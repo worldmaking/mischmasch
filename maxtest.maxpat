@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 653.0, 214.0, 907.0, 626.0 ],
+		"rect" : [ 653.0, 214.0, 927.0, 1019.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -38,6 +38,64 @@
 		"style" : "",
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-26",
+					"maxclass" : "ezdac~",
+					"numinlets" : 2,
+					"numoutlets" : 0,
+					"patching_rect" : [ 161.0, 779.0, 45.0, 45.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"bgmode" : 0,
+					"border" : 0,
+					"clickthrough" : 0,
+					"enablehscroll" : 0,
+					"enablevscroll" : 0,
+					"extract" : 1,
+					"id" : "obj-25",
+					"lockeddragscroll" : 0,
+					"maxclass" : "bpatcher",
+					"name" : "bp.FM.maxpat",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"offset" : [ 0.0, 0.0 ],
+					"outlettype" : [ "signal" ],
+					"patching_rect" : [ 205.0, 573.0, 211.0, 116.0 ],
+					"varname" : "bp.FM",
+					"viewvisibility" : 1
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-17",
+					"linecount" : 2,
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 669.0, 69.25, 223.0, 35.0 ],
+					"text" : ";\r\nmax launchbrowser http://localhost:8080"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontsize" : 17.073673751737665,
+					"id" : "obj-21",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 669.0, 20.0, 168.0, 28.0 ],
+					"text" : "Launch the webpage"
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-13",
 					"maxclass" : "newobj",
@@ -80,7 +138,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "bang" ],
-					"patching_rect" : [ 539.0, 52.0, 87.0, 22.0 ],
+					"patching_rect" : [ 522.0, 52.0, 87.0, 22.0 ],
 					"text" : "filewatch client"
 				}
 
@@ -579,6 +637,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-17", 0 ],
+					"source" : [ "obj-21", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-20", 0 ],
 					"order" : 1,
 					"source" : [ "obj-22", 0 ]
@@ -603,6 +668,22 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-26", 1 ],
+					"order" : 0,
+					"source" : [ "obj-25", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-26", 0 ],
+					"order" : 1,
+					"source" : [ "obj-25", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-2", 0 ],
 					"source" : [ "obj-4", 0 ]
 				}
@@ -616,6 +697,18 @@
 
 			}
  ],
+		"parameters" : 		{
+			"obj-25::obj-56" : [ "Depth", "Depth", 0 ],
+			"obj-25::obj-20" : [ "mute", "mute", 0 ],
+			"obj-25::obj-91" : [ "Offset", "Offset", 0 ],
+			"obj-25::obj-80" : [ "Ratio", "Ratio", 0 ],
+			"obj-25::obj-86" : [ "Amt", "Amt", 0 ],
+			"parameterbanks" : 			{
+
+			}
+
+		}
+,
 		"dependency_cache" : [ 			{
 				"name" : "server.js",
 				"bootpath" : "D:/github/msvr",
@@ -639,6 +732,12 @@
 				"name" : "fit_jweb_to_bounds.js",
 				"bootpath" : "C74:/packages/Node For Max/patchers/debug-monitor",
 				"type" : "TEXT",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "bp.FM.maxpat",
+				"bootpath" : "C74:/packages/Beap/clippings/BEAP/Oscillator",
+				"type" : "JSON",
 				"implicit" : 1
 			}
  ],
