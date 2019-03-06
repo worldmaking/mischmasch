@@ -27,6 +27,7 @@
     "ignore": [
       "test/*",
       "docs/*"
-    ]
+    ],
+    "ext": "js html"
   }
 }

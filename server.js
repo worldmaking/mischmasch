@@ -13,6 +13,15 @@ const express = require('express');
 const WebSocket = require('ws');
 const { vec2, vec3, vec4, quat, mat3, mat4 } = require("gl-matrix");
 
+const Max = (() => {
+    try {
+        return require("max-api");
+    } catch(e) {
+        console.log("not running in Max")
+    }
+})();
+
+
 //////////////////////// 
 
 const project_path = process.cwd();

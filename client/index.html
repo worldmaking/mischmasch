@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:8080; style-src 'self' 'unsafe-inline' http://localhost:8080;">
+
+
 <style>
 html,body {
   margin: 0px;
@@ -484,7 +487,6 @@ function render() {
     renderer.render(scene, camera);
 
 }
-
 </script>
 </body>
 </html>
