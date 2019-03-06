@@ -166,11 +166,12 @@ function init() {
     ];
   
     for (let i = 0; i < 2; i++) {
-        let geometry = geometries[Math.floor(Math.random() * geometries.length)];
+        let geometry = geometries[0];
         let material = new THREE.MeshStandardMaterial({
             color: Math.random() * 0xffffff,
             roughness: 0.7,
-            metalness: 0.0
+            metalness: 0.0,
+            wireframe: true
         });
         let object = new THREE.Mesh(geometry, material);
         object.position.x = Math.random() * 4 - 2;
@@ -182,6 +183,13 @@ function init() {
         object.scale.setScalar(Math.random() + 0.5);
         object.castShadow = true;
         object.receiveShadow = true;
+
+        //Child Node
+        let child = geometries[0];
+        let childNode = new THREE.Mesh(child, material);
+        childNode.scale.setScalar(0.2);
+        object.add(childNode);
+
         group.add(object);
     }
 
