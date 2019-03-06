@@ -73,6 +73,32 @@ try {
 
 </script>
 <script>
+let patch = {
+  "nodes": {
+    "a": {
+      "_props": { "kind": "noise", "pos": [ 0.0, 1.5, 0.0 ] },
+      "signal": { "_props": { "kind": "outlet" } }
+    },
+    "b": {
+      "_props": { "kind": "dac", "pos": [ 0.0, 1.0, 0.0 ] },
+      "source": { "_props": { "kind": "inlet" } }
+    },
+    "child": {
+      "_props": { "kind": "group", "pos": [ 0.5, 1.5, 0.0 ] },
+      "aa": {
+        "_props": {  "kind": "beep", "pos": [ 0.0, 0.2, 0.0 ] },
+        "signal":  { "_props": { "kind": "outlet" } }
+      }
+    },
+    "x": { "_props": {  "kind": "noise", "pos": [ -0.5, 1.5, 0.0] } }
+  },
+  "arcs": [
+    [  "a.signal", "b.source" ],
+    [ "child.a.signal", "b" ]
+  ]
+}
+</script>
+<script>
 var container;
 var camera, scene, renderer;
 var controller1, controller2;
