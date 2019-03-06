@@ -29,13 +29,13 @@ canvas {
   padding: 10px;
   color: #fff;
   background-color: hsla(50, 0%, 10%, .75);
-  z-index: 10;
-  display: none;
+  z-index: 1000;
 }
 
 </style>
 <body>
 <div id="container"></div>
+<canvas id="webgl-canvas"></canvas>
 <div id="log">log</div>
 
 <script src="js/gl-matrix-min.js"></script>  
@@ -49,6 +49,7 @@ canvas {
 
 <script>
 let canvas = document.getElementById("webgl-canvas");
+let log = document.getElementById("log");
 
 let sock
 try {
@@ -104,18 +105,22 @@ var camera, scene, renderer;
 var controller1, controller2;
 var raycaster,
     intersected = [];
-var tempMatrix = new THREE.Matrix4();
-var group;
+let tempMatrix = new THREE.Matrix4();
+let group;
 
-var splineHelperObjects = [];
-var splinePointsLength = 4;
-var positions = [];
-var point = new THREE.Vector3();
-var geometry = new THREE.BoxBufferGeometry(0.2, 0.2, 0.2);
-var geometry2 = new THREE.BoxBufferGeometry(0.1, 0.1, 0.1);
-var ARC_SEGMENTS = 40;
-var splines = {};
-var params = {
+let splineHelperObjects = [];
+let splinePointsLength = 4;
+let positions = [new THREE.Vector3(0.7, 0.5, 0.1),
+        new THREE.Vector3(-0.5, 0.4, -0.09),
+        new THREE.Vector3(-0.4, 0.4, -0.9),
+        new THREE.Vector3(-0.7, 0.1, 0.8)
+    ];
+let point = new THREE.Vector3();
+let geometry = new THREE.BoxBufferGeometry(0.2, 0.2, 0.2);
+let geometry2 = new THREE.BoxBufferGeometry(0.1, 0.1, 0.1);
+let ARC_SEGMENTS = 40;
+let splines = {};
+let params = {
     uniform: true,
     tension: 0.5,
     centripetal: true,
@@ -129,8 +134,8 @@ init();
 animate();
 
 function init() {
-    container = document.getElementById('container');
-    document.body.appendChild(container);
+    //container = document.getElementById('container');
+    //document.body.appendChild(container);
     // let info = document.createElement("div");
     // container.appendChild(info);
     scene = new THREE.Scene();
@@ -143,7 +148,8 @@ function init() {
     );
 
     renderer = new THREE.WebGLRenderer({
-        antialias: true
+        antialias: true,
+        canvas: canvas
     });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -151,7 +157,7 @@ function init() {
     renderer.gammaOutput = true;
     renderer.shadowMap.enabled = true;
     renderer.vr.enabled = true;
-    container.appendChild(renderer.domElement);
+    //container.appendChild(renderer.domElement);
     document.body.appendChild(WEBVR.createButton(renderer));
     // controllers
     controller1 = renderer.vr.getController(0);
@@ -178,7 +184,7 @@ function init() {
     group = new THREE.Group();
     scene.add(group);
     let geometries = [
-        new THREE.BoxBufferGeometry(0.2, 0.2, 0.2),
+        new THREE.BoxBufferGeometry(0.5, 0.5, 0.5),
         // new THREE.ConeBufferGeometry(0.2, 0.2, 64),
         // new THREE.CylinderBufferGeometry(0.2, 0.2, 0.2, 64),
         // new THREE.IcosahedronBufferGeometry(0.2, 3),
@@ -231,11 +237,11 @@ function init() {
     for (let i = 0; i < splinePointsLength; i++) {
         addSplineObject(positions[i], i);
     }
-    positions = [];
+    // positions = [];
   
-    for (let i = 0; i < splinePointsLength; i++) {
-        positions.push(splineHelperObjects[i].position);
-    }
+    // for (let i = 0; i < splinePointsLength; i++) {
+    //     positions.push(splineHelperObjects[i].position);
+    // }
   
     //Three patch cord connection lines (red, green, blue) 
     let patchCord = new THREE.BufferGeometry(20, 20, 20);
@@ -268,17 +274,15 @@ function init() {
         let spline = splines[k];
         scene.add(spline.mesh);
     }
-    load([new THREE.Vector3(0.7, 0.5, 0.1),
-        new THREE.Vector3(-0.5, 0.4, -0.09),
-        new THREE.Vector3(-0.4, 0.4, -0.9),
-        new THREE.Vector3(-0.7, 0.1, 0.8)
-    ]);
+    updateSplineOutline()
 
   
   //Font 
   let fontLoader = new THREE.FontLoader;
+  let fontFile = 'js/three-r102/examples/fonts/helvetiker_regular.typeface.json';
 
-  fontLoader.load('fonts/helvetiker_regular.typeface.json', function ( font ) {
+  fontLoader.load(fontFile, function ( font ) {
+
     let color = 0x00ff00;
     let text, xMid;
     let material = new THREE.MeshBasicMaterial({
@@ -288,19 +292,20 @@ function init() {
               side: THREE.DoubleSide
     });
 
-    let message = "Hello World!";
-    let shapes = font.generateShapes( message, 100 );
+    let message = "Text!";
+
+    let shapes = font.generateShapes( message, .5 );
     let shapeGeometry = new THREE.ShapeBufferGeometry( shapes );
     shapeGeometry.computeBoundingBox();
 
-    xMid = - 0.5 * ( shapeGeometry.boundingBox.max.x - shapeGeometry.boundingBox.min.x );
+    xMid =  -0.1 *( shapeGeometry.boundingBox.max.x - shapeGeometry.boundingBox.min.x );
     shapeGeometry.translate( xMid, 0, 0 );
 
     text = new THREE.Mesh( shapeGeometry, material );
     text.position.z = 0;
-      console.log("Hi");
+    text.rotation.y = 180;
+     
     scene.add( text );
-  
   });
 
 }
@@ -321,7 +326,7 @@ function onSelectStart(event) {
         object.matrix.premultiply(tempMatrix);
         object.matrix.decompose(object.position, object.quaternion, object.scale);
         //object.material.emissive.b = 1;
-        controller.add(object);
+        controller.add(object); //removes from previous parent
         controller.userData.selected = object;
     }
 }
@@ -402,13 +407,20 @@ function addSplineObject(position, amount) {
 }
 
 function updateSplineOutline() {
+    
     for (let k in splines) {
+        // todo: this should be spline.positions
+        for (let i in positions) {
+            //console.log(p)
+            splineHelperObjects[i].getWorldPosition(positions[i])
+        }
         let spline = splines[k];
         let splineMesh = spline.mesh;
         let position = splineMesh.geometry.attributes.position;
         for (let i = 0; i < ARC_SEGMENTS; i++) {
             let t = i / (ARC_SEGMENTS - 1);
             spline.getPoint(t, point);
+            if (i==0) console.log(point)
             position.setXYZ(i, point.x, point.y, point.z);
         }
         position.needsUpdate = true;
@@ -451,36 +463,48 @@ function animate() {
 
 function render() {
     //Spline
+    //updateSplineOutline();
     splines.uniform.mesh.visible = params.uniform;
     splines.centripetal.mesh.visible = params.centripetal;
     splines.chordal.mesh.visible = params.chordal;
 
+    // make sure all objects' matrices are up to date (TODO might not be needed?)
+    scene.updateMatrixWorld();
+
+    let p = new THREE.Vector3();
+    
+    log.textContent = JSON.stringify(p)
     if (controller1.userData.selected !== undefined) {
-        let object = controller1.userData.selected;
-        let object2 = function() {
-            object.matrix.premultiply(controller1.matrixWorld);
-            object.matrix.decompose(object.position, object.quaternion, object.scale);
-        }
-        let temp = object;
-        object = object2;
-        object2 = temp;
-        //console.log("Test");
+        
         updateSplineOutline();
     }
 
-    if (controller2.userData.selected !== undefined) {
-        let object = controller2.userData.selected;
-        let object2 = function() {
-            object.matrix.premultiply(controller2.matrixWorld);
-            object.matrix.decompose(object.position, object.quaternion, object.scale);
-        }
+    // if (controller1.userData.selected !== undefined) {
+    //     let object = controller1.userData.selected;
+    //     let object2 = function() {
+    //         object.matrix.premultiply(controller1.matrixWorld);
+    //         object.matrix.decompose(object.position, object.quaternion, object.scale);
+    //     }
+    //     /*let temp = object;
+    //     object = object2;
+    //     object2 = temp;*/
+    //     //console.log("Test");
+    //     updateSplineOutline();
+    // }
 
-        let temp = object;
-        object = object2;
-        object2 = temp;
+    // if (controller2.userData.selected !== undefined) {
+    //     let object = controller2.userData.selected;
+    //     let object2 = function() {
+    //         object.matrix.premultiply(controller2.matrixWorld);
+    //         object.matrix.decompose(object.position, object.quaternion, object.scale);
+    //     }
 
-        updateSplineOutline();
-      }
+    //     let temp = object;
+    //     object = object2;
+    //     object2 = temp;
+
+    //     updateSplineOutline();
+    //   }
 
     //Objects
     cleanIntersected();
