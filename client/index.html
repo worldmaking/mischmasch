@@ -94,12 +94,14 @@ let patch = {
     "x": { "_props": {  "kind": "noise", "pos": [ -0.5, 1.5, 0.0] } }
   },
   "arcs": [
-    [  "a.signal", "b.source" ],
-    [ "child.a.signal", "b" ]
+    [  "a.signal", "b.source" ]//, [ "child.a.signal", "b" ]
   ]
 }
 </script>
 <script>
+
+
+
 var container;
 var camera, scene, renderer;
 var controller1, controller2;
@@ -107,6 +109,21 @@ var raycaster,
     intersected = [];
 let tempMatrix = new THREE.Matrix4();
 let group;
+
+let ark = [{
+    positions: [new THREE.Vector3(0.7, 0.5, 0.1),
+        new THREE.Vector3(-0.5, 0.4, -0.09),
+        new THREE.Vector3(-0.4, 0.4, -0.9),
+        new THREE.Vector3(-0.7, 0.1, 0.8)
+    ],
+    splinePointsLength: 4,
+    splineHelperObjects: [],
+    splineData: {}
+
+}];
+
+let synths = [{
+}];
 
 let splineHelperObjects = [];
 let splinePointsLength = 4;
@@ -215,8 +232,10 @@ function init() {
         let childNode = new THREE.Mesh(child, material);
         childNode.scale.setScalar(0.2);
         object.add(childNode);
-
+        synths.push(object);
         group.add(object);
+        //log.textContent = JSON.stringify(synths);
+        console.log(synths)
     }
 
     let geometry = new THREE.BufferGeometry().setFromPoints([
@@ -291,7 +310,7 @@ function init() {
 
   fontLoader.load(fontFile, function ( font ) {
 
-    let color = 0x00ff00;
+    let color = 0x000000;
     let text, xMid;
     let material = new THREE.MeshBasicMaterial({
               color: color,
@@ -315,6 +334,7 @@ function init() {
      
     scene.add( text );
   });
+
 
 }
 
@@ -382,7 +402,6 @@ function cleanIntersected() {
         object.material.emissive.r = 0;
     }
 }
-
 function addSplineObject(position, amount) {
   //Colours the spline points based on if its moveable (Green) or unmoveable (Red)
     if (amount == 0 || amount == splinePointsLength - 1) {
@@ -404,6 +423,7 @@ function addSplineObject(position, amount) {
     }
     object.castShadow = true;
     object.receiveShadow = true;
+
     if (amount == 0 || amount == splinePointsLength - 1) {
         group.add(object);
     } else {
@@ -420,7 +440,8 @@ function updateSplineOutline() {
         // todo: this should be spline.positions
         for (let i in positions) {
             //console.log(p)
-            splineHelperObjects[i].getWorldPosition(positions[i])
+            splineHelperObjects[i].getWorldPosition(positions[i]);
+        
         }
         let spline = splines[k];
         let splineMesh = spline.mesh;
@@ -428,7 +449,7 @@ function updateSplineOutline() {
         for (let i = 0; i < ARC_SEGMENTS; i++) {
             let t = i / (ARC_SEGMENTS - 1);
             spline.getPoint(t, point);
-            if (i==0) console.log(point)
+           // if (i==0) console.log(point)
             position.setXYZ(i, point.x, point.y, point.z);
         }
         position.needsUpdate = true;
@@ -464,6 +485,16 @@ function load(new_positions) {
     updateSplineOutline();
 }
 
+function generateScene(patch){
+    /** Going to use this to search through the patch JSON coming in from max */
+    for(let i = 0; i < patch.arcs.length; i++){
+        let arc = patch.arcs[i];
+        let data = patch.nodes.arc;
+       // return data;
+        
+    }
+}
+
 function animate() {
     renderer.setAnimationLoop(render);
 }
@@ -481,9 +512,9 @@ function render() {
 
     let p = new THREE.Vector3();
     
-    log.textContent = JSON.stringify(p)
+    //log.textContent = JSON.stringify(p)
     if (controller1.userData.selected !== undefined) {
-        
+
         updateSplineOutline();
     }
 
