@@ -13,13 +13,41 @@ const express = require('express');
 const WebSocket = require('ws');
 const { vec2, vec3, vec4, quat, mat3, mat4 } = require("gl-matrix");
 
-const Max = (() => {
+const MaxAPI = (() => {
     try {
         return require("max-api");
     } catch(e) {
         console.log("not running in Max")
     }
 })();
+
+if (MaxAPI) {
+    MaxAPI.addHandler(MaxAPI.MESSAGE_TYPES.BANG, () => {
+        MaxAPI.outletBang();
+    });
+    MaxAPI.addHandler(MaxAPI.MESSAGE_TYPES.NUMBER, (n) => {
+        MaxAPI.outlet("got a number", n);
+    });
+    MaxAPI.addHandler("hello", (n) => {
+        MaxAPI.outlet("hello", n);
+    });
+    MaxAPI.addHandler(MaxAPI.MESSAGE_TYPES.ALL, (handled, ...args) => {
+        MaxAPI.outlet(`The following inlet event was ${!handled ? "not " : "" }handled`);
+        MaxAPI.outlet(args);
+    });
+    
+    (async () => {
+        let patch = await MaxAPI.getDict("patch");
+        MaxAPI.post(JSON.stringify(patch), MaxAPI.INFO);
+        
+        MaxAPI.setDict("patch", {
+            a: 1, b: Math.random()
+        });
+        // updateDict(id, "ab.cd", value) 
+        MaxAPI.outletBang();
+
+    })()
+}
 
 
 //////////////////////// 
