@@ -241,6 +241,8 @@
             generateSynths(true);
             generateSynths(true, 0.9, 0.2, 0.7);
             generateSplines();
+
+            //console.log(group)
         }
 
         function onWindowResize() {
@@ -310,6 +312,11 @@
             }
         }
 
+        function splineConnectNode(){
+            
+        }
+
+
         /** Generate Text object inside viewport.
          * 
          * @param {String} fontType - pass in font file (.typeface.json)
@@ -369,9 +376,12 @@
 
         }
 
-        /** Create multiple synth objects (cubes for now) with 1 child in the center.
+        /** Create synth objects.
          * 
-         * @param {Int} amount - how many synths to create inside the viewport
+         * @param {Boolean} child - would you like a child aka node attached to this object
+         * @param {Float} length - length of the cube
+         * @param {Float} width - width of the cube
+         * @param {Float} height - height of the cube
          */
 
         function generateSynths(child, length, width, height) {
@@ -409,7 +419,14 @@
             //}
             console.log(synths)
         }
-        
+
+         /** Create node objects (cubes for now).
+         * 
+         * @param {Object} object - parent object which this child is being created and attached too
+         * @param {Material} material - the material which this node will inherit
+         * 
+         * @return returns the object with the child parented to it already
+         */
         function generateNodes(object, material){
             let child = new THREE.BoxBufferGeometry(0.1, 0.1, 0.1);;
             let childNode = new THREE.Mesh(child, material);
