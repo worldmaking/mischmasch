@@ -118,7 +118,7 @@
 
         // test
         let ark = {
-            positions: [new THREE.Vector3(0.7, 0.5, 0.1),
+            positions: [new THREE.Vector3( 0.7, 0.5, 0.1),
             new THREE.Vector3(-0.5, 0.4, -0.09),
             new THREE.Vector3(-0.4, 0.4, -0.9),
             new THREE.Vector3(-0.7, 0.1, 0.8)
@@ -128,7 +128,7 @@
             splineData: {}
 
         };
-
+    
         let synths = [{
         }];
 
@@ -231,55 +231,16 @@
             helper.material.transparent = true;
             scene.add(helper);
 
-            /**********
-             * Curves *
-             **********/
+            /****************************
+             * Generate Different Parts *
+             ****************************/
 
-            for (let i = 0; i < splinePointsLength; i++) {
-                addSplineObject(ark.positions[i], i);
-            }
-            // positions = [];
-
-            // for (let i = 0; i < splinePointsLength; i++) {
-            //     positions.push(splineHelperObjects[i].position);
-            // }
-
-            //Three patch cord connection lines (red, green, blue) 
-            let patchCord = new THREE.BufferGeometry(20, 20, 20);
-            patchCord.addAttribute('position', new THREE.BufferAttribute(new Float32Array(ARC_SEGMENTS * 3), 3));
-            let curve = new THREE.CatmullRomCurve3(ark.positions);
-            curve.curveType = 'catmullrom';
-            curve.mesh = new THREE.Line(patchCord.clone(), new THREE.LineBasicMaterial({
-                color: 0xff0000,
-                opacity: 1
-            }));
-            curve.mesh.castShadow = true;
-            splines.uniform = curve;
-            curve = new THREE.CatmullRomCurve3(ark.positions);
-            curve.curveType = 'centripetal';
-            curve.mesh = new THREE.Line(patchCord.clone(), new THREE.LineBasicMaterial({
-                color: 0x00ff00,
-                opacity: 1
-            }));
-            curve.mesh.castShadow = true;
-            splines.centripetal = curve;
-            curve = new THREE.CatmullRomCurve3(ark.positions);
-            curve.curveType = 'chordal';
-            curve.mesh = new THREE.Line(patchCord.clone(), new THREE.LineBasicMaterial({
-                color: 0x0000ff,
-                opacity: 1
-            }));
-            curve.mesh.castShadow = true;
-            splines.chordal = curve;
-            for (let k in splines) {
-                let spline = splines[k];
-                scene.add(spline.mesh);
-            }
-            updateSplineOutline()
 
             generateText(fontFile, "Test");
             generateText(fontFile, "BLLALALAL", 0x000ff0, .5, true);
-            generateSynths(2);
+            generateSynths(true);
+            generateSynths(true, 0.9, 0.2, 0.7);
+            generateSplines();
         }
 
         function onWindowResize() {
@@ -413,17 +374,14 @@
          * @param {Int} amount - how many synths to create inside the viewport
          */
 
-        function generateSynths(amount) {
-            let geometries = [
-                new THREE.BoxBufferGeometry(0.5, 0.5, 0.5),
-                // new THREE.ConeBufferGeometry(0.2, 0.2, 64),
-                // new THREE.CylinderBufferGeometry(0.2, 0.2, 0.2, 64),
-                // new THREE.IcosahedronBufferGeometry(0.2, 3),
-                // new THREE.TorusBufferGeometry(0.2, 0.04, 64, 32)
-            ];
+        function generateSynths(child, length, width, height) {
 
-            for (let i = 0; i < amount; i++) {
-                let geometry = geometries[0];
+           // for (let i = 0; i < amount; i++) {
+               if(length === undefined || width === undefined || height === undefined){
+                   length = 0.5, width = 0.5, height = 0.5;
+               }
+                let geometry = new THREE.BoxBufferGeometry(length, height, width);
+
                 let material = new THREE.MeshStandardMaterial({
                     color: Math.random() * 0xffffff,
                     roughness: 0.7,
@@ -437,20 +395,73 @@
                 object.rotation.x = Math.random() * 2 * Math.PI;
                 object.rotation.y = Math.random() * 2 * Math.PI;
                 object.rotation.z = Math.random() * 2 * Math.PI;
-                object.scale.setScalar(Math.random() + 0.5);
+                //object.scale.setScalar(Math.random() + 0.5);
                 object.castShadow = true;
                 object.receiveShadow = true;
+               
+                if(child === true){
+                    object = generateNodes(object, material);
+                }
 
-                //Child Node
-                let child = geometries[0];
-                let childNode = new THREE.Mesh(child, material);
-                childNode.scale.setScalar(0.2);
-                object.add(childNode);
                 synths.push(object);
                 group.add(object);
                 //log.textContent = JSON.stringify(synths);
-            }
+            //}
             console.log(synths)
+        }
+        
+        function generateNodes(object, material){
+            let child = new THREE.BoxBufferGeometry(0.1, 0.1, 0.1);;
+            let childNode = new THREE.Mesh(child, material);
+
+           // childNode.scale.setScalar(0.2);
+            object.add(childNode);
+            return object;
+        }
+
+        function generateSplines(){
+
+            for (let i = 0; i < splinePointsLength; i++) {
+                addSplineObject(ark.positions[i], i);
+            }
+            // positions = [];
+
+            // for (let i = 0; i < splinePointsLength; i++) {
+            //     positions.push(splineHelperObjects[i].position);
+            // }
+
+            //Three patch cord connection lines (red, green, blue) 
+            let patchCord = new THREE.BufferGeometry(20, 20, 20);
+            patchCord.addAttribute('position', new THREE.BufferAttribute(new Float32Array(ARC_SEGMENTS * 3), 3));
+            let curve = new THREE.CatmullRomCurve3(ark.positions);
+            curve.curveType = 'catmullrom';
+            curve.mesh = new THREE.Line(patchCord.clone(), new THREE.LineBasicMaterial({
+                color: 0xff0000,
+                opacity: 1
+            }));
+            curve.mesh.castShadow = true;
+            splines.uniform = curve;
+            curve = new THREE.CatmullRomCurve3(ark.positions);
+            curve.curveType = 'centripetal';
+            curve.mesh = new THREE.Line(patchCord.clone(), new THREE.LineBasicMaterial({
+                color: 0x00ff00,
+                opacity: 1
+            }));
+            curve.mesh.castShadow = true;
+            splines.centripetal = curve;
+            curve = new THREE.CatmullRomCurve3(ark.positions);
+            curve.curveType = 'chordal';
+            curve.mesh = new THREE.Line(patchCord.clone(), new THREE.LineBasicMaterial({
+                color: 0x0000ff,
+                opacity: 1
+            }));
+            curve.mesh.castShadow = true;
+            splines.chordal = curve;
+            for (let k in splines) {
+                let spline = splines[k];
+                scene.add(spline.mesh);
+            }
+            updateSplineOutline();
         }
 
         function addSplineObject(position, amount) {
