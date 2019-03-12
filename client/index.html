@@ -80,7 +80,7 @@
 
     </script>
     <script>
-        let patch = {
+        let patch1 = {
             "nodes": {
                 "a": {
                     "_props": { "kind": "noise", "pos": [0.0, 1.5, 0.0] },
@@ -136,8 +136,9 @@
 
         }];
 
-        let splineHelperObjects = [];
-        let splinePointsLength = 4;
+        // let splineHelperObjects = [];
+        // let splinePointsLength = 4;
+        // let splines = {};
         // let positions = [new THREE.Vector3(0.7, 0.5, 0.1),
         //         new THREE.Vector3(-0.5, 0.4, -0.09),
         //         new THREE.Vector3(-0.4, 0.4, -0.9),
@@ -146,8 +147,10 @@
         let point = new THREE.Vector3();
         let geometry = new THREE.BoxBufferGeometry(0.2, 0.2, 0.2);
         let geometry2 = new THREE.BoxBufferGeometry(0.1, 0.1, 0.1);
+
+
         let ARC_SEGMENTS = 40;
-        let splines = {};
+      
         let params = {
             uniform: true,
             tension: 0.5,
@@ -162,6 +165,7 @@
         animate();
 
         function init() {
+
             //container = document.getElementById('container');
             //document.body.appendChild(container);
             // let info = document.createElement("div");
@@ -241,8 +245,10 @@
             generateSynths(true);
             generateSynths(true, 0.9, 0.2, 0.7);
             generateSplines();
+            generateSplines();
 
-            //console.log(group)
+            //console.log(ark)
+            generateScene(patch1);
         }
 
         function onWindowResize() {
@@ -438,7 +444,7 @@
 
         function generateSplines(){
 
-            for (let i = 0; i < splinePointsLength; i++) {
+            for (let i = 0; i < ark.splinePointsLength; i++) {
                 addSplineObject(ark.positions[i], i);
             }
             // positions = [];
@@ -457,7 +463,7 @@
                 opacity: 1
             }));
             curve.mesh.castShadow = true;
-            splines.uniform = curve;
+            ark.splineData.uniform = curve;
             curve = new THREE.CatmullRomCurve3(ark.positions);
             curve.curveType = 'centripetal';
             curve.mesh = new THREE.Line(patchCord.clone(), new THREE.LineBasicMaterial({
@@ -465,7 +471,7 @@
                 opacity: 1
             }));
             curve.mesh.castShadow = true;
-            splines.centripetal = curve;
+            ark.splineData.centripetal = curve;
             curve = new THREE.CatmullRomCurve3(ark.positions);
             curve.curveType = 'chordal';
             curve.mesh = new THREE.Line(patchCord.clone(), new THREE.LineBasicMaterial({
@@ -473,9 +479,9 @@
                 opacity: 1
             }));
             curve.mesh.castShadow = true;
-            splines.chordal = curve;
-            for (let k in splines) {
-                let spline = splines[k];
+            ark.splineData.chordal = curve;
+            for (let k in ark.splineData) {
+                let spline = ark.splineData[k];
                 scene.add(spline.mesh);
             }
             updateSplineOutline();
@@ -483,7 +489,7 @@
 
         function addSplineObject(position, amount) {
             //Colours the spline points based on if its moveable (Green) or unmoveable (Red)
-            if (amount == 0 || amount == splinePointsLength - 1) {
+            if (amount == 0 || amount == ark.splinePointsLength - 1) {
                 var material = new THREE.MeshLambertMaterial({
                     color: 0x00ff00
                 });
@@ -503,26 +509,28 @@
             object.castShadow = true;
             object.receiveShadow = true;
 
-            if (amount == 0 || amount == splinePointsLength - 1) {
+            if (amount == 0 || amount == ark.splinePointsLength - 1) {
                 group.add(object);
             } else {
                 scene.add(object);
             }
 
-            splineHelperObjects.push(object);
+            ark.splineHelperObjects.push(object);
             return object;
         }
 
         function updateSplineOutline() {
+     
 
-            for (let k in splines) {
+
+            for (let k in ark.splineData) {
                 // todo: this should be spline.positions
                 for (let i in ark.positions) {
                     //console.log(p)
-                    splineHelperObjects[i].getWorldPosition(ark.positions[i]);
+                    ark.splineHelperObjects[i].getWorldPosition(ark.positions[i]);
 
                 }
-                let spline = splines[k];
+                let spline = ark.splineData[k];
                 let splineMesh = spline.mesh;
                 let position = splineMesh.geometry.attributes.position;
                 for (let i = 0; i < ARC_SEGMENTS; i++) {
@@ -533,8 +541,9 @@
                 }
                 position.needsUpdate = true;
             }
+            
         }
-
+    
         // function load(new_positions) {
         //     /** This code can be used to add more points to an existing spline or remove from an existing spline
         //       * for our purposes this seems useless because all the "patch" cables will be always 4 points
@@ -564,14 +573,30 @@
         //     updateSplineOutline();
         // }
 
-        function generateScene(patch) {
+        function generateScene(data) {
             /** Going to use this to search through the patch JSON coming in from max */
-            for (let i = 0; i < patch.arcs.length; i++) {
-                let arc = patch.arcs[i];
-                let data = patch.nodes.arc;
-                // return data;
 
+          
+            // Object.size = function(obj) {
+            //     var size = 0, key;
+            //     for (key in obj) {
+            //         if (obj.hasOwnProperty(key)) size++;
+            //     }
+            //     return size;
+            // };
+
+            // var size = Object.size(patch.nodes);
+            for(key in data) {
+                if(data.hasOwnProperty(key)) {
+                    var value = data[key];
+                    //console.log(value)
+
+                }
             }
+           // generateScene(value);
+                
+            
+           
         }
 
         function animate() {
@@ -582,9 +607,9 @@
         function render() {
             //Spline
             //updateSplineOutline();
-            splines.uniform.mesh.visible = params.uniform;
-            splines.centripetal.mesh.visible = params.centripetal;
-            splines.chordal.mesh.visible = params.chordal;
+            ark.splineData.uniform.mesh.visible = params.uniform;
+            ark.splineData.centripetal.mesh.visible = params.centripetal;
+            ark.splineData.chordal.mesh.visible = params.chordal;
 
             // make sure all objects' matrices are up to date (TODO might not be needed?)
             scene.updateMatrixWorld();
