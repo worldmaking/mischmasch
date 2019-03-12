@@ -114,7 +114,7 @@
         var raycaster,
             intersected = [];
         let tempMatrix = new THREE.Matrix4();
-        let group;
+        let world;
 
         // test
         let ark = {
@@ -160,9 +160,36 @@
 
 
         let fontFile = 'js/three-r102/examples/fonts/helvetiker_regular.typeface.json';
+        let fontLoader = new THREE.FontLoader;
+        let loadedFont;
+        
+        // STYLES
+        let inlet_geometry = new THREE.BoxBufferGeometry(0.1, 0.03, 0.1);
+        let outlet_geometry = new THREE.BoxBufferGeometry(0.1, 0.03, 0.1);
+        let generic_geometry = new THREE.BoxBufferGeometry(0.4, 0.2, 0.2);
 
-        init();
-        animate();
+        let generic_material = new THREE.MeshStandardMaterial({
+            color: Math.random() * 0xffffff,
+            roughness: 0.7,
+            metalness: 0.0,
+            wireframe: true
+        });
+        let inlet_material = generic_material
+        let outlet_material = generic_material
+
+        let label_material = new THREE.MeshStandardMaterial({
+            color: 0x000000,
+            transparent: true,
+            opacity: 0.4,
+            side: THREE.DoubleSide
+        });
+
+        // TODO: lazy hack, fix this with async/await or something smarter
+        fontLoader.load(fontFile, function (font) {
+            loadedFont = font;
+            init();
+            animate();
+        });
 
         function init() {
 
@@ -213,9 +240,10 @@
             light.shadow.camera.left = -2;
             light.shadow.mapSize.set(4096, 4096);
             scene.add(light);
-            group = new THREE.Group();
-            scene.add(group);
+            world = new THREE.Group();
+            scene.add(world);
 
+            // controllers geom
             let geometry = new THREE.BufferGeometry().setFromPoints([
                 new THREE.Vector3(0, 0, 0),
                 new THREE.Vector3(0, 0, -1)
@@ -228,7 +256,7 @@
             raycaster = new THREE.Raycaster();
             window.addEventListener("resize", onWindowResize, false);
 
-
+            // floor
             let helper = new THREE.GridHelper(10, 10);
             helper.position.y = 0;
             helper.material.opacity = 0.25;
@@ -279,7 +307,7 @@
                 object.matrix.premultiply(controller.matrixWorld);
                 object.matrix.decompose(object.position, object.quaternion, object.scale);
                 //object.material.emissive.b = 0;
-                group.add(object);
+                world.add(object);
                 controller.userData.selected = undefined;
                 //updateSplineOutline();
 
@@ -290,7 +318,9 @@
             tempMatrix.identity().extractRotation(controller.matrixWorld);
             raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
             raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
-            return raycaster.intersectObjects(group.children);
+            // argument here is just any old array of objects
+            // 2nd arg is recursive
+            return raycaster.intersectObjects(world.children, true);
         }
 
         function intersectObjects(controller) {
@@ -336,7 +366,7 @@
 
         function generateText(fontType, message, color, positionZ, moveable) {
             //Font 
-            let fontLoader = new THREE.FontLoader;
+            
 
             fontLoader.load(fontType, function (font) {
                 if (color === undefined) {
@@ -372,7 +402,7 @@
                 text.rotation.y = 180;
                 if (moveable === true) {
 
-                    group.add(text);
+                    world.add(text);
                 }
                 else {
                     scene.add(text);
@@ -420,7 +450,7 @@
                 }
 
                 synths.push(object);
-                group.add(object);
+                world.add(object);
                 //log.textContent = JSON.stringify(synths);
             //}
             console.log(synths)
@@ -510,7 +540,7 @@
             object.receiveShadow = true;
 
             if (amount == 0 || amount == ark.splinePointsLength - 1) {
-                group.add(object);
+                world.add(object);
             } else {
                 scene.add(object);
             }
@@ -572,8 +602,65 @@
         //     }
         //     updateSplineOutline();
         // }
+               
+        function generateLabel(message) {
+            let shapes = loadedFont.generateShapes(message, .05);
+            let shapeGeometry = new THREE.ShapeBufferGeometry(shapes);
+            shapeGeometry.computeBoundingBox();
 
-        function generateScene(data) {
+            text = new THREE.Mesh(shapeGeometry, label_material);
+           
+            return text;
+        }
+
+        function generateNode(parent, node, name) {
+            let container
+
+            let props = node._props;
+            switch(props.kind) {
+                case "outlet": {
+                    container = new THREE.Mesh(outlet_geometry, outlet_material);
+                    container.castShadow = true;
+                    container.receiveShadow = true;
+                    container.position.fromArray([0., -0.1, 0.]);
+                    break;
+                }
+                case "inlet": {
+                    container = new THREE.Mesh(inlet_geometry, inlet_material);
+                    container.castShadow = true;
+                    container.receiveShadow = true;
+                    container.position.fromArray([0., 0.1, 0.]);
+                    
+                    break;
+                }
+                case "group": {
+                    container = new THREE.Mesh(generic_geometry, generic_material);
+                    container.position.fromArray(props.pos);
+                    break;
+                }
+                default: {
+                    // generic object:
+                    container = new THREE.Mesh(generic_geometry, generic_material);
+                    container.castShadow = true;
+                    container.receiveShadow = true;
+                    container.position.fromArray(props.pos);
+                    container.add(generateLabel(props.kind))
+
+                }
+            }
+
+            // add to proper parent:
+            parent.add(container);
+
+            for (let k in node) {
+                if (k == "_props") continue;
+                
+                generateNode(container, node[k], k);
+            }
+            
+        }
+
+        function generateScene(patch) {
             /** Going to use this to search through the patch JSON coming in from max */
 
           
@@ -586,18 +673,21 @@
             // };
 
             // var size = Object.size(patch.nodes);
-            for(key in data) {
-                if(data.hasOwnProperty(key)) {
-                    var value = data[key];
-                    // console.log(value)
-                    // generateScene(value);
+            // for(key in data) {
+            //     if(data.hasOwnProperty(key)) {
+            //         var value = data[key];
+            //         // console.log(value)
+            //         // generateScene(value);
 
-                }
-            }
-          
-                
+            //     }
+            // }
             
-           
+            let nodes = patch.nodes;
+            for (let k in nodes) {
+                console.log(k)
+                let node = nodes[k];
+                generateNode(world, node, k);
+            }
         }
 
         function animate() {
