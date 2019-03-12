@@ -106,9 +106,6 @@
     </script>
     <script>
 
-
-
-        var container;
         var camera, scene, renderer;
         var controller1, controller2;
         var raycaster,
@@ -116,7 +113,6 @@
         let tempMatrix = new THREE.Matrix4();
         let world;
 
-        // test
         let ark = {
             positions: [new THREE.Vector3( 0.7, 0.5, 0.1),
             new THREE.Vector3(-0.5, 0.4, -0.09),
@@ -136,14 +132,7 @@
 
         }];
 
-        // let splineHelperObjects = [];
-        // let splinePointsLength = 4;
-        // let splines = {};
-        // let positions = [new THREE.Vector3(0.7, 0.5, 0.1),
-        //         new THREE.Vector3(-0.5, 0.4, -0.09),
-        //         new THREE.Vector3(-0.4, 0.4, -0.9),
-        //         new THREE.Vector3(-0.7, 0.1, 0.8)
-        //     ];
+
         let point = new THREE.Vector3();
         let geometry = new THREE.BoxBufferGeometry(0.2, 0.2, 0.2);
         let geometry2 = new THREE.BoxBufferGeometry(0.1, 0.1, 0.1);
@@ -163,19 +152,13 @@
         let fontLoader = new THREE.FontLoader;
         let loadedFont;
         
-        // STYLES
-        let inlet_geometry = new THREE.BoxBufferGeometry(0.1, 0.03, 0.1);
+        // STYLES (Materials got moved because it is always using the same mesh across all objects)
+
+        let inlet_geometry = new THREE.BoxBufferGeometry(0.1, 0.03, 0.2);
         let outlet_geometry = new THREE.BoxBufferGeometry(0.1, 0.03, 0.1);
         let generic_geometry = new THREE.BoxBufferGeometry(0.4, 0.2, 0.2);
 
-        let generic_material = new THREE.MeshStandardMaterial({
-            color: Math.random() * 0xffffff,
-            roughness: 0.7,
-            metalness: 0.0,
-            wireframe: true
-        });
-        let inlet_material = generic_material
-        let outlet_material = generic_material
+     
 
         let label_material = new THREE.MeshStandardMaterial({
             color: 0x000000,
@@ -184,7 +167,7 @@
             side: THREE.DoubleSide
         });
 
-        // TODO: lazy hack, fix this with async/await or something smarter
+        //TODO: lazy hack, fix this with async/await or something smarter
         fontLoader.load(fontFile, function (font) {
             loadedFont = font;
             init();
@@ -193,10 +176,6 @@
 
         function init() {
 
-            //container = document.getElementById('container');
-            //document.body.appendChild(container);
-            // let info = document.createElement("div");
-            // container.appendChild(info);
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x20ff80);
             camera = new THREE.PerspectiveCamera(
@@ -243,7 +222,7 @@
             world = new THREE.Group();
             scene.add(world);
 
-            // controllers geom
+            // controllers geometry
             let geometry = new THREE.BufferGeometry().setFromPoints([
                 new THREE.Vector3(0, 0, 0),
                 new THREE.Vector3(0, 0, -1)
@@ -264,18 +243,21 @@
             scene.add(helper);
 
             /****************************
-             * Generate Different Parts *
+             * Generate Different Parts *               Old Way
              ****************************/
 
 
-            generateText(fontFile, "Test");
-            generateText(fontFile, "BLLALALAL", 0x000ff0, .5, true);
-            generateSynths(true);
-            generateSynths(true, 0.9, 0.2, 0.7);
+            // generateText(fontFile, "Test");
+            // generateText(fontFile, "BLLALALAL", 0x000ff0, .5, true);
+            // generateSynths(true);
+            // generateSynths(true, 0.9, 0.2, 0.7);
             generateSplines();
-            generateSplines();
+            //generateSplines();
 
             //console.log(ark)
+
+
+            //Input JSON files to be parsed on generations
             generateScene(patch1);
         }
 
@@ -294,9 +276,10 @@
                 let object = intersection.object;
                 object.matrix.premultiply(tempMatrix);
                 object.matrix.decompose(object.position, object.quaternion, object.scale);
-                //object.material.emissive.b = 1;
+                object.material.emissive.b = 1;
                 controller.add(object); //removes from previous parent
                 controller.userData.selected = object;
+                
             }
         }
 
@@ -306,10 +289,9 @@
                 let object = controller.userData.selected;
                 object.matrix.premultiply(controller.matrixWorld);
                 object.matrix.decompose(object.position, object.quaternion, object.scale);
-                //object.material.emissive.b = 0;
+                object.material.emissive.b = 0;
                 world.add(object);
                 controller.userData.selected = undefined;
-                //updateSplineOutline();
 
             }
         }
@@ -319,8 +301,8 @@
             raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
             raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
             // argument here is just any old array of objects
-            // 2nd arg is recursive
-            return raycaster.intersectObjects(world.children, true);
+            // 2nd arg is recursive (recursive breaks grabbing)
+            return raycaster.intersectObjects(world.children);
         }
 
         function intersectObjects(controller) {
@@ -333,7 +315,6 @@
                 let object = intersection.object;
 
                 object.material.emissive.r = 1;
-
                 intersected.push(object);
                 line.scale.z = intersection.distance;
             } else {
@@ -453,7 +434,6 @@
                 world.add(object);
                 //log.textContent = JSON.stringify(synths);
             //}
-            console.log(synths)
         }
 
          /** Create node objects (cubes for now).
@@ -477,11 +457,6 @@
             for (let i = 0; i < ark.splinePointsLength; i++) {
                 addSplineObject(ark.positions[i], i);
             }
-            // positions = [];
-
-            // for (let i = 0; i < splinePointsLength; i++) {
-            //     positions.push(splineHelperObjects[i].position);
-            // }
 
             //Three patch cord connection lines (red, green, blue) 
             let patchCord = new THREE.BufferGeometry(20, 20, 20);
@@ -573,35 +548,6 @@
             }
             
         }
-    
-        // function load(new_positions) {
-        //     /** This code can be used to add more points to an existing spline or remove from an existing spline
-        //       * for our purposes this seems useless because all the "patch" cables will be always 4 points
-        //       */
-        //   /*
-        //     //Add Point
-        //     while (new_positions.length > positions.length) {
-        //         splinePointsLength++;
-        //         positions.push(addSplineObject().position);
-        //         updateSplineOutline();
-        //     }
-        //      //Remove Point
-        //     while (new_positions.length < positions.length) {
-        //         if (splinePointsLength <= 4) {
-        //             return;
-        //         }
-        //         splinePointsLength--;
-        //         positions.pop();
-        //         scene.remove(splineHelperObjects.pop());
-        //         updateSplineOutline();
-        //     }*/
-
-        //     // Loops through the passed in Vector3's and adds them to the position paramater
-        //     for (let i = 0; i < positions.length; i++) {
-        //         positions[i].copy(new_positions[i]);
-        //     }
-        //     updateSplineOutline();
-        // }
                
         function generateLabel(message) {
             let shapes = loadedFont.generateShapes(message, .05);
@@ -614,8 +560,18 @@
         }
 
         function generateNode(parent, node, name) {
-            let container
+            let container;
 
+            //Having Materials inside styles at the top causes it use the same mess across all objects
+            let generic_material = new THREE.MeshStandardMaterial({
+                color: Math.random() * 0xffffff,
+                roughness: 0.7,
+                metalness: 0.0,
+                wireframe: true
+            });
+            let inlet_material = generic_material
+            let outlet_material = generic_material
+            
             let props = node._props;
             switch(props.kind) {
                 case "outlet": {
@@ -623,6 +579,7 @@
                     container.castShadow = true;
                     container.receiveShadow = true;
                     container.position.fromArray([0., -0.1, 0.]);
+               
                     break;
                 }
                 case "inlet": {
@@ -630,12 +587,15 @@
                     container.castShadow = true;
                     container.receiveShadow = true;
                     container.position.fromArray([0., 0.1, 0.]);
-                    
+                
                     break;
                 }
                 case "group": {
                     container = new THREE.Mesh(generic_geometry, generic_material);
+                    container.castShadow = true;
+                    container.receiveShadow = true;
                     container.position.fromArray(props.pos);
+                    
                     break;
                 }
                 default: {
@@ -645,7 +605,7 @@
                     container.receiveShadow = true;
                     container.position.fromArray(props.pos);
                     container.add(generateLabel(props.kind))
-
+                  
                 }
             }
 
@@ -663,30 +623,14 @@
         function generateScene(patch) {
             /** Going to use this to search through the patch JSON coming in from max */
 
-          
-            // Object.size = function(obj) {
-            //     var size = 0, key;
-            //     for (key in obj) {
-            //         if (obj.hasOwnProperty(key)) size++;
-            //     }
-            //     return size;
-            // };
-
-            // var size = Object.size(patch.nodes);
-            // for(key in data) {
-            //     if(data.hasOwnProperty(key)) {
-            //         var value = data[key];
-            //         // console.log(value)
-            //         // generateScene(value);
-
-            //     }
-            // }
-            
             let nodes = patch.nodes;
             for (let k in nodes) {
                 console.log(k)
+    
                 let node = nodes[k];
+                console.log(node)
                 generateNode(world, node, k);
+            
             }
         }
 
@@ -697,7 +641,6 @@
 
         function render() {
             //Spline
-            //updateSplineOutline();
             ark.splineData.uniform.mesh.visible = params.uniform;
             ark.splineData.centripetal.mesh.visible = params.centripetal;
             ark.splineData.chordal.mesh.visible = params.chordal;
