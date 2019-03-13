@@ -22,15 +22,12 @@ let inlet_geometry = new THREE.BoxBufferGeometry(0.1, 0.03, 0.2);
 let outlet_geometry = new THREE.BoxBufferGeometry(0.1, 0.03, 0.1);
 let generic_geometry = new THREE.BoxBufferGeometry(0.4, 0.2, 0.2);
 
-
-
 let label_material = new THREE.MeshStandardMaterial({
     color: 0x000000,
     transparent: true,
     opacity: 0.4,
     side: THREE.DoubleSide
 });
-
 
 let spline_material = new THREE.MeshLambertMaterial({
     color: 0x00ff00
@@ -53,7 +50,7 @@ let controller1, controller2;
 
 
 
-let raycaster, intersected = [];
+let raycaster = new THREE.Raycaster(), intersected = [];
 let tempMatrix = new THREE.Matrix4();
 
 let ARC_SEGMENTS = 40;
@@ -91,22 +88,13 @@ let point = new THREE.Vector3();
 // BOOT SEQUENCE
 //////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-// loadFont(fontFile).then(function(font) {
-//     console.log("font is loaded", font)
-//     loadedFont = font;
-
-    
-// })
-
 init();
-
 async function init() {
 
+    // load & wait for required resources:
     loadedFont = await loadFont(fontFile);
-    console.log("fff", loadedFont)
 
+    // build up the scene
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x20ff80);
     camera = new THREE.PerspectiveCamera(
@@ -126,19 +114,10 @@ async function init() {
     renderer.gammaOutput = true;
     renderer.shadowMap.enabled = true;
     renderer.vr.enabled = true;
-    //container.appendChild(renderer.domElement);
     document.body.appendChild(WEBVR.createButton(renderer));
-    // controllers
-    controller1 = renderer.vr.getController(0);
-    controller1.addEventListener("selectstart", onSelectStart);
-    controller1.addEventListener("selectend", onSelectEnd);
-    scene.add(controller1);
-    controller2 = renderer.vr.getController(1);
-    controller2.addEventListener("selectstart", onSelectStart);
-    controller2.addEventListener("selectend", onSelectEnd);
-    scene.add(controller2);
+    window.addEventListener("resize", onWindowResize, false);
 
-
+    // basic lighting:
     scene.add(new THREE.HemisphereLight(0x808080, 0x606060));
     scene.background = new THREE.Color(0xf0f0f0);
     let light = new THREE.DirectionalLight(0xffffff);
@@ -150,9 +129,17 @@ async function init() {
     light.shadow.camera.left = -2;
     light.shadow.mapSize.set(4096, 4096);
     scene.add(light);
-    world = new THREE.Group();
-    scene.add(world);
 
+    // VR controllers
+    // TODO: visualize them!
+    controller1 = renderer.vr.getController(0);
+    controller1.addEventListener("selectstart", onSelectStart);
+    controller1.addEventListener("selectend", onSelectEnd);
+    scene.add(controller1);
+    controller2 = renderer.vr.getController(1);
+    controller2.addEventListener("selectstart", onSelectStart);
+    controller2.addEventListener("selectend", onSelectEnd);
+    scene.add(controller2);
     // controllers geometry
     let geometry = new THREE.BufferGeometry().setFromPoints([
         new THREE.Vector3(0, 0, 0),
@@ -163,8 +150,12 @@ async function init() {
     line.scale.z = 1;
     controller1.add(line.clone());
     controller2.add(line.clone());
-    raycaster = new THREE.Raycaster();
-    window.addEventListener("resize", onWindowResize, false);
+
+    // 'world' represents the root node of the patch:
+    world = new THREE.Group();
+    scene.add(world);
+
+    
 
     // floor
     let helper = new THREE.GridHelper(10, 10);
