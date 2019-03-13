@@ -52,10 +52,15 @@
     <script src="js/webutils.js"></script>
     <script src="js/three-r102/build/three.js"></script>
     <script src="js/three-r102/examples/js/vr/WebVR.js"></script>
+    <script src="js/three-r102/examples/js/libs/stats.min.js"></script>
 
     <script>
         let canvas = document.getElementById("webgl-canvas");
         let log = document.getElementById("log");
+
+        let stats = new Stats();
+        stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+        document.body.appendChild( stats.dom );
 
         let sock
         try {
@@ -640,6 +645,8 @@
 
 
         function render() {
+            stats.begin();
+
             //Spline
             ark.splineData.uniform.mesh.visible = params.uniform;
             ark.splineData.centripetal.mesh.visible = params.centripetal;
@@ -661,7 +668,8 @@
             intersectObjects(controller1);
             intersectObjects(controller2);
             renderer.render(scene, camera);
-
+            
+            stats.end();
         }
     </script>
 </body>
