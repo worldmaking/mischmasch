@@ -36,8 +36,14 @@ const LABEL_SIZE = .05;
 const CONTROL_POINT_DISTANCE = 0.03;
 const NUM_CABLE_SEGMENTS = 40;
 
-let inlet_geometry = new THREE.BoxBufferGeometry(0.1, 0.03, 0.05);
-let outlet_geometry = new THREE.BoxBufferGeometry(0.1, 0.03, 0.05);
+const NLET_RADIUS = 0.025;
+const NLET_HEIGHT = 0.01;
+
+// let inlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
+// let outlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
+
+let inlet_geometry = new THREE.CylinderGeometry( NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT, 8 );
+let outlet_geometry = inlet_geometry;
 
 let generic_geometry = new THREE.BoxBufferGeometry(0.4, 0.2, 0.05);
 generic_geometry.translate(generic_geometry.parameters.width/2, -generic_geometry.parameters.height/2, -generic_geometry.parameters.depth/2);
@@ -47,6 +53,8 @@ let label_material = new THREE.MeshStandardMaterial({
     transparent: true,
     opacity: 0.4,
     side: THREE.DoubleSide
+    //, blending: THREE.AdditiveBlending
+        
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -134,6 +142,8 @@ async function init() {
     controller1.addEventListener("triggerup", onSelectEnd);
     controller2.addEventListener("triggerdown", onSelectStart);
     controller2.addEventListener("triggerup", onSelectEnd);
+    controller1.addEventListener("axischanged", onScroll);
+    controller2.addEventListener("axischanged", onScroll);
     scene.add(controller1);
     scene.add(controller2);
 
@@ -213,19 +223,21 @@ class Cable {
             new THREE.Vector3()
         ];
 
-        let patchCord = new THREE.BufferGeometry();
+        this.geometry = new THREE.BufferGeometry();
         let vertices = new Float32Array(NUM_CABLE_SEGMENTS * 3);
-        patchCord.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        this.geometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
         let curve = new THREE.CatmullRomCurve3(this.positions);
         //curve.curveType = 'catmullrom'; //
-        curve.curveType = 'centripetal'; //
+        //curve.curveType = 'centripetal'; 
         curve.curveType = 'chordal';
-        curve.mesh = new THREE.Line(patchCord/*.clone()*/, new THREE.LineBasicMaterial({
+        curve.mesh = new THREE.Line(this.geometry, new THREE.LineBasicMaterial({
             color: 0xff0000,
             opacity: 1
         }));
         curve.mesh.castShadow = true;
         this.curve = curve;
+        // TODO: this shouldn't be needed
+        curve.mesh.frustumCulled = false;
         
         this.update();
 
@@ -248,6 +260,7 @@ class Cable {
             position.setXYZ(i, point.x, point.y, point.z);
         }
         position.needsUpdate = true;
+        //this.geometry.computeBoundingBox();
     }
 }
 
@@ -274,7 +287,6 @@ function onSelectStart(event) {
         controller.userData.selected = object;
         controller.userData.parent = parent;
         controller.add(object); //removes from previous parent
-        onScroll(event);
     }
 }
 
@@ -296,14 +308,22 @@ function onSelectEnd(event) {
     }
 }
 
-function onScroll(controller){
-    
-    // if(controller.getButtonState('thumbpad')){
-    //     let up = event.axes(0) / 2.0;
-    //     let down = event.axes(1)/ 2.0;   
-    //     console.log(up)
-    //  }
-     
+function onScroll(event){
+    let controller = event.target;
+    if(controller.getButtonState('thumbpad') === undefined) return;
+
+    let x = event.axes[0];
+    let y = event.axes[1];  
+    console.log(y)
+
+    // map -1..1 => 1/2..2/2..3/2 (1 in the middle)
+    let s = 1 + (y*0.01);
+
+
+    if (controller.userData.selected === undefined) return;
+    let object = controller.userData.selected;
+    object.position.multiplyScalar(s);
+
 }
 
 function getIntersections(controller) {
@@ -377,14 +397,14 @@ function generateNode(parent, node, name) {
             container.castShadow = true;
             container.receiveShadow = true;
             container.position.fromArray([
-                outlet_geometry.parameters.width/2, 
-                -generic_geometry.parameters.height - outlet_geometry.parameters.height/2, 
-                -outlet_geometry.parameters.depth/2]);
+                NLET_RADIUS, 
+                -generic_geometry.parameters.height - NLET_HEIGHT/2, 
+                -NLET_RADIUS]);
 
             let plug_geometry = new THREE.CylinderGeometry( CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE, 8 );
 
             let ctrlpt = new THREE.Mesh( plug_geometry, outlet_material );
-            ctrlpt.position.y = -CONTROL_POINT_DISTANCE;
+            ctrlpt.position.y = -(NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2;
             container.add(ctrlpt);
         
             break;
@@ -394,13 +414,13 @@ function generateNode(parent, node, name) {
             container.castShadow = true;
             container.receiveShadow = true;
             container.position.fromArray([
-                inlet_geometry.parameters.width/2, 
-                inlet_geometry.parameters.height/2, 
-                -inlet_geometry.parameters.depth/2]);
+                NLET_RADIUS, 
+                NLET_HEIGHT/2, 
+                -NLET_RADIUS]);
 
             let plug_geometry = new THREE.CylinderGeometry( CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE, 8 );
             let ctrlpt = new THREE.Mesh( plug_geometry, inlet_material );
-            ctrlpt.position.y = CONTROL_POINT_DISTANCE;
+            ctrlpt.position.y = (NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2;
             container.add(ctrlpt);
 
             break;
@@ -500,7 +520,6 @@ function render() {
 
     intersectObjects(controller1);
     intersectObjects(controller2);
-    onScroll(controller1)
     renderer.render(scene, camera);
     
     stats.end();
