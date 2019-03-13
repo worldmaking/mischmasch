@@ -232,7 +232,9 @@ class Cable {
         curve.curveType = 'chordal';
         curve.mesh = new THREE.Line(this.geometry, new THREE.LineBasicMaterial({
             color: 0xff0000,
-            opacity: 1
+            opacity: 1,
+            lights: true,
+            linewidth: 2
         }));
         curve.mesh.castShadow = true;
         this.curve = curve;
@@ -312,13 +314,14 @@ function onScroll(event){
     let controller = event.target;
     if(controller.getButtonState('thumbpad') === undefined) return;
 
-    let x = event.axes[0];
+    //let x = event.axes[0];
+
     let y = event.axes[1];  
     console.log(y)
-
+    
     // map -1..1 => 1/2..2/2..3/2 (1 in the middle)
-    let s = 1 + (y*0.01);
 
+    let s = 1 + (y*0.01);
 
     if (controller.userData.selected === undefined) return;
     let object = controller.userData.selected;
