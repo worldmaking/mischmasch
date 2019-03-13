@@ -48,8 +48,10 @@
     <script src="js/socket.js"></script>
     <script src="js/webutils.js"></script>
     <script src="js/three-r102/build/three.js"></script>
+    <script src="js/three-r102/examples/js/loaders/OBJLoader.js"></script>
     <script src="js/three-r102/examples/js/vr/WebVR.js"></script>
     <script src="js/three-r102/examples/js/libs/stats.min.js"></script>
+    <script src="js/three-r102/examples/js/vr/ViveController.js"></script>
 
     <script>
         let canvas = document.getElementById("webgl-canvas");
@@ -85,21 +87,22 @@
         let patch1 = {
             "nodes": {
                 "a": {
-                    "_props": { "kind": "noise", "pos": [0.0, 1.5, 0.0] },
+                    "_props": { "kind": "NOISE", "pos": [0.0, 1.5, 0.0] },
                     "signal": { "_props": { "kind": "outlet" } }
                 },
                 "b": {
-                    "_props": { "kind": "dac", "pos": [0.0, 1.0, 0.0] },
+                    "_props": { "kind": "DAC", "pos": [0.0, 1.0, 0.0] },
                     "source": { "_props": { "kind": "inlet" } }
                 },
                 "child": {
                     "_props": { "kind": "group", "pos": [0.5, 1.5, 0.0] },
                     "aa": {
-                        "_props": { "kind": "beep", "pos": [0.0, 0.2, 0.0] },
+                        "_props": { "kind": "BEEP", "pos": [0.0, 0.2, 0.0] },
                         "signal": { "_props": { "kind": "outlet" } }
                     }
                 },
-                "x": { "_props": { "kind": "noise", "pos": [-0.5, 1.5, 0.0] } }
+                "x": { "_props": { "kind": "noise", "pos": [-0.5, 1.5, 0.0] },
+                "signal": { "_props": { "kind": "outlet" } } }
             },
             "arcs": [
                 ["a.signal", "b.source"]//, [ "child.a.signal", "b" ]
