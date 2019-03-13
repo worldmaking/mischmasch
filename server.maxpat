@@ -4,13 +4,13 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 0,
-			"revision" : 3,
+			"revision" : 0,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 1132.0, 343.0, 927.0, 1019.0 ],
+		"rect" : [ 57.0, 79.0, 927.0, 1019.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -38,6 +38,28 @@
 		"style" : "",
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-28",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 613.0, 599.0, 150.0, 20.0 ],
+					"text" : "build scripting here:"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-5",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 0,
+					"patching_rect" : [ 681.0, 638.0, 44.0, 22.0 ],
+					"text" : "synth~"
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-27",
 					"maxclass" : "dict.view",
@@ -167,7 +189,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 669.0, 69.25, 223.0, 35.0 ],
-					"text" : ";\r\nmax launchbrowser http://localhost:8080"
+					"text" : ";\rmax launchbrowser http://localhost:8080"
 				}
 
 			}
@@ -315,7 +337,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 3,
+							"revision" : 0,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -585,7 +607,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"offset" : [ 0.0, 0.0 ],
-					"patching_rect" : [ 398.0, 159.0, 509.0, 201.5 ],
+					"patching_rect" : [ 398.0, 159.0, 400.0, 220.0 ],
 					"viewvisibility" : 1
 				}
 
@@ -788,11 +810,11 @@
 			}
  ],
 		"parameters" : 		{
+			"obj-25::obj-86" : [ "Amt", "Amt", 0 ],
 			"obj-25::obj-56" : [ "Depth", "Depth", 0 ],
 			"obj-25::obj-20" : [ "mute", "mute", 0 ],
 			"obj-25::obj-91" : [ "Offset", "Offset", 0 ],
 			"obj-25::obj-80" : [ "Ratio", "Ratio", 0 ],
-			"obj-25::obj-86" : [ "Amt", "Amt", 0 ],
 			"parameterbanks" : 			{
 
 			}
@@ -800,13 +822,6 @@
 		}
 ,
 		"dependency_cache" : [ 			{
-				"name" : "server.js",
-				"bootpath" : "D:/github/msvr",
-				"patcherrelativepath" : ".",
-				"type" : "TEXT",
-				"implicit" : 1
-			}
-, 			{
 				"name" : "n4m.monitor.maxpat",
 				"bootpath" : "C74:/packages/Node For Max/patchers/debug-monitor",
 				"type" : "JSON",
@@ -819,14 +834,15 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "fit_jweb_to_bounds.js",
-				"bootpath" : "C74:/packages/Node For Max/patchers/debug-monitor",
-				"type" : "TEXT",
+				"name" : "bp.FM.maxpat",
+				"bootpath" : "C74:/packages/BEAP/clippings/BEAP/Oscillator",
+				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
-				"name" : "bp.FM.maxpat",
-				"bootpath" : "C74:/packages/Beap/clippings/BEAP/Oscillator",
+				"name" : "synth~.maxpat",
+				"bootpath" : "~/msvr",
+				"patcherrelativepath" : ".",
 				"type" : "JSON",
 				"implicit" : 1
 			}
