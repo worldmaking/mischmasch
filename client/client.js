@@ -119,7 +119,7 @@ async function init() {
 
     // basic lighting:
     scene.add(new THREE.HemisphereLight(0x808080, 0x606060));
-    scene.background = new THREE.Color(0xf0f0f0);
+    scene.background = new THREE.Color(0x000000);
     let light = new THREE.DirectionalLight(0xffffff);
     light.position.set(0, 6, 0);
     light.castShadow = true;
@@ -195,27 +195,49 @@ function onWindowResize() {
 function onSelectStart(event) {
     let controller = event.target;
     let intersections = getIntersections(controller);
-    if (intersections.length > 0) {
-        let intersection = intersections[0];
+    if (intersections.length < 1) return;
+
+    //console.log(intersections)
+    let intersection = intersections[0];
+    // for (let o of intersections) {
+    //     if (o.userData.moveable) {
+    //         intersection = o;
+    //         break;
+    //     }
+    // }
+
+    let object = intersection.object;
+    while (object && !object.userData.moveable) {
+        object = object.parent;
+    }
+
+    if (object) {
         tempMatrix.getInverse(controller.matrixWorld);
-        let object = intersection.object;
+        let parent = object.parent;
+        object.matrix.premultiply(parent.matrixWorld);
         object.matrix.premultiply(tempMatrix);
         object.matrix.decompose(object.position, object.quaternion, object.scale);
         object.material.emissive.b = 1;
-        controller.add(object); //removes from previous parent
-        controller.userData.selected = object;
         
+        controller.userData.selected = object;
+        controller.userData.parent = parent;
+        controller.add(object); //removes from previous parent
     }
 }
 
 function onSelectEnd(event) {
     let controller = event.target;
     if (controller.userData.selected !== undefined) {
+        let parent = controller.userData.parent;
         let object = controller.userData.selected;
+
+        tempMatrix.getInverse(parent.matrixWorld);
         object.matrix.premultiply(controller.matrixWorld);
+        object.matrix.premultiply(tempMatrix);
         object.matrix.decompose(object.position, object.quaternion, object.scale);
         object.material.emissive.b = 0;
-        world.add(object);
+        //world.add(object);
+        parent.add(object);
         controller.userData.selected = undefined;
 
     }
@@ -227,7 +249,7 @@ function getIntersections(controller) {
     raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
-    return raycaster.intersectObjects(world.children);
+    return raycaster.intersectObjects(world.children, true);
 }
 
 function intersectObjects(controller) {
@@ -483,7 +505,12 @@ function generateNode(parent, node, name) {
         color: Math.random() * 0xffffff,
         roughness: 0.7,
         metalness: 0.0,
-        wireframe: true
+        opacity: 0.3,
+        transparent: true,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+        
     });
     let inlet_material = generic_material
     let outlet_material = generic_material
@@ -495,6 +522,7 @@ function generateNode(parent, node, name) {
             container.castShadow = true;
             container.receiveShadow = true;
             container.position.fromArray([0., -0.1, 0.]);
+            container.userData.moveable = false;
         
             break;
         }
@@ -503,6 +531,7 @@ function generateNode(parent, node, name) {
             container.castShadow = true;
             container.receiveShadow = true;
             container.position.fromArray([0., 0.1, 0.]);
+            container.userData.moveable = false;
         
             break;
         }
@@ -511,6 +540,7 @@ function generateNode(parent, node, name) {
             container.castShadow = true;
             container.receiveShadow = true;
             container.position.fromArray(props.pos);
+            container.userData.moveable = true;
             
             break;
         }
@@ -520,10 +550,14 @@ function generateNode(parent, node, name) {
             container.castShadow = true;
             container.receiveShadow = true;
             container.position.fromArray(props.pos);
-            container.add(generateLabel(props.kind))
+            container.add(generateLabel(props.kind));
+            container.userData.moveable = true;
             
         }
     }
+
+    container.userData.name = name;
+    container.userData.kind = props.kind;
 
     // add to proper parent:
     parent.add(container);
