@@ -1,50 +1,22 @@
-var camera, scene, renderer;
-var controller1, controller2;
-var raycaster,
-    intersected = [];
-let tempMatrix = new THREE.Matrix4();
-let world;
 
-let ark = {
-    positions: [new THREE.Vector3( 0.7, 0.5, 0.1),
-    new THREE.Vector3(-0.5, 0.4, -0.09),
-    new THREE.Vector3(-0.4, 0.4, -0.9),
-    new THREE.Vector3(-0.7, 0.1, 0.8)
-    ],
-    splinePointsLength: 4,
-    splineHelperObjects: [],
-    splineData: {}
+//////////////////////////////////////////////////////////////////////////////////////////
+// COMMON GEOMETRIES
+//////////////////////////////////////////////////////////////////////////////////////////
 
-};
-
-let synths = [{
-}];
-
-let texts = [{
-
-}];
-
-
-let point = new THREE.Vector3();
 let geometry = new THREE.BoxBufferGeometry(0.2, 0.2, 0.2);
 let geometry2 = new THREE.BoxBufferGeometry(0.1, 0.1, 0.1);
 
-
-let ARC_SEGMENTS = 40;
-
-let params = {
-    uniform: true,
-    tension: 0.5,
-    centripetal: true,
-    chordal: true
-};
-
-
 let fontFile = 'js/three-r102/examples/fonts/helvetiker_regular.typeface.json';
-let fontLoader = new THREE.FontLoader;
 let loadedFont;
 
-// STYLES (Materials got moved because it is always using the same mesh across all objects)
+// turn FontLoader into something we can await:
+async function loadFont(fontFile) {
+    return new Promise(resolve => new THREE.FontLoader().load(fontFile, resolve));
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// COMMON MATERIALS
+//////////////////////////////////////////////////////////////////////////////////////////
 
 let inlet_geometry = new THREE.BoxBufferGeometry(0.1, 0.03, 0.2);
 let outlet_geometry = new THREE.BoxBufferGeometry(0.1, 0.03, 0.1);
@@ -59,14 +31,81 @@ let label_material = new THREE.MeshStandardMaterial({
     side: THREE.DoubleSide
 });
 
-//TODO: lazy hack, fix this with async/await or something smarter
-fontLoader.load(fontFile, function (font) {
-    loadedFont = font;
-    init();
-    animate();
+
+let spline_material = new THREE.MeshLambertMaterial({
+    color: 0x00ff00
 });
 
-function init() {
+//////////////////////////////////////////////////////////////////////////////////////////
+// SCENE COMPONENTS
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
+let camera, scene, renderer;
+let world; // a THREE.Group()
+
+let controller1, controller2;
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// OTHER GLOBALS
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+let raycaster, intersected = [];
+let tempMatrix = new THREE.Matrix4();
+
+let ARC_SEGMENTS = 40;
+
+let params = {
+    uniform: true,
+    tension: 0.5,
+    centripetal: true,
+    chordal: true
+};
+
+let ark = {
+    positions: [new THREE.Vector3( 0.7, 0.5, 0.1),
+        new THREE.Vector3(-0.5, 0.4, -0.09),
+        new THREE.Vector3(-0.4, 0.4, -0.9),
+        new THREE.Vector3(-0.7, 0.1, 0.8)
+    ],
+    splinePointsLength: 4,
+    splineHelperObjects: [],
+    splineData: {}
+
+};
+
+let synths = [{
+}];
+
+let texts = [{
+
+}];
+
+let point = new THREE.Vector3();
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// BOOT SEQUENCE
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+// loadFont(fontFile).then(function(font) {
+//     console.log("font is loaded", font)
+//     loadedFont = font;
+
+    
+// })
+
+init();
+
+async function init() {
+
+    loadedFont = await loadFont(fontFile);
+    console.log("fff", loadedFont)
 
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x20ff80);
@@ -151,6 +190,9 @@ function init() {
 
     //Input JSON files to be parsed on generations
     generateScene(patch1);
+
+    // now we can start rendering:
+    animate();
 }
 
 function onWindowResize() {
@@ -385,17 +427,8 @@ function generateSplines(){
 }
 
 function addSplineObject(position, amount) {
-    //Colours the spline points based on if its moveable (Green) or unmoveable (Red)
-    if (amount == 0 || amount == ark.splinePointsLength - 1) {
-        var material = new THREE.MeshLambertMaterial({
-            color: 0x00ff00
-        });
-    } else {
-        var material = new THREE.MeshLambertMaterial({
-            color: 0xff0000
-        });
-    }
-    let object = new THREE.Mesh(geometry2, material);
+
+    let object = new THREE.Mesh(geometry2, spline_material);
     if (position) {
         object.position.copy(position);
     } else {
