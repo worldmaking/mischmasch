@@ -39,6 +39,128 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-47",
+					"maxclass" : "newobj",
+					"numinlets" : 3,
+					"numoutlets" : 3,
+					"outlettype" : [ "signal", "signal", "signal" ],
+					"patching_rect" : [ 522.0, 124.0, 76.0, 22.0 ],
+					"text" : "gen~ shaper"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontname" : "Lato",
+					"fontsize" : 12.0,
+					"id" : "obj-42",
+					"maxclass" : "newobj",
+					"numinlets" : 5,
+					"numoutlets" : 1,
+					"outlettype" : [ "signal" ],
+					"patching_rect" : [ 522.0, 94.0, 87.0, 23.0 ],
+					"text" : "gen~ foldcomb"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontname" : "Lato",
+					"fontsize" : 12.0,
+					"id" : "obj-10",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 2,
+					"outlettype" : [ "signal", "float" ],
+					"patching_rect" : [ 1313.0, 321.0, 81.0, 23.0 ],
+					"text" : "mstosamps~"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontname" : "Lato",
+					"fontsize" : 11.595186999999999,
+					"id" : "obj-28",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "float" ],
+					"patching_rect" : [ 1313.0, 241.3333740234375, 40.0, 22.0 ],
+					"text" : "/ 100."
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontname" : "Lato",
+					"fontsize" : 11.595186999999999,
+					"format" : 6,
+					"id" : "obj-29",
+					"maxclass" : "flonum",
+					"numinlets" : 1,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "bang" ],
+					"parameter_enable" : 0,
+					"patching_rect" : [ 1313.0, 216.0, 50.0, 22.0 ],
+					"triscale" : 0.9
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontname" : "Lato",
+					"fontsize" : 11.595186999999999,
+					"id" : "obj-30",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 1313.0, 264.5, 40.0, 22.0 ],
+					"text" : "$1 30"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontname" : "Lato",
+					"fontsize" : 11.595186999999999,
+					"id" : "obj-31",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 2,
+					"outlettype" : [ "signal", "bang" ],
+					"patching_rect" : [ 1313.0, 291.0, 53.0, 22.0 ],
+					"text" : "line~ 44"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-21",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 2,
+					"outlettype" : [ "signal", "signal" ],
+					"patching_rect" : [ 674.0, 225.0, 142.0, 22.0 ],
+					"text" : "gen~ comparator.gendsp"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-18",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 7,
+					"outlettype" : [ "signal", "signal", "signal", "signal", "signal", "signal", "signal" ],
+					"patching_rect" : [ 674.0, 192.0, 106.0, 22.0 ],
+					"text" : "gen~ logic.gendsp"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-14",
 					"maxclass" : "newobj",
 					"numinlets" : 3,
@@ -46,18 +168,6 @@
 					"outlettype" : [ "signal", "signal", "signal" ],
 					"patching_rect" : [ 674.0, 134.0, 137.0, 22.0 ],
 					"text" : "gen~ complex_compare"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-9",
-					"maxclass" : "newobj",
-					"numinlets" : 2,
-					"numoutlets" : 7,
-					"outlettype" : [ "signal", "signal", "signal", "signal", "signal", "signal", "signal" ],
-					"patching_rect" : [ 674.0, 168.0, 106.0, 22.0 ],
-					"text" : "gen~ logic.gendsp"
 				}
 
 			}
@@ -403,7 +513,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 2,
 					"outlettype" : [ "signal", "signal" ],
-					"patching_rect" : [ 674.0, 94.0, 142.0, 22.0 ],
+					"patching_rect" : [ 484.0, 842.0, 142.0, 22.0 ],
 					"text" : "gen~ comparator.gendsp"
 				}
 
@@ -456,6 +566,48 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-30", 0 ],
+					"source" : [ "obj-28", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-28", 0 ],
+					"source" : [ "obj-29", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-54", 1 ],
+					"source" : [ "obj-3", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-54", 0 ],
+					"source" : [ "obj-3", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-31", 0 ],
+					"source" : [ "obj-30", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-10", 0 ],
+					"source" : [ "obj-31", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-74", 0 ],
 					"source" : [ "obj-45", 0 ]
 				}
@@ -491,23 +643,23 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-54", 1 ],
-					"order" : 0,
+					"destination" : [ "obj-3", 0 ],
 					"source" : [ "obj-74", 2 ]
 				}
 
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-54", 0 ],
-					"order" : 1,
-					"source" : [ "obj-74", 2 ]
+					"destination" : [ "obj-3", 1 ],
+					"order" : 0,
+					"source" : [ "obj-74", 1 ]
 				}
 
 			}
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-57", 0 ],
+					"order" : 1,
 					"source" : [ "obj-74", 1 ]
 				}
 
@@ -653,6 +805,13 @@
 				"implicit" : 1
 			}
 , 			{
+				"name" : "complex_compare.gendsp",
+				"bootpath" : "~/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
 				"name" : "logic.gendsp",
 				"bootpath" : "~/msvr",
 				"patcherrelativepath" : ".",
@@ -660,7 +819,14 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "complex_compare.gendsp",
+				"name" : "foldcomb.gendsp",
+				"bootpath" : "~/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "shaper.gendsp",
 				"bootpath" : "~/msvr",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
