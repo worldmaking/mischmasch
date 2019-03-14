@@ -39,6 +39,50 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-14",
+					"maxclass" : "newobj",
+					"numinlets" : 3,
+					"numoutlets" : 3,
+					"outlettype" : [ "signal", "signal", "signal" ],
+					"patching_rect" : [ 674.0, 134.0, 137.0, 22.0 ],
+					"text" : "gen~ complex_compare"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-9",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 7,
+					"outlettype" : [ "signal", "signal", "signal", "signal", "signal", "signal", "signal" ],
+					"patching_rect" : [ 674.0, 168.0, 106.0, 22.0 ],
+					"text" : "gen~ logic.gendsp"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"bgmode" : 0,
+					"border" : 0,
+					"clickthrough" : 0,
+					"enablehscroll" : 0,
+					"enablevscroll" : 0,
+					"id" : "obj-4",
+					"lockeddragscroll" : 0,
+					"maxclass" : "bpatcher",
+					"name" : "outs.maxpat",
+					"numinlets" : 2,
+					"numoutlets" : 2,
+					"offset" : [ 0.0, 0.0 ],
+					"outlettype" : [ "signal", "signal" ],
+					"patching_rect" : [ 937.125, 125.0, 133.0, 178.0 ],
+					"viewvisibility" : 1
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"bgmode" : 0,
 					"border" : 0,
 					"clickthrough" : 0,
@@ -178,11 +222,11 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-67",
-					"linecount" : 7,
+					"linecount" : 6,
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 91.0, 288.0, 150.0, 100.0 ],
+					"patching_rect" : [ 91.0, 288.0, 151.0, 87.0 ],
 					"text" : "NOTE: major limitation is modules can't be patched into themselves i.e. 2nd outlet of ffm into its 3rd inlet. see this workaround, but talk to graham about it!"
 				}
 
@@ -482,6 +526,7 @@
 			"obj-74::obj-11" : [ "index[1]", "index", 0 ],
 			"obj-45::obj-1" : [ "threshold", "threshold", 0 ],
 			"obj-54" : [ "live.gain~[1]", "live.gain~", 0 ],
+			"obj-4::obj-7" : [ "volume", "volume", 0 ],
 			"obj-60::obj-4" : [ "damping", "damping", 0 ],
 			"obj-60::obj-3" : [ "feedback2", "feedback2", 0 ],
 			"obj-74::obj-10" : [ "feedback[1]", "feedback", 0 ],
@@ -598,6 +643,27 @@
 				"bootpath" : "~/msvr",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "outs.maxpat",
+				"bootpath" : "~/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "JSON",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "logic.gendsp",
+				"bootpath" : "~/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "complex_compare.gendsp",
+				"bootpath" : "~/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
 				"implicit" : 1
 			}
  ],
