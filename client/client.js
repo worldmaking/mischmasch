@@ -83,6 +83,7 @@ let raycaster = new THREE.Raycaster(), intersected = [];
 // temp variables to save allocations
 let tempMatrix = new THREE.Matrix4();
 let point = new THREE.Vector3();
+let delta;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // BOOT SEQUENCE
@@ -315,25 +316,52 @@ function onScroll(event){
     let controller = event.target;
     if(controller.getButtonState('thumbpad') === undefined) return;
 
-    //let x = event.axes[0];
-
-    let y = event.axes[1];  
-    console.log(y)
     
-    // map -1..1 => 1/2..2/2..3/2 (1 in the middle)
+    let y = event.axes[1];  
+    y = parseFloat(y.toFixed(2))
+    let s = 0;
+    //Up Scroll
 
-    let s = 1 + (y*0.01);
-
+    if(y >= delta && y <= 0){
+        s = parseFloat((1 + (-y*0.1)).toFixed(3));
+        
+        console.log("S: " + s + " Delta: " + delta+ " Y: " + y + " Forward")
+    }
+    if(y >= delta && y >= 0){
+        s = parseFloat((1 + (y*0.1)).toFixed(3));
+        console.log("S: " + s + " Delta: " + delta+ " Y: " + y + " Forward")
+    }
+    
+    //Down scroll
+    if (y <= delta && y >= 0){
+        s = parseFloat((1 + (-y*0.1)).toFixed(3));
+        //console.log("S: " + s + " Delta: " + delta+ " Y: " + y + " Backward")
+    }
+    if (y <= delta && y <= 0){
+        s = parseFloat((1 + (y*0.1)).toFixed(3));
+    }
+    delta = y;
+    
     if (controller.userData.selected === undefined) return;
     let object = controller.userData.selected;
-    object.position.multiplyScalar(s);
+
+    if(y !== delta){
+        object.position.multiplyScalar(s);
+    }
+
+    // map -1..1 => 1/2..2/2..3/2 (1 in the middle)
+
+
+
+
 
 }
 
 function onGrips(event){
     let controller = event.target;
     if(controller.getButtonState('grips') === undefined) return;
-    generateNode(world);
+        generateNode(world);
+
     
     
 }
