@@ -144,6 +144,8 @@ async function init() {
     controller2.addEventListener("triggerup", onSelectEnd);
     controller1.addEventListener("axischanged", onScroll);
     controller2.addEventListener("axischanged", onScroll);
+    controller1.addEventListener("gripsdown", onGrips);
+    controller2.addEventListener("gripsdown", onGrips);
     scene.add(controller1);
     scene.add(controller2);
 
@@ -233,7 +235,6 @@ class Cable {
         curve.mesh = new THREE.Line(this.geometry, new THREE.LineBasicMaterial({
             color: 0xff0000,
             opacity: 1,
-            lights: true,
             linewidth: 2
         }));
         curve.mesh.castShadow = true;
@@ -242,7 +243,7 @@ class Cable {
         curve.mesh.frustumCulled = false;
         
         this.update();
-
+        world.userData.moveable = true;
         world.add(curve.mesh)
     }
 
@@ -329,6 +330,14 @@ function onScroll(event){
 
 }
 
+function onGrips(event){
+    let controller = event.target;
+    if(controller.getButtonState('grips') === undefined) return;
+    generateNode(world);
+    
+    
+}
+
 function getIntersections(controller) {
     tempMatrix.identity().extractRotation(controller.matrixWorld);
     raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
@@ -378,6 +387,12 @@ function generateLabel(message) {
 function generateNode(parent, node, name) {
     let container;
 
+    if(node === undefined || name === undefined){
+        node = { 
+                "_props": { "kind": "blank", "pos": [controller1.getWorldPosition().x, controller1.getWorldPosition().y, controller1.getWorldPosition().z] }      
+    }
+    }
+
     //Having Materials inside styles at the top causes it use the same mess across all objects
     let generic_material = new THREE.MeshStandardMaterial({
         color: Math.random() * 0xffffff,
@@ -404,12 +419,13 @@ function generateNode(parent, node, name) {
                 -generic_geometry.parameters.height - NLET_HEIGHT/2, 
                 -NLET_RADIUS]);
 
+
             let plug_geometry = new THREE.CylinderGeometry( CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE, 8 );
 
             let ctrlpt = new THREE.Mesh( plug_geometry, outlet_material );
             ctrlpt.position.y = -(NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2;
             container.add(ctrlpt);
-        
+            
             break;
         }
         case "inlet": {
@@ -434,7 +450,7 @@ function generateNode(parent, node, name) {
             container.receiveShadow = true;
             container.position.fromArray(props.pos);
             container.userData.moveable = true;
-            
+            console.log(container.position)
             break;
         }
         default: {
@@ -520,6 +536,7 @@ function render() {
 
     controller1.update();
     controller2.update();
+   // console.log(controller1.position)
 
     intersectObjects(controller1);
     intersectObjects(controller2);
