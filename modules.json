@@ -1,0 +1,54 @@
+{
+  "UI": {
+    "range":["small_knob", "large_knob", "tuning_knob", "slider"],
+    "switches":["momentary","n_switch"],
+    "input":["signal_input","trigger"],
+    "output":["signal_output","line_level"],
+    "led":"led"    
+  },
+
+  "modules": {
+      "comparator": {
+        "A": "signal_input", "B": "signal_input", "max": "signal_output", "min":"signal_output"
+      },
+      "noise": {
+        "noise":"signal_output"
+      },
+      "vca": {
+        "in":"signal_input","cv":"signal_input","trim":"small_knob","bias":"small_knob"
+      },
+      "lfo": {
+        "rate":"small_knob", "sine":"signal_output","phasor":"signal_output","pulse":"signal_output"
+      },
+      "ffm":{
+        "cv1":"signal_input","index_cv":"signal_input","cv2":"signal_input","feedback_cv":"signal_input","vco1":"large_knob","waveform1":{"n_switch":["Sine","Phasor","Triangle"]}, "vco2":"large_knob", "waveform2":{"n_switch":["Sine","Phasor","Triangle"]},"index":"small_knob","feedback":"small_knob","vco_1":"signal_output","vco_2":"signal_output","master":"signal_output"
+      },
+      "outs":{
+        "in_1(mono)":"signal_input", "in_2(stereo)":"signal_input","volume":"large_knob","left":"signal_output","right":"signal_output"
+      },
+      "sample_and_hold":{
+        "in":"signal_input","trigger":"signal_input","small_knob":"threshold"
+      },
+      "freevoib":{
+        "feedback1":"small_knob","feedback2":"small_knob","damping":"small_knob","spread":"small_knob","in":"signal_input","out":"signal_output"
+      },"foldcomb":{"signal":"signal_input","delay_cv":"signal_input","a_cv":"signal_input","b_cv":"signal_input","c_cv":"signal_input","out":"signal_output"
+      },
+      "logic":{
+        "A":"signal_input","B":"signal_input","not_A":"signal_output","not_B":"signal_output","and":"signal_output","bool_A":"signal_output","bool_B":"signal_output","or":"signal_output","xor":"signal_output"
+      },"shaper":{
+        "signal":"signal_input","min_cv":"signal_input","max_cv":"signal_input","fold":"siognal_output","wrap":"signal_output","clip":"signal_output"
+      },"complex_compare":{
+        "A":"signal_input","B":"signal_input","bias_cv":"signal_input","bias":"small_knob","max":"signal_output","min":"signal_output","diff":"signal_output"
+
+      },"":{
+
+      },"":{
+
+      },"":{
+
+      }
+
+  }
+
+
+}
