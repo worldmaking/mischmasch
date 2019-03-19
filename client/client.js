@@ -44,6 +44,12 @@ const NLET_HEIGHT = 0.01;
 
 let inlet_geometry = new THREE.CylinderGeometry( NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT, 8 );
 let outlet_geometry = inlet_geometry;
+inlet_geometry.computeBoundingBox();
+
+let plug_geometry = new THREE.CylinderGeometry( CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE, 8 );
+plug_geometry.computeBoundingBox();
+
+console.log(plug_geometry.boundingBox)
 
 let generic_geometry = new THREE.BoxBufferGeometry(0.4, 0.2, 0.05);
 generic_geometry.translate(generic_geometry.parameters.width/2, -generic_geometry.parameters.height/2, -generic_geometry.parameters.depth/2);
@@ -216,9 +222,41 @@ class Cable {
         this.src = src;
         this.dst = dst;
 
-        // TODO: is this a safe assumption?
-        this.srcctrl = src.children[0];
-        this.dstctrl = dst.children[0];
+        let inlet_material = new THREE.MeshStandardMaterial({
+            color: 0x00ff00,
+            roughness: 0.7,
+            metalness: 0.0,
+            opacity: 0.3,
+            transparent: true,
+            side: THREE.DoubleSide,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
+            
+        });
+        let outlet_material = new THREE.MeshStandardMaterial({
+            color: 0x00ff00,
+            roughness: 0.7,
+            metalness: 0.0,
+            opacity: 0.3,
+            transparent: true,
+            side: THREE.DoubleSide,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
+            
+        });
+
+        this.srcCtrlPt = new THREE.Mesh( plug_geometry, outlet_material );
+        this.dstCtrlPt = new THREE.Mesh( plug_geometry, inlet_material );
+        world.add(this.srcCtrlPt);
+        world.add(this.dstCtrlPt);
+        this.srcCtrlPt.userData.moveable = true;
+        this.srcCtrlPt.userData.selectable = true;
+        this.srcCtrlPt.userData.cable = this;
+        this.srcCtrlPt.userData.kind = "jack_outlet";
+        this.dstCtrlPt.userData.moveable = true;
+        this.dstCtrlPt.userData.selectable = true;
+        this.dstCtrlPt.userData.cable = this;
+        this.dstCtrlPt.userData.kind = "jack_inlet";
 
         this.positions = [
             new THREE.Vector3(),
@@ -235,7 +273,7 @@ class Cable {
         //curve.curveType = 'centripetal'; 
         curve.curveType = 'chordal';
         curve.mesh = new THREE.Line(this.geometry, new THREE.LineBasicMaterial({
-            color: 0xff0000,
+            color: 0x00ff00,
             opacity: 1,
             linewidth: 2
         }));
@@ -245,15 +283,48 @@ class Cable {
         curve.mesh.frustumCulled = false;
         
         this.update();
-        world.userData.moveable = true;
+        
+        curve.mesh.userData.moveable = true;
         world.add(curve.mesh)
     }
 
     update() {
-        this.src.getWorldPosition(this.positions[0]);
-        this.srcctrl.getWorldPosition(this.positions[1]);
-        this.dstctrl.getWorldPosition(this.positions[2]);
-        this.dst.getWorldPosition(this.positions[3]);
+
+        if (this.src) {
+            this.src.getWorldPosition(this.positions[0]);
+            this.positions[1]
+                .set(0, -(NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
+                .applyQuaternion(this.src.getWorldQuaternion())
+                .add(this.positions[0]);
+            this.srcCtrlPt.position.copy(this.positions[1]);
+            this.srcCtrlPt.quaternion.copy(this.src.getWorldQuaternion());
+        } else {
+            // derive positions[0] from the srcCtrlPt
+            this.srcCtrlPt.getWorldPosition(this.positions[1]);
+            this.positions[0]
+                .set(0, (NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
+                .applyQuaternion(this.srcCtrlPt.getWorldQuaternion())
+                .add(this.positions[1])
+        }
+
+        if (this.dst) {
+            this.dst.getWorldPosition(this.positions[3]);
+            this.positions[2]
+                .set(0, (NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
+                .applyQuaternion(this.dst.getWorldQuaternion())
+                .add(this.positions[3]);
+
+            this.dstCtrlPt.position.copy(this.positions[2]);
+            this.dstCtrlPt.quaternion.copy(this.dst.getWorldQuaternion());
+        } else {
+            // derive positions[3] from the srcCtrlPt
+            this.dstCtrlPt.getWorldPosition(this.positions[2]);
+            this.positions[3]
+                .set(0, -(NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
+                .applyQuaternion(this.dstCtrlPt.getWorldQuaternion())
+                .add(this.positions[2])
+        }
+        ////////////////////
 
         let curve = this.curve;
         let mesh = this.curve.mesh;
@@ -271,16 +342,30 @@ class Cable {
 
 function onSelectStart(event) {
     let controller = event.target;
-    let intersections = getIntersections(controller);
+    let intersections = getIntersections(controller, 0, 0, -1);
     if (intersections.length < 1) return;
     let intersection = intersections[0];
 
     let object = intersection.object;
-    while (object && !object.userData.moveable) {
-        object = object.parent;
-    }
+    // while (object && !object.userData.moveable) {
+    //     object = object.parent;
+    // }
 
-    if (object) {
+    if (object && object.userData.moveable) {
+
+        let kind = object.userData.kind;
+        if (kind == "jack_outlet") {
+            object.userData.cable.src = null;
+        } else if (kind == "jack_inlet") {
+            object.userData.cable.dst = null;
+        } else if (kind == "outlet") {
+            // create a new line
+            // line's src == object
+            // now set object = line.dstCtrlPt
+        } else if (kind == "inlet") {
+            //...
+        }
+
         tempMatrix.getInverse(controller.matrixWorld);
         let parent = object.parent;
         object.matrix.premultiply(parent.matrixWorld);
@@ -301,14 +386,34 @@ function onSelectEnd(event) {
         let parent = controller.userData.parent;
         let object = controller.userData.selected;
 
-        tempMatrix.getInverse(parent.matrixWorld);
         object.matrix.premultiply(controller.matrixWorld);
+        tempMatrix.getInverse(parent.matrixWorld);
         object.matrix.premultiply(tempMatrix);
         object.matrix.decompose(object.position, object.quaternion, object.scale);
         object.material.emissive.b = 0;
         //world.add(object);
         parent.add(object);
         controller.userData.selected = undefined;
+
+        // if it is a jack, see if we can hook up?
+        if (object.userData.kind == "jack_outlet") {
+
+            let intersections = getIntersections(object, 0, 1, 0);
+            if (intersections.length > 0) {
+                let intersection = intersections[0];
+                let o = intersection.object;
+                if (o.userData.kind == "outlet") {
+                    // we have a hit! disconnect
+                    object.userData.cable.src = o;
+                }
+            }
+        
+
+    
+
+        } else if (object.userData.kind == "jack_inlet") {
+            object.userData.cable.dst = null;
+        }
 
     }
 }
@@ -322,10 +427,10 @@ function onGrips(event){
     
 }
 
-function getIntersections(controller) {
+function getIntersections(controller, x, y, z) {
     tempMatrix.identity().extractRotation(controller.matrixWorld);
     raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
-    raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
+    raycaster.ray.direction.set(x, y, z).applyMatrix4(tempMatrix);
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
     let intersections = raycaster.intersectObjects(world.children, true);
@@ -337,7 +442,7 @@ function intersectObjects(controller) {
     // Do not highlight when already selected
     if (controller.userData.selected !== undefined) return;
     let line = controller.getObjectByName("line");
-    let intersections = getIntersections(controller);
+    let intersections = getIntersections(controller, 0, 0, -1);
     if (intersections.length > 0) {
         let intersection = intersections[0];
         let object = intersection.object;
@@ -372,9 +477,18 @@ function generateNode(parent, node, name) {
     let container;
 
     if(node === undefined || name === undefined){
+        let pos = controller1.getWorldPosition();
+        let quat = controller1.getWorldQuaternion();
+        let tilt = new THREE.Quaternion();
+        tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
+        quat.multiply(tilt);
+        let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
+        pos.add(rel.applyQuaternion(quat));
         node = { 
-                "_props": { "kind": "blank", "pos": [controller1.getWorldPosition().x, controller1.getWorldPosition().y, controller1.getWorldPosition().z] }      
-    }
+                "_props": { "kind": "blank", 
+                "pos": [pos.x, pos.y, pos.z],
+                "orient": [quat.x, quat.y, quat.z, quat.w]}      
+        }
     }
 
     //Having Materials inside styles at the top causes it use the same mess across all objects
@@ -403,12 +517,6 @@ function generateNode(parent, node, name) {
                 -generic_geometry.parameters.height - NLET_HEIGHT/2, 
                 -NLET_RADIUS]);
 
-
-            let plug_geometry = new THREE.CylinderGeometry( CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE, 8 );
-            let ctrlpt = new THREE.Mesh( plug_geometry, outlet_material );
-            ctrlpt.position.y = -(NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2;
-            container.add(ctrlpt);
-            
             break;
         }
         case "inlet": {
@@ -419,11 +527,6 @@ function generateNode(parent, node, name) {
                 NLET_RADIUS, 
                 NLET_HEIGHT/2, 
                 -NLET_RADIUS]);
-
-            let plug_geometry = new THREE.CylinderGeometry( CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE, 8 );
-            let ctrlpt = new THREE.Mesh( plug_geometry, inlet_material );
-            ctrlpt.position.y = (NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2;
-            container.add(ctrlpt);
 
             break;
         }
@@ -454,6 +557,9 @@ function generateNode(parent, node, name) {
     let path = "";
     if (parent.userData.path) path = parent.userData.path + ".";
     path += name;
+
+    console.log("orient", props.orient)
+    if (props.orient) container.quaternion.fromArray(props.orient);
 
     container.userData.name = name;
     container.userData.path = path;
@@ -555,9 +661,30 @@ function render() {
     }
 
     if (controller1.userData.selected) {
-        let obj = controller1.userData.selected;
+        let object = controller1.userData.selected;
         let s = 1. + (controller1.userData.thumbpadDY);
-        obj.position.multiplyScalar(s);
+        object.position.multiplyScalar(s);
+
+        // // if it is a jack, see if we can hook up?
+        // if (object.userData.kind == "jack_outlet") {
+
+        //     let intersections = getIntersections(object, 0, 1, 0);
+        //     if (intersections.length > 0) {
+        //         let intersection = intersections[0];
+        //         let o = intersection.object;
+        //         if (o.userData.kind == "outlet") {
+        //             // we have a hit! disconnect
+        //             //object.userData.cable.src = o;
+        //             o.getWorldPosition(object.userData.positions[0])
+        //         }
+        //     }
+        
+
+    
+
+        // } else if (object.userData.kind == "jack_inlet") {
+        //     object.userData.cable.dst = null;
+        // }
 
     }
 

@@ -87,21 +87,21 @@
         let patch1 = {
             "nodes": {
                 "a": {
-                    "_props": { "kind": "NOISE", "pos": [0.0, 1.5, 0.0] },
+                    "_props": { "kind": "NOISE", "pos": [0.0, 1.5, 0.0], "orient": [0, 0, 0, 1] },
                     "signal": { "_props": { "kind": "outlet" } }
                 },
                 "b": {
-                    "_props": { "kind": "DAC", "pos": [0.0, 1.0, 0.0] },
+                    "_props": { "kind": "DAC", "pos": [0.0, 1.0, 0.0], "orient": [0, 0, 0, 1] },
                     "source": { "_props": { "kind": "inlet" } }
                 },
                 "child": {
-                    "_props": { "kind": "group", "pos": [0.5, 1.5, 0.0] },
+                    "_props": { "kind": "group", "pos": [0.5, 1.5, 0.0], "orient": [0, 0, 0, 1] },
                     "aa": {
-                        "_props": { "kind": "BEEP", "pos": [0.0, 0.2, 0.0] },
+                        "_props": { "kind": "BEEP", "pos": [0.0, 0.2, 0.0], "orient": [0, 0, 0, 1] },
                         "signal": { "_props": { "kind": "outlet" } }
                     }
                 },
-                "x": { "_props": { "kind": "noise", "pos": [-0.5, 1.5, 0.0] },
+                "x": { "_props": { "kind": "noise", "pos": [-0.5, 1.5, 0.0], "orient": [0, 0, 0, 1] },
                 "signal": { "_props": { "kind": "outlet" } } }
             },
             "arcs": [
