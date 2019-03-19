@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 38.0, 92.0, 1244.0, 907.0 ],
+		"rect" : [ 193.0, 94.0, 1136.0, 907.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -60,78 +60,6 @@
 					"outlettype" : [ "signal" ],
 					"patching_rect" : [ 522.0, 94.0, 87.0, 23.0 ],
 					"text" : "gen~ foldcomb"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"fontname" : "Lato",
-					"fontsize" : 12.0,
-					"id" : "obj-10",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 2,
-					"outlettype" : [ "signal", "float" ],
-					"patching_rect" : [ 1313.0, 321.0, 81.0, 23.0 ],
-					"text" : "mstosamps~"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"fontname" : "Lato",
-					"fontsize" : 11.595186999999999,
-					"id" : "obj-28",
-					"maxclass" : "newobj",
-					"numinlets" : 2,
-					"numoutlets" : 1,
-					"outlettype" : [ "float" ],
-					"patching_rect" : [ 1313.0, 241.3333740234375, 40.0, 22.0 ],
-					"text" : "/ 100."
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"fontname" : "Lato",
-					"fontsize" : 11.595186999999999,
-					"format" : 6,
-					"id" : "obj-29",
-					"maxclass" : "flonum",
-					"numinlets" : 1,
-					"numoutlets" : 2,
-					"outlettype" : [ "", "bang" ],
-					"parameter_enable" : 0,
-					"patching_rect" : [ 1313.0, 216.0, 50.0, 22.0 ],
-					"triscale" : 0.9
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"fontname" : "Lato",
-					"fontsize" : 11.595186999999999,
-					"id" : "obj-30",
-					"maxclass" : "message",
-					"numinlets" : 2,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 1313.0, 264.5, 40.0, 22.0 ],
-					"text" : "$1 30"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"fontname" : "Lato",
-					"fontsize" : 11.595186999999999,
-					"id" : "obj-31",
-					"maxclass" : "newobj",
-					"numinlets" : 2,
-					"numoutlets" : 2,
-					"outlettype" : [ "signal", "bang" ],
-					"patching_rect" : [ 1313.0, 291.0, 53.0, 22.0 ],
-					"text" : "line~ 44"
 				}
 
 			}
@@ -230,7 +158,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "signal" ],
-					"patching_rect" : [ 91.0, 461.0, 100.0, 22.0 ],
+					"patching_rect" : [ 91.0, 381.0, 100.0, 22.0 ],
 					"text" : "infiniterecursion~"
 				}
 
@@ -332,12 +260,12 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-67",
-					"linecount" : 6,
+					"linecount" : 23,
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 91.0, 288.0, 151.0, 87.0 ],
-					"text" : "NOTE: major limitation is modules can't be patched into themselves i.e. 2nd outlet of ffm into its 3rd inlet. see this workaround, but talk to graham about it!"
+					"patching_rect" : [ 70.0, 291.0, 152.0, 315.0 ],
+					"text" : "NOTE: major limitation is modules can't be patched into themselves i.e. 2nd outlet of ffm into its 3rd inlet. see this workaround, but talk to graham about it!\n\n\n\na benefit to this abstraction be that it could augment the cable its connected to. In other words, what if all cabled had an infiniterecursion~ object in their path, and if someone wanted to audition the audio in a given gable, this abstraction would provide that functionality by sending to a subbmix?\n\ngraph colouring. "
 				}
 
 			}
@@ -353,13 +281,13 @@
 					"patching_rect" : [ 812.0, 759.0, 104.0, 136.0 ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
+							"parameter_type" : 0,
+							"parameter_unitstyle" : 4,
+							"parameter_mmin" : -70.0,
 							"parameter_longname" : "live.gain~[1]",
 							"parameter_mmax" : 6.0,
 							"parameter_initial" : [ 0.0 ],
-							"parameter_shortname" : "live.gain~",
-							"parameter_type" : 0,
-							"parameter_unitstyle" : 4,
-							"parameter_mmin" : -70.0
+							"parameter_shortname" : "live.gain~"
 						}
 
 					}
@@ -508,18 +436,6 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-3",
-					"maxclass" : "newobj",
-					"numinlets" : 2,
-					"numoutlets" : 2,
-					"outlettype" : [ "signal", "signal" ],
-					"patching_rect" : [ 484.0, 842.0, 142.0, 22.0 ],
-					"text" : "gen~ comparator.gendsp"
-				}
-
-			}
-, 			{
-				"box" : 				{
 					"id" : "obj-2",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
@@ -566,43 +482,8 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-30", 0 ],
-					"source" : [ "obj-28", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-28", 0 ],
-					"source" : [ "obj-29", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-54", 1 ],
-					"source" : [ "obj-3", 1 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-54", 0 ],
-					"source" : [ "obj-3", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-31", 0 ],
-					"source" : [ "obj-30", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-10", 0 ],
-					"source" : [ "obj-31", 0 ]
+					"destination" : [ "obj-74", 3 ],
+					"source" : [ "obj-23", 2 ]
 				}
 
 			}
@@ -629,13 +510,6 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-74", 3 ],
-					"source" : [ "obj-57", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-74", 2 ],
 					"source" : [ "obj-59", 0 ]
 				}
@@ -643,23 +517,23 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-3", 0 ],
+					"destination" : [ "obj-54", 1 ],
+					"order" : 0,
 					"source" : [ "obj-74", 2 ]
 				}
 
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-3", 1 ],
-					"order" : 0,
-					"source" : [ "obj-74", 1 ]
+					"destination" : [ "obj-54", 0 ],
+					"order" : 1,
+					"source" : [ "obj-74", 2 ]
 				}
 
 			}
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-57", 0 ],
-					"order" : 1,
 					"source" : [ "obj-74", 1 ]
 				}
 
@@ -673,19 +547,19 @@
 			}
  ],
 		"parameters" : 		{
-			"obj-60::obj-5" : [ "spread", "spread", 0 ],
-			"obj-60::obj-1" : [ "feedback1", "feedback1", 0 ],
-			"obj-74::obj-11" : [ "index[1]", "index", 0 ],
+			"obj-74::obj-8" : [ "vco1[1]", "vco1", 0 ],
+			"obj-74::obj-10" : [ "feedback[1]", "feedback", 0 ],
+			"obj-15::obj-1" : [ "rate[3]", "rate", 0 ],
 			"obj-45::obj-1" : [ "threshold", "threshold", 0 ],
 			"obj-54" : [ "live.gain~[1]", "live.gain~", 0 ],
-			"obj-4::obj-7" : [ "volume", "volume", 0 ],
 			"obj-60::obj-4" : [ "damping", "damping", 0 ],
-			"obj-60::obj-3" : [ "feedback2", "feedback2", 0 ],
-			"obj-74::obj-10" : [ "feedback[1]", "feedback", 0 ],
-			"obj-74::obj-8" : [ "vco1[1]", "vco1", 0 ],
-			"obj-15::obj-1" : [ "rate[3]", "rate", 0 ],
 			"obj-74::obj-9" : [ "vco2[1]", "vco2", 0 ],
+			"obj-60::obj-3" : [ "feedback2", "feedback2", 0 ],
+			"obj-60::obj-5" : [ "spread", "spread", 0 ],
 			"obj-23::obj-1" : [ "rate[4]", "rate", 0 ],
+			"obj-60::obj-1" : [ "feedback1", "feedback1", 0 ],
+			"obj-74::obj-11" : [ "index[1]", "index", 0 ],
+			"obj-4::obj-7" : [ "volume", "volume", 0 ],
 			"parameterbanks" : 			{
 
 			}
@@ -701,13 +575,6 @@
 			}
 , 			{
 				"name" : "noise.gendsp",
-				"bootpath" : "~/msvr",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "comparator.gendsp",
 				"bootpath" : "~/msvr",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
@@ -813,6 +680,13 @@
 			}
 , 			{
 				"name" : "logic.gendsp",
+				"bootpath" : "~/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "comparator.gendsp",
 				"bootpath" : "~/msvr",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
