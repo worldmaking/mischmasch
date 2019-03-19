@@ -40,12 +40,6 @@
       },"complex_compare":{
         "A":"signal_input","B":"signal_input","bias_cv":"signal_input","bias":"small_knob","max":"signal_output","min":"signal_output","diff":"signal_output"
 
-      },"":{
-
-      },"":{
-
-      },"":{
-
       }
 
   }
