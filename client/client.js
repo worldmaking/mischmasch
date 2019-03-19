@@ -83,6 +83,7 @@ let raycaster = new THREE.Raycaster(), intersected = [];
 // temp variables to save allocations
 let tempMatrix = new THREE.Matrix4();
 let point = new THREE.Vector3();
+let delta;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // BOOT SEQUENCE
@@ -144,6 +145,8 @@ async function init() {
     controller2.addEventListener("triggerup", onSelectEnd);
     controller1.addEventListener("axischanged", onScroll);
     controller2.addEventListener("axischanged", onScroll);
+    controller1.addEventListener("gripsdown", onGrips);
+    controller2.addEventListener("gripsdown", onGrips);
     scene.add(controller1);
     scene.add(controller2);
 
@@ -233,7 +236,6 @@ class Cable {
         curve.mesh = new THREE.Line(this.geometry, new THREE.LineBasicMaterial({
             color: 0xff0000,
             opacity: 1,
-            lights: true,
             linewidth: 2
         }));
         curve.mesh.castShadow = true;
@@ -242,7 +244,7 @@ class Cable {
         curve.mesh.frustumCulled = false;
         
         this.update();
-
+        world.userData.moveable = true;
         world.add(curve.mesh)
     }
 
@@ -314,19 +316,54 @@ function onScroll(event){
     let controller = event.target;
     if(controller.getButtonState('thumbpad') === undefined) return;
 
-    //let x = event.axes[0];
-
-    let y = event.axes[1];  
-    console.log(y)
     
-    // map -1..1 => 1/2..2/2..3/2 (1 in the middle)
+    let y = event.axes[1];  
+    y = parseFloat(y.toFixed(2))
+    let s = 0;
+    //Up Scroll
 
-    let s = 1 + (y*0.01);
-
+    if(y >= delta && y <= 0){
+        s = parseFloat((1 + (-y*0.1)).toFixed(3));
+        
+        console.log("S: " + s + " Delta: " + delta+ " Y: " + y + " Forward")
+    }
+    if(y >= delta && y >= 0){
+        s = parseFloat((1 + (y*0.1)).toFixed(3));
+        console.log("S: " + s + " Delta: " + delta+ " Y: " + y + " Forward")
+    }
+    
+    //Down scroll
+    if (y <= delta && y >= 0){
+        s = parseFloat((1 + (-y*0.1)).toFixed(3));
+        //console.log("S: " + s + " Delta: " + delta+ " Y: " + y + " Backward")
+    }
+    if (y <= delta && y <= 0){
+        s = parseFloat((1 + (y*0.1)).toFixed(3));
+    }
+    delta = y;
+    
     if (controller.userData.selected === undefined) return;
     let object = controller.userData.selected;
-    object.position.multiplyScalar(s);
 
+    if(y !== delta){
+        object.position.multiplyScalar(s);
+    }
+
+    // map -1..1 => 1/2..2/2..3/2 (1 in the middle)
+
+
+
+
+
+}
+
+function onGrips(event){
+    let controller = event.target;
+    if(controller.getButtonState('grips') === undefined) return;
+        generateNode(world);
+
+    
+    
 }
 
 function getIntersections(controller) {
@@ -378,6 +415,12 @@ function generateLabel(message) {
 function generateNode(parent, node, name) {
     let container;
 
+    if(node === undefined || name === undefined){
+        node = { 
+                "_props": { "kind": "blank", "pos": [controller1.getWorldPosition().x, controller1.getWorldPosition().y, controller1.getWorldPosition().z] }      
+    }
+    }
+
     //Having Materials inside styles at the top causes it use the same mess across all objects
     let generic_material = new THREE.MeshStandardMaterial({
         color: Math.random() * 0xffffff,
@@ -404,12 +447,13 @@ function generateNode(parent, node, name) {
                 -generic_geometry.parameters.height - NLET_HEIGHT/2, 
                 -NLET_RADIUS]);
 
+
             let plug_geometry = new THREE.CylinderGeometry( CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE, 8 );
 
             let ctrlpt = new THREE.Mesh( plug_geometry, outlet_material );
             ctrlpt.position.y = -(NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2;
             container.add(ctrlpt);
-        
+            
             break;
         }
         case "inlet": {
@@ -434,7 +478,7 @@ function generateNode(parent, node, name) {
             container.receiveShadow = true;
             container.position.fromArray(props.pos);
             container.userData.moveable = true;
-            
+            console.log(container.position)
             break;
         }
         default: {
@@ -520,6 +564,7 @@ function render() {
 
     controller1.update();
     controller2.update();
+   // console.log(controller1.position)
 
     intersectObjects(controller1);
     intersectObjects(controller2);
