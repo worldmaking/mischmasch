@@ -49,8 +49,6 @@ inlet_geometry.computeBoundingBox();
 let plug_geometry = new THREE.CylinderGeometry( CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE, 8 );
 plug_geometry.computeBoundingBox();
 
-console.log(plug_geometry.boundingBox)
-
 let generic_geometry = new THREE.BoxBufferGeometry(0.4, 0.2, 0.05);
 generic_geometry.translate(generic_geometry.parameters.width/2, -generic_geometry.parameters.height/2, -generic_geometry.parameters.depth/2);
 
@@ -90,6 +88,8 @@ let raycaster = new THREE.Raycaster(), intersected = [];
 let tempMatrix = new THREE.Matrix4();
 let point = new THREE.Vector3();
 let delta;
+
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // BOOT SEQUENCE
@@ -149,8 +149,8 @@ async function init() {
     controller1.addEventListener("triggerup", onSelectEnd);
     controller2.addEventListener("triggerdown", onSelectStart);
     controller2.addEventListener("triggerup", onSelectEnd);
-    controller1.addEventListener("gripsdown", onGrips);
-    controller2.addEventListener("gripsdown", onGrips);
+    controller1.addEventListener("thumbpadup", onSpawn);
+    controller2.addEventListener("thumbpadup", onSpawn);
     scene.add(controller1);
     scene.add(controller2);
 
@@ -359,12 +359,13 @@ function onSelectStart(event) {
             // now set object = line.dstCtrlPt
             let cable = new Cable(object);
             object = cable.dstCtrlPt;
-           
             allCables.push(cable);
 
         } else if (kind == "inlet") {
             //...
-         
+            let cable = new Cable(object);
+            object = cable.srcCtrlPt;
+            allCables.push(cable);
         }
     }
 
@@ -440,14 +441,15 @@ function onSelectEnd(event) {
     }
 }
 
-function onGrips(event){
+function onSpawn(event){
     let controller = event.target;
-    if(controller.getButtonState('grips') === undefined) return;
-        generateNode(world);
-
-    
-    
+    if(controller.getButtonState('thumbpad') === undefined) return;
+    if(controller.getButtonState('trigger') == false){
+        generateNode(world); 
+    }
+     
 }
+
 
 function getIntersections(controller, x, y, z) {
     tempMatrix.identity().extractRotation(controller.matrixWorld);
@@ -558,7 +560,7 @@ function generateNode(parent, node, name) {
             container.receiveShadow = true;
             container.position.fromArray(props.pos);
             container.userData.moveable = true;
-            console.log(container.position)
+          
             break;
         }
         default: {
@@ -580,7 +582,6 @@ function generateNode(parent, node, name) {
     if (parent.userData.path) path = parent.userData.path + ".";
     path += name;
 
-    console.log("orient", props.orient)
     if (props.orient) container.quaternion.fromArray(props.orient);
 
     container.userData.name = name;
@@ -671,7 +672,6 @@ function render() {
             controller1.userData.thumbpadX = gamepad.axes[0];
             controller1.userData.thumbpadY = gamepad.axes[1];
 
-            console.log(controller1.userData.thumbpadDY)
 
         } else if (controller1.userData.touched) {
             controller1.userData.touched = false;
@@ -710,14 +710,6 @@ function render() {
 
     }
 
-
-   // console.log(controller1.position)
-   
-    if (once && controller1.getGamepad()){
-        console.log(controller1.getGamepad())
-        //console.log(controller2.getGamepad())
-        once = 0;
-    }
 
     intersectObjects(controller1);
     intersectObjects(controller2);
