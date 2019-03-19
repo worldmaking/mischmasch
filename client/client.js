@@ -143,8 +143,6 @@ async function init() {
     controller1.addEventListener("triggerup", onSelectEnd);
     controller2.addEventListener("triggerdown", onSelectStart);
     controller2.addEventListener("triggerup", onSelectEnd);
-    controller1.addEventListener("axischanged", onScroll);
-    controller2.addEventListener("axischanged", onScroll);
     controller1.addEventListener("gripsdown", onGrips);
     controller2.addEventListener("gripsdown", onGrips);
     scene.add(controller1);
@@ -168,6 +166,9 @@ async function init() {
        // pivot.material = pivot.material.clone();
     
     }
+
+    controller1.userData.thumbpadDX = 0;
+    controller1.userData.thumbpadDY = 0;
 
     // controllers geometry
     let geometry = new THREE.BufferGeometry().setFromPoints([
@@ -312,51 +313,6 @@ function onSelectEnd(event) {
     }
 }
 
-function onScroll(event){
-    let controller = event.target;
-    if(controller.getButtonState('thumbpad') === undefined) return;
-
-    
-    let y = event.axes[1];  
-    y = parseFloat(y.toFixed(2))
-    let s = 0;
-    //Up Scroll
-
-    if(y >= delta && y <= 0){
-        s = parseFloat((1 + (-y*0.1)).toFixed(3));
-        
-        console.log("S: " + s + " Delta: " + delta+ " Y: " + y + " Forward")
-    }
-    if(y >= delta && y >= 0){
-        s = parseFloat((1 + (y*0.1)).toFixed(3));
-        console.log("S: " + s + " Delta: " + delta+ " Y: " + y + " Forward")
-    }
-    
-    //Down scroll
-    if (y <= delta && y >= 0){
-        s = parseFloat((1 + (-y*0.1)).toFixed(3));
-        //console.log("S: " + s + " Delta: " + delta+ " Y: " + y + " Backward")
-    }
-    if (y <= delta && y <= 0){
-        s = parseFloat((1 + (y*0.1)).toFixed(3));
-    }
-    delta = y;
-    
-    if (controller.userData.selected === undefined) return;
-    let object = controller.userData.selected;
-
-    if(y !== delta){
-        object.position.multiplyScalar(s);
-    }
-
-    // map -1..1 => 1/2..2/2..3/2 (1 in the middle)
-
-
-
-
-
-}
-
 function onGrips(event){
     let controller = event.target;
     if(controller.getButtonState('grips') === undefined) return;
@@ -449,7 +405,6 @@ function generateNode(parent, node, name) {
 
 
             let plug_geometry = new THREE.CylinderGeometry( CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE, 8 );
-
             let ctrlpt = new THREE.Mesh( plug_geometry, outlet_material );
             ctrlpt.position.y = -(NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2;
             container.add(ctrlpt);
@@ -548,6 +503,9 @@ function animate() {
 }
 
 
+let once = 1
+
+
 
 function render() {
     stats.begin();
@@ -564,7 +522,53 @@ function render() {
 
     controller1.update();
     controller2.update();
+
+    let gamepad = controller1.getGamepad();
+    if (gamepad) {
+        let button0 = gamepad.buttons[0];
+        // consider the thumbpad state:
+        if (button0.touched) {
+            if (!controller1.userData.touched) {
+                controller1.userData.touched = true;
+                //console.log("touchstart", gamepad.axes[1])
+                controller1.userData.thumbpadDX = 0;
+                controller1.userData.thumbpadDY = 0;
+
+            } else {
+                //console.log("drag", gamepad.axes[1])
+                controller1.userData.thumbpadDX = gamepad.axes[0] - controller1.userData.thumbpadX;
+                controller1.userData.thumbpadDY = gamepad.axes[1] - controller1.userData.thumbpadY;
+            }
+            
+            controller1.userData.thumbpadX = gamepad.axes[0];
+            controller1.userData.thumbpadY = gamepad.axes[1];
+
+            console.log(controller1.userData.thumbpadDY)
+
+        } else if (controller1.userData.touched) {
+            controller1.userData.touched = false;
+            controller1.userData.thumbpadDX = 0;
+            controller1.userData.thumbpadDY = 0;
+            // touch release event
+            //console.log("release")
+        }
+    }
+
+    if (controller1.userData.selected) {
+        let obj = controller1.userData.selected;
+        let s = 1. + (controller1.userData.thumbpadDY);
+        obj.position.multiplyScalar(s);
+
+    }
+
+
    // console.log(controller1.position)
+   
+    if (once && controller1.getGamepad()){
+        console.log(controller1.getGamepad())
+        //console.log(controller2.getGamepad())
+        once = 0;
+    }
 
     intersectObjects(controller1);
     intersectObjects(controller2);
