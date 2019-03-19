@@ -351,6 +351,23 @@ function onSelectStart(event) {
     //     object = object.parent;
     // }
 
+    if (object && !object.userData.moveable) {
+        let kind = object.userData.kind;
+        if (kind == "outlet") {
+            // create a new line
+            // line's src == object
+            // now set object = line.dstCtrlPt
+            let cable = new Cable(object);
+            object = cable.dstCtrlPt;
+           
+            allCables.push(cable);
+
+        } else if (kind == "inlet") {
+            //...
+         
+        }
+    }
+
     if (object && object.userData.moveable) {
 
         let kind = object.userData.kind;
@@ -358,13 +375,7 @@ function onSelectStart(event) {
             object.userData.cable.src = null;
         } else if (kind == "jack_inlet") {
             object.userData.cable.dst = null;
-        } else if (kind == "outlet") {
-            // create a new line
-            // line's src == object
-            // now set object = line.dstCtrlPt
-        } else if (kind == "inlet") {
-            //...
-        }
+        } 
 
         tempMatrix.getInverse(controller.matrixWorld);
         let parent = object.parent;
@@ -378,6 +389,8 @@ function onSelectStart(event) {
         controller.userData.parent = parent;
         controller.add(object); //removes from previous parent
     }
+
+    
 }
 
 function onSelectEnd(event) {
@@ -412,7 +425,16 @@ function onSelectEnd(event) {
     
 
         } else if (object.userData.kind == "jack_inlet") {
-            object.userData.cable.dst = null;
+            
+            let intersections = getIntersections(object, 0, -1, 0);
+            if (intersections.length > 0) {
+                let intersection = intersections[0];
+                let o = intersection.object;
+                if (o.userData.kind == "inlet") {
+                    // we have a hit! disconnect
+                    object.userData.cable.dst = o;
+                }
+            }
         }
 
     }
