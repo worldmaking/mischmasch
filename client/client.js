@@ -351,23 +351,6 @@ function onSelectStart(event) {
     //     object = object.parent;
     // }
 
-    if (object && !object.userData.moveable) {
-        let kind = object.userData.kind;
-        if (kind == "outlet") {
-            // create a new line
-            // line's src == object
-            // now set object = line.dstCtrlPt
-            let cable = new Cable(object);
-            object = cable.dstCtrlPt;
-            allCables.push(cable);
-
-        } else if (kind == "inlet") {
-            //...
-            let cable = new Cable(object);
-            object = cable.srcCtrlPt;
-            allCables.push(cable);
-        }
-    }
 
     if (object && object.userData.moveable) {
 
@@ -392,6 +375,26 @@ function onSelectStart(event) {
     }
 
     
+    if (object && !object.userData.moveable) {
+        let kind = object.userData.kind;
+        if (kind == "outlet") {
+            // create a new line
+            // line's src == object
+            // now set object = line.dstCtrlPt
+            let cable = new Cable(object, null);
+            object = cable.dstCtrlPt;
+            controller.userData.selected = object;
+            allCables.push(cable);
+
+        } else if (kind == "inlet") {
+            //...
+            let cable = new Cable(null, object);
+            object = cable.srcCtrlPt;
+            controller.userData.selected = object;
+            allCables.push(cable);
+        }
+        controller.add(object); //removes from previous parent
+    }
 }
 
 function onSelectEnd(event) {
@@ -421,8 +424,6 @@ function onSelectEnd(event) {
                     object.userData.cable.src = o;
                 }
             }
-        
-
     
 
         } else if (object.userData.kind == "jack_inlet") {
@@ -434,7 +435,7 @@ function onSelectEnd(event) {
                 if (o.userData.kind == "inlet") {
                     // we have a hit! disconnect
                     object.userData.cable.dst = o;
-                }
+                } 
             }
         }
 
