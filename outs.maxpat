@@ -4,7 +4,7 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 0,
-			"revision" : 0,
+			"revision" : 3,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
@@ -89,12 +89,13 @@
 					"presentation_rect" : [ 29.0, 57.0, 50.0, 63.0 ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
+							"parameter_type" : 0,
+							"parameter_unitstyle" : 1,
 							"parameter_longname" : "volume",
 							"parameter_initial_enable" : 1,
+							"parameter_mmax" : 1.0,
 							"parameter_initial" : [ 0.0 ],
-							"parameter_shortname" : "volume",
-							"parameter_type" : 0,
-							"parameter_unitstyle" : 1
+							"parameter_shortname" : "volume"
 						}
 
 					}
@@ -253,7 +254,7 @@
 ,
 		"dependency_cache" : [ 			{
 				"name" : "outs.gendsp",
-				"bootpath" : "~/msvr",
+				"bootpath" : "D:/github/msvr",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
