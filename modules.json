@@ -18,7 +18,7 @@
         "in":"inlet","cv":"inlet","trim":"small_knob","bias":"small_knob"
       },
       "lfo": {
-        "rate":"small_knob", "sine":"outlet","phasor":"outlet","pulse":"outlet"
+        "fm_cv":"inlet", "phasor_sync":"inlet","pulse_width_cv":"inlet","rate":"small_knob","sine":"outlet","phasor":"outlet","pulse":"outlet","pulse_width":"small_knob", "onset":"small_knob"
       },
       "ffm":{
         "cv1":"inlet","index_cv":"inlet","cv2":"inlet","feedback_cv":"inlet","vco1":"large_knob","waveform1":{"n_switch":["Sine","Phasor","Triangle"]}, "vco2":"large_knob", "waveform2":{"n_switch":["Sine","Phasor","Triangle"]},"index":"small_knob","feedback":"small_knob","vco_1":"outlet","vco_2":"outlet","master":"outlet"
@@ -34,11 +34,14 @@
       },"foldcomb":{"signal":"inlet","delay_cv":"inlet","a_cv":"inlet","b_cv":"inlet","c_cv":"inlet","out":"outlet"
       },
       "logic":{
-        "A":"inlet","B":"inlet","not_A":"outlet","not_B":"outlet","and":"outlet","bool_A":"outlet","bool_B":"outlet","or":"outlet","xor":"outlet"
+        "A":"inlet","B":"inlet","not_A":"outlet","not_B":"outlet","and":"outlet","bool_A":"outlet","bool_B":"outlet","or":"outlet","xor":"outlet",">":"outlet"
       },"shaper":{
         "signal":"inlet","min_cv":"inlet","max_cv":"inlet","fold":"outlet","wrap":"outlet","clip":"outlet"
       },"complex_compare":{
         "A":"inlet","B":"inlet","bias_cv":"inlet","bias":"small_knob","max":"outlet","min":"outlet","diff":"outlet"
+      },"shifter":{"signal":"inlet","cv":"inlet","range":"small_knob","out":"outlet","comparator":"outlet"
+      },"constant":{"voltage":"large_knob"
+      },"":{
 
       },"dac":{
         "left":"inlet","right":"inlet"
