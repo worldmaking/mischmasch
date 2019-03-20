@@ -44,6 +44,8 @@ const LARGE_KNOB_HEIGHT = 0.02;
 const SMALL_KNOB_RADIUS = 0.035;
 const SMALL_KNOB_HEIGHT = 0.02;
 
+const CONTROLLER_HIT_DISTANCE = 0.03;
+
 // let inlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
 // let outlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
 
@@ -162,6 +164,8 @@ async function init() {
     controller2.addEventListener("triggerup", onSelectEnd);
     controller1.addEventListener("thumbpadup", onSpawn);
     controller2.addEventListener("thumbpadup", onSpawn);
+    controller1.addEventListener("gripsdown", onGrips);
+    controller2.addEventListener("gripsdown", onGrips);
     scene.add(controller1);
     scene.add(controller2);
 
@@ -210,6 +214,8 @@ async function init() {
     floorGrid.material.transparent = true;
     scene.add(floorGrid);
 
+    // hook up server:
+    connect_to_server();
 
     // now we can start rendering:
     animate();
@@ -299,37 +305,41 @@ class Cable {
     update() {
 
         if (this.src) {
+            this.src.getWorldQuaternion(this.srcCtrlPt.quaternion);
             this.src.getWorldPosition(this.positions[0]);
             this.positions[1]
                 .set(0, -(NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
-                .applyQuaternion(this.src.getWorldQuaternion())
+                .applyQuaternion(this.srcCtrlPt.quaternion)
                 .add(this.positions[0]);
             this.srcCtrlPt.position.copy(this.positions[1]);
-            this.srcCtrlPt.quaternion.copy(this.src.getWorldQuaternion());
         } else {
+            let q = new THREE.Quaternion();
+            this.srcCtrlPt.getWorldQuaternion(q);
             // derive positions[0] from the srcCtrlPt
             this.srcCtrlPt.getWorldPosition(this.positions[1]);
             this.positions[0]
                 .set(0, (NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
-                .applyQuaternion(this.srcCtrlPt.getWorldQuaternion())
+                .applyQuaternion(q)
                 .add(this.positions[1])
         }
 
         if (this.dst) {
             this.dst.getWorldPosition(this.positions[3]);
+            this.dst.getWorldQuaternion(this.dstCtrlPt.quaternion);
             this.positions[2]
                 .set(0, (NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
-                .applyQuaternion(this.dst.getWorldQuaternion())
+                .applyQuaternion(this.dstCtrlPt.quaternion)
                 .add(this.positions[3]);
 
             this.dstCtrlPt.position.copy(this.positions[2]);
-            this.dstCtrlPt.quaternion.copy(this.dst.getWorldQuaternion());
         } else {
+            let q = new THREE.Quaternion();
+            this.dstCtrlPt.getWorldQuaternion(q);
             // derive positions[3] from the srcCtrlPt
             this.dstCtrlPt.getWorldPosition(this.positions[2]);
             this.positions[3]
                 .set(0, -(NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
-                .applyQuaternion(this.dstCtrlPt.getWorldQuaternion())
+                .applyQuaternion(q)
                 .add(this.positions[2])
         }
         ////////////////////
@@ -454,7 +464,9 @@ function onSpawn(event){
     let controller = event.target;
     if(controller.getButtonState('thumbpad') === undefined) return;
     if(controller.getButtonState('trigger') == false){
-        generateNode(world); 
+        //generateNode(world); 
+        // request scene:
+        //sock.send({ cmd: "get_scene", date: Date.now() });
     }
      
 }
@@ -510,7 +522,8 @@ function generateNode(parent, node, name) {
 
     if(node === undefined || name === undefined){
         let pos = controller1.getWorldPosition();
-        let quat = controller1.getWorldQuaternion();
+        let quat = new THREE.Quaternion();
+        controller1.getWorldQuaternion(quat);
         let tilt = new THREE.Quaternion();
         tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
         quat.multiply(tilt);
@@ -665,6 +678,9 @@ function generateNode(parent, node, name) {
     container.userData.selectable = true;
 
     allNodes[path] = container;
+
+    //console.log("added ", path, container)
+
     // add to proper parent:
     parent.add(container);
 
@@ -677,9 +693,9 @@ function generateNode(parent, node, name) {
 }
 
 function generateScene(patch) {
-    /** Going to use this to search through the patch JSON coming in from max */
-    allNodes = {};
-    allCables = [];
+
+    clearScene();
+    
 
     let nodes = patch.nodes;
     for (let k in nodes) {
@@ -691,10 +707,11 @@ function generateScene(patch) {
         let dst = allNodes[arc[1]];
 
         if (!src || !dst) {
+            console.log(arc[0], src)
+            console.log(arc[1], dst)
             console.error("arc with unmatchable paths")
             continue;
         }
-
 
         let cable = new Cable(src, dst);
         allCables.push(cable);
@@ -704,10 +721,6 @@ function generateScene(patch) {
 function animate() {
     renderer.setAnimationLoop(render);
 }
-
-
-let once = 1
-
 
 
 function render() {
@@ -782,6 +795,20 @@ function render() {
         //     object.userData.cable.dst = null;
         // }
 
+    } else {
+        let targetPos = new THREE.Vector3();
+        let controllerPos = new THREE.Vector3();
+        controller1.getWorldPosition(controllerPos);
+
+        for (let name in allNodes) {
+            let target = allNodes[name];
+            target.getWorldPosition(targetPos);
+
+            let d = targetPos.distanceTo(controllerPos);
+            if (d < CONTROLLER_HIT_DISTANCE) {
+                console.log(name, target.userData.kind);
+            }
+        }
     }
 
 
@@ -792,21 +819,64 @@ function render() {
     stats.end();
 }
 
+function onGrips(event){
+    let controller = event.target;
+    if(controller.getButtonState("grips")){
+        
+    }
+}
+
+function clearScene(){
+    while(world.children.length > 0){ 
+        world.remove(world.children[0]); 
+    }
+    allNodes = {};
+    allCables = [];
+    
+}
+
+
 /////////////////////////////////////////////////////
 // Websocket handling
 /////////////////////////////////////////////////////
 
+let sock
+function connect_to_server() {
+    try {
+        if (window.location.hostname == "localhost") {
+            sock = new Socket({
+                reload_on_disconnect: true,
+                reconnect_period: 1000,
+                onopen: function () {
+                    //this.send({ cmd: "getdata", date: Date.now() });
+                    write("connected to server");
+                    // request scene:
+                    this.send({ cmd: "get_scene", date: Date.now() });
+                },
+                onmessage: function (m) {
+                    handlemessage(m, this);
+                },
+                onbuffer(data, byteLength) {
+                    console.log("received binary:", byteLength);
+                },
+            });
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
 function handlemessage(msg, sock) {
 	switch (msg.cmd) {
 		case "patch": {
-            console.log("patch", msg.value);
             // lazy deep copy:
             patch = JSON.parse(JSON.stringify(msg.value));
+            write("received patch");
             
 
             //Input JSON files to be parsed on generations
             generateScene(patch);
-		}
+		} break;
 		default: console.log("received JSON", msg, typeof msg);
 	}
 }
