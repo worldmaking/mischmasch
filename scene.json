@@ -1,81 +1,81 @@
 {
-  "nodes": {
+    "nodes": {
 
-  "lfo_1":{
-    "_props":{"kind":"lfo","pos": [0.0, 1.5, 0.0], "orient": [0, 0, 0, 1] },
-    "fm_cv":{"_props":{"kind":"inlet"}},
-    "phasor_sync":{"_props":{"kind":"inlet"}},
-    "pulse_width_cv":{"_props":{"kind":"inlet"}},
-    "rate":{"_props":{"kind":"large_knob","range":[0,80],"taper":"log 3.8","value":0.63,"unit":"Hz"}},
-    "index":{"_props":{"kind":"small_knob","range":[0,10],"taper":"linear","value":1,"unit":"float"}},
-    "pulse_width":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0.25,"unit":"float"}},
-    "onset":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0,"unit":"float"}},
-    "sine":{"_props":{"kind":"outlet"}},
-    "phasor":{"_props":{"kind":"outlet"}},
-    "pulse":{"_props":{"kind":"outlet"}}
-  },
-  "lfo_2":{
-    "_props":{"kind":"lfo","pos": [0.0, 1.0, 0.0], "orient": [0, 0, 0, 1] },
-    "fm_cv":{"_props":{"kind":"inlet"}},
-    "phasor_sync":{"_props":{"kind":"inlet"}},
-    "pulse_width_cv":{"_props":{"kind":"inlet"}},
-    "rate":{"_props":{"kind":"large_knob","range":[0,80],"taper":"log 3.8","value":1,"unit":"Hz"}},
-    "index":{"_props":{"kind":"small_knob","range":[0,10],"taper":"linear","value":10,"unit":"float"}},
-    "pulse_width":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0.25,"unit":"float"}},
-    "onset":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0,"unit":"float"}},
-    "sine":{"_props":{"kind":"outlet"}},
-    "phasor":{"_props":{"kind":"outlet"}},
-    "pulse":{"_props":{"kind":"outlet"}}
-  },
-  "ffmvco_1":{
-    "_props":{"kind":"ffmvco","pos": [0.0, 0.5, 0.0], "orient": [0, 0, 0, 1] },
-    "vco_1_cv":{"_props":{"kind":"inlet"}},
-    "index_cv":{"_props":{"kind":"inlet"}},
-    "vco_2_cv":{"_props":{"kind":"inlet"}},
-    "feedback_cv":{"_props":{"kind":"inlet"}},
-    "vco_1_rate":{"_props":{"kind":"large_knob","range":[0,6000],"taper":"log 3.8","value":120,"unit":"Hz"}},
-    "vco_1_waveform":
-      {"_props":{"kind":"n_switch","throws":["Sine","Phasor","Triangle"],"value":"Sine"}},
-    "vco_2_rate":{"_props":{"kind":"large_knob","range":[0,6000],"taper":"log 3.8","value":3,"unit":"Hz"}},
-    "vco_2_waveform":
-    {"_props":{"kind":"n_switch","throws":["Sine","Phasor","Triangle"],"value":"Sine"}},
-    "feedback":{"_props":{"kind":"small_knob","range":[0,6],"taper":"linear","value":0.25,"unit":"float"}},
-    "vco_1":{"_props":{"kind":"outlet"}},
-    "vco_2":{"_props":{"kind":"outlet"}},
-    "master":{"_props":{"kind":"outlet"}}
-  },
-  "vca_1":{
-    "_props":{"kind":"vca","pos": [0.0, 1.8, 0.0], "orient": [0, 0, 0, 1] },
-    "signal":{"_props":{"kind":"inlet"}},
-    "cv":{"_props":{"kind":"inlet"}},
-    "cv_amount":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
-    "bias":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
-    "output":{"_props":{"kind":"outlet"}}
-  },
-  "comparator_1":{
-    "_props":{"kind":"comparator","pos": [0.0, 0.8, 0.0], "orient": [0, 0, 0, 1] },
-    "A":{"_props":{"kind":"inlet"}},
-    "B":{"_props":{"kind":"inlet"}},
-    "max":{"_props":{"kind":"outlet"}},
-    "min":{"_props":{"kind":"outlet"}}
-  },
-  "outs_1":{
-    "_props":{"kind":"comparator","pos": [0.0, 0.8, 0.0], "orient": [0, 0, 0, 1] },
-    "left_(mono)":{"_props":{"kind":"inlet"}},
-    "right_(stereo)":{"_props":{"kind":"inlet"}},
-    "volume":{"_props":{"kind":"small_knob","range":[0,1],"taper":"log 3.8","value":0.25,"unit":"float"}},
-    "left":{"_props":{"kind":"outlet"}},
-    "right":{"_props":{"kind":"outlet"}}
-  }
-},
-"arcs": [
-  ["lfo_1.sine", "vca_1.signal"], 
-  [ "lfo_1.sine", "lfo_2.fm_cv" ],
-  ["lfo_1.phasor","ffmvco.feedback_cv"],
-  ["lfo_1.pulse","ffmvco.vco_cv_1"],
-  ["vca_1.output","comparator.A"],
-  ["ffmvco.master","comparator.B"],
-  ["comparator.max","outs_1.left"],
-  ["comparator.min","outs_1.right"]
-]
+        "lfo_1":{
+            "_props":{"kind":"lfo","pos": [0.0, 1.5, 0.0], "orient": [0, 0, 0, 1] },
+            "fm_cv":{"_props":{"kind":"inlet"}},
+            "phasor_sync":{"_props":{"kind":"inlet"}},
+            "pulse_width_cv":{"_props":{"kind":"inlet"}},
+            "rate":{"_props":{"kind":"large_knob","range":[0,80],"taper":"log 3.8","value":0.63,"unit":"Hz"}},
+            "index":{"_props":{"kind":"small_knob","range":[0,10],"taper":"linear","value":1,"unit":"float"}},
+            "pulse_width":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0.25,"unit":"float"}},
+            "onset":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0,"unit":"float"}},
+            "sine":{"_props":{"kind":"outlet"}},
+            "phasor":{"_props":{"kind":"outlet"}},
+            "pulse":{"_props":{"kind":"outlet"}}
+        },
+        "lfo_2":{
+            "_props":{"kind":"lfo","pos": [0.0, 1.0, 0.0], "orient": [0, 0, 0, 1] },
+            "fm_cv":{"_props":{"kind":"inlet"}},
+            "phasor_sync":{"_props":{"kind":"inlet"}},
+            "pulse_width_cv":{"_props":{"kind":"inlet"}},
+            "rate":{"_props":{"kind":"large_knob","range":[0,80],"taper":"log 3.8","value":1,"unit":"Hz"}},
+            "index":{"_props":{"kind":"small_knob","range":[0,10],"taper":"linear","value":10,"unit":"float"}},
+            "pulse_width":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0.25,"unit":"float"}},
+            "onset":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0,"unit":"float"}},
+            "sine":{"_props":{"kind":"outlet"}},
+            "phasor":{"_props":{"kind":"outlet"}},
+            "pulse":{"_props":{"kind":"outlet"}}
+        },
+        "ffmvco_1":{
+            "_props":{"kind":"ffmvco","pos": [0.0, 0.5, 0.0], "orient": [0, 0, 0, 1] },
+            "vco_1_cv":{"_props":{"kind":"inlet"}},
+            "index_cv":{"_props":{"kind":"inlet"}},
+            "vco_2_cv":{"_props":{"kind":"inlet"}},
+            "feedback_cv":{"_props":{"kind":"inlet"}},
+            "vco_1_rate":{"_props":{"kind":"large_knob","range":[0,6000],"taper":"log 3.8","value":120,"unit":"Hz"}},
+            "vco_1_waveform":
+            {"_props":{"kind":"n_switch","throws":["Sine","Phasor","Triangle"],"value":"Sine"}},
+            "vco_2_rate":{"_props":{"kind":"large_knob","range":[0,6000],"taper":"log 3.8","value":3,"unit":"Hz"}},
+            "vco_2_waveform":
+            {"_props":{"kind":"n_switch","throws":["Sine","Phasor","Triangle"],"value":"Sine"}},
+            "feedback":{"_props":{"kind":"small_knob","range":[0,6],"taper":"linear","value":0.25,"unit":"float"}},
+            "vco_1":{"_props":{"kind":"outlet"}},
+            "vco_2":{"_props":{"kind":"outlet"}},
+            "master":{"_props":{"kind":"outlet"}}
+        },
+        "vca_1":{
+            "_props":{"kind":"vca","pos": [0.0, 1.8, 0.0], "orient": [0, 0, 0, 1] },
+            "signal":{"_props":{"kind":"inlet"}},
+            "cv":{"_props":{"kind":"inlet"}},
+            "cv_amount":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
+            "bias":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
+            "output":{"_props":{"kind":"outlet"}}
+        },
+        "comparator_1":{
+            "_props":{"kind":"comparator","pos": [0.0, 0.8, 0.0], "orient": [0, 0, 0, 1] },
+            "A":{"_props":{"kind":"inlet"}},
+            "B":{"_props":{"kind":"inlet"}},
+            "max":{"_props":{"kind":"outlet"}},
+            "min":{"_props":{"kind":"outlet"}}
+        },
+        "outs_1":{
+            "_props":{"kind":"comparator","pos": [0.0, 0.8, 0.0], "orient": [0, 0, 0, 1] },
+            "left_(mono)":{"_props":{"kind":"inlet"}},
+            "right_(stereo)":{"_props":{"kind":"inlet"}},
+            "volume":{"_props":{"kind":"small_knob","range":[0,1],"taper":"log 3.8","value":0.25,"unit":"float"}},
+            "left":{"_props":{"kind":"outlet"}},
+            "right":{"_props":{"kind":"outlet"}}
+        }
+    },
+    "arcs": [
+        ["lfo_1.sine", "vca_1.signal"], 
+        [ "lfo_1.sine", "lfo_2.fm_cv" ],
+        ["lfo_1.phasor","ffmvco.feedback_cv"],
+        ["lfo_1.pulse","ffmvco.vco_cv_1"],
+        ["vca_1.output","comparator.A"],
+        ["ffmvco.master","comparator.B"],
+        ["comparator.max","outs_1.left"],
+        ["comparator.min","outs_1.right"]
+    ]
 }
