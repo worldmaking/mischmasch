@@ -271,9 +271,6 @@ async function init() {
     scene.add(floorGrid);
 
 
-    //Input JSON files to be parsed on generations
-    generateScene(patch1);
-
     // now we can start rendering:
     animate();
 }
@@ -855,4 +852,23 @@ function render() {
     renderer.render(scene, camera);
     
     stats.end();
+}
+
+/////////////////////////////////////////////////////
+// Websocket handling
+/////////////////////////////////////////////////////
+
+function handlemessage(msg, sock) {
+	switch (msg.cmd) {
+		case "patch": {
+            console.log("patch", msg.value);
+            // lazy deep copy:
+            patch = JSON.parse(JSON.stringify(msg.value));
+            
+
+            //Input JSON files to be parsed on generations
+            generateScene(patch);
+		}
+		default: console.log("received JSON", msg, typeof msg);
+	}
 }
