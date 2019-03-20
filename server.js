@@ -56,7 +56,8 @@ if (MaxAPI) {
 
 //////////////////////// 
 
-let demo_scene = {
+let demo_scene = JSON.parse(fs.readFileSync("scene.json", "utf-8")); 
+/*{
 	"nodes": {
 		"a": {
 			"_props": { "kind": "noise", "pos": [0.0, 1.5, 0.0], "orient": [0, 0, 0, 1] },
@@ -84,7 +85,7 @@ let demo_scene = {
 		["a.signal", "b.source"], 
 		[ "aa.signal", "b.source" ]
 	]
-}
+}*/
 
 //////////////////////// 
 

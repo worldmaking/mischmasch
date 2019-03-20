@@ -210,6 +210,8 @@ async function init() {
     floorGrid.material.transparent = true;
     scene.add(floorGrid);
 
+    // hook up server:
+    connect_to_server();
 
     // now we can start rendering:
     animate();
@@ -665,6 +667,9 @@ function generateNode(parent, node, name) {
     container.userData.selectable = true;
 
     allNodes[path] = container;
+
+    console.log("added ", path, container)
+
     // add to proper parent:
     parent.add(container);
 
@@ -691,10 +696,11 @@ function generateScene(patch) {
         let dst = allNodes[arc[1]];
 
         if (!src || !dst) {
+            console.log(arc[0], src)
+            console.log(arc[1], dst)
             console.error("arc with unmatchable paths")
             continue;
         }
-
 
         let cable = new Cable(src, dst);
         allCables.push(cable);
@@ -800,12 +806,38 @@ function clearScene(){
 // Websocket handling
 /////////////////////////////////////////////////////
 
+let sock
+function connect_to_server() {
+    try {
+        if (window.location.hostname == "localhost") {
+            sock = new Socket({
+                reload_on_disconnect: true,
+                reconnect_period: 1000,
+                onopen: function () {
+                    //this.send({ cmd: "getdata", date: Date.now() });
+                    write("connected to server");
+                    // request scene:
+                    this.send({ cmd: "get_scene", date: Date.now() });
+                },
+                onmessage: function (m) {
+                    handlemessage(m, this);
+                },
+                onbuffer(data, byteLength) {
+                    console.log("received binary:", byteLength);
+                },
+            });
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
 function handlemessage(msg, sock) {
 	switch (msg.cmd) {
 		case "patch": {
-            console.log("patch", msg.value);
             // lazy deep copy:
             patch = JSON.parse(JSON.stringify(msg.value));
+            console.log("patch", patch);
             
 
             //Input JSON files to be parsed on generations
