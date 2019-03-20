@@ -1,64 +1,4 @@
 //////////////////////////////////////////////////////////////////////////////////////////
-// MODULES DEFINITIONS
-//////////////////////////////////////////////////////////////////////////////////////////
-
-// couldn't figure out how to properly load the modules.json file in js in browser, sorry! Did this below for now...
-
-let UI = {
-        "range":["small_knob", "large_knob", "tuning_knob", "slider"],
-        "switches":["momentary","n_switch"],
-        "input":["inlet","trigger"],
-        "output":["outlet","line_level"],
-        "led":"led"    
-      }
-let modules =  {
-    "comparator": {
-        "A": "inlet", "B": "inlet", "max": "outlet", "min":"outlet"
-    },
-    "noise": {
-        "noise":"outlet"
-    },
-    "vca": {
-        "in":"inlet","cv":"inlet","trim":"small_knob","bias":"small_knob"
-    },
-    "lfo": {
-        "fm_cv":"inlet", "phasor_sync":"inlet","pulse_width_cv":"inlet","rate":"small_knob","sine":"outlet","phasor":"outlet","pulse":"outlet","pulse_width":"small_knob", "onset":"small_knob"
-    },
-    "ffm":{
-        "cv1":"inlet","index_cv":"inlet","cv2":"inlet","feedback_cv":"inlet","vco1":"large_knob","waveform1":{"n_switch":["Sine","Phasor","Triangle"]}, "vco2":"large_knob", "waveform2":{"n_switch":["Sine","Phasor","Triangle"]},"index":"small_knob","feedback":"small_knob","vco_1":"outlet","vco_2":"outlet","master":"outlet"
-    },
-    "outs":{
-        "in_1(mono)":"inlet", "in_2(stereo)":"inlet","volume":"large_knob","left":"outlet","right":"outlet"
-    },
-    "sample_and_hold":{
-        "in":"inlet","trigger":"inlet","small_knob":"threshold"
-    },
-    "freevoib":{
-        "feedback1":"small_knob","feedback2":"small_knob","damping":"small_knob","spread":"small_knob","in":"inlet","out":"outlet"
-    },
-    "foldcomb":{"signal":"inlet","delay_cv":"inlet","a_cv":"inlet","b_cv":"inlet","c_cv":"inlet","out":"outlet"
-    },
-    "logic":{
-        "A":"inlet","B":"inlet","not_A":"outlet","not_B":"outlet","and":"outlet","bool_A":"outlet","bool_B":"outlet","or":"outlet","xor":"outlet",">":"outlet"
-    },
-    "shaper":{
-        "signal":"inlet","min_cv":"inlet","max_cv":"inlet","fold":"outlet","wrap":"outlet","clip":"outlet"
-    },
-    "complex_compare":{
-        "A":"inlet","B":"inlet","bias_cv":"inlet","bias":"small_knob","max":"outlet","min":"outlet","diff":"outlet"
-    },
-    "shifter":{"signal":"inlet","cv":"inlet","range":"small_knob","out":"outlet","comparator":"outlet"
-    },
-    "constant":{"voltage":"large_knob"
-    },
-    "dac":{
-        "left":"inlet","right":"inlet"
-    }
-}
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
 // COMMON GEOMETRIES
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -570,7 +510,6 @@ function generateLabel(message) {
 }
 
 function generateNode(parent, node, name) {
-    let container;
 
     if(node === undefined || name === undefined){
         let pos = controller1.getWorldPosition();
@@ -615,34 +554,28 @@ function generateNode(parent, node, name) {
     let outlet_material = generic_material
     
     
+
     let props = node._props;
 
     let type = props.kind;
-
-    if (modules.hasOwnProperty(props.kind)){
-
-        for (var parameter in modules[type]){
-            let UI_Type = modules[type][parameter];
-            console.log(type,parameter,UI_Type)
-        }
-        
-    }
-
+    let container;
     // TODO this switch needs to operate on "UI_Type" ^^^, NOT "props.kind"
-    switch(props.kind) {
+    switch(type) {
         case "large_knob": {
             container = new THREE.Mesh(large_knob_geometry, knob_material);
             container.castShadow = true;
             container.receiveShadow = true;
             container.position.fromArray([
-                LARGE_KNOB_RADIUS, 
-                -generic_geometry.parameters.height - LARGE_KNOB_HEIGHT/2, 
-                -LARGE_KNOB_RADIUS]);
-            let label = generateLabel(parameter);
-            label.position.y = -LABEL_SIZE;
-            label.position.z += 0.01;
-            container.add(label);
-            container.userData.moveable = true;
+                generic_geometry.parameters.width/2, 
+                -generic_geometry.parameters.height/2 - LARGE_KNOB_HEIGHT/2, 
+                generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
+            //Takes Radians
+            container.rotation.x = 1.5708;
+            // let label = generateLabel(parameter);
+            // label.position.y = -LABEL_SIZE;
+            // label.position.z += 0.01;
+            // container.add(label);
+            // container.userData.moveable = true;
             break;
         }
         case "small_knob": {
@@ -650,14 +583,15 @@ function generateNode(parent, node, name) {
             container.castShadow = true;
             container.receiveShadow = true;
             container.position.fromArray([
-                SMALL_KNOB_RADIUS, 
-                -generic_geometry.parameters.height - SMALL_KNOB_HEIGHT/2, 
-                -SMALL_KNOB_RADIUS]);
-            let label = generateLabel(parameter);
-            label.position.y = -LABEL_SIZE;
-            label.position.z += 0.01;
-            container.add(label);
-            container.userData.moveable = true;
+                generic_geometry.parameters.width/2, 
+                -generic_geometry.parameters.height/2 - SMALL_KNOB_HEIGHT/2, 
+                generic_geometry.parameters.depth/2 - SMALL_KNOB_HEIGHT]);
+            container.rotation.x = 1.5708;
+            // let label = generateLabel(parameter);
+            // label.position.y = -LABEL_SIZE;
+            // label.position.z += 0.01;
+            // container.add(label);
+            // container.userData.moveable = true;
 
             break;
         }
@@ -669,11 +603,11 @@ function generateNode(parent, node, name) {
                 NLET_RADIUS, 
                 -generic_geometry.parameters.height - NLET_HEIGHT/2, 
                 -NLET_RADIUS]);
-        //    let label = generateLabel(parameter);
-        //     label.position.y = -LABEL_SIZE;
-        //     label.position.z += 0.01;
-        //     container.add(label);
-            // container.userData.moveable = true;
+            // let label = generateLabel(UI_Type);
+            // label.position.y = -LABEL_SIZE;
+            // label.position.z += 0.01;
+            // container.add(label);
+            //container.userData.moveable = true;
 
             break;
         }
@@ -698,21 +632,26 @@ function generateNode(parent, node, name) {
             container.receiveShadow = true;
             container.position.fromArray(props.pos);
             container.userData.moveable = true;
-          
+        
             break;
         }
         default: {
+
             // generic object:
             container = new THREE.Mesh(generic_geometry, generic_material);
             container.castShadow = true;
             container.receiveShadow = true;
-            container.position.fromArray(props.pos);
+
+            if (props.pos){
+                container.position.fromArray(props.pos);
+            } else{
+                container.position = parent.position.clone();
+            }
             let label = generateLabel(props.kind);
             label.position.y = -LABEL_SIZE;
             label.position.z += 0.01;
             container.add(label);
-            container.userData.moveable = true;
-            
+            container.userData.moveable = true;    
         }
     
     }
@@ -729,16 +668,15 @@ function generateNode(parent, node, name) {
     container.userData.selectable = true;
 
     allNodes[path] = container;
-
     // add to proper parent:
     parent.add(container);
 
     for (let k in node) {
         if (k == "_props") continue;
-        
+            
         generateNode(container, node[k], k);
     }
-    
+
 }
 
 function generateScene(patch) {
