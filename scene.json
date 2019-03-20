@@ -61,11 +61,11 @@
   },
   "outs_1":{
     "_props":{"kind":"comparator","pos": [0.0, 0.8, 0.0], "orient": [0, 0, 0, 1] },
-    "A":{"_props":{"kind":"inlet"}},
-    "B":{"_props":{"kind":"inlet"}},
+    "left_(mono)":{"_props":{"kind":"inlet"}},
+    "right_(stereo)":{"_props":{"kind":"inlet"}},
     "volume":{"_props":{"kind":"small_knob","range":[0,1],"taper":"log 3.8","value":0.25,"unit":"float"}},
-    "max":{"_props":{"kind":"outlet"}},
-    "min":{"_props":{"kind":"outlet"}}
+    "left":{"_props":{"kind":"outlet"}},
+    "right":{"_props":{"kind":"outlet"}}
   }
 },
 "arcs": [
@@ -73,6 +73,9 @@
   [ "lfo_1.sine", "lfo_2.fm_cv" ],
   ["lfo_1.phasor","ffmvco.feedback_cv"],
   ["lfo_1.pulse","ffmvco.vco_cv_1"],
-  []
+  ["vca_1.output","comparator.A"],
+  ["ffmvco.master","comparator.B"],
+  ["comparator.max","outs_1.left"],
+  ["comparator.min","outs_1.right"]
 ]
 }
