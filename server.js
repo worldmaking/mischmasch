@@ -56,7 +56,7 @@ if (MaxAPI) {
 
 //////////////////////// 
 
-let demo_scene = fs.readFileSync("scene.json", "utf-8"); 
+let demo_scene = JSON.parse(fs.readFileSync("scene.json", "utf-8")); 
 /*{
 	"nodes": {
 		"a": {
