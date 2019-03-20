@@ -60,20 +60,21 @@ let demo_scene = {
 	"nodes": {
 		"a": {
 			"_props": { "kind": "noise", "pos": [0.0, 1.5, 0.0], "orient": [0, 0, 0, 1] },
-			"signal": { "_props": { "kind": "outlet" } }
+			"signal": { "_props": { "kind": "outlet" } },
+			"amp": { _props: { kind: "large_knob" }},
 		},
 		"b": {
 			"_props": { "kind": "dac", "pos": [0.0, 1.0, 0.0], "orient": [0, 0, 0, 1] },
 			"source": { "_props": { "kind": "inlet" } }
 		},
 		"lfo1": {
-			"_props": { "kind": "lfo", "pos": [0.0, 0.5, 0.0], "orient": [0, 0, 0, 1]},
+			"_props": { "kind": "lfo", "pos": [0.0, 1.5, -.3], "orient": [0, 0, 0, 1]},
 			"signal": { "_props": { "kind": "outlet" } }
 			//third parameter causes array error
 			//,"rate": {"_props": {"kind": "param", "value": 1 } }
 		},
 		"aa": {
-			"_props": { "kind": "BEEP", "pos": [0.0, 0.2, 0.0], "orient": [0, 0, 0, 1] },
+			"_props": { "kind": "BEEP", "pos": [0.5, 1.2, 0.0], "orient": [0, 0, 0, 1] },
 			"signal": { "_props": { "kind": "outlet" } }
 		},
 		"x": { "_props": { "kind": "noise", "pos": [-0.5, 1.5, 0.0], "orient": [0, 0, 0, 1] },
