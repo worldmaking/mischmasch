@@ -4,7 +4,7 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 0,
-			"revision" : 3,
+			"revision" : 0,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
@@ -428,8 +428,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 105.0, 362.0, 107.0, 23.0 ],
-					"text" : "param depth 0.01"
+					"patching_rect" : [ 105.0, 362.0, 100.0, 23.0 ],
+					"text" : "param index 0.01"
 				}
 
 			}
@@ -940,8 +940,7 @@
 				}
 
 			}
- ],
-		"autosave" : 0
+ ]
 	}
 
 }

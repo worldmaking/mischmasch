@@ -15,10 +15,10 @@
         "noise":"outlet"
       },
       "vca": {
-        "in":"inlet","cv":"inlet","trim":"small_knob","bias":"small_knob"
+        "in":"inlet","cv":"inlet","trim":"small_knob","bias":"small_knob","signal":"outlet"
       },
       "lfo": {
-        "fm_cv":"inlet", "phasor_sync":"inlet","pulse_width_cv":"inlet","rate":"small_knob","sine":"outlet","phasor":"outlet","pulse":"outlet","pulse_width":"small_knob", "onset":"small_knob"
+        "fm_cv":"inlet", "phasor_sync":"inlet","pulse_width_cv":"inlet","rate":"large_knob","index":"small_knob","sine":"outlet","phasor":"outlet","pulse":"outlet","pulse_width":"small_knob", "onset":"small_knob"
       },
       "ffm":{
         "cv1":"inlet","index_cv":"inlet","cv2":"inlet","feedback_cv":"inlet","vco1":"large_knob","waveform1":{"n_switch":["Sine","Phasor","Triangle"]}, "vco2":"large_knob", "waveform2":{"n_switch":["Sine","Phasor","Triangle"]},"index":"small_knob","feedback":"small_knob","vco_1":"outlet","vco_2":"outlet","master":"outlet"

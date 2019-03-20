@@ -6,7 +6,7 @@ var scene
 
 function read(file){
 	// if no argument is provided to dict then a random/unique name will be assigned
-	var x = new Dict('scene');
+	var x = new Dict('patch');
 
 	// the import_json() and import_yaml() do enforce naming conventions and will only work if the
 	// files to be imported end with the standard .json or .yml file suffixes.
@@ -18,7 +18,7 @@ function read(file){
 	
 	scene = JSON.parse(xjson)
 	outlet(0, 'bang')
-	
+	/*
 	Object.keys(scene.nodes).forEach(function(key) {
 	var nodeName = key;
 	var _props = scene.nodes[key]._props 
@@ -31,6 +31,7 @@ function read(file){
 	// outlet(1, "script newobject newobj @text \"gen~ " + kind + ".gendsp\" @varname " + nodeName)
 });
 
+*/
 	//post("test", nodes)
 }
 

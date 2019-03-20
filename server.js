@@ -22,20 +22,20 @@ const MaxAPI = (() => {
 })();
 
 if (MaxAPI) {
-    MaxAPI.addHandler(MaxAPI.MESSAGE_TYPES.BANG, () => {
-        MaxAPI.outletBang();
-    });
-    MaxAPI.addHandler(MaxAPI.MESSAGE_TYPES.NUMBER, (n) => {
-        MaxAPI.outlet("got a number", n);
-    });
+    // MaxAPI.addHandler(MaxAPI.MESSAGE_TYPES.BANG, () => {
+    //     MaxAPI.outletBang();
+    // });
+    // MaxAPI.addHandler(MaxAPI.MESSAGE_TYPES.NUMBER, (n) => {
+    //     MaxAPI.outlet("got a number", n);
+    // });
     MaxAPI.addHandler("scene", (n) => {
 		scene = fs.readFile(__dirname + "/scene.json", 'utf8')
 		MaxAPI.outlet("scene", scene);
     });
-    MaxAPI.addHandler(MaxAPI.MESSAGE_TYPES.ALL, (handled, ...args) => {
-        MaxAPI.outlet(`The following inlet event was ${!handled ? "not " : "" }handled`);
-        MaxAPI.outlet(args);
-	});
+    // MaxAPI.addHandler(MaxAPI.MESSAGE_TYPES.ALL, (handled, ...args) => {
+    //     MaxAPI.outlet(`The following inlet event was ${!handled ? "not " : "" }handled`);
+    //     MaxAPI.outlet(args);
+	// });
 	// MaxAPI.addHandler("scene", () =>{
 	// 	scene = fs.readFile(__dirname + "/scene.json")
 	// 	MaxAPI.outlet("scene", scene);
