@@ -1,3 +1,54 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+// MODULES DEFINITIONS
+//////////////////////////////////////////////////////////////////////////////////////////
+
+// couldn't figure out how to properly load the modules.json file in js in browser, sorry! Did this below for now...
+
+let UI = {
+        "range":["small_knob", "large_knob", "tuning_knob", "slider"],
+        "switches":["momentary","n_switch"],
+        "input":["inlet","trigger"],
+        "output":["outlet","line_level"],
+        "led":"led"    
+      }
+let modules = {
+        "comparator": {
+          "A": "inlet", "B": "inlet", "max": "outlet", "min":"outlet"
+        },
+        "noise": {
+          "noise":"outlet"
+        },
+        "vca": {
+          "in":"inlet","cv":"inlet","trim":"small_knob","bias":"small_knob"
+        },
+        "lfo": {
+          "rate":"small_knob", "sine":"outlet","phasor":"outlet","pulse":"outlet"
+        },
+        "ffm":{
+          "cv1":"inlet","index_cv":"inlet","cv2":"inlet","feedback_cv":"inlet","vco1":"large_knob","waveform1":{"n_switch":["Sine","Phasor","Triangle"]}, "vco2":"large_knob", "waveform2":{"n_switch":["Sine","Phasor","Triangle"]},"index":"small_knob","feedback":"small_knob","vco_1":"outlet","vco_2":"outlet","master":"outlet"
+        },
+        "outs":{
+          "in_1(mono)":"inlet", "in_2(stereo)":"inlet","volume":"large_knob","left":"outlet","right":"outlet"
+        },
+        "sample_and_hold":{
+          "in":"inlet","trigger":"inlet","small_knob":"threshold"
+        },
+        "freevoib":{
+          "feedback1":"small_knob","feedback2":"small_knob","damping":"small_knob","spread":"small_knob","in":"inlet","out":"outlet"
+        },"foldcomb":{"signal":"inlet","delay_cv":"inlet","a_cv":"inlet","b_cv":"inlet","c_cv":"inlet","out":"outlet"
+        },
+        "logic":{
+          "A":"inlet","B":"inlet","not_A":"outlet","not_B":"outlet","and":"outlet","bool_A":"outlet","bool_B":"outlet","or":"outlet","xor":"outlet"
+        },"shaper":{
+          "signal":"inlet","min_cv":"inlet","max_cv":"inlet","fold":"outlet","wrap":"outlet","clip":"outlet"
+        },"complex_compare":{
+          "A":"inlet","B":"inlet","bias_cv":"inlet","bias":"small_knob","max":"outlet","min":"outlet","diff":"outlet"
+  
+        }
+    
+  }
+
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // COMMON GEOMETRIES
@@ -39,12 +90,24 @@ const NUM_CABLE_SEGMENTS = 40;
 const NLET_RADIUS = 0.025;
 const NLET_HEIGHT = 0.01;
 
+const LARGE_KNOB_RADIUS = 0.055;
+const LARGE_KNOB_HEIGHT = 0.02;
+
+const SMALL_KNOB_RADIUS = 0.035;
+const SMALL_KNOB_HEIGHT = 0.02;
+
 // let inlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
 // let outlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
 
 let inlet_geometry = new THREE.CylinderGeometry( NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT, 8 );
 let outlet_geometry = inlet_geometry;
 inlet_geometry.computeBoundingBox();
+
+let small_knob_geometry = new THREE.CylinderGeometry( SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, SMALL_KNOB_HEIGHT, 8 );
+small_knob_geometry.computeBoundingBox();
+
+let large_knob_geometry = new THREE.CylinderGeometry( LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, LARGE_KNOB_HEIGHT, 8 );
+large_knob_geometry.computeBoundingBox();
 
 let plug_geometry = new THREE.CylinderGeometry( CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE, 8 );
 plug_geometry.computeBoundingBox();
@@ -525,11 +588,116 @@ function generateNode(parent, node, name) {
         blending: THREE.AdditiveBlending
         
     });
+
+    let knob_material = new THREE.MeshStandardMaterial({
+        color: Math.random() * 0xf44242,
+        roughness: 0.7,
+        metalness: 0.0,
+        opacity: 0.3,
+        transparent: true,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+        
+    });
     let inlet_material = generic_material
     let outlet_material = generic_material
     
+    
     let props = node._props;
+
+    let type = props.kind
+
+
+
+    //console.log(props.kind)
+/*
+    for (var elements in modules){
+        let type = props.kind   
+        //console.log(type)
+        if (type === elements)
+        console.log(type,modules[type])
+
+        // let label = Object.keys(modules[type])
+
+        // console.log(label)
+
+
+        // console.log(Object.keys(modules[type]))
+        console.log(Object.values(modules[type]))
+
+        // for (var elements in type){
+        //     console.log(modules[type])
+        // }
+    }
+
+    */
+
+
+    // if(props.kind ){
+    //     let type = props.kind;
+    //     console.log(type)
+
+
+    //     for (var elements in modules){
+
+    //         if (type = elements)
+    //         console.log(elements)
+    //     }
+
+    // }
+
+    // for (var type in props) {
+  
+    //     // let moduleType = type.kind
+    //     console.log(type)
+      
+    //     let moduleSpec = modules.modules[type]
+    //     console.log(moduleSpec)
+      
+      
+    //   }
+
+    if (modules.hasOwnProperty(props.kind)){
+
+        for (var parameter in modules[type])
+        let UI_Type = modules[type][parameter];
+    }
+
+    // TODO this switch needs to operate on "UI_Type" ^^^, NOT "props.kind"
     switch(props.kind) {
+        case "large_knob": {
+            container = new THREE.Mesh(large_knob_geometry, knob_material);
+            container.castShadow = true;
+            container.receiveShadow = true;
+            container.position.fromArray([
+                LARGE_KNOB_RADIUS, 
+                -generic_geometry.parameters.height - LARGE_KNOB_HEIGHT/2, 
+                -LARGE_KNOB_RADIUS]);
+            let label = generateLabel(parameter);
+            label.position.y = -LABEL_SIZE;
+            label.position.z += 0.01;
+            container.add(label);
+            container.userData.moveable = true;
+
+            break;
+        }
+        case "small_knob": {
+            container = new THREE.Mesh(small_knob_geometry, knob_material);
+            container.castShadow = true;
+            container.receiveShadow = true;
+            container.position.fromArray([
+                SMALL_KNOB_RADIUS, 
+                -generic_geometry.parameters.height - SMALL_KNOB_HEIGHT/2, 
+                -SMALL_KNOB_RADIUS]);
+            let label = generateLabel(parameter);
+            label.position.y = -LABEL_SIZE;
+            label.position.z += 0.01;
+            container.add(label);
+            container.userData.moveable = true;
+
+            break;
+        }
         case "outlet": {
             container = new THREE.Mesh(outlet_geometry, outlet_material);
             container.castShadow = true;
@@ -538,6 +706,11 @@ function generateNode(parent, node, name) {
                 NLET_RADIUS, 
                 -generic_geometry.parameters.height - NLET_HEIGHT/2, 
                 -NLET_RADIUS]);
+            let label = generateLabel(parameter);
+            label.position.y = -LABEL_SIZE;
+            label.position.z += 0.01;
+            container.add(label);
+            container.userData.moveable = true;
 
             break;
         }
@@ -549,7 +722,11 @@ function generateNode(parent, node, name) {
                 NLET_RADIUS, 
                 NLET_HEIGHT/2, 
                 -NLET_RADIUS]);
-
+            let label = generateLabel(parameter);
+            label.position.y = -LABEL_SIZE;
+            label.position.z += 0.01;
+            container.add(label);
+            container.userData.moveable = true;
             break;
         }
         case "group": {
@@ -574,6 +751,7 @@ function generateNode(parent, node, name) {
             container.userData.moveable = true;
             
         }
+    
     }
 
     let path = "";

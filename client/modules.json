@@ -40,8 +40,6 @@
       },"complex_compare":{
         "A":"inlet","B":"inlet","bias_cv":"inlet","bias":"small_knob","max":"outlet","min":"outlet","diff":"outlet"
 
-      },"dac":{
-        "left":"inlet","right":"inlet"
       }
 
   }

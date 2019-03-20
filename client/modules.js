@@ -1,4 +1,9 @@
-{
+//////////////////////////////////////////////////////////////////////////////////////////
+// MODULES DEFINITIONS
+//////////////////////////////////////////////////////////////////////////////////////////
+
+// couldn't figure out how to properly load the modules.json file in js in browser, sorry! Did this below for now...
+let modules = {
   "UI": {
     "range":["small_knob", "large_knob", "tuning_knob", "slider"],
     "switches":["momentary","n_switch"],
@@ -43,8 +48,50 @@
       },"dac":{
         "left":"inlet","right":"inlet"
       }
-
   }
+}
+
+
+let scene = {
+  "nodes": {
+      "a": {
+          "_props": { "kind": "noise", "pos": [0.0, 1.5, 0.0] },
+          "signal": { "_props": { "kind": "outlet" } }
+      },
+      "b": {
+          "_props": { "kind": "dac", "pos": [0.0, 1.0, 0.0] },
+          "source": { "_props": { "kind": "inlet" } }
+      },
+      "lfo1": {
+        "_props": { "kind": "lfo", "pos": [0.0, 0.5, 0.0]},
+        "signal": { "_props": { "kind": "outlet" } },
+        "rate": {"_props": {"kind": "param", "value": 1 } }
+      },
+      "child": {
+          "_props": { "kind": "group", "pos": [0.5, 1.5, 0.0] },
+          "aa": {
+              "_props":  { "kind": "beep", "pos": [0.0, 0.2, 0.0] },
+              "signal": { "_props": { "kind": "outlet" } }
+          }
+      },
+      "x": { "_props": { "kind": "noise", "pos": [-0.5, 1.5, 0.0] } }
+  },
+  "arcs": [
+      ["a.signal", "b.source"]
+  ]
+}
+
+
+for (var node in scene.nodes) {
+  
+  let moduleType = scene.nodes[node]._props.kind
+
+
+  let moduleSpec = modules.modules[moduleType]
+  console.log(moduleType,moduleSpec)
 
 
 }
+
+// console.log(string1);
+// expected output: "123"
