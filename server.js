@@ -72,19 +72,16 @@ let demo_scene = {
 			//third parameter causes array error
 			//,"rate": {"_props": {"kind": "param", "value": 1 } }
 		},
-		"child": {
-			"_props": { "kind": "group", "pos": [0.5, 1.5, 0.0], "orient": [0, 0, 0, 1] },
-			"aa": {
-				"_props": { "kind": "BEEP", "pos": [0.0, 0.2, 0.0], "orient": [0, 0, 0, 1] },
-				"signal": { "_props": { "kind": "outlet" } }
-			}
+		"aa": {
+			"_props": { "kind": "BEEP", "pos": [0.0, 0.2, 0.0], "orient": [0, 0, 0, 1] },
+			"signal": { "_props": { "kind": "outlet" } }
 		},
 		"x": { "_props": { "kind": "noise", "pos": [-0.5, 1.5, 0.0], "orient": [0, 0, 0, 1] },
 		"signal": { "_props": { "kind": "outlet" } } }
 	},
 	"arcs": [
 		["a.signal", "b.source"], 
-		[ "child.aa.signal", "b.source" ]
+		[ "aa.signal", "b.source" ]
 	]
 }
 
