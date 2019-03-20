@@ -717,10 +717,6 @@ function animate() {
 }
 
 
-let once = 1
-
-
-
 function render() {
     stats.begin();
 
@@ -802,6 +798,14 @@ function render() {
     
     stats.end();
 }
+
+
+function clearScene(){
+    allNodes = {};
+    allCables = [];
+    
+}
+
 
 /////////////////////////////////////////////////////
 // Websocket handling
