@@ -54,6 +54,37 @@ if (MaxAPI) {
     })()
 }
 
+//////////////////////// 
+
+let demo_scene = {
+	"nodes": {
+		"a": {
+			"_props": { "kind": "noise", "pos": [0.0, 1.5, 0.0], "orient": [0, 0, 0, 1] },
+			"signal": { "_props": { "kind": "outlet" } },
+			"amp": { _props: { kind: "large_knob" }},
+		},
+		"b": {
+			"_props": { "kind": "dac", "pos": [0.0, 1.0, 0.0], "orient": [0, 0, 0, 1] },
+			"source": { "_props": { "kind": "inlet" } }
+		},
+		"lfo1": {
+			"_props": { "kind": "lfo", "pos": [0.0, 1.5, -.3], "orient": [0, 0, 0, 1]},
+			"signal": { "_props": { "kind": "outlet" } }
+			//third parameter causes array error
+			//,"rate": {"_props": {"kind": "param", "value": 1 } }
+		},
+		"aa": {
+			"_props": { "kind": "BEEP", "pos": [0.5, 1.2, 0.0], "orient": [0, 0, 0, 1] },
+			"signal": { "_props": { "kind": "outlet" } }
+		},
+		"x": { "_props": { "kind": "noise", "pos": [-0.5, 1.5, 0.0], "orient": [0, 0, 0, 1] },
+		"signal": { "_props": { "kind": "outlet" } } }
+	},
+	"arcs": [
+		["a.signal", "b.source"], 
+		[ "aa.signal", "b.source" ]
+	]
+}
 
 //////////////////////// 
 
@@ -156,12 +187,7 @@ wss.on('connection', function(ws, req) {
 		}
 	});
     
-	// // Example sending some greetings:
-	// ws.send(JSON.stringify({
-	// 	type: "greeting",
-	// 	value: "hello",
-	// 	date: Date.now()
-	// }));
+	
 	// // Example sending binary:
 	// const array = new Float32Array(5);
 	// for (var i = 0; i < array.length; ++i) {
@@ -172,9 +198,16 @@ wss.on('connection', function(ws, req) {
     //send_all_clients("hi")
 });
 
-function handlemessage(msg, session) {
+function handlemessage(msg, sock) {
 	switch (msg.cmd) {
-		
+		case "get_scene": {
+			// // Example sending some greetings:
+			sock.send(JSON.stringify({
+				cmd: "patch",
+				date: Date.now(),
+				value: demo_scene
+			}));
+		}
 		default: console.log("received JSON", msg, typeof msg);
 	}
 }
