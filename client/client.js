@@ -305,37 +305,41 @@ class Cable {
     update() {
 
         if (this.src) {
+            this.src.getWorldQuaternion(this.srcCtrlPt.quaternion);
             this.src.getWorldPosition(this.positions[0]);
             this.positions[1]
                 .set(0, -(NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
-                .applyQuaternion(this.src.getWorldQuaternion())
+                .applyQuaternion(this.srcCtrlPt.quaternion)
                 .add(this.positions[0]);
             this.srcCtrlPt.position.copy(this.positions[1]);
-            this.srcCtrlPt.quaternion.copy(this.src.getWorldQuaternion());
         } else {
+            let q = new THREE.Quaternion();
+            this.srcCtrlPt.getWorldQuaternion(q);
             // derive positions[0] from the srcCtrlPt
             this.srcCtrlPt.getWorldPosition(this.positions[1]);
             this.positions[0]
                 .set(0, (NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
-                .applyQuaternion(this.srcCtrlPt.getWorldQuaternion())
+                .applyQuaternion(q)
                 .add(this.positions[1])
         }
 
         if (this.dst) {
             this.dst.getWorldPosition(this.positions[3]);
+            this.dst.getWorldQuaternion(this.dstCtrlPt.quaternion);
             this.positions[2]
                 .set(0, (NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
-                .applyQuaternion(this.dst.getWorldQuaternion())
+                .applyQuaternion(this.dstCtrlPt.quaternion)
                 .add(this.positions[3]);
 
             this.dstCtrlPt.position.copy(this.positions[2]);
-            this.dstCtrlPt.quaternion.copy(this.dst.getWorldQuaternion());
         } else {
+            let q = new THREE.Quaternion();
+            this.dstCtrlPt.getWorldQuaternion(q);
             // derive positions[3] from the srcCtrlPt
             this.dstCtrlPt.getWorldPosition(this.positions[2]);
             this.positions[3]
                 .set(0, -(NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
-                .applyQuaternion(this.dstCtrlPt.getWorldQuaternion())
+                .applyQuaternion(q)
                 .add(this.positions[2])
         }
         ////////////////////
@@ -518,7 +522,8 @@ function generateNode(parent, node, name) {
 
     if(node === undefined || name === undefined){
         let pos = controller1.getWorldPosition();
-        let quat = controller1.getWorldQuaternion();
+        let quat = new THREE.Quaternion();
+        controller1.getWorldQuaternion(quat);
         let tilt = new THREE.Quaternion();
         tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
         quat.multiply(tilt);
@@ -674,7 +679,7 @@ function generateNode(parent, node, name) {
 
     allNodes[path] = container;
 
-    console.log("added ", path, container)
+    //console.log("added ", path, container)
 
     // add to proper parent:
     parent.add(container);
@@ -866,12 +871,12 @@ function handlemessage(msg, sock) {
 		case "patch": {
             // lazy deep copy:
             patch = JSON.parse(JSON.stringify(msg.value));
-            console.log("patch", patch);
+            write("received patch");
             
 
             //Input JSON files to be parsed on generations
             generateScene(patch);
-		}
+		} break;
 		default: console.log("received JSON", msg, typeof msg);
 	}
 }
