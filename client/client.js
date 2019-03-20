@@ -11,42 +11,50 @@ let UI = {
         "output":["outlet","line_level"],
         "led":"led"    
       }
-let modules = {
-        "comparator": {
-          "A": "inlet", "B": "inlet", "max": "outlet", "min":"outlet"
-        },
-        "noise": {
-          "noise":"outlet"
-        },
-        "vca": {
-          "in":"inlet","cv":"inlet","trim":"small_knob","bias":"small_knob"
-        },
-        "lfo": {
-          "rate":"small_knob", "sine":"outlet","phasor":"outlet","pulse":"outlet"
-        },
-        "ffm":{
-          "cv1":"inlet","index_cv":"inlet","cv2":"inlet","feedback_cv":"inlet","vco1":"large_knob","waveform1":{"n_switch":["Sine","Phasor","Triangle"]}, "vco2":"large_knob", "waveform2":{"n_switch":["Sine","Phasor","Triangle"]},"index":"small_knob","feedback":"small_knob","vco_1":"outlet","vco_2":"outlet","master":"outlet"
-        },
-        "outs":{
-          "in_1(mono)":"inlet", "in_2(stereo)":"inlet","volume":"large_knob","left":"outlet","right":"outlet"
-        },
-        "sample_and_hold":{
-          "in":"inlet","trigger":"inlet","small_knob":"threshold"
-        },
-        "freevoib":{
-          "feedback1":"small_knob","feedback2":"small_knob","damping":"small_knob","spread":"small_knob","in":"inlet","out":"outlet"
-        },"foldcomb":{"signal":"inlet","delay_cv":"inlet","a_cv":"inlet","b_cv":"inlet","c_cv":"inlet","out":"outlet"
-        },
-        "logic":{
-          "A":"inlet","B":"inlet","not_A":"outlet","not_B":"outlet","and":"outlet","bool_A":"outlet","bool_B":"outlet","or":"outlet","xor":"outlet"
-        },"shaper":{
-          "signal":"inlet","min_cv":"inlet","max_cv":"inlet","fold":"outlet","wrap":"outlet","clip":"outlet"
-        },"complex_compare":{
-          "A":"inlet","B":"inlet","bias_cv":"inlet","bias":"small_knob","max":"outlet","min":"outlet","diff":"outlet"
-  
-        }
-    
-  }
+let modules =  {
+    "comparator": {
+        "A": "inlet", "B": "inlet", "max": "outlet", "min":"outlet"
+    },
+    "noise": {
+        "noise":"outlet"
+    },
+    "vca": {
+        "in":"inlet","cv":"inlet","trim":"small_knob","bias":"small_knob"
+    },
+    "lfo": {
+        "fm_cv":"inlet", "phasor_sync":"inlet","pulse_width_cv":"inlet","rate":"small_knob","sine":"outlet","phasor":"outlet","pulse":"outlet","pulse_width":"small_knob", "onset":"small_knob"
+    },
+    "ffm":{
+        "cv1":"inlet","index_cv":"inlet","cv2":"inlet","feedback_cv":"inlet","vco1":"large_knob","waveform1":{"n_switch":["Sine","Phasor","Triangle"]}, "vco2":"large_knob", "waveform2":{"n_switch":["Sine","Phasor","Triangle"]},"index":"small_knob","feedback":"small_knob","vco_1":"outlet","vco_2":"outlet","master":"outlet"
+    },
+    "outs":{
+        "in_1(mono)":"inlet", "in_2(stereo)":"inlet","volume":"large_knob","left":"outlet","right":"outlet"
+    },
+    "sample_and_hold":{
+        "in":"inlet","trigger":"inlet","small_knob":"threshold"
+    },
+    "freevoib":{
+        "feedback1":"small_knob","feedback2":"small_knob","damping":"small_knob","spread":"small_knob","in":"inlet","out":"outlet"
+    },
+    "foldcomb":{"signal":"inlet","delay_cv":"inlet","a_cv":"inlet","b_cv":"inlet","c_cv":"inlet","out":"outlet"
+    },
+    "logic":{
+        "A":"inlet","B":"inlet","not_A":"outlet","not_B":"outlet","and":"outlet","bool_A":"outlet","bool_B":"outlet","or":"outlet","xor":"outlet",">":"outlet"
+    },
+    "shaper":{
+        "signal":"inlet","min_cv":"inlet","max_cv":"inlet","fold":"outlet","wrap":"outlet","clip":"outlet"
+    },
+    "complex_compare":{
+        "A":"inlet","B":"inlet","bias_cv":"inlet","bias":"small_knob","max":"outlet","min":"outlet","diff":"outlet"
+    },
+    "shifter":{"signal":"inlet","cv":"inlet","range":"small_knob","out":"outlet","comparator":"outlet"
+    },
+    "constant":{"voltage":"large_knob"
+    },
+    "dac":{
+        "left":"inlet","right":"inlet"
+    }
+}
 
 
 
@@ -609,62 +617,15 @@ function generateNode(parent, node, name) {
     
     let props = node._props;
 
-    let type = props.kind
-
-
-
-    //console.log(props.kind)
-/*
-    for (var elements in modules){
-        let type = props.kind   
-        //console.log(type)
-        if (type === elements)
-        console.log(type,modules[type])
-
-        // let label = Object.keys(modules[type])
-
-        // console.log(label)
-
-
-        // console.log(Object.keys(modules[type]))
-        console.log(Object.values(modules[type]))
-
-        // for (var elements in type){
-        //     console.log(modules[type])
-        // }
-    }
-
-    */
-
-
-    // if(props.kind ){
-    //     let type = props.kind;
-    //     console.log(type)
-
-
-    //     for (var elements in modules){
-
-    //         if (type = elements)
-    //         console.log(elements)
-    //     }
-
-    // }
-
-    // for (var type in props) {
-  
-    //     // let moduleType = type.kind
-    //     console.log(type)
-      
-    //     let moduleSpec = modules.modules[type]
-    //     console.log(moduleSpec)
-      
-      
-    //   }
+    let type = props.kind;
 
     if (modules.hasOwnProperty(props.kind)){
 
-        for (var parameter in modules[type])
-        let UI_Type = modules[type][parameter];
+        for (var parameter in modules[type]){
+            let UI_Type = modules[type][parameter];
+            console.log(type,parameter,UI_Type)
+        }
+        
     }
 
     // TODO this switch needs to operate on "UI_Type" ^^^, NOT "props.kind"
@@ -682,7 +643,6 @@ function generateNode(parent, node, name) {
             label.position.z += 0.01;
             container.add(label);
             container.userData.moveable = true;
-
             break;
         }
         case "small_knob": {
@@ -709,11 +669,11 @@ function generateNode(parent, node, name) {
                 NLET_RADIUS, 
                 -generic_geometry.parameters.height - NLET_HEIGHT/2, 
                 -NLET_RADIUS]);
-            let label = generateLabel(parameter);
-            label.position.y = -LABEL_SIZE;
-            label.position.z += 0.01;
-            container.add(label);
-            container.userData.moveable = true;
+        //    let label = generateLabel(parameter);
+        //     label.position.y = -LABEL_SIZE;
+        //     label.position.z += 0.01;
+        //     container.add(label);
+            // container.userData.moveable = true;
 
             break;
         }
@@ -725,11 +685,11 @@ function generateNode(parent, node, name) {
                 NLET_RADIUS, 
                 NLET_HEIGHT/2, 
                 -NLET_RADIUS]);
-            let label = generateLabel(parameter);
-            label.position.y = -LABEL_SIZE;
-            label.position.z += 0.01;
-            container.add(label);
-            container.userData.moveable = true;
+        //    let label = generateLabel(parameter);
+        //     label.position.y = -LABEL_SIZE;
+        //     label.position.z += 0.01;
+        //     container.add(label);
+            // container.userData.moveable = true;
             break;
         }
         case "group": {
