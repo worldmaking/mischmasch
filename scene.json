@@ -45,7 +45,7 @@
             "master":{"_props":{"kind":"outlet"}}
         },
         "vca_1":{
-            "_props":{"kind":"vca","pos": [0.0, 1.8, 0.0], "orient": [0, 0, 0, 1] },
+            "_props":{"kind":"vca","pos": [0.5, 1.8, 0.0], "orient": [0, 0, 0, 1] },
             "signal":{"_props":{"kind":"inlet"}},
             "cv":{"_props":{"kind":"inlet"}},
             "cv_amount":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
@@ -53,14 +53,14 @@
             "output":{"_props":{"kind":"outlet"}}
         },
         "comparator_1":{
-            "_props":{"kind":"comparator","pos": [0.0, 0.8, 0.0], "orient": [0, 0, 0, 1] },
+            "_props":{"kind":"comparator","pos": [0.5, 0.8, 0.0], "orient": [0, 0, 0, 1] },
             "A":{"_props":{"kind":"inlet"}},
             "B":{"_props":{"kind":"inlet"}},
             "max":{"_props":{"kind":"outlet"}},
             "min":{"_props":{"kind":"outlet"}}
         },
         "outs_1":{
-            "_props":{"kind":"comparator","pos": [0.0, 0.8, 0.0], "orient": [0, 0, 0, 1] },
+            "_props":{"kind":"comparator","pos": [-0.5, 0.8, 0.0], "orient": [0, 0, 0, 1] },
             "left_(mono)":{"_props":{"kind":"inlet"}},
             "right_(stereo)":{"_props":{"kind":"inlet"}},
             "volume":{"_props":{"kind":"small_knob","range":[0,1],"taper":"log 3.8","value":0.25,"unit":"float"}},
