@@ -44,6 +44,8 @@ const LARGE_KNOB_HEIGHT = 0.02;
 const SMALL_KNOB_RADIUS = 0.035;
 const SMALL_KNOB_HEIGHT = 0.02;
 
+const CONTROLLER_HIT_DISTANCE = 0.03;
+
 // let inlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
 // let outlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
 
@@ -162,6 +164,8 @@ async function init() {
     controller2.addEventListener("triggerup", onSelectEnd);
     controller1.addEventListener("thumbpadup", onSpawn);
     controller2.addEventListener("thumbpadup", onSpawn);
+    controller1.addEventListener("gripsdown", onGrips);
+    controller2.addEventListener("gripsdown", onGrips);
     scene.add(controller1);
     scene.add(controller2);
 
@@ -456,7 +460,9 @@ function onSpawn(event){
     let controller = event.target;
     if(controller.getButtonState('thumbpad') === undefined) return;
     if(controller.getButtonState('trigger') == false){
-        generateNode(world); 
+        //generateNode(world); 
+        // request scene:
+        //sock.send({ cmd: "get_scene", date: Date.now() });
     }
      
 }
@@ -682,9 +688,9 @@ function generateNode(parent, node, name) {
 }
 
 function generateScene(patch) {
-    /** Going to use this to search through the patch JSON coming in from max */
-    allNodes = {};
-    allCables = [];
+
+    clearScene();
+    
 
     let nodes = patch.nodes;
     for (let k in nodes) {
@@ -784,6 +790,20 @@ function render() {
         //     object.userData.cable.dst = null;
         // }
 
+    } else {
+        let targetPos = new THREE.Vector3();
+        let controllerPos = new THREE.Vector3();
+        controller1.getWorldPosition(controllerPos);
+
+        for (let name in allNodes) {
+            let target = allNodes[name];
+            target.getWorldPosition(targetPos);
+
+            let d = targetPos.distanceTo(controllerPos);
+            if (d < CONTROLLER_HIT_DISTANCE) {
+                console.log(name, target.userData.kind);
+            }
+        }
     }
 
 
@@ -794,8 +814,17 @@ function render() {
     stats.end();
 }
 
+function onGrips(event){
+    let controller = event.target;
+    if(controller.getButtonState("grips")){
+        
+    }
+}
 
 function clearScene(){
+    while(world.children.length > 0){ 
+        world.remove(world.children[0]); 
+    }
     allNodes = {};
     allCables = [];
     
