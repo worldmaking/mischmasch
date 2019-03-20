@@ -401,8 +401,8 @@ function onSelectStart(event) {
             // now set object = line.dstCtrlPt
             let cable = new Cable(object, null);
             object = cable.dstCtrlPt;
-            controller.userData.selected = object;
             allCables.push(cable);
+            controller.add(object); //removes from previous parent
 
         } else if (kind == "inlet") {
             //...
@@ -410,8 +410,10 @@ function onSelectStart(event) {
             object = cable.srcCtrlPt;
             controller.userData.selected = object;
             allCables.push(cable);
+            controller.add(object); //removes from previous parent
         }
-        controller.add(object); //removes from previous parent
+        
+            controller.userData.selected = object;
     }
 }
 
@@ -420,16 +422,16 @@ function onSelectEnd(event) {
     if (controller.userData.selected !== undefined) {
         let parent = controller.userData.parent;
         let object = controller.userData.selected;
-
-        object.matrix.premultiply(controller.matrixWorld);
-        tempMatrix.getInverse(parent.matrixWorld);
-        object.matrix.premultiply(tempMatrix);
-        object.matrix.decompose(object.position, object.quaternion, object.scale);
-        object.material.emissive.b = 0;
-        //world.add(object);
-        parent.add(object);
         controller.userData.selected = undefined;
-
+        if (object && object.userData.moveable) {
+            object.matrix.premultiply(controller.matrixWorld);
+            tempMatrix.getInverse(parent.matrixWorld);
+            object.matrix.premultiply(tempMatrix);
+            object.matrix.decompose(object.position, object.quaternion, object.scale);
+            object.material.emissive.b = 0;
+            //world.add(object);
+            parent.add(object);
+        }
         // if it is a jack, see if we can hook up?
         if (object.userData.kind == "jack_outlet") {
 
@@ -585,7 +587,7 @@ function generateNode(parent, node, name) {
             // label.position.y = -LABEL_SIZE;
             // label.position.z += 0.01;
             // container.add(label);
-            // container.userData.moveable = true;
+            container.userData.turnable = true;
             break;
         }
         case "small_knob": {
@@ -601,7 +603,7 @@ function generateNode(parent, node, name) {
             // label.position.y = -LABEL_SIZE;
             // label.position.z += 0.01;
             // container.add(label);
-            // container.userData.moveable = true;
+            container.userData.turnable = true;
 
             break;
         }
@@ -771,8 +773,19 @@ function render() {
 
     if (controller1.userData.selected) {
         let object = controller1.userData.selected;
-        let s = 1. + (controller1.userData.thumbpadDY);
-        object.position.multiplyScalar(s);
+
+        // if what we have selected is a jack,
+        // then do ray intersection as usual
+        // if ray target is inlet/outlet (appropriately)
+        // locate jack at ray target
+
+        if (object.userData.moveable) {
+            let s = 1. + (controller1.userData.thumbpadDY);
+            object.position.multiplyScalar(s);
+        } else if (object.userData.turnable) {
+            // do UI effeect
+            object.rotateY(Math.PI / 90);
+        }
 
         // // if it is a jack, see if we can hook up?
         // if (object.userData.kind == "jack_outlet") {
@@ -807,6 +820,8 @@ function render() {
             let d = targetPos.distanceTo(controllerPos);
             if (d < CONTROLLER_HIT_DISTANCE) {
                 console.log(name, target.userData.kind);
+
+                // if kind is outlet/inlet, start a patch coord
             }
         }
     }
