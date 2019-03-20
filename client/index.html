@@ -39,7 +39,8 @@
 <body>
     <div id="container"></div>
     <canvas id="webgl-canvas"></canvas>
-    <div id="log">log</div>
+    <div id="log">Log:</div>
+
     <link href="favicon.ico" rel="icon" type="image/x-icon" />
     <script src="js/gl-matrix-min.js"></script>
     <script src="js/screenfull.js"></script>
@@ -57,6 +58,11 @@
         let canvas = document.getElementById("webgl-canvas");
         let log = document.getElementById("log");
 
+        function write(msg) {
+            log.innerText += "\n" + msg;
+            console.log(msg);
+        }
+
         let stats = new Stats();
         stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
         document.body.appendChild( stats.dom );
@@ -69,9 +75,12 @@
                     reconnect_period: 1000,
                     onopen: function () {
                         //this.send({ cmd: "getdata", date: Date.now() });
+                        write("connected to server");
+                        // request scene:
+                        this.send({ cmd: "get_scene", date: Date.now() });
                     },
-                    onmessage: function (msg) {
-                        console.log("received", msg);
+                    onmessage: function (m) {
+                        handlemessage(m, this);
                     },
                     onbuffer(data, byteLength) {
                         console.log("received binary:", byteLength);
@@ -84,7 +93,7 @@
 
     </script>
     <script>
-        let patch1 = {
+        let patch = {
             "nodes": {
                 "a": {
                     "_props": { "kind": "noise", "pos": [0.0, 1.5, 0.0], "orient": [0, 0, 0, 1] },
