@@ -358,6 +358,11 @@ class Cable {
     }
 }
 
+//Gonna start here and get 4 of the same scene spawned one N S E W
+function show_scene(){
+
+}
+
 function onSelectStart(event) {
     let controller = event.target;
     let intersections = getIntersections(controller, 0, 0, -1);
