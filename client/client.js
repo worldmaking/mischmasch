@@ -362,16 +362,21 @@ class Cable {
 //TODO: Should move?
 let nodeAlphabet = [];
 let population = []
-let population_size = 1;
+let population_size = 3;
 let genome_size = 4;
 let mutation_rate = 0.05;
 let shuffle_rate = 0.2;
+let patcher;
+
+document.addEventListener("keyup", onKeyPress);
+
 
 
 //Generate the base Genome from the original scene file
 //AKA my reset function (trying to keep seperate from important stuff)
 function generateGenome(patch){
     let nodes = patch.nodes;
+    patcher = patch;
     for (let k in nodes) {
        nodeAlphabet.push(k + " ");
     }
@@ -398,17 +403,21 @@ function generateGenome(patch){
 
 function show_population() {
     for (let p of population) {
-      write(p.genome, p.fitness)
+      write( p.fitness)
+      write(p.genome)
     }
 }
 
 function interpret(node, id, genome){
-     for(let count=0; count < genome.length; count++){
+    //genome size to make sure to spawn multiples of the same if needed
+     for(let count=0; count < genome_size; count++){
          let gen = genome.split(' ');
+         //getting each node specifically
         for (let k in node) {
             if(gen[count] == k) {
                 generateNode(world, node[k], k);
                 let kind = node[k];
+                //ignore the props itself and get its children if you get a child get its kind
                 for(let i in kind){
                     let type = kind[i];
                     if(type.kind){
@@ -424,19 +433,73 @@ function interpret(node, id, genome){
                                     population[id].validOutlet = true;
                                 }
                             }
-                            
-                        
                     } else {
                         // this should never actually be called but if it is just do nothing...
                     }
-                    
-
                 }
             }
         }
-        console.log(genome)
+        console.log(genome);
    }
 }
+
+function regenerate() {
+    population.sort(function(a, b) {
+      return b.fitness - a.fitness;
+    })
+    
+    for (let id=0; id<population_size; id++) {
+      let child = population[id];
+      let parent = population[Math.floor(Math.random(id))];
+      let local_mutation_rate = mutation_rate * (1-child.fitness);
+      let local_shuffle_rate = shuffle_rate * (1-child.fitness);
+      
+      let genome = [];
+      for (let i=0; i<child.genome.length; i++) {
+        if (Math.random() < local_mutation_rate) {
+          genome[i] = nodeAlphabet[Math.floor(Math.random()*nodeAlphabet.length)]
+        } else {
+          genome[i] = parent.genome[i];
+        }
+      }
+      
+      if (Math.random() < local_shuffle_rate) {
+        // shuffle the genes around:
+        let num_to_shuffle = Math.random(genome.length-1) + 1;
+        let shuffle_point = Math.random(genome.length - num_to_shuffle + 1);
+        let shuffled = genome.splice(shuffle_point, num_to_shuffle);
+        if (Math.random() < 0.5) {
+          shuffled = shuffled.reverse();
+        }
+        if (Math.random() < 0.5) {
+          genome = genome.concat(shuffled);
+        } else {
+          genome = shuffled.concat(genome);
+        }
+      }
+      
+      child.genome = genome.join("")
+      child.fitness *= 0.5;
+
+      clearScene();
+
+      genome = genome.join("");
+      for (let id =0; id<population_size; id++) {
+            interpret(patcher.nodes, id, genome);
+      }
+    }
+    show_population();
+  }
+
+function onKeyPress(e){
+    
+    if(e.keyCode == 13){
+    let p = population[0];
+    p.fitness = 1;
+    regenerate();
+    }
+}
+
 
 function onSelectStart(event) {
     let controller = event.target;
