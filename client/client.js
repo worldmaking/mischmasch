@@ -362,8 +362,8 @@ class Cable {
 //TODO: Should move?
 let nodeAlphabet = [];
 let population = []
-let population_size = 9;
-let genome_size = 10;
+let population_size = 1;
+let genome_size = 4;
 let mutation_rate = 0.05;
 let shuffle_rate = 0.2;
 
@@ -375,7 +375,7 @@ function generateGenome(patch){
     for (let k in nodes) {
        nodeAlphabet.push(k + " ");
     }
-    console.log(nodeAlphabet);
+    //console.log(nodeAlphabet);
     for (let id =0; id<population_size; id++) {
         let genome = []
         for (let i=0; i<genome_size; i++) {
@@ -385,9 +385,12 @@ function generateGenome(patch){
         
         population[id] = {
           genome: genome,
-          fitness: 0
+          fitness: 0,
+          validInlet: false,
+          validOutlet: false
         };
-        interpret(nodes);
+        interpret(nodes, id, genome);
+
       } 
       show_population();
 
@@ -399,36 +402,40 @@ function show_population() {
     }
 }
 
-function interpret(node){
-    for (let k in node) {
-        if(nodeAlphabet.keys(k)) {
-            let kind = node[k];
-            for(let i in kind){
-                let type = kind[i];
-                if(type.kind){
-                    //this gives me the props of the overall object AKA positions and stuff
-                } else if(type._props) {
-                    // this gives me what children it has attached like inlets and outlets, etc.
-                    let props = type._props;
-                        console.log(props)
-                        switch(props.kind){
-                            case "inlet": {
-    
+function interpret(node, id, genome){
+     for(let count=0; count < genome.length; count++){
+         let gen = genome.split(' ');
+        for (let k in node) {
+            if(gen[count] == k) {
+                generateNode(world, node[k], k);
+                let kind = node[k];
+                for(let i in kind){
+                    let type = kind[i];
+                    if(type.kind){
+                        //this gives me the props of the overall object AKA positions and stuff
+                    } else if(type._props) {
+                        // this gives me what children it has attached like inlets and outlets, etc.
+                        let props = type._props;
+                            switch(props.kind){
+                                case "inlet": {
+                                    population[id].validInlet = true;
+                                }
+                                case "outlet": {
+                                    population[id].validOutlet = true;
+                                }
                             }
-                            case "outlet": {
-    
-                            }
-                        }
+                            
                         
+                    } else {
+                        // this should never actually be called but if it is just do nothing...
+                    }
                     
-                } else {
-                    // this should never actually be called but if it is just do nothing...
-                }
-                
 
+                }
             }
         }
-    }
+        console.log(genome)
+   }
 }
 
 function onSelectStart(event) {
@@ -965,7 +972,7 @@ function handlemessage(msg, sock) {
             
 
             //Input JSON files to be parsed on generations
-            generateScene(patch);
+           // generateScene(patch);
             generateGenome(patch);
 		} break;
 		default: console.log("received JSON", msg, typeof msg);
