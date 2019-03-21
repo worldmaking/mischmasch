@@ -357,6 +357,9 @@ class Cable {
         //this.geometry.computeBoundingBox();
     }
 }
+/////////////////////////////////////////////////////////
+//                    START OF EVO                     //
+/////////////////////////////////////////////////////////
 
 //Global Variables for EVO project 
 //TODO: Should move?
@@ -402,9 +405,10 @@ function generateGenome(patch){
 }
 
 function show_population() {
+    clearWrite();
     for (let p of population) {
-      write( p.fitness)
-      write(p.genome)
+        write(p.fitness + " " + p.genome)
+
     }
 }
 
@@ -484,9 +488,7 @@ function regenerate() {
       clearScene();
 
       genome = genome.join("");
-      for (let id =0; id<population_size; id++) {
-            interpret(patcher.nodes, id, genome);
-      }
+        interpret(patcher.nodes, id, genome);
     }
     show_population();
   }
@@ -500,6 +502,9 @@ function onKeyPress(e){
     }
 }
 
+/////////////////////////////////////////////////////////
+//                     END OF EVO                      //
+/////////////////////////////////////////////////////////
 
 function onSelectStart(event) {
     let controller = event.target;
