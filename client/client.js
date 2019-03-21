@@ -358,9 +358,77 @@ class Cable {
     }
 }
 
-//Gonna start here and get 4 of the same scene spawned one N S E W
-function show_scene(){
+//Global Variables for EVO project 
+//TODO: Should move?
+let nodeAlphabet = [];
+let population = []
+let population_size = 9;
+let genome_size = 10;
+let mutation_rate = 0.05;
+let shuffle_rate = 0.2;
 
+
+//Generate the base Genome from the original scene file
+//AKA my reset function (trying to keep seperate from important stuff)
+function generateGenome(patch){
+    let nodes = patch.nodes;
+    for (let k in nodes) {
+       nodeAlphabet.push(k + " ");
+    }
+    console.log(nodeAlphabet);
+    for (let id =0; id<population_size; id++) {
+        let genome = []
+        for (let i=0; i<genome_size; i++) {
+          genome.push(nodeAlphabet[Math.floor(Math.random()*nodeAlphabet.length)])
+        }
+        genome = genome.join("");
+        
+        population[id] = {
+          genome: genome,
+          fitness: 0
+        };
+        interpret(nodes);
+      } 
+      show_population();
+
+}
+
+function show_population() {
+    for (let p of population) {
+      write(p.genome, p.fitness)
+    }
+}
+
+function interpret(node){
+    for (let k in node) {
+        if(nodeAlphabet.keys(k)) {
+            let kind = node[k];
+            for(let i in kind){
+                let type = kind[i];
+                if(type.kind){
+                    //this gives me the props of the overall object AKA positions and stuff
+                } else if(type._props) {
+                    // this gives me what children it has attached like inlets and outlets, etc.
+                    let props = type._props;
+                        console.log(props)
+                        switch(props.kind){
+                            case "inlet": {
+    
+                            }
+                            case "outlet": {
+    
+                            }
+                        }
+                        
+                    
+                } else {
+                    // this should never actually be called but if it is just do nothing...
+                }
+                
+
+            }
+        }
+    }
 }
 
 function onSelectStart(event) {
@@ -898,6 +966,7 @@ function handlemessage(msg, sock) {
 
             //Input JSON files to be parsed on generations
             generateScene(patch);
+            generateGenome(patch);
 		} break;
 		default: console.log("received JSON", msg, typeof msg);
 	}
