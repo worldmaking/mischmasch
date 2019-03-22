@@ -39,6 +39,51 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-5",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 220.0, 391.0, 102.0, 22.0 ],
+					"text" : "poly~ msvr_world"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-66",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 0,
+					"patching_rect" : [ 464.0, 953.0, 105.0, 22.0 ],
+					"text" : "dict.unpack nodes"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-65",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 498.0, 900.0, 32.0, 22.0 ],
+					"text" : "print"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-64",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 491.0, 768.0, 61.0, 22.0 ],
+					"text" : "get nodes"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-62",
 					"maxclass" : "newobj",
 					"numinlets" : 2,
@@ -509,6 +554,19 @@
 								}
 
 							}
+, 							{
+								"box" : 								{
+									"id" : "obj-1",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 1,
+									"outlettype" : [ "signal" ],
+									"patching_rect" : [ -1.0, 40.0, 100.0, 22.0 ],
+									"text" : "gen~ noise",
+									"varname" : "x"
+								}
+
+							}
  ],
 						"lines" : [ 							{
 								"patchline" : 								{
@@ -613,7 +671,7 @@
 					"maxclass" : "dict.view",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 564.5, 847.0, 359.0, 349.0 ]
+					"patching_rect" : [ 573.0, 859.0, 359.0, 349.0 ]
 				}
 
 			}
@@ -687,7 +745,7 @@
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 573.0, 685.0, 79.0, 22.0 ],
 					"saved_object_attributes" : 					{
-						"filename" : "messaging.js",
+						"filename" : "messaging",
 						"parameter_enable" : 0
 					}
 ,
@@ -1600,6 +1658,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-65", 0 ],
+					"source" : [ "obj-43", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-35", 0 ],
 					"source" : [ "obj-48", 0 ]
 				}
@@ -1630,6 +1695,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-62", 0 ],
 					"source" : [ "obj-61", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-43", 0 ],
+					"source" : [ "obj-64", 0 ]
 				}
 
 			}
@@ -1668,9 +1740,16 @@
 				"implicit" : 1
 			}
 , 			{
+				"name" : "noise.gendsp",
+				"bootpath" : "~/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
 				"name" : "patchdescribe.js",
-				"bootpath" : "~/vsl-2019/vsl-vader/sound/synthesis/waterModule/lib/code",
-				"patcherrelativepath" : "../vsl-2019/vsl-vader/sound/synthesis/waterModule/lib/code",
+				"bootpath" : "~/dispersion-lab/sound/synthesis/waterModule/lib/code",
+				"patcherrelativepath" : "../dispersion-lab/sound/synthesis/waterModule/lib/code",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
@@ -1679,6 +1758,13 @@
 				"bootpath" : "~/msvr",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "msvr_world.maxpat",
+				"bootpath" : "~/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "JSON",
 				"implicit" : 1
 			}
  ],

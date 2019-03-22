@@ -29,26 +29,33 @@
         "spread":{"_props":{"kind":"small_knob","range":[0,400],"taper":"linear","value":100,"unit":"float"}},
         "out":{"_props":{"kind":"outlet"}
       },
-      "foldcomb":{"signal":"inlet","delay_cv":"inlet","a_cv":"inlet","b_cv":"inlet","c_cv":"inlet","out":"outlet"
-      },
-      "logic":{
-        "A":"inlet","B":"inlet","not_A":"outlet","not_B":"outlet","and":"outlet","bool_A":"outlet","bool_B":"outlet","or":"outlet","xor":"outlet",">":"outlet"
-      },
-      "shaper":{
-        "signal":"inlet","min_cv":"inlet","max_cv":"inlet","fold":"outlet","wrap":"outlet","clip":"outlet"
-      },
-      "complex_compare":{"_props":{"kind":"complex_compare","pos": [0.0, 1.5, 0.0], "orient": [0, 0, 0, 1] },
-        "A":"inlet","B":"inlet","bias_cv":"inlet","bias":"small_knob","max":"outlet","min":"outlet","diff":"outlet"
-      },
-      "shifter":{"signal":"inlet","cv":"inlet","range":"small_knob","out":"outlet","comparator":"outlet"
+      // need to add these into the spec
+      // "foldcomb":{"signal":"inlet","delay_cv":"inlet","a_cv":"inlet","b_cv":"inlet","c_cv":"inlet","out":"outlet"
+      // },
+      // "logic":{
+      //   "A":"inlet","B":"inlet","not_A":"outlet","not_B":"outlet","and":"outlet","bool_A":"outlet","bool_B":"outlet","or":"outlet","xor":"outlet",">":"outlet"
+      // },
+      // "shaper":{
+      //   "signal":"inlet","min_cv":"inlet","max_cv":"inlet","fold":"outlet","wrap":"outlet","clip":"outlet"
+      // },
+      // "complex_compare":{"_props":{"kind":"complex_compare","pos": [0.0, 1.5, 0.0], "orient": [0, 0, 0, 1] },
+      //   "A":"inlet","B":"inlet","bias_cv":"inlet","bias":"small_knob","max":"outlet","min":"outlet","diff":"outlet"
+      // },
+      "shifter":{"_props":{"kind":"shifter","pos": [0.0, 1.5, 0.0], "orient": [0, 0, 0, 1] },
+      "signal":{"_props":{"kind":"inlet"}},
+      "cv":{"_props":{"kind":"inlet"}},
+      "range":{"_props":{"kind":"small_knob"}},
+      "out":{"_props":{"kind":"outlet"}},
+      ">":{"_props":{"kind":"outlet"}}
+
       },
       "constant":{"_props":{"kind":"constant","pos": [0.0, 1.5, 0.0], "orient": [0, 0, 0, 1] },
       "voltage":{"_props":{"kind":"large_knob"},
       "out":{"_props":{"kind":"outlet"}}
       },
-      "dac":{
-        "left":"inlet","right":"inlet"
-      },
+      // "dac":{
+      //   "left":"inlet","right":"inlet"
+      // },
       "lfo":{
         "_props":{"kind":"lfo","pos": [0.0, 1.5, 0.0], "orient": [0, 0, 0, 1] },
         "fm_cv":{"_props":{"kind":"inlet"}},
@@ -105,9 +112,7 @@
     "noise":{
       "_props":{"kind":"noise","pos": [0.0, 0.8, 0.0], "orient": [0, 0, 0, 1] },
       "out":{"_props":{"kind":"outlet"}}
-  }
+    }
 
   }
-
-
 }
