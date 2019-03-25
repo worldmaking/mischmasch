@@ -18,6 +18,18 @@ function read(file){
 	
 	scene = JSON.parse(xjson)
 	outlet(0, 'bang')
+	var arcs = JSON.stringify(scene.arcs)
+	post("\n\narcs", arcs)
+	var nodes = JSON.stringify(x)
+	post("\n\nnodes", nodes)
+
+	Object.keys(scene.nodes).forEach(function(key) {
+	var nodeName = key;
+	var _props = scene.nodes[key]._props 
+	var kind = _props.kind
+	var pos = _props.pos
+  	post(nodeName, kind, pos[0], pos[1], pos[2]);
+})
 	/*
 	Object.keys(scene.nodes).forEach(function(key) {
 	var nodeName = key;

@@ -67,7 +67,8 @@
         "onset":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0,"unit":"float"}},
         "sine":{"_props":{"kind":"outlet"}},
         "phasor":{"_props":{"kind":"outlet"}},
-        "pulse":{"_props":{"kind":"outlet"}}
+        "pulse":{"_props":{"kind":"outlet"}},
+        "sine_index":{"_props":{"kind":"outlet"}}
     },
     "dualvco":{
         "_props":{"kind":"dualvco","pos": [0.0, 0.5, 0.0], "orient": [0, 0, 0, 1] },
