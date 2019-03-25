@@ -129,6 +129,15 @@ let inverseDelta = function(delta) {
 					paths: [delta.paths[1], delta.paths[0]],
 				};
 			} break;
+			case "propchange": {
+				return {
+					op:"propchange", 
+					path: delta.path,
+					name: delta.name,
+					from: delta.to,
+					to: delta.from
+				}
+			} break;
 		}
 	}
 }
@@ -203,7 +212,14 @@ let rebase = function(B, A, result) {
 				if (b.path == src) { b.path = dst; } 
 				if (b.paths && b.paths[0] == src) { b.paths[0] = dst; }
 				if (b.paths && b.paths[1] == src) { b.paths[1] = dst; }
-			} break;	
+			} break;
+			case "propchange": {
+				// TODO -- are there any potential conflicts?
+				if (b.op == "propchange" && b.path==A.path && b.name==A.name) {
+					// if both A and b change the same property, then they should be merged or sequenced
+					b.from = A.to;
+				}
+			} break;
 		}
 		return b;
 	}
@@ -220,20 +236,20 @@ let mergeDeltasToGraph = function(graph, deltasA, deltasB) {
 	
 }
 
-let applyDeltasToGraph = function (graph, deltas) {
-	if (Array.isArray(deltas)) {
-		for (let d of deltas) {
+let applyDeltasToGraph = function (graph, delta) {
+	if (Array.isArray(delta)) {
+		for (let d of delta) {
 			applyDeltasToGraph(graph, d);
 		}
 	} else {
-		switch (deltas.op) {
+		switch (delta.op) {
 			case "repath": {
-				let [ctr0, src] = findPathContainer(graph.nodes, deltas.paths[0]);
-				let [ctr1, dst] = findPathContainer(graph.nodes, deltas.paths[1]);
+				let [ctr0, src] = findPathContainer(graph.nodes, delta.paths[0]);
+				let [ctr1, dst] = findPathContainer(graph.nodes, delta.paths[1]);
 				assert(ctr0, "repath failed; couldn't find source");
 				assert(ctr1 == undefined, "repath failed; destination already exists");
 				// find destination container:
-				let steps = deltas.paths[1].split(".");
+				let steps = delta.paths[1].split(".");
 				steps.pop(); // ignoring the last element
 				let container = graph.nodes;
 				for (let i=0; i<steps.length; i++) {
@@ -246,22 +262,22 @@ let applyDeltasToGraph = function (graph, deltas) {
 				delete ctr0[src];				
 				// repath arcs:
 				for (let arc of graph.arcs) {
-					if (arc[0] == deltas.paths[0]) arc[0] = deltas.paths[1];
-					if (arc[1] == deltas.paths[0]) arc[1] = deltas.paths[1];
+					if (arc[0] == delta.paths[0]) arc[0] = delta.paths[1];
+					if (arc[1] == delta.paths[0]) arc[1] = delta.paths[1];
 				}
 			} break;
 			
 			case "newnode": {
-				let o = makePath(graph.nodes, deltas.path);
-				copyProps(deltas, o._props);
+				let o = makePath(graph.nodes, delta.path);
+				copyProps(delta, o._props);
 			} break;
 			case "delnode": {
-				let [ctr, name] = findPathContainer(graph.nodes, deltas.path);
+				let [ctr, name] = findPathContainer(graph.nodes, delta.path);
 				let o = ctr[name];
 				assert(o, "delnode failed: path not found");
 				// assert o._props match delta props:
 				for (let k in o._props) {
-					assert(deepEqual(o._props[k], deltas[k]), "delnode failed; properties do not match");
+					assert(deepEqual(o._props[k], delta[k]), "delnode failed; properties do not match");
 				}
 				// assert o has no child nodes
 				// keys should either be ['_props'] or just []:
@@ -271,22 +287,47 @@ let applyDeltasToGraph = function (graph, deltas) {
 			} break;
 			case "connect": {
 				// assert connection does not yet exist
-				assert(undefined == graph.arcs.find(e => e[0]==deltas.paths[0] && e[1]==deltas.paths[1]), "connect failed: arc already exists");
+				assert(undefined == graph.arcs.find(e => e[0]==delta.paths[0] && e[1]==delta.paths[1]), "connect failed: arc already exists");
 
-				graph.arcs.push([ deltas.paths[0], deltas.paths[1] ]);
+				graph.arcs.push([ delta.paths[0], delta.paths[1] ]);
 			} break;
 			case "disconnect": {
 				// find matching arc; there should only be 1.
 				let index = -1;
 				for (let i in graph.arcs) {
 					let a = graph.arcs[i];
-					if (a[0] == deltas.paths[0] && a[1] == deltas.paths[1]) {
+					if (a[0] == delta.paths[0] && a[1] == delta.paths[1]) {
 						assert(index == -1, "disconnect failed: more than one matching arc");
 						index = i;
 					}
 				}
 				assert(index != -1, "disconnect failed: no matching arc found");
 				graph.arcs.splice(index, 1);
+			} break;
+
+			case "propchange": {
+				let [ctr, name] = findPathContainer(graph.nodes, delta.path);
+				let o = ctr[name];
+				// assert object & property exist:
+				assert(o, "propchange failed: path not found");
+				assert(o._props, "propchange failed: object has no _props");
+				let prop = o._props[delta.name];
+				assert(prop, "propchange failed: property not found");
+				// assert 'from' value matches object's current value
+				assert(deepEqual(prop, delta.from), "propchange failed; property value does not match");
+
+				// change it:
+				o._props[delta.name] = delta.to;
+
+				// // assert o._props match delta props:
+				// for (let k in o._props) {
+				// 	assert(deepEqual(o._props[k], delta[k]), "delnode failed; properties do not match");
+				// }
+				// // assert o has no child nodes
+				// // keys should either be ['_props'] or just []:
+				// let keys = Object.keys(o);
+				// assert((keys.length == 1 && keys[0]=="_props") || keys.length == 0, "delnode failed; node has children");
+				// delete ctr[name];
 			} break;
 		}
 	}

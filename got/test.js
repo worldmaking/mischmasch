@@ -50,6 +50,9 @@ let d = [
 
 	{ op:"newnode", path:"x", kind:"noise", pos:[10,10] },
 	{ op:"repath", paths: ["child.a", "child.aa"] },
+
+	// change a property
+	{ op:"propchange", path:"x", name:"pos", from:[10,10], to:[20,20] }
 ];
 
 console.log("\nTEST DUALITY")
@@ -91,6 +94,7 @@ console.log("\nTEST UNDO EVERYTHING")
 
 let id = got.inverseDelta(d);
 console.log("\n--- deltas inverted ---")
+//console.log(id)
 console.log(got.deltasToString(id))
 
 got.applyDeltasToGraph(g, id);
