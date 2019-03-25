@@ -1,32 +1,32 @@
 let assert = require("assert");
-let ot = require("./ot.js");
+let got = require("./got.js");
 
 
 // {
-// 	let res = ot.findPathContainer(graph.nodes, "a");
+// 	let res = got.findPathContainer(graph.nodes, "a");
 // 	console.log(res)
 // 	assert(res[0] == graph.nodes)
 // 	assert(res[1] == "a");
 // }
 
 // {
-// 	let res = ot.findPathContainer(graph.nodes, "b.c");
+// 	let res = got.findPathContainer(graph.nodes, "b.c");
 // 	assert(res[0] == graph.nodes.b)
 // 	assert(res[1] == "c");
 // }
 
 // {
-// 	let res = ot.findPathContainer(graph.nodes, "c");
+// 	let res = got.findPathContainer(graph.nodes, "c");
 // 	assert(res[0] == undefined);	
 // }
 
 // {
-// 	let res = ot.findPathContainer(graph.nodes, "x");
+// 	let res = got.findPathContainer(graph.nodes, "x");
 // 	assert(res[0] == undefined);		
 // }
 
 // {
-// 	let res = ot.findPathContainer({}, "a");
+// 	let res = got.findPathContainer({}, "a");
 // 	assert(res[0] == undefined);			
 // }
 
@@ -54,15 +54,15 @@ let d = [
 
 console.log("\nTEST DUALITY")
 console.log("\n--- deltas ---")
-console.log(ot.deltasToString(d))
+console.log(got.deltasToString(d))
 
-let g = ot.graphFromDeltas(d);
+let g = got.graphFromDeltas(d);
 console.log("\n--- graph ---")
-console.log(ot.graphToString(g))
+console.log(got.graphToString(g))
 
-let g1 = ot.graphFromDeltas(d);
-assert(ot.deepEqual(g, g1));
-assert(ot.deepEqual(ot.deltasFromGraph(g, []), ot.deltasFromGraph(g1, [])));
+let g1 = got.graphFromDeltas(d);
+assert(got.deepEqual(g, g1));
+assert(got.deepEqual(got.deltasFromGraph(g, []), got.deltasFromGraph(g1, [])));
 
 //console.log("\nTEST MERGE")
 
@@ -75,27 +75,27 @@ if (0) {
 	let op1 = { op:"newnode", path:"x.y", kind:"squeak", pos:[10,10] };
 	let op2 = { op:"delnode", path:"x", kind:"noise", pos:[10,10] };
 
-	let ab = ot.deepCopy(g);
-	let ba = ot.deepCopy(g);
+	let ab = got.deepCopy(g);
+	let ba = got.deepCopy(g);
 
-	ot.applyDeltasToGraph(ba, [op1, op2]);
+	got.applyDeltasToGraph(ba, [op1, op2]);
 	console.log("\n--- graph ba ---")
-	console.log(ot.graphToString(ba))
+	console.log(got.graphToString(ba))
 
-	ot.applyDeltasToGraph(ab, [op1, op2]);
+	got.applyDeltasToGraph(ab, [op1, op2]);
 	console.log("\n--- graph ab ---")
-	console.log(ot.graphToString(ab))
+	console.log(got.graphToString(ab))
 }
 
 console.log("\nTEST UNDO EVERYTHING")
 
-let id = ot.inverseDelta(d);
+let id = got.inverseDelta(d);
 console.log("\n--- deltas inverted ---")
-console.log(ot.deltasToString(id))
+console.log(got.deltasToString(id))
 
-ot.applyDeltasToGraph(g, id);
+got.applyDeltasToGraph(g, id);
 console.log("\n--- graph ---")
-console.log(ot.graphToString(g))
-assert(ot.graphToString(g) == "")
+console.log(got.graphToString(g))
+assert(got.graphToString(g) == "")
 
 console.log("\nALL TESTS PASSED")

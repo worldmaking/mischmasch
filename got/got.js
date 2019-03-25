@@ -1,3 +1,8 @@
+/*
+	Graph Operational Transforms
+	(not game of thrones :-))
+*/
+
 const assert = require ("assert");
 
 // see https://github.com/worldmaking/cards/wiki/List-of-Operational-Transforms
