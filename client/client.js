@@ -370,6 +370,7 @@ let genome_size = 4;
 let mutation_rate = 0.05;
 let shuffle_rate = 0.2;
 let patcher;
+let selectedStrand = 0;
 
 document.addEventListener("keyup", onKeyPress);
 
@@ -496,7 +497,7 @@ function regenerate() {
 function onKeyPress(e){
     
     if(e.keyCode == 13){
-    let p = population[0];
+    let p = population[selectedStrand];
     p.fitness = 1;
     regenerate();
     }
@@ -617,6 +618,27 @@ function onSpawn(event){
         //generateNode(world); 
         // request scene:
         //sock.send({ cmd: "get_scene", date: Date.now() });
+        
+
+        // EVO CODE //
+        
+        let x = controller.axes[0];
+
+        //Right thumbpad
+        if(x < 0){
+            selectedStrand++;
+            if(selectedStrand <= population.length){
+                interpret(patcher.nodes, selectedStrand, genome);
+            }
+        //Left thumbpad
+        } else if( x >= 0){
+            selectedStrand--;
+            if(selectedStrand < 0){
+                selectedStrand = population.length;
+                interpret(patcher.nodes, selectedStrand, genome);
+            }
+        }
+    
     }
      
 }
