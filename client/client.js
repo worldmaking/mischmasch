@@ -416,30 +416,16 @@ function show_population() {
 
 function interpret(node, id, genome){
     //genome size to make sure to spawn multiples of the same if needed
+    //let src;
+    //let dst;
      for(let count=0; count < genome_size; count++){
+
          let gen = genome.split(' ');
          //getting each node specifically
         for (let k in node) {
             if(gen[count] == k) {
-            
+                            
                 generateNode(world, node[k], k);
-                for(let o = 0; o < population.length; o++) { 
-                    for (let arc in population[o]) {
-                        let src = allNodes[arc[Math.random(population[o].arcs.length)]];
-                        let dst = allNodes[arc[Math.random(population[o].arcs.length)]];
-                
-                        if (!src || !dst) {
-                            // console.log(arc[0], src)
-                            // console.log(arc[1], dst)
-                            // console.error("arc with unmatchable paths")
-                            continue;
-                        }
-                
-                        let cable = new Cable(src, dst);
-                        allCables.push(cable);
-                    }
-                }
-                
                 let kind = node[k];
                 //ignore the props itself and get its children if you get a child get its kind
                 for(let i in kind){
@@ -451,23 +437,26 @@ function interpret(node, id, genome){
                         let props = type._props;
 
                             //kind._props.kind + "." + type.kind
-                            
-                            population[selectedStrand].arcs[i] = kind._props.kind + "." + type.kind;
                             switch(props.kind){
                                 case "inlet": {
                                     population[id].validInlet = true;
+                                   // src = population[id].arcs.push(kind._props.kind + "." + type.kind);
                                 }
                                 case "outlet": {
                                     population[id].validOutlet = true;
+                                   // dst = population[id].arcs.push(kind._props.kind + "." + type.kind);
                                 }
                             }
+                            
                     } else {
                         // this should never actually be called but if it is just do nothing...
                     }
                 }
+
             }
         }
-        console.log(genome);
+      //  console.log(gen);
+
     }
 }
 
@@ -475,7 +464,7 @@ function regenerate() {
     population.sort(function(a, b) {
       return b.fitness - a.fitness;
     })
-    
+
     for (let id=0; id<population_size; id++) {
       let child = population[id];
       let parent = population[Math.floor(Math.random(id))];
@@ -487,35 +476,52 @@ function regenerate() {
         if (Math.random() < local_mutation_rate) {
           genome[i] = nodeAlphabet[Math.floor(Math.random()*nodeAlphabet.length)]
         } else {
-          genome[i] = parent.genome[i];
+          genome[i] = parent.genome.split(" ")[i];
         }
       }
-      
       if (Math.random() < local_shuffle_rate) {
         // shuffle the genes around:
+        // genome = genome.join("");
+        // let gens = genome.split(" ");
+        // let shuffled = shuffle(genome);
+
         let num_to_shuffle = Math.random(genome.length-1) + 1;
         let shuffle_point = Math.random(genome.length - num_to_shuffle + 1);
         let shuffled = genome.splice(shuffle_point, num_to_shuffle);
+       
         if (Math.random() < 0.5) {
           shuffled = shuffled.reverse();
         }
         if (Math.random() < 0.5) {
-          genome = genome.concat(shuffled);
+          genome = genome.concat(shuffled)//.split(' ');
+         // genome = genome.slice(0, genome_size);
         } else {
-          genome = shuffled.concat(genome);
+          genome = shuffled.concat(genome)//.split(' ');
+          //genome = genome.slice(0, genome_size);
         }
       }
-      
-      child.genome = genome.join("")
+
+      child.genome = genome.join("");
       child.fitness *= 0.5;
 
       clearScene();
 
-      genome = genome.join("");
+        genome = genome.join("");
         interpret(patcher.nodes, id, genome);
     }
     show_population();
   }
+
+  function shuffle(a) {
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
+}
 
 function onKeyPress(e){
     
@@ -646,33 +652,41 @@ function onSpawn(event){
         // EVO CODE //
         
         let x = event.axes[0];
-        console.log("selectedStrand " + selectedStrand)
+
 
         //Right thumbpad
         
         if(!controller1.userData.touched){
 
             if(x <= 0){
-                
-                if(selectedStrand < population.length - 1){
+                selectedStrand++;
+
+                    
+                if(selectedStrand > population.length - 1){
+                    selectedStrand = 0;  
+                }
+             
+                if(selectedStrand <= population.length - 1){
                     if(population[selectedStrand].genome === undefined) return;
                     clearScene();
                     interpret(patcher.nodes, selectedStrand, population[selectedStrand].genome);
-                    selectedStrand++;
-                    
-                }
+                  
+                } 
+              
             //Left thumbpad
             } else if( x > 0){
-
+                selectedStrand--;
                 if(selectedStrand < 0){
                     selectedStrand = population.length - 1;  
                 }
                     if(population[selectedStrand].genome === undefined) return;
                     clearScene();
                     interpret(patcher.nodes, selectedStrand, population[selectedStrand].genome);
-                    selectedStrand--;
+
                 }
+
             }
+            console.log("selectedStrand " + selectedStrand)
         }
     
     }
