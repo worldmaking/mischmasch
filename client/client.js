@@ -366,7 +366,7 @@ class Cable {
 let nodeAlphabet = [];
 let population = [];
 let population_size = 10;
-let genome_size = 5;
+let genome_size = 7;
 let mutation_rate = 0.05;
 let shuffle_rate = 0.2;
 let patcher;
@@ -472,34 +472,34 @@ function regenerate() {
       let local_shuffle_rate = shuffle_rate * (1-child.fitness);
       
       let genome = [];
-      for (let i=0; i<child.genome.length; i++) {
+      for (let i=0; i<genome_size; i++) {
         if (Math.random() < local_mutation_rate) {
           genome[i] = nodeAlphabet[Math.floor(Math.random()*nodeAlphabet.length)]
         } else {
-          genome[i] = parent.genome.split(" ")[i];
-        }
-      }
-      if (Math.random() < local_shuffle_rate) {
-        // shuffle the genes around:
-        // genome = genome.join("");
-        // let gens = genome.split(" ");
-        // let shuffled = shuffle(genome);
+          genome[i] = parent.genome.split(",")[i];
 
-        let num_to_shuffle = Math.random(genome.length-1) + 1;
-        let shuffle_point = Math.random(genome.length - num_to_shuffle + 1);
-        let shuffled = genome.splice(shuffle_point, num_to_shuffle);
-       
-        if (Math.random() < 0.5) {
-          shuffled = shuffled.reverse();
-        }
-        if (Math.random() < 0.5) {
-          genome = genome.concat(shuffled)//.split(' ');
-         // genome = genome.slice(0, genome_size);
-        } else {
-          genome = shuffled.concat(genome)//.split(' ');
-          //genome = genome.slice(0, genome_size);
         }
       }
+    //   if (Math.random() < local_shuffle_rate) {
+    //     // shuffle the genes around:
+    //     //genome = genome.join("");
+    //     // let gens = genome.split(" ");
+    //     let shuffled = shuffle(genome);
+    //     // let num_to_shuffle = Math.random(genome.length-1) + 1;
+    //     // let shuffle_point = Math.random(genome.length - num_to_shuffle + 1);
+    //     // let shuffled = genome.splice(shuffle_point, num_to_shuffle);
+       
+    //     if (Math.random() < 0.5) {
+    //       shuffled = shuffled.split(',').reverse().join('');
+    //     }
+    //     if (Math.random() < 0.5) {
+    //       genome = genome.concat(shuffled);
+    //       genome = genome.slice(0, genome_size);
+    //     } else {
+    //       genome = shuffled.concat(genome);
+    //       genome = genome.slice(0, genome_size);
+    //     }
+    //   }
 
       child.genome = genome.join("");
       child.fitness *= 0.5;
