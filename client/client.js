@@ -365,8 +365,8 @@ class Cable {
 //TODO: Should move?
 let nodeAlphabet = [];
 let population = [];
-let population_size = 3;
-let genome_size = 4;
+let population_size = 10;
+let genome_size = 5;
 let mutation_rate = 0.05;
 let shuffle_rate = 0.2;
 let patcher;
@@ -396,7 +396,8 @@ function generateGenome(patch){
           genome: genome,
           fitness: 0,
           validInlet: false,
-          validOutlet: false
+          validOutlet: false,
+          arcs: []
         };
         interpret(nodes, id, genome);
 
@@ -420,7 +421,25 @@ function interpret(node, id, genome){
          //getting each node specifically
         for (let k in node) {
             if(gen[count] == k) {
+            
                 generateNode(world, node[k], k);
+                for(let o = 0; o < population.length; o++) { 
+                    for (let arc in population[o]) {
+                        let src = allNodes[arc[Math.random(population[o].arcs.length)]];
+                        let dst = allNodes[arc[Math.random(population[o].arcs.length)]];
+                
+                        if (!src || !dst) {
+                            // console.log(arc[0], src)
+                            // console.log(arc[1], dst)
+                            // console.error("arc with unmatchable paths")
+                            continue;
+                        }
+                
+                        let cable = new Cable(src, dst);
+                        allCables.push(cable);
+                    }
+                }
+                
                 let kind = node[k];
                 //ignore the props itself and get its children if you get a child get its kind
                 for(let i in kind){
@@ -430,6 +449,10 @@ function interpret(node, id, genome){
                     } else if(type._props) {
                         // this gives me what children it has attached like inlets and outlets, etc.
                         let props = type._props;
+
+                            //kind._props.kind + "." + type.kind
+                            
+                            population[selectedStrand].arcs[i] = kind._props.kind + "." + type.kind;
                             switch(props.kind){
                                 case "inlet": {
                                     population[id].validInlet = true;
@@ -445,7 +468,7 @@ function interpret(node, id, genome){
             }
         }
         console.log(genome);
-   }
+    }
 }
 
 function regenerate() {
@@ -623,27 +646,38 @@ function onSpawn(event){
         // EVO CODE //
         
         let x = event.axes[0];
+        console.log("selectedStrand " + selectedStrand)
 
         //Right thumbpad
-        if(x < 0){
-            selectedStrand++;
-            if(selectedStrand <= population.length){
-                clearScene();
-                interpret(patcher.nodes, selectedStrand, population[selectedStrand].genome);
-            }
-        //Left thumbpad
-        } else if( x >= 0){
-            selectedStrand--;
-            if(selectedStrand < 0){
-                selectedStrand = population.length;
-                clearScene();
-                interpret(patcher.nodes, selectedStrand, population[selectedStrand].genome);
+        
+        if(!controller1.userData.touched){
+
+            if(x <= 0){
+                
+                if(selectedStrand < population.length - 1){
+                    if(population[selectedStrand].genome === undefined) return;
+                    clearScene();
+                    interpret(patcher.nodes, selectedStrand, population[selectedStrand].genome);
+                    selectedStrand++;
+                    
+                }
+            //Left thumbpad
+            } else if( x > 0){
+
+                if(selectedStrand < 0){
+                    selectedStrand = population.length - 1;  
+                }
+                    if(population[selectedStrand].genome === undefined) return;
+                    clearScene();
+                    interpret(patcher.nodes, selectedStrand, population[selectedStrand].genome);
+                    selectedStrand--;
+                }
             }
         }
     
     }
      
-}
+
 
 
 function getIntersections(controller, x, y, z) {
