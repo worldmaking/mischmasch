@@ -162,8 +162,8 @@ async function init() {
     controller1.addEventListener("triggerup", onSelectEnd);
     controller2.addEventListener("triggerdown", onSelectStart);
     controller2.addEventListener("triggerup", onSelectEnd);
-    controller1.addEventListener("thumbpadup", onSpawn);
-    controller2.addEventListener("thumbpadup", onSpawn);
+    controller1.addEventListener("axischanged", onSpawn);
+    controller2.addEventListener("axischanged", onSpawn);
     controller1.addEventListener("gripsdown", onGrips);
     controller2.addEventListener("gripsdown", onGrips);
     scene.add(controller1);
@@ -364,7 +364,7 @@ class Cable {
 //Global Variables for EVO project 
 //TODO: Should move?
 let nodeAlphabet = [];
-let population = []
+let population = [];
 let population_size = 3;
 let genome_size = 4;
 let mutation_rate = 0.05;
@@ -622,20 +622,22 @@ function onSpawn(event){
 
         // EVO CODE //
         
-        let x = controller.axes[0];
+        let x = event.axes[0];
 
         //Right thumbpad
         if(x < 0){
             selectedStrand++;
             if(selectedStrand <= population.length){
-                interpret(patcher.nodes, selectedStrand, genome);
+                clearScene();
+                interpret(patcher.nodes, selectedStrand, population[selectedStrand].genome);
             }
         //Left thumbpad
         } else if( x >= 0){
             selectedStrand--;
             if(selectedStrand < 0){
                 selectedStrand = population.length;
-                interpret(patcher.nodes, selectedStrand, genome);
+                clearScene();
+                interpret(patcher.nodes, selectedStrand, population[selectedStrand].genome);
             }
         }
     
