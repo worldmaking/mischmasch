@@ -428,8 +428,8 @@ function isString(value) {
 
 function interpret(node, id, genome) {
     //genome size to make sure to spawn multiples of the same if needed
-    //let src;
-    //let dst;
+    let src;
+    let dst;
     let gen;
     if (isString(genome)) {
         gen = genome.split(' ');
@@ -440,88 +440,78 @@ function interpret(node, id, genome) {
         gen = genome;
 
     }
-    let possibleConnectsrc = 0;
-    let connectPointsrc = 0;
-    let possibleConnectdst = 0;
-    let connectPointdst = 0;
+    // let possibleConnectsrc = 0;
+    // let possibleConnectdst = 0;
     for (let count = 0; count < genome_size; count++) {
 
-        //getting each node specifically
-        for (let k in node) {
-            if (gen[count] == k) {
+    //getting each node specifically
+    for (let k in node) {
+        if (gen[count] == k) {
 
-                let newPos;
-                if(population[id].pos[count] == undefined){
-                    newPos = new THREE.Vector3(Math.random(), Math.random(), Math.random());
-                    population[id].pos[count] = newPos;
-                } else {
-                    newPos = population[id].pos[count];
-                }
-                generateNode(world, node[k], k, newPos);
-                let kind = node[k];
-                //ignore the props itself and get its children if you get a child get its kind
-                for (let i in kind) {
-                    let type = kind[i];
-                    let overall;
-                    if (type.kind) {
-                        //this gives me the props of the overall object AKA positions and stuff
-                    } else if (type._props) {
-                        // this gives me what children it has attached like inlets and outlets, etc.
-                        let props = type._props;
-
-
-         
-
-                        //kind._props.kind + "." + type.kind
-
-                        switch (props.kind) {
-                            case "inlet":
-                                {
-                                    population[id].validInlet = true;
-                                    if(Math.random() < 0.5){
-                                        if(possibleConnectsrc <= count){
-
-                                            console.log(possibleConnectsrc)
-
-                                            population[id].arcs[possibleConnectsrc][0].push(kind._props.kind + "." + Object.keys(type).join(''));
-                                            console.log(population[id].arcs[possibleConnectsrc][0])
-                                            possibleConnectsrc++;
-                                        }
-                                    }
-                                    // src = population[id].arcs.push(kind._props.kind + "." + type.kind);
-                                }
-                            case "outlet":
-                                {
-                                    
-                                    population[id].validOutlet = true;
-                                    if(Math.random() < 0.5){
-                                        if(possibleConnectdst <= count){
-                                          
-                                            population[id].arcs[possibleConnectdst][1] = kind._props.kind + "." + Object.keys(type).join('');
-                                            possibleConnectdst++;
-                                        }
-                                    }
-                                    // dst = population[id].arcs.push(kind._props.kind + "." + type.kind);
-                                    
-                                }
-                        }
-
-                    } else {
-                        // this should never actually be called but if it is just do nothing...
-                    }
-                }
-
+            let newPos;
+            if (population[id].pos[count] == undefined) {
+                newPos = new THREE.Vector3(Math.random(), Math.random(), Math.random());
+                population[id].pos[count] = newPos;
+            } else {
+                newPos = population[id].pos[count];
             }
-        }
+            generateNode(world, node[k], k, newPos);
+            let kind = node[k];
+            //ignore the props itself and get its children if you get a child get its kind
+            for (let i in kind) {
+                let type = kind[i];
+                if (type.kind) {
+                    //this gives me the props of the overall object AKA positions and stuff
+                } else if (type._props) {
+                    // this gives me what children it has attached like inlets and outlets, etc.
+                    let props = type._props;
 
+                    //kind._props.kind + "." + type.kind
+                    switch (props.kind) {
+                        case "inlet":
+                            {
+                                population[id].validInlet = true;
+                               // if (Math.random() < 0.5) {
+                                // if (Object.keys(kind[i]).join('') !== "_props") {
+                                
+                                //     population[id].arcs[count][0].push(kind._props.kind + "." + Object.keys(kind[i]).join(''));
+
+                                    
+                                // }
+                               // }
+                                 src = population[id].arcs.push(kind._props.kind + "." + type.kind);
+
+                            }
+                        case "outlet":
+                            {
+                                population[id].validOutlet = true;
+                               // if (Math.random() < 0.5) {
+                                    // if (Object.keys(kind[i]).join('') !== "_props") {
+                                    //     population[id].arcs[count][1] = kind._props.kind + "." + Object.keys(kind[i]).join('');
+                                        
+                                    // }
+                                //}
+                                 dst = population[id].arcs.push(kind._props.kind + "." + type.kind);
+
+                            }
+                    }
+
+                } else {
+                    // this should never actually be called but if it is just do nothing...
+                }
+            }
+
+        }
     }
-    for (let arc = 0; arc <= possibleConnect; arc++) {
-        let src = population[id].arcs[arc][0];
-        let dst = population[id].arcs[arc][1];
+
+}
+    for (let arc of patch.arcs) {
+        let src = allNodes[arc[0]];
+        let dst = allNodes[arc[1]];
 
         if (!src || !dst) {
-            console.log(src)
-            console.log(dst)
+            console.log(arc[0], src)
+            console.log(arc[1], dst)
             console.error("arc with unmatchable paths")
             continue;
         }
@@ -796,11 +786,7 @@ function onSpawn(event){
             }
             console.log("selectedStrand " + selectedStrand)
         }
-        if(controller.getButtonState('trigger') == true){
-            let p = population[selectedStrand];
-            p.fitness = 1;
-            regenerate();
-        }
+   
     
     }
      
@@ -1176,7 +1162,10 @@ function render() {
 function onGrips(event){
     let controller = event.target;
     if(controller.getButtonState("grips")){
-        
+        let p = population[selectedStrand];
+        p.fitness = 1;
+        regenerate();
+
     }
 }
 
