@@ -357,6 +357,7 @@ class Cable {
         //this.geometry.computeBoundingBox();
     }
 }
+
 /////////////////////////////////////////////////////////
 //                    START OF EVO                     //
 /////////////////////////////////////////////////////////
@@ -374,35 +375,33 @@ let selectedStrand = 0;
 
 document.addEventListener("keyup", onKeyPress);
 
-
-
 //Generate the base Genome from the original scene file
 //AKA my reset function (trying to keep seperate from important stuff)
-function generateGenome(patch){
+function generateGenome(patch) {
     let nodes = patch.nodes;
     patcher = patch;
     for (let k in nodes) {
-       nodeAlphabet.push(k + " ");
+        nodeAlphabet.push(k + " ");
     }
     //console.log(nodeAlphabet);
-    for (let id =0; id<population_size; id++) {
+    for (let id = 0; id < population_size; id++) {
         let genome = []
-        for (let i=0; i<genome_size; i++) {
-          genome.push(nodeAlphabet[Math.floor(Math.random()*nodeAlphabet.length)])
+        for (let i = 0; i < genome_size; i++) {
+            genome.push(nodeAlphabet[Math.floor(Math.random() * nodeAlphabet.length)])
         }
         genome = genome.join("");
-        
+
         population[id] = {
-          genome: genome,
-          fitness: 0,
-          validInlet: false,
-          validOutlet: false,
-          arcs: []
+            genome: genome,
+            fitness: 0,
+            validInlet: false,
+            validOutlet: false,
+            arcs: []
         };
         interpret(nodes, id, genome);
 
-      } 
-      show_population();
+    }
+    show_population();
 
 }
 
@@ -410,7 +409,7 @@ function show_population() {
     clearWrite();
     for (let p of population) {
         let gen;
-        if(!isString(p.genome)){
+        if (!isString(p.genome)) {
             gen = p.genome.join(" ");
         } else {
             gen = p.genome;
@@ -420,56 +419,56 @@ function show_population() {
     }
 }
 
-
-function isString (value) {
+function isString(value) {
     return typeof value === 'string' || value instanceof String;
 }
 
-
-function interpret(node, id, genome){
+function interpret(node, id, genome) {
     //genome size to make sure to spawn multiples of the same if needed
     //let src;
     //let dst;
     let gen;
-    if(isString(genome)){
+    if (isString(genome)) {
         gen = genome.split(' ');
-       
+
     } else {
         // genome = genome.join("");
         // gen = genome.split(' ');
         gen = genome;
- 
+
     }
 
-     for(let count=0; count < genome_size; count++){
+    for (let count = 0; count < genome_size; count++) {
 
-         //getting each node specifically
+        //getting each node specifically
         for (let k in node) {
-            if(gen[count] == k) {
-                            
+            if (gen[count] == k) {
+
                 generateNode(world, node[k], k);
                 let kind = node[k];
                 //ignore the props itself and get its children if you get a child get its kind
-                for(let i in kind){
+                for (let i in kind) {
                     let type = kind[i];
-                    if(type.kind){
+                    if (type.kind) {
                         //this gives me the props of the overall object AKA positions and stuff
-                    } else if(type._props) {
+                    } else if (type._props) {
                         // this gives me what children it has attached like inlets and outlets, etc.
                         let props = type._props;
 
-                            //kind._props.kind + "." + type.kind
-                            switch(props.kind){
-                                case "inlet": {
+                        //kind._props.kind + "." + type.kind
+                        switch (props.kind) {
+                            case "inlet":
+                                {
                                     population[id].validInlet = true;
-                                   // src = population[id].arcs.push(kind._props.kind + "." + type.kind);
+                                    // src = population[id].arcs.push(kind._props.kind + "." + type.kind);
                                 }
-                                case "outlet": {
+                            case "outlet":
+                                {
                                     population[id].validOutlet = true;
-                                   // dst = population[id].arcs.push(kind._props.kind + "." + type.kind);
+                                    // dst = population[id].arcs.push(kind._props.kind + "." + type.kind);
                                 }
-                            }
-                            
+                        }
+
                     } else {
                         // this should never actually be called but if it is just do nothing...
                     }
@@ -477,91 +476,90 @@ function interpret(node, id, genome){
 
             }
         }
-      
 
     }
 }
 
 function regenerate() {
     population.sort(function(a, b) {
-      return b.fitness - a.fitness;
+        return b.fitness - a.fitness;
     })
 
-    for (let id=0; id<population_size; id++) {
-      let child = population[id];  
+    for (let id = 0; id < population_size; id++) {
+        let child = population[id];
 
-      let parent = population[Math.floor(Math.random(id))];
+        let parent = population[Math.floor(Math.random(id))];
 
-      let local_mutation_rate = mutation_rate * (1-child.fitness);
-      let local_shuffle_rate = shuffle_rate * (1-child.fitness);
-      
-      let genome = [];
-      for (let i=0; i<genome_size; i++) {
-        if (Math.random() < local_mutation_rate) {
-          genome[i] = nodeAlphabet[Math.floor(Math.random()*nodeAlphabet.length)]
-        } else {
-           if(isString(parent.genome)){
-            parent.genome = parent.genome.split(' ');
-           }
-            genome[i] = parent.genome[i];
+        let local_mutation_rate = mutation_rate * (1 - child.fitness);
+        let local_shuffle_rate = shuffle_rate * (1 - child.fitness);
+
+        let genome = [];
+        for (let i = 0; i < genome_size; i++) {
+            if (Math.random() < local_mutation_rate) {
+                genome[i] = nodeAlphabet[Math.floor(Math.random() * nodeAlphabet.length)]
+            } else {
+                if (isString(parent.genome)) {
+                    parent.genome = parent.genome.split(' ');
+                }
+                genome[i] = parent.genome[i];
+
+            }
 
         }
+        if (Math.random() < local_shuffle_rate) {
+            // shuffle the genes around:
+            //genome = genome.join("");
+            // let gens = genome.split(" ");
 
-      }
-      if (Math.random() < local_shuffle_rate) {
-        // shuffle the genes around:
-        //genome = genome.join("");
-        // let gens = genome.split(" ");
-   
-        genome = genome.join(' ');
-        genome = genome.split(' ');
-        
-        let shuffled = shuffle(genome);
-        // let num_to_shuffle = Math.random(genome.length-1) + 1;
-        // let shuffle_point = Math.random(genome.length - num_to_shuffle + 1);
-        // let shuffled = genome.splice(shuffle_point, num_to_shuffle);
-       
-        if (Math.random() < 0.5) {
-          shuffled = shuffled.reverse().join(' ');
-        }
-        if (Math.random() < 0.5) {
-        // shuffled = shuffled.join(" ");
-        if(!isString(shuffled)){
-            shuffled = shuffled.join(" ");
-           } else if(isString(shuffled)) {
-            shuffled = shuffled.split(" ");
-            shuffled = shuffled.join(" ");
-           }
-        if(!isString(genome)){
-            genome = genome.join(" ");
-           } else if(isString(genome)) {
-            genome = genome.split(" "); 
-            genome = genome.join(" ");
-           }
-           genome = shuffled + " " + genome;
-         // genome = genome.concat(shuffled);
-        } else {
-            if(!isString(shuffled)){
-                shuffled = shuffled.join(" ");
-               } else if(isString(shuffled)) {
-                shuffled = shuffled.split(" ");
-                shuffled = shuffled.join(" ");
-               }
-            if(!isString(genome)){
-                genome = genome.join(" ");
-               } else if(isString(genome)) {
-                genome = genome.split(" "); 
-                genome = genome.join(" ");
-               }
-            genome = genome + " " + shuffled;
-         // genome = shuffled.concat(genome);
-        }
-      }
-      //genome = genome.join(" ");
-      child.genome = genome;
-      child.fitness *= 0.5;
+            genome = genome.join(' ');
+            genome = genome.split(' ');
 
-      clearScene();
+            let shuffled = shuffle(genome);
+            // let num_to_shuffle = Math.random(genome.length-1) + 1;
+            // let shuffle_point = Math.random(genome.length - num_to_shuffle + 1);
+            // let shuffled = genome.splice(shuffle_point, num_to_shuffle);
+
+            if (Math.random() < 0.5) {
+                shuffled = shuffled.reverse().join(' ');
+            }
+            if (Math.random() < 0.5) {
+                // shuffled = shuffled.join(" ");
+                if (!isString(shuffled)) {
+                    shuffled = shuffled.join(" ");
+                } else if (isString(shuffled)) {
+                    shuffled = shuffled.split(" ");
+                    shuffled = shuffled.join(" ");
+                }
+                if (!isString(genome)) {
+                    genome = genome.join(" ");
+                } else if (isString(genome)) {
+                    genome = genome.split(" ");
+                    genome = genome.join(" ");
+                }
+                genome = shuffled + " " + genome;
+                // genome = genome.concat(shuffled);
+            } else {
+                if (!isString(shuffled)) {
+                    shuffled = shuffled.join(" ");
+                } else if (isString(shuffled)) {
+                    shuffled = shuffled.split(" ");
+                    shuffled = shuffled.join(" ");
+                }
+                if (!isString(genome)) {
+                    genome = genome.join(" ");
+                } else if (isString(genome)) {
+                    genome = genome.split(" ");
+                    genome = genome.join(" ");
+                }
+                genome = genome + " " + shuffled;
+                // genome = shuffled.concat(genome);
+            }
+        }
+        //genome = genome.join(" ");
+        child.genome = genome;
+        child.fitness *= 0.5;
+
+        clearScene();
 
         genome = genome;
 
@@ -569,26 +567,25 @@ function regenerate() {
     }
     //console.log(population)
     show_population();
-  }
+}
 
-  function shuffle(a) {
-    var j, x, i;
+function shuffle(a) {
+    let j, x, i;
     for (i = a.length - 1; i > 0; i--) {
         j = Math.floor(Math.random() * (i + 1));
         x = a[i];
         a[i] = a[j];
         a[j] = x;
-        
     }
     return a;
 }
 
-function onKeyPress(e){
-    
-    if(e.keyCode == 13){
-    let p = population[selectedStrand];
-    p.fitness = 1;
-    regenerate();
+function onKeyPress(e) {
+
+    if (e.keyCode == 13) {
+        let p = population[selectedStrand];
+        p.fitness = 1;
+        regenerate();
     }
 }
 
