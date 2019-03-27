@@ -13,6 +13,9 @@ const express = require('express');
 const WebSocket = require('ws');
 const { vec2, vec3, vec4, quat, mat3, mat4 } = require("gl-matrix");
 
+const got = require("./got/got")
+console.log(got)
+
 const MaxAPI = (() => {
     try {
         return require("max-api");
