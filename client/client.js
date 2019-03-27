@@ -396,11 +396,14 @@ function generateGenome(patch) {
             fitness: 0,
             validInlet: false,
             validOutlet: false,
-            arcs: []
+            arcs: [[]],
+            pos: []
         };
-        interpret(nodes, id, genome);
 
+        interpret(nodes, id, genome);
     }
+
+    
     show_population();
 
 }
@@ -437,35 +440,69 @@ function interpret(node, id, genome) {
         gen = genome;
 
     }
-
+    let possibleConnectsrc = 0;
+    let connectPointsrc = 0;
+    let possibleConnectdst = 0;
+    let connectPointdst = 0;
     for (let count = 0; count < genome_size; count++) {
 
         //getting each node specifically
         for (let k in node) {
             if (gen[count] == k) {
 
-                generateNode(world, node[k], k);
+                let newPos;
+                if(population[id].pos[count] == undefined){
+                    newPos = new THREE.Vector3(Math.random(), Math.random(), Math.random());
+                    population[id].pos[count] = newPos;
+                } else {
+                    newPos = population[id].pos[count];
+                }
+                generateNode(world, node[k], k, newPos);
                 let kind = node[k];
                 //ignore the props itself and get its children if you get a child get its kind
                 for (let i in kind) {
                     let type = kind[i];
+                    let overall;
                     if (type.kind) {
                         //this gives me the props of the overall object AKA positions and stuff
                     } else if (type._props) {
                         // this gives me what children it has attached like inlets and outlets, etc.
                         let props = type._props;
 
+
+         
+
                         //kind._props.kind + "." + type.kind
+
                         switch (props.kind) {
                             case "inlet":
                                 {
                                     population[id].validInlet = true;
+                                    if(Math.random() < 0.5){
+                                        if(possibleConnectsrc <= count){
+
+                                            console.log(possibleConnectsrc)
+
+                                            population[id].arcs[possibleConnectsrc][0].push(kind._props.kind + "." + Object.keys(type).join(''));
+                                            console.log(population[id].arcs[possibleConnectsrc][0])
+                                            possibleConnectsrc++;
+                                        }
+                                    }
                                     // src = population[id].arcs.push(kind._props.kind + "." + type.kind);
                                 }
                             case "outlet":
                                 {
+                                    
                                     population[id].validOutlet = true;
+                                    if(Math.random() < 0.5){
+                                        if(possibleConnectdst <= count){
+                                          
+                                            population[id].arcs[possibleConnectdst][1] = kind._props.kind + "." + Object.keys(type).join('');
+                                            possibleConnectdst++;
+                                        }
+                                    }
                                     // dst = population[id].arcs.push(kind._props.kind + "." + type.kind);
+                                    
                                 }
                         }
 
@@ -477,6 +514,20 @@ function interpret(node, id, genome) {
             }
         }
 
+    }
+    for (let arc = 0; arc <= possibleConnect; arc++) {
+        let src = population[id].arcs[arc][0];
+        let dst = population[id].arcs[arc][1];
+
+        if (!src || !dst) {
+            console.log(src)
+            console.log(dst)
+            console.error("arc with unmatchable paths")
+            continue;
+        }
+
+        let cable = new Cable(src, dst);
+        allCables.push(cable);
     }
 }
 
@@ -745,6 +796,11 @@ function onSpawn(event){
             }
             console.log("selectedStrand " + selectedStrand)
         }
+        if(controller.getButtonState('trigger') == true){
+            let p = population[selectedStrand];
+            p.fitness = 1;
+            regenerate();
+        }
     
     }
      
@@ -797,7 +853,7 @@ function generateLabel(message) {
     return text;
 }
 
-function generateNode(parent, node, name) {
+function generateNode(parent, node, name, pos) {
 
     if(node === undefined || name === undefined){
         let pos = controller1.getWorldPosition();
@@ -931,7 +987,11 @@ function generateNode(parent, node, name) {
             container.castShadow = true;
             container.receiveShadow = true;
 
-            if (props.pos){
+            if (pos){
+                container.position.x = pos.x;
+                container.position.y = pos.y;
+                container.position.z = pos.z;
+            } else if (props.pos){
                 container.position.fromArray(props.pos);
             } else{
                 container.position = parent.position.clone();
