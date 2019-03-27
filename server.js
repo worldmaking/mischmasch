@@ -43,10 +43,12 @@ if (MaxAPI) {
 	// 	scene = fs.readFile(__dirname + "/scene.json")
 	// 	MaxAPI.outlet("scene", scene);
 	// })
-    
+	
+	/* why is this necessary?
+
     (async () => {
         let patch = await MaxAPI.getDict("patch");
-        MaxAPI.post(JSON.stringify(patch), MaxAPI.INFO);
+        //MaxAPI.post(JSON.stringify(patch), MaxAPI.INFO);
         
         MaxAPI.setDict("patch", {
             a: 1, b: Math.random()
@@ -54,7 +56,9 @@ if (MaxAPI) {
         // updateDict(id, "ab.cd", value) 
         MaxAPI.outletBang();
 
-    })()
+		})()
+		
+		*/
 }
 
 //////////////////////// 
