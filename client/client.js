@@ -396,14 +396,15 @@ function generateGenome(patch) {
             fitness: 0,
             validInlet: false,
             validOutlet: false,
-            arcs: [[]],
+            arcs: [
+                []
+            ],
             pos: []
         };
 
         interpret(nodes, id, genome);
     }
 
-    
     show_population();
 
 }
@@ -440,71 +441,56 @@ function interpret(node, id, genome) {
         gen = genome;
 
     }
-    // let possibleConnectsrc = 0;
-    // let possibleConnectdst = 0;
+    
     for (let count = 0; count < genome_size; count++) {
 
-    //getting each node specifically
-    for (let k in node) {
-        if (gen[count] == k) {
+        //getting each node specifically
+        for (let k in node) {
+            if (gen[count] == k) {
 
-            let newPos;
-            if (population[id].pos[count] == undefined) {
-                newPos = new THREE.Vector3(Math.random(), Math.random(), Math.random());
-                population[id].pos[count] = newPos;
-            } else {
-                newPos = population[id].pos[count];
-            }
-            generateNode(world, node[k], k, newPos);
-            let kind = node[k];
-            //ignore the props itself and get its children if you get a child get its kind
-            for (let i in kind) {
-                let type = kind[i];
-                if (type.kind) {
-                    //this gives me the props of the overall object AKA positions and stuff
-                } else if (type._props) {
-                    // this gives me what children it has attached like inlets and outlets, etc.
-                    let props = type._props;
-
-                    //kind._props.kind + "." + type.kind
-                    switch (props.kind) {
-                        case "inlet":
-                            {
-                                population[id].validInlet = true;
-                               // if (Math.random() < 0.5) {
-                                // if (Object.keys(kind[i]).join('') !== "_props") {
-                                
-                                //     population[id].arcs[count][0].push(kind._props.kind + "." + Object.keys(kind[i]).join(''));
-
-                                    
-                                // }
-                               // }
-                                 src = population[id].arcs.push(kind._props.kind + "." + type.kind);
-
-                            }
-                        case "outlet":
-                            {
-                                population[id].validOutlet = true;
-                               // if (Math.random() < 0.5) {
-                                    // if (Object.keys(kind[i]).join('') !== "_props") {
-                                    //     population[id].arcs[count][1] = kind._props.kind + "." + Object.keys(kind[i]).join('');
-                                        
-                                    // }
-                                //}
-                                 dst = population[id].arcs.push(kind._props.kind + "." + type.kind);
-
-                            }
-                    }
-
+                let newPos;
+                if (population[id].pos[count] == undefined) {
+                    newPos = new THREE.Vector3(Math.random(), Math.random(), Math.random());
+                    population[id].pos[count] = newPos;
                 } else {
-                    // this should never actually be called but if it is just do nothing...
+                    newPos = population[id].pos[count];
                 }
+                generateNode(world, node[k], k, newPos);
+                let kind = node[k];
+                //ignore the props itself and get its children if you get a child get its kind
+                for (let i in kind) {
+                    let type = kind[i];
+                    if (type.kind) {
+                        //this gives me the props of the overall object AKA positions and stuff
+                    } else if (type._props) {
+                        // this gives me what children it has attached like inlets and outlets, etc.
+                        let props = type._props;
+
+                        //kind._props.kind + "." + type.kind
+                        switch (props.kind) {
+                            case "inlet":
+                                {
+                                    population[id].validInlet = true;
+                                    src = population[id].arcs.push(kind._props.kind + "." + type.kind);
+
+                                }
+                            case "outlet":
+                                {
+                                    population[id].validOutlet = true;
+                                    dst = population[id].arcs.push(kind._props.kind + "." + type.kind);
+
+                                }
+                        }
+
+                    } else {
+                        // this should never actually be called but if it is just do nothing...
+                    }
+                }
+
             }
-
         }
-    }
 
-}
+    }
     for (let arc of patch.arcs) {
         let src = allNodes[arc[0]];
         let dst = allNodes[arc[1]];
@@ -549,16 +535,10 @@ function regenerate() {
         }
         if (Math.random() < local_shuffle_rate) {
             // shuffle the genes around:
-            //genome = genome.join("");
-            // let gens = genome.split(" ");
-
             genome = genome.join(' ');
             genome = genome.split(' ');
 
             let shuffled = shuffle(genome);
-            // let num_to_shuffle = Math.random(genome.length-1) + 1;
-            // let shuffle_point = Math.random(genome.length - num_to_shuffle + 1);
-            // let shuffled = genome.splice(shuffle_point, num_to_shuffle);
 
             if (Math.random() < 0.5) {
                 shuffled = shuffled.reverse().join(' ');
