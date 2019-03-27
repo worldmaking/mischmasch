@@ -367,8 +367,8 @@ let nodeAlphabet = [];
 let population = [];
 let population_size = 10;
 let genome_size = 7;
-let mutation_rate = 0.05;
-let shuffle_rate = 0.2;
+let mutation_rate = 0.1;
+let shuffle_rate = 0.5;
 let patcher;
 let selectedStrand = 0;
 
@@ -409,18 +409,40 @@ function generateGenome(patch){
 function show_population() {
     clearWrite();
     for (let p of population) {
-        write(p.fitness + " " + p.genome)
+        let gen;
+        if(!isString(p.genome)){
+            gen = p.genome.join(" ");
+        } else {
+            gen = p.genome;
+        }
+        write(p.fitness + " " + gen)
 
     }
 }
+
+
+function isString (value) {
+    return typeof value === 'string' || value instanceof String;
+}
+
 
 function interpret(node, id, genome){
     //genome size to make sure to spawn multiples of the same if needed
     //let src;
     //let dst;
+    let gen;
+    if(isString(genome)){
+        gen = genome.split(' ');
+       
+    } else {
+        // genome = genome.join("");
+        // gen = genome.split(' ');
+        gen = genome;
+ 
+    }
+
      for(let count=0; count < genome_size; count++){
 
-         let gen = genome.split(' ');
          //getting each node specifically
         for (let k in node) {
             if(gen[count] == k) {
@@ -455,7 +477,7 @@ function interpret(node, id, genome){
 
             }
         }
-      //  console.log(gen);
+      
 
     }
 }
@@ -466,8 +488,10 @@ function regenerate() {
     })
 
     for (let id=0; id<population_size; id++) {
-      let child = population[id];
+      let child = population[id];  
+
       let parent = population[Math.floor(Math.random(id))];
+
       let local_mutation_rate = mutation_rate * (1-child.fitness);
       let local_shuffle_rate = shuffle_rate * (1-child.fitness);
       
@@ -476,39 +500,74 @@ function regenerate() {
         if (Math.random() < local_mutation_rate) {
           genome[i] = nodeAlphabet[Math.floor(Math.random()*nodeAlphabet.length)]
         } else {
-          genome[i] = parent.genome.split(",")[i];
+           if(isString(parent.genome)){
+            parent.genome = parent.genome.split(' ');
+           }
+            genome[i] = parent.genome[i];
 
         }
-      }
-    //   if (Math.random() < local_shuffle_rate) {
-    //     // shuffle the genes around:
-    //     //genome = genome.join("");
-    //     // let gens = genome.split(" ");
-    //     let shuffled = shuffle(genome);
-    //     // let num_to_shuffle = Math.random(genome.length-1) + 1;
-    //     // let shuffle_point = Math.random(genome.length - num_to_shuffle + 1);
-    //     // let shuffled = genome.splice(shuffle_point, num_to_shuffle);
-       
-    //     if (Math.random() < 0.5) {
-    //       shuffled = shuffled.split(',').reverse().join('');
-    //     }
-    //     if (Math.random() < 0.5) {
-    //       genome = genome.concat(shuffled);
-    //       genome = genome.slice(0, genome_size);
-    //     } else {
-    //       genome = shuffled.concat(genome);
-    //       genome = genome.slice(0, genome_size);
-    //     }
-    //   }
 
-      child.genome = genome.join("");
+      }
+      if (Math.random() < local_shuffle_rate) {
+        // shuffle the genes around:
+        //genome = genome.join("");
+        // let gens = genome.split(" ");
+   
+        genome = genome.join(' ');
+        genome = genome.split(' ');
+        
+        let shuffled = shuffle(genome);
+        // let num_to_shuffle = Math.random(genome.length-1) + 1;
+        // let shuffle_point = Math.random(genome.length - num_to_shuffle + 1);
+        // let shuffled = genome.splice(shuffle_point, num_to_shuffle);
+       
+        if (Math.random() < 0.5) {
+          shuffled = shuffled.reverse().join(' ');
+        }
+        if (Math.random() < 0.5) {
+        // shuffled = shuffled.join(" ");
+        if(!isString(shuffled)){
+            shuffled = shuffled.join(" ");
+           } else if(isString(shuffled)) {
+            shuffled = shuffled.split(" ");
+            shuffled = shuffled.join(" ");
+           }
+        if(!isString(genome)){
+            genome = genome.join(" ");
+           } else if(isString(genome)) {
+            genome = genome.split(" "); 
+            genome = genome.join(" ");
+           }
+           genome = shuffled + " " + genome;
+         // genome = genome.concat(shuffled);
+        } else {
+            if(!isString(shuffled)){
+                shuffled = shuffled.join(" ");
+               } else if(isString(shuffled)) {
+                shuffled = shuffled.split(" ");
+                shuffled = shuffled.join(" ");
+               }
+            if(!isString(genome)){
+                genome = genome.join(" ");
+               } else if(isString(genome)) {
+                genome = genome.split(" "); 
+                genome = genome.join(" ");
+               }
+            genome = genome + " " + shuffled;
+         // genome = shuffled.concat(genome);
+        }
+      }
+      //genome = genome.join(" ");
+      child.genome = genome;
       child.fitness *= 0.5;
 
       clearScene();
 
-        genome = genome.join("");
+        genome = genome;
+
         interpret(patcher.nodes, id, genome);
     }
+    //console.log(population)
     show_population();
   }
 
@@ -519,6 +578,7 @@ function regenerate() {
         x = a[i];
         a[i] = a[j];
         a[j] = x;
+        
     }
     return a;
 }
