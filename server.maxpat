@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 498.0, -1001.0, 875.0, 692.0 ],
+		"rect" : [ -105.0, -1001.0, 875.0, 496.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -45,8 +45,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 411.0, 300.0, 300.0, 22.0 ],
-					"presentation_linecount" : 3,
-					"text" : "read \"Macintosh HD:/Users/mp/msvr/scene.json\""
+					"text" : "clear, read \"Macintosh HD:/Users/mp/msvr/scene.json\""
 				}
 
 			}
@@ -250,7 +249,7 @@
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 373.0, 818.0, 145.0, 22.0 ],
 					"saved_object_attributes" : 					{
-						"filename" : "patch2scene.js",
+						"filename" : "patch2scene",
 						"parameter_enable" : 0
 					}
 ,
@@ -422,8 +421,8 @@
 					"id" : "obj-42",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
-					"numoutlets" : 5,
-					"outlettype" : [ "", "", "", "", "" ],
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
 					"patching_rect" : [ 129.0, 788.0, 101.0, 22.0 ],
 					"saved_object_attributes" : 					{
 						"filename" : "patchdescribe.js",
@@ -597,8 +596,8 @@
 									"id" : "obj-3",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
-									"numoutlets" : 5,
-									"outlettype" : [ "", "", "", "", "" ],
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
 									"patching_rect" : [ 273.0, 331.0, 217.0, 22.0 ],
 									"saved_object_attributes" : 									{
 										"filename" : "patchdescribe.js",
@@ -724,13 +723,6 @@
 									"destination" : [ "obj-15", 1 ],
 									"order" : 0,
 									"source" : [ "obj-16", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-5", 0 ],
-									"source" : [ "obj-3", 1 ]
 								}
 
 							}
@@ -1484,6 +1476,19 @@
 				}
 
 			}
+, 			{
+				"box" : 				{
+					"id" : "obj-41",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "signal" ],
+					"patching_rect" : [ 0.0, 0.0, 100.0, 22.0 ],
+					"text" : "gen~ noise",
+					"varname" : "x"
+				}
+
+			}
  ],
 		"lines" : [ 			{
 				"patchline" : 				{
@@ -1685,6 +1690,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-33", 0 ],
 					"source" : [ "obj-32", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-73", 0 ],
+					"source" : [ "obj-33", 0 ]
 				}
 
 			}
@@ -1923,6 +1935,13 @@
 			}
  ],
 		"dependency_cache" : [ 			{
+				"name" : "noise.gendsp",
+				"bootpath" : "~/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
 				"name" : "n4m.monitor.maxpat",
 				"bootpath" : "C74:/packages/Node For Max/patchers/debug-monitor",
 				"type" : "JSON",
@@ -1942,20 +1961,6 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "noise.gendsp",
-				"bootpath" : "~/msvr",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "patchdescribe.js",
-				"bootpath" : "~/dispersion-lab/sound/synthesis/waterModule/lib/code",
-				"patcherrelativepath" : "../dispersion-lab/sound/synthesis/waterModule/lib/code",
-				"type" : "TEXT",
-				"implicit" : 1
-			}
-, 			{
 				"name" : "patch2scene.js",
 				"bootpath" : "~/msvr",
 				"patcherrelativepath" : ".",
@@ -1971,6 +1976,41 @@
 			}
 , 			{
 				"name" : "world.gendsp",
+				"bootpath" : "~/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "lfo.gendsp",
+				"bootpath" : "~/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "dualvco.gendsp",
+				"bootpath" : "~/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "vca.gendsp",
+				"bootpath" : "~/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "comparator.gendsp",
+				"bootpath" : "~/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "outs.gendsp",
 				"bootpath" : "~/msvr",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",

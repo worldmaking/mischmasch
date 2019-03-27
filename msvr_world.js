@@ -2,6 +2,16 @@
 inlets = 2
 	// get a reference to "thegen"'s embedded gen patcher:
 var varnameCount = 0
+
+// store inlet&outlet indexes per node
+var inletsTable = new Array();
+var outletsTable = new Array();
+
+//store varnames per node
+var varnamesTable = new Array();
+
+var object = {};
+counter = 1;
 function read(file){
 	// if no argument is provided to dict then a random/unique name will be assigned
 	var x = new Dict('patch');
@@ -17,27 +27,79 @@ function read(file){
 	scene = JSON.parse(xjson)
 	outlet(0, 'bang')
 	var arcs = JSON.stringify(scene.arcs)
-	post("\n\narcs", arcs)
+	//post("\n\narcs", arcs)
 	var nodes = JSON.stringify(x)
-	post("\n\nnodes", nodes)
+	//post("\n\nnodes", nodes)
 	var varnames = new Array()
+	//post(arcs.length,"\n\n")
+	//var a = ["a", "b", "c"];
 	
 	
 	Object.keys(scene.nodes).forEach(function(key) {
 		
+
 		varnameCount++
 		
-	var nodeName = key;
-	var _props = scene.nodes[key]._props 
-	var kind = _props.kind
-	var pos = _props.pos
-  	post(nodeName, kind, pos[0], pos[1], pos[2]);
-	//var newModule = 
-	varnames.push(gen_patcher.newdefault([pos[0] * 100, pos[1] * 100, "gen", "@gen", kind]))
-})
-post(varnames)
-}
+		var nodeName = key;
+		var _props = scene.nodes[key]._props 
+				var kind = _props.kind
+						var pos = _props.pos
 
+				
+		// generate the object
+  	//	post(nodeName, kind, pos[0], pos[1], pos[2]);
+		var newModule = gen_patcher.newdefault([pos[0] * 100, pos[1] * 100, "gen", "@gen", kind])
+		newModule.varname = nodeName
+		
+		var unit = scene.nodes[key]
+		// get all the inlets and outlets (and eventually the UI params)
+		Object.keys(unit).forEach(function(key) {
+			
+if(JSON.stringify(unit[key]._props) !== undefined){
+	kind = JSON.stringify(unit[key]._props.kind)
+	index = JSON.stringify(unit[key]._props.index)
+
+	post("\n\n",kind)
+			if(kind === "inlet"){
+							//object[nodeName] = _props.index
+			inletsTable.push({nodeName:{kind:index}})
+				post("test", inletsTable)
+
+				
+				}
+
+			post("\n\ninlet")
+
+			
+			
+			
+			
+	
+	}
+			//newKind = unit[key]._props.kind
+			//post(JSON.stringify(newKind))
+
+			})
+		//if(scene.nodes[key]._props.kind)
+		//post("inlet",newInlet)
+		//post(JSON.stringify(_props))
+
+		post(nodeName[_props])
+		
+	//	post(kind)
+
+		//post(newModule)
+		//varnames.push()
+		//	post(inletsTable)
+
+	})
+	for (index = 0; index < scene.arcs.length; ++index) {
+    	post(scene.arcs[index], "\n");
+		}
+	
+
+
+}
 function clear(){
 		gen_patcher = this.patcher.getnamed("world").subpatcher();
 
@@ -49,6 +111,8 @@ function module(module){
 
 
 	var newModule = gen_patcher.newdefault([20, 120, "gen", "@gen", module]);
+		newModule.varname = module
+
 	
 	}
 	
