@@ -102,7 +102,8 @@ let tempMatrix = new THREE.Matrix4();
 let point = new THREE.Vector3();
 let delta;
 
-
+let tempPatch;
+let spawn = false;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // BOOT SEQUENCE
@@ -466,13 +467,29 @@ function onSpawn(event){
     let controller = event.target;
     if(controller.getButtonState('thumbpad') === undefined) return;
     if(controller.getButtonState('trigger') == false){
-        //generateNode(world); 
+        
+        let rand = [];
+        for (let k in tempPatch.nodes) {
+            rand.push(k);
+        }
+        spawn = true;
+        let nodeNum = randomIntFromInterval(0, rand.length -1);
+        generateNode(world, 
+            tempPatch.nodes[rand[nodeNum]], 
+            rand[nodeNum]); 
+
+            //console.log(randomIntFromInterval(0, rand.length))
+    
         // request scene:
         //sock.send({ cmd: "get_scene", date: Date.now() });
     }
      
 }
 
+function randomIntFromInterval(min,max) // min and max included
+{
+    return Math.floor(Math.random()*(max-min+1)+min);
+}
 
 function getIntersections(controller, x, y, z) {
     tempMatrix.identity().extractRotation(controller.matrixWorld);
@@ -654,7 +671,19 @@ function generateNode(parent, node, name) {
             container.castShadow = true;
             container.receiveShadow = true;
 
-            if (props.pos){
+            if(spawn === true){
+                let pos = controller1.getWorldPosition();
+                let quat = new THREE.Quaternion();
+                controller1.getWorldQuaternion(quat);
+                let tilt = new THREE.Quaternion();
+                tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
+                quat.multiply(tilt);
+                let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
+                pos.add(rel.applyQuaternion(quat));
+                let arr = [pos.x, pos.y, pos.z];
+                container.position.fromArray(arr);
+                spawn = false;
+            } else if (props.pos){
                 container.position.fromArray(props.pos);
             } else{
                 container.position = parent.position.clone();
@@ -698,6 +727,7 @@ function generateScene(patch) {
 
     clearScene();
     
+    tempPatch = patch;
 
     let nodes = patch.nodes;
     for (let k in nodes) {
