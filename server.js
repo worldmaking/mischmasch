@@ -13,6 +13,9 @@ const express = require('express');
 const WebSocket = require('ws');
 const { vec2, vec3, vec4, quat, mat3, mat4 } = require("gl-matrix");
 
+const got = require("./got/got")
+console.log(got)
+
 const MaxAPI = (() => {
     try {
         return require("max-api");
@@ -40,10 +43,12 @@ if (MaxAPI) {
 	// 	scene = fs.readFile(__dirname + "/scene.json")
 	// 	MaxAPI.outlet("scene", scene);
 	// })
-    
+	
+	/* why is this necessary?
+
     (async () => {
         let patch = await MaxAPI.getDict("patch");
-        MaxAPI.post(JSON.stringify(patch), MaxAPI.INFO);
+        //MaxAPI.post(JSON.stringify(patch), MaxAPI.INFO);
         
         MaxAPI.setDict("patch", {
             a: 1, b: Math.random()
@@ -51,7 +56,9 @@ if (MaxAPI) {
         // updateDict(id, "ab.cd", value) 
         MaxAPI.outletBang();
 
-    })()
+		})()
+		
+		*/
 }
 
 //////////////////////// 
