@@ -62,6 +62,9 @@ large_knob_geometry.computeBoundingBox();
 let plug_geometry = new THREE.CylinderGeometry( CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE, 8 );
 plug_geometry.computeBoundingBox();
 
+let n_switch_geometry = new THREE.BoxGeometry( SMALL_KNOB_RADIUS + 0.1, SMALL_KNOB_RADIUS, SMALL_KNOB_HEIGHT, 8 );
+n_switch_geometry.computeBoundingBox();
+
 let generic_geometry = new THREE.BoxBufferGeometry(0.4, 0.2, 0.05);
 generic_geometry.translate(generic_geometry.parameters.width/2, -generic_geometry.parameters.height/2, -generic_geometry.parameters.depth/2);
 
@@ -104,6 +107,10 @@ let delta;
 
 let tempPatch;
 let spawn = false;
+
+let subObjCount = 0;
+let subInletCount = 0;
+let subOutletCount = 0;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // BOOT SEQUENCE
@@ -526,9 +533,15 @@ function cleanIntersected() {
         object.material.emissive.r = 0;
     }
 }
-        
-function generateLabel(message) {
-    let shapes = loadedFont.generateShapes(message, LABEL_SIZE);
+          
+function generateLabel(message, label_size) {
+    let shapes;
+    if(label_size !== undefined){
+        shapes = loadedFont.generateShapes(message, label_size);
+    } else {
+        shapes = loadedFont.generateShapes(message, LABEL_SIZE);
+    }
+
     let shapeGeometry = new THREE.ShapeBufferGeometry(shapes);
     shapeGeometry.computeBoundingBox();
 
@@ -581,6 +594,7 @@ function generateNode(parent, node, name) {
     });
     let inlet_material = generic_material
     let outlet_material = generic_material
+    let n_switch_material = generic_material
     
     
 
@@ -594,8 +608,9 @@ function generateNode(parent, node, name) {
             container = new THREE.Mesh(large_knob_geometry, knob_material);
             container.castShadow = true;
             container.receiveShadow = true;
+            //generic_geometry.parameters.width
             container.position.fromArray([
-                generic_geometry.parameters.width/2, 
+                (subObjCount / 10) + .065, 
                 -generic_geometry.parameters.height/2 - LARGE_KNOB_HEIGHT/2, 
                 generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
             //Takes Radians
@@ -605,6 +620,7 @@ function generateNode(parent, node, name) {
             // label.position.z += 0.01;
             // container.add(label);
             container.userData.turnable = true;
+            subObjCount++;
             break;
         }
         case "small_knob": {
@@ -612,7 +628,7 @@ function generateNode(parent, node, name) {
             container.castShadow = true;
             container.receiveShadow = true;
             container.position.fromArray([
-                generic_geometry.parameters.width/2, 
+                (subObjCount / 12)+ 0.075, 
                 -generic_geometry.parameters.height/2 - SMALL_KNOB_HEIGHT/2, 
                 generic_geometry.parameters.depth/2 - SMALL_KNOB_HEIGHT]);
             container.rotation.x = 1.5708;
@@ -621,7 +637,7 @@ function generateNode(parent, node, name) {
             // label.position.z += 0.01;
             // container.add(label);
             container.userData.turnable = true;
-
+            subObjCount++;
             break;
         }
         case "outlet": {
@@ -629,7 +645,7 @@ function generateNode(parent, node, name) {
             container.castShadow = true;
             container.receiveShadow = true;
             container.position.fromArray([
-                NLET_RADIUS, 
+                NLET_RADIUS + (subOutletCount / 10), 
                 -generic_geometry.parameters.height - NLET_HEIGHT/2, 
                 -NLET_RADIUS]);
             // let label = generateLabel(UI_Type);
@@ -637,7 +653,7 @@ function generateNode(parent, node, name) {
             // label.position.z += 0.01;
             // container.add(label);
             //container.userData.moveable = true;
-
+            subOutletCount++;
             break;
         }
         case "inlet": {
@@ -645,7 +661,7 @@ function generateNode(parent, node, name) {
             container.castShadow = true;
             container.receiveShadow = true;
             container.position.fromArray([
-                NLET_RADIUS, 
+                NLET_RADIUS + (subInletCount / 10), 
                 NLET_HEIGHT/2, 
                 -NLET_RADIUS]);
         //    let label = generateLabel(parameter);
@@ -653,6 +669,23 @@ function generateNode(parent, node, name) {
         //     label.position.z += 0.01;
         //     container.add(label);
             // container.userData.moveable = true;
+            subInletCount++;
+            break;
+        }
+        case "n_switch": {
+            container = new THREE.Mesh(n_switch_geometry, n_switch_material);
+            container.castShadow = true;
+            container.receiveShadow = true;
+            container.position.fromArray([
+                NLET_RADIUS + (subInletCount / 10), 
+                NLET_HEIGHT/2, 
+                -NLET_RADIUS]);
+            
+            let label = generateLabel(props.kind, .01);
+            label.position.y =  0;
+            label.position.z = 0;
+            container.add(label);
+
             break;
         }
         case "group": {
@@ -661,7 +694,7 @@ function generateNode(parent, node, name) {
             container.receiveShadow = true;
             container.position.fromArray(props.pos);
             container.userData.moveable = true;
-        
+            
             break;
         }
         default: {
@@ -692,7 +725,10 @@ function generateNode(parent, node, name) {
             label.position.y = -LABEL_SIZE;
             label.position.z += 0.01;
             container.add(label);
-            container.userData.moveable = true;    
+            container.userData.moveable = true; 
+            subObjCount = 0;   
+            subInletCount = 0;
+            subOutletCount = 0;
         }
     
     }
