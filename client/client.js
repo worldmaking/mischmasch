@@ -240,13 +240,13 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-
-
+let once =true;
 class Cable {
     constructor(src, dst) {
         this.src = src;
         this.dst = dst;
-
+     
+   
         let inlet_material = new THREE.MeshStandardMaterial({
             color: 0x00ff00,
             roughness: 0.7,
@@ -259,7 +259,7 @@ class Cable {
             
         });
         let outlet_material = new THREE.MeshStandardMaterial({
-            color: 0x00ff00,
+            color: 0xff0000,
             roughness: 0.7,
             metalness: 0.0,
             opacity: 0.3,
@@ -307,6 +307,10 @@ class Cable {
         // TODO: this shouldn't be needed
         curve.mesh.frustumCulled = false;
         
+        if(once){
+            console.log(src)
+            once = false;
+        }
         this.update();
         
         curve.mesh.userData.moveable = true;
@@ -323,6 +327,8 @@ class Cable {
                 .applyQuaternion(this.srcCtrlPt.quaternion)
                 .add(this.positions[0]);
             this.srcCtrlPt.position.copy(this.positions[1]);
+            //Color Set
+            this.curve.mesh.material.color.copy(this.src.material.color);
         } else {
             let q = new THREE.Quaternion();
             this.srcCtrlPt.getWorldQuaternion(q);
@@ -331,7 +337,10 @@ class Cable {
             this.positions[0]
                 .set(0, (NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
                 .applyQuaternion(q)
-                .add(this.positions[1])
+                .add(this.positions[1]);
+            //Reset Color
+             this.curve.mesh.material.color.setRGB(0,1,0);
+
         }
 
         if (this.dst) {
@@ -453,6 +462,9 @@ function onSelectEnd(event) {
                 if (o.userData.kind == "outlet") {
                     // we have a hit! disconnect
                     object.userData.cable.src = o;
+                
+                  // object.userData.cable.curve.mesh.material.color = o.material.color;
+                    
                 }
             }
     
