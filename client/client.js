@@ -62,10 +62,13 @@ large_knob_geometry.computeBoundingBox();
 let plug_geometry = new THREE.CylinderGeometry( CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE, 8 );
 plug_geometry.computeBoundingBox();
 
-let n_switch_geometry = new THREE.BoxGeometry( SMALL_KNOB_RADIUS + 0.1, SMALL_KNOB_RADIUS, SMALL_KNOB_HEIGHT, 8 );
+let n_switch_geometry = new THREE.BoxGeometry( LARGE_KNOB_RADIUS + 0.03, LARGE_KNOB_RADIUS  + 0.03, LARGE_KNOB_HEIGHT, 8 );
 n_switch_geometry.computeBoundingBox();
 
-let generic_geometry = new THREE.BoxBufferGeometry(0.4, 0.2, 0.05);
+let n_switch_slider_geometry = new THREE.BoxGeometry( NLET_HEIGHT + .01 , NLET_HEIGHT+ .01 , NLET_HEIGHT, 8 );
+n_switch_slider_geometry.computeBoundingBox();
+
+let generic_geometry = new THREE.BoxBufferGeometry(0.6, 0.2, 0.05);
 generic_geometry.translate(generic_geometry.parameters.width/2, -generic_geometry.parameters.height/2, -generic_geometry.parameters.depth/2);
 
 let label_material = new THREE.MeshStandardMaterial({
@@ -551,7 +554,6 @@ function generateLabel(message, label_size) {
 }
 
 function generateNode(parent, node, name) {
-
     if(node === undefined || name === undefined){
         let pos = controller1.getWorldPosition();
         let quat = new THREE.Quaternion();
@@ -610,15 +612,18 @@ function generateNode(parent, node, name) {
             container.receiveShadow = true;
             //generic_geometry.parameters.width
             container.position.fromArray([
-                (subObjCount / 10) + .065, 
+                (subObjCount / 8) + .065, 
                 -generic_geometry.parameters.height/2 - LARGE_KNOB_HEIGHT/2, 
                 generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
             //Takes Radians
             container.rotation.x = 1.5708;
-            // let label = generateLabel(parameter);
-            // label.position.y = -LABEL_SIZE;
-            // label.position.z += 0.01;
-            // container.add(label);
+           
+            let label = generateLabel(parent.userData.name, LARGE_KNOB_HEIGHT/2);
+            label.position.y = 0.01;
+            label.position.x = -LARGE_KNOB_RADIUS /2;
+            label.rotation.x = -1.5708;
+            container.add(label);
+
             container.userData.turnable = true;
             subObjCount++;
             break;
@@ -628,14 +633,17 @@ function generateNode(parent, node, name) {
             container.castShadow = true;
             container.receiveShadow = true;
             container.position.fromArray([
-                (subObjCount / 12)+ 0.075, 
+                (subObjCount / 8) + .065, 
                 -generic_geometry.parameters.height/2 - SMALL_KNOB_HEIGHT/2, 
                 generic_geometry.parameters.depth/2 - SMALL_KNOB_HEIGHT]);
             container.rotation.x = 1.5708;
-            // let label = generateLabel(parameter);
-            // label.position.y = -LABEL_SIZE;
-            // label.position.z += 0.01;
-            // container.add(label);
+            //Label
+            let label = generateLabel(parent.userData.name, SMALL_KNOB_HEIGHT/2.7);
+            label.position.y = 0.01;
+            label.position.x = -SMALL_KNOB_RADIUS /2;
+            label.rotation.x = -1.5708;
+            container.add(label);
+
             container.userData.turnable = true;
             subObjCount++;
             break;
@@ -648,10 +656,13 @@ function generateNode(parent, node, name) {
                 NLET_RADIUS + (subOutletCount / 10), 
                 -generic_geometry.parameters.height - NLET_HEIGHT/2, 
                 -NLET_RADIUS]);
-            // let label = generateLabel(UI_Type);
-            // label.position.y = -LABEL_SIZE;
-            // label.position.z += 0.01;
-            // container.add(label);
+           
+            let label = generateLabel(parent.userData.name, NLET_HEIGHT);
+            label.position.y = -0.01;
+            label.position.x = -NLET_RADIUS /2;
+            label.rotation.x = 1.5708;
+            container.add(label);
+                
             //container.userData.moveable = true;
             subOutletCount++;
             break;
@@ -664,10 +675,13 @@ function generateNode(parent, node, name) {
                 NLET_RADIUS + (subInletCount / 10), 
                 NLET_HEIGHT/2, 
                 -NLET_RADIUS]);
-        //    let label = generateLabel(parameter);
-        //     label.position.y = -LABEL_SIZE;
-        //     label.position.z += 0.01;
-        //     container.add(label);
+    
+            let label = generateLabel(parent.userData.name, NLET_HEIGHT);
+            label.position.y = 0.01;
+            label.position.x = -NLET_RADIUS /2;
+            label.rotation.x = -1.5708;
+            container.add(label);
+            
             // container.userData.moveable = true;
             subInletCount++;
             break;
@@ -677,15 +691,40 @@ function generateNode(parent, node, name) {
             container.castShadow = true;
             container.receiveShadow = true;
             container.position.fromArray([
-                NLET_RADIUS + (subInletCount / 10), 
-                NLET_HEIGHT/2, 
-                -NLET_RADIUS]);
+                (subObjCount / 8) + .065,
+                -generic_geometry.parameters.height/2 - LARGE_KNOB_HEIGHT/2, 
+                generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
             
-            let label = generateLabel(props.kind, .01);
-            label.position.y =  0;
-            label.position.z = 0;
-            container.add(label);
+                //Draw N_SWTICH Label name itself
+            // let label = generateLabel(parent.userData.name, .01);
+            // label.position.y =  0;
+            // label.position.z = 0;
+            // container.add(label);
+            if(props.throws !== undefined){
+                let y = -container.position.y / 2;
+                for(let l =0; l < props.throws.length; l++){
+                    let labelN = generateLabel(props.throws[l], .01);
+                    labelN.position.y = y - container.geometry.parameters.height / 3.5;
+                    y = labelN.position.y;
+                    labelN.position.z = 0;
+                    labelN.position.x = -0.01;
+                    
+                    if(props.value !== undefined && props.value === l){
+                        n_switch_slider = new THREE.Mesh(n_switch_slider_geometry, inlet_material);
+                        n_switch_slider.castShadow = true;
+                        n_switch_slider.receiveShadow = true;
+                        n_switch_slider.position.fromArray([
+                            labelN.position.x + -0.02,
+                            labelN.position.y,
+                            labelN.position.z+ -0.005,
+                        ]);
+                        container.add(n_switch_slider);
+                    }
+                    container.add(labelN);
+                }
 
+            }
+            subObjCount++;
             break;
         }
         case "group": {
