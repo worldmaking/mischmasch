@@ -118,7 +118,9 @@ function read(file){
 			gen_patcher.message("script", "connect", nodeName, 0, "dac_left", 0);
 			gen_patcher.message("script", "connect", nodeName, 1, "dac_right", 0);
 		
-		}
+		} else if (kind === "param"){
+			
+			} else {
 		
 		
 		//post(kind)
@@ -164,10 +166,11 @@ function read(file){
 			object[nodeName] = UI_obj;
 
 		}
-
+	
 
 			})
 counter++
+}
 
 	})
 	//post(JSON.stringify(object))
