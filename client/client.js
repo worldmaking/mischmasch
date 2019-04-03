@@ -568,14 +568,12 @@ function generateNode(parent, node, name) {
         let tilt = new THREE.Quaternion();
         tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
         quat.multiply(tilt);
-        let rel = new THREE.Vector3(-generic_geometry.parameters.width / 2, generic_geometry.parameters.height * 1.2, -.1);
+        let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
         pos.add(rel.applyQuaternion(quat));
-        node = {
-            "_props": {
-                "kind": "blank",
+        node = { 
+                "_props": { "kind": "blank", 
                 "pos": [pos.x, pos.y, pos.z],
-                "orient": [quat.x, quat.y, quat.z, quat.w]
-            }
+                "orient": [quat.x, quat.y, quat.z, quat.w]}      
         }
     }
 
@@ -589,7 +587,7 @@ function generateNode(parent, node, name) {
         side: THREE.DoubleSide,
         depthWrite: false,
         blending: THREE.AdditiveBlending
-
+        
     });
 
     let knob_material = new THREE.MeshStandardMaterial({
@@ -601,7 +599,7 @@ function generateNode(parent, node, name) {
         side: THREE.DoubleSide,
         depthWrite: false,
         blending: THREE.AdditiveBlending
-
+        
     });
     let inlet_material = generic_material
     let outlet_material = generic_material
@@ -766,9 +764,8 @@ function generateNode(parent, node, name) {
                 spawn = false;
             } else if (props.pos){
                 container.position.fromArray(props.pos);
-                container.userData.moveable = true;
-
-                break;
+            } else{
+                container.position = parent.position.clone();
             }
             let label = generateLabel(props.kind);
             label.position.y = -LABEL_SIZE;
@@ -802,12 +799,11 @@ function generateNode(parent, node, name) {
 
     for (let k in node) {
         if (k == "_props") continue;
-
+            
         generateNode(container, node[k], k);
     }
 
 }
-
 function generateScene(patch) {
 
     clearScene();
