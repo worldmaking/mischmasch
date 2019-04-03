@@ -157,13 +157,16 @@ function send_all_clients(msg, ignore) {
 }
 
 // whenever a client connects to this websocket:
+let sessionId = 0;
 wss.on('connection', function(ws, req) {
 	console.log("server received a connection");
 	console.log("server has "+wss.clients.size+" connected clients");
 	
+	const id = ++sessionId;
 	const location = url.parse(req.url, true);
 	// You might use location.query.access_token to authenticate or share sessions
 	// or req.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
+	console.log(id)
 	
 	ws.on('error', function (e) {
 		if (e.message === "read ECONNRESET") {
@@ -190,7 +193,7 @@ wss.on('connection', function(ws, req) {
 
 		} else {
 			try {
-				handlemessage(JSON.parse(e), ws);
+				handlemessage(JSON.parse(e), ws, id);
 			} catch (e) {
 				console.log('bad JSON: ', e);
 			}
@@ -208,7 +211,7 @@ wss.on('connection', function(ws, req) {
     //send_all_clients("hi")
 });
 
-function handlemessage(msg, sock) {
+function handlemessage(msg, sock, id) {
 	switch (msg.cmd) {
 		case "get_scene": {
 			demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
@@ -216,6 +219,7 @@ function handlemessage(msg, sock) {
 			sock.send(JSON.stringify({
 				cmd: "patch",
 				date: Date.now(),
+				id: id,
 				value: demo_scene
 			}));
 		} break;
@@ -223,6 +227,17 @@ function handlemessage(msg, sock) {
 			// // Example sending some greetings:
 			let scenestr = JSON.stringify(msg.scene, null, "\t");
 			fs.writeFileSync(scenefile, scenestr, "utf-8");
+		} break;
+		case "user_pose": {
+			//console.log(JSON.stringify(msg.pose))
+			// broadcast this data... 
+			send_all_clients(JSON.stringify(
+				{
+				cmd: "user_pose",
+				date: Date.now(),
+				pose: msg.pose
+			})
+			);
 		} break;
 		default: console.log("received JSON", msg, typeof msg);
 	}

@@ -71,6 +71,9 @@ n_switch_slider_geometry.computeBoundingBox();
 let generic_geometry = new THREE.BoxBufferGeometry(0.6, 0.2, 0.05);
 generic_geometry.translate(generic_geometry.parameters.width/2, -generic_geometry.parameters.height/2, -generic_geometry.parameters.depth/2);
 
+let op_geometry = new THREE.BoxBufferGeometry(0.2, 0.2, 0.05);
+op_geometry.translate(op_geometry.parameters.width/2, -op_geometry.parameters.height/2, -op_geometry.parameters.depth/2);
+
 let label_material = new THREE.MeshStandardMaterial({
     color: 0x000000,
     transparent: true,
@@ -92,14 +95,34 @@ let world = new THREE.Group();
 //world.rotateY(-Math.PI/2.)
 
 let controller1, controller2;
-
+let controllerMesh;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // OTHER GLOBALS
 //////////////////////////////////////////////////////////////////////////////////////////
 
+function createUserPose(id=0) {
+    return {
+        id: id,
+        head: {
+            pos: new THREE.Vector3(),
+            orient: new THREE.Quaternion()
+        },
+        controller1: {
+            pos: new THREE.Vector3(),
+            orient: new THREE.Quaternion()
+        },
+        controller2: {
+            pos: new THREE.Vector3(),
+            orient: new THREE.Quaternion()
+        },
+    }
+}
 
 let sock
+let userPose = createUserPose();
+let otherUsers = {};
+
 
 let allNodes = {};
 let allCables = [];
@@ -189,7 +212,7 @@ async function init() {
     document.addEventListener("keyup", onKeyPress);
 
     {
-        let controllerMesh = loadedController.children[0];
+        controllerMesh = loadedController.children[0];
         controllerMesh.material.map = viveTexturePNG;
         controllerMesh.material.specularMap = viveSpecularPNG;
         controllerMesh.castShadow = true;
@@ -205,10 +228,21 @@ async function init() {
         controller2.add(controllerMesh.clone());
         // pivot.material = pivot.material.clone();
 
+        //Extra Controllers
+        // let controllers = controllerMesh.clone();
+        // controllers.position.fromArray([
+        //     1.0056755443927932,
+        //     1.5397452991727987,
+        //     0.054924342380011204
+        // ]);
+        // scene.add(controllers);
     }
-
+    
     controller1.userData.thumbpadDX = 0;
     controller1.userData.thumbpadDY = 0;
+
+
+
 
     // controllers geometry
     let geometry = new THREE.BufferGeometry().setFromPoints([
@@ -305,7 +339,7 @@ class Cable {
         //curve.curveType = 'centripetal'; 
         curve.curveType = 'chordal';
         curve.mesh = new THREE.Line(this.geometry, new THREE.LineBasicMaterial({
-            color: 0x00ff00,
+            color: 0xD3D3D3,
             opacity: 1,
             linewidth: 2
         }));
@@ -342,8 +376,7 @@ class Cable {
                 .applyQuaternion(q)
                 .add(this.positions[1]);
             //Reset Color
-             this.curve.mesh.material.color.setRGB(0,1,0);
-
+             this.curve.mesh.material.color.setRGB(211,211,211);
         }
 
         if (this.dst) {
@@ -376,6 +409,7 @@ class Cable {
             position.setXYZ(i, point.x, point.y, point.z);
         }
         position.needsUpdate = true;
+
         //this.geometry.computeBoundingBox();
     }
 }
@@ -754,11 +788,37 @@ function generateNode(parent, node, name) {
             break;
         }
         default: {
+            let labelName;
+            if(props.kind.substring(0,3) == "op_") {
+                // use a square shape
+                // trim "op_" from the label
+                container = new THREE.Mesh(op_geometry, generic_material);
+                container.castShadow = true;
+                container.receiveShadow = true;
+                labelName = props.kind.substring(3);
 
+            } else if(props.kind == "param"){
+                container = new THREE.Mesh(op_geometry, generic_material);
+                container.castShadow = true;
+                container.receiveShadow = true;
+                let n = name.split('_');
+                n.shift();
+                n.pop();
+                let w = n.join("");
+                // let n = name.split("_")
+                // .shift()
+                // .pop()
+                // .join("");
+
+                labelName = w;
+            } else {
             // generic object:
             container = new THREE.Mesh(generic_geometry, generic_material);
             container.castShadow = true;
             container.receiveShadow = true;
+            labelName = props.kind;
+                
+            }
 
             if(spawn === true){
                 let pos = controller1.getWorldPosition();
@@ -777,9 +837,10 @@ function generateNode(parent, node, name) {
             } else{
                 container.position = parent.position.clone();
             }
-            let label = generateLabel(props.kind);
+            let label = generateLabel(labelName);
             label.position.y = -LABEL_SIZE;
             label.position.z += 0.01;
+            label.position.x = 0.005;
             container.add(label);
             container.userData.moveable = true; 
             subObjCount = 0;   
@@ -876,11 +937,16 @@ function syncLocalPatch() {
     }
 }
 
+
 function onKeyPress(e) {
 
     if (e.keyCode == 13) {
         syncLocalPatch();
         console.log(localPatch)
+    }
+    if (e.keyCode == 83){
+        console.log("saving image")
+        webutils.saveCanvasToPNG(canvas);
     }
 }
 
@@ -945,7 +1011,16 @@ function render() {
 
         if (object.userData.moveable) {
             let s = 1. + (controller1.userData.thumbpadDY);
+            let r = 1. + (controller1.userData.thumbpadDX);
             object.position.multiplyScalar(s);
+            
+            let rot = new THREE.Vector3(object.rotation.x, object.rotation.y, object.rotation.z);
+            rot.multiplyScalar(r);
+            //object.rotation.x = rot.x;
+            object.rotation.y = rot.y;
+            //object.rotation.z = rot.z;
+            //object.quaternion.multiply(r);
+
         } else if (object.userData.turnable) {
             // do UI effeect
             object.rotateY(Math.PI / 90);
@@ -990,6 +1065,21 @@ function render() {
         }
     }
 
+    if (sock && sock.socket.readyState === 1 && controller1 && controller2) {
+
+        camera.getWorldPosition(userPose.head.pos);
+        camera.getWorldQuaternion(userPose.head.orient);
+        controller1.getWorldPosition(userPose.controller1.pos);
+        controller1.getWorldQuaternion(userPose.controller1.orient);
+        controller2.getWorldPosition(userPose.controller2.pos);
+        controller2.getWorldQuaternion(userPose.controller2.orient);
+
+        sock.send({
+            cmd: "user_pose",
+            date: Date.now(),
+            pose: userPose
+        });
+    }
 
     intersectObjects(controller1);
     intersectObjects(controller2);
@@ -1022,7 +1112,7 @@ function clearScene() {
 
 function connect_to_server() {
     try {
-        if (window.location.hostname == "localhost") {
+        if (window.location.hostname/* == "localhost"*/) {
             sock = new Socket({
                 reload_on_disconnect: true,
                 reconnect_period: 1000,
@@ -1047,20 +1137,52 @@ function connect_to_server() {
         console.error(e);
     }
 }
-
+let count = 0;
 function handlemessage(msg, sock) {
     switch (msg.cmd) {
         case "patch":
             {
+                userPose.id = msg.id;
+
+   
                 // lazy deep copy:
                 patch = JSON.parse(JSON.stringify(msg.value));
-                write("received patch");
+                write("received patch for user " +  userPose.id);
 
 
                 //Input JSON files to be parsed on generations
                 generateScene(patch);
             }
             break;
+        case "user_pose": {
+            let id = msg.pose.id;
+    
+            // now add another user pose for this ID.
+            // if msg.pos.id != userPose.id, then draw it
+            // check if we have a userPose already set up for this id.
+            //write(msg.pose)
+           
+            if (!otherUsers[id]) {
+                // create it
+                otherUsers[id] = createUserPose(id);
+                otherUsers[id].controller1 = controllerMesh.clone();
+                // otherUsers[id].controller2 = controllerMesh.clone();
+                scene.add(otherUsers[id].controller1);
+                // scene.add(otherUsers[id].controller2);
+                console.log("Created Controller");
+            }
+            // now copy msg.pose pos/orient etc. into otherUsers[id]
+ 
+            otherUsers[id].controller1.position.copy(msg.pose.controller1.pos);
+            otherUsers[id].controller1.quaternion.copy(msg.pose.controller1.orient);
+            // otherUsers[id].controller2.position.copy(msg.pose.controller2.pos);
+            // otherUsers[id].controller2.quaternion.copy(msg.pose.controller2.orient);
+
+            if(count <10){
+                console.log(msg)
+                count++;
+            }
+        } break;
         default:
             console.log("received JSON", msg, typeof msg);
     }
