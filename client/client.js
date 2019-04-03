@@ -241,7 +241,6 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-let once =true;
 class Cable {
     constructor(src, dst) {
         this.src = src;
@@ -308,10 +307,6 @@ class Cable {
         // TODO: this shouldn't be needed
         curve.mesh.frustumCulled = false;
         
-        if(once){
-            console.log(src)
-            once = false;
-        }
         this.update();
 
         curve.mesh.userData.moveable = true;
@@ -363,7 +358,6 @@ class Cable {
                 .applyQuaternion(q)
                 .add(this.positions[2])
         }
-        ////////////////////
 
         let curve = this.curve;
         let mesh = this.curve.mesh;
