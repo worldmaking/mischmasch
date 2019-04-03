@@ -17,9 +17,10 @@ var object = {};
 counter = 1;
 
 var feedbackConnections = 0
+
 function read(file){
 	
-//	gen_patcher = this.patcher.getnamed("world").subpatcher();
+	//	gen_patcher = this.patcher.getnamed("world").subpatcher();
 
 	// if no argument is provided to dict then a random/unique name will be assigned
 	var x = new Dict('patch');
@@ -50,68 +51,38 @@ function read(file){
 		paramCounter = 0;
 		nodeName = key;
 		var _props = scene.nodes[key]._props 
-				var kind = _props.kind
-						var pos = _props.pos
-						
-						
+		var kind = _props.kind
+		var pos = _props.pos								
 		var unit = scene.nodes[key]
-
-		var gen = JSON.stringify(unit._props.kind)
-		
+		var gen = JSON.stringify(unit._props.kind)		
 		var checkOp = gen.split(' ')[0];
-	//	gen = gen
-		//post(kind)
-		//outlet(0, checkOp)
-		
-		
-		// generate the object
-  	//	post(nodeName, kind, pos[0], pos[1], pos[2]);
-/*
-		if (checkOp.includes('"op') === true){
+		var genType = kind.split("_")[0]
 			
-			post("op found", kind)
-
-		} */
-		genType = kind.split("_")[0]
-		
-		
-		
+		// switch between gen operators, params, and @gen abstractions (eveything else)
 		switch (genType){
 			
 			case "op":
 			op = kind.split("_")[1]
-			post(genType, "op\n")
 			var newModule = gen_patcher.newdefault([(pos[0] + counter) * 100, (pos[1] + counter) * 50, op])
 			newModule.varname = nodeName
 			break;
 			
 			case "param":
 			var args = _props.args
-			post("args",args)
 			param = kind.split("_")[0]
-
-			//post(genType, "param\n")
 			var objSettings = [(pos[0] + counter) * 100, (pos[1] + counter) * 50, param ]
 			var paramSettings = args
 			var newParam = objSettings.concat(paramSettings);
 			var newModule = gen_patcher.newdefault(newParam)
 			newModule.varname = nodeName
-
 			break;
 	
-			default:
-				
+			default:			
 			var newModule = gen_patcher.newdefault([(pos[0] + counter) * 100, (pos[1] + counter) * 50, "gen", "@gen", kind])
 			newModule.varname = nodeName
 			break;
 		}
-		
 
-		
-		
-		
-		
-		
 		// attach all outs modules to the dac outputs. 
 		if (kind === "outs"){
 			
@@ -119,59 +90,52 @@ function read(file){
 			gen_patcher.message("script", "connect", nodeName, 1, "dac_right", 0);
 		
 		} else if (kind === "param"){
-			
+			// ignore gen operator-based param modules in the next section
 			} else {
 		
-		
-		//post(kind)
 		// get all the inlets and outlets (and eventually the UI params)
 		Object.keys(unit).forEach(function(key) {
-		var UI_obj = {}	
-		if(JSON.stringify(unit[key]._props) !== undefined){
-			UI = JSON.stringify(unit[key]._props.kind)
-			paramValue = parseFloat(JSON.stringify(unit[key]._props.value, 10))
-			// generate the param and subparam for each object
-			switch(UI){
-				case '"small_knob"':
-				case '"large_knob"':
-				case '"tuning_knob"':
-				case '"slider"':
-				case '"momentary"':
-				case '"n_switch"':
-				case '"led"':
+			var UI_obj = {}	
+			if(JSON.stringify(unit[key]._props) !== undefined){
+				UI = JSON.stringify(unit[key]._props.kind)
+				paramValue = parseFloat(JSON.stringify(unit[key]._props.value, 10))
+				// generate the param and subparam for each object
+				switch(UI){
+					case '"small_knob"':
+					case '"large_knob"':
+					case '"tuning_knob"':
+					case '"slider"':
+					case '"momentary"':
+					case '"n_switch"':
+					case '"led"':
 				
-				paramX = paramCounter * 150
-				// generate the subparam which the param will bind to
-				var setparam = gen_patcher.newdefault([(pos[0] + counter) * 100 + paramX, (pos[1] + counter) * 50 - 25, "setparam", key])
-				setparam.varname = nodeName + "_setparam_" + key
-				gen_patcher.message("script", "connect", setparam.varname, 0, nodeName, 0);
+					paramX = paramCounter * 150
+					// generate the subparam which the param will bind to
+					var setparam = gen_patcher.newdefault([(pos[0] + counter) * 100 + paramX, (pos[1] + counter) * 50 - 25, "setparam", key])
+					setparam.varname = nodeName + "_setparam_" + key
+					gen_patcher.message("script", "connect", setparam.varname, 0, nodeName, 0);
 				
-				// generate the param which the js script will bind to
-				var param = gen_patcher.newdefault([(pos[0] + counter) * 100 + paramX, (pos[1] + counter) * 50 - 50, "param", nodeName + "__" + key])
-				param.varname = nodeName + "_param_" + key
-				gen_patcher.message("script", "connect", param.varname, 0, setparam.varname, 0);
+					// generate the param which the js script will bind to
+					var param = gen_patcher.newdefault([(pos[0] + counter) * 100 + paramX, (pos[1] + counter) * 50 - 50, "param", nodeName + "__" + key])
+					param.varname = nodeName + "_param_" + key
+					gen_patcher.message("script", "connect", param.varname, 0, setparam.varname, 0);
 				
-				//gen_patcher.message("script", "send", param.varname, paramValue);
-				outlet(1, nodeName + "__" + key, paramValue)
-				paramCounter++
-				break;
-				
+					//gen_patcher.message("script", "send", param.varname, paramValue);
+					outlet(1, nodeName + "__" + key, paramValue)
+					paramCounter++
+					break;	
+					}
+				index = JSON.stringify(unit[key]._props.index)
+	
+				UI_obj[key] = [UI,index]
+	
+				object[nodeName] = UI_obj;
+
 				}
-			index = JSON.stringify(unit[key]._props.index)
-	
-			//post("\n\n",UI)
-			UI_obj[key] = [UI,index]
-	
-			//post(JSON.stringify(UI_obj))
-			object[nodeName] = UI_obj;
-
-		}
-	
-
 			})
-counter++
-}
-
+			
+			counter++
+		}
 	})
 	//post(JSON.stringify(object))
 	for (i = 0; i < scene.arcs.length; ++i) {
@@ -190,60 +154,28 @@ counter++
 		//post(lookup2)
 		
 
-	//	post(opName, opUI, JSON.stringify(lookup[opUI]._props.index))
+		//	post(opName, opUI, JSON.stringify(lookup[opUI]._props.index))
 		if(lookup1 !== undefined && lookup2 !== undefined){
 			//post("\n",JSON.stringify(lookup1), JSON.stringify(lookup2))
-					var index1 = parseInt(JSON.stringify(lookup1[opUI1]._props.index, 10))
-		var index2 = parseInt(JSON.stringify(lookup2[opUI2]._props.index, 10))
+			var index1 = parseInt(JSON.stringify(lookup1[opUI1]._props.index, 10))
+			var index2 = parseInt(JSON.stringify(lookup2[opUI2]._props.index, 10))
 		
-		//post(opName1, index1, opName2, index2)
+			//post(opName1, index1, opName2, index2)
 		
-		// if a feedback connection is made, add a history object!
-		if(opName1 === opName2){
-			feedbackConnections++
-			post(opName1,opName2)
-			var history = gen_patcher.newdefault([20,20, "history"])
+			// if a feedback connection is made, add a history object!
+			if(opName1 === opName2){
+				feedbackConnections++
+				var history = gen_patcher.newdefault([20,20, "history"])
 				history.varname = "feedback_" + feedbackConnections
 				gen_patcher.message("script", "connect", opName1, index1, history.varname, 0);
 				gen_patcher.message("script", "connect", history.varname, 0, opName2, index2);
 			} else {
-		gen_patcher.message("script", "connect", opName1, index1, opName2, index2);
+				gen_patcher.message("script", "connect", opName1, index1, opName2, index2);
 			}
 		}
-		
-		
-		// pos[0] + counter) * 100, (pos[1] + counter) * 50 - 50
-	
-		//arcLookup = JSON.stringify(object)
-		//post(arcLookup)
-		//post(opName)
-		//var destinationOp = scene.arcs[i][1].split(".")
-		//varSourceOpName = sourceOp
-		//cable = scene.arcs[i].toString()
-		
-    	//cable = cable.split(".").join(',')
-
-
-		}
-	
-
-
-}
-/*
-function parameter(value){
-		post(value)
-
-	gen_patcher = this.patcher.getnamed("world").subpatcher();
-	
-	
-	gen_patcher.apply(function(b) {
-		
-		b.outs_1.m
-		}
-	gen_patcher.message("script","send","outs_1","volume",value)
-	return;
 	}
-*/	
+}
+	
 function clear(){
 	
 	counter = 1;
@@ -263,6 +195,10 @@ function clear(){
 			});
 				
 				}
+
+/* some of this other code below is legacy from the gen scripting example. 
+some of it may prove useful for the OT interpretation>>>scripting
+				
 function module(module){
 	var gen_patcher = this.patcher.getnamed("world").subpatcher();
 
@@ -324,4 +260,4 @@ function biggerer() {
 		gen_patcher.connect(osc_box, 0, mul_box, 0);
 	}
 }
-
+*/
