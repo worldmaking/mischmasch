@@ -272,7 +272,7 @@
 				"_props" : 				{
 					"kind" : "n_switch",
 					"throws" : [ "Sine", "Phasor", "Triangle" ],
-					"value" : 2
+					"value" : 1
 				}
 
 			}
@@ -334,9 +334,9 @@
 
 		}
 ,
-		"vca_1" : 		{
+		"*_1" : 		{
 			"_props" : 			{
-				"kind" : "vca",
+				"kind" : "op_*",
 				"pos" : [ 0.0, 1.8, 0.0 ],
 				"orient" : [ 0, 0, 0, 1 ]
 			}
@@ -348,36 +348,13 @@
 				}
 
 			}
-,
-			"cv" : 			{
-				"_props" : 				{
-					"kind" : "inlet",
-					"index" : 1
-				}
+,			"cv" : 			{
+        "_props" : 				{
+          "kind" : "inlet",
+          "index" : 1
+        }
 
-			}
-,
-			"cv_amount" : 			{
-				"_props" : 				{
-					"kind" : "large_knob",
-					"range" : [ 0, 1 ],
-					"taper" : "linear",
-					"value" : 0.762,
-					"unit" : "float"
-				}
-
-			}
-,
-			"bias" : 			{
-				"_props" : 				{
-					"kind" : "large_knob",
-					"range" : [ 0, 1 ],
-					"taper" : "linear",
-					"value" : 0.0,
-					"unit" : "float"
-				}
-
-			}
+      }
 ,
 			"output" : 			{
 				"_props" : 				{
@@ -388,6 +365,152 @@
 			}
 
 		}
+,
+    "abs_1" : 		{
+      "_props" : 			{
+        "kind" : "op_abs",
+        "pos" : [ 0.0, 1.8, 0.0 ],
+        "orient" : [ 0, 0, 0, 1 ]
+      }
+    ,
+      "signal" : 			{
+        "_props" : 				{
+          "kind" : "inlet",
+          "index" : 0
+        }
+
+      }
+    ,
+      "output" : 			{
+        "_props" : 				{
+          "kind" : "outlet",
+          "index" : 0
+        }
+
+      }
+
+    }
+,
+    "*_2" : 		{
+      "_props" : 			{
+        "kind" : "op_*",
+        "pos" : [ 0.0, 1.8, 0.0 ],
+        "orient" : [ 0, 0, 0, 1 ]
+      }
+    ,
+      "signal" : 			{
+        "_props" : 				{
+          "kind" : "inlet",
+          "index" : 0
+        }
+
+      }
+    ,			"cv" : 			{
+        "_props" : 				{
+          "kind" : "inlet",
+          "index" : 1
+        }
+
+      }
+    ,
+      "output" : 			{
+        "_props" : 				{
+          "kind" : "outlet",
+          "index" : 0
+        }
+
+      }
+
+    }
+    ,
+    "+_1" : 		{
+			"_props" : 			{
+				"kind" : "op_+",
+				"pos" : [ 0.0, 1.8, 0.0 ],
+				"orient" : [ 0, 0, 0, 1 ]
+			}
+,
+			"signal" : 			{
+				"_props" : 				{
+					"kind" : "inlet",
+					"index" : 0
+				}
+
+			}
+,			"cv" : 			{
+        "_props" : 				{
+          "kind" : "inlet",
+          "index" : 1
+        }
+
+      }
+,
+			"output" : 			{
+				"_props" : 				{
+					"kind" : "outlet",
+					"index" : 0
+				}
+
+			}
+
+		}
+,
+"param_cv_1" : 		{
+  "_props" : 			{
+    "kind" : "param",
+    "pos" : [ 0.0, 1.8, 0.0 ],
+    "orient" : [ 0, 0, 0, 1 ],
+    "args" : ["cv",1,"@min", 0,"@max",1]
+  }
+  ,
+  "cv" : 			{
+    "_props" : 				{
+      "kind" : "small_knob",
+      "range" : [ 0, 1 ],
+      "taper" : "linear",
+      "value" : 1,
+      "unit" : "float"
+    }
+
+  }
+,
+  "output" : 			{
+    "_props" : 				{
+      "kind" : "outlet",
+      "index" : 0
+    }
+
+  }
+
+}
+, "param_bias_1" : 		{
+    "_props" : 			{
+      "kind" : "param",
+      "pos" : [ 0.0, 1.8, 0.0 ],
+      "orient" : [ 0, 0, 0, 1 ],
+      "args" : ["bias",0.5,"@min", 0,"@max",1]
+    }
+  
+,"bias" : 			{
+  "_props" : 				{
+    "kind" : "small_knob",
+    "range" : [ 0, 1 ],
+    "taper" : "linear",
+    "value" : 0.5,
+    "unit" : "float"
+  }
+
+}
+,
+  "output" : 			{
+    "_props" : 				{
+      "kind" : "outlet",
+      "index" : 0
+    }
+
+  }
+
+}
 ,
 		"comparator_1" : 		{
 			"_props" : 			{
@@ -484,5 +607,5 @@
 
 	}
 ,
-	"arcs" : [ [ "lfo_1.sine", "vca_1.signal" ], [ "lfo_1.sine", "lfo_2.fm_cv" ], [ "lfo_2.sine", "vca_1.cv" ], [ "lfo_1.phasor", "dualvco_1.feedback_cv" ], [ "lfo_1.pulse", "dualvco_1.vco_1_cv" ], [ "vca_1.output", "comparator_1.A" ], [ "dualvco_1.master", "comparator_1.B" ], [ "comparator_1.max", "outs_1.left_(mono)" ], [ "comparator_1.min", "outs_1.right_(stereo)" ], [ "dualvco_1.master", "dualvco_1.vco_2_cv" ] ]
+	"arcs" : [ [ "lfo_1.sine", "*_1.signal" ], [ "lfo_1.sine", "lfo_2.fm_cv" ], [ "lfo_2.sine", "abs_1.signal" ], [ "lfo_1.phasor", "dualvco_1.feedback_cv" ], [ "lfo_1.pulse", "dualvco_1.vco_1_cv" ], [ "vca_1.output", "comparator_1.A" ], [ "dualvco_1.master", "comparator_1.B" ], [ "comparator_1.max", "outs_1.left_(mono)" ], [ "comparator_1.min", "outs_1.right_(stereo)" ], [ "dualvco_1.master", "dualvco_1.vco_2_cv" ], [ "*_1.output", "comparator_1.A"], [ "abs_1.output", "*_2.signal"], [ "param_cv_1.output", "*_2.cv"], [ "*_2.output", "+_1.signal"], [ "param_bias_1.output", "+_1.cv"], [ "+_1.output", "*_1.cv"]      ]
 }
