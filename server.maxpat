@@ -39,6 +39,43 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-30",
+					"maxclass" : "button",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "bang" ],
+					"parameter_enable" : 0,
+					"patching_rect" : [ 1234.0, 396.0, 24.0, 24.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-26",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 140.0, 425.0, 35.0, 22.0 ],
+					"text" : "clear"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-12",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 310.0, 200.0, 305.0, 22.0 ],
+					"presentation_linecount" : 2,
+					"text" : "read \"Macintosh HD:/Users/mp/msvr/scene_group.json\""
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-155",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
@@ -508,7 +545,7 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-119",
-					"items" : [ "lfo_1__rate", ",", "lfo_1__index", ",", "lfo_1__pulse_width", ",", "lfo_1__onset", ",", "lfo_2__rate", ",", "lfo_2__index", ",", "lfo_2__pulse_width", ",", "lfo_2__onset", ",", "dualvco_1__vco_1_rate", ",", "dualvco_1__vco_1_waveform", ",", "dualvco_1__vco_2_rate", ",", "dualvco_1__vco_2_waveform", ",", "dualvco_1__feedback", ",", "vca_1__cv_amount", ",", "vca_1__bias", ",", "outs_1__volume" ],
+					"items" : [ "lfo_1__rate", ",", "lfo_1__index", ",", "lfo_1__pulse_width", ",", "lfo_1__onset", ",", "lfo_2__rate", ",", "lfo_2__index", ",", "lfo_2__pulse_width", ",", "lfo_2__onset", ",", "dualvco_1__vco_1_rate", ",", "dualvco_1__vco_1_waveform", ",", "dualvco_1__vco_2_rate", ",", "dualvco_1__vco_2_waveform", ",", "dualvco_1__feedback", ",", "outs_1__volume" ],
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
@@ -696,7 +733,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 123.0, 364.5, 94.0, 22.0 ],
+					"patching_rect" : [ 123.0, 354.5, 94.0, 22.0 ],
 					"saved_object_attributes" : 					{
 						"filename" : "msvr_world.js",
 						"parameter_enable" : 0
@@ -737,7 +774,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 310.0, 296.5, 268.0, 22.0 ],
+					"patching_rect" : [ 387.0, 224.0, 268.0, 22.0 ],
 					"text" : "read \"Macintosh HD:/Users/mp/msvr/scene.json\""
 				}
 
@@ -786,7 +823,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "bang" ],
-					"patching_rect" : [ 310.0, 267.5, 116.0, 22.0 ],
+					"patching_rect" : [ 310.0, 123.5, 116.0, 22.0 ],
 					"text" : "filewatch scene.json"
 				}
 
@@ -1466,6 +1503,22 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-155", 0 ],
+					"order" : 1,
+					"source" : [ "obj-12", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-24", 0 ],
+					"order" : 0,
+					"source" : [ "obj-12", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-137", 1 ],
 					"midpoints" : [ 754.5, 456.0, 807.75, 456.0, 807.75, 413.0, 587.0, 413.0 ],
 					"source" : [ "obj-122", 0 ]
@@ -1706,6 +1759,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-111", 0 ],
+					"source" : [ "obj-26", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-1", 0 ],
 					"source" : [ "obj-29", 0 ]
 				}
@@ -1720,6 +1780,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-24", 0 ],
+					"source" : [ "obj-30", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-1", 0 ],
 					"source" : [ "obj-31", 0 ]
 				}
@@ -1727,7 +1794,7 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-73", 0 ],
+					"destination" : [ "obj-12", 0 ],
 					"source" : [ "obj-33", 0 ]
 				}
 
@@ -1850,7 +1917,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-73", 1 ],
-					"midpoints" : [ 132.5, 260.75, 568.5, 260.75 ],
+					"midpoints" : [ 132.5, 260.75, 645.5, 260.75 ],
 					"order" : 0,
 					"source" : [ "obj-88", 0 ]
 				}
@@ -1917,13 +1984,6 @@
 			}
 , 			{
 				"name" : "dualvco.gendsp",
-				"bootpath" : "~/msvr",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "vca.gendsp",
 				"bootpath" : "~/msvr",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",

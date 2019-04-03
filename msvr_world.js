@@ -52,13 +52,59 @@ function read(file){
 		var _props = scene.nodes[key]._props 
 				var kind = _props.kind
 						var pos = _props.pos
+						
+						
+		var unit = scene.nodes[key]
 
-			
+		var gen = JSON.stringify(unit._props.kind)
+		
+		var checkOp = gen.split(' ')[0];
+	//	gen = gen
+		//post(kind)
+		//outlet(0, checkOp)
+		
+		
 		// generate the object
   	//	post(nodeName, kind, pos[0], pos[1], pos[2]);
-		var newModule = gen_patcher.newdefault([(pos[0] + counter) * 100, (pos[1] + counter) * 50, "gen", "@gen", kind])
-		newModule.varname = nodeName
+/*
+		if (checkOp.includes('"op') === true){
+			
+			post("op found", kind)
+
+		} */
+		genType = kind.split("_")[0]
 		
+		
+		
+		switch (genType){
+			
+			case "op":
+			op = kind.split("_")[1]
+			post(genType, "op\n")
+			var newModule = gen_patcher.newdefault([(pos[0] + counter) * 100, (pos[1] + counter) * 50, op])
+			newModule.varname = nodeName
+			break;
+			
+			case "param":
+			var args = _props.args
+			post("args",args)
+			param = kind.split("_")[0]
+
+			//post(genType, "param\n")
+			var objSettings = [(pos[0] + counter) * 100, (pos[1] + counter) * 50, param ]
+			var paramSettings = args
+			var newParam = objSettings.concat(paramSettings);
+			var newModule = gen_patcher.newdefault(newParam)
+			newModule.varname = nodeName
+
+			break;
+	
+			default:
+				
+			var newModule = gen_patcher.newdefault([(pos[0] + counter) * 100, (pos[1] + counter) * 50, "gen", "@gen", kind])
+			newModule.varname = nodeName
+			break;
+		}
 		
 
 		
@@ -74,7 +120,6 @@ function read(file){
 		
 		}
 		
-		var unit = scene.nodes[key]
 		
 		//post(kind)
 		// get all the inlets and outlets (and eventually the UI params)
