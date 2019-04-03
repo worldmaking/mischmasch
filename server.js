@@ -16,6 +16,8 @@ const { vec2, vec3, vec4, quat, mat3, mat4 } = require("gl-matrix");
 const got = require("./got/got")
 console.log(got)
 
+const scenefile = "scene_edited.json"
+
 const MaxAPI = (() => {
     try {
         return require("max-api");
@@ -32,7 +34,7 @@ if (MaxAPI) {
     //     MaxAPI.outlet("got a number", n);
     // });
     MaxAPI.addHandler("scene", (n) => {
-		scene = fs.readFile(__dirname + "/scene.json", 'utf8')
+		scene = fs.readFile(path.join(__dirname, scenefile), 'utf8')
 		MaxAPI.outlet("scene", scene);
     });
     // MaxAPI.addHandler(MaxAPI.MESSAGE_TYPES.ALL, (handled, ...args) => {
@@ -40,7 +42,7 @@ if (MaxAPI) {
     //     MaxAPI.outlet(args);
 	// });
 	// MaxAPI.addHandler("scene", () =>{
-	// 	scene = fs.readFile(__dirname + "/scene.json")
+	// 	scene = fs.readFile(__dirname + scenefile)
 	// 	MaxAPI.outlet("scene", scene);
 	// })
 	
@@ -63,7 +65,7 @@ if (MaxAPI) {
 
 //////////////////////// 
 
-let demo_scene = JSON.parse(fs.readFileSync("scene.json", "utf-8")); 
+let demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
 /*{
 	"nodes": {
 		"a": {
@@ -209,13 +211,19 @@ wss.on('connection', function(ws, req) {
 function handlemessage(msg, sock) {
 	switch (msg.cmd) {
 		case "get_scene": {
+			demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
 			// // Example sending some greetings:
 			sock.send(JSON.stringify({
 				cmd: "patch",
 				date: Date.now(),
 				value: demo_scene
 			}));
-		}
+		} break;
+		case "updated_scene": {
+			// // Example sending some greetings:
+			let scenestr = JSON.stringify(msg.scene, null, "\t");
+			fs.writeFileSync(scenefile, scenestr, "utf-8");
+		} break;
 		default: console.log("received JSON", msg, typeof msg);
 	}
 }

@@ -98,6 +98,9 @@ let controller1, controller2;
 // OTHER GLOBALS
 //////////////////////////////////////////////////////////////////////////////////////////
 
+
+let sock
+
 let allNodes = {};
 let allCables = [];
 
@@ -109,7 +112,7 @@ let tempMatrix = new THREE.Matrix4();
 let point = new THREE.Vector3();
 let delta;
 
-let tempPatch;
+let localPatch;
 let spawn = false;
 
 let subObjCount = 0;
@@ -180,6 +183,10 @@ async function init() {
     controller2.addEventListener("gripsdown", onGrips);
     scene.add(controller1);
     scene.add(controller2);
+
+
+    //Keypress
+    document.addEventListener("keyup", onKeyPress);
 
     {
         let controllerMesh = loadedController.children[0];
@@ -478,6 +485,8 @@ function onSelectEnd(event) {
         }
 
     }
+
+    syncLocalPatch();
 }
 
 function onSpawn(event) {
@@ -486,13 +495,13 @@ function onSpawn(event) {
     if(controller.getButtonState('trigger') == false){
         
         let rand = [];
-        for (let k in tempPatch.nodes) {
+        for (let k in localPatch.nodes) {
             rand.push(k);
         }
         spawn = true;
         let nodeNum = randomIntFromInterval(0, rand.length -1);
         generateNode(world, 
-            tempPatch.nodes[rand[nodeNum]], 
+            localPatch.nodes[rand[nodeNum]], 
             rand[nodeNum]); 
 
             //console.log(randomIntFromInterval(0, rand.length))
@@ -546,10 +555,11 @@ function cleanIntersected() {
           
 function generateLabel(message, label_size) {
     let shapes;
+    let msg = message.replace(/_/g, " ")
     if(label_size !== undefined){
-        shapes = loadedFont.generateShapes(message, label_size);
+        shapes = loadedFont.generateShapes(msg, label_size);
     } else {
-        shapes = loadedFont.generateShapes(message, LABEL_SIZE);
+        shapes = loadedFont.generateShapes(msg, LABEL_SIZE);
     }
 
     let shapeGeometry = new THREE.ShapeBufferGeometry(shapes);
@@ -625,7 +635,7 @@ function generateNode(parent, node, name) {
             //Takes Radians
             container.rotation.x = 1.5708;
            
-            let label = generateLabel(parent.userData.name, LARGE_KNOB_HEIGHT/2);
+            let label = generateLabel(name, LARGE_KNOB_HEIGHT/2);
             label.position.y = 0.01;
             label.position.x = -LARGE_KNOB_RADIUS /2;
             label.rotation.x = -1.5708;
@@ -645,7 +655,7 @@ function generateNode(parent, node, name) {
                 generic_geometry.parameters.depth/2 - SMALL_KNOB_HEIGHT]);
             container.rotation.x = 1.5708;
             //Label
-            let label = generateLabel(parent.userData.name, SMALL_KNOB_HEIGHT/2.7);
+            let label = generateLabel(name, SMALL_KNOB_HEIGHT/2.7);
             label.position.y = 0.01;
             label.position.x = -SMALL_KNOB_RADIUS /2;
             label.rotation.x = -1.5708;
@@ -664,7 +674,7 @@ function generateNode(parent, node, name) {
                 -generic_geometry.parameters.height - NLET_HEIGHT/2, 
                 -NLET_RADIUS]);
            
-            let label = generateLabel(parent.userData.name, NLET_HEIGHT);
+            let label = generateLabel(name, SMALL_KNOB_HEIGHT/2.7);
             label.position.y = -0.01;
             label.position.x = -NLET_RADIUS /2;
             label.rotation.x = 1.5708;
@@ -683,7 +693,7 @@ function generateNode(parent, node, name) {
                 NLET_HEIGHT/2, 
                 -NLET_RADIUS]);
     
-            let label = generateLabel(parent.userData.name, NLET_HEIGHT);
+            let label = generateLabel(name, NLET_HEIGHT);
             label.position.y = 0.01;
             label.position.x = -NLET_RADIUS /2;
             label.rotation.x = -1.5708;
@@ -789,6 +799,7 @@ function generateNode(parent, node, name) {
     container.userData.path = path;
     container.userData.kind = props.kind;
     container.userData.selectable = true;
+    container.userData.localPatchNode = node;
 
     allNodes[path] = container;
 
@@ -808,7 +819,7 @@ function generateScene(patch) {
 
     clearScene();
     
-    tempPatch = patch;
+    localPatch = patch;
 
     let nodes = patch.nodes;
     for (let k in nodes) {
@@ -828,6 +839,48 @@ function generateScene(patch) {
 
         let cable = new Cable(src, dst);
         allCables.push(cable);
+    }
+}
+
+
+function syncLocalPatchNode(obj) {
+    let v = new THREE.Vector3();
+    let q = new THREE.Quaternion();
+    
+    obj.getWorldPosition(v);
+    obj.getWorldQuaternion(q);
+    // update the pos and orient props in the corresponding object in the localPatch
+    let props = obj.userData.localPatchNode._props;
+    if(props.pos && props.orient){
+        props.pos[0] = v.x;
+        props.pos[1] = v.y;
+        props.pos[2] = v.z;
+        props.orient[0] = q.x;
+        props.orient[1] = q.y;
+        props.orient[2] = q.z;
+        props.orient[3] = q.w;
+    }
+
+    if (sock) {
+        sock.send({
+            cmd: "updated_scene",
+            date: Date.now(),
+            scene: localPatch,
+        });
+    }
+}
+
+function syncLocalPatch() {
+    for (let path in allNodes) {
+        syncLocalPatchNode(allNodes[path])
+    }
+}
+
+function onKeyPress(e) {
+
+    if (e.keyCode == 13) {
+        syncLocalPatch();
+        console.log(localPatch)
     }
 }
 
@@ -966,7 +1019,6 @@ function clearScene() {
 // Websocket handling
 /////////////////////////////////////////////////////
 
-let sock
 
 function connect_to_server() {
     try {

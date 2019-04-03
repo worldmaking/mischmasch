@@ -607,5 +607,21 @@
 
 	}
 ,
-	"arcs" : [ [ "lfo_1.sine", "*_1.signal" ], [ "lfo_1.sine", "lfo_2.fm_cv" ], [ "lfo_2.sine", "abs_1.signal" ], [ "lfo_1.phasor", "dualvco_1.feedback_cv" ], [ "lfo_1.pulse", "dualvco_1.vco_1_cv" ], [ "vca_1.output", "comparator_1.A" ], [ "dualvco_1.master", "comparator_1.B" ], [ "comparator_1.max", "outs_1.left_(mono)" ], [ "comparator_1.min", "outs_1.right_(stereo)" ], [ "dualvco_1.master", "dualvco_1.vco_2_cv" ], [ "*_1.output", "comparator_1.A"], [ "abs_1.output", "*_2.signal"], [ "param_cv_1.output", "*_2.cv"], [ "*_2.output", "+_1.signal"], [ "param_bias_1.output", "+_1.cv"], [ "+_1.output", "*_1.cv"]      ]
+	"arcs" : [ 
+		[ "lfo_1.sine", "*_1.signal" ], 
+		[ "lfo_1.sine", "lfo_2.fm_cv" ], 
+		[ "lfo_2.sine", "abs_1.signal" ], 
+		[ "lfo_1.phasor", "dualvco_1.feedback_cv" ], 
+		[ "lfo_1.pulse", "dualvco_1.vco_1_cv" ], 
+		[ "dualvco_1.master", "comparator_1.B" ], 
+		[ "comparator_1.max", "outs_1.left_(mono)" ], 
+		[ "comparator_1.min", "outs_1.right_(stereo)" ], 
+		[ "dualvco_1.master", "dualvco_1.vco_2_cv" ], 
+		[ "*_1.output", "comparator_1.A"], 
+		[ "abs_1.output", "*_2.signal"], 
+		[ "param_cv_1.output", "*_2.cv"], 
+		[ "*_2.output", "+_1.signal"], 
+		[ "param_bias_1.output", "+_1.cv"], 
+		[ "+_1.output", "*_1.cv"]      
+	]
 }
