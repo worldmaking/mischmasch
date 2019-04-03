@@ -16,14 +16,14 @@ async function loadFont(fontFile) {
     return new Promise(resolve => new THREE.FontLoader().load(fontFile, resolve));
 }
 
-async function loadOBJ(path){
+async function loadOBJ(path) {
     return new Promise(resolve => new THREE.OBJLoader().load(path, resolve));
 }
 
 let viveTextureLoader = new THREE.TextureLoader();
 viveTextureLoader.setPath(viveControllerPath);
 let viveTexturePNG, viveSpecularPNG;
-async function loadViveTexture(filename){
+async function loadViveTexture(filename) {
     return new Promise(resolve => viveTextureLoader.load(filename, resolve));
 }
 
@@ -49,21 +49,21 @@ const CONTROLLER_HIT_DISTANCE = 0.03;
 // let inlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
 // let outlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
 
-let inlet_geometry = new THREE.CylinderGeometry( NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT, 8 );
+let inlet_geometry = new THREE.CylinderGeometry(NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT, 8);
 let outlet_geometry = inlet_geometry;
 inlet_geometry.computeBoundingBox();
 
-let small_knob_geometry = new THREE.CylinderGeometry( SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, SMALL_KNOB_HEIGHT, 8 );
+let small_knob_geometry = new THREE.CylinderGeometry(SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, SMALL_KNOB_HEIGHT, 8);
 small_knob_geometry.computeBoundingBox();
 
-let large_knob_geometry = new THREE.CylinderGeometry( LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, LARGE_KNOB_HEIGHT, 8 );
+let large_knob_geometry = new THREE.CylinderGeometry(LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, LARGE_KNOB_HEIGHT, 8);
 large_knob_geometry.computeBoundingBox();
 
-let plug_geometry = new THREE.CylinderGeometry( CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE, 8 );
+let plug_geometry = new THREE.CylinderGeometry(CONTROL_POINT_DISTANCE * 0.2, CONTROL_POINT_DISTANCE * 0.2, CONTROL_POINT_DISTANCE, 8);
 plug_geometry.computeBoundingBox();
 
 let generic_geometry = new THREE.BoxBufferGeometry(0.4, 0.2, 0.05);
-generic_geometry.translate(generic_geometry.parameters.width/2, -generic_geometry.parameters.height/2, -generic_geometry.parameters.depth/2);
+generic_geometry.translate(generic_geometry.parameters.width / 2, -generic_geometry.parameters.height / 2, -generic_geometry.parameters.depth / 2);
 
 let label_material = new THREE.MeshStandardMaterial({
     color: 0x000000,
@@ -71,7 +71,7 @@ let label_material = new THREE.MeshStandardMaterial({
     opacity: 0.4,
     side: THREE.DoubleSide
     //, blending: THREE.AdditiveBlending
-        
+
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -95,7 +95,8 @@ let controller1, controller2;
 let allNodes = {};
 let allCables = [];
 
-let raycaster = new THREE.Raycaster(), intersected = [];
+let raycaster = new THREE.Raycaster(),
+    intersected = [];
 
 // temp variables to save allocations
 let tempMatrix = new THREE.Matrix4();
@@ -154,8 +155,8 @@ async function init() {
     scene.add(light);
 
     // VR controllers
-    controller1 = new THREE.ViveController( 0 );
-    controller2 = new THREE.ViveController( 1 );
+    controller1 = new THREE.ViveController(0);
+    controller2 = new THREE.ViveController(1);
     controller1.standingMatrix = renderer.vr.getStandingMatrix();
     controller2.standingMatrix = renderer.vr.getStandingMatrix();
     controller1.addEventListener("triggerdown", onSelectStart);
@@ -175,17 +176,17 @@ async function init() {
         controllerMesh.material.specularMap = viveSpecularPNG;
         controllerMesh.castShadow = true;
         controllerMesh.receiveShadow = true;
-    
-        let pivot = new THREE.Mesh( new THREE.IcosahedronBufferGeometry( 0.01, 2 ) );
+
+        let pivot = new THREE.Mesh(new THREE.IcosahedronBufferGeometry(0.01, 2));
         pivot.name = 'pivot';
         //pivot.position.y = - 0.016;
         //pivot.position.z = - 0.043;
         //pivot.rotation.x = Math.PI / 5.5;
-        controllerMesh.add( pivot );
-        controller1.add( controllerMesh.clone() );
-        controller2.add( controllerMesh.clone() );
-       // pivot.material = pivot.material.clone();
-    
+        controllerMesh.add(pivot);
+        controller1.add(controllerMesh.clone());
+        controller2.add(controllerMesh.clone());
+        // pivot.material = pivot.material.clone();
+
     }
 
     controller1.userData.thumbpadDX = 0;
@@ -205,7 +206,7 @@ async function init() {
     // 'world' represents the root node of the patch:
     scene.add(world);
 
-    
+
 
     // floor
     let floorGrid = new THREE.GridHelper(10, 10);
@@ -245,7 +246,7 @@ class Cable {
             side: THREE.DoubleSide,
             depthWrite: false,
             blending: THREE.AdditiveBlending
-            
+
         });
         let outlet_material = new THREE.MeshStandardMaterial({
             color: 0x00ff00,
@@ -256,11 +257,11 @@ class Cable {
             side: THREE.DoubleSide,
             depthWrite: false,
             blending: THREE.AdditiveBlending
-            
+
         });
 
-        this.srcCtrlPt = new THREE.Mesh( plug_geometry, outlet_material );
-        this.dstCtrlPt = new THREE.Mesh( plug_geometry, inlet_material );
+        this.srcCtrlPt = new THREE.Mesh(plug_geometry, outlet_material);
+        this.dstCtrlPt = new THREE.Mesh(plug_geometry, inlet_material);
         world.add(this.srcCtrlPt);
         world.add(this.dstCtrlPt);
         this.srcCtrlPt.userData.moveable = true;
@@ -295,9 +296,9 @@ class Cable {
         this.curve = curve;
         // TODO: this shouldn't be needed
         curve.mesh.frustumCulled = false;
-        
+
         this.update();
-        
+
         curve.mesh.userData.moveable = true;
         world.add(curve.mesh)
     }
@@ -308,7 +309,7 @@ class Cable {
             this.src.getWorldQuaternion(this.srcCtrlPt.quaternion);
             this.src.getWorldPosition(this.positions[0]);
             this.positions[1]
-                .set(0, -(NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
+                .set(0, -(NLET_HEIGHT + CONTROL_POINT_DISTANCE) / 2, 0)
                 .applyQuaternion(this.srcCtrlPt.quaternion)
                 .add(this.positions[0]);
             this.srcCtrlPt.position.copy(this.positions[1]);
@@ -318,7 +319,7 @@ class Cable {
             // derive positions[0] from the srcCtrlPt
             this.srcCtrlPt.getWorldPosition(this.positions[1]);
             this.positions[0]
-                .set(0, (NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
+                .set(0, (NLET_HEIGHT + CONTROL_POINT_DISTANCE) / 2, 0)
                 .applyQuaternion(q)
                 .add(this.positions[1])
         }
@@ -327,7 +328,7 @@ class Cable {
             this.dst.getWorldPosition(this.positions[3]);
             this.dst.getWorldQuaternion(this.dstCtrlPt.quaternion);
             this.positions[2]
-                .set(0, (NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
+                .set(0, (NLET_HEIGHT + CONTROL_POINT_DISTANCE) / 2, 0)
                 .applyQuaternion(this.dstCtrlPt.quaternion)
                 .add(this.positions[3]);
 
@@ -338,7 +339,7 @@ class Cable {
             // derive positions[3] from the srcCtrlPt
             this.dstCtrlPt.getWorldPosition(this.positions[2]);
             this.positions[3]
-                .set(0, -(NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
+                .set(0, -(NLET_HEIGHT + CONTROL_POINT_DISTANCE) / 2, 0)
                 .applyQuaternion(q)
                 .add(this.positions[2])
         }
@@ -377,7 +378,7 @@ function onSelectStart(event) {
             object.userData.cable.src = null;
         } else if (kind == "jack_inlet") {
             object.userData.cable.dst = null;
-        } 
+        }
 
         tempMatrix.getInverse(controller.matrixWorld);
         let parent = object.parent;
@@ -385,14 +386,14 @@ function onSelectStart(event) {
         object.matrix.premultiply(tempMatrix);
         object.matrix.decompose(object.position, object.quaternion, object.scale);
         if (object.material)
-        object.material.emissive.b = 1;
-        
+            object.material.emissive.b = 1;
+
         controller.userData.selected = object;
         controller.userData.parent = parent;
         controller.add(object); //removes from previous parent
     }
 
-    
+
     if (object && !object.userData.moveable) {
         let kind = object.userData.kind;
         if (kind == "outlet") {
@@ -412,8 +413,8 @@ function onSelectStart(event) {
             allCables.push(cable);
             controller.add(object); //removes from previous parent
         }
-        
-            controller.userData.selected = object;
+
+        controller.userData.selected = object;
     }
 }
 
@@ -444,10 +445,10 @@ function onSelectEnd(event) {
                     object.userData.cable.src = o;
                 }
             }
-    
+
 
         } else if (object.userData.kind == "jack_inlet") {
-            
+
             let intersections = getIntersections(object, 0, -1, 0);
             if (intersections.length > 0) {
                 let intersection = intersections[0];
@@ -455,22 +456,22 @@ function onSelectEnd(event) {
                 if (o.userData.kind == "inlet") {
                     // we have a hit! disconnect
                     object.userData.cable.dst = o;
-                } 
+                }
             }
         }
 
     }
 }
 
-function onSpawn(event){
+function onSpawn(event) {
     let controller = event.target;
-    if(controller.getButtonState('thumbpad') === undefined) return;
-    if(controller.getButtonState('trigger') == false){
+    if (controller.getButtonState('thumbpad') === undefined) return;
+    if (controller.getButtonState('trigger') == false) {
         //generateNode(world); 
         // request scene:
         //sock.send({ cmd: "get_scene", date: Date.now() });
     }
-     
+
 }
 
 
@@ -481,7 +482,7 @@ function getIntersections(controller, x, y, z) {
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
     let intersections = raycaster.intersectObjects(world.children, true);
-    while(intersections.length > 0 && !intersections[0].object.userData.selectable) intersections.shift();
+    while (intersections.length > 0 && !intersections[0].object.userData.selectable) intersections.shift();
     return intersections;
 }
 
@@ -493,8 +494,8 @@ function intersectObjects(controller) {
     if (intersections.length > 0) {
         let intersection = intersections[0];
         let object = intersection.object;
-        if(object.material.emissive)
-        object.material.emissive.r = 1;
+        if (object.material.emissive)
+            object.material.emissive.r = 1;
         intersected.push(object);
         line.scale.z = intersection.distance;
     } else {
@@ -505,36 +506,38 @@ function intersectObjects(controller) {
 function cleanIntersected() {
     while (intersected.length) {
         let object = intersected.pop();
-        if(object.material.emissive)
-        object.material.emissive.r = 0;
+        if (object.material.emissive)
+            object.material.emissive.r = 0;
     }
 }
-        
+
 function generateLabel(message) {
     let shapes = loadedFont.generateShapes(message, LABEL_SIZE);
     let shapeGeometry = new THREE.ShapeBufferGeometry(shapes);
     shapeGeometry.computeBoundingBox();
 
     text = new THREE.Mesh(shapeGeometry, label_material);
-    
+
     return text;
 }
 
 function generateNode(parent, node, name) {
 
-    if(node === undefined || name === undefined){
+    if (node === undefined || name === undefined) {
         let pos = controller1.getWorldPosition();
         let quat = new THREE.Quaternion();
         controller1.getWorldQuaternion(quat);
         let tilt = new THREE.Quaternion();
         tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
         quat.multiply(tilt);
-        let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
+        let rel = new THREE.Vector3(-generic_geometry.parameters.width / 2, generic_geometry.parameters.height * 1.2, -.1);
         pos.add(rel.applyQuaternion(quat));
-        node = { 
-                "_props": { "kind": "blank", 
+        node = {
+            "_props": {
+                "kind": "blank",
                 "pos": [pos.x, pos.y, pos.z],
-                "orient": [quat.x, quat.y, quat.z, quat.w]}      
+                "orient": [quat.x, quat.y, quat.z, quat.w]
+            }
         }
     }
 
@@ -548,7 +551,7 @@ function generateNode(parent, node, name) {
         side: THREE.DoubleSide,
         depthWrite: false,
         blending: THREE.AdditiveBlending
-        
+
     });
 
     let knob_material = new THREE.MeshStandardMaterial({
@@ -560,112 +563,122 @@ function generateNode(parent, node, name) {
         side: THREE.DoubleSide,
         depthWrite: false,
         blending: THREE.AdditiveBlending
-        
+
     });
     let inlet_material = generic_material
     let outlet_material = generic_material
-    
-    
+
+
 
     let props = node._props;
 
     let type = props.kind;
     let container;
     // TODO this switch needs to operate on "UI_Type" ^^^, NOT "props.kind"
-    switch(type) {
-        case "large_knob": {
-            container = new THREE.Mesh(large_knob_geometry, knob_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
-            container.position.fromArray([
-                generic_geometry.parameters.width/2, 
-                -generic_geometry.parameters.height/2 - LARGE_KNOB_HEIGHT/2, 
-                generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
-            //Takes Radians
-            container.rotation.x = 1.5708;
-            // let label = generateLabel(parameter);
-            // label.position.y = -LABEL_SIZE;
-            // label.position.z += 0.01;
-            // container.add(label);
-            container.userData.turnable = true;
-            break;
-        }
-        case "small_knob": {
-            container = new THREE.Mesh(small_knob_geometry, knob_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
-            container.position.fromArray([
-                generic_geometry.parameters.width/2, 
-                -generic_geometry.parameters.height/2 - SMALL_KNOB_HEIGHT/2, 
-                generic_geometry.parameters.depth/2 - SMALL_KNOB_HEIGHT]);
-            container.rotation.x = 1.5708;
-            // let label = generateLabel(parameter);
-            // label.position.y = -LABEL_SIZE;
-            // label.position.z += 0.01;
-            // container.add(label);
-            container.userData.turnable = true;
-
-            break;
-        }
-        case "outlet": {
-            container = new THREE.Mesh(outlet_geometry, outlet_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
-            container.position.fromArray([
-                NLET_RADIUS, 
-                -generic_geometry.parameters.height - NLET_HEIGHT/2, 
-                -NLET_RADIUS]);
-            // let label = generateLabel(UI_Type);
-            // label.position.y = -LABEL_SIZE;
-            // label.position.z += 0.01;
-            // container.add(label);
-            //container.userData.moveable = true;
-
-            break;
-        }
-        case "inlet": {
-            container = new THREE.Mesh(inlet_geometry, inlet_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
-            container.position.fromArray([
-                NLET_RADIUS, 
-                NLET_HEIGHT/2, 
-                -NLET_RADIUS]);
-        //    let label = generateLabel(parameter);
-        //     label.position.y = -LABEL_SIZE;
-        //     label.position.z += 0.01;
-        //     container.add(label);
-            // container.userData.moveable = true;
-            break;
-        }
-        case "group": {
-            container = new THREE.Mesh(generic_geometry, generic_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
-            container.position.fromArray(props.pos);
-            container.userData.moveable = true;
-        
-            break;
-        }
-        default: {
-
-            // generic object:
-            container = new THREE.Mesh(generic_geometry, generic_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
-
-            if (props.pos){
-                container.position.fromArray(props.pos);
-            } else{
-                container.position = parent.position.clone();
+    switch (type) {
+        case "large_knob":
+            {
+                container = new THREE.Mesh(large_knob_geometry, knob_material);
+                container.castShadow = true;
+                container.receiveShadow = true;
+                container.position.fromArray([
+                    generic_geometry.parameters.width / 2,
+                    -generic_geometry.parameters.height / 2 - LARGE_KNOB_HEIGHT / 2,
+                    generic_geometry.parameters.depth / 2 - LARGE_KNOB_HEIGHT
+                ]);
+                //Takes Radians
+                container.rotation.x = 1.5708;
+                // let label = generateLabel(parameter);
+                // label.position.y = -LABEL_SIZE;
+                // label.position.z += 0.01;
+                // container.add(label);
+                container.userData.turnable = true;
+                break;
             }
-            let label = generateLabel(props.kind);
-            label.position.y = -LABEL_SIZE;
-            label.position.z += 0.01;
-            container.add(label);
-            container.userData.moveable = true;    
-        }
-    
+        case "small_knob":
+            {
+                container = new THREE.Mesh(small_knob_geometry, knob_material);
+                container.castShadow = true;
+                container.receiveShadow = true;
+                container.position.fromArray([
+                    generic_geometry.parameters.width / 2,
+                    -generic_geometry.parameters.height / 2 - SMALL_KNOB_HEIGHT / 2,
+                    generic_geometry.parameters.depth / 2 - SMALL_KNOB_HEIGHT
+                ]);
+                container.rotation.x = 1.5708;
+                // let label = generateLabel(parameter);
+                // label.position.y = -LABEL_SIZE;
+                // label.position.z += 0.01;
+                // container.add(label);
+                container.userData.turnable = true;
+
+                break;
+            }
+        case "outlet":
+            {
+                container = new THREE.Mesh(outlet_geometry, outlet_material);
+                container.castShadow = true;
+                container.receiveShadow = true;
+                container.position.fromArray([
+                    NLET_RADIUS,
+                    -generic_geometry.parameters.height - NLET_HEIGHT / 2,
+                    -NLET_RADIUS
+                ]);
+                // let label = generateLabel(UI_Type);
+                // label.position.y = -LABEL_SIZE;
+                // label.position.z += 0.01;
+                // container.add(label);
+                //container.userData.moveable = true;
+
+                break;
+            }
+        case "inlet":
+            {
+                container = new THREE.Mesh(inlet_geometry, inlet_material);
+                container.castShadow = true;
+                container.receiveShadow = true;
+                container.position.fromArray([
+                    NLET_RADIUS,
+                    NLET_HEIGHT / 2,
+                    -NLET_RADIUS
+                ]);
+                //    let label = generateLabel(parameter);
+                //     label.position.y = -LABEL_SIZE;
+                //     label.position.z += 0.01;
+                //     container.add(label);
+                // container.userData.moveable = true;
+                break;
+            }
+        case "group":
+            {
+                container = new THREE.Mesh(generic_geometry, generic_material);
+                container.castShadow = true;
+                container.receiveShadow = true;
+                container.position.fromArray(props.pos);
+                container.userData.moveable = true;
+
+                break;
+            }
+        default:
+            {
+
+                // generic object:
+                container = new THREE.Mesh(generic_geometry, generic_material);
+                container.castShadow = true;
+                container.receiveShadow = true;
+
+                if (props.pos) {
+                    container.position.fromArray(props.pos);
+                } else {
+                    container.position = parent.position.clone();
+                }
+                let label = generateLabel(props.kind);
+                label.position.y = -LABEL_SIZE;
+                label.position.z += 0.01;
+                container.add(label);
+                container.userData.moveable = true;
+            }
+
     }
 
     let path = "";
@@ -688,7 +701,7 @@ function generateNode(parent, node, name) {
 
     for (let k in node) {
         if (k == "_props") continue;
-            
+
         generateNode(container, node[k], k);
     }
 
@@ -697,7 +710,7 @@ function generateNode(parent, node, name) {
 function generateScene(patch) {
 
     clearScene();
-    
+
 
     let nodes = patch.nodes;
     for (let k in nodes) {
@@ -757,7 +770,7 @@ function render() {
                 controller1.userData.thumbpadDX = gamepad.axes[0] - controller1.userData.thumbpadX;
                 controller1.userData.thumbpadDY = gamepad.axes[1] - controller1.userData.thumbpadY;
             }
-            
+
             controller1.userData.thumbpadX = gamepad.axes[0];
             controller1.userData.thumbpadY = gamepad.axes[1];
 
@@ -800,9 +813,9 @@ function render() {
         //             o.getWorldPosition(object.userData.positions[0])
         //         }
         //     }
-        
 
-    
+
+
 
         // } else if (object.userData.kind == "jack_inlet") {
         //     object.userData.cable.dst = null;
@@ -830,24 +843,24 @@ function render() {
     intersectObjects(controller1);
     intersectObjects(controller2);
     renderer.render(scene, camera);
-    
+
     stats.end();
 }
 
-function onGrips(event){
+function onGrips(event) {
     let controller = event.target;
-    if(controller.getButtonState("grips")){
-        
+    if (controller.getButtonState("grips")) {
+
     }
 }
 
-function clearScene(){
-    while(world.children.length > 0){ 
-        world.remove(world.children[0]); 
+function clearScene() {
+    while (world.children.length > 0) {
+        world.remove(world.children[0]);
     }
     allNodes = {};
     allCables = [];
-    
+
 }
 
 
@@ -856,6 +869,7 @@ function clearScene(){
 /////////////////////////////////////////////////////
 
 let sock
+
 function connect_to_server() {
     try {
         if (window.location.hostname == "localhost") {
@@ -866,7 +880,10 @@ function connect_to_server() {
                     //this.send({ cmd: "getdata", date: Date.now() });
                     write("connected to server");
                     // request scene:
-                    this.send({ cmd: "get_scene", date: Date.now() });
+                    this.send({
+                        cmd: "get_scene",
+                        date: Date.now()
+                    });
                 },
                 onmessage: function (m) {
                     handlemessage(m, this);
@@ -882,16 +899,19 @@ function connect_to_server() {
 }
 
 function handlemessage(msg, sock) {
-	switch (msg.cmd) {
-		case "patch": {
-            // lazy deep copy:
-            patch = JSON.parse(JSON.stringify(msg.value));
-            write("received patch");
-            
+    switch (msg.cmd) {
+        case "patch":
+            {
+                // lazy deep copy:
+                patch = JSON.parse(JSON.stringify(msg.value));
+                write("received patch");
 
-            //Input JSON files to be parsed on generations
-            generateScene(patch);
-		} break;
-		default: console.log("received JSON", msg, typeof msg);
-	}
+
+                //Input JSON files to be parsed on generations
+                generateScene(patch);
+            }
+            break;
+        default:
+            console.log("received JSON", msg, typeof msg);
+    }
 }
