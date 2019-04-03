@@ -62,7 +62,13 @@ large_knob_geometry.computeBoundingBox();
 let plug_geometry = new THREE.CylinderGeometry( CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE, 8 );
 plug_geometry.computeBoundingBox();
 
-let generic_geometry = new THREE.BoxBufferGeometry(0.4, 0.2, 0.05);
+let n_switch_geometry = new THREE.BoxGeometry( LARGE_KNOB_RADIUS + 0.03, LARGE_KNOB_RADIUS  + 0.03, LARGE_KNOB_HEIGHT, 8 );
+n_switch_geometry.computeBoundingBox();
+
+let n_switch_slider_geometry = new THREE.BoxGeometry( NLET_HEIGHT + .01 , NLET_HEIGHT+ .01 , NLET_HEIGHT, 8 );
+n_switch_slider_geometry.computeBoundingBox();
+
+let generic_geometry = new THREE.BoxBufferGeometry(0.6, 0.2, 0.05);
 generic_geometry.translate(generic_geometry.parameters.width/2, -generic_geometry.parameters.height/2, -generic_geometry.parameters.depth/2);
 
 let label_material = new THREE.MeshStandardMaterial({
@@ -102,7 +108,12 @@ let tempMatrix = new THREE.Matrix4();
 let point = new THREE.Vector3();
 let delta;
 
+let tempPatch;
+let spawn = false;
 
+let subObjCount = 0;
+let subInletCount = 0;
+let subOutletCount = 0;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // BOOT SEQUENCE
@@ -229,13 +240,13 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-
-
+let once =true;
 class Cable {
     constructor(src, dst) {
         this.src = src;
         this.dst = dst;
-
+     
+   
         let inlet_material = new THREE.MeshStandardMaterial({
             color: 0x00ff00,
             roughness: 0.7,
@@ -248,7 +259,7 @@ class Cable {
             
         });
         let outlet_material = new THREE.MeshStandardMaterial({
-            color: 0x00ff00,
+            color: 0xff0000,
             roughness: 0.7,
             metalness: 0.0,
             opacity: 0.3,
@@ -296,6 +307,10 @@ class Cable {
         // TODO: this shouldn't be needed
         curve.mesh.frustumCulled = false;
         
+        if(once){
+            console.log(src)
+            once = false;
+        }
         this.update();
         
         curve.mesh.userData.moveable = true;
@@ -312,6 +327,8 @@ class Cable {
                 .applyQuaternion(this.srcCtrlPt.quaternion)
                 .add(this.positions[0]);
             this.srcCtrlPt.position.copy(this.positions[1]);
+            //Color Set
+            this.curve.mesh.material.color.copy(this.src.material.color);
         } else {
             let q = new THREE.Quaternion();
             this.srcCtrlPt.getWorldQuaternion(q);
@@ -320,7 +337,10 @@ class Cable {
             this.positions[0]
                 .set(0, (NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
                 .applyQuaternion(q)
-                .add(this.positions[1])
+                .add(this.positions[1]);
+            //Reset Color
+             this.curve.mesh.material.color.setRGB(0,1,0);
+
         }
 
         if (this.dst) {
@@ -442,6 +462,9 @@ function onSelectEnd(event) {
                 if (o.userData.kind == "outlet") {
                     // we have a hit! disconnect
                     object.userData.cable.src = o;
+                
+                  // object.userData.cable.curve.mesh.material.color = o.material.color;
+                    
                 }
             }
     
@@ -466,13 +489,29 @@ function onSpawn(event){
     let controller = event.target;
     if(controller.getButtonState('thumbpad') === undefined) return;
     if(controller.getButtonState('trigger') == false){
-        //generateNode(world); 
+        
+        let rand = [];
+        for (let k in tempPatch.nodes) {
+            rand.push(k);
+        }
+        spawn = true;
+        let nodeNum = randomIntFromInterval(0, rand.length -1);
+        generateNode(world, 
+            tempPatch.nodes[rand[nodeNum]], 
+            rand[nodeNum]); 
+
+            //console.log(randomIntFromInterval(0, rand.length))
+    
         // request scene:
         //sock.send({ cmd: "get_scene", date: Date.now() });
     }
      
 }
 
+function randomIntFromInterval(min,max) // min and max included
+{
+    return Math.floor(Math.random()*(max-min+1)+min);
+}
 
 function getIntersections(controller, x, y, z) {
     tempMatrix.identity().extractRotation(controller.matrixWorld);
@@ -509,9 +548,15 @@ function cleanIntersected() {
         object.material.emissive.r = 0;
     }
 }
-        
-function generateLabel(message) {
-    let shapes = loadedFont.generateShapes(message, LABEL_SIZE);
+          
+function generateLabel(message, label_size) {
+    let shapes;
+    if(label_size !== undefined){
+        shapes = loadedFont.generateShapes(message, label_size);
+    } else {
+        shapes = loadedFont.generateShapes(message, LABEL_SIZE);
+    }
+
     let shapeGeometry = new THREE.ShapeBufferGeometry(shapes);
     shapeGeometry.computeBoundingBox();
 
@@ -521,7 +566,6 @@ function generateLabel(message) {
 }
 
 function generateNode(parent, node, name) {
-
     if(node === undefined || name === undefined){
         let pos = controller1.getWorldPosition();
         let quat = new THREE.Quaternion();
@@ -564,6 +608,7 @@ function generateNode(parent, node, name) {
     });
     let inlet_material = generic_material
     let outlet_material = generic_material
+    let n_switch_material = generic_material
     
     
 
@@ -577,17 +622,22 @@ function generateNode(parent, node, name) {
             container = new THREE.Mesh(large_knob_geometry, knob_material);
             container.castShadow = true;
             container.receiveShadow = true;
+            //generic_geometry.parameters.width
             container.position.fromArray([
-                generic_geometry.parameters.width/2, 
+                (subObjCount / 8) + .065, 
                 -generic_geometry.parameters.height/2 - LARGE_KNOB_HEIGHT/2, 
                 generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
             //Takes Radians
             container.rotation.x = 1.5708;
-            // let label = generateLabel(parameter);
-            // label.position.y = -LABEL_SIZE;
-            // label.position.z += 0.01;
-            // container.add(label);
+           
+            let label = generateLabel(parent.userData.name, LARGE_KNOB_HEIGHT/2);
+            label.position.y = 0.01;
+            label.position.x = -LARGE_KNOB_RADIUS /2;
+            label.rotation.x = -1.5708;
+            container.add(label);
+
             container.userData.turnable = true;
+            subObjCount++;
             break;
         }
         case "small_knob": {
@@ -595,16 +645,19 @@ function generateNode(parent, node, name) {
             container.castShadow = true;
             container.receiveShadow = true;
             container.position.fromArray([
-                generic_geometry.parameters.width/2, 
+                (subObjCount / 8) + .065, 
                 -generic_geometry.parameters.height/2 - SMALL_KNOB_HEIGHT/2, 
                 generic_geometry.parameters.depth/2 - SMALL_KNOB_HEIGHT]);
             container.rotation.x = 1.5708;
-            // let label = generateLabel(parameter);
-            // label.position.y = -LABEL_SIZE;
-            // label.position.z += 0.01;
-            // container.add(label);
-            container.userData.turnable = true;
+            //Label
+            let label = generateLabel(parent.userData.name, SMALL_KNOB_HEIGHT/2.7);
+            label.position.y = 0.01;
+            label.position.x = -SMALL_KNOB_RADIUS /2;
+            label.rotation.x = -1.5708;
+            container.add(label);
 
+            container.userData.turnable = true;
+            subObjCount++;
             break;
         }
         case "outlet": {
@@ -612,15 +665,18 @@ function generateNode(parent, node, name) {
             container.castShadow = true;
             container.receiveShadow = true;
             container.position.fromArray([
-                NLET_RADIUS, 
+                NLET_RADIUS + (subOutletCount / 10), 
                 -generic_geometry.parameters.height - NLET_HEIGHT/2, 
                 -NLET_RADIUS]);
-            // let label = generateLabel(UI_Type);
-            // label.position.y = -LABEL_SIZE;
-            // label.position.z += 0.01;
-            // container.add(label);
+           
+            let label = generateLabel(parent.userData.name, NLET_HEIGHT);
+            label.position.y = -0.01;
+            label.position.x = -NLET_RADIUS /2;
+            label.rotation.x = 1.5708;
+            container.add(label);
+                
             //container.userData.moveable = true;
-
+            subOutletCount++;
             break;
         }
         case "inlet": {
@@ -628,14 +684,59 @@ function generateNode(parent, node, name) {
             container.castShadow = true;
             container.receiveShadow = true;
             container.position.fromArray([
-                NLET_RADIUS, 
+                NLET_RADIUS + (subInletCount / 10), 
                 NLET_HEIGHT/2, 
                 -NLET_RADIUS]);
-        //    let label = generateLabel(parameter);
-        //     label.position.y = -LABEL_SIZE;
-        //     label.position.z += 0.01;
-        //     container.add(label);
+    
+            let label = generateLabel(parent.userData.name, NLET_HEIGHT);
+            label.position.y = 0.01;
+            label.position.x = -NLET_RADIUS /2;
+            label.rotation.x = -1.5708;
+            container.add(label);
+            
             // container.userData.moveable = true;
+            subInletCount++;
+            break;
+        }
+        case "n_switch": {
+            container = new THREE.Mesh(n_switch_geometry, n_switch_material);
+            container.castShadow = true;
+            container.receiveShadow = true;
+            container.position.fromArray([
+                (subObjCount / 8) + .065,
+                -generic_geometry.parameters.height/2 - LARGE_KNOB_HEIGHT/2, 
+                generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
+            
+                //Draw N_SWTICH Label name itself
+            // let label = generateLabel(parent.userData.name, .01);
+            // label.position.y =  0;
+            // label.position.z = 0;
+            // container.add(label);
+            if(props.throws !== undefined){
+                let y = -container.position.y / 2;
+                for(let l =0; l < props.throws.length; l++){
+                    let labelN = generateLabel(props.throws[l], .01);
+                    labelN.position.y = y - container.geometry.parameters.height / 3.5;
+                    y = labelN.position.y;
+                    labelN.position.z = 0;
+                    labelN.position.x = -0.01;
+                    
+                    if(props.value !== undefined && props.value === l){
+                        n_switch_slider = new THREE.Mesh(n_switch_slider_geometry, inlet_material);
+                        n_switch_slider.castShadow = true;
+                        n_switch_slider.receiveShadow = true;
+                        n_switch_slider.position.fromArray([
+                            labelN.position.x + -0.02,
+                            labelN.position.y,
+                            labelN.position.z+ -0.005,
+                        ]);
+                        container.add(n_switch_slider);
+                    }
+                    container.add(labelN);
+                }
+
+            }
+            subObjCount++;
             break;
         }
         case "group": {
@@ -644,7 +745,7 @@ function generateNode(parent, node, name) {
             container.receiveShadow = true;
             container.position.fromArray(props.pos);
             container.userData.moveable = true;
-        
+            
             break;
         }
         default: {
@@ -654,7 +755,19 @@ function generateNode(parent, node, name) {
             container.castShadow = true;
             container.receiveShadow = true;
 
-            if (props.pos){
+            if(spawn === true){
+                let pos = controller1.getWorldPosition();
+                let quat = new THREE.Quaternion();
+                controller1.getWorldQuaternion(quat);
+                let tilt = new THREE.Quaternion();
+                tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
+                quat.multiply(tilt);
+                let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
+                pos.add(rel.applyQuaternion(quat));
+                let arr = [pos.x, pos.y, pos.z];
+                container.position.fromArray(arr);
+                spawn = false;
+            } else if (props.pos){
                 container.position.fromArray(props.pos);
             } else{
                 container.position = parent.position.clone();
@@ -663,7 +776,10 @@ function generateNode(parent, node, name) {
             label.position.y = -LABEL_SIZE;
             label.position.z += 0.01;
             container.add(label);
-            container.userData.moveable = true;    
+            container.userData.moveable = true; 
+            subObjCount = 0;   
+            subInletCount = 0;
+            subOutletCount = 0;
         }
     
     }
@@ -698,6 +814,7 @@ function generateScene(patch) {
 
     clearScene();
     
+    tempPatch = patch;
 
     let nodes = patch.nodes;
     for (let k in nodes) {

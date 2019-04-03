@@ -272,7 +272,7 @@
 				"_props" : 				{
 					"kind" : "n_switch",
 					"throws" : [ "Sine", "Phasor", "Triangle" ],
-					"value" : 1
+					"value" : 2
 				}
 
 			}
