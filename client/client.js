@@ -1069,7 +1069,7 @@ function render() {
         }
     }
 
-    if (sock && sock.socket.readyState === 1 && controller1 && controller2) {
+    if (sock && sock.socket && sock.socket.readyState === 1 && controller1 && controller2) {
 
         camera.getWorldPosition(userPose.head.pos);
         camera.getWorldQuaternion(userPose.head.orient);
@@ -1160,30 +1160,63 @@ function handlemessage(msg, sock) {
             break;
         case "user_pose": {
             let id = msg.pose.id;
+
+            // ignore our self!
+            if (id == userPose.id) break;
     
             // now add another user pose for this ID.
             // if msg.pos.id != userPose.id, then draw it
             // check if we have a userPose already set up for this id.
             //write(msg.pose)
+
+            let other = otherUsers[id];
            
-            if (!otherUsers[id]) {
+            if (!other) {
                 // create it
-                otherUsers[id] = createUserPose(id);
+                other = createUserPose(id);
+                otherUsers[id] = other;
 
-                // otherUsers[id].controller2 = controllerMesh.clone();
-                otherUsers[id].controller1 = new THREE.ViveController(0);
-                scene.add(otherUsers[id].controller1);
-                otherUsers[id].controller1.add(controllerMesh.clone());
+                other.controller1 = controllerMesh.clone();
+                scene.add(other.controller1);
+                other.controller2 = controllerMesh.clone();
+                scene.add(other.controller2);
 
-                // scene.add(otherUsers[id].controller2);
+                
+                other.head = controllerMesh.clone();
+                scene.add(other.head);
+                
+                //other.controller1 = new THREE.ViveController(0);
+                
+                //other.controller1.add(controllerMesh.clone());
+
+                // scene.add(other.controller2);
                 console.log("Created Controller");
             }
-            // now copy msg.pose pos/orient etc. into otherUsers[id]
+            // now copy msg.pose pos/orient etc. into other
+
+
+            other.controller1.position.copy(msg.pose.controller1.pos);
+            other.controller1.quaternion._x = msg.pose.controller1.orient._x;
+            other.controller1.quaternion._y = msg.pose.controller1.orient._y;
+            other.controller1.quaternion._z = msg.pose.controller1.orient._z;
+            other.controller1.quaternion._w = msg.pose.controller1.orient._w;
+            other.controller1.matrixWorldNeedsUpdate = true;
             
-            otherUsers[id].controller1.position.copy(msg.pose.controller1.pos);
-            otherUsers[id].controller1.quaternion.copy(msg.pose.controller1.orient);
-            // otherUsers[id].controller2.position.copy(msg.pose.controller2.pos);
-            // otherUsers[id].controller2.quaternion.copy(msg.pose.controller2.orient);
+            other.controller2.position.copy(msg.pose.controller2.pos);
+            other.controller2.quaternion._x = msg.pose.controller2.orient._x;
+            other.controller2.quaternion._y = msg.pose.controller2.orient._y;
+            other.controller2.quaternion._z = msg.pose.controller2.orient._z;
+            other.controller2.quaternion._w = msg.pose.controller2.orient._w;
+            other.controller2.matrixWorldNeedsUpdate = true;
+            
+            other.head.position.copy(msg.pose.head.pos);
+            other.head.quaternion._x = msg.pose.head.orient._x;
+            other.head.quaternion._y = msg.pose.head.orient._y;
+            other.head.quaternion._z = msg.pose.head.orient._z;
+            other.head.quaternion._w = msg.pose.head.orient._w;
+            other.head.matrixWorldNeedsUpdate = true;
+
+            
 
         } break;
         default:
