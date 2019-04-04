@@ -1220,7 +1220,6 @@ function handlemessage(msg, sock) {
                 // create it
                 other = createUserPose(id);
                 otherUsers[id] = other;
-
                 other.controller1 = controllerMesh.clone();
                 scene.add(other.controller1);
                 other.controller2 = controllerMesh.clone();
