@@ -11,6 +11,9 @@ let loadedFont;
 let viveControllerPath = 'js/three-r102/examples/models/obj/vive-controller/';
 let loadedController;
 
+let viveHeadsetModelPath = "models/viveHeadset/"
+let loadedHeadsetModel
+
 // turn FontLoader into something we can await:
 async function loadFont(fontFile) {
     return new Promise(resolve => new THREE.FontLoader().load(fontFile, resolve));
@@ -21,9 +24,9 @@ async function loadOBJ(path) {
 }
 
 let viveTextureLoader = new THREE.TextureLoader();
-viveTextureLoader.setPath(viveControllerPath);
+//viveTextureLoader.setPath(viveControllerPath);
 let viveTexturePNG, viveSpecularPNG;
-async function loadViveTexture(filename) {
+async function loadTexture(filename) {
     return new Promise(resolve => viveTextureLoader.load(filename, resolve));
 }
 
@@ -152,8 +155,23 @@ async function init() {
     // load & wait for required resources:
     loadedFont = await loadFont(fontFile);
     loadedController = await loadOBJ(viveControllerPath + "vr_controller_vive_1_5.obj");
-    viveTexturePNG = await loadViveTexture('onepointfive_texture.png');
-    viveSpecularPNG = await loadViveTexture('onepointfive_spec.png');
+    viveTexturePNG = await loadTexture(viveControllerPath + 'onepointfive_texture.png');
+    viveSpecularPNG = await loadTexture(viveControllerPath + 'onepointfive_spec.png');
+    loadedHeadsetModel = await loadOBJ(viveHeadsetModelPath + "V2.obj");
+    let viveHeadsetPNGs = [
+        await loadTexture(viveHeadsetModelPath + 'base.png'),
+        await loadTexture(viveHeadsetModelPath + 'strap.png'),
+        await loadTexture(viveHeadsetModelPath + 'logo.png'),
+        await loadTexture(viveHeadsetModelPath + 'lens.png'),
+        null, //await loadTexture(viveHeadsetModelPath + 'dots.png'),
+        null, //await loadTexture(viveHeadsetModelPath + 'black.png'),
+        await loadTexture(viveHeadsetModelPath + 'noise.png'),
+        await loadTexture(viveHeadsetModelPath + 'foam.png'),
+        null, //await loadTexture(viveHeadsetModelPath + 'screen.png')
+    ];
+
+    console.log('loaded textures')
+    //let viveHeadsetNormalsPNG = await loadTexture(viveHeadsetModelPath + 'normals.png');
 
     // build up the scene
     scene = new THREE.Scene();
@@ -210,6 +228,21 @@ async function init() {
 
     //Keypress
     document.addEventListener("keyup", onKeyPress);
+
+    {
+        
+        headsetMesh = loadedHeadsetModel.children[0]
+        const inch2m = 0.0254;
+        headsetMesh.geometry.scale(-inch2m, inch2m, -inch2m); // convert cm to m
+        for (let i in headsetMesh.material) {
+            if (viveHeadsetPNGs[i]) {
+                headsetMesh.material[i].map = viveHeadsetPNGs[i];
+            }
+        }
+        headsetMesh.castShadow = true;
+        headsetMesh.receiveShadow = true;
+        console.log(loadedHeadsetModel)
+    }
 
     {
         controllerMesh = loadedController.children[0];
@@ -1182,7 +1215,7 @@ function handlemessage(msg, sock) {
                 scene.add(other.controller2);
 
                 
-                other.head = controllerMesh.clone();
+                other.head = headsetMesh.clone(); //controllerMesh.clone();
                 scene.add(other.head);
                 
                 //other.controller1 = new THREE.ViveController(0);
