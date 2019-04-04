@@ -169,8 +169,7 @@ async function init() {
         await loadTexture(viveHeadsetModelPath + 'foam.png'),
         await loadTexture(viveHeadsetModelPath + 'black.png'), //await loadTexture(viveHeadsetModelPath + 'screen.png')
     ];
-
-    console.log('loaded textures')
+    // TODO: where do these normal maps apply?
     //let viveHeadsetNormalsPNG = await loadTexture(viveHeadsetModelPath + 'normals.png');
 
     // build up the scene
@@ -1104,6 +1103,7 @@ function render() {
 
     if (sock && sock.socket && sock.socket.readyState === 1 && controller1 && controller2) {
 
+        // TODO: camera is probably not the right point to grab -- maybe there's somethign in the vive handling that is head position
         camera.getWorldPosition(userPose.head.pos);
         camera.getWorldQuaternion(userPose.head.orient);
         controller1.getWorldPosition(userPose.controller1.pos);
@@ -1213,20 +1213,12 @@ function handlemessage(msg, sock) {
                 scene.add(other.controller1);
                 other.controller2 = controllerMesh.clone();
                 scene.add(other.controller2);
-
-                
-                other.head = headsetMesh.clone(); //controllerMesh.clone();
+                other.head = headsetMesh.clone();
                 scene.add(other.head);
                 
-                //other.controller1 = new THREE.ViveController(0);
-                
-                //other.controller1.add(controllerMesh.clone());
-
-                // scene.add(other.controller2);
                 console.log("Created Controller");
             }
             // now copy msg.pose pos/orient etc. into other
-
 
             other.controller1.position.copy(msg.pose.controller1.pos);
             other.controller1.quaternion._x = msg.pose.controller1.orient._x;
@@ -1248,8 +1240,6 @@ function handlemessage(msg, sock) {
             other.head.quaternion._z = msg.pose.head.orient._z;
             other.head.quaternion._w = msg.pose.head.orient._w;
             other.head.matrixWorldNeedsUpdate = true;
-
-            
 
         } break;
         default:
