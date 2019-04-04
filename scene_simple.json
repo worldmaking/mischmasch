@@ -1,0 +1,32 @@
+{
+    "nodes": {
+      "noise_1": {
+        "_props": {
+          "kind": "noise",
+          "pos": [ 0.0, 1.5, 0.0 ], "orient": [ 0, 0, 0, 1 ]
+        },  
+        "signal": { "_props": { "kind": "outlet", "index": 0 } }
+      },
+      "outs_2": {
+        "_props": {
+          "kind": "outs",
+          "pos": [ 0.0, 0.8, 0.0 ], "orient": [ 0, 0, 0, 1 ]
+        },
+        "volume": {
+          "_props": {
+            "kind": "small_knob",
+            "value": 1.0, "range": [ 0, 1 ],
+            "taper": "log 3.8", "unit": "float"
+          }
+        },
+        "left_(mono)": { "_props": { "kind": "inlet", "index": 0 } },
+        "right_(stereo)": { "_props": { "kind": "inlet", "index": 1 } },
+        "left": { "_props": { "kind": "outlet", "index": 0 } },
+        "right": { "_props": { "kind": "outlet", "index": 1 } }
+      }
+    },
+    "arcs": [
+      ["noise_1.signal", "outs_2.left_(mono)"],
+      ["noise_1.signal", "outs_2.right_(stereo)"]
+    ]
+  }

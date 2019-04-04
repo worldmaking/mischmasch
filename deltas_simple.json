@@ -1,0 +1,106 @@
+[
+  [
+    {
+      "op": "newnode",
+      "path": "noise_1",
+      "kind": "noise",
+      "pos": [
+        0,
+        1.5,
+        0
+      ],
+      "orient": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    [
+      {
+        "op": "newnode",
+        "path": "noise_1.signal",
+        "kind": "outlet",
+        "index": 0
+      }
+    ]
+  ],
+  [
+    {
+      "op": "newnode",
+      "path": "outs_2",
+      "kind": "outs",
+      "pos": [
+        0,
+        0.8,
+        0
+      ],
+      "orient": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    [
+      {
+        "op": "newnode",
+        "path": "outs_2.volume",
+        "kind": "small_knob",
+        "value": 1,
+        "range": [
+          0,
+          1
+        ],
+        "taper": "log 3.8",
+        "unit": "float"
+      }
+    ],
+    [
+      {
+        "op": "newnode",
+        "path": "outs_2.left_(mono)",
+        "kind": "inlet",
+        "index": 0
+      }
+    ],
+    [
+      {
+        "op": "newnode",
+        "path": "outs_2.right_(stereo)",
+        "kind": "inlet",
+        "index": 1
+      }
+    ],
+    [
+      {
+        "op": "newnode",
+        "path": "outs_2.left",
+        "kind": "outlet",
+        "index": 0
+      }
+    ],
+    [
+      {
+        "op": "newnode",
+        "path": "outs_2.right",
+        "kind": "outlet",
+        "index": 1
+      }
+    ]
+  ],
+  {
+    "op": "connect",
+    "paths": [
+      "noise_1.signal",
+      "outs_2.left_(mono)"
+    ]
+  },
+  {
+    "op": "connect",
+    "paths": [
+      "noise_1.signal",
+      "outs_2.right_(stereo)"
+    ]
+  }
+]
