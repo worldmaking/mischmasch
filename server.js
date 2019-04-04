@@ -16,6 +16,8 @@ const { vec2, vec3, vec4, quat, mat3, mat4 } = require("gl-matrix");
 const got = require("./got/got")
 console.log(got)
 
+const scenefile = "scene_edited.json"
+
 const MaxAPI = (() => {
     try {
         return require("max-api");
@@ -32,7 +34,7 @@ if (MaxAPI) {
     //     MaxAPI.outlet("got a number", n);
     // });
     MaxAPI.addHandler("scene", (n) => {
-		scene = fs.readFile(__dirname + "/scene.json", 'utf8')
+		scene = fs.readFile(path.join(__dirname, scenefile), 'utf8')
 		MaxAPI.outlet("scene", scene);
     });
     // MaxAPI.addHandler(MaxAPI.MESSAGE_TYPES.ALL, (handled, ...args) => {
@@ -40,7 +42,7 @@ if (MaxAPI) {
     //     MaxAPI.outlet(args);
 	// });
 	// MaxAPI.addHandler("scene", () =>{
-	// 	scene = fs.readFile(__dirname + "/scene.json")
+	// 	scene = fs.readFile(__dirname + scenefile)
 	// 	MaxAPI.outlet("scene", scene);
 	// })
 	
@@ -63,7 +65,7 @@ if (MaxAPI) {
 
 //////////////////////// 
 
-let demo_scene = JSON.parse(fs.readFileSync("scene.json", "utf-8")); 
+let demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
 /*{
 	"nodes": {
 		"a": {
@@ -155,13 +157,16 @@ function send_all_clients(msg, ignore) {
 }
 
 // whenever a client connects to this websocket:
+let sessionId = 0;
 wss.on('connection', function(ws, req) {
 	console.log("server received a connection");
 	console.log("server has "+wss.clients.size+" connected clients");
 	
+	const id = ++sessionId;
 	const location = url.parse(req.url, true);
 	// You might use location.query.access_token to authenticate or share sessions
 	// or req.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
+	console.log(id)
 	
 	ws.on('error', function (e) {
 		if (e.message === "read ECONNRESET") {
@@ -188,7 +193,7 @@ wss.on('connection', function(ws, req) {
 
 		} else {
 			try {
-				handlemessage(JSON.parse(e), ws);
+				handlemessage(JSON.parse(e), ws, id);
 			} catch (e) {
 				console.log('bad JSON: ', e);
 			}
@@ -206,16 +211,32 @@ wss.on('connection', function(ws, req) {
     //send_all_clients("hi")
 });
 
-function handlemessage(msg, sock) {
+function handlemessage(msg, sock, id) {
 	switch (msg.cmd) {
 		case "get_scene": {
+			demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
 			// // Example sending some greetings:
 			sock.send(JSON.stringify({
 				cmd: "patch",
 				date: Date.now(),
+				id: id,
 				value: demo_scene
 			}));
-		}
+		} break;
+		case "updated_scene": {
+			// // Example sending some greetings:
+			let scenestr = JSON.stringify(msg.scene, null, "\t");
+			fs.writeFileSync(scenefile, scenestr, "utf-8");
+		} break;
+		case "user_pose": {
+			//console.log(JSON.stringify(msg.pose))
+			// broadcast this data... 
+			send_all_clients(JSON.stringify({
+				cmd: "user_pose",
+				date: Date.now(),
+				pose: msg.pose
+			}));
+		} break;
 		default: console.log("received JSON", msg, typeof msg);
 	}
 }

@@ -1,3 +1,4 @@
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // COMMON GEOMETRIES
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -11,19 +12,22 @@ let loadedFont;
 let viveControllerPath = 'js/three-r102/examples/models/obj/vive-controller/';
 let loadedController;
 
+let viveHeadsetModelPath = "models/viveHeadset/"
+let loadedHeadsetModel;
+
 // turn FontLoader into something we can await:
 async function loadFont(fontFile) {
     return new Promise(resolve => new THREE.FontLoader().load(fontFile, resolve));
 }
 
-async function loadOBJ(path){
+async function loadOBJ(path) {
     return new Promise(resolve => new THREE.OBJLoader().load(path, resolve));
 }
 
 let viveTextureLoader = new THREE.TextureLoader();
-viveTextureLoader.setPath(viveControllerPath);
+//viveTextureLoader.setPath(viveControllerPath);
 let viveTexturePNG, viveSpecularPNG;
-async function loadViveTexture(filename){
+async function loadTexture(filename) {
     return new Promise(resolve => viveTextureLoader.load(filename, resolve));
 }
 
@@ -49,17 +53,17 @@ const CONTROLLER_HIT_DISTANCE = 0.03;
 // let inlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
 // let outlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
 
-let inlet_geometry = new THREE.CylinderGeometry( NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT, 8 );
+let inlet_geometry = new THREE.CylinderGeometry(NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT, 8);
 let outlet_geometry = inlet_geometry;
 inlet_geometry.computeBoundingBox();
 
-let small_knob_geometry = new THREE.CylinderGeometry( SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, SMALL_KNOB_HEIGHT, 8 );
+let small_knob_geometry = new THREE.CylinderGeometry(SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, SMALL_KNOB_HEIGHT, 8);
 small_knob_geometry.computeBoundingBox();
 
-let large_knob_geometry = new THREE.CylinderGeometry( LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, LARGE_KNOB_HEIGHT, 8 );
+let large_knob_geometry = new THREE.CylinderGeometry(LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, LARGE_KNOB_HEIGHT, 8);
 large_knob_geometry.computeBoundingBox();
 
-let plug_geometry = new THREE.CylinderGeometry( CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE*0.2, CONTROL_POINT_DISTANCE, 8 );
+let plug_geometry = new THREE.CylinderGeometry(CONTROL_POINT_DISTANCE * 0.2, CONTROL_POINT_DISTANCE * 0.2, CONTROL_POINT_DISTANCE, 8);
 plug_geometry.computeBoundingBox();
 
 let n_switch_geometry = new THREE.BoxGeometry( LARGE_KNOB_RADIUS + 0.03, LARGE_KNOB_RADIUS  + 0.03, LARGE_KNOB_HEIGHT, 8 );
@@ -71,13 +75,16 @@ n_switch_slider_geometry.computeBoundingBox();
 let generic_geometry = new THREE.BoxBufferGeometry(0.6, 0.2, 0.05);
 generic_geometry.translate(generic_geometry.parameters.width/2, -generic_geometry.parameters.height/2, -generic_geometry.parameters.depth/2);
 
+let op_geometry = new THREE.BoxBufferGeometry(0.2, 0.2, 0.05);
+op_geometry.translate(op_geometry.parameters.width/2, -op_geometry.parameters.height/2, -op_geometry.parameters.depth/2);
+
 let label_material = new THREE.MeshStandardMaterial({
     color: 0x000000,
     transparent: true,
     opacity: 0.4,
     side: THREE.DoubleSide
     //, blending: THREE.AdditiveBlending
-        
+
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -92,23 +99,47 @@ let world = new THREE.Group();
 //world.rotateY(-Math.PI/2.)
 
 let controller1, controller2;
-
+let controllerMesh;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // OTHER GLOBALS
 //////////////////////////////////////////////////////////////////////////////////////////
 
+function createUserPose(id=0) {
+    return {
+        id: id,
+        head: {
+            pos: new THREE.Vector3(),
+            orient: new THREE.Quaternion()
+        },
+        controller1: {
+            pos: new THREE.Vector3(),
+            orient: new THREE.Quaternion()
+        },
+        controller2: {
+            pos: new THREE.Vector3(),
+            orient: new THREE.Quaternion()
+        },
+    }
+}
+
+let sock
+let userPose = createUserPose();
+let otherUsers = {};
+
+
 let allNodes = {};
 let allCables = [];
 
-let raycaster = new THREE.Raycaster(), intersected = [];
+let raycaster = new THREE.Raycaster(),
+    intersected = [];
 
 // temp variables to save allocations
 let tempMatrix = new THREE.Matrix4();
 let point = new THREE.Vector3();
 let delta;
 
-let tempPatch;
+let localPatch;
 let spawn = false;
 
 let subObjCount = 0;
@@ -125,8 +156,22 @@ async function init() {
     // load & wait for required resources:
     loadedFont = await loadFont(fontFile);
     loadedController = await loadOBJ(viveControllerPath + "vr_controller_vive_1_5.obj");
-    viveTexturePNG = await loadViveTexture('onepointfive_texture.png');
-    viveSpecularPNG = await loadViveTexture('onepointfive_spec.png');
+    viveTexturePNG = await loadTexture(viveControllerPath + 'onepointfive_texture.png');
+    viveSpecularPNG = await loadTexture(viveControllerPath + 'onepointfive_spec.png');
+    loadedHeadsetModel = await loadOBJ(viveHeadsetModelPath + "V2.obj");
+    let viveHeadsetPNGs = [
+        await loadTexture(viveHeadsetModelPath + 'base.png'),
+        await loadTexture(viveHeadsetModelPath + 'strap.png'),
+        await loadTexture(viveHeadsetModelPath + 'logo.png'),
+        await loadTexture(viveHeadsetModelPath + 'lens.png'),
+        await loadTexture(viveHeadsetModelPath + 'black.png'), //await loadTexture(viveHeadsetModelPath + 'dots.png'),
+        await loadTexture(viveHeadsetModelPath + 'black.png'),
+        await loadTexture(viveHeadsetModelPath + 'noise.png'),
+        await loadTexture(viveHeadsetModelPath + 'foam.png'),
+        await loadTexture(viveHeadsetModelPath + 'black.png'), //await loadTexture(viveHeadsetModelPath + 'screen.png')
+    ];
+    // TODO: where do these normal maps apply?
+    //let viveHeadsetNormalsPNG = await loadTexture(viveHeadsetModelPath + 'normals.png');
 
     // build up the scene
     scene = new THREE.Scene();
@@ -165,8 +210,8 @@ async function init() {
     scene.add(light);
 
     // VR controllers
-    controller1 = new THREE.ViveController( 0 );
-    controller2 = new THREE.ViveController( 1 );
+    controller1 = new THREE.ViveController(0);
+    controller2 = new THREE.ViveController(1);
     controller1.standingMatrix = renderer.vr.getStandingMatrix();
     controller2.standingMatrix = renderer.vr.getStandingMatrix();
     controller1.addEventListener("triggerdown", onSelectStart);
@@ -180,27 +225,57 @@ async function init() {
     scene.add(controller1);
     scene.add(controller2);
 
+
+    //Keypress
+    document.addEventListener("keyup", onKeyPress);
+
     {
-        let controllerMesh = loadedController.children[0];
+        
+        headsetMesh = loadedHeadsetModel.children[0]
+        const inch2m = 0.0254;
+        headsetMesh.geometry.scale(-inch2m, inch2m, -inch2m); // convert cm to m
+        for (let i in headsetMesh.material) {
+            if (viveHeadsetPNGs[i]) {
+                headsetMesh.material[i].map = viveHeadsetPNGs[i];
+            }
+        }
+        headsetMesh.castShadow = true;
+        headsetMesh.receiveShadow = true;
+        console.log(loadedHeadsetModel)
+    }
+
+    {
+        controllerMesh = loadedController.children[0];
         controllerMesh.material.map = viveTexturePNG;
         controllerMesh.material.specularMap = viveSpecularPNG;
         controllerMesh.castShadow = true;
         controllerMesh.receiveShadow = true;
-    
-        let pivot = new THREE.Mesh( new THREE.IcosahedronBufferGeometry( 0.01, 2 ) );
+
+        let pivot = new THREE.Mesh(new THREE.IcosahedronBufferGeometry(0.01, 2));
         pivot.name = 'pivot';
         //pivot.position.y = - 0.016;
-        //pivot.position.z = - 0.043;
-        //pivot.rotation.x = Math.PI / 5.5;
-        controllerMesh.add( pivot );
-        controller1.add( controllerMesh.clone() );
-        controller2.add( controllerMesh.clone() );
-       // pivot.material = pivot.material.clone();
-    
-    }
+        pivot.position.z = - 0.043;
+        pivot.rotation.x = Math.PI / 5.5;
+        controllerMesh.add(pivot);
+        controller1.add(controllerMesh.clone());
+        controller2.add(controllerMesh.clone());
+        // pivot.material = pivot.material.clone();
 
+        //Extra Controllers
+        // let controllers = controllerMesh.clone();
+        // controllers.position.fromArray([
+        //     1.0056755443927932,
+        //     1.5397452991727987,
+        //     0.054924342380011204
+        // ]);
+        // scene.add(controllers);
+    }
+    
     controller1.userData.thumbpadDX = 0;
     controller1.userData.thumbpadDY = 0;
+
+
+
 
     // controllers geometry
     let geometry = new THREE.BufferGeometry().setFromPoints([
@@ -216,7 +291,7 @@ async function init() {
     // 'world' represents the root node of the patch:
     scene.add(world);
 
-    
+
 
     // floor
     let floorGrid = new THREE.GridHelper(10, 10);
@@ -240,7 +315,6 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-let once =true;
 class Cable {
     constructor(src, dst) {
         this.src = src;
@@ -256,7 +330,7 @@ class Cable {
             side: THREE.DoubleSide,
             depthWrite: false,
             blending: THREE.AdditiveBlending
-            
+
         });
         let outlet_material = new THREE.MeshStandardMaterial({
             color: 0xff0000,
@@ -267,11 +341,11 @@ class Cable {
             side: THREE.DoubleSide,
             depthWrite: false,
             blending: THREE.AdditiveBlending
-            
+
         });
 
-        this.srcCtrlPt = new THREE.Mesh( plug_geometry, outlet_material );
-        this.dstCtrlPt = new THREE.Mesh( plug_geometry, inlet_material );
+        this.srcCtrlPt = new THREE.Mesh(plug_geometry, outlet_material);
+        this.dstCtrlPt = new THREE.Mesh(plug_geometry, inlet_material);
         world.add(this.srcCtrlPt);
         world.add(this.dstCtrlPt);
         this.srcCtrlPt.userData.moveable = true;
@@ -298,7 +372,7 @@ class Cable {
         //curve.curveType = 'centripetal'; 
         curve.curveType = 'chordal';
         curve.mesh = new THREE.Line(this.geometry, new THREE.LineBasicMaterial({
-            color: 0x00ff00,
+            color: 0xD3D3D3,
             opacity: 1,
             linewidth: 2
         }));
@@ -307,12 +381,8 @@ class Cable {
         // TODO: this shouldn't be needed
         curve.mesh.frustumCulled = false;
         
-        if(once){
-            console.log(src)
-            once = false;
-        }
         this.update();
-        
+
         curve.mesh.userData.moveable = true;
         world.add(curve.mesh)
     }
@@ -323,7 +393,7 @@ class Cable {
             this.src.getWorldQuaternion(this.srcCtrlPt.quaternion);
             this.src.getWorldPosition(this.positions[0]);
             this.positions[1]
-                .set(0, -(NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
+                .set(0, -(NLET_HEIGHT + CONTROL_POINT_DISTANCE) / 2, 0)
                 .applyQuaternion(this.srcCtrlPt.quaternion)
                 .add(this.positions[0]);
             this.srcCtrlPt.position.copy(this.positions[1]);
@@ -335,19 +405,18 @@ class Cable {
             // derive positions[0] from the srcCtrlPt
             this.srcCtrlPt.getWorldPosition(this.positions[1]);
             this.positions[0]
-                .set(0, (NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
+                .set(0, (NLET_HEIGHT + CONTROL_POINT_DISTANCE) / 2, 0)
                 .applyQuaternion(q)
                 .add(this.positions[1]);
             //Reset Color
-             this.curve.mesh.material.color.setRGB(0,1,0);
-
+             this.curve.mesh.material.color.setRGB(211,211,211);
         }
 
         if (this.dst) {
             this.dst.getWorldPosition(this.positions[3]);
             this.dst.getWorldQuaternion(this.dstCtrlPt.quaternion);
             this.positions[2]
-                .set(0, (NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
+                .set(0, (NLET_HEIGHT + CONTROL_POINT_DISTANCE) / 2, 0)
                 .applyQuaternion(this.dstCtrlPt.quaternion)
                 .add(this.positions[3]);
 
@@ -358,11 +427,10 @@ class Cable {
             // derive positions[3] from the srcCtrlPt
             this.dstCtrlPt.getWorldPosition(this.positions[2]);
             this.positions[3]
-                .set(0, -(NLET_HEIGHT + CONTROL_POINT_DISTANCE)/2, 0)
+                .set(0, -(NLET_HEIGHT + CONTROL_POINT_DISTANCE) / 2, 0)
                 .applyQuaternion(q)
                 .add(this.positions[2])
         }
-        ////////////////////
 
         let curve = this.curve;
         let mesh = this.curve.mesh;
@@ -374,6 +442,7 @@ class Cable {
             position.setXYZ(i, point.x, point.y, point.z);
         }
         position.needsUpdate = true;
+
         //this.geometry.computeBoundingBox();
     }
 }
@@ -397,7 +466,7 @@ function onSelectStart(event) {
             object.userData.cable.src = null;
         } else if (kind == "jack_inlet") {
             object.userData.cable.dst = null;
-        } 
+        }
 
         tempMatrix.getInverse(controller.matrixWorld);
         let parent = object.parent;
@@ -405,14 +474,14 @@ function onSelectStart(event) {
         object.matrix.premultiply(tempMatrix);
         object.matrix.decompose(object.position, object.quaternion, object.scale);
         if (object.material)
-        object.material.emissive.b = 1;
-        
+            object.material.emissive.b = 1;
+
         controller.userData.selected = object;
         controller.userData.parent = parent;
         controller.add(object); //removes from previous parent
     }
 
-    
+
     if (object && !object.userData.moveable) {
         let kind = object.userData.kind;
         if (kind == "outlet") {
@@ -432,8 +501,8 @@ function onSelectStart(event) {
             allCables.push(cable);
             controller.add(object); //removes from previous parent
         }
-        
-            controller.userData.selected = object;
+
+        controller.userData.selected = object;
     }
 }
 
@@ -467,10 +536,10 @@ function onSelectEnd(event) {
                     
                 }
             }
-    
+
 
         } else if (object.userData.kind == "jack_inlet") {
-            
+
             let intersections = getIntersections(object, 0, -1, 0);
             if (intersections.length > 0) {
                 let intersection = intersections[0];
@@ -478,26 +547,28 @@ function onSelectEnd(event) {
                 if (o.userData.kind == "inlet") {
                     // we have a hit! disconnect
                     object.userData.cable.dst = o;
-                } 
+                }
             }
         }
 
     }
+
+    syncLocalPatch();
 }
 
-function onSpawn(event){
+function onSpawn(event) {
     let controller = event.target;
     if(controller.getButtonState('thumbpad') === undefined) return;
     if(controller.getButtonState('trigger') == false){
         
         let rand = [];
-        for (let k in tempPatch.nodes) {
+        for (let k in localPatch.nodes) {
             rand.push(k);
         }
         spawn = true;
         let nodeNum = randomIntFromInterval(0, rand.length -1);
         generateNode(world, 
-            tempPatch.nodes[rand[nodeNum]], 
+            localPatch.nodes[rand[nodeNum]], 
             rand[nodeNum]); 
 
             //console.log(randomIntFromInterval(0, rand.length))
@@ -505,7 +576,7 @@ function onSpawn(event){
         // request scene:
         //sock.send({ cmd: "get_scene", date: Date.now() });
     }
-     
+
 }
 
 function randomIntFromInterval(min,max) // min and max included
@@ -520,7 +591,7 @@ function getIntersections(controller, x, y, z) {
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
     let intersections = raycaster.intersectObjects(world.children, true);
-    while(intersections.length > 0 && !intersections[0].object.userData.selectable) intersections.shift();
+    while (intersections.length > 0 && !intersections[0].object.userData.selectable) intersections.shift();
     return intersections;
 }
 
@@ -532,8 +603,8 @@ function intersectObjects(controller) {
     if (intersections.length > 0) {
         let intersection = intersections[0];
         let object = intersection.object;
-        if(object.material.emissive)
-        object.material.emissive.r = 1;
+        if (object.material.emissive)
+            object.material.emissive.r = 1;
         intersected.push(object);
         line.scale.z = intersection.distance;
     } else {
@@ -544,24 +615,25 @@ function intersectObjects(controller) {
 function cleanIntersected() {
     while (intersected.length) {
         let object = intersected.pop();
-        if(object.material.emissive)
-        object.material.emissive.r = 0;
+        if (object.material.emissive)
+            object.material.emissive.r = 0;
     }
 }
           
 function generateLabel(message, label_size) {
     let shapes;
+    let msg = message.replace(/_/g, " ")
     if(label_size !== undefined){
-        shapes = loadedFont.generateShapes(message, label_size);
+        shapes = loadedFont.generateShapes(msg, label_size);
     } else {
-        shapes = loadedFont.generateShapes(message, LABEL_SIZE);
+        shapes = loadedFont.generateShapes(msg, LABEL_SIZE);
     }
 
     let shapeGeometry = new THREE.ShapeBufferGeometry(shapes);
     shapeGeometry.computeBoundingBox();
 
     text = new THREE.Mesh(shapeGeometry, label_material);
-    
+
     return text;
 }
 
@@ -630,7 +702,7 @@ function generateNode(parent, node, name) {
             //Takes Radians
             container.rotation.x = 1.5708;
            
-            let label = generateLabel(parent.userData.name, LARGE_KNOB_HEIGHT/2);
+            let label = generateLabel(name, LARGE_KNOB_HEIGHT/2);
             label.position.y = 0.01;
             label.position.x = -LARGE_KNOB_RADIUS /2;
             label.rotation.x = -1.5708;
@@ -650,7 +722,7 @@ function generateNode(parent, node, name) {
                 generic_geometry.parameters.depth/2 - SMALL_KNOB_HEIGHT]);
             container.rotation.x = 1.5708;
             //Label
-            let label = generateLabel(parent.userData.name, SMALL_KNOB_HEIGHT/2.7);
+            let label = generateLabel(name, SMALL_KNOB_HEIGHT/2.7);
             label.position.y = 0.01;
             label.position.x = -SMALL_KNOB_RADIUS /2;
             label.rotation.x = -1.5708;
@@ -669,7 +741,7 @@ function generateNode(parent, node, name) {
                 -generic_geometry.parameters.height - NLET_HEIGHT/2, 
                 -NLET_RADIUS]);
            
-            let label = generateLabel(parent.userData.name, NLET_HEIGHT);
+            let label = generateLabel(name, SMALL_KNOB_HEIGHT/2.7);
             label.position.y = -0.01;
             label.position.x = -NLET_RADIUS /2;
             label.rotation.x = 1.5708;
@@ -688,7 +760,7 @@ function generateNode(parent, node, name) {
                 NLET_HEIGHT/2, 
                 -NLET_RADIUS]);
     
-            let label = generateLabel(parent.userData.name, NLET_HEIGHT);
+            let label = generateLabel(name, NLET_HEIGHT);
             label.position.y = 0.01;
             label.position.x = -NLET_RADIUS /2;
             label.rotation.x = -1.5708;
@@ -749,11 +821,37 @@ function generateNode(parent, node, name) {
             break;
         }
         default: {
+            let labelName;
+            if(props.kind.substring(0,3) == "op_") {
+                // use a square shape
+                // trim "op_" from the label
+                container = new THREE.Mesh(op_geometry, generic_material);
+                container.castShadow = true;
+                container.receiveShadow = true;
+                labelName = props.kind.substring(3);
 
+            } else if(props.kind == "param"){
+                container = new THREE.Mesh(op_geometry, generic_material);
+                container.castShadow = true;
+                container.receiveShadow = true;
+                let n = name.split('_');
+                n.shift();
+                n.pop();
+                let w = n.join("");
+                // let n = name.split("_")
+                // .shift()
+                // .pop()
+                // .join("");
+
+                labelName = w;
+            } else {
             // generic object:
             container = new THREE.Mesh(generic_geometry, generic_material);
             container.castShadow = true;
             container.receiveShadow = true;
+            labelName = props.kind;
+                
+            }
 
             if(spawn === true){
                 let pos = controller1.getWorldPosition();
@@ -772,9 +870,10 @@ function generateNode(parent, node, name) {
             } else{
                 container.position = parent.position.clone();
             }
-            let label = generateLabel(props.kind);
+            let label = generateLabel(labelName);
             label.position.y = -LABEL_SIZE;
             label.position.z += 0.01;
+            label.position.x = 0.005;
             container.add(label);
             container.userData.moveable = true; 
             subObjCount = 0;   
@@ -794,6 +893,7 @@ function generateNode(parent, node, name) {
     container.userData.path = path;
     container.userData.kind = props.kind;
     container.userData.selectable = true;
+    container.userData.localPatchNode = node;
 
     allNodes[path] = container;
 
@@ -809,12 +909,11 @@ function generateNode(parent, node, name) {
     }
 
 }
-
 function generateScene(patch) {
 
     clearScene();
     
-    tempPatch = patch;
+    localPatch = patch;
 
     let nodes = patch.nodes;
     for (let k in nodes) {
@@ -837,6 +936,53 @@ function generateScene(patch) {
     }
 }
 
+
+function syncLocalPatchNode(obj) {
+    let v = new THREE.Vector3();
+    let q = new THREE.Quaternion();
+    
+    obj.getWorldPosition(v);
+    obj.getWorldQuaternion(q);
+    // update the pos and orient props in the corresponding object in the localPatch
+    let props = obj.userData.localPatchNode._props;
+    if(props.pos && props.orient){
+        props.pos[0] = v.x;
+        props.pos[1] = v.y;
+        props.pos[2] = v.z;
+        props.orient[0] = q.x;
+        props.orient[1] = q.y;
+        props.orient[2] = q.z;
+        props.orient[3] = q.w;
+    }
+
+    if (sock) {
+        sock.send({
+            cmd: "updated_scene",
+            date: Date.now(),
+            scene: localPatch,
+        });
+    }
+}
+
+function syncLocalPatch() {
+    for (let path in allNodes) {
+        syncLocalPatchNode(allNodes[path])
+    }
+}
+
+
+function onKeyPress(e) {
+
+    if (e.keyCode == 13) {
+        syncLocalPatch();
+        console.log(localPatch)
+    }
+    if (e.keyCode == 83){
+        console.log("saving image")
+        webutils.saveCanvasToPNG(canvas);
+    }
+}
+
 function animate() {
     renderer.setAnimationLoop(render);
 }
@@ -855,8 +1001,18 @@ function render() {
     //Objects
     cleanIntersected();
 
+    try {
+
     controller1.update();
     controller2.update();
+
+    } catch(e) {
+        console.warn(e)
+    }
+
+    // for(let u in otherUsers){
+    //     otherUsers[u].controller1.update();
+    // }
 
     let gamepad = controller1.getGamepad();
     if (gamepad) {
@@ -874,7 +1030,7 @@ function render() {
                 controller1.userData.thumbpadDX = gamepad.axes[0] - controller1.userData.thumbpadX;
                 controller1.userData.thumbpadDY = gamepad.axes[1] - controller1.userData.thumbpadY;
             }
-            
+
             controller1.userData.thumbpadX = gamepad.axes[0];
             controller1.userData.thumbpadY = gamepad.axes[1];
 
@@ -898,10 +1054,24 @@ function render() {
 
         if (object.userData.moveable) {
             let s = 1. + (controller1.userData.thumbpadDY);
+            let r = 1. + (controller1.userData.thumbpadDX);
             object.position.multiplyScalar(s);
+            
+            let rot = new THREE.Vector3(object.rotation.x, object.rotation.y, object.rotation.z);
+            rot.multiplyScalar(r);
+            //object.rotation.x = rot.x;
+            object.rotation.y = rot.y;
+            //object.rotation.z = rot.z;
+            //object.quaternion.multiply(r);
+
         } else if (object.userData.turnable) {
             // do UI effeect
-            object.rotateY(Math.PI / 90);
+            //object.rotateY(Math.PI / 90);
+          
+            //object.quaternion._y = controller1.quaternion._y;
+            //object.quaternion._z = controller1.quaternion._z;
+
+
         }
 
         // // if it is a jack, see if we can hook up?
@@ -917,9 +1087,9 @@ function render() {
         //             o.getWorldPosition(object.userData.positions[0])
         //         }
         //     }
-        
 
-    
+
+
 
         // } else if (object.userData.kind == "jack_inlet") {
         //     object.userData.cable.dst = null;
@@ -943,28 +1113,44 @@ function render() {
         }
     }
 
+    if (sock && sock.socket && sock.socket.readyState === 1 && controller1 && controller2) {
+
+        // TODO: camera is probably not the right point to grab -- maybe there's somethign in the vive handling that is head position
+        camera.getWorldPosition(userPose.head.pos);
+        camera.getWorldQuaternion(userPose.head.orient);
+        controller1.getWorldPosition(userPose.controller1.pos);
+        controller1.getWorldQuaternion(userPose.controller1.orient);
+        controller2.getWorldPosition(userPose.controller2.pos);
+        controller2.getWorldQuaternion(userPose.controller2.orient);
+
+        sock.send({
+            cmd: "user_pose",
+            date: Date.now(),
+            pose: userPose
+        });
+    }
 
     intersectObjects(controller1);
     intersectObjects(controller2);
     renderer.render(scene, camera);
-    
+
     stats.end();
 }
 
-function onGrips(event){
+function onGrips(event) {
     let controller = event.target;
-    if(controller.getButtonState("grips")){
-        
+    if (controller.getButtonState("grips")) {
+
     }
 }
 
-function clearScene(){
-    while(world.children.length > 0){ 
-        world.remove(world.children[0]); 
+function clearScene() {
+    while (world.children.length > 0) {
+        world.remove(world.children[0]);
     }
     allNodes = {};
     allCables = [];
-    
+
 }
 
 
@@ -972,10 +1158,10 @@ function clearScene(){
 // Websocket handling
 /////////////////////////////////////////////////////
 
-let sock
+
 function connect_to_server() {
     try {
-        if (window.location.hostname == "localhost") {
+        if (window.location.hostname/* == "localhost"*/) {
             sock = new Socket({
                 reload_on_disconnect: true,
                 reconnect_period: 1000,
@@ -983,7 +1169,10 @@ function connect_to_server() {
                     //this.send({ cmd: "getdata", date: Date.now() });
                     write("connected to server");
                     // request scene:
-                    this.send({ cmd: "get_scene", date: Date.now() });
+                    this.send({
+                        cmd: "get_scene",
+                        date: Date.now()
+                    });
                 },
                 onmessage: function (m) {
                     handlemessage(m, this);
@@ -997,18 +1186,74 @@ function connect_to_server() {
         console.error(e);
     }
 }
-
+let count = 0;
 function handlemessage(msg, sock) {
-	switch (msg.cmd) {
-		case "patch": {
-            // lazy deep copy:
-            patch = JSON.parse(JSON.stringify(msg.value));
-            write("received patch");
-            
+    switch (msg.cmd) {
+        case "patch":
+            {
+                userPose.id = msg.id;
 
-            //Input JSON files to be parsed on generations
-            generateScene(patch);
-		} break;
-		default: console.log("received JSON", msg, typeof msg);
-	}
+   
+                // lazy deep copy:
+                patch = JSON.parse(JSON.stringify(msg.value));
+                write("received patch for user " +  userPose.id);
+
+
+                //Input JSON files to be parsed on generations
+                generateScene(patch);
+            }
+            break;
+        case "user_pose": {
+            let id = msg.pose.id;
+
+            // ignore our self!
+            if (id == userPose.id) break;
+    
+            // now add another user pose for this ID.
+            // if msg.pos.id != userPose.id, then draw it
+            // check if we have a userPose already set up for this id.
+            //write(msg.pose)
+
+            let other = otherUsers[id];
+           
+            if (!other) {
+                // create it
+                other = createUserPose(id);
+                otherUsers[id] = other;
+                other.controller1 = controllerMesh.clone();
+                scene.add(other.controller1);
+                other.controller2 = controllerMesh.clone();
+                scene.add(other.controller2);
+                other.head = headsetMesh.clone();
+                scene.add(other.head);
+                
+                console.log("Created Controller");
+            }
+            // now copy msg.pose pos/orient etc. into other
+
+            other.controller1.position.copy(msg.pose.controller1.pos);
+            other.controller1.quaternion._x = msg.pose.controller1.orient._x;
+            other.controller1.quaternion._y = msg.pose.controller1.orient._y;
+            other.controller1.quaternion._z = msg.pose.controller1.orient._z;
+            other.controller1.quaternion._w = msg.pose.controller1.orient._w;
+            other.controller1.matrixWorldNeedsUpdate = true;
+            
+            other.controller2.position.copy(msg.pose.controller2.pos);
+            other.controller2.quaternion._x = msg.pose.controller2.orient._x;
+            other.controller2.quaternion._y = msg.pose.controller2.orient._y;
+            other.controller2.quaternion._z = msg.pose.controller2.orient._z;
+            other.controller2.quaternion._w = msg.pose.controller2.orient._w;
+            other.controller2.matrixWorldNeedsUpdate = true;
+            
+            other.head.position.copy(msg.pose.head.pos);
+            other.head.quaternion._x = msg.pose.head.orient._x;
+            other.head.quaternion._y = msg.pose.head.orient._y;
+            other.head.quaternion._z = msg.pose.head.orient._z;
+            other.head.quaternion._w = msg.pose.head.orient._w;
+            other.head.matrixWorldNeedsUpdate = true;
+
+        } break;
+        default:
+            console.log("received JSON", msg, typeof msg);
+    }
 }
