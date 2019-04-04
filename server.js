@@ -231,13 +231,11 @@ function handlemessage(msg, sock, id) {
 		case "user_pose": {
 			//console.log(JSON.stringify(msg.pose))
 			// broadcast this data... 
-			send_all_clients(JSON.stringify(
-				{
+			send_all_clients(JSON.stringify({
 				cmd: "user_pose",
 				date: Date.now(),
 				pose: msg.pose
-			})
-			);
+			}));
 		} break;
 		default: console.log("received JSON", msg, typeof msg);
 	}

@@ -971,6 +971,10 @@ function render() {
     controller1.update();
     controller2.update();
 
+    // for(let u in otherUsers){
+    //     otherUsers[u].controller1.update();
+    // }
+
     let gamepad = controller1.getGamepad();
     if (gamepad) {
         let button0 = gamepad.buttons[0];
@@ -1165,23 +1169,22 @@ function handlemessage(msg, sock) {
             if (!otherUsers[id]) {
                 // create it
                 otherUsers[id] = createUserPose(id);
-                otherUsers[id].controller1 = controllerMesh.clone();
+
                 // otherUsers[id].controller2 = controllerMesh.clone();
+                otherUsers[id].controller1 = new THREE.ViveController(0);
                 scene.add(otherUsers[id].controller1);
+                otherUsers[id].controller1.add(controllerMesh.clone());
+
                 // scene.add(otherUsers[id].controller2);
                 console.log("Created Controller");
             }
             // now copy msg.pose pos/orient etc. into otherUsers[id]
- 
+            
             otherUsers[id].controller1.position.copy(msg.pose.controller1.pos);
             otherUsers[id].controller1.quaternion.copy(msg.pose.controller1.orient);
             // otherUsers[id].controller2.position.copy(msg.pose.controller2.pos);
             // otherUsers[id].controller2.quaternion.copy(msg.pose.controller2.orient);
 
-            if(count <10){
-                console.log(msg)
-                count++;
-            }
         } break;
         default:
             console.log("received JSON", msg, typeof msg);
