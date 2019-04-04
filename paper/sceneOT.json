@@ -1,0 +1,23 @@
+let d = [
+	[
+	  { op:"newnode", path:"a", kind:"noise", pos:[10,10] }, 
+	  { op:"newnode", path:"a.signal", kind:"outlet" }, 
+	],
+	[
+	  { op:"newnode", path:"b", kind:"dac", pos:[10,50] },
+	  { op:"newnode", path:"b.source", kind:"inlet" }, 
+	],
+	{ op:"connect", paths: ["a.signal", "b.source"] },
+	{ op:"newnode", path:"child", kind:"group", pos:[50,50] },
+	[
+	  { op:"newnode", path:"child.a", kind:"beep", pos:[10,10] },
+	  { op:"newnode", path:"child.a.signal", kind:"outlet" }
+	], 
+	{ op:"connect", paths: ["child.a.signal", "b"] },
+
+	{ op:"newnode", path:"x", kind:"noise", pos:[10,10] },
+	{ op:"repath", paths: ["child.a", "child.aa"] },
+
+	// change a property
+	{ op:"propchange", path:"x", name:"pos", from:[10,10], to:[20,20] }
+];
