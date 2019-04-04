@@ -1,3 +1,4 @@
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // COMMON GEOMETRIES
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -253,8 +254,8 @@ async function init() {
         let pivot = new THREE.Mesh(new THREE.IcosahedronBufferGeometry(0.01, 2));
         pivot.name = 'pivot';
         //pivot.position.y = - 0.016;
-        //pivot.position.z = - 0.043;
-        //pivot.rotation.x = Math.PI / 5.5;
+        pivot.position.z = - 0.043;
+        pivot.rotation.x = Math.PI / 5.5;
         controllerMesh.add(pivot);
         controller1.add(controllerMesh.clone());
         controller2.add(controllerMesh.clone());
@@ -1000,8 +1001,14 @@ function render() {
     //Objects
     cleanIntersected();
 
+    try {
+
     controller1.update();
     controller2.update();
+
+    } catch(e) {
+        console.warn(e)
+    }
 
     // for(let u in otherUsers){
     //     otherUsers[u].controller1.update();
@@ -1059,7 +1066,12 @@ function render() {
 
         } else if (object.userData.turnable) {
             // do UI effeect
-            object.rotateY(Math.PI / 90);
+            //object.rotateY(Math.PI / 90);
+          
+            //object.quaternion._y = controller1.quaternion._y;
+            //object.quaternion._z = controller1.quaternion._z;
+
+
         }
 
         // // if it is a jack, see if we can hook up?
