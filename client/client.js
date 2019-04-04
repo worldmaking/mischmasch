@@ -163,11 +163,11 @@ async function init() {
         await loadTexture(viveHeadsetModelPath + 'strap.png'),
         await loadTexture(viveHeadsetModelPath + 'logo.png'),
         await loadTexture(viveHeadsetModelPath + 'lens.png'),
-        null, //await loadTexture(viveHeadsetModelPath + 'dots.png'),
-        null, //await loadTexture(viveHeadsetModelPath + 'black.png'),
+        await loadTexture(viveHeadsetModelPath + 'black.png'), //await loadTexture(viveHeadsetModelPath + 'dots.png'),
+        await loadTexture(viveHeadsetModelPath + 'black.png'),
         await loadTexture(viveHeadsetModelPath + 'noise.png'),
         await loadTexture(viveHeadsetModelPath + 'foam.png'),
-        null, //await loadTexture(viveHeadsetModelPath + 'screen.png')
+        await loadTexture(viveHeadsetModelPath + 'black.png'), //await loadTexture(viveHeadsetModelPath + 'screen.png')
     ];
 
     console.log('loaded textures')
