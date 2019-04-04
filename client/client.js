@@ -13,7 +13,7 @@ let viveControllerPath = 'js/three-r102/examples/models/obj/vive-controller/';
 let loadedController;
 
 let viveHeadsetModelPath = "models/viveHeadset/"
-let loadedHeadsetModel
+let loadedHeadsetModel;
 
 // turn FontLoader into something we can await:
 async function loadFont(fontFile) {
