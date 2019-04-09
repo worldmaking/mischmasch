@@ -141,6 +141,7 @@ let delta;
 
 let localPatch;
 let spawn = false;
+let controllerPrevPos;
 
 let subObjCount = 0;
 let subInletCount = 0;
@@ -678,9 +679,10 @@ function generateNode(parent, node, name) {
         blending: THREE.AdditiveBlending
         
     });
-    let inlet_material = generic_material
-    let outlet_material = generic_material
-    let n_switch_material = generic_material
+    let inlet_material = generic_material.clone();
+    let outlet_material = generic_material.clone();
+    let n_switch_material = generic_material.clone();
+    let n_switch_slider_material = generic_material.clone();
     
     
 
@@ -709,6 +711,7 @@ function generateNode(parent, node, name) {
             container.add(label);
 
             container.userData.turnable = true;
+            container.userData.selectable = true;
             subObjCount++;
             break;
         }
@@ -729,6 +732,7 @@ function generateNode(parent, node, name) {
             container.add(label);
 
             container.userData.turnable = true;
+            container.userData.selectable = true;
             subObjCount++;
             break;
         }
@@ -748,6 +752,7 @@ function generateNode(parent, node, name) {
             container.add(label);
                 
             //container.userData.moveable = true;
+            container.userData.selectable = true;
             subOutletCount++;
             break;
         }
@@ -768,6 +773,7 @@ function generateNode(parent, node, name) {
             
             // container.userData.moveable = true;
             subInletCount++;
+            container.userData.selectable = true;
             break;
         }
         case "n_switch": {
@@ -779,7 +785,8 @@ function generateNode(parent, node, name) {
                 -generic_geometry.parameters.height/2 - LARGE_KNOB_HEIGHT/2, 
                 generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
             
-                //Draw N_SWTICH Label name itself
+            let switchPositions = [];
+            //Draw N_SWTICH Label name itself
             // let label = generateLabel(parent.userData.name, .01);
             // label.position.y =  0;
             // label.position.z = 0;
@@ -788,27 +795,37 @@ function generateNode(parent, node, name) {
                 let y = -container.position.y / 2;
                 for(let l =0; l < props.throws.length; l++){
                     let labelN = generateLabel(props.throws[l], .01);
+
                     labelN.position.y = y - container.geometry.parameters.height / 3.5;
                     y = labelN.position.y;
                     labelN.position.z = 0;
                     labelN.position.x = -0.01;
-                    
+                    switchPositions[l] = [labelN.position.x + -0.02,
+                        labelN.position.y,
+                        labelN.position.z + n_switch_slider_geometry.parameters.width/2];
+
                     if(props.value !== undefined && props.value === l){
-                        n_switch_slider = new THREE.Mesh(n_switch_slider_geometry, inlet_material);
+                        n_switch_slider = new THREE.Mesh(n_switch_slider_geometry, n_switch_slider_material);
                         n_switch_slider.castShadow = true;
                         n_switch_slider.receiveShadow = true;
-                        n_switch_slider.position.fromArray([
-                            labelN.position.x + -0.02,
-                            labelN.position.y,
-                            labelN.position.z+ -0.005,
-                        ]);
+                        n_switch_slider.userData.slideable = true;
+                        n_switch_slider.userData.selectable = true;
+                        n_switch_slider.position.fromArray(switchPositions[l]);
+                       
                         container.add(n_switch_slider);
+
                     }
                     container.add(labelN);
+
                 }
 
             }
+
             subObjCount++;
+            container.userData.positions = switchPositions;
+            container.userData.selectable = false;
+            container.userData.slideable = false;
+
             break;
         }
         case "group": {
@@ -817,6 +834,7 @@ function generateNode(parent, node, name) {
             container.receiveShadow = true;
             container.position.fromArray(props.pos);
             container.userData.moveable = true;
+            container.userData.selectable = true;
             
             break;
         }
@@ -876,6 +894,7 @@ function generateNode(parent, node, name) {
             label.position.x = 0.005;
             container.add(label);
             container.userData.moveable = true; 
+            container.userData.selectable = true;
             subObjCount = 0;   
             subInletCount = 0;
             subOutletCount = 0;
@@ -892,7 +911,8 @@ function generateNode(parent, node, name) {
     container.userData.name = name;
     container.userData.path = path;
     container.userData.kind = props.kind;
-    container.userData.selectable = true;
+    //Default makes everything selectable
+    //container.userData.selectable = true;
     container.userData.localPatchNode = node;
 
     allNodes[path] = container;
@@ -1005,7 +1025,6 @@ function render() {
 
     controller1.update();
     controller2.update();
-
     } catch(e) {
         console.warn(e)
     }
@@ -1047,6 +1066,7 @@ function render() {
     if (controller1.userData.selected) {
         let object = controller1.userData.selected;
 
+
         // if what we have selected is a jack,
         // then do ray intersection as usual
         // if ray target is inlet/outlet (appropriately)
@@ -1072,8 +1092,25 @@ function render() {
             //object.quaternion._z = controller1.quaternion._z;
 
 
-        }
+        } else if (object.userData.slideable){
 
+            let controllerPos = new THREE.Vector3();
+            controller1.getWorldPosition(controllerPos);
+
+            if(controllerPrevPos !== undefined){
+                if(controllerPrevPos.y < controllerPos.y){
+                    if(object.parent.userData.localPatchNode._props.value > 0){
+                        object.position.fromArray(object.parent.userData.positions[object.parent.userData.localPatchNode._props.value-1]);
+                    } 
+                } else if(controllerPrevPos.y > controllerPos.y){
+                    if(object.parent.userData.localPatchNode._props.value < object.parent.userData.positions.length){
+                        object.position.fromArray(object.parent.userData.positions[object.parent.userData.localPatchNode._props.value+1]);
+                    }
+                }   
+            }
+            controllerPrevPos = controllerPos;
+        }
+ 
         // // if it is a jack, see if we can hook up?
         // if (object.userData.kind == "jack_outlet") {
 
