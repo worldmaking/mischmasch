@@ -147,6 +147,9 @@ let subObjCount = 0;
 let subInletCount = 0;
 let subOutletCount = 0;
 
+//Simple debug hack
+let once = true;
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // BOOT SEQUENCE
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1062,7 +1065,6 @@ function render() {
             //console.log("release")
         }
     }
-
     if (controller1.userData.selected) {
         let object = controller1.userData.selected;
 
@@ -1094,22 +1096,31 @@ function render() {
 
         } else if (object.userData.slideable){
 
-            let controllerPos = new THREE.Vector3();
-            controller1.getWorldPosition(controllerPos);
-
-            if(controllerPrevPos !== undefined){
-                if(controllerPrevPos.y < controllerPos.y){
-                    if(object.parent.userData.localPatchNode._props.value > 0){
-                        object.position.fromArray(object.parent.userData.positions[object.parent.userData.localPatchNode._props.value-1]);
-                    } 
-                } else if(controllerPrevPos.y > controllerPos.y){
-                    if(object.parent.userData.localPatchNode._props.value < object.parent.userData.positions.length){
-                        object.position.fromArray(object.parent.userData.positions[object.parent.userData.localPatchNode._props.value+1]);
-                    }
-                }   
+            // simple hack: 
+            if(once){
+                let controllerPos = new THREE.Vector3();
+                controller1.getWorldPosition(controllerPos);
+    
+                if(controllerPrevPos !== undefined){
+                    console.log(object.parent.userData.localPatchNode._props.value)
+                    if(controllerPrevPos.y < controllerPos.y){
+                        if(object.parent.userData.localPatchNode._props.value > 0){
+                            object.parent.userData.localPatchNode._props.value -= 1;
+                            object.position.fromArray(object.parent.userData.positions[object.parent.userData.localPatchNode._props.value]);
+                        } 
+                    } else if(controllerPrevPos.y > controllerPos.y){
+                        if(object.parent.userData.localPatchNode._props.value < object.parent.userData.positions.length - 1){
+                            object.parent.userData.localPatchNode._props.value += 1;
+                            object.position.fromArray(object.parent.userData.positions[object.parent.userData.localPatchNode._props.value]);
+                        }
+                    }   
+                }
+                controllerPrevPos = controllerPos;
+                once = false;
             }
-            controllerPrevPos = controllerPos;
+          
         }
+        
  
         // // if it is a jack, see if we can hook up?
         // if (object.userData.kind == "jack_outlet") {
@@ -1148,6 +1159,9 @@ function render() {
                 // if kind is outlet/inlet, start a patch coord
             }
         }
+
+        //simple hack for selected then deseleted
+        once = true;
     }
 
     if (sock && sock.socket && sock.socket.readyState === 1 && controller1 && controller2) {
