@@ -1593,10 +1593,23 @@ function render() {
         } else if (object.userData.turnable) {
             // do UI effeect
             //object.rotateY(Math.PI / 90);
-          
-            //object.quaternion._y = controller1.quaternion._y;
-            //object.quaternion._z = controller1.quaternion._z;
+            
+            //put controller into knob space using matrix
+            //get controller angle via x and y
+            //set angle to the knob
+            //take controller out of knob space
 
+            // tempMatrix.getInverse(object.matrixWorld);
+            // let parent = object.parent;
+            // controller1.matrix.premultiply(parent.matrixWorld);
+            // controller1.matrix.premultiply(tempMatrix);
+            // controller1.matrix.decompose(controller1.position, controller1.quaternion, controller1.scale);
+            //object.rotateY(Math.atan2(controller1.rotation.y - object.rotation.y, controller1.rotation.x - object.rotation.x));
+            let currentPos = object.rotation.y;
+
+            object.rotation.y = controller1.rotation.z;
+            
+            
 
         } else if (object.userData.slideable){
 
