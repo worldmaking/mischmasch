@@ -213,6 +213,15 @@ wss.on('connection', function(ws, req) {
 
 function handlemessage(msg, sock, id) {
 	switch (msg.cmd) {
+		case "deltas": {
+			// TODO: merge OTs
+
+			send_all_clients(JSON.stringify({
+				cmd: "deltas",
+				date: Date.now(),
+				data: msg.data
+			}));
+		} break;
 		case "get_scene": {
 			demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
 			// // Example sending some greetings:

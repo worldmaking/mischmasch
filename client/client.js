@@ -127,9 +127,15 @@ let sock
 let userPose = createUserPose();
 let otherUsers = {};
 
+let incomingDeltas = [];
+let outgoingDeltas = [];
 
 let allNodes = {};
 let allCables = [];
+
+function getObjectByPath(path) {
+    return allNodes[path];
+}
 
 let raycaster = new THREE.Raycaster(),
     intersected = [];
@@ -388,7 +394,9 @@ class Cable {
         this.update();
 
         curve.mesh.userData.moveable = true;
-        world.add(curve.mesh)
+        world.add(curve.mesh);
+
+        allCables.push(this);
     }
 
     update() {
@@ -449,6 +457,20 @@ class Cable {
 
         //this.geometry.computeBoundingBox();
     }
+
+    destroy() {
+
+        // destroy the cable and its objects
+        // and remove it from allCables
+        world.remove(this.srcCtrlPt);
+        world.remove(this.dstCtrlPt);
+        world.remove(this.curve.mesh);
+
+        allCables = allCables.filter(value => {
+            // keep cables that are not us:
+            return value != this;
+        });
+    }
 }
 
 function onSelectStart(event) {
@@ -466,12 +488,21 @@ function onSelectStart(event) {
     if (object && object.userData.moveable) {
 
         let kind = object.userData.kind;
-        if (kind == "jack_outlet") {
-            object.userData.cable.src = null;
-        } else if (kind == "jack_inlet") {
-            object.userData.cable.dst = null;
-        }
+        if (kind == "jack_inlet" || kind == "jack_outlet") {
+            let cable = object.userData.cable;
+            if (cable.dst && cable.src) {
+                // send a delta:
+                outgoingDeltas.push(
+                    { op:"disconnect", paths:[cable.src.userData.path, cable.dst.userData.path] }
+                );
+            }
 
+            if (kind == "jack_outlet") {
+                cable.src = null;
+            } else if (kind == "jack_inlet") {
+                cable.dst = null;
+            }
+        }
         tempMatrix.getInverse(controller.matrixWorld);
         let parent = object.parent;
         object.matrix.premultiply(parent.matrixWorld);
@@ -481,7 +512,7 @@ function onSelectStart(event) {
             object.material.emissive.b = 1;
 
         controller.userData.selected = object;
-        controller.userData.parent = parent;
+        object.userData.originalParent = parent;
         controller.add(object); //removes from previous parent
     }
 
@@ -494,7 +525,6 @@ function onSelectStart(event) {
             // now set object = line.dstCtrlPt
             let cable = new Cable(object, null);
             object = cable.dstCtrlPt;
-            allCables.push(cable);
             controller.add(object); //removes from previous parent
 
         } else if (kind == "inlet") {
@@ -502,7 +532,6 @@ function onSelectStart(event) {
             let cable = new Cable(null, object);
             object = cable.srcCtrlPt;
             controller.userData.selected = object;
-            allCables.push(cable);
             controller.add(object); //removes from previous parent
         }
 
@@ -510,51 +539,220 @@ function onSelectStart(event) {
     }
 }
 
+/*
+    { op:"newnode", path:"x", kind:"noise", pos:[], orient:[], ...properties }
+*/
+function enactDeltaNewNode(delta) {
+    // create new object etc.
+}
+
+/*
+    { op:"delnode", path:"x", kind:"noise", pos:[], orient:[], ...properties }
+*/
+function enactDeltaDeleteNode(delta) {
+    // find matching object & destroy
+    // (first destroy any cables connected to it)
+}
+
+/*
+    { op:"disconnect", paths:["oldpath", "newpath"] }
+*/
+function enactDeltaRepath(delta) {
+    // rename object at oldpath to newpath (including its userData.path etc.)
+}
+
+/*
+    { op:"disconnect", paths:["x", "y"] }
+*/
+function enactDeltaDisconnect(delta) {
+    let src = allNodes[delta.paths[0]];
+    let dst = allNodes[delta.paths[1]];
+    if (!src || !dst) {
+        console.log(arc[0], src)
+        console.log(arc[1], dst)
+        console.error("arc with unmatchable paths")
+        return;
+    }
+
+    // find any matching cables and destroy them!!
+    console.log("disconnecting", delta.paths)
+
+    let found = allCables.filter(cable => {
+        return cable.src == src && cable.dst == dst;
+    });
+
+    console.log("found matches:", found.length)
+
+    found.forEach(cable => {
+        console.log("removing cable", cable);
+        cable.destroy();
+    });
+}
+
+/*
+    { op:"connect", paths:["x", "y"] }
+*/
+function enactDeltaConnect(delta) {
+    // create a new arc that joins the paths of delta.paths[0] and delta.paths[1]
+    let src = allNodes[delta.paths[0]];
+    let dst = allNodes[delta.paths[1]];
+    if (!src || !dst) {
+        console.log(arc[0], src)
+        console.log(arc[1], dst)
+        console.error("arc with unmatchable paths")
+        return;
+    }
+    new Cable(src, dst);
+}
+
+
+/*
+    { op:"propchange", path:"x", name:"pos", from:[x, y, z], to:[x, y, z] }
+*/
+function enactDeltaObjectPos(delta) {
+    // assert(delta.op == "propchange")
+    // assert(delta.name == "pos")
+
+    let object = getObjectByPath(delta.path);
+    // assert (object, "path not found")
+
+    // TODO: assert delta.from is roughly equal to current object.position
+
+    // what the object should be part of:
+    let parent = object.userData.originalParent;
+    if (parent == undefined) parent = object.parent;
+    // temporarily move object to world space to set the position:
+    world.add(object);
+    // set the position & update matrices:
+    object.position.fromArray(delta.to);
+    object.matrixWorldNeedsUpdate = true;
+    object.updateMatrixWorld();
+    // now re-attach object to proper parent:
+    parent.add(object);
+}
+
+/*
+    { op:"propchange", path:"x", name:"orient", from:[x, y, z, w], to:[x, y, z, w] }
+*/
+function enactDeltaObjectOrient(delta) {
+    // assert(delta.op == "propchange")
+    // assert(delta.name == "orient")
+
+    let object = getObjectByPath(delta.path);
+    // assert (object, "path not found")
+
+    // TODO: assert delta.from is roughly equal to current object.quaternion
+
+    // what the object should be part of:
+    let parent = object.userData.originalParent;
+    if (parent == undefined) parent = object.parent;
+    // temporarily move object to world space to set the position:
+    world.add(object);
+    // set the position & update matrices:
+    object.quaternion.fromArray(delta.to);
+    object.matrixWorldNeedsUpdate = true;
+    object.updateMatrixWorld();
+    // now re-attach object to proper parent:
+    parent.add(object);
+}
+
+/*
+    { op:"propchange", path:"x", name:"value", from:x, to:y }
+*/
+function enactDeltaObjectValue(delta) {
+
+}
+
 function onSelectEnd(event) {
     let controller = event.target;
     if (controller.userData.selected !== undefined) {
-        let parent = controller.userData.parent;
         let object = controller.userData.selected;
+        let parent = object.userData.originalParent;
+        if (parent == undefined) parent = world; //object.parent;
         controller.userData.selected = undefined;
+
+        
+
         if (object && object.userData.moveable) {
-            object.matrix.premultiply(controller.matrixWorld);
-            tempMatrix.getInverse(parent.matrixWorld);
-            object.matrix.premultiply(tempMatrix);
-            object.matrix.decompose(object.position, object.quaternion, object.scale);
-            object.material.emissive.b = 0;
-            //world.add(object);
-            parent.add(object);
-        }
-        // if it is a jack, see if we can hook up?
-        if (object.userData.kind == "jack_outlet") {
+           
+            if (object.userData.kind == "jack_outlet" || object.userData.kind == "jack_inlet") {
+                // take it out of controller-space
+                object.matrix.premultiply(controller.matrixWorld);
+                tempMatrix.getInverse(parent.matrixWorld);
+                object.matrix.premultiply(tempMatrix);
+                object.matrix.decompose(object.position, object.quaternion, object.scale);
+                object.material.emissive.b = 0;
+                //world.add(object);
+                parent.add(object);
 
-            let intersections = getIntersections(object, 0, 1, 0);
-            if (intersections.length > 0) {
-                let intersection = intersections[0];
-                let o = intersection.object;
-                if (o.userData.kind == "outlet") {
-                    // we have a hit! disconnect
-                    object.userData.cable.src = o;
-                
-                  // object.userData.cable.curve.mesh.material.color = o.material.color;
+
+                // if it is a jack, see if we can hook up?
+                if (object.userData.kind == "jack_outlet") {
+
+                    let intersections = getIntersections(object, 0, 1, 0);
+
                     
+                console.log("put that cable back", intersections.length)
+
+                    if (intersections.length > 0) {
+                        let intersection = intersections[0];
+                        let o = intersection.object;
+                        if (o.userData.kind == "outlet") {
+                            // we have a hit! connect
+                            let cable = object.userData.cable
+                            cable.src = o;
+
+                            // send a delta:
+                            outgoingDeltas.push(
+                                { op:"connect", paths:[cable.src.userData.path, cable.dst.userData.path] }
+                            );
+
+                            // destroy the cable and its objects
+                            // and remove it from allCables
+                            cable.destroy();
+                            
+
+                        }
+                    }
+
+
+                } else if (object.userData.kind == "jack_inlet") {
+
+                    let intersections = getIntersections(object, 0, -1, 0);
+                    console.log("put that cable back", intersections.length)
+                    if (intersections.length > 0) {
+                        let intersection = intersections[0];
+                        let o = intersection.object;
+                        if (o.userData.kind == "inlet") {
+                            // we have a hit! connect
+                            let cable = object.userData.cable
+                            cable.dst = o;
+
+                            // send a delta:
+                            outgoingDeltas.push(
+                                { op:"connect", paths:[cable.src.userData.path, cable.dst.userData.path] }
+                            );
+
+                            // destroy the arc
+                            cable.destroy();
+                        }
+                    }
                 }
-            }
 
+            } else {
 
-        } else if (object.userData.kind == "jack_inlet") {
+                let pos = new THREE.Vector3();
+                let orient = new THREE.Quaternion();
+                object.getWorldPosition(pos);
+                object.getWorldQuaternion(orient);
+                let path = object.userData.path;
 
-            let intersections = getIntersections(object, 0, -1, 0);
-            if (intersections.length > 0) {
-                let intersection = intersections[0];
-                let o = intersection.object;
-                if (o.userData.kind == "inlet") {
-                    // we have a hit! disconnect
-                    object.userData.cable.dst = o;
-                }
+                outgoingDeltas.push(
+                    { op:"propchange", path:path, name:"pos", from:[0, 0, 0], to:[pos.x, pos.y, pos.z] }, 
+                    { op:"propchange", path:path, name:"orient", from:[0, 0, 0, 1], to:[orient._x, orient._y, orient._z, orient._w] }
+                );
             }
         }
-
     }
 
     syncLocalPatch();
@@ -935,6 +1133,8 @@ function generateNode(parent, node, name) {
 function generateScene(patch) {
 
     clearScene();
+
+    console.log("#cables", allCables.length)
     
     localPatch = patch;
 
@@ -955,8 +1155,8 @@ function generateScene(patch) {
         }
 
         let cable = new Cable(src, dst);
-        allCables.push(cable);
     }
+    console.log("#cables", allCables.length)
 }
 
 
@@ -1006,13 +1206,58 @@ function onKeyPress(e) {
     }
 }
 
+
+
 function animate() {
-    renderer.setAnimationLoop(render);
+   renderer.setAnimationLoop(render);
 }
+
 
 
 function render() {
     stats.begin();
+
+    // handle incoming deltas:
+    while (incomingDeltas.length > 0) {
+        let delta = incomingDeltas.shift();
+        console.log("enacting", delta.op)
+        switch(delta.op) {
+            case "propchange": {
+                switch(delta.name) {
+                    case "pos": {
+                        enactDeltaObjectPos(delta);
+                    } break;
+                    case "orient": {
+                        enactDeltaObjectOrient(delta);
+                    } break; 
+                    case "value": {
+                        enactDeltaObjectValue(delta);
+                    } break;
+                    // handle other types, e.g. param value
+                }
+            } break;
+            case "connect": {
+                enactDeltaConnect(delta);
+            } break;
+            case "disconnect": {
+                enactDeltaDisconnect(delta);
+            } break;
+            case "newnode": {
+                enactDeltaNewNode(delta);
+            } break;
+            case "disconnect": {
+                enactDeltaDeleteNode(delta);
+            } break;
+            case "repath": {
+                enactDeltaRepath(delta);
+            } break;
+            default: {
+                console.log(delta)
+            }
+
+            // handle newnode, delnode, connect, disconnect, repath, etc.
+        }
+    }
 
     // make sure all objects' matrices are up to date (TODO might not be needed?)
     scene.updateMatrixWorld();
@@ -1026,8 +1271,8 @@ function render() {
 
     try {
 
-    controller1.update();
-    controller2.update();
+        controller1.update();
+        controller2.update();
     } catch(e) {
         console.warn(e)
     }
@@ -1164,21 +1409,35 @@ function render() {
         once = true;
     }
 
-    if (sock && sock.socket && sock.socket.readyState === 1 && controller1 && controller2) {
+    if (sock && sock.socket && sock.socket.readyState === 1) {
 
-        // TODO: camera is probably not the right point to grab -- maybe there's somethign in the vive handling that is head position
-        camera.getWorldPosition(userPose.head.pos);
-        camera.getWorldQuaternion(userPose.head.orient);
-        controller1.getWorldPosition(userPose.controller1.pos);
-        controller1.getWorldQuaternion(userPose.controller1.orient);
-        controller2.getWorldPosition(userPose.controller2.pos);
-        controller2.getWorldQuaternion(userPose.controller2.orient);
+        // send any edits to the server:
+        if (outgoingDeltas.length > 0) {
+            sock.send({
+                cmd: "deltas",
+                date: Date.now(),
+                data: outgoingDeltas
+            });
+            outgoingDeltas.length = 0;
+        }
 
-        sock.send({
-            cmd: "user_pose",
-            date: Date.now(),
-            pose: userPose
-        });
+        // send VR poses to the server:
+        if (controller1 && controller2) {
+
+            // TODO: camera is probably not the right point to grab -- maybe there's somethign in the vive handling that is head position
+            camera.getWorldPosition(userPose.head.pos);
+            camera.getWorldQuaternion(userPose.head.orient);
+            controller1.getWorldPosition(userPose.controller1.pos);
+            controller1.getWorldQuaternion(userPose.controller1.orient);
+            controller2.getWorldPosition(userPose.controller2.pos);
+            controller2.getWorldQuaternion(userPose.controller2.orient);
+
+            sock.send({
+                cmd: "user_pose",
+                date: Date.now(),
+                pose: userPose
+            });
+        }
     }
 
     intersectObjects(controller1);
@@ -1240,8 +1499,14 @@ function connect_to_server() {
 let count = 0;
 function handlemessage(msg, sock) {
     switch (msg.cmd) {
+        case "deltas": {
+            // insert into our TODO list:
+            incomingDeltas.push.apply(incomingDeltas, msg.data);
+        } break;
         case "patch":
             {
+                console.log("got patch")
+                
                 userPose.id = msg.id;
 
    
