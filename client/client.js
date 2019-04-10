@@ -87,6 +87,18 @@ let label_material = new THREE.MeshStandardMaterial({
 
 });
 
+let generic_material = new THREE.MeshStandardMaterial({
+    color: 0x888888,
+    roughness: 0.7,
+    metalness: 0.0,
+    opacity: 0.3,
+    transparent: true,
+    side: THREE.DoubleSide,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending
+    
+});
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // SCENE COMPONENTS
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -104,6 +116,22 @@ let controllerMesh;
 //////////////////////////////////////////////////////////////////////////////////////////
 // OTHER GLOBALS
 //////////////////////////////////////////////////////////////////////////////////////////
+
+
+let sock
+let userPose = createUserPose();
+let otherUsers = {};
+
+let incomingDeltas = [];
+let outgoingDeltas = [];
+
+let allNodes = {};
+let allCables = [];
+
+function getObjectByPath(path) {
+    return allNodes[path];
+}
+
 
 function createUserPose(id=0) {
     return {
@@ -123,19 +151,13 @@ function createUserPose(id=0) {
     }
 }
 
-let sock
-let userPose = createUserPose();
-let otherUsers = {};
-
-let incomingDeltas = [];
-let outgoingDeltas = [];
-
-let allNodes = {};
-let allCables = [];
-
-function getObjectByPath(path) {
-    return allNodes[path];
-}
+// generate a random name for new object:
+let gensym = (function() {
+    let nodeid = 0;
+    return function (prefix="node") {
+        return `${prefix}_${userPose.id}_${nodeid++}`
+    }
+})();
 
 let raycaster = new THREE.Raycaster(),
     intersected = [];
@@ -544,6 +566,67 @@ function onSelectStart(event) {
 */
 function enactDeltaNewNode(delta) {
     // create new object etc.
+
+    let parent = world;
+    
+    // first, find parent.
+    let path = delta.path;
+    let name, parentpath;
+    let pathlastdot = path.lastIndexOf(".")
+    if (pathlastdot >= 0) {
+        parentpath = path.substring(0, pathlastdot);
+        name = path.substring(pathlastdot+1);
+        parent = getObjectByPath(parentpath);
+    } else {
+        name = delta.path;
+    }
+    
+
+    let container;
+    let labelName = delta.kind;
+
+    // generic object:
+    let material = generic_material.clone();
+    material.color = Math.random() * 0xffffff;
+        
+    container = new THREE.Mesh(generic_geometry, material);
+    container.castShadow = true;
+    container.receiveShadow = true;
+
+    if (delta.pos) {
+        container.position.fromArray(delta.pos);
+    } else {
+        container.position = parent.position.clone();
+    }
+    if (delta.orient) {
+        container.quaternion.fromArray(delta.orient);
+    } else {
+        container.quaternion = parent.quaternion.clone();
+    }
+
+    let label = generateLabel(labelName);
+    label.position.y = -LABEL_SIZE;
+    label.position.z += 0.01;
+    label.position.x = 0.005;
+    container.add(label);
+    container.userData.moveable = true; 
+    container.userData.selectable = true;
+    subObjCount = 0;   
+    subInletCount = 0;
+    subOutletCount = 0;
+
+    container.userData.name = name;
+    container.userData.path = path;
+    container.userData.kind = delta.kind;
+
+    // add to our library of nodes:
+    allNodes[path] = container;
+    // add to proper parent:
+    parent.add(container);
+
+    // NOTE: not all nodes will have a pos, orient
+    // e.g. outlet, knob, etc.
+    // they need to find their parent and position accordingly
 }
 
 /*
@@ -762,21 +845,42 @@ function onSpawn(event) {
     let controller = event.target;
     if(controller.getButtonState('thumbpad') === undefined) return;
     if(controller.getButtonState('trigger') == false){
-        
-        let rand = [];
-        for (let k in localPatch.nodes) {
-            rand.push(k);
-        }
-        spawn = true;
-        let nodeNum = randomIntFromInterval(0, rand.length -1);
-        generateNode(world, 
-            localPatch.nodes[rand[nodeNum]], 
-            rand[nodeNum]); 
 
-            //console.log(randomIntFromInterval(0, rand.length))
+        let pos = new THREE.Vector3();
+        let orient = new THREE.Quaternion();
+        controller.getWorldPosition(pos);
+        controller.getWorldQuaternion(orient);
+
+        // adjust spawn location:
+        let tilt = new THREE.Quaternion();
+        tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
+        orient.multiply(tilt);
+        let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
+        pos.add(rel.applyQuaternion(orient));
+
+        let opname = "noise"
+        
+        let path = gensym(opname)
+
+        outgoingDeltas.push(
+            { op:"newnode", kind:opname, path:path, pos:[pos.x, pos.y, pos.z], orient:[orient._x, orient._y, orient._z, orient._w] },
+            { op:"newnode", kind:"outlet", path: path+".out" }
+        );
+        
+        // let rand = [];
+        // for (let k in localPatch.nodes) {
+        //     rand.push(k);
+        // }
+        // spawn = true;
+        // let nodeNum = randomIntFromInterval(0, rand.length -1);
+        // generateNode(world, 
+        //     localPatch.nodes[rand[nodeNum]], 
+        //     rand[nodeNum]); 
+
+        //     //console.log(randomIntFromInterval(0, rand.length))
     
-        // request scene:
-        //sock.send({ cmd: "get_scene", date: Date.now() });
+        // // request scene:
+        // //sock.send({ cmd: "get_scene", date: Date.now() });
     }
 
 }
@@ -1064,11 +1168,11 @@ function generateNode(parent, node, name) {
 
                 labelName = w;
             } else {
-            // generic object:
-            container = new THREE.Mesh(generic_geometry, generic_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
-            labelName = props.kind;
+                // generic object:
+                container = new THREE.Mesh(generic_geometry, generic_material);
+                container.castShadow = true;
+                container.receiveShadow = true;
+                labelName = props.kind;
                 
             }
 
