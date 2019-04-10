@@ -567,6 +567,8 @@ function onSelectStart(event) {
 function enactDeltaNewNode(delta) {
     // create new object etc.
 
+    //console.log(delta)
+
     let parent = world;
     
     // first, find parent.
@@ -581,17 +583,170 @@ function enactDeltaNewNode(delta) {
         name = delta.path;
     }
     
+   // console.log(path, name, parentpath, parent)
+
 
     let container;
     let labelName = delta.kind;
 
     // generic object:
     let material = generic_material.clone();
-    material.color = Math.random() * 0xffffff;
-        
-    container = new THREE.Mesh(generic_geometry, material);
-    container.castShadow = true;
-    container.receiveShadow = true;
+    material.color.set(Math.random() * 0xffffff);
+    
+    let outlet_material = material.clone();
+    let inlet_material = material.clone();
+    let knob_material = material.clone();
+    let n_switch_material = material.clone();
+    let n_switch_slider_material = material.clone();
+    
+    switch(delta.kind){
+        case "inlet": {
+            container = new THREE.Mesh(inlet_geometry, inlet_material);
+            container.castShadow = true;
+            container.receiveShadow = true;
+            container.rotation.x = 1.5708;
+            container.position.fromArray([
+                (subInletCount / 10) + .15, 
+                -generic_geometry.parameters.height/4 - NLET_HEIGHT/2, 
+                generic_geometry.parameters.depth/2 - NLET_HEIGHT]);
+    
+            let label = generateLabel(name, NLET_HEIGHT);
+            label.position.y = 0.01;
+            label.position.x = -NLET_RADIUS /2;
+            label.rotation.x = -1.5708;
+            container.add(label);
+            
+            // container.userData.moveable = true;
+            subInletCount++;
+            container.userData.selectable = true;
+        } break;
+        case "outlet":{
+            container = new THREE.Mesh(outlet_geometry, outlet_material);
+            container.castShadow = true;
+            container.receiveShadow = true;
+            container.rotation.x = -1.5708;
+            container.position.fromArray([
+                (subOutletCount / 10)  + .15, 
+                -generic_geometry.parameters.height/2 - NLET_HEIGHT/2, 
+                generic_geometry.parameters.depth/2 - NLET_HEIGHT]);
+           
+            let label = generateLabel(name, SMALL_KNOB_HEIGHT/2.7);
+            label.position.y = -0.01;
+            label.position.x = -NLET_RADIUS /2;
+            label.rotation.x = 1.5708;
+            container.add(label);
+                
+            //container.userData.moveable = true;
+            container.userData.selectable = true;
+            subOutletCount++;
+        } break;
+        case "large_knob": {
+            container = new THREE.Mesh(large_knob_geometry, knob_material);
+            container.castShadow = true;
+            container.receiveShadow = true;
+            //generic_geometry.parameters.width
+            container.position.fromArray([
+                (subObjCount / 8) + .065, 
+                -generic_geometry.parameters.height/2 - LARGE_KNOB_HEIGHT/2, 
+                generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
+            container.rotation.x = 1.5708;
+            let label = generateLabel(name, LARGE_KNOB_HEIGHT/2);
+            label.position.y = 0.01;
+            label.position.x = -LARGE_KNOB_RADIUS /2;
+            label.rotation.x = -1.5708;
+            container.add(label);
+            container.userData.turnable = true;
+            container.userData.selectable = true;
+            subObjCount++;
+          
+        } break;
+        case "small_knob": {
+            container = new THREE.Mesh(small_knob_geometry, knob_material);
+            container.castShadow = true;
+            container.receiveShadow = true;
+            container.position.fromArray([
+                (subObjCount / 8) + .065, 
+                -generic_geometry.parameters.height/2 - SMALL_KNOB_HEIGHT/2, 
+                generic_geometry.parameters.depth/2 - SMALL_KNOB_HEIGHT]);
+           container.rotation.x = 1.5708;
+            //Label
+            let label = generateLabel(name, SMALL_KNOB_HEIGHT/2.7);
+            label.position.y = 0.01;
+            label.position.x = -SMALL_KNOB_RADIUS /2;
+            label.rotation.x = -1.5708;
+            container.add(label);
+
+            container.userData.turnable = true;
+            container.userData.selectable = true;
+            subObjCount++;
+            
+        } break;
+        case "n_switch": {
+            container = new THREE.Mesh(n_switch_geometry, n_switch_material);
+            container.castShadow = true;
+            container.receiveShadow = true;
+            container.position.fromArray([
+                (subObjCount / 8) + 0.25,
+                -generic_geometry.parameters.height/2 - LARGE_KNOB_HEIGHT/2, 
+                generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
+            
+            let switchPositions = [];
+            //Draw N_SWTICH Label name itself
+            // let label = generateLabel(parent.userData.name, .01);
+            // label.position.y =  0;
+            // label.position.z = 0;
+            // container.add(label);
+            if(delta.throws !== undefined){
+                let y = -container.position.y / 2;
+                for(let l =0; l < delta.throws.length; l++){
+                    let labelN = generateLabel(delta.throws[l], .01);
+
+                    labelN.position.y = y - container.geometry.parameters.height / 3.5;
+                    y = labelN.position.y;
+                    labelN.position.z = 0;
+                    labelN.position.x = -0.01;
+                    switchPositions[l] = [labelN.position.x + -0.02,
+                        labelN.position.y,
+                        labelN.position.z + n_switch_slider_geometry.parameters.width/2];
+
+                    if(delta.value !== undefined && delta.value === l){
+                        n_switch_slider = new THREE.Mesh(n_switch_slider_geometry, n_switch_slider_material);
+                        n_switch_slider.castShadow = true;
+                        n_switch_slider.receiveShadow = true;
+                        n_switch_slider.userData.slideable = true;
+                        n_switch_slider.userData.selectable = true;
+                        n_switch_slider.position.fromArray(switchPositions[l]);
+                       
+                        container.add(n_switch_slider);
+
+                    }
+                    container.add(labelN);
+
+                }
+
+            }
+
+            subObjCount++;
+            container.userData.positions = switchPositions;
+            container.userData.selectable = false;
+            container.userData.slideable = false;
+
+        } break;
+        default: {
+            container = new THREE.Mesh(generic_geometry, material);
+            container.castShadow = true;
+            container.receiveShadow = true;
+            
+            let label = generateLabel(labelName);
+            label.position.y = -LABEL_SIZE;
+            label.position.z += 0.01;
+            label.position.x = 0.005;
+            container.add(label);
+
+            container.userData.moveable = true; 
+            container.userData.selectable = true;
+        } break;
+    }    
 
     if (delta.pos) {
         container.position.fromArray(delta.pos);
@@ -604,13 +759,8 @@ function enactDeltaNewNode(delta) {
         container.quaternion = parent.quaternion.clone();
     }
 
-    let label = generateLabel(labelName);
-    label.position.y = -LABEL_SIZE;
-    label.position.z += 0.01;
-    label.position.x = 0.005;
-    container.add(label);
-    container.userData.moveable = true; 
-    container.userData.selectable = true;
+
+
     subObjCount = 0;   
     subInletCount = 0;
     subOutletCount = 0;
@@ -754,6 +904,7 @@ function onSelectEnd(event) {
         if (parent == undefined) parent = world; //object.parent;
         controller.userData.selected = undefined;
 
+        object.material.emissive.b = 0;
         
 
         if (object && object.userData.moveable) {
@@ -764,7 +915,6 @@ function onSelectEnd(event) {
                 tempMatrix.getInverse(parent.matrixWorld);
                 object.matrix.premultiply(tempMatrix);
                 object.matrix.decompose(object.position, object.quaternion, object.scale);
-                object.material.emissive.b = 0;
                 //world.add(object);
                 parent.add(object);
 
@@ -864,7 +1014,11 @@ function onSpawn(event) {
 
         outgoingDeltas.push(
             { op:"newnode", kind:opname, path:path, pos:[pos.x, pos.y, pos.z], orient:[orient._x, orient._y, orient._z, orient._w] },
-            { op:"newnode", kind:"outlet", path: path+".out" }
+            { op:"newnode", kind:"outlet", path: path+".out" },
+            { op:"newnode", kind:"small_knob", path: path+".knob" },
+            { op:"newnode", kind:"large_knob", path: path+".lknob" },
+            { op:"newnode", kind:"inlet", path: path+".in" },
+            { op:"newnode", kind:"n_switch", path: path+".nswtich", throws: ["Sine", "Phasor","Triangle"], value: 1 }
         );
         
         // let rand = [];
@@ -1447,27 +1601,27 @@ function render() {
         } else if (object.userData.slideable){
 
             // simple hack: 
-            if(once){
-                let controllerPos = new THREE.Vector3();
-                controller1.getWorldPosition(controllerPos);
+            // if(once){
+            //     let controllerPos = new THREE.Vector3();
+            //     controller1.getWorldPosition(controllerPos);
     
-                if(controllerPrevPos !== undefined){
-                    console.log(object.parent.userData.localPatchNode._props.value)
-                    if(controllerPrevPos.y < controllerPos.y){
-                        if(object.parent.userData.localPatchNode._props.value > 0){
-                            object.parent.userData.localPatchNode._props.value -= 1;
-                            object.position.fromArray(object.parent.userData.positions[object.parent.userData.localPatchNode._props.value]);
-                        } 
-                    } else if(controllerPrevPos.y > controllerPos.y){
-                        if(object.parent.userData.localPatchNode._props.value < object.parent.userData.positions.length - 1){
-                            object.parent.userData.localPatchNode._props.value += 1;
-                            object.position.fromArray(object.parent.userData.positions[object.parent.userData.localPatchNode._props.value]);
-                        }
-                    }   
-                }
-                controllerPrevPos = controllerPos;
-                once = false;
-            }
+            //     if(controllerPrevPos !== undefined){
+            //         console.log(object.parent.userData.localPatchNode._props.value)
+            //         if(controllerPrevPos.y < controllerPos.y){
+            //             if(object.parent.userData.localPatchNode._props.value > 0){
+            //                 object.parent.userData.localPatchNode._props.value -= 1;
+            //                 object.position.fromArray(object.parent.userData.positions[object.parent.userData.localPatchNode._props.value]);
+            //             } 
+            //         } else if(controllerPrevPos.y > controllerPos.y){
+            //             if(object.parent.userData.localPatchNode._props.value < object.parent.userData.positions.length - 1){
+            //                 object.parent.userData.localPatchNode._props.value += 1;
+            //                 object.position.fromArray(object.parent.userData.positions[object.parent.userData.localPatchNode._props.value]);
+            //             }
+            //         }   
+            //     }
+            //     controllerPrevPos = controllerPos;
+            //     once = false;
+            // }
           
         }
         
