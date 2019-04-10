@@ -544,6 +544,7 @@ function onSelectStart(event) {
 */
 function enactDeltaNewNode(delta) {
     // create new object etc.
+    generateNode(world, delta.path);
 }
 
 /*
@@ -777,6 +778,10 @@ function onSpawn(event) {
     
         // request scene:
         //sock.send({ cmd: "get_scene", date: Date.now() });
+
+        outgoingDeltas.push(
+            { op:"newnode", path:path, name:"pos", pos:[0, 0, 0], orient:[0,0,0,1] }
+        );
     }
 
 }
@@ -1141,6 +1146,7 @@ function generateScene(patch) {
     let nodes = patch.nodes;
     for (let k in nodes) {
         generateNode(world, nodes[k], k);
+        console.log(nodes[k], k)
     }
 
     for (let arc of patch.arcs) {
