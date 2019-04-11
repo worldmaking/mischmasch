@@ -1766,7 +1766,7 @@ function render() {
             });
             outgoingDeltas.length = 0;
         }
-
+        
         // send VR poses to the server:
         if (controller1 && controller2) {
 
