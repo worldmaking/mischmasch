@@ -132,6 +132,17 @@ function getObjectByPath(path) {
     return allNodes[path];
 }
 
+function addObjectByPath(path, object) {
+    allNodes[path] = object;
+}
+
+// TODO: iterator over all nodes 
+function iterateAllNodes(fun) {
+    for (let node of allNodes) {
+        fun(node);
+    }
+}
+
 
 function createUserPose(id=0) {
     return {
@@ -745,6 +756,7 @@ function enactDeltaNewNode(delta) {
 
             container.userData.moveable = true; 
             container.userData.selectable = true;
+            container.userData.dirty = true;
         } break;
     }    
 
@@ -770,7 +782,7 @@ function enactDeltaNewNode(delta) {
     container.userData.kind = delta.kind;
 
     // add to our library of nodes:
-    allNodes[path] = container;
+    addObjectByPath(path, container);
     // add to proper parent:
     parent.add(container);
 
@@ -798,8 +810,8 @@ function enactDeltaRepath(delta) {
     { op:"disconnect", paths:["x", "y"] }
 */
 function enactDeltaDisconnect(delta) {
-    let src = allNodes[delta.paths[0]];
-    let dst = allNodes[delta.paths[1]];
+    let src = getObjectByPath(delta.paths[0]);
+    let dst = getObjectByPath(delta.paths[1]);
     if (!src || !dst) {
         console.log(arc[0], src)
         console.log(arc[1], dst)
@@ -827,8 +839,8 @@ function enactDeltaDisconnect(delta) {
 */
 function enactDeltaConnect(delta) {
     // create a new arc that joins the paths of delta.paths[0] and delta.paths[1]
-    let src = allNodes[delta.paths[0]];
-    let dst = allNodes[delta.paths[1]];
+    let src = getObjectByPath(delta.paths[0]);
+    let dst = getObjectByPath(delta.paths[1]);
     if (!src || !dst) {
         console.log(arc[0], src)
         console.log(arc[1], dst)
@@ -988,7 +1000,7 @@ function onSelectEnd(event) {
         }
     }
 
-    syncLocalPatch();
+    //syncLocalPatch();
 }
 
 function onSpawn(event) {
@@ -1374,7 +1386,7 @@ function generateNode(parent, node, name) {
     //container.userData.selectable = true;
     container.userData.localPatchNode = node;
 
-    allNodes[path] = container;
+    addObjectByPath(path, container);
 
     //console.log("added ", path, container)
 
@@ -1403,8 +1415,8 @@ function generateScene(patch) {
     }
 
     for (let arc of patch.arcs) {
-        let src = allNodes[arc[0]];
-        let dst = allNodes[arc[1]];
+        let src = getObjectByPath(arc[0]);
+        let dst = getObjectByPath(arc[1]);
 
         if (!src || !dst) {
             console.log(arc[0], src)
@@ -1418,45 +1430,76 @@ function generateScene(patch) {
     console.log("#cables", allCables.length)
 }
 
-
-function syncLocalPatchNode(obj) {
-    let v = new THREE.Vector3();
-    let q = new THREE.Quaternion();
+function updateDirty(){
+    let dirtyObj;
+    let nodesToClean = [];
+    let parentNode;
     
-    obj.getWorldPosition(v);
-    obj.getWorldQuaternion(q);
-    // update the pos and orient props in the corresponding object in the localPatch
-    let props = obj.userData.localPatchNode._props;
-    if(props.pos && props.orient){
-        props.pos[0] = v.x;
-        props.pos[1] = v.y;
-        props.pos[2] = v.z;
-        props.orient[0] = q.x;
-        props.orient[1] = q.y;
-        props.orient[2] = q.z;
-        props.orient[3] = q.w;
-    }
+    for(let node in allNodes){
+        
+        if (allNodes[node].userData.dirty == true){
+            dirtyObj = node;
+        }
 
-    if (sock) {
-        sock.send({
-            cmd: "updated_scene",
-            date: Date.now(),
-            scene: localPatch,
-        });
+        if(dirtyObj !== undefined){
+            if(node === dirtyObj){
+                parentNode = node;
+            }
+
+            if(node.includes(dirtyObj) ){
+                nodesToClean.push(allNodes[node]);
+            }
+        }
+    }
+   
+    
+
+    if(dirtyObj !== undefined){
+        console.log(nodesToClean)
+        console.log(allNodes)
+        allNodes[dirtyObj].userData.dirty = false;
+        dirtyObj = undefined;
     }
 }
 
-function syncLocalPatch() {
-    for (let path in allNodes) {
-        syncLocalPatchNode(allNodes[path])
-    }
-}
+// function syncLocalPatchNode(obj) {
+//     let v = new THREE.Vector3();
+//     let q = new THREE.Quaternion();
+    
+//     obj.getWorldPosition(v);
+//     obj.getWorldQuaternion(q);
+//     // update the pos and orient props in the corresponding object in the localPatch
+//     let props = obj.userData.localPatchNode._props;
+//     if(props.pos && props.orient){
+//         props.pos[0] = v.x;
+//         props.pos[1] = v.y;
+//         props.pos[2] = v.z;
+//         props.orient[0] = q.x;
+//         props.orient[1] = q.y;
+//         props.orient[2] = q.z;
+//         props.orient[3] = q.w;
+//     }
+
+//     if (sock) {
+//         sock.send({
+//             cmd: "updated_scene",
+//             date: Date.now(),
+//             scene: localPatch,
+//         });
+//     }
+// }
+
+// function syncLocalPatch() {
+//     for (let path in allNodes) {
+//         syncLocalPatchNode(allNodes[path])
+//     }
+// }
 
 
 function onKeyPress(e) {
 
     if (e.keyCode == 13) {
-        syncLocalPatch();
+        //syncLocalPatch();
         console.log(localPatch)
     }
     if (e.keyCode == 83){
@@ -1517,6 +1560,9 @@ function render() {
             // handle newnode, delnode, connect, disconnect, repath, etc.
         }
     }
+    
+    updateDirty();
+
 
     // make sure all objects' matrices are up to date (TODO might not be needed?)
     scene.updateMatrixWorld();
@@ -1533,7 +1579,7 @@ function render() {
         controller1.update();
         controller2.update();
     } catch(e) {
-        console.warn(e)
+        //console.warn(e)
     }
 
     // for(let u in otherUsers){
@@ -1605,16 +1651,16 @@ function render() {
             // controller1.matrix.premultiply(tempMatrix);
             // controller1.matrix.decompose(controller1.position, controller1.quaternion, controller1.scale);
             //object.rotateY(Math.atan2(controller1.rotation.y - object.rotation.y, controller1.rotation.x - object.rotation.x));
-            let currentPos = object.rotation.y;
+            let offset = controller1.rotation.z - object.rotation.y;
+            object.rotation.y =  controller1.rotation.z + offset;
 
-            object.rotation.y = controller1.rotation.z;
+            //object.rotation.y = controller1.rotation.z;
             
             
 
         } else if (object.userData.slideable){
 
-            // simple hack: 
-            // if(once){
+  
             //     let controllerPos = new THREE.Vector3();
             //     controller1.getWorldPosition(controllerPos);
     
@@ -1633,8 +1679,8 @@ function render() {
             //         }   
             //     }
             //     controllerPrevPos = controllerPos;
-            //     once = false;
-            // }
+            //  
+           
           
         }
         
@@ -1665,20 +1711,17 @@ function render() {
         let controllerPos = new THREE.Vector3();
         controller1.getWorldPosition(controllerPos);
 
-        for (let name in allNodes) {
-            let target = allNodes[name];
-            target.getWorldPosition(targetPos);
+        // for (let name in allNodes) {
+        //     let target = allNodes[name];
+        //     target.getWorldPosition(targetPos);
 
-            let d = targetPos.distanceTo(controllerPos);
-            if (d < CONTROLLER_HIT_DISTANCE) {
-                console.log(name, target.userData.kind);
+        //     let d = targetPos.distanceTo(controllerPos);
+        //     if (d < CONTROLLER_HIT_DISTANCE) {
+        //         console.log(name, target.userData.kind);
 
-                // if kind is outlet/inlet, start a patch coord
-            }
-        }
-
-        //simple hack for selected then deseleted
-        once = true;
+        //         // if kind is outlet/inlet, start a patch coord
+        //     }
+        // }
     }
 
     if (sock && sock.socket && sock.socket.readyState === 1) {
