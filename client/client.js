@@ -1027,11 +1027,20 @@ function onSpawn(event) {
         outgoingDeltas.push(
             { op:"newnode", kind:opname, path:path, pos:[pos.x, pos.y, pos.z], orient:[orient._x, orient._y, orient._z, orient._w] },
             { op:"newnode", kind:"outlet", path: path+".out" },
+            { op:"newnode", kind:"outlet", path: path+".out1" },
+            { op:"newnode", kind:"outlet", path: path+".out2" },
+            { op:"newnode", kind:"outlet", path: path+".out3" },
+            { op:"newnode", kind:"outlet", path: path+".out4" },
+            { op:"newnode", kind:"outlet", path: path+".out5" },
             { op:"newnode", kind:"small_knob", path: path+".knob" },
             { op:"newnode", kind:"large_knob", path: path+".lknob1" },
             { op:"newnode", kind:"large_knob", path: path+".lknob2" },
             { op:"newnode", kind:"large_knob", path: path+".lknob3" },
             { op:"newnode", kind:"inlet", path: path+".in" },
+            { op:"newnode", kind:"inlet", path: path+".in1" },
+            { op:"newnode", kind:"inlet", path: path+".in2" },
+            { op:"newnode", kind:"inlet", path: path+".in3" },
+            { op:"newnode", kind:"inlet", path: path+".in4" },
             { op:"newnode", kind:"n_switch", path: path+".nswtich", throws: ["Sine", "Phasor","Triangle"], value: 1 }
         );
         
@@ -1458,11 +1467,17 @@ function updateDirty(){
     }
 
     if(parentNode !== undefined){
-        let width = parentNode.geometry.parameters.width / nodesToClean.length;
+        //let width = parentNode.geometry.parameters.width / nodesToClean.length;
+        let width = (LARGEST_MODULE * 2) + (LARGEST_MODULE /4);
         let height = parentNode.geometry.parameters.height / 2;
         
+        // TODO: Seems silly to have to create a new geometry everytime.....
+        parentNode.geometry = new THREE.BoxBufferGeometry(width * nodesToClean.length, 0.2, 0.05);
+        parentNode.geometry.translate(parentNode.geometry.parameters.width/2, -parentNode.geometry.parameters.height/2, -parentNode.geometry.parameters.depth/2);
+
         for(let c of nodesToClean){
-            c.position.x = ((width * amount) + -width) + (LARGEST_MODULE);
+            //c.position.x = ((width * amount) + -width) + (LARGEST_MODULE);
+            c.position.x = (width * amount)
             c.position.y = -height;
             //c.position.y = -((height * amount) + height) + (LARGEST_MODULE / 2);
             c.position.z = 0;
