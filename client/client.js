@@ -617,8 +617,8 @@ function enactDeltaNewNode(delta) {
             container.receiveShadow = true;
             container.rotation.x = 1.5708;
             container.position.fromArray([
-                (subInletCount / 10) + .15, 
-                -generic_geometry.parameters.height/4 - NLET_HEIGHT/2, 
+                0, 
+                0,
                 generic_geometry.parameters.depth/2 - NLET_HEIGHT]);
     
             let label = generateLabel(name, NLET_HEIGHT);
@@ -637,8 +637,8 @@ function enactDeltaNewNode(delta) {
             container.receiveShadow = true;
             container.rotation.x = -1.5708;
             container.position.fromArray([
-                (subOutletCount / 10)  + .15, 
-                -generic_geometry.parameters.height/2 - NLET_HEIGHT/2, 
+                0, 
+                0,
                 generic_geometry.parameters.depth/2 - NLET_HEIGHT]);
            
             let label = generateLabel(name, SMALL_KNOB_HEIGHT/2.7);
@@ -657,8 +657,8 @@ function enactDeltaNewNode(delta) {
             container.receiveShadow = true;
             //generic_geometry.parameters.width
             container.position.fromArray([
-                (subObjCount / 8) + .065, 
-                -generic_geometry.parameters.height/2 - LARGE_KNOB_HEIGHT/2, 
+                0, 
+                0,
                 generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
             container.rotation.x = 1.5708;
             let label = generateLabel(name, LARGE_KNOB_HEIGHT/2);
@@ -676,8 +676,8 @@ function enactDeltaNewNode(delta) {
             container.castShadow = true;
             container.receiveShadow = true;
             container.position.fromArray([
-                (subObjCount / 8) + .065, 
-                -generic_geometry.parameters.height/2 - SMALL_KNOB_HEIGHT/2, 
+                0, 
+                0,
                 generic_geometry.parameters.depth/2 - SMALL_KNOB_HEIGHT]);
            container.rotation.x = 1.5708;
             //Label
@@ -1027,9 +1027,20 @@ function onSpawn(event) {
         outgoingDeltas.push(
             { op:"newnode", kind:opname, path:path, pos:[pos.x, pos.y, pos.z], orient:[orient._x, orient._y, orient._z, orient._w] },
             { op:"newnode", kind:"outlet", path: path+".out" },
+            { op:"newnode", kind:"outlet", path: path+".out1" },
+            { op:"newnode", kind:"outlet", path: path+".out2" },
+            { op:"newnode", kind:"outlet", path: path+".out3" },
+            { op:"newnode", kind:"outlet", path: path+".out4" },
+            { op:"newnode", kind:"outlet", path: path+".out5" },
             { op:"newnode", kind:"small_knob", path: path+".knob" },
-            { op:"newnode", kind:"large_knob", path: path+".lknob" },
+            { op:"newnode", kind:"large_knob", path: path+".lknob1" },
+            { op:"newnode", kind:"large_knob", path: path+".lknob2" },
+            { op:"newnode", kind:"large_knob", path: path+".lknob3" },
             { op:"newnode", kind:"inlet", path: path+".in" },
+            { op:"newnode", kind:"inlet", path: path+".in1" },
+            { op:"newnode", kind:"inlet", path: path+".in2" },
+            { op:"newnode", kind:"inlet", path: path+".in3" },
+            { op:"newnode", kind:"inlet", path: path+".in4" },
             { op:"newnode", kind:"n_switch", path: path+".nswtich", throws: ["Sine", "Phasor","Triangle"], value: 1 }
         );
         
@@ -1434,6 +1445,9 @@ function updateDirty(){
     let dirtyObj;
     let nodesToClean = [];
     let parentNode;
+    let amount = 0;
+
+    let LARGEST_MODULE = LARGE_KNOB_RADIUS;
     
     for(let node in allNodes){
         
@@ -1443,7 +1457,7 @@ function updateDirty(){
 
         if(dirtyObj !== undefined){
             if(node === dirtyObj){
-                parentNode = node;
+                parentNode = allNodes[node];
             }
 
             if(node.includes(dirtyObj) ){
@@ -1451,12 +1465,29 @@ function updateDirty(){
             }
         }
     }
-   
-    
+
+    if(parentNode !== undefined){
+        //let width = parentNode.geometry.parameters.width / nodesToClean.length;
+        let width = (LARGEST_MODULE * 2) + (LARGEST_MODULE /4);
+        let height = parentNode.geometry.parameters.height / 2;
+        
+        // TODO: Seems silly to have to create a new geometry everytime.....
+        parentNode.geometry = new THREE.BoxBufferGeometry(width * nodesToClean.length, 0.2, 0.05);
+        parentNode.geometry.translate(parentNode.geometry.parameters.width/2, -parentNode.geometry.parameters.height/2, -parentNode.geometry.parameters.depth/2);
+
+        for(let c of nodesToClean){
+            //c.position.x = ((width * amount) + -width) + (LARGEST_MODULE);
+            c.position.x = (width * amount)
+            c.position.y = -height;
+            //c.position.y = -((height * amount) + height) + (LARGEST_MODULE / 2);
+            c.position.z = 0;
+            amount++;
+        }
+    }    
 
     if(dirtyObj !== undefined){
-        console.log(nodesToClean)
-        console.log(allNodes)
+        // console.log(nodesToClean)
+        // console.log(allNodes)
         allNodes[dirtyObj].userData.dirty = false;
         dirtyObj = undefined;
     }
@@ -1735,7 +1766,7 @@ function render() {
             });
             outgoingDeltas.length = 0;
         }
-
+        
         // send VR poses to the server:
         if (controller1 && controller2) {
 
