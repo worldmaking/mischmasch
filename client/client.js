@@ -1029,7 +1029,7 @@ function enactDeltaObjectValue(delta) {
     switch(kind){
         case "small_knob":
         case "large_knob": {
-
+            console.log(object);
         } break;
         default:{
 
@@ -1463,6 +1463,10 @@ function render() {
             // map this to a 0..1 range:
             let value = (angle + Math.PI) / (2 * Math.PI);
             console.log(value)
+            console.log(object)
+            // outgoingDeltas.push(
+            //      { op:"propchange", path:"x", name:"value", from: object, to:y });
+
             // TODO: send delta with this value
             // TODO: enact delta by mapping value back to angular range:
             let derived_angle = (value * Math.PI * 2) - Math.PI;
