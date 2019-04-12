@@ -61,6 +61,7 @@ const CONTROLLER_HIT_DISTANCE = 0.03;
 
 let inlet_geometry = new THREE.CylinderGeometry(NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT, 8);
 let outlet_geometry = inlet_geometry;
+inlet_geometry.rotateX(Math.PI/2)
 inlet_geometry.computeBoundingBox();
 
 let small_knob_geometry = new THREE.CylinderGeometry(SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, SMALL_KNOB_HEIGHT, 8);
@@ -74,6 +75,7 @@ large_knob_geometry.computeBoundingBox();
 let plug_geometry = new THREE.CylinderGeometry(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT, 8);
 // fix anchor point
 plug_geometry.translate(0, CABLE_JACK_HEIGHT/2, 0);
+plug_geometry.rotateX(Math.PI/2)
 plug_geometry.computeBoundingBox();
 
 let n_switch_geometry = new THREE.BoxGeometry( LARGE_KNOB_RADIUS + 0.03, LARGE_KNOB_RADIUS  + 0.03, LARGE_KNOB_HEIGHT, 8 );
@@ -452,7 +454,7 @@ class Cable {
             this.src.getWorldPosition(this.positions[0]);
             // set positions[1] control point accordingly:
             this.positions[1]
-                .set(0, (NLET_HEIGHT + CABLE_CONTROL_POINT_DISTANCE) / 2, 0)
+                .set(0, 0, (NLET_HEIGHT + CABLE_CONTROL_POINT_DISTANCE) / 2)
                 .applyQuaternion(this.srcJackMesh.quaternion)
                 .add(this.positions[0]);
             // set source jack position accordingly
@@ -472,7 +474,7 @@ class Cable {
             this.srcJackMesh.getWorldPosition(this.positions[0]);
             // derive positions[1] (cable control point)
             this.positions[1]
-                .set(0, (NLET_HEIGHT + CABLE_CONTROL_POINT_DISTANCE) / 2, 0)
+                .set(0, 0, (NLET_HEIGHT + CABLE_CONTROL_POINT_DISTANCE) / 2)
                 .applyQuaternion(q)
                 .add(this.positions[0]);
             //Reset Color
@@ -483,7 +485,7 @@ class Cable {
             this.dst.getWorldPosition(this.positions[3]);
             this.dst.getWorldQuaternion(this.dstJackMesh.quaternion);
             this.positions[2]
-                .set(0, (NLET_HEIGHT + CABLE_CONTROL_POINT_DISTANCE) / 2, 0)
+                .set(0, 0, (NLET_HEIGHT + CABLE_CONTROL_POINT_DISTANCE) / 2)
                 .applyQuaternion(this.dstJackMesh.quaternion)
                 .add(this.positions[3]);
 
@@ -499,7 +501,7 @@ class Cable {
             this.dstJackMesh.getWorldPosition(this.positions[3]);
             // derive positions[2] (cable control point)
             this.positions[2]
-                .set(0, (NLET_HEIGHT + CABLE_CONTROL_POINT_DISTANCE) / 2, 0)
+                .set(0, 0, (NLET_HEIGHT + CABLE_CONTROL_POINT_DISTANCE) / 2)
                 .applyQuaternion(q)
                 .add(this.positions[3])
         }
@@ -531,6 +533,11 @@ class Cable {
             return value != this;
         });
     }
+}
+
+function randomIntFromInterval(min,max) // min and max included
+{
+    return Math.floor(Math.random()*(max-min+1)+min);
 }
 
 function onSelectStart(event) {
@@ -634,7 +641,7 @@ function enactDelta(delta) {
             case "newnode": {
                 enactDeltaNewNode(delta);
             } break;
-            case "disconnect": {
+            case "delnode": {
                 enactDeltaDeleteNode(delta);
             } break;
             case "repath": {
@@ -690,16 +697,14 @@ function enactDeltaNewNode(delta) {
             container = new THREE.Mesh(inlet_geometry, inlet_material);
             container.castShadow = true;
             container.receiveShadow = true;
-            container.rotation.x = 1.5708;
             container.position.fromArray([
                 0, 
                 0,
                 generic_geometry.parameters.depth/2 - NLET_HEIGHT]);
     
             let label = generateLabel(name, NLET_HEIGHT);
-            label.position.y = 0.01;
+            label.position.z = 0.01;
             label.position.x = -NLET_RADIUS /2;
-            label.rotation.x = -1.5708;
             container.add(label);
             
             // container.userData.moveable = true;
@@ -710,16 +715,14 @@ function enactDeltaNewNode(delta) {
             container = new THREE.Mesh(outlet_geometry, outlet_material);
             container.castShadow = true;
             container.receiveShadow = true;
-            container.rotation.x = 1.5708;
             container.position.fromArray([
                 0, 
                 0,
                 generic_geometry.parameters.depth/2 - NLET_HEIGHT]);
            
             let label = generateLabel(name, SMALL_KNOB_HEIGHT/2.7);
-            label.position.y = -0.01;
+            label.position.z = 0.01;
             label.position.x = -NLET_RADIUS /2;
-            label.rotation.x = 1.5708;
             container.add(label);
                 
             //container.userData.moveable = true;
@@ -735,11 +738,9 @@ function enactDeltaNewNode(delta) {
                 0, 
                 0,
                 generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
-            //container.rotation.x = 1.5708;
             let label = generateLabel(name, LARGE_KNOB_HEIGHT/2);
-            label.position.y = 0.01;
+            label.position.z = 0.01;
             label.position.x = -LARGE_KNOB_RADIUS /2;
-            label.rotation.x = -1.5708;
             container.add(label);
             container.userData.turnable = true;
             container.userData.selectable = true;
@@ -754,12 +755,10 @@ function enactDeltaNewNode(delta) {
                 0, 
                 0,
                 generic_geometry.parameters.depth/2 - SMALL_KNOB_HEIGHT]);
-           //container.rotation.x = 1.5708;
             //Label
             let label = generateLabel(name, SMALL_KNOB_HEIGHT/2.7);
-            label.position.y = 0.01;
+            label.position.z = 0.01;
             label.position.x = -SMALL_KNOB_RADIUS /2;
-            label.rotation.x = -1.5708;
             container.add(label);
 
             container.userData.turnable = true;
@@ -873,22 +872,31 @@ function enactDeltaNewNode(delta) {
 function enactDeltaDeleteNode(delta) {
     // find matching object & destroy
     // (first destroy any cables connected to it)
-
-    let parent = world;
     
     // first, find parent.
-    let path = delta.path;
-    let name, parentpath;
-    let pathlastdot = path.lastIndexOf(".")
-    if (pathlastdot >= 0) {
-        parentpath = path.substring(0, pathlastdot);
-        name = path.substring(pathlastdot+1);
-        parent = getObjectByPath(parentpath);
-    } else {
-        name = delta.path;
+
+    let kind = delta.kind;
+
+    for(let c =0; c < allCables.length; c++){
+        if(allCables[c].dst.parent.name === kind || allCables[c].src.parent.name === kind){
+            allCables[c].destroy();
+        }
     }
 
 
+
+    //Removing from allNodes
+    for(let name in allNodes){
+        if(name.includes(kind)){
+           delete allNodes[name];
+        }
+    }
+    //Removing from the world
+    for(let i=0; i<world.children.length; i++){
+        if(world.children[i].name === kind){
+            world.remove(world.children[i])
+        }
+    }
 }
 
 /*
@@ -1009,8 +1017,8 @@ function onSelectEnd(event) {
         controller.userData.selected = undefined;
 
         object.material.emissive.b = 0;
-        
 
+       
         if (object && object.userData.moveable) {
            
             if (object.userData.kind == "jack_outlet" || object.userData.kind == "jack_inlet") {
@@ -1022,7 +1030,7 @@ function onSelectEnd(event) {
                 //world.add(object);
                 parent.add(object);
 
-                let intersections = getIntersections(object, 0, -1, 0);
+                let intersections = getIntersections(object, 0, 0, -1);
 
                 if (intersections.length > 0) {
                     let intersection = intersections[0];
@@ -1072,6 +1080,15 @@ function onSelectEnd(event) {
                     { op:"propchange", path:path, name:"orient", from:[0, 0, 0, 1], to:[orient._x, orient._y, orient._z, orient._w] }
                 );
             }
+
+            let objPos = new THREE.Vector3();
+            object.getWorldPosition(objPos)
+            if(objPos.y < 0){
+                outgoingDeltas.push(
+                    { op:"delnode", path:object.userData.path, kind:object.userData.name}
+                );
+            }
+
         }
     }
 
@@ -1095,8 +1112,8 @@ function onSpawn(event) {
         let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
         pos.add(rel.applyQuaternion(orient));
 
-        let opname = "noise"
-        
+        let opname = "noise";
+
         let path = gensym(opname)
 
         outgoingDeltas.push(
@@ -1119,27 +1136,8 @@ function onSpawn(event) {
             { op:"newnode", kind:"n_switch", path: path+".nswtich", throws: ["Sine", "Phasor","Triangle"], value: 1 }
         );
         
-        // let rand = [];
-        // for (let k in localPatch.nodes) {
-        //     rand.push(k);
-        // }
-        // spawn = true;
-        // let nodeNum = randomIntFromInterval(0, rand.length -1);
-        // generateNode(world, 
-        //     localPatch.nodes[rand[nodeNum]], 
-        //     rand[nodeNum]); 
-
-        //     //console.log(randomIntFromInterval(0, rand.length))
-    
-        // // request scene:
-        // //sock.send({ cmd: "get_scene", date: Date.now() });
     }
 
-}
-
-function randomIntFromInterval(min,max) // min and max included
-{
-    return Math.floor(Math.random()*(max-min+1)+min);
 }
 
 function getIntersections(controller, x, y, z) {
@@ -1193,328 +1191,6 @@ function generateLabel(message, label_size) {
     text = new THREE.Mesh(shapeGeometry, label_material);
 
     return text;
-}
-
-function generateNode(parent, node, name) {
-    if(node === undefined || name === undefined){
-        let pos = controller1.getWorldPosition();
-        let quat = new THREE.Quaternion();
-        controller1.getWorldQuaternion(quat);
-        let tilt = new THREE.Quaternion();
-        tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
-        quat.multiply(tilt);
-        let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
-        pos.add(rel.applyQuaternion(quat));
-        node = { 
-                "_props": { "kind": "blank", 
-                "pos": [pos.x, pos.y, pos.z],
-                "orient": [quat.x, quat.y, quat.z, quat.w]}      
-        }
-    }
-
-    //Having Materials inside styles at the top causes it use the same mess across all objects
-    let generic_material = new THREE.MeshStandardMaterial({
-        color: Math.random() * 0xffffff,
-        roughness: 0.7,
-        metalness: 0.0,
-        opacity: 0.3,
-        transparent: true,
-        side: THREE.DoubleSide,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
-        
-    });
-
-    let knob_material = new THREE.MeshStandardMaterial({
-        color: Math.random() * 0xf44242,
-        roughness: 0.7,
-        metalness: 0.0,
-        opacity: 0.3,
-        transparent: true,
-        side: THREE.DoubleSide,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
-        
-    });
-    let inlet_material = generic_material.clone();
-    let outlet_material = generic_material.clone();
-    let n_switch_material = generic_material.clone();
-    let n_switch_slider_material = generic_material.clone();
-    
-    
-
-    let props = node._props;
-
-    let type = props.kind;
-    let container;
-    // TODO this switch needs to operate on "UI_Type" ^^^, NOT "props.kind"
-    switch(type) {
-        case "large_knob": {
-            container = new THREE.Mesh(large_knob_geometry, knob_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
-            //generic_geometry.parameters.width
-            container.position.fromArray([
-                (subObjCount / 8) + .065, 
-                -generic_geometry.parameters.height/2 - LARGE_KNOB_HEIGHT/2, 
-                generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
-            //Takes Radians
-            container.rotation.x = 1.5708;
-           
-            let label = generateLabel(name, LARGE_KNOB_HEIGHT/2);
-            label.position.y = 0.01;
-            label.position.x = -LARGE_KNOB_RADIUS /2;
-            label.rotation.x = -1.5708;
-            container.add(label);
-
-            container.userData.turnable = true;
-            container.userData.selectable = true;
-            subObjCount++;
-            break;
-        }
-        case "small_knob": {
-            container = new THREE.Mesh(small_knob_geometry, knob_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
-            container.position.fromArray([
-                (subObjCount / 8) + .065, 
-                -generic_geometry.parameters.height/2 - SMALL_KNOB_HEIGHT/2, 
-                generic_geometry.parameters.depth/2 - SMALL_KNOB_HEIGHT]);
-            container.rotation.x = 1.5708;
-            //Label
-            let label = generateLabel(name, SMALL_KNOB_HEIGHT/2.7);
-            label.position.y = 0.01;
-            label.position.x = -SMALL_KNOB_RADIUS /2;
-            label.rotation.x = -1.5708;
-            container.add(label);
-
-            container.userData.turnable = true;
-            container.userData.selectable = true;
-            subObjCount++;
-            break;
-        }
-        case "outlet": {
-            container = new THREE.Mesh(outlet_geometry, outlet_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
-            container.rotation.x = Math.PI;
-            container.position.fromArray([
-                NLET_RADIUS + (subOutletCount / 10), 
-                -generic_geometry.parameters.height - NLET_HEIGHT/2, 
-                -NLET_RADIUS]);
-           
-            let label = generateLabel(name, SMALL_KNOB_HEIGHT/2.7);
-            label.position.y = -0.01;
-            label.position.x = -NLET_RADIUS /2;
-            label.rotation.x = 1.5708;
-            container.add(label);
-                
-            //container.userData.moveable = true;
-            container.userData.selectable = true;
-            subOutletCount++;
-            break;
-        }
-        case "inlet": {
-            container = new THREE.Mesh(inlet_geometry, inlet_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
-            container.position.fromArray([
-                NLET_RADIUS + (subInletCount / 10), 
-                NLET_HEIGHT/2, 
-                -NLET_RADIUS]);
-    
-            let label = generateLabel(name, NLET_HEIGHT);
-            label.position.y = 0.01;
-            label.position.x = -NLET_RADIUS /2;
-            label.rotation.x = -1.5708;
-            container.add(label);
-            
-            // container.userData.moveable = true;
-            subInletCount++;
-            container.userData.selectable = true;
-            break;
-        }
-        case "n_switch": {
-            container = new THREE.Mesh(n_switch_geometry, n_switch_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
-            container.position.fromArray([
-                (subObjCount / 8) + .065,
-                -generic_geometry.parameters.height/2 - LARGE_KNOB_HEIGHT/2, 
-                generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
-            
-            let switchPositions = [];
-            //Draw N_SWTICH Label name itself
-            // let label = generateLabel(parent.userData.name, .01);
-            // label.position.y =  0;
-            // label.position.z = 0;
-            // container.add(label);
-            if(props.throws !== undefined){
-                let y = -container.position.y / 2;
-                for(let l =0; l < props.throws.length; l++){
-                    let labelN = generateLabel(props.throws[l], .01);
-
-                    labelN.position.y = y - container.geometry.parameters.height / 3.5;
-                    y = labelN.position.y;
-                    labelN.position.z = 0;
-                    labelN.position.x = -0.01;
-                    switchPositions[l] = [labelN.position.x + -0.02,
-                        labelN.position.y,
-                        labelN.position.z + n_switch_slider_geometry.parameters.width/2];
-
-                    if(props.value !== undefined && props.value === l){
-                        n_switch_slider = new THREE.Mesh(n_switch_slider_geometry, n_switch_slider_material);
-                        n_switch_slider.castShadow = true;
-                        n_switch_slider.receiveShadow = true;
-                        n_switch_slider.userData.slideable = true;
-                        n_switch_slider.userData.selectable = true;
-                        n_switch_slider.position.fromArray(switchPositions[l]);
-                       
-                        container.add(n_switch_slider);
-
-                    }
-                    container.add(labelN);
-
-                }
-
-            }
-
-            subObjCount++;
-            container.userData.positions = switchPositions;
-            container.userData.selectable = false;
-            container.userData.slideable = false;
-
-            break;
-        }
-        case "group": {
-            container = new THREE.Mesh(generic_geometry, generic_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
-            container.position.fromArray(props.pos);
-            container.userData.moveable = true;
-            container.userData.selectable = true;
-            
-            break;
-        }
-        default: {
-            let labelName;
-            if(props.kind.substring(0,3) == "op_") {
-                // use a square shape
-                // trim "op_" from the label
-                container = new THREE.Mesh(op_geometry, generic_material);
-                container.castShadow = true;
-                container.receiveShadow = true;
-                labelName = props.kind.substring(3);
-
-            } else if(props.kind == "param"){
-                container = new THREE.Mesh(op_geometry, generic_material);
-                container.castShadow = true;
-                container.receiveShadow = true;
-                let n = name.split('_');
-                n.shift();
-                n.pop();
-                let w = n.join("");
-                // let n = name.split("_")
-                // .shift()
-                // .pop()
-                // .join("");
-
-                labelName = w;
-            } else {
-                // generic object:
-                container = new THREE.Mesh(generic_geometry, generic_material);
-                container.castShadow = true;
-                container.receiveShadow = true;
-                labelName = props.kind;
-                
-            }
-
-            if(spawn === true){
-                let pos = controller1.getWorldPosition();
-                let quat = new THREE.Quaternion();
-                controller1.getWorldQuaternion(quat);
-                let tilt = new THREE.Quaternion();
-                tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
-                quat.multiply(tilt);
-                let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
-                pos.add(rel.applyQuaternion(quat));
-                let arr = [pos.x, pos.y, pos.z];
-                container.position.fromArray(arr);
-                spawn = false;
-            } else if (props.pos){
-                container.position.fromArray(props.pos);
-            } else{
-                container.position = parent.position.clone();
-            }
-            let label = generateLabel(labelName);
-            label.position.y = -LABEL_SIZE;
-            label.position.z += 0.01;
-            label.position.x = 0.005;
-            container.add(label);
-            container.userData.moveable = true; 
-            container.userData.selectable = true;
-            subObjCount = 0;   
-            subInletCount = 0;
-            subOutletCount = 0;
-        }
-    
-    }
-
-    let path = "";
-    if (parent.userData.path) path = parent.userData.path + ".";
-    path += name;
-
-    if (props.orient) container.quaternion.fromArray(props.orient);
-
-    container.userData.name = name;
-    container.userData.path = path;
-    container.userData.kind = props.kind;
-    //Default makes everything selectable
-    //container.userData.selectable = true;
-    container.userData.localPatchNode = node;
-
-    addObjectByPath(path, container);
-
-    //console.log("added ", path, container)
-
-    // add to proper parent:
-    parent.add(container);
-
-    for (let k in node) {
-        if (k == "_props") continue;
-            
-        generateNode(container, node[k], k);
-    }
-
-}
-function generateScene(patch) {
-
-    clearScene();
-
-    console.log("#cables", allCables.length)
-    
-    localPatch = patch;
-
-    let nodes = patch.nodes;
-    for (let k in nodes) {
-        generateNode(world, nodes[k], k);
-        console.log(nodes[k], k)
-    }
-
-    for (let arc of patch.arcs) {
-        let src = getObjectByPath(arc[0]);
-        let dst = getObjectByPath(arc[1]);
-
-        if (!src || !dst) {
-            console.log(arc[0], src)
-            console.log(arc[1], dst)
-            console.error("arc with unmatchable paths")
-            continue;
-        }
-
-        let cable = new Cable(src, dst);
-    }
-    console.log("#cables", allCables.length)
 }
 
 function updateDirtyNode(dirtyPath) {
@@ -1678,6 +1354,7 @@ function render() {
     //     otherUsers[u].controller1.update();
     // }
 
+
     let gamepad = controller1.getGamepad();
     if (gamepad) {
         let button0 = gamepad.buttons[0];
@@ -1709,8 +1386,8 @@ function render() {
     }
     if (controller1.userData.selected) {
         let object = controller1.userData.selected;
-
-
+        
+      
         // if what we have selected is a jack,
         // then do ray intersection as usual
         // if ray target is inlet/outlet (appropriately)
@@ -1940,22 +1617,6 @@ function handlemessage(msg, sock) {
             // insert into our TODO list:
             incomingDeltas.push.apply(incomingDeltas, msg.data);
         } break;
-        case "patch":
-            {
-                console.log("got patch")
-                
-                userPose.id = msg.id;
-
-   
-                // lazy deep copy:
-                patch = JSON.parse(JSON.stringify(msg.value));
-                write("received patch for user " +  userPose.id);
-
-
-                //Input JSON files to be parsed on generations
-                generateScene(patch);
-            }
-            break;
         case "user_pose": {
             let id = msg.pose.id;
 
