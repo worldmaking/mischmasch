@@ -215,12 +215,16 @@ function handlemessage(msg, sock, id) {
 	switch (msg.cmd) {
 		case "deltas": {
 			// TODO: merge OTs
-
-			send_all_clients(JSON.stringify({
+			let response = {
 				cmd: "deltas",
 				date: Date.now(),
 				data: msg.data
-			}));
+			};
+
+			send_all_clients(JSON.stringify(response));
+		} break;
+		case "clear_scene": {
+			
 		} break;
 		case "get_scene": {
 			demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 

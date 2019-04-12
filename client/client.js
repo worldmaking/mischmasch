@@ -64,6 +64,11 @@ let outlet_geometry = inlet_geometry;
 inlet_geometry.rotateX(Math.PI/2)
 inlet_geometry.computeBoundingBox();
 
+let inlet_backplate_geometry = new THREE.BoxBufferGeometry(NLET_RADIUS * 2, NLET_RADIUS * 2, NLET_HEIGHT, 8);
+let outlet_backplate_geometry = inlet_backplate_geometry;
+//inlet_backplate_geometry.rotateX(Math.PI/2)
+inlet_backplate_geometry.computeBoundingBox();
+
 let small_knob_geometry = new THREE.CylinderGeometry(SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, SMALL_KNOB_HEIGHT, 8);
 small_knob_geometry.rotateX(Math.PI/2)
 small_knob_geometry.computeBoundingBox();
@@ -701,7 +706,13 @@ function enactDeltaNewNode(delta) {
                 0, 
                 0,
                 generic_geometry.parameters.depth/2 - NLET_HEIGHT]);
-    
+            
+            //backplate to show which is inlet
+            material.color.set(0x00ff00);    
+            let backplate = new THREE.Mesh(inlet_backplate_geometry, material);
+            backplate.position.z += -NLET_HEIGHT;
+            container.add(backplate);
+
             let label = generateLabel(name, NLET_HEIGHT);
             label.position.z = 0.01;
             label.position.x = -NLET_RADIUS /2;
@@ -719,7 +730,13 @@ function enactDeltaNewNode(delta) {
                 0, 
                 0,
                 generic_geometry.parameters.depth/2 - NLET_HEIGHT]);
-           
+
+            //backplate to show which is outlet
+            material.color.set(0xff0000);    
+            let backplate = new THREE.Mesh(outlet_backplate_geometry, material);
+            backplate.position.z += -NLET_HEIGHT;
+            container.add(backplate);
+
             let label = generateLabel(name, SMALL_KNOB_HEIGHT/2.7);
             label.position.z = 0.01;
             label.position.x = -NLET_RADIUS /2;
@@ -876,14 +893,14 @@ function enactDeltaDeleteNode(delta) {
     // first, find parent.
 
     let kind = delta.kind;
-    console.log(kind)
+
+    //Removing all Cables that are attached to this node
     for(let c =0; c < allCables.length; c++){
-        if(allCables[c].dst.parent.name === kind || allCables[c].src.parent.name === kind){
+        if((allCables[c].dst !== null && allCables[c].dst.parent.name === kind) || (allCables[c].src !== null && allCables[c].src.parent.name === kind)){
             allCables[c].destroy();
-        }
+            c = 0;
+        } 
     }
-
-
 
     //Removing from allNodes
     for(let name in allNodes){
@@ -910,6 +927,7 @@ function enactDeltaRepath(delta) {
     { op:"disconnect", paths:["x", "y"] }
 */
 function enactDeltaDisconnect(delta) {
+    console.log(delta)
     let src = getObjectByPath(delta.paths[0]);
     let dst = getObjectByPath(delta.paths[1]);
     if (!src || !dst) {
@@ -1005,7 +1023,8 @@ function enactDeltaObjectOrient(delta) {
     { op:"propchange", path:"x", name:"value", from:x, to:y }
 */
 function enactDeltaObjectValue(delta) {
-
+    let object = getObjectByPath(delta.path);
+    let kind = object.userData.kind; // small_knob, nswitch, etc.
 }
 
 function onSelectEnd(event) {
