@@ -1,4 +1,5 @@
 let assert = require("assert");
+let fs = require("fs")
 let got = require("./got.js");
 
 
@@ -142,3 +143,9 @@ console.log(got.graphToString(g))
 assert(got.graphToString(g) == "")
 
 console.log("\nALL TESTS PASSED")
+
+
+
+let graph = JSON.parse(fs.readFileSync("../scene_edited.json"), "utf-8")
+let deltas = got.deltasFromGraph(graph, [])
+fs.writeFileSync("../scene_edited_deltas.json", JSON.stringify(deltas, null, "  "), "utf-8")

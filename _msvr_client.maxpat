@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 529.0, 140.0, 1802.0, 929.0 ],
+		"rect" : [ 293.0, 129.0, 1605.0, 929.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -38,6 +38,54 @@
 		"style" : "",
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-33",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 889.0, 91.0, 399.0, 20.0 ],
+					"text" : "^^^^^ edit this so that its sending a knob value instead of pos and orient!"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-26",
+					"maxclass" : "button",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "bang" ],
+					"parameter_enable" : 0,
+					"patching_rect" : [ 117.0, 533.0, 24.0, 24.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-10",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 610.5, 989.0, 442.0, 22.0 ],
+					"text" : "script send world dualvco_1__vco_2_waveform 59."
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-69",
+					"linecount" : 45,
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 1756.0, 11.0, 827.0, 612.0 ],
+					"text" : "\"{\\\"cmd\\\":\\\"deltas\\\",\\\"date\\\":1555097353555,\\\"data\\\":[[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1\\\",\\\"kind\\\":\\\"lfo\\\",\\\"pos\\\":[-2.326367085370336,1.5209056349935186,-0.7035861792005239],\\\"orient\\\":[0.12358177055502231,0.41713355199484253,0.13623412932103282,0.8900378687419946]},[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.fm_cv\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.phasor_sync\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.pulse_width_cv\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":2}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.rate\\\",\\\"kind\\\":\\\"large_knob\\\",\\\"range\\\":[0,80],\\\"taper\\\":\\\"log 3.8\\\",\\\"value\\\":0.17,\\\"unit\\\":\\\"Hz\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.index\\\",\\\"kind\\\":\\\"small_knob\\\",\\\"range\\\":[0,10],\\\"taper\\\":\\\"linear\\\",\\\"value\\\":3,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.pulse_width\\\",\\\"kind\\\":\\\"small_knob\\\",\\\"range\\\":[0,1],\\\"taper\\\":\\\"linear\\\",\\\"value\\\":5,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.onset\\\",\\\"kind\\\":\\\"small_knob\\\",\\\"range\\\":[0,1],\\\"taper\\\":\\\"linear\\\",\\\"value\\\":2.8,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.sine\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.phasor\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.pulse\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":2}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.sine_index\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":3}]],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2\\\",\\\"kind\\\":\\\"lfo\\\",\\\"pos\\\":[-2.424671389806588,0.9688708758277417,-0.18653185392820404],\\\"orient\\\":[-0.19209762519910564,0.5831224304667423,0.22962993689028358,0.7552064787613966]},[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.fm_cv\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.phasor_sync\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.pulse_width_cv\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":2}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.rate\\\",\\\"kind\\\":\\\"large_knob\\\",\\\"range\\\":[0,80],\\\"taper\\\":\\\"log 3.8\\\",\\\"value\\\":375,\\\"unit\\\":\\\"Hz\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.index\\\",\\\"kind\\\":\\\"small_knob\\\",\\\"range\\\":[0,10],\\\"taper\\\":\\\"linear\\\",\\\"value\\\":21.9,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.pulse_width\\\",\\\"kind\\\":\\\"small_knob\\\",\\\"range\\\":[0,1],\\\"taper\\\":\\\"linear\\\",\\\"value\\\":0.6,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.onset\\\",\\\"kind\\\":\\\"small_knob\\\",\\\"range\\\":[0,1],\\\"taper\\\":\\\"linear\\\",\\\"value\\\":0.74,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.sine\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.phasor\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.pulse\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":2}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.sine_index\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":3}]],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1\\\",\\\"kind\\\":\\\"dualvco\\\",\\\"pos\\\":[-2.3443101728993065,1.0586006732132194,-0.7830673231770153],\\\"orient\\\":[0.2342255713614243,0.35412725955930197,0.07915509581778843,0.9019239084110882]},[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.vco_1_cv\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.index_cv\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.vco_2_cv\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.feedback_cv\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":2}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.vco_1_rate\\\",\\\"kind\\\":\\\"large_knob\\\",\\\"range\\\":[0,6000],\\\"taper\\\":\\\"log 3.8\\\",\\\"value\\\":61,\\\"unit\\\":\\\"Hz\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.vco_1_waveform\\\",\\\"kind\\\":\\\"n_switch\\\",\\\"throws\\\":[\\\"Sine\\\",\\\"Phasor\\\",\\\"Triangle\\\"],\\\"value\\\":2}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.vco_2_rate\\\",\\\"kind\\\":\\\"large_knob\\\",\\\"range\\\":[0,6000],\\\"taper\\\":\\\"log 3.8\\\",\\\"value\\\":17.6,\\\"unit\\\":\\\"Hz\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.vco_2_waveform\\\",\\\"kind\\\":\\\"n_switch\\\",\\\"throws\\\":[\\\"Sine\\\",\\\"Phasor\\\",\\\"Triangle\\\"],\\\"value\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.feedback\\\",\\\"kind\\\":\\\"small_knob\\\",\\\"range\\\":[0,6],\\\"taper\\\":\\\"linear\\\",\\\"value\\\":6.7,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.vco_1\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.vco_2\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.master\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":2}]],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"vca_1\\\",\\\"kind\\\":\\\"vca\\\",\\\"pos\\\":[-1.8874404486624103,1.6447142321669945,-1.27836666000946],\\\"orient\\\":[-0.00320043028644092,0.5635363501996354,0.20483018876733974,0.8002881562407327]},[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"vca_1.signal\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"vca_1.cv\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"vca_1.cv_amount\\\",\\\"kind\\\":\\\"large_knob\\\",\\\"range\\\":[0,1],\\\"taper\\\":\\\"linear\\\",\\\"value\\\":0.762,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"vca_1.bias\\\",\\\"kind\\\":\\\"large_knob\\\",\\\"range\\\":[0,1],\\\"taper\\\":\\\"linear\\\",\\\"value\\\":0,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"vca_1.output\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":0}]],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"comparator_1\\\",\\\"kind\\\":\\\"comparator\\\",\\\"pos\\\":[-2.0809666515777456,0.8417822341996655,-0.9555356411990519],\\\"orient\\\":[-0.04273939274318167,0.48753902180372916,0.0518319148711431,0.8705127794164756]},[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"comparator_1.A\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"comparator_1.B\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"comparator_1.max\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"comparator_1.min\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":1}]],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1\\\",\\\"kind\\\":\\\"outs\\\",\\\"pos\\\":[-2.0605223497200336,0.46826704387316614,-1.0405112532755187],\\\"orient\\\":[-0.3121451653567321,0.369889483526838,0.14650496286711281,0.8627186456637955]},[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.left_(mono)\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.right_(stereo)\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.volume\\\",\\\"kind\\\":\\\"small_knob\\\",\\\"range\\\":[0,1],\\\"taper\\\":\\\"log 3.8\\\",\\\"value\\\":1,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.left\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.right\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":0}]],{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"lfo_1.sine\\\",\\\"vca_1.signal\\\"]},{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"lfo_1.sine\\\",\\\"lfo_2.fm_cv\\\"]},{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"lfo_2.sine\\\",\\\"vca_1.cv\\\"]},{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"lfo_1.phasor\\\",\\\"dualvco_1.feedback_cv\\\"]},{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"lfo_1.pulse\\\",\\\"dualvco_1.vco_1_cv\\\"]},{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"dualvco_1.master\\\",\\\"comparator_1.B\\\"]},{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"comparator_1.max\\\",\\\"outs_1.left_(mono)\\\"]},{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"comparator_1.min\\\",\\\"outs_1.right_(stereo)\\\"]},{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"dualvco_1.master\\\",\\\"dualvco_1.vco_2_cv\\\"]},{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"vca_1.output\\\",\\\"comparator_1.A\\\"]}]}\""
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-67",
 					"maxclass" : "dict.view",
@@ -117,7 +165,6 @@
 						"tags" : "",
 						"style" : "",
 						"subpatcher_template" : "",
-						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
 									"comment" : "",
@@ -825,7 +872,7 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-119",
-					"items" : [ "lfo_1__rate", ",", "lfo_1__index", ",", "lfo_1__pulse_width", ",", "lfo_1__onset", ",", "lfo_2__rate", ",", "lfo_2__index", ",", "lfo_2__pulse_width", ",", "lfo_2__onset", ",", "dualvco_1__vco_1_rate", ",", "dualvco_1__vco_1_waveform", ",", "dualvco_1__vco_2_rate", ",", "dualvco_1__vco_2_waveform", ",", "dualvco_1__feedback", ",", "vca_1__cv_amount", ",", "vca_1__bias", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas" ],
+					"items" : [ "lfo_1__rate", ",", "lfo_1__index", ",", "lfo_1__pulse_width", ",", "lfo_1__onset", ",", "lfo_2__rate", ",", "lfo_2__index", ",", "lfo_2__pulse_width", ",", "lfo_2__onset", ",", "dualvco_1__vco_1_rate", ",", "dualvco_1__vco_1_waveform", ",", "dualvco_1__vco_2_rate", ",", "dualvco_1__vco_2_waveform", ",", "dualvco_1__feedback", ",", "vca_1__cv_amount", ",", "vca_1__bias", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas" ],
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
@@ -1325,7 +1372,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 59.0, 107.0, 640.0, 480.0 ],
+						"rect" : [ 996.0, 143.0, 981.0, 1093.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
@@ -1452,6 +1499,10 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "signal", "signal" ],
 					"patching_rect" : [ 335.0, 723.5, 68.0, 22.0 ],
+					"saved_object_attributes" : 					{
+						"poll" : 1
+					}
+,
 					"text" : "gen~ world",
 					"varname" : "world"
 				}
@@ -1603,7 +1654,7 @@
 					"maxclass" : "dict.view",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 1244.0, 243.0, 246.0, 376.0 ]
+					"patching_rect" : [ 1235.0, 243.0, 255.0, 740.0 ]
 				}
 
 			}
@@ -1710,6 +1761,43 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 310.0, 197.0, 37.0, 22.0 ],
 					"text" : "close"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"attr" : "dualvco_1__vco_2_waveform",
+					"id" : "obj-15",
+					"maxclass" : "attrui",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 416.5, 665.5, 407.0, 22.0 ],
+					"text_width" : 294.0
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"attr" : "poll",
+					"id" : "obj-18",
+					"maxclass" : "attrui",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 279.0, 635.5, 150.0, 22.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-22",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 133.0, 559.0, 50.0, 22.0 ],
+					"text" : "compile"
 				}
 
 			}
@@ -1859,7 +1947,16 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-10", 1 ],
+					"order" : 0,
+					"source" : [ "obj-142", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-40", 0 ],
+					"order" : 1,
 					"source" : [ "obj-142", 0 ]
 				}
 
@@ -1895,6 +1992,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-83", 0 ],
+					"source" : [ "obj-15", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-146", 1 ],
 					"source" : [ "obj-150", 1 ]
 				}
@@ -1911,6 +2015,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-17", 0 ],
 					"source" : [ "obj-16", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-83", 0 ],
+					"source" : [ "obj-18", 0 ]
 				}
 
 			}
@@ -1944,6 +2055,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-12", 0 ],
+					"source" : [ "obj-22", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-47", 0 ],
 					"source" : [ "obj-23", 0 ]
 				}
@@ -1953,6 +2071,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-41", 0 ],
 					"source" : [ "obj-24", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-69", 0 ],
+					"source" : [ "obj-26", 0 ]
 				}
 
 			}
@@ -2070,6 +2195,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-59", 0 ],
+					"source" : [ "obj-69", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-1", 0 ],
 					"source" : [ "obj-7", 0 ]
 				}
@@ -2133,6 +2265,41 @@
 			}
 , 			{
 				"name" : "world.gendsp",
+				"bootpath" : "D:/github/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "lfo.gendsp",
+				"bootpath" : "D:/github/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "dualvco.gendsp",
+				"bootpath" : "D:/github/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "vca.gendsp",
+				"bootpath" : "D:/github/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "comparator.gendsp",
+				"bootpath" : "D:/github/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "outs.gendsp",
 				"bootpath" : "D:/github/msvr",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",

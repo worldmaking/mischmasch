@@ -12,80 +12,116 @@ var outletsTable = new Array();
 var varnamesTable = new Array();
 
 var object = {};
-	var nodeName;
-
+var nodeName;
 var counter = 1;
-
 var feedbackConnections = 0
 
-function client(msg){
+var handleDelta = function(delta) {
 
-	var ot = JSON.parse(msg)
-		outlet(1, ot.cmd)
-
-
-	cmd = ot.cmd
-
-    switch(cmd){
-
-        case "deltas":
-			counter++
+	if (Array.isArray(delta)) {
+		for (var i=0; i<delta.length; i++) {
+			post(i, "\n");
+			handleDelta(delta[i]);
+		}
+	} else {
+		switch (delta.op){
 			
-			var delta = new Dict("delta");
-			delta.parse(msg);
-			
-			var data = ot.data[0]
-			var op = data.op
-			var kind = data.kind
-			var posX = data.pos[0]
-			var posY = data.pos[1]
-			
-			switch (op){
-				
-				// create an object!
-				case "newnode":
-				
-					var newModule = gen_patcher.newdefault([(posX + counter) * 100, (posY + counter) * 50, kind])
-					newModule.varname = kind + "_" + data.path 
+			// create an object!
+			case "newnode": {
+				// individual delta to handle:
+				counter++;
 					
-					if (kind === "outs"){
-			
+				var kind = delta.kind
+				var posX = 10
+				var posY = 10
+				if (delta.pos) {
+
+				
+					posX = (delta.pos[0] + 3)
+					posY = (delta.pos[1] + 3) 
+				} else {
+						// TEMP HACK!!!!
+					// so we can ignore UI objects that we don't need to patcher script at this point
+					// NEED TO FIX
+
+					// handle "inlet", "outlet", and "small_knob" etc here
+					// you need to cache them somehwere, even though they don't exist as objects in a patcher
+					// so we can know how to connect to them or change their values
+
+					return;
+
+				}
+				var newModule = gen_patcher.newdefault([(posX) * 300, (posY) * 250, kind])
+				newModule.varname = kind + "_" + delta.path 
+
+				// if kind is 
+				
+				if (kind === "outs"){
+		
 					gen_patcher.message("script", "connect", newModule.varname, 0, "dac_left", 0);
 					gen_patcher.message("script", "connect", newModule.varname, 1, "dac_right", 0);
-		
 				}
-				
-				break
-				
-				
-				
-				
+			} break;
+			case "connect": {
+				// connect delta.paths[0] to delta.paths[1]
+			} break;
+			case "propchange": {
+				// special case name == pos, name == orient, name == value
+				switch(delta.name) {
+					case "value": {
+						// handle knob twiddle
+						// send to appropriate param
+						// based on delta.path and delta.to (new value)
+					} break;
+					case "pos": {
+						// whatever
+					} break;
 				}
-			
-        break;
+			} break;
+			// ETC
+		} 
+	}
+}
 
-        case "patch":
-		
+function client(msg){
+	var ot = JSON.parse(msg)
+	outlet(1, ot.cmd)
+	cmd = ot.cmd
+
+	switch(cmd){
+
+		case "deltas": {
+			//var delta = new Dict("delta");
+			//delta.parse(msg);
+
+			post("msg data", ot.data, "\n")
+			
+			handleDelta(ot.data);
+		} break;
+			
+
+		case "patch":
+	
 			counter = 1;
 			gen_patcher = this.patcher.getnamed("world").subpatcher();
 
-				gen_patcher.apply(function(b) { 
-				
-				//post("ops: ", b.varname)
-				// prevent erasing our audio outputs from genpatcher
-				if(b.varname !== "dac_right" && b.varname !== "dac_left"){
-					
-					//post("removing: ", b.varname)
-
-					gen_patcher.remove(b); 
-					
-					}
-			});
-			var patch = new Dict("patch");
-			patch.parse(msg);
+			gen_patcher.apply(function(b) { 
 			
-			var scene = ot.value
-			outlet(2, 'clear')
+			//post("ops: ", b.varname)
+			// prevent erasing our audio outputs from genpatcher
+			if(b.varname !== "dac_right" && b.varname !== "dac_left"){
+				
+				//post("removing: ", b.varname)
+
+				gen_patcher.remove(b); 
+				
+				}
+			});
+		var patch = new Dict("patch");
+		patch.parse(msg);
+		
+		var scene = ot.value
+		outlet(2, 'clear')
 	post(scene)
 	var arcs = JSON.stringify(scene.arcs)
 	//post("\n\narcs", arcs)
