@@ -1025,6 +1025,16 @@ function enactDeltaObjectOrient(delta) {
 function enactDeltaObjectValue(delta) {
     let object = getObjectByPath(delta.path);
     let kind = object.userData.kind; // small_knob, nswitch, etc.
+
+    switch(kind){
+        case "small_knob":
+        case "large_knob": {
+
+        } break;
+        default:{
+
+        } break;
+    }
 }
 
 function onSelectEnd(event) {
