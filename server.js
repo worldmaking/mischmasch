@@ -224,13 +224,25 @@ function handlemessage(msg, sock, id) {
 		} break;
 		case "get_scene": {
 			demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
-			// // Example sending some greetings:
-			sock.send(JSON.stringify({
-				cmd: "patch",
+
+
+			// turn this into deltas:
+			let deltas = got.deltasFromGraph(demo_scene, []);
+			console.log(deltas)
+
+			send_all_clients(JSON.stringify({
+				cmd: "deltas",
 				date: Date.now(),
-				id: id,
-				value: demo_scene
+				data: deltas
 			}));
+
+			// // // Example sending some greetings:
+			// sock.send(JSON.stringify({
+			// 	cmd: "patch",
+			// 	date: Date.now(),
+			// 	id: id,
+			// 	value: demo_scene
+			// }));
 		} break;
 		case "updated_scene": {
 			// // Example sending some greetings:

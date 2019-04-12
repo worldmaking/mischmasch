@@ -599,6 +599,54 @@ function onSelectStart(event) {
     }
 }
 
+function enactDelta(delta) {
+    if (Array.isArray(delta)) {
+        for (let d of delta) {
+            enactDelta(d);
+        }
+    } else {
+
+        console.log("enacting", delta.op)
+        switch(delta.op) {
+            case "propchange": {
+                switch(delta.name) {
+                    case "pos": {
+                        enactDeltaObjectPos(delta);
+                    } break;
+                    case "orient": {
+                        enactDeltaObjectOrient(delta);
+                    } break; 
+                    case "value": {
+                        enactDeltaObjectValue(delta);
+                    } break;
+                    // handle other types, e.g. param value
+                    default: {
+                        console.log("unknown propchange delta kind", delta)
+                    }
+                }
+            } break;
+            case "connect": {
+                enactDeltaConnect(delta);
+            } break;
+            case "disconnect": {
+                enactDeltaDisconnect(delta);
+            } break;
+            case "newnode": {
+                enactDeltaNewNode(delta);
+            } break;
+            case "disconnect": {
+                enactDeltaDeleteNode(delta);
+            } break;
+            case "repath": {
+                enactDeltaRepath(delta);
+            } break;
+            default: {
+                console.log("unknown delta kind", delta)
+            }
+        }
+    }
+}
+
 /*
     { op:"newnode", path:"x", kind:"noise", pos:[], orient:[], ...properties }
 */
@@ -1494,8 +1542,6 @@ function updateDirty(){
 
     if(parentNode !== undefined){
 
-        console.log("nodesToClean", nodesToClean)
-
         let numchildren = nodesToClean.length;
         // attempt an automatic layout
         let numcols = Math.ceil(Math.sqrt(numchildren));
@@ -1518,7 +1564,7 @@ function updateDirty(){
 
         for (let r = 0, i=0; r<numrows; r++) {
             for (let c=0; c<numcols && i < numchildren; c++, i++) {
-                console.log("adding child" + i + " of " + numchildren + "at ", c, r)
+                //console.log("adding child" + i + " of " + numchildren + "at ", c, r)
 
                 let widget = nodesToClean[i];
                 widget.position.x = grid_spacing * (c + 0.5);
@@ -1605,43 +1651,7 @@ function render() {
     // handle incoming deltas:
     while (incomingDeltas.length > 0) {
         let delta = incomingDeltas.shift();
-        console.log("enacting", delta.op)
-        switch(delta.op) {
-            case "propchange": {
-                switch(delta.name) {
-                    case "pos": {
-                        enactDeltaObjectPos(delta);
-                    } break;
-                    case "orient": {
-                        enactDeltaObjectOrient(delta);
-                    } break; 
-                    case "value": {
-                        enactDeltaObjectValue(delta);
-                    } break;
-                    // handle other types, e.g. param value
-                }
-            } break;
-            case "connect": {
-                enactDeltaConnect(delta);
-            } break;
-            case "disconnect": {
-                enactDeltaDisconnect(delta);
-            } break;
-            case "newnode": {
-                enactDeltaNewNode(delta);
-            } break;
-            case "disconnect": {
-                enactDeltaDeleteNode(delta);
-            } break;
-            case "repath": {
-                enactDeltaRepath(delta);
-            } break;
-            default: {
-                console.log(delta)
-            }
-
-            // handle newnode, delnode, connect, disconnect, repath, etc.
-        }
+        enactDelta(delta);
     }
     
     updateDirty();
@@ -1925,6 +1935,9 @@ let count = 0;
 function handlemessage(msg, sock) {
     switch (msg.cmd) {
         case "deltas": {
+
+            console.log("got deltas", msg.data)
+
             // insert into our TODO list:
             incomingDeltas.push.apply(incomingDeltas, msg.data);
         } break;
