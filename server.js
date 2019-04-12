@@ -17,7 +17,8 @@ const got = require("./got/got")
 console.log(got)
 
 const scenefile = "scene_edited.json"
-const sessionRecording = "../session_recordings/session_" + Date.now() + ".json"
+const sessionRecording = __dirname + "session_recordings/session_" + Date.now() + ".json"
+console.log(sessionRecording)
 fs.writeFileSync(sessionRecording)
 
 const MaxAPI = (() => {
