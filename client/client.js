@@ -64,9 +64,11 @@ let outlet_geometry = inlet_geometry;
 inlet_geometry.computeBoundingBox();
 
 let small_knob_geometry = new THREE.CylinderGeometry(SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, SMALL_KNOB_HEIGHT, 8);
+small_knob_geometry.rotateX(Math.PI/2)
 small_knob_geometry.computeBoundingBox();
 
 let large_knob_geometry = new THREE.CylinderGeometry(LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, LARGE_KNOB_HEIGHT, 8);
+large_knob_geometry.rotateX(Math.PI/2)
 large_knob_geometry.computeBoundingBox();
 
 let plug_geometry = new THREE.CylinderGeometry(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT, 8);
@@ -685,7 +687,7 @@ function enactDeltaNewNode(delta) {
                 0, 
                 0,
                 generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
-            container.rotation.x = 1.5708;
+            //container.rotation.x = 1.5708;
             let label = generateLabel(name, LARGE_KNOB_HEIGHT/2);
             label.position.y = 0.01;
             label.position.x = -LARGE_KNOB_RADIUS /2;
@@ -704,7 +706,7 @@ function enactDeltaNewNode(delta) {
                 0, 
                 0,
                 generic_geometry.parameters.depth/2 - SMALL_KNOB_HEIGHT]);
-           container.rotation.x = 1.5708;
+           //container.rotation.x = 1.5708;
             //Label
             let label = generateLabel(name, SMALL_KNOB_HEIGHT/2.7);
             label.position.y = 0.01;
@@ -978,7 +980,7 @@ function onSelectEnd(event) {
                     let intersection = intersections[0];
                     let o = intersection.object;
                     let cable = object.userData.cable
-                    
+
                     // if it is a jack, see if we can hook up?
                     if (object.userData.kind == "jack_outlet" && o.userData.kind == "outlet") {
                         // we have a hit! connect
@@ -1722,20 +1724,47 @@ function render() {
             //object.rotateY(Math.PI / 90);
             
             //put controller into knob space using matrix
-            //get controller angle via x and y
             //set angle to the knob
             //take controller out of knob space
 
-            // tempMatrix.getInverse(object.matrixWorld);
+            let controllerPos = new THREE.Vector3()
+            controller1.getWorldPosition(controllerPos)
+
+            let knobPos = new THREE.Vector3()
+            object.getWorldPosition(knobPos);
+
+            let relPos = new THREE.Vector3();
+            relPos.subVectors(controllerPos, knobPos);
+
+            let moduleQuat = new THREE.Quaternion();
+            moduleQuat.copy(object.parent.quaternion)
+            moduleQuat.inverse();
+
+            // now rotate this into the knob's perspective:
+            relPos.applyQuaternion(moduleQuat);
+            // //get controller angle via x and y
+            // (This ranges from -PI to +PI)
+            let angle = Math.atan2(relPos.x, -relPos.y);
+            // map this to a 0..1 range:
+            let value = (angle + Math.PI) / (2 * Math.PI);
+            console.log(value)
+            // TODO: send delta with this value
+            // TODO: enact delta by mapping value back to angular range:
+            let derived_angle = (value * Math.PI * 2) - Math.PI;
+            // set rotation of knob by this angle, and normal axis of knob:
+            object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
+
+
+
             // let parent = object.parent;
             // controller1.matrix.premultiply(parent.matrixWorld);
             // controller1.matrix.premultiply(tempMatrix);
             // controller1.matrix.decompose(controller1.position, controller1.quaternion, controller1.scale);
-            //object.rotateY(Math.atan2(controller1.rotation.y - object.rotation.y, controller1.rotation.x - object.rotation.x));
-            let offset = controller1.rotation.z - object.rotation.y;
-            object.rotation.y =  controller1.rotation.z + offset;
+            // object.rotateY(Math.atan2(controller1.rotation.y - object.rotation.y, controller1.rotation.x - object.rotation.x));
+            // // let offset = controller1.rotation.z - object.rotation.y;
+            // // object.rotation.y =  controller1.rotation.z + offset;
 
-            //object.rotation.y = controller1.rotation.z;
+            // //object.rotation.y = controller1.rotation.z;
             
             
 
