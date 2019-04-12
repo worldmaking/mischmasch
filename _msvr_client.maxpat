@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 529.0, 140.0, 1802.0, 929.0 ],
+		"rect" : [ 34.0, 77.0, 1852.0, 929.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -1638,7 +1638,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 188.0, 227.0, 252.0, 22.0 ],
-					"text" : "ws.client @host 192.168.137.113 @port 8080"
+					"text" : "ws.client @host 192.168.137.181 @port 8080"
 				}
 
 			}
@@ -2059,39 +2059,8 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "lfo.gendsp",
-				"bootpath" : "D:/github/msvr",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "dualvco.gendsp",
-				"bootpath" : "D:/github/msvr",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "vca.gendsp",
-				"bootpath" : "D:/github/msvr",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "comparator.gendsp",
-				"bootpath" : "D:/github/msvr",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "outs.gendsp",
-				"bootpath" : "D:/github/msvr",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
+				"name" : "ws.client.mxe64",
+				"type" : "mx64"
 			}
  ],
 		"autosave" : 0
