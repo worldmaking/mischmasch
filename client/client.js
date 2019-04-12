@@ -145,6 +145,9 @@ let outgoingDeltas = [];
 let allNodes = {};
 let allCables = [];
 
+
+//let currentKnobValue = 0;
+
 function getObjectByPath(path) {
     return allNodes[path];
 }
@@ -872,6 +875,7 @@ function enactDeltaNewNode(delta) {
     container.userData.name = name;
     container.userData.path = path;
     container.userData.kind = delta.kind;
+    if(delta.value) container.userData.value = delta.value;
 
     // add to our library of nodes:
     addObjectByPath(path, container);
@@ -1026,10 +1030,17 @@ function enactDeltaObjectValue(delta) {
     let object = getObjectByPath(delta.path);
     let kind = object.userData.kind; // small_knob, nswitch, etc.
 
+    let value = delta.to;
     switch(kind){
         case "small_knob":
         case "large_knob": {
-            console.log(object);
+            object.userData.value = value;
+            let derived_angle = (value * Math.PI * 2) - Math.PI;
+            // set rotation of knob by this angle, and normal axis of knob:
+            object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
+        } break;
+        case "n_switch": {
+
         } break;
         default:{
 
@@ -1119,6 +1130,10 @@ function onSelectEnd(event) {
             }
 
         }
+        // if(object && object.userData.turnable){
+        //     outgoingDeltas.push(
+        //         { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: currentKnobValue });
+        // }
     }
 
     //syncLocalPatch();
@@ -1462,30 +1477,16 @@ function render() {
             let angle = Math.atan2(relPos.x, -relPos.y);
             // map this to a 0..1 range:
             let value = (angle + Math.PI) / (2 * Math.PI);
-            console.log(value)
-            console.log(object)
-            // outgoingDeltas.push(
-            //      { op:"propchange", path:"x", name:"value", from: object, to:y });
+            //currentKnobValue = value;
+            outgoingDeltas.push(
+            { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: value });
 
             // TODO: send delta with this value
             // TODO: enact delta by mapping value back to angular range:
-            let derived_angle = (value * Math.PI * 2) - Math.PI;
-            // set rotation of knob by this angle, and normal axis of knob:
-            object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
 
-
-
-            // let parent = object.parent;
-            // controller1.matrix.premultiply(parent.matrixWorld);
-            // controller1.matrix.premultiply(tempMatrix);
-            // controller1.matrix.decompose(controller1.position, controller1.quaternion, controller1.scale);
-            // object.rotateY(Math.atan2(controller1.rotation.y - object.rotation.y, controller1.rotation.x - object.rotation.x));
-            // // let offset = controller1.rotation.z - object.rotation.y;
-            // // object.rotation.y =  controller1.rotation.z + offset;
-
-            // //object.rotation.y = controller1.rotation.z;
-            
-            
+            // let derived_angle = (value * Math.PI * 2) - Math.PI;
+            // // set rotation of knob by this angle, and normal axis of knob:
+            // object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);            
 
         } else if (object.userData.slideable){
 
