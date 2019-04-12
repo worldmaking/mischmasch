@@ -36,8 +36,14 @@ async function loadTexture(filename) {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 const LABEL_SIZE = .05;
-const CONTROL_POINT_DISTANCE = 0.03;
-const NUM_CABLE_SEGMENTS = 40;
+// how far the control poitns for cables are from the inlets outlets
+// effects how 'straight' the cables are as come out of inlets/outlets
+const CABLE_CONTROL_POINT_DISTANCE = 0.1;
+// how many line segments in each patch cable
+const NUM_CABLE_SEGMENTS = 128;
+// how tall the cable jack cylinders are
+const CABLE_JACK_HEIGHT = 0.03;
+const CABLE_JACK_RADIUS = CABLE_JACK_HEIGHT * 0.2;
 
 const NLET_RADIUS = 0.025;
 const NLET_HEIGHT = 0.01;
@@ -63,7 +69,9 @@ small_knob_geometry.computeBoundingBox();
 let large_knob_geometry = new THREE.CylinderGeometry(LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, LARGE_KNOB_HEIGHT, 8);
 large_knob_geometry.computeBoundingBox();
 
-let plug_geometry = new THREE.CylinderGeometry(CONTROL_POINT_DISTANCE * 0.2, CONTROL_POINT_DISTANCE * 0.2, CONTROL_POINT_DISTANCE, 8);
+let plug_geometry = new THREE.CylinderGeometry(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT, 8);
+// fix anchor point
+plug_geometry.translate(0, CABLE_JACK_HEIGHT/2, 0);
 plug_geometry.computeBoundingBox();
 
 let n_switch_geometry = new THREE.BoxGeometry( LARGE_KNOB_RADIUS + 0.03, LARGE_KNOB_RADIUS  + 0.03, LARGE_KNOB_HEIGHT, 8 );
@@ -387,18 +395,18 @@ class Cable {
 
         });
 
-        this.srcCtrlPt = new THREE.Mesh(plug_geometry, outlet_material);
-        this.dstCtrlPt = new THREE.Mesh(plug_geometry, inlet_material);
-        world.add(this.srcCtrlPt);
-        world.add(this.dstCtrlPt);
-        this.srcCtrlPt.userData.moveable = true;
-        this.srcCtrlPt.userData.selectable = true;
-        this.srcCtrlPt.userData.cable = this;
-        this.srcCtrlPt.userData.kind = "jack_outlet";
-        this.dstCtrlPt.userData.moveable = true;
-        this.dstCtrlPt.userData.selectable = true;
-        this.dstCtrlPt.userData.cable = this;
-        this.dstCtrlPt.userData.kind = "jack_inlet";
+        this.srcJackMesh = new THREE.Mesh(plug_geometry, outlet_material);
+        this.dstJackMesh = new THREE.Mesh(plug_geometry, inlet_material);
+        world.add(this.srcJackMesh);
+        world.add(this.dstJackMesh);
+        this.srcJackMesh.userData.moveable = true;
+        this.srcJackMesh.userData.selectable = true;
+        this.srcJackMesh.userData.cable = this;
+        this.srcJackMesh.userData.kind = "jack_outlet";
+        this.dstJackMesh.userData.moveable = true;
+        this.dstJackMesh.userData.selectable = true;
+        this.dstJackMesh.userData.cable = this;
+        this.dstJackMesh.userData.kind = "jack_inlet";
 
         this.positions = [
             new THREE.Vector3(),
@@ -435,46 +443,63 @@ class Cable {
     update() {
 
         if (this.src) {
-            this.src.getWorldQuaternion(this.srcCtrlPt.quaternion);
+            // cable is connected to a source
+            // use src (outlet) orientation for our cable orientation 
+            this.src.getWorldQuaternion(this.srcJackMesh.quaternion);
+            // use src (outlet) position for our start point (position[0])
             this.src.getWorldPosition(this.positions[0]);
+            // set positions[1] control point accordingly:
             this.positions[1]
-                .set(0, -(NLET_HEIGHT + CONTROL_POINT_DISTANCE) / 2, 0)
-                .applyQuaternion(this.srcCtrlPt.quaternion)
+                .set(0, (NLET_HEIGHT + CABLE_CONTROL_POINT_DISTANCE) / 2, 0)
+                .applyQuaternion(this.srcJackMesh.quaternion)
                 .add(this.positions[0]);
-            this.srcCtrlPt.position.copy(this.positions[1]);
+            // set source jack position accordingly
+            this.srcJackMesh.position //.copy(this.positions[1]);
+                // .set(0, -(NLET_HEIGHT + CABLE_JACK_HEIGHT) / 2, 0)
+                // .applyQuaternion(this.srcJackMesh.quaternion)
+                // .add(this.positions[0]);
+                .copy(this.positions[0])
             //Color Set
             this.curve.mesh.material.color.copy(this.src.material.color);
         } else {
+            // dangling jack case
             let q = new THREE.Quaternion();
-            this.srcCtrlPt.getWorldQuaternion(q);
-            // derive positions[0] from the srcCtrlPt
-            this.srcCtrlPt.getWorldPosition(this.positions[1]);
-            this.positions[0]
-                .set(0, (NLET_HEIGHT + CONTROL_POINT_DISTANCE) / 2, 0)
+            // get the jack's orientation
+            this.srcJackMesh.getWorldQuaternion(q);
+            // derive the cable start point from the jack's position
+            this.srcJackMesh.getWorldPosition(this.positions[0]);
+            // derive positions[1] (cable control point)
+            this.positions[1]
+                .set(0, (NLET_HEIGHT + CABLE_CONTROL_POINT_DISTANCE) / 2, 0)
                 .applyQuaternion(q)
-                .add(this.positions[1]);
+                .add(this.positions[0]);
             //Reset Color
              this.curve.mesh.material.color.setRGB(211,211,211);
         }
 
         if (this.dst) {
             this.dst.getWorldPosition(this.positions[3]);
-            this.dst.getWorldQuaternion(this.dstCtrlPt.quaternion);
+            this.dst.getWorldQuaternion(this.dstJackMesh.quaternion);
             this.positions[2]
-                .set(0, (NLET_HEIGHT + CONTROL_POINT_DISTANCE) / 2, 0)
-                .applyQuaternion(this.dstCtrlPt.quaternion)
+                .set(0, (NLET_HEIGHT + CABLE_CONTROL_POINT_DISTANCE) / 2, 0)
+                .applyQuaternion(this.dstJackMesh.quaternion)
                 .add(this.positions[3]);
 
-            this.dstCtrlPt.position.copy(this.positions[2]);
+            this.dstJackMesh.position //.copy(this.positions[2]);
+            //    .set(0, (NLET_HEIGHT + CABLE_JACK_HEIGHT) / 2, 0)
+            //      .applyQuaternion(this.dstJackMesh.quaternion)
+            //     .add(this.positions[3]);
+            .copy(this.positions[3])
         } else {
             let q = new THREE.Quaternion();
-            this.dstCtrlPt.getWorldQuaternion(q);
-            // derive positions[3] from the srcCtrlPt
-            this.dstCtrlPt.getWorldPosition(this.positions[2]);
-            this.positions[3]
-                .set(0, -(NLET_HEIGHT + CONTROL_POINT_DISTANCE) / 2, 0)
+            this.dstJackMesh.getWorldQuaternion(q);
+            // get cable end point from the srcJackMesh
+            this.dstJackMesh.getWorldPosition(this.positions[3]);
+            // derive positions[2] (cable control point)
+            this.positions[2]
+                .set(0, (NLET_HEIGHT + CABLE_CONTROL_POINT_DISTANCE) / 2, 0)
                 .applyQuaternion(q)
-                .add(this.positions[2])
+                .add(this.positions[3])
         }
 
         let curve = this.curve;
@@ -495,8 +520,8 @@ class Cable {
 
         // destroy the cable and its objects
         // and remove it from allCables
-        world.remove(this.srcCtrlPt);
-        world.remove(this.dstCtrlPt);
+        world.remove(this.srcJackMesh);
+        world.remove(this.dstJackMesh);
         world.remove(this.curve.mesh);
 
         allCables = allCables.filter(value => {
@@ -555,15 +580,15 @@ function onSelectStart(event) {
         if (kind == "outlet") {
             // create a new line
             // line's src == object
-            // now set object = line.dstCtrlPt
+            // now set object = line.dstJackMesh
             let cable = new Cable(object, null);
-            object = cable.dstCtrlPt;
+            object = cable.dstJackMesh;
             controller.add(object); //removes from previous parent
 
         } else if (kind == "inlet") {
             //...
             let cable = new Cable(null, object);
-            object = cable.srcCtrlPt;
+            object = cable.srcJackMesh;
             controller.userData.selected = object;
             controller.add(object); //removes from previous parent
         }
@@ -635,7 +660,7 @@ function enactDeltaNewNode(delta) {
             container = new THREE.Mesh(outlet_geometry, outlet_material);
             container.castShadow = true;
             container.receiveShadow = true;
-            container.rotation.x = -1.5708;
+            container.rotation.x = 1.5708;
             container.position.fromArray([
                 0, 
                 0,
@@ -777,6 +802,7 @@ function enactDeltaNewNode(delta) {
     subInletCount = 0;
     subOutletCount = 0;
 
+    container.name = name;
     container.userData.name = name;
     container.userData.path = path;
     container.userData.kind = delta.kind;
@@ -797,6 +823,22 @@ function enactDeltaNewNode(delta) {
 function enactDeltaDeleteNode(delta) {
     // find matching object & destroy
     // (first destroy any cables connected to it)
+
+    let parent = world;
+    
+    // first, find parent.
+    let path = delta.path;
+    let name, parentpath;
+    let pathlastdot = path.lastIndexOf(".")
+    if (pathlastdot >= 0) {
+        parentpath = path.substring(0, pathlastdot);
+        name = path.substring(pathlastdot+1);
+        parent = getObjectByPath(parentpath);
+    } else {
+        name = delta.path;
+    }
+
+
 }
 
 /*
@@ -930,59 +972,42 @@ function onSelectEnd(event) {
                 //world.add(object);
                 parent.add(object);
 
+                let intersections = getIntersections(object, 0, -1, 0);
 
-                // if it is a jack, see if we can hook up?
-                if (object.userData.kind == "jack_outlet") {
-
-                    let intersections = getIntersections(object, 0, 1, 0);
-
+                if (intersections.length > 0) {
+                    let intersection = intersections[0];
+                    let o = intersection.object;
+                    let cable = object.userData.cable
                     
-                console.log("put that cable back", intersections.length)
+                    // if it is a jack, see if we can hook up?
+                    if (object.userData.kind == "jack_outlet" && o.userData.kind == "outlet") {
+                        // we have a hit! connect
+                        cable.src = o;
 
-                    if (intersections.length > 0) {
-                        let intersection = intersections[0];
-                        let o = intersection.object;
-                        if (o.userData.kind == "outlet") {
-                            // we have a hit! connect
-                            let cable = object.userData.cable
-                            cable.src = o;
+                        // send a delta:
+                        outgoingDeltas.push(
+                            { op:"connect", paths:[cable.src.userData.path, cable.dst.userData.path] }
+                        );
 
-                            // send a delta:
-                            outgoingDeltas.push(
-                                { op:"connect", paths:[cable.src.userData.path, cable.dst.userData.path] }
-                            );
+                        // destroy the cable and its objects
+                        // and remove it from allCables
+                        cable.destroy();
+                                
+                    } else if (object.userData.kind == "jack_inlet" && o.userData.kind == "inlet") {
+                        // we have a hit! connect
+                        cable.dst = o;
 
-                            // destroy the cable and its objects
-                            // and remove it from allCables
-                            cable.destroy();
-                            
+                        // send a delta:
+                        outgoingDeltas.push(
+                            { op:"connect", paths:[cable.src.userData.path, cable.dst.userData.path] }
+                        );
 
-                        }
-                    }
-
-
-                } else if (object.userData.kind == "jack_inlet") {
-
-                    let intersections = getIntersections(object, 0, -1, 0);
-                    console.log("put that cable back", intersections.length)
-                    if (intersections.length > 0) {
-                        let intersection = intersections[0];
-                        let o = intersection.object;
-                        if (o.userData.kind == "inlet") {
-                            // we have a hit! connect
-                            let cable = object.userData.cable
-                            cable.dst = o;
-
-                            // send a delta:
-                            outgoingDeltas.push(
-                                { op:"connect", paths:[cable.src.userData.path, cable.dst.userData.path] }
-                            );
-
-                            // destroy the arc
-                            cable.destroy();
-                        }
+                        // destroy the arc
+                        cable.destroy();
                     }
                 }
+
+                
 
             } else {
 
@@ -1222,6 +1247,7 @@ function generateNode(parent, node, name) {
             container = new THREE.Mesh(outlet_geometry, outlet_material);
             container.castShadow = true;
             container.receiveShadow = true;
+            container.rotation.x = Math.PI;
             container.position.fromArray([
                 NLET_RADIUS + (subOutletCount / 10), 
                 -generic_geometry.parameters.height - NLET_HEIGHT/2, 
@@ -1458,31 +1484,55 @@ function updateDirty(){
         if(dirtyObj !== undefined){
             if(node === dirtyObj){
                 parentNode = allNodes[node];
-            }
-
-            if(node.includes(dirtyObj) ){
+            } else if (node.includes(dirtyObj) ){
                 nodesToClean.push(allNodes[node]);
             }
         }
     }
 
     if(parentNode !== undefined){
+
+        console.log("nodesToClean", nodesToClean)
+
+        let numchildren = nodesToClean.length;
+        // attempt an automatic layout
+        let numcols = Math.ceil(Math.sqrt(numchildren));
+        let numrows = Math.ceil(numchildren / numcols);
+
+        let widget_diameter = LARGEST_MODULE*2;
+        let widget_padding = LARGEST_MODULE / 4;
+        let grid_spacing = widget_diameter + widget_padding;
+
+
         //let width = parentNode.geometry.parameters.width / nodesToClean.length;
-        let width = (LARGEST_MODULE * 2) + (LARGEST_MODULE /4);
-        let height = parentNode.geometry.parameters.height / 2;
+        //let width = (LARGEST_MODULE * 2) + (LARGEST_MODULE /4);
+       //let height = parentNode.geometry.parameters.height / 2;
         
         // TODO: Seems silly to have to create a new geometry everytime.....
-        parentNode.geometry = new THREE.BoxBufferGeometry(width * nodesToClean.length, 0.2, 0.05);
+        //parentNode.geometry = new THREE.BoxBufferGeometry(width * nodesToClean.length, 0.2, 0.05);
+        parentNode.geometry = new THREE.BoxBufferGeometry(grid_spacing * numcols, grid_spacing * numrows, 0.05);
+        // reset anchor to top left corner:
         parentNode.geometry.translate(parentNode.geometry.parameters.width/2, -parentNode.geometry.parameters.height/2, -parentNode.geometry.parameters.depth/2);
 
-        for(let c of nodesToClean){
-            //c.position.x = ((width * amount) + -width) + (LARGEST_MODULE);
-            c.position.x = (width * amount)
-            c.position.y = -height;
-            //c.position.y = -((height * amount) + height) + (LARGEST_MODULE / 2);
-            c.position.z = 0;
-            amount++;
+        for (let r = 0, i=0; r<numrows; r++) {
+            for (let c=0; c<numcols && i < numchildren; c++, i++) {
+                console.log("adding child" + i + " of " + numchildren + "at ", c, r)
+
+                let widget = nodesToClean[i];
+                widget.position.x = grid_spacing * (c + 0.5);
+                widget.position.y = -grid_spacing * (r + 0.5);
+                widget.position.z = 0;
+            }
         }
+
+        // for(let c of nodesToClean){
+        //     //c.position.x = ((width * amount) + -width) + (LARGEST_MODULE);
+        //     c.position.x = (width * amount)
+        //     c.position.y = -height;
+        //     //c.position.y = -((height * amount) + height) + (LARGEST_MODULE / 2);
+        //     c.position.z = 0;
+        //     amount++;
+        // }
     }    
 
     if(dirtyObj !== undefined){
