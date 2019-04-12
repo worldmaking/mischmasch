@@ -146,7 +146,7 @@ let allNodes = {};
 let allCables = [];
 
 
-//let currentKnobValue = 0;
+let currentKnobValue = 0;
 
 function getObjectByPath(path) {
     return allNodes[path];
@@ -1130,10 +1130,10 @@ function onSelectEnd(event) {
             }
 
         }
-        // if(object && object.userData.turnable){
-        //     outgoingDeltas.push(
-        //         { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: currentKnobValue });
-        // }
+        if(object && object.userData.turnable){
+            outgoingDeltas.push(
+                { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: currentKnobValue });
+        }
     }
 
     //syncLocalPatch();
@@ -1477,16 +1477,19 @@ function render() {
             let angle = Math.atan2(relPos.x, -relPos.y);
             // map this to a 0..1 range:
             let value = (angle + Math.PI) / (2 * Math.PI);
-            //currentKnobValue = value;
-            outgoingDeltas.push(
-            { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: value });
+            currentKnobValue = value;
+            // TODO: Sending delta every frame got very laggy. Possibly bring this back so other person can see knob turning...?
+            // outgoingDeltas.push(
+            // { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: value });
 
             // TODO: send delta with this value
             // TODO: enact delta by mapping value back to angular range:
 
-            // let derived_angle = (value * Math.PI * 2) - Math.PI;
-            // // set rotation of knob by this angle, and normal axis of knob:
-            // object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);            
+            //This is locally only, the knob rotation gets updated from the delta's once they are sent back. Theoretically you should never actually see a difference,
+            //this just means that you can see the rotation before the final position is sent to the server instead of constantly sending it.
+            let derived_angle = (value * Math.PI * 2) - Math.PI;
+            // set rotation of knob by this angle, and normal axis of knob:
+            object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);            
 
         } else if (object.userData.slideable){
 
