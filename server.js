@@ -19,7 +19,8 @@ console.log(got)
 const scenefile = "scene_edited.json"
 const sessionRecording = __dirname + "/session_recordings/session_" + Date.now() + ".json"
 console.log(sessionRecording)
-fs.writeFileSync(sessionRecording)
+var recordHead = {}
+fs.writeFileSync(sessionRecording, JSON.stringify(recordHead, null, "  "), "utf-8")
 
 const MaxAPI = (() => {
     try {
