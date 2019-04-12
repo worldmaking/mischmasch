@@ -10,7 +10,7 @@
             <String>Node.js server</String>
             <ConnectedNoteIDs>2-4</ConnectedNoteIDs>
         </Note>
-        <Note ID="2" FontSize="12.0" Position="199.675781,383.710938" Width="110.0">
+        <Note ID="2" FontSize="12.0" Position="200.0,384.21875" Width="110.0">
             <Appearance>
                 <Alignment>Left</Alignment>
                 <Border Weight="1">0.477193 0.557066 0.76433</Border>
