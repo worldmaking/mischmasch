@@ -876,7 +876,7 @@ function enactDeltaDeleteNode(delta) {
     // first, find parent.
 
     let kind = delta.kind;
-
+    console.log(kind)
     for(let c =0; c < allCables.length; c++){
         if(allCables[c].dst.parent.name === kind || allCables[c].src.parent.name === kind){
             allCables[c].destroy();
