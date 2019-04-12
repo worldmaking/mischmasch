@@ -1517,78 +1517,77 @@ function generateScene(patch) {
     console.log("#cables", allCables.length)
 }
 
-function updateDirty(){
-    let dirtyObj;
+function updateDirtyNode(dirtyPath) {
+    console.log("cleaning", dirtyPath)
+    let parentNode = getObjectByPath(dirtyPath);
+    if (!parentNode) return;
+
     let nodesToClean = [];
-    let parentNode;
-    let amount = 0;
+    for(let path in allNodes) {
+        if (path === dirtyPath) continue; // skip ourself
+        if (path.includes(dirtyPath)) {
+            nodesToClean.push(getObjectByPath(path));
+        }
+    }
+
+    let numchildren = nodesToClean.length;
+    // attempt an automatic layout
+    let numcols = Math.ceil(Math.sqrt(numchildren));
+    let numrows = Math.ceil(numchildren / numcols);
+    // special-case small modules:
+    if (numchildren <= 4) {
+        numcols = numchildren;
+        numrows = 1;
+    }
+
+    console.log("building module ", numchildren, parentNode.children.length, numrows, numcols)
 
     let LARGEST_MODULE = LARGE_KNOB_RADIUS;
+    let widget_diameter = LARGEST_MODULE*2;
+    let widget_padding = LARGEST_MODULE / 4;
+    let grid_spacing = widget_diameter + widget_padding;
+
+    // TODO: Seems silly to have to create a new geometry everytime.....
+    //parentNode.geometry = new THREE.BoxBufferGeometry(width * nodesToClean.length, 0.2, 0.05);
+    parentNode.geometry = new THREE.BoxBufferGeometry(grid_spacing * numcols, grid_spacing * numrows, 0.05);
+    // reset anchor to top left corner:
+    parentNode.geometry.translate(parentNode.geometry.parameters.width/2, -parentNode.geometry.parameters.height/2, -parentNode.geometry.parameters.depth/2);
+
+    for (let r = 0, i=0; r<numrows; r++) {
+        for (let c=0; c<numcols && i < numchildren; c++, i++) {
+            //console.log("adding child" + i + " of " + numchildren + "at ", c, r)
+
+            let widget = nodesToClean[i];
+            widget.position.x = grid_spacing * (c + 0.5);
+            widget.position.y = -grid_spacing * (r + 0.5);
+            widget.position.z = 0;
+        }
+    }
+
+    // cleansed:
+    parentNode.userData.dirty = false;
+}
+
+function updateDirty(){
+
+    // get a list of dirty objects:
+    let dirtyObjects = [];
+    for (let path in allNodes) {
+        
+        if (allNodes[path].userData.dirty) {
+            dirtyObjects.push(path)
+        }
+        allNodes[path].userData.dirty = false;
+    }
+    if (dirtyObjects.length) {
+        console.log(dirtyObjects)
+    }
+
+    for (let dirtyPath of dirtyObjects) {
+        updateDirtyNode(dirtyPath);
+    }
     
-    for(let node in allNodes){
-        
-        if (allNodes[node].userData.dirty == true){
-            dirtyObj = node;
-        }
-
-        if(dirtyObj !== undefined){
-            if(node === dirtyObj){
-                parentNode = allNodes[node];
-            } else if (node.includes(dirtyObj) ){
-                nodesToClean.push(allNodes[node]);
-            }
-        }
-    }
-
-    if(parentNode !== undefined){
-
-        let numchildren = nodesToClean.length;
-        // attempt an automatic layout
-        let numcols = Math.ceil(Math.sqrt(numchildren));
-        let numrows = Math.ceil(numchildren / numcols);
-
-        let widget_diameter = LARGEST_MODULE*2;
-        let widget_padding = LARGEST_MODULE / 4;
-        let grid_spacing = widget_diameter + widget_padding;
-
-
-        //let width = parentNode.geometry.parameters.width / nodesToClean.length;
-        //let width = (LARGEST_MODULE * 2) + (LARGEST_MODULE /4);
-       //let height = parentNode.geometry.parameters.height / 2;
-        
-        // TODO: Seems silly to have to create a new geometry everytime.....
-        //parentNode.geometry = new THREE.BoxBufferGeometry(width * nodesToClean.length, 0.2, 0.05);
-        parentNode.geometry = new THREE.BoxBufferGeometry(grid_spacing * numcols, grid_spacing * numrows, 0.05);
-        // reset anchor to top left corner:
-        parentNode.geometry.translate(parentNode.geometry.parameters.width/2, -parentNode.geometry.parameters.height/2, -parentNode.geometry.parameters.depth/2);
-
-        for (let r = 0, i=0; r<numrows; r++) {
-            for (let c=0; c<numcols && i < numchildren; c++, i++) {
-                //console.log("adding child" + i + " of " + numchildren + "at ", c, r)
-
-                let widget = nodesToClean[i];
-                widget.position.x = grid_spacing * (c + 0.5);
-                widget.position.y = -grid_spacing * (r + 0.5);
-                widget.position.z = 0;
-            }
-        }
-
-        // for(let c of nodesToClean){
-        //     //c.position.x = ((width * amount) + -width) + (LARGEST_MODULE);
-        //     c.position.x = (width * amount)
-        //     c.position.y = -height;
-        //     //c.position.y = -((height * amount) + height) + (LARGEST_MODULE / 2);
-        //     c.position.z = 0;
-        //     amount++;
-        // }
-    }    
-
-    if(dirtyObj !== undefined){
-        // console.log(nodesToClean)
-        // console.log(allNodes)
-        allNodes[dirtyObj].userData.dirty = false;
-        dirtyObj = undefined;
-    }
+    
 }
 
 // function syncLocalPatchNode(obj) {
