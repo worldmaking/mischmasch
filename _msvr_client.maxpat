@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 293.0, 103.0, 1605.0, 955.0 ],
+		"rect" : [ 293.0, 129.0, 1605.0, 929.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -38,6 +38,19 @@
 		"style" : "",
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-110",
+					"linecount" : 2,
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 684.0, 583.0, 50.0, 35.0 ],
+					"text" : "append deltas"
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-108",
 					"maxclass" : "message",
@@ -189,7 +202,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 610.5, 989.0, 442.0, 22.0 ],
-					"text" : "script send world lfo_2__rate 0.0638"
+					"text" : "script send world lfo_2__rate 40.45"
 				}
 
 			}
@@ -655,6 +668,42 @@
 						"subpatcher_template" : "",
 						"boxes" : [ 							{
 								"box" : 								{
+									"id" : "obj-4",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "bang", "" ],
+									"patching_rect" : [ 50.0, 250.0, 29.5, 22.0 ],
+									"text" : "t b l"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-3",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 50.0, 284.0, 50.0, 22.0 ],
+									"text" : "deltas"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-1",
+									"maxclass" : "newobj",
+									"numinlets" : 2,
+									"numoutlets" : 2,
+									"outlettype" : [ "", "" ],
+									"patching_rect" : [ 50.0, 318.0, 40.0, 22.0 ],
+									"text" : "zl.thin"
+								}
+
+							}
+, 							{
+								"box" : 								{
 									"id" : "obj-126",
 									"maxclass" : "newobj",
 									"numinlets" : 2,
@@ -720,7 +769,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 50.0, 121.0, 96.0, 22.0 ],
+									"patching_rect" : [ 50.0, 200.0, 96.0, 22.0 ],
 									"text" : "prepend append"
 								}
 
@@ -840,6 +889,22 @@
  ],
 						"lines" : [ 							{
 								"patchline" : 								{
+									"destination" : [ "obj-133", 0 ],
+									"order" : 1,
+									"source" : [ "obj-1", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-3", 1 ],
+									"order" : 0,
+									"source" : [ "obj-1", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
 									"destination" : [ "obj-118", 0 ],
 									"source" : [ "obj-117", 0 ]
 								}
@@ -847,7 +912,7 @@
 							}
 , 							{
 								"patchline" : 								{
-									"destination" : [ "obj-133", 0 ],
+									"destination" : [ "obj-4", 0 ],
 									"source" : [ "obj-118", 0 ]
 								}
 
@@ -925,6 +990,27 @@
 								}
 
 							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-1", 0 ],
+									"source" : [ "obj-3", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-3", 0 ],
+									"source" : [ "obj-4", 1 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-3", 0 ],
+									"source" : [ "obj-4", 0 ]
+								}
+
+							}
  ]
 					}
 ,
@@ -958,7 +1044,7 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-119",
-					"items" : [ "lfo_1__rate", ",", "lfo_1__index", ",", "lfo_1__pulse_width", ",", "lfo_1__onset", ",", "lfo_2__rate", ",", "lfo_2__index", ",", "lfo_2__pulse_width", ",", "lfo_2__onset", ",", "dualvco_1__vco_1_rate", ",", "dualvco_1__vco_1_waveform", ",", "dualvco_1__vco_2_rate", ",", "dualvco_1__vco_2_waveform", ",", "dualvco_1__feedback", ",", "vca_1__cv_amount", ",", "vca_1__bias", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas" ],
+					"items" : [ "lfo_1__rate", ",", "lfo_1__index", ",", "lfo_1__pulse_width", ",", "lfo_1__onset", ",", "lfo_2__rate", ",", "lfo_2__index", ",", "lfo_2__pulse_width", ",", "lfo_2__onset", ",", "dualvco_1__vco_1_rate", ",", "dualvco_1__vco_1_waveform", ",", "dualvco_1__vco_2_rate", ",", "dualvco_1__vco_2_waveform", ",", "dualvco_1__feedback", ",", "vca_1__cv_amount", ",", "vca_1__bias", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas" ],
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
@@ -1944,6 +2030,14 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-110", 1 ],
+					"order" : 0,
+					"source" : [ "obj-12", 2 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-112", 0 ],
 					"order" : 1,
 					"source" : [ "obj-12", 1 ]
@@ -1953,6 +2047,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-119", 0 ],
+					"order" : 1,
 					"source" : [ "obj-12", 2 ]
 				}
 
