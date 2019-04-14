@@ -69,6 +69,7 @@ var handleDelta = function(delta) {
 				// special case name == pos, name == orient, name == value
 				switch(delta.name) {
 					case "value": {
+						post("yeah", delta.from, delta.to)
 						// handle knob twiddle
 						// send to appropriate param
 						// based on delta.path and delta.to (new value)
@@ -84,6 +85,7 @@ var handleDelta = function(delta) {
 }
 
 function client(msg){
+	post(msg)
 	var ot = JSON.parse(msg)
 	outlet(1, ot.cmd)
 	cmd = ot.cmd
