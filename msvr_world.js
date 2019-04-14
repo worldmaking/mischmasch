@@ -1,6 +1,6 @@
 
 inlets = 2
-outlets = 3
+outlets = 4
 	// get a reference to "thegen"'s embedded gen patcher:
 var varnameCount = 0
 
@@ -69,7 +69,9 @@ var handleDelta = function(delta) {
 				// special case name == pos, name == orient, name == value
 				switch(delta.name) {
 					case "value": {
-						post("yeah", delta.from, delta.to)
+						var param = delta.path
+						param = param.replace(".", "__")
+						outlet(3, delta.to, param)
 						// handle knob twiddle
 						// send to appropriate param
 						// based on delta.path and delta.to (new value)
