@@ -17,10 +17,11 @@ const got = require("./got/got")
 console.log(got)
 
 const scenefile = "scene_edited.json"
+const sessionJSON = []
 const sessionRecording = __dirname + "/session_recordings/session_" + Date.now() + ".json"
 console.log(sessionRecording)
-var recordHead = {}
-fs.writeFileSync(sessionRecording, JSON.stringify(recordHead, null, "  "), "utf-8")
+
+fs.writeFileSync(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")
 
 const MaxAPI = (() => {
     try {
@@ -224,7 +225,9 @@ function handlemessage(msg, sock, id) {
 				date: Date.now(),
 				data: msg.data
 			};
-			fs.appendFileSync(sessionRecording, JSON.stringify(response, null, "  "), "utf-8")
+
+			sessionJSON.push(response)
+			fs.writeFileSync(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")
 			send_all_clients(JSON.stringify(response));
 		} break;
 		case "clear_scene": {
