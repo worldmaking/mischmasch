@@ -4,13 +4,13 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 0,
-			"revision" : 3,
+			"revision" : 0,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "dsp.gen",
-		"rect" : [ 45.0, 98.0, 437.0, 451.0 ],
+		"rect" : [ 45.0, 97.0, 437.0, 451.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -58,19 +58,6 @@
 					"patching_rect" : [ 85.0, 389.0, 35.0, 22.0 ],
 					"text" : "out 1",
 					"varname" : "dac_left"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-1808",
-					"maxclass" : "newobj",
-					"numinlets" : 0,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 200.0, 100.0, 100.0, 22.0 ],
-					"text" : "noise",
-					"varname" : "noise_path"
 				}
 
 			}
