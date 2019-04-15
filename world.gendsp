@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "dsp.gen",
-		"rect" : [ 45.0, 97.0, 437.0, 451.0 ],
+		"rect" : [ 45.0, 97.0, 1108.0, 914.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -39,11 +39,24 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-19662",
+					"linecount" : 9,
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 24.0, 327.0, 54.0, 127.0 ],
+					"text" : "please don't ever delete these out objects (out 1, out 2)",
+					"varname" : "out_comment"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-919",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 191.0, 389.0, 35.0, 22.0 ],
+					"patching_rect" : [ 24.0, 301.0, 35.0, 22.0 ],
 					"text" : "out 2",
 					"varname" : "dac_right"
 				}
@@ -55,7 +68,7 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 85.0, 389.0, 35.0, 22.0 ],
+					"patching_rect" : [ 24.0, 271.0, 35.0, 22.0 ],
 					"text" : "out 1",
 					"varname" : "dac_left"
 				}
