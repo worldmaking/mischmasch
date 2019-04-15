@@ -371,6 +371,10 @@ async function init() {
 
     // now we can start rendering:
     animate();
+
+    // outgoingDeltas.push(spawnRandomModule([1, 2, 3], [4, 5, 6, 7]))
+    // outgoingDeltas.push(spawnRandomModule([1, 2, 3], [4, 5, 6, 7]))
+    // outgoingDeltas.push(spawnRandomModule([1, 2, 3], [4, 5, 6, 7]))
 }
 
 
