@@ -30,7 +30,8 @@ var handleDelta = function(delta) {
 			case "newnode": {
 				// individual delta to handle:
 				counter++;
-					
+				paramCounter = 0;
+				
 				var kind = delta.kind
 				var posX = 10
 				var posY = 10
@@ -47,7 +48,62 @@ var handleDelta = function(delta) {
 					// handle "inlet", "outlet", and "small_knob" etc here
 					// you need to cache them somehwere, even though they don't exist as objects in a patcher
 					// so we can know how to connect to them or change their values
+					
+					
+					switch(kind){
+						case '"small_knob"':
+						case '"large_knob"':
+						case '"tuning_knob"':
+						case '"slider"':
+						case '"momentary"':
+						case '"n_switch"':
+						case '"led"':
+					
+						var nodeName = delta.path.replace(".", "__")
+						post("test", nodeName)
+						paramX = paramCounter * 150
+						// generate the subparam which the param will bind to
+						var setparam = gen_patcher.newdefault([(counter) * 100, (pos[1] + counter) * 50 - 25, "setparam", key])
+						setparam.varname = nodeName + "_setparam_" + key
+						gen_patcher.message("script", "connect", setparam.varname, 0, kind + "_" + delta.path, 0);
+					
+						// generate the param which the js script will bind to
+						var param = gen_patcher.newdefault([(pos[0] + counter) * 100 + paramX, (pos[1] + counter) * 50 - 50, "param", nodeName + "__" + key])
+						param.varname = nodeName + "_param_" + key
+						gen_patcher.message("script", "connect", param.varname, 0, setparam.varname, 0);
+					
+						//gen_patcher.message("script", "send", param.varname, paramValue);
+						outlet(1, nodeName + "__" + key, paramValue)
+						paramCounter++
+						break;	
+						}
+					index = JSON.stringify(unit[key]._props.index)
+	
+					UI_obj[key] = [UI,index]
+	
+					object[nodeName] = UI_obj;
 
+					}
+				
+				
+				
+									post(kind, delta.path,"\n")
+
+									post(Object.keys(delta),"\n")
+									
+									for (var k in delta){
+    									if (delta.hasOwnProperty(k)) {
+         									post("Key is " + k + ", value is" + delta[k]);
+    									}
+									}
+					/*var args = _props.args
+					param = kind.split("_")[0]
+					var objSettings = [(pos[0] + counter) * 100, (pos[1] + counter) * 50, param ]
+					var paramSettings = args
+					var newParam = objSettings.concat(paramSettings);
+					var newModule = gen_patcher.newdefault(newParam)
+					newModule.varname = nodeName
+*/
 					return;
 
 				}
@@ -64,7 +120,7 @@ var handleDelta = function(delta) {
 			} break;
 			case "connect": {
 				// connect delta.paths[0] to delta.paths[1]
-			} break;
+			 break;
 			case "propchange": {
 				// special case name == pos, name == orient, name == value
 				switch(delta.name) {

@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 293.0, 129.0, 1605.0, 929.0 ],
+		"rect" : [ 433.0, 79.0, 1014.0, 933.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -40,13 +40,12 @@
 		"boxes" : [ 			{
 				"box" : 				{
 					"id" : "obj-110",
-					"linecount" : 2,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 684.0, 583.0, 50.0, 35.0 ],
-					"text" : "append deltas"
+					"patching_rect" : [ 684.0, 583.0, 50.0, 22.0 ],
+					"text" : "clear"
 				}
 
 			}
@@ -190,7 +189,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "bang" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 117.0, 533.0, 24.0, 24.0 ]
+					"patching_rect" : [ 948.0, 253.5, 24.0, 24.0 ]
 				}
 
 			}
@@ -202,7 +201,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 610.5, 989.0, 442.0, 22.0 ],
-					"text" : "script send world lfo_2__rate 40.45"
+					"text" : "script send world lfo_2__rate 0.0638"
 				}
 
 			}
@@ -226,7 +225,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 178.0, 620.0, 35.0, 22.0 ],
+					"patching_rect" : [ 898.0, 254.5, 35.0, 22.0 ],
 					"text" : "clear"
 				}
 
@@ -625,9 +624,9 @@
 				"box" : 				{
 					"id" : "obj-137",
 					"maxclass" : "newobj",
-					"numinlets" : 4,
+					"numinlets" : 5,
 					"numoutlets" : 4,
-					"outlettype" : [ "", "", "", "" ],
+					"outlettype" : [ "clear", "", "", "" ],
 					"patcher" : 					{
 						"fileversion" : 1,
 						"appversion" : 						{
@@ -639,7 +638,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 59.0, 104.0, 640.0, 480.0 ],
+						"rect" : [ 59.0, 104.0, 499.0, 720.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
@@ -666,7 +665,213 @@
 						"tags" : "",
 						"style" : "",
 						"subpatcher_template" : "",
+						"visible" : 1,
 						"boxes" : [ 							{
+								"box" : 								{
+									"id" : "obj-16",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "", "clear" ],
+									"patching_rect" : [ 51.0, 379.0, 47.0, 22.0 ],
+									"text" : "t l clear"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-15",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 52.5, 414.0, 25.0, 22.0 ],
+									"text" : "iter"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-14",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 1,
+									"outlettype" : [ "set" ],
+									"patching_rect" : [ 409.0, 147.0, 31.0, 22.0 ],
+									"text" : "t set"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-13",
+									"maxclass" : "newobj",
+									"numinlets" : 2,
+									"numoutlets" : 2,
+									"outlettype" : [ "bang", "" ],
+									"patching_rect" : [ 409.0, 109.0, 53.0, 22.0 ],
+									"text" : "sel clear"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"comment" : "",
+									"id" : "obj-12",
+									"index" : 5,
+									"maxclass" : "inlet",
+									"numinlets" : 0,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 427.0, 52.0, 30.0, 30.0 ]
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-11",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 50.0, 451.0, 96.0, 22.0 ],
+									"text" : "prepend append"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-10",
+									"maxclass" : "newobj",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patcher" : 									{
+										"fileversion" : 1,
+										"appversion" : 										{
+											"major" : 8,
+											"minor" : 0,
+											"revision" : 0,
+											"architecture" : "x64",
+											"modernui" : 1
+										}
+,
+										"classnamespace" : "box",
+										"rect" : [ 59.0, 104.0, 640.0, 480.0 ],
+										"bglocked" : 0,
+										"openinpresentation" : 0,
+										"default_fontsize" : 12.0,
+										"default_fontface" : 0,
+										"default_fontname" : "Arial",
+										"gridonopen" : 1,
+										"gridsize" : [ 15.0, 15.0 ],
+										"gridsnaponopen" : 1,
+										"objectsnaponopen" : 1,
+										"statusbarvisible" : 2,
+										"toolbarvisible" : 1,
+										"lefttoolbarpinned" : 0,
+										"toptoolbarpinned" : 0,
+										"righttoolbarpinned" : 0,
+										"bottomtoolbarpinned" : 0,
+										"toolbars_unpinned_last_save" : 0,
+										"tallnewobj" : 0,
+										"boxanimatetime" : 200,
+										"enablehscroll" : 1,
+										"enablevscroll" : 1,
+										"devicewidth" : 0.0,
+										"description" : "",
+										"digest" : "",
+										"tags" : "",
+										"style" : "",
+										"subpatcher_template" : "",
+										"boxes" : [ 											{
+												"box" : 												{
+													"id" : "obj-3",
+													"maxclass" : "message",
+													"numinlets" : 2,
+													"numoutlets" : 1,
+													"outlettype" : [ "" ],
+													"patching_rect" : [ 50.0, 100.0, 51.0, 22.0 ],
+													"text" : "deltas"
+												}
+
+											}
+, 											{
+												"box" : 												{
+													"comment" : "",
+													"id" : "obj-7",
+													"index" : 1,
+													"maxclass" : "inlet",
+													"numinlets" : 0,
+													"numoutlets" : 1,
+													"outlettype" : [ "set" ],
+													"patching_rect" : [ 50.0, 40.0, 30.0, 30.0 ]
+												}
+
+											}
+, 											{
+												"box" : 												{
+													"comment" : "",
+													"id" : "obj-8",
+													"index" : 2,
+													"maxclass" : "inlet",
+													"numinlets" : 0,
+													"numoutlets" : 1,
+													"outlettype" : [ "" ],
+													"patching_rect" : [ 81.0, 40.0, 30.0, 30.0 ]
+												}
+
+											}
+, 											{
+												"box" : 												{
+													"comment" : "",
+													"id" : "obj-9",
+													"index" : 1,
+													"maxclass" : "outlet",
+													"numinlets" : 1,
+													"numoutlets" : 0,
+													"patching_rect" : [ 50.0, 785.0, 30.0, 30.0 ]
+												}
+
+											}
+ ],
+										"lines" : [ 											{
+												"patchline" : 												{
+													"destination" : [ "obj-9", 0 ],
+													"source" : [ "obj-3", 0 ]
+												}
+
+											}
+, 											{
+												"patchline" : 												{
+													"destination" : [ "obj-3", 0 ],
+													"source" : [ "obj-7", 0 ]
+												}
+
+											}
+, 											{
+												"patchline" : 												{
+													"destination" : [ "obj-3", 1 ],
+													"source" : [ "obj-8", 0 ]
+												}
+
+											}
+ ]
+									}
+,
+									"patching_rect" : [ 50.0, 284.0, 50.0, 22.0 ],
+									"saved_object_attributes" : 									{
+										"description" : "",
+										"digest" : "",
+										"globalpatchername" : "",
+										"tags" : ""
+									}
+,
+									"text" : "p"
+								}
+
+							}
+, 							{
 								"box" : 								{
 									"id" : "obj-4",
 									"maxclass" : "newobj",
@@ -675,18 +880,6 @@
 									"outlettype" : [ "bang", "" ],
 									"patching_rect" : [ 50.0, 250.0, 29.5, 22.0 ],
 									"text" : "t b l"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-3",
-									"maxclass" : "message",
-									"numinlets" : 2,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 50.0, 284.0, 50.0, 22.0 ],
-									"text" : "deltas"
 								}
 
 							}
@@ -846,7 +1039,7 @@
 									"maxclass" : "outlet",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 50.0, 361.0, 30.0, 30.0 ]
+									"patching_rect" : [ 50.0, 491.0, 30.0, 30.0 ]
 								}
 
 							}
@@ -858,7 +1051,7 @@
 									"maxclass" : "outlet",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 90.5, 361.0, 30.0, 30.0 ]
+									"patching_rect" : [ 126.0, 294.0, 30.0, 30.0 ]
 								}
 
 							}
@@ -889,7 +1082,15 @@
  ],
 						"lines" : [ 							{
 								"patchline" : 								{
-									"destination" : [ "obj-133", 0 ],
+									"destination" : [ "obj-10", 1 ],
+									"order" : 0,
+									"source" : [ "obj-1", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-16", 0 ],
 									"order" : 1,
 									"source" : [ "obj-1", 0 ]
 								}
@@ -897,9 +1098,15 @@
 							}
 , 							{
 								"patchline" : 								{
-									"destination" : [ "obj-3", 1 ],
-									"order" : 0,
-									"source" : [ "obj-1", 0 ]
+									"destination" : [ "obj-1", 0 ],
+									"source" : [ "obj-10", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-133", 0 ],
+									"source" : [ "obj-11", 0 ]
 								}
 
 							}
@@ -914,6 +1121,13 @@
 								"patchline" : 								{
 									"destination" : [ "obj-4", 0 ],
 									"source" : [ "obj-118", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-13", 0 ],
+									"source" : [ "obj-12", 0 ]
 								}
 
 							}
@@ -961,6 +1175,13 @@
 							}
 , 							{
 								"patchline" : 								{
+									"destination" : [ "obj-14", 0 ],
+									"source" : [ "obj-13", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
 									"destination" : [ "obj-123", 0 ],
 									"midpoints" : [ 209.25, 237.5, 100.0, 237.5 ],
 									"order" : 1,
@@ -992,21 +1213,42 @@
 							}
 , 							{
 								"patchline" : 								{
-									"destination" : [ "obj-1", 0 ],
-									"source" : [ "obj-3", 0 ]
+									"destination" : [ "obj-10", 0 ],
+									"source" : [ "obj-14", 0 ]
 								}
 
 							}
 , 							{
 								"patchline" : 								{
-									"destination" : [ "obj-3", 0 ],
+									"destination" : [ "obj-11", 0 ],
+									"source" : [ "obj-15", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-133", 0 ],
+									"source" : [ "obj-16", 1 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-15", 0 ],
+									"source" : [ "obj-16", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-10", 0 ],
 									"source" : [ "obj-4", 1 ]
 								}
 
 							}
 , 							{
 								"patchline" : 								{
-									"destination" : [ "obj-3", 0 ],
+									"destination" : [ "obj-10", 0 ],
 									"source" : [ "obj-4", 0 ]
 								}
 
@@ -1044,13 +1286,13 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-119",
-					"items" : [ "lfo_1__rate", ",", "lfo_1__index", ",", "lfo_1__pulse_width", ",", "lfo_1__onset", ",", "lfo_2__rate", ",", "lfo_2__index", ",", "lfo_2__pulse_width", ",", "lfo_2__onset", ",", "dualvco_1__vco_1_rate", ",", "dualvco_1__vco_1_waveform", ",", "dualvco_1__vco_2_rate", ",", "dualvco_1__vco_2_waveform", ",", "dualvco_1__feedback", ",", "vca_1__cv_amount", ",", "vca_1__bias", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas", ",", "deltas" ],
+					"items" : "deltas",
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
 					"outlettype" : [ "int", "", "" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 570.0, 712.0, 100.0, 22.0 ],
+					"patching_rect" : [ 574.0, 712.0, 100.0, 22.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 436.0, 455.0, 236.0, 22.0 ]
 				}
@@ -2023,7 +2265,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-137", 2 ],
-					"midpoints" : [ 620.0, 744.0, 559.25, 744.0, 559.25, 701.0, 536.5, 701.0 ],
+					"midpoints" : [ 624.0, 744.0, 559.25, 744.0, 559.25, 701.0, 536.5, 701.0 ],
 					"source" : [ "obj-119", 1 ]
 				}
 
@@ -2048,6 +2290,14 @@
 				"patchline" : 				{
 					"destination" : [ "obj-119", 0 ],
 					"order" : 1,
+					"source" : [ "obj-12", 2 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-137", 4 ],
+					"order" : 2,
 					"source" : [ "obj-12", 2 ]
 				}
 
@@ -2085,7 +2335,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-119", 0 ],
-					"midpoints" : [ 515.5, 744.0, 563.5, 744.0, 563.5, 701.0, 579.5, 701.0 ],
+					"midpoints" : [ 515.5, 744.0, 563.5, 744.0, 563.5, 701.0, 583.5, 701.0 ],
 					"source" : [ "obj-137", 0 ]
 				}
 
@@ -2336,14 +2586,14 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-25", 0 ],
+					"destination" : [ "obj-26", 0 ],
 					"source" : [ "obj-46", 1 ]
 				}
 
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-39", 0 ],
+					"destination" : [ "obj-64", 0 ],
 					"source" : [ "obj-46", 0 ]
 				}
 
