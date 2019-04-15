@@ -58,6 +58,8 @@ const CONTROLLER_HIT_DISTANCE = 0.03;
 
 const FRAME_WAIT_AMOUNT = 0;
 
+const GRID_DIVISIONS = 60;
+
 // let inlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
 // let outlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
 
@@ -360,7 +362,7 @@ async function init() {
 
 
     // floor
-    let floorGrid = new THREE.GridHelper(30, 30);
+    let floorGrid = new THREE.GridHelper(10, GRID_DIVISIONS);
     floorGrid.position.y = 0;
     floorGrid.material.opacity = 0.25;
     floorGrid.material.transparent = true;
@@ -1068,7 +1070,9 @@ function onSelectEnd(event) {
 
        
         if (object && object.userData.moveable) {
-           
+            let objPos = new THREE.Vector3();
+            object.getWorldPosition(objPos);
+
             if (object.userData.kind == "jack_outlet" || object.userData.kind == "jack_inlet") {
                 // take it out of controller-space
                 object.matrix.premultiply(controller.matrixWorld);
@@ -1085,6 +1089,16 @@ function onSelectEnd(event) {
                     let o = intersection.object;
                     let cable = object.userData.cable
 
+                    if(cable.src == null && cable.dst == null){
+                        cable.destroy();
+                    }
+
+                    if(cable.src == null || cable.dst == null){
+                        if(objPos < 0){
+                            cable.destroy();
+                        }
+                    }
+                    
                     // if it is a jack, see if we can hook up?
                     if (object.userData.kind == "jack_outlet" && o.userData.kind == "outlet") {
                         // we have a hit! connect
@@ -1129,8 +1143,7 @@ function onSelectEnd(event) {
                 );
             }
 
-            let objPos = new THREE.Vector3();
-            object.getWorldPosition(objPos)
+
             if(objPos.y < 0){
                 outgoingDeltas.push(
                     { op:"delnode", path:object.userData.path, kind:object.userData.name}
