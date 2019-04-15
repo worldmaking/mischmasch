@@ -360,7 +360,7 @@ async function init() {
 
 
     // floor
-    let floorGrid = new THREE.GridHelper(10, 10);
+    let floorGrid = new THREE.GridHelper(30, 30);
     floorGrid.position.y = 0;
     floorGrid.material.opacity = 0.25;
     floorGrid.material.transparent = true;
