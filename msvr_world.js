@@ -162,6 +162,10 @@ var handleDelta = function(delta) {
 
 			 break;
 			
+			case "delnode":
+				var deleted = delta.path.replace('.', '__');
+				gen_patcher.message("script", "delete", deleted)
+			break;
 			case "disconnect":
 				
 				var setOutlet = delta.paths[0].replace('.','__')
