@@ -226,6 +226,8 @@ function handlemessage(msg, sock, id) {
 				data: msg.data
 			};
 
+			console.log("forwarding deltas", JSON.stringify(sessionJSON, null, "  "))
+
 			sessionJSON.push(response)
 			fs.writeFileSync(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")
 			send_all_clients(JSON.stringify(response));
