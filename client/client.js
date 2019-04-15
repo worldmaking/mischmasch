@@ -120,6 +120,12 @@ let generic_material = new THREE.MeshStandardMaterial({
     
 });
 
+let outline_material = new THREE.MeshStandardMaterial({
+    color: 0x888888,
+    side: THREE.BackSide
+    
+});
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // SCENE COMPONENTS
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -568,7 +574,6 @@ function onSelectStart(event) {
     //     object = object.parent;
     // }
 
-
     if (object && object.userData.moveable) {
 
         let kind = object.userData.kind;
@@ -597,9 +602,9 @@ function onSelectStart(event) {
 
         controller.userData.selected = object;
         object.userData.originalParent = parent;
+        
         controller.add(object); //removes from previous parent
     }
-
 
     if (object && !object.userData.moveable) {
         let kind = object.userData.kind;
@@ -609,18 +614,23 @@ function onSelectStart(event) {
             // now set object = line.dstJackMesh
             let cable = new Cable(object, null);
             object = cable.dstJackMesh;
+            controller.userData.selected = object;
             controller.add(object); //removes from previous parent
 
         } else if (kind == "inlet") {
             //...
             let cable = new Cable(null, object);
+
             object = cable.srcJackMesh;
+
             controller.userData.selected = object;
+            //Something with controller.add makes selected = null....
             controller.add(object); //removes from previous parent
         }
 
-        controller.userData.selected = object;
+
     }
+ 
 }
 
 function enactDelta(delta) {
@@ -704,13 +714,16 @@ function enactDeltaNewNode(delta) {
     material.color.set(Math.random() * 0xffffff);
     
     let outlet_material = material.clone();
+
     let inlet_material = material.clone();
     let knob_material = material.clone();
     let n_switch_material = material.clone();
     let n_switch_slider_material = material.clone();
+    let outline_mat = outline_material.clone();
     
     switch(delta.kind){
         case "inlet": {
+            inlet_material.blending = THREE.NoBlending;
             container = new THREE.Mesh(inlet_geometry, inlet_material);
             container.castShadow = true;
             container.receiveShadow = true;
@@ -718,12 +731,18 @@ function enactDeltaNewNode(delta) {
                 0, 
                 0,
                 generic_geometry.parameters.depth/2 - NLET_HEIGHT]);
-            
             //backplate to show which is inlet
-            material.color.set(0x00ff00);    
-            let backplate = new THREE.Mesh(inlet_backplate_geometry, material);
-            backplate.position.z += -NLET_HEIGHT;
-            container.add(backplate);
+            // material.color.set(0x00ff00);    
+            // let backplate = new THREE.Mesh(inlet_backplate_geometry, material);
+            // backplate.position.z += -NLET_HEIGHT;
+            // container.add(backplate);
+
+            outline_mat.color.set(0x00ff00);    
+            let outline = new THREE.Mesh(inlet_geometry, outline_mat);
+            outline.scale.multiplyScalar(1.18);
+            outline.castShadow = true;
+            outline.receiveShadow = true;
+            container.add(outline);
 
             let label = generateLabel(name, NLET_HEIGHT);
             label.position.z = 0.01;
@@ -735,19 +754,22 @@ function enactDeltaNewNode(delta) {
             container.userData.selectable = true;
         } break;
         case "outlet":{
+            outlet_material.blending = THREE.NoBlending;
             container = new THREE.Mesh(outlet_geometry, outlet_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
+            container.castShadow = false;
+            container.receiveShadow = false;
             container.position.fromArray([
                 0, 
                 0,
                 generic_geometry.parameters.depth/2 - NLET_HEIGHT]);
 
             //backplate to show which is outlet
-            material.color.set(0xff0000);    
-            let backplate = new THREE.Mesh(outlet_backplate_geometry, material);
-            backplate.position.z += -NLET_HEIGHT;
-            container.add(backplate);
+            outline_mat.color.set(0xff0000);    
+            let outline = new THREE.Mesh(outlet_geometry, outline_mat);
+            outline.scale.multiplyScalar(1.18);
+            outline.castShadow = false;
+            outline.receiveShadow = false;
+            container.add(outline);
 
             let label = generateLabel(name, SMALL_KNOB_HEIGHT/2.7);
             label.position.z = 0.01;
@@ -1399,7 +1421,7 @@ function controllerGamepadControls(controller){
             let s = 1. + (controller.userData.thumbpadDY);
             let r = 1. + (controller.userData.thumbpadDX);
             object.position.multiplyScalar(s);
-            
+            //console.log(controller)
             let rot = new THREE.Vector3(object.rotation.x, object.rotation.y, object.rotation.z);
             rot.multiplyScalar(r);
             //object.rotation.x = rot.x;
