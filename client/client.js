@@ -1552,6 +1552,9 @@ function render() {
 
         // send any edits to the server:
         if (outgoingDeltas.length > 0) {
+
+            console.log("sending", outgoingDeltas)
+
             sock.send({
                 cmd: "deltas",
                 date: Date.now(),
