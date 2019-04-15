@@ -35,7 +35,7 @@ async function loadTexture(filename) {
 // COMMON MATERIALS
 //////////////////////////////////////////////////////////////////////////////////////////
 
-const LABEL_SIZE = .05;
+const LABEL_SIZE = .03;
 // how far the control poitns for cables are from the inlets outlets
 // effects how 'straight' the cables are as come out of inlets/outlets
 const CABLE_CONTROL_POINT_DISTANCE = 0.1;
@@ -1339,80 +1339,40 @@ function onKeyPress(e) {
     }
 }
 
-
-
-function animate() {
-   renderer.setAnimationLoop(render);
-}
-
-
-
-function render() {
-    stats.begin();
-
-    // handle incoming deltas:
-    while (incomingDeltas.length > 0) {
-        let delta = incomingDeltas.shift();
-        enactDelta(delta);
-    }
-    
-    updateDirty();
-
-
-    // make sure all objects' matrices are up to date (TODO might not be needed?)
-    scene.updateMatrixWorld();
-
-    for (let cable of allCables) {
-        cable.update();
-    }
-
-    //Objects
-    cleanIntersected();
-
-    try {
-
-        controller1.update();
-        controller2.update();
-    } catch(e) {
-        //console.warn(e)
-    }
-
-    // for(let u in otherUsers){
-    //     otherUsers[u].controller1.update();
-    // }
-
-
-    let gamepad = controller1.getGamepad();
+function controllerGamepadControls(controller){
+    //console.log(controller)
+    let gamepad = controller.getGamepad();
     if (gamepad) {
         let button0 = gamepad.buttons[0];
         // consider the thumbpad state:
         if (button0.touched) {
-            if (!controller1.userData.touched) {
-                controller1.userData.touched = true;
+            if (!controller.userData.touched) {
+                controller.userData.touched = true;
                 //console.log("touchstart", gamepad.axes[1])
-                controller1.userData.thumbpadDX = 0;
-                controller1.userData.thumbpadDY = 0;
+                controller.userData.thumbpadDX = 0;
+                controller.userData.thumbpadDY = 0;
 
             } else {
                 //console.log("drag", gamepad.axes[1])
-                controller1.userData.thumbpadDX = gamepad.axes[0] - controller1.userData.thumbpadX;
-                controller1.userData.thumbpadDY = gamepad.axes[1] - controller1.userData.thumbpadY;
+                controller.userData.thumbpadDX = gamepad.axes[0] - controller.userData.thumbpadX;
+                controller.userData.thumbpadDY = gamepad.axes[1] - controller.userData.thumbpadY;
             }
 
-            controller1.userData.thumbpadX = gamepad.axes[0];
-            controller1.userData.thumbpadY = gamepad.axes[1];
+            controller.userData.thumbpadX = gamepad.axes[0];
+            controller.userData.thumbpadY = gamepad.axes[1];
 
 
-        } else if (controller1.userData.touched) {
-            controller1.userData.touched = false;
-            controller1.userData.thumbpadDX = 0;
-            controller1.userData.thumbpadDY = 0;
+        } else if (controller.userData.touched) {
+            controller.userData.touched = false;
+            controller.userData.thumbpadDX = 0;
+            controller.userData.thumbpadDY = 0;
             // touch release event
             //console.log("release")
         }
     }
-    if (controller1.userData.selected) {
-        let object = controller1.userData.selected;
+
+    if (controller.userData.selected) {
+        let object = controller.userData.selected;
         
       
         // if what we have selected is a jack,
@@ -1421,8 +1381,8 @@ function render() {
         // locate jack at ray target
 
         if (object.userData.moveable) {
-            let s = 1. + (controller1.userData.thumbpadDY);
-            let r = 1. + (controller1.userData.thumbpadDX);
+            let s = 1. + (controller.userData.thumbpadDY);
+            let r = 1. + (controller.userData.thumbpadDX);
             object.position.multiplyScalar(s);
             
             let rot = new THREE.Vector3(object.rotation.x, object.rotation.y, object.rotation.z);
@@ -1441,7 +1401,7 @@ function render() {
             //take controller out of knob space
 
             let controllerPos = new THREE.Vector3()
-            controller1.getWorldPosition(controllerPos)
+            controller.getWorldPosition(controllerPos)
 
             let knobPos = new THREE.Vector3()
             object.getWorldPosition(knobPos);
@@ -1529,7 +1489,7 @@ function render() {
     } else {
         let targetPos = new THREE.Vector3();
         let controllerPos = new THREE.Vector3();
-        controller1.getWorldPosition(controllerPos);
+        controller.getWorldPosition(controllerPos);
 
         // for (let name in allNodes) {
         //     let target = allNodes[name];
@@ -1543,6 +1503,48 @@ function render() {
         //     }
         // }
     }
+}
+
+
+function animate() {
+   renderer.setAnimationLoop(render);
+}
+
+
+
+function render() {
+    stats.begin();
+
+    // handle incoming deltas:
+    while (incomingDeltas.length > 0) {
+        let delta = incomingDeltas.shift();
+        enactDelta(delta);
+    }
+    
+    updateDirty();
+
+
+    // make sure all objects' matrices are up to date (TODO might not be needed?)
+    scene.updateMatrixWorld();
+
+    for (let cable of allCables) {
+        cable.update();
+    }
+
+    //Objects
+    cleanIntersected();
+
+    try {
+
+        controller1.update();
+        controller2.update();
+    } catch(e) {
+        //console.warn(e)
+    }
+
+    controllerGamepadControls(controller1);
+    controllerGamepadControls(controller2);
+
 
     if (sock && sock.socket && sock.socket.readyState === 1) {
 
