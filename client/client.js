@@ -56,7 +56,7 @@ const SMALL_KNOB_HEIGHT = 0.02;
 
 const CONTROLLER_HIT_DISTANCE = 0.03;
 
-const FRAME_WAIT_AMOUNT = 5;
+const FRAME_WAIT_AMOUNT = 0;
 
 // let inlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
 // let outlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
