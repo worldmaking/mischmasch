@@ -1163,8 +1163,7 @@ function onSpawn(event) {
         pos.add(rel.applyQuaternion(orient));
 
         let deltas = spawnRandomModule([pos.x, pos.y, pos.z], [orient._x, orient._y, orient._z, orient._w]);
-        console.log("sending", deltas);
-        outgoingDeltas.concat(deltas);
+        outgoingDeltas = outgoingDeltas.concat(deltas);
     }
 
 }
@@ -1558,7 +1557,7 @@ function render() {
                 data: outgoingDeltas
             };
 
-            console.log("sending", message)
+            console.log("sendingoooggg", message)
 
             sock.send(message);
             outgoingDeltas.length = 0;
