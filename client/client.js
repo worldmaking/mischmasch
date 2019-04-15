@@ -1558,9 +1558,9 @@ function render() {
                 data: outgoingDeltas
             };
 
-            console.log("sending", msg)
+            console.log("sending", message)
 
-            sock.send();
+            sock.send(message);
             outgoingDeltas.length = 0;
         }
         
