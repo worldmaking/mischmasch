@@ -57,7 +57,7 @@ function spawnRandomModule(pos, orient) {
   let path = gensym(opname)
 
   return [
-      { op:"newnode", kind:opname, path:path, pos:[pos.x, pos.y, pos.z], orient:[orient._x, orient._y, orient._z, orient._w] },
+      { op:"newnode", kind:opname, path:path, pos:pos, orient:orient },
       { op:"newnode", kind:"outlet", path: path+".out" },
       { op:"newnode", kind:"outlet", path: path+".out1" },
       { op:"newnode", kind:"outlet", path: path+".out2" },
