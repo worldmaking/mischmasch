@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 433.0, 79.0, 1142.0, 933.0 ],
+		"rect" : [ 44.0, 79.0, 1538.0, 933.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -93,7 +93,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 69.0, 695.0, 195.0, 22.0 ],
-					"text" : "outs_1__volume nan"
+					"text" : "outs_1__volume 1 0 1"
 				}
 
 			}
@@ -754,7 +754,6 @@
 						"tags" : "",
 						"style" : "",
 						"subpatcher_template" : "",
-						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
 									"id" : "obj-6",

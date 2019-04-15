@@ -118,7 +118,7 @@ var handleDelta = function(delta) {
 							outlet(4, delta.path.replace('.','__'), delta.value, delta.range)
 							break;
 							
-							case 'value'
+							case 'value':
 							
 							break;
 							
