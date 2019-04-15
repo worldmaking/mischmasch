@@ -1144,6 +1144,7 @@ function onSelectEnd(event) {
     //syncLocalPatch();
 }
 
+
 function onSpawn(event) {
     let controller = event.target;
     if(controller.getButtonState('thumbpad') === undefined) return;
@@ -1161,30 +1162,7 @@ function onSpawn(event) {
         let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
         pos.add(rel.applyQuaternion(orient));
 
-        let opname = "noise";
-
-        let path = gensym(opname)
-
-        outgoingDeltas.push(
-            { op:"newnode", kind:opname, path:path, pos:[pos.x, pos.y, pos.z], orient:[orient._x, orient._y, orient._z, orient._w] },
-            { op:"newnode", kind:"outlet", path: path+".out" },
-            { op:"newnode", kind:"outlet", path: path+".out1" },
-            { op:"newnode", kind:"outlet", path: path+".out2" },
-            { op:"newnode", kind:"outlet", path: path+".out3" },
-            { op:"newnode", kind:"outlet", path: path+".out4" },
-            { op:"newnode", kind:"outlet", path: path+".out5" },
-            { op:"newnode", kind:"small_knob", path: path+".knob" },
-            { op:"newnode", kind:"large_knob", path: path+".lknob1" },
-            { op:"newnode", kind:"large_knob", path: path+".lknob2" },
-            { op:"newnode", kind:"large_knob", path: path+".lknob3" },
-            { op:"newnode", kind:"inlet", path: path+".in" },
-            { op:"newnode", kind:"inlet", path: path+".in1" },
-            { op:"newnode", kind:"inlet", path: path+".in2" },
-            { op:"newnode", kind:"inlet", path: path+".in3" },
-            { op:"newnode", kind:"inlet", path: path+".in4" },
-            { op:"newnode", kind:"n_switch", path: path+".nswtich", throws: ["Sine", "Phasor","Triangle"], value: 1 }
-        );
-        
+        outgoingDeltas.concat( spawnRandomModule(pos, orient) );
     }
 
 }
