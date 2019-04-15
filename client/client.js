@@ -1162,7 +1162,9 @@ function onSpawn(event) {
         let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
         pos.add(rel.applyQuaternion(orient));
 
-        outgoingDeltas.concat( spawnRandomModule(pos, orient) );
+        let deltas = spawnRandomModule([pos.x, pos.y, pos.z], [orient._x, orient._y, orient._z, orient._w]);
+        console.log("sending", deltas);
+        outgoingDeltas.concat(deltas);
     }
 
 }
