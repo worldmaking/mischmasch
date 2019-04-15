@@ -597,8 +597,12 @@ function onSelectStart(event) {
         object.matrix.premultiply(parent.matrixWorld);
         object.matrix.premultiply(tempMatrix);
         object.matrix.decompose(object.position, object.quaternion, object.scale);
-        if (object.material)
-            object.material.emissive.b = 1;
+        if (object.material){
+            object.material.emissive.r = .2;
+            object.material.emissive.g = .2;
+            object.material.emissive.b = .2;
+        }
+
 
         controller.userData.selected = object;
         object.userData.originalParent = parent;
@@ -614,7 +618,7 @@ function onSelectStart(event) {
             // now set object = line.dstJackMesh
             let cable = new Cable(object, null);
             object = cable.dstJackMesh;
-            controller.userData.selected = object;
+            object.position.z = -0.07;
             controller.add(object); //removes from previous parent
 
         } else if (kind == "inlet") {
@@ -622,13 +626,10 @@ function onSelectStart(event) {
             let cable = new Cable(null, object);
 
             object = cable.srcJackMesh;
-
-            controller.userData.selected = object;
-            //Something with controller.add makes selected = null....
+            object.position.z = -0.07;
             controller.add(object); //removes from previous parent
         }
-
-
+        controller.userData.selected = object;
     }
  
 }
@@ -1088,6 +1089,8 @@ function onSelectEnd(event) {
         if (parent == undefined) parent = world; //object.parent;
         controller.userData.selected = undefined;
 
+        object.material.emissive.r = 0;
+        object.material.emissive.g = 0;
         object.material.emissive.b = 0;
 
        
@@ -1223,8 +1226,12 @@ function intersectObjects(controller) {
     if (intersections.length > 0) {
         let intersection = intersections[0];
         let object = intersection.object;
-        if (object.material.emissive)
-            object.material.emissive.r = 1;
+        if (object.material.emissive){
+            object.material.emissive.r = .15;
+            object.material.emissive.g = .15;
+            object.material.emissive.b = .15;
+        }
+
         intersected.push(object);
         line.scale.z = intersection.distance;
     } else {
@@ -1235,8 +1242,11 @@ function intersectObjects(controller) {
 function cleanIntersected() {
     while (intersected.length) {
         let object = intersected.pop();
-        if (object.material.emissive)
+        if (object.material.emissive){
             object.material.emissive.r = 0;
+            object.material.emissive.g = 0;
+            object.material.emissive.b = 0;
+        }
     }
 }
           
@@ -1421,7 +1431,6 @@ function controllerGamepadControls(controller){
             let s = 1. + (controller.userData.thumbpadDY);
             let r = 1. + (controller.userData.thumbpadDX);
             object.position.multiplyScalar(s);
-            //console.log(controller)
             let rot = new THREE.Vector3(object.rotation.x, object.rotation.y, object.rotation.z);
             rot.multiplyScalar(r);
             //object.rotation.x = rot.x;
