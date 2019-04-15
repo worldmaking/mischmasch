@@ -624,7 +624,7 @@ function enactDelta(delta) {
         }
     } else {
 
-        console.log("enacting", delta.op)
+        //console.log("enacting", delta.op)
         switch(delta.op) {
             case "propchange": {
                 switch(delta.name) {
@@ -1163,8 +1163,7 @@ function onSpawn(event) {
         pos.add(rel.applyQuaternion(orient));
 
         let deltas = spawnRandomModule([pos.x, pos.y, pos.z], [orient._x, orient._y, orient._z, orient._w]);
-        console.log("sending", deltas);
-        outgoingDeltas.concat(deltas);
+        outgoingDeltas = outgoingDeltas.concat(deltas);
     }
 
 }
@@ -1468,9 +1467,7 @@ function render() {
                 outgoingDeltas.push(
                     { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: value });
                 frames = 0;
-                console.log("update")
             }
-            console.log("no")
             frames++;
 
             // TODO: send delta with this value
@@ -1557,9 +1554,6 @@ function render() {
                 date: Date.now(),
                 data: outgoingDeltas
             };
-
-            console.log("sending", message)
-
             sock.send(message);
             outgoingDeltas.length = 0;
         }
@@ -1644,7 +1638,7 @@ function handlemessage(msg, sock) {
     switch (msg.cmd) {
         case "deltas": {
 
-            console.log("got deltas", msg.data)
+            //console.log("got deltas", msg.data)
 
             // insert into our TODO list:
             incomingDeltas.push.apply(incomingDeltas, msg.data);
