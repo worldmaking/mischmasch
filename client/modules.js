@@ -51,47 +51,28 @@ let modules = {
   }
 }
 
+function spawnRandomModule(pos, orient) {
+  let opname = "noise";
 
-let scene = {
-  "nodes": {
-      "a": {
-          "_props": { "kind": "noise", "pos": [0.0, 1.5, 0.0] },
-          "signal": { "_props": { "kind": "outlet" } }
-      },
-      "b": {
-          "_props": { "kind": "dac", "pos": [0.0, 1.0, 0.0] },
-          "source": { "_props": { "kind": "inlet" } }
-      },
-      "lfo1": {
-        "_props": { "kind": "lfo", "pos": [0.0, 0.5, 0.0]},
-        "signal": { "_props": { "kind": "outlet" } },
-        "rate": {"_props": {"kind": "param", "value": 1 } }
-      },
-      "child": {
-          "_props": { "kind": "group", "pos": [0.5, 1.5, 0.0] },
-          "aa": {
-              "_props":  { "kind": "beep", "pos": [0.0, 0.2, 0.0] },
-              "signal": { "_props": { "kind": "outlet" } }
-          }
-      },
-      "x": { "_props": { "kind": "noise", "pos": [-0.5, 1.5, 0.0] } }
-  },
-  "arcs": [
-      ["a.signal", "b.source"]
-  ]
+  let path = gensym(opname)
+
+  return [
+      { op:"newnode", kind:opname, path:path, pos:pos, orient:orient },
+      { op:"newnode", kind:"outlet", path: path+".out" },
+      { op:"newnode", kind:"outlet", path: path+".out1" },
+      { op:"newnode", kind:"outlet", path: path+".out2" },
+      { op:"newnode", kind:"outlet", path: path+".out3" },
+      { op:"newnode", kind:"outlet", path: path+".out4" },
+      { op:"newnode", kind:"outlet", path: path+".out5" },
+      { op:"newnode", kind:"small_knob", path: path+".knob" },
+      { op:"newnode", kind:"large_knob", path: path+".lknob1" },
+      { op:"newnode", kind:"large_knob", path: path+".lknob2" },
+      { op:"newnode", kind:"large_knob", path: path+".lknob3" },
+      { op:"newnode", kind:"inlet", path: path+".in" },
+      { op:"newnode", kind:"inlet", path: path+".in1" },
+      { op:"newnode", kind:"inlet", path: path+".in2" },
+      { op:"newnode", kind:"inlet", path: path+".in3" },
+      { op:"newnode", kind:"inlet", path: path+".in4" },
+      { op:"newnode", kind:"n_switch", path: path+".nswtich", throws: ["Sine", "Phasor","Triangle"], value: 1 }
+  ];
 }
-
-
-for (var node in scene.nodes) {
-  
-  let moduleType = scene.nodes[node]._props.kind
-
-
-  let moduleSpec = modules.modules[moduleType]
-  console.log(moduleType,moduleSpec)
-
-
-}
-
-// console.log(string1);
-// expected output: "123"

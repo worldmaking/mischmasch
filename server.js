@@ -216,15 +216,20 @@ wss.on('connection', function(ws, req) {
     //send_all_clients("hi")
 });
 
+
+
 function handlemessage(msg, sock, id) {
 	switch (msg.cmd) {
 		case "deltas": {
+
 			// TODO: merge OTs
 			let response = {
 				cmd: "deltas",
 				date: Date.now(),
 				data: msg.data
 			};
+
+			//console.log("forwarding deltas", response)
 
 			sessionJSON.push(response)
 			fs.writeFileSync(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")

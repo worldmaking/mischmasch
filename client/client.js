@@ -56,7 +56,7 @@ const SMALL_KNOB_HEIGHT = 0.02;
 
 const CONTROLLER_HIT_DISTANCE = 0.03;
 
-const FRAME_WAIT_AMOUNT = 5;
+const FRAME_WAIT_AMOUNT = 0;
 
 // let inlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
 // let outlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
@@ -624,7 +624,7 @@ function enactDelta(delta) {
         }
     } else {
 
-        console.log("enacting", delta.op)
+        //console.log("enacting", delta.op)
         switch(delta.op) {
             case "propchange": {
                 switch(delta.name) {
@@ -1144,6 +1144,7 @@ function onSelectEnd(event) {
     //syncLocalPatch();
 }
 
+
 function onSpawn(event) {
     let controller = event.target;
     if(controller.getButtonState('thumbpad') === undefined) return;
@@ -1161,30 +1162,8 @@ function onSpawn(event) {
         let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
         pos.add(rel.applyQuaternion(orient));
 
-        let opname = "noise";
-
-        let path = gensym(opname)
-
-        outgoingDeltas.push(
-            { op:"newnode", kind:opname, path:path, pos:[pos.x, pos.y, pos.z], orient:[orient._x, orient._y, orient._z, orient._w] },
-            { op:"newnode", kind:"outlet", path: path+".out" },
-            { op:"newnode", kind:"outlet", path: path+".out1" },
-            { op:"newnode", kind:"outlet", path: path+".out2" },
-            { op:"newnode", kind:"outlet", path: path+".out3" },
-            { op:"newnode", kind:"outlet", path: path+".out4" },
-            { op:"newnode", kind:"outlet", path: path+".out5" },
-            { op:"newnode", kind:"small_knob", path: path+".knob" },
-            { op:"newnode", kind:"large_knob", path: path+".lknob1" },
-            { op:"newnode", kind:"large_knob", path: path+".lknob2" },
-            { op:"newnode", kind:"large_knob", path: path+".lknob3" },
-            { op:"newnode", kind:"inlet", path: path+".in" },
-            { op:"newnode", kind:"inlet", path: path+".in1" },
-            { op:"newnode", kind:"inlet", path: path+".in2" },
-            { op:"newnode", kind:"inlet", path: path+".in3" },
-            { op:"newnode", kind:"inlet", path: path+".in4" },
-            { op:"newnode", kind:"n_switch", path: path+".nswtich", throws: ["Sine", "Phasor","Triangle"], value: 1 }
-        );
-        
+        let deltas = spawnRandomModule([pos.x, pos.y, pos.z], [orient._x, orient._y, orient._z, orient._w]);
+        outgoingDeltas = outgoingDeltas.concat(deltas);
     }
 
 }
@@ -1488,9 +1467,7 @@ function render() {
                 outgoingDeltas.push(
                     { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: value });
                 frames = 0;
-                console.log("update")
             }
-            console.log("no")
             frames++;
 
             // TODO: send delta with this value
@@ -1572,11 +1549,12 @@ function render() {
 
         // send any edits to the server:
         if (outgoingDeltas.length > 0) {
-            sock.send({
+            let message = {
                 cmd: "deltas",
                 date: Date.now(),
                 data: outgoingDeltas
-            });
+            };
+            sock.send(message);
             outgoingDeltas.length = 0;
         }
         
@@ -1660,7 +1638,7 @@ function handlemessage(msg, sock) {
     switch (msg.cmd) {
         case "deltas": {
 
-            console.log("got deltas", msg.data)
+            //console.log("got deltas", msg.data)
 
             // insert into our TODO list:
             incomingDeltas.push.apply(incomingDeltas, msg.data);
