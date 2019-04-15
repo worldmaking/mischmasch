@@ -1072,7 +1072,7 @@ function onSelectEnd(event) {
         if (object && object.userData.moveable) {
             let objPos = new THREE.Vector3();
             object.getWorldPosition(objPos);
-
+            let cable = object.userData.cable
             if (object.userData.kind == "jack_outlet" || object.userData.kind == "jack_inlet") {
                 // take it out of controller-space
                 object.matrix.premultiply(controller.matrixWorld);
@@ -1087,17 +1087,6 @@ function onSelectEnd(event) {
                 if (intersections.length > 0) {
                     let intersection = intersections[0];
                     let o = intersection.object;
-                    let cable = object.userData.cable
-
-                    if(cable.src == null && cable.dst == null){
-                        cable.destroy();
-                    }
-
-                    if(cable.src == null || cable.dst == null){
-                        if(objPos < 0){
-                            cable.destroy();
-                        }
-                    }
                     
                     // if it is a jack, see if we can hook up?
                     if (object.userData.kind == "jack_outlet" && o.userData.kind == "outlet") {
@@ -1127,6 +1116,15 @@ function onSelectEnd(event) {
                     }
                 }
 
+                if(cable.src == null && cable.dst == null){
+                    cable.destroy();
+                }
+
+                if(cable.src == null || cable.dst == null){
+                    if(objPos.y < 0){
+                        cable.destroy();
+                    }
+                }
                 
 
             } else {
