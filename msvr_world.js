@@ -63,12 +63,12 @@ var handleDelta = function(delta) {
 						case 'momentary':
 						case 'n_switch':
 						case 'led':
-						post(kind, delta.path)
+						//post(kind, delta.path)
 						
 					nodeName = delta.path.split('.')[0]
 					paramName = delta.path.replace('.','__')
 					setparamName = delta.path.split('.')[1]
-					post(nodeName)
+					//post(nodeName)
 					
 					paramX = paramCounter * 150
 					// generate the subparam which the param will bind to
@@ -82,15 +82,24 @@ var handleDelta = function(delta) {
 					gen_patcher.message("script", "connect", param.varname, 0, setparam.varname, 0);
 				
 					//gen_patcher.message("script", "send", param.varname, paramValue);
-					post('\n\n', delta.value)
+					//post('\n\n', delta.value)
 					outlet(1, paramName, delta.value, delta.range)
 					paramCounter++
 					
 					break;
 					
 					case "inlet": 
+					
+					object[delta.path.replace('.','__')] = delta.index
+					inletsTable.push(object)
+					
+					//post(JSON.stringify(inletsTable))
 					case "outlet":
 					//post('found ', kind)
+					object[delta.path.replace('.','__')] = delta.index
+					outletsTable.push(object)
+					
+					//post(JSON.stringify(outletsTable))
 					break;
 						// TEMP HACK!!!!
 					// so we can ignore UI objects that we don't need to patcher script at this point
@@ -153,6 +162,32 @@ var handleDelta = function(delta) {
 
 			 break;
 			case "connect": 
+				//post('newconnection: ', delta.paths[0])
+				
+				//need to get indexes from path first!
+				//delta.path.split('.')[0]
+				//post(delta.paths[0].split('.')[0])
+				
+				var setOutlet = delta.paths[0].replace('.','__')
+				var setInlet = delta.paths[1].replace('.','__')
+				var input;
+				var output;
+    				for (var i = 0; i < inletsTable.length; i++) {
+						var inletsIndexes = inletsTable[i]
+        				input = JSON.stringify(inletsIndexes[setInlet]);
+        				//Do something
+    				}
+    				for (var i = 0; i < outletsTable.length; i++) {
+						var outletsIndexes = outletsTable[i]
+        				output = JSON.stringify(outletsIndexes[setOutlet]);
+        				//Do something
+    				}
+
+				//post(setOutlet)
+				gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
+
+				post("script", "connect", delta.paths[0].split('.')[0], output, delta.paths[1].split('.')[0], input, '\n\n')
+
 				// connect delta.paths[0] to delta.paths[1]
 			 break;
 			case "propchange": {

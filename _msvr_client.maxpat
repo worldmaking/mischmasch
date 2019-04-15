@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 44.0, 79.0, 1538.0, 933.0 ],
+		"rect" : [ 388.0, 79.0, 1046.0, 933.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -38,6 +38,18 @@
 		"style" : "",
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-50",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 721.0, 552.5, 691.0, 22.0 ],
+					"text" : "{\\\"cmd\\\":\\\"deltas\\\"\\,\\\"date\\\":1555097353555\\,\\\"data\\\":[{\\\"op\\\":\\\"connect\\\"\\,\\\"paths\\\":[\\\"dualvco_1.master\\\"\\,\\\"dualvco_1.vco_2_cv\\\"]}}"
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-49",
 					"maxclass" : "message",
@@ -1936,6 +1948,7 @@
 						"tags" : "",
 						"style" : "",
 						"subpatcher_template" : "",
+						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
 									"id" : "obj-35",
@@ -2757,6 +2770,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-8", 0 ],
 					"source" : [ "obj-5", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-59", 0 ],
+					"source" : [ "obj-50", 0 ]
 				}
 
 			}
