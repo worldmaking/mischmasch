@@ -1,78 +1,120 @@
-//////////////////////////////////////////////////////////////////////////////////////////
-// MODULES DEFINITIONS
-//////////////////////////////////////////////////////////////////////////////////////////
+let module_constructors = {
+	"sample_and_hold": function(path, pos, orient) { 
+        let json = `[{"op":"newnode","path":"${path}","kind":"sample_and_hold","pos":[0,1.5,0],"orient":[0,0,0,1]},{"op":"newnode","path":"${path}.signal","kind":"inlet"},{"op":"newnode","path":"${path}.trigger","kind":"inlet"},{"op":"newnode","path":"${path}.threshold","kind":"small_knob","range":[0,1],"taper":"linear","value":0,"unit":"float"},{"op":"newnode","path":"${path}.out","kind":"inlet"}]`;
+        let deltas = JSON.parse(json);
+        let op0 = deltas[0]
+        op0.pos = pos;
+        op0.orient = orient;
+        return deltas;
+    },
 
-// couldn't figure out how to properly load the modules.json file in js in browser, sorry! Did this below for now...
-let modules = {
-  "UI": {
-    "range":["small_knob", "large_knob", "tuning_knob", "slider"],
-    "switches":["momentary","n_switch"],
-    "input":["inlet","trigger"],
-    "output":["outlet","line_level"],
-    "led":"led"    
-  },
+	"freevoib": function(path, pos, orient) { 
+        let json = `[{"op":"newnode","path":"${path}","kind":"freevoib","pos":[0,1.5,0],"orient":[0,0,0,1]},{"op":"newnode","path":"${path}.signal","kind":"inlet"},{"op":"newnode","path":"${path}.feedback_1","kind":"small_knob","range":[0,1],"taper":"linear","value":0.9,"unit":"float"},{"op":"newnode","path":"${path}.feedback_2","kind":"small_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"},{"op":"newnode","path":"${path}.damping","kind":"small_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"},{"op":"newnode","path":"${path}.spread","kind":"small_knob","range":[0,400],"taper":"linear","value":100,"unit":"float"},{"op":"newnode","path":"${path}.out","kind":"outlet"}]`;
+        let deltas = JSON.parse(json);
+        let op0 = deltas[0]
+        op0.pos = pos;
+        op0.orient = orient;
+        return deltas;
+    },
 
-  "modules": {
-      "comparator": {
-        "A": "inlet", "B": "inlet", "max": "outlet", "min":"outlet"
-      },
-      "noise": {
-        "noise":"outlet"
-      },
-      "vca": {
-        "in":"inlet","cv":"inlet","trim":"small_knob","bias":"small_knob"
-      },
-      "lfo": {
-        "rate":"small_knob", "sine":"outlet","phasor":"outlet","pulse":"outlet"
-      },
-      "ffm":{
-        "cv1":"inlet","index_cv":"inlet","cv2":"inlet","feedback_cv":"inlet","vco1":"large_knob","waveform1":{"n_switch":["Sine","Phasor","Triangle"]}, "vco2":"large_knob", "waveform2":{"n_switch":["Sine","Phasor","Triangle"]},"index":"small_knob","feedback":"small_knob","vco_1":"outlet","vco_2":"outlet","master":"outlet"
-      },
-      "outs":{
-        "in_1(mono)":"inlet", "in_2(stereo)":"inlet","volume":"large_knob","left":"outlet","right":"outlet"
-      },
-      "sample_and_hold":{
-        "in":"inlet","trigger":"inlet","small_knob":"threshold"
-      },
-      "freevoib":{
-        "feedback1":"small_knob","feedback2":"small_knob","damping":"small_knob","spread":"small_knob","in":"inlet","out":"outlet"
-      },"foldcomb":{"signal":"inlet","delay_cv":"inlet","a_cv":"inlet","b_cv":"inlet","c_cv":"inlet","out":"outlet"
-      },
-      "logic":{
-        "A":"inlet","B":"inlet","not_A":"outlet","not_B":"outlet","and":"outlet","bool_A":"outlet","bool_B":"outlet","or":"outlet","xor":"outlet"
-      },"shaper":{
-        "signal":"inlet","min_cv":"inlet","max_cv":"inlet","fold":"outlet","wrap":"outlet","clip":"outlet"
-      },"complex_compare":{
-        "A":"inlet","B":"inlet","bias_cv":"inlet","bias":"small_knob","max":"outlet","min":"outlet","diff":"outlet"
+	"shifter": function(path, pos, orient) { 
+        let json = `[{"op":"newnode","path":"${path}","kind":"shifter","pos":[0,1.5,0],"orient":[0,0,0,1]},{"op":"newnode","path":"${path}.signal","kind":"inlet"},{"op":"newnode","path":"${path}.cv","kind":"inlet"},{"op":"newnode","path":"${path}.range","kind":"small_knob"},{"op":"newnode","path":"${path}.out","kind":"outlet"},{"op":"newnode","path":"${path}.>","kind":"outlet"}]`;
+        let deltas = JSON.parse(json);
+        let op0 = deltas[0]
+        op0.pos = pos;
+        op0.orient = orient;
+        return deltas;
+    },
 
-      },"dac":{
-        "left":"inlet","right":"inlet"
-      }
-  }
+	"constant": function(path, pos, orient) { 
+        let json = `[{"op":"newnode","path":"${path}","kind":"constant","pos":[0,1.5,0],"orient":[0,0,0,1]},{"op":"newnode","path":"${path}.voltage","kind":"large_knob"},{"op":"newnode","path":"${path}.out","kind":"outlet"}]`;
+        let deltas = JSON.parse(json);
+        let op0 = deltas[0]
+        op0.pos = pos;
+        op0.orient = orient;
+        return deltas;
+    },
+
+	"lfo": function(path, pos, orient) { 
+        let json = `[{"op":"newnode","path":"${path}","kind":"lfo","pos":[0,1.5,0],"orient":[0,0,0,1]},{"op":"newnode","path":"${path}.fm_cv","kind":"inlet"},{"op":"newnode","path":"${path}.phasor_sync","kind":"inlet"},{"op":"newnode","path":"${path}.pulse_width_cv","kind":"inlet"},{"op":"newnode","path":"${path}.rate","kind":"large_knob","range":[0,80],"taper":"log 3.8","value":0.63,"unit":"Hz"},{"op":"newnode","path":"${path}.index","kind":"small_knob","range":[0,10],"taper":"linear","value":1,"unit":"float"},{"op":"newnode","path":"${path}.pulse_width","kind":"small_knob","range":[0,1],"taper":"linear","value":0.25,"unit":"float"},{"op":"newnode","path":"${path}.onset","kind":"small_knob","range":[0,1],"taper":"linear","value":0,"unit":"float"},{"op":"newnode","path":"${path}.sine","kind":"outlet"},{"op":"newnode","path":"${path}.phasor","kind":"outlet"},{"op":"newnode","path":"${path}.pulse","kind":"outlet"},{"op":"newnode","path":"${path}.sine_index","kind":"outlet"}]`;
+        let deltas = JSON.parse(json);
+        let op0 = deltas[0]
+        op0.pos = pos;
+        op0.orient = orient;
+        return deltas;
+    },
+
+	"dualvco": function(path, pos, orient) { 
+        let json = `[{"op":"newnode","path":"${path}","kind":"dualvco","pos":[0,0.5,0],"orient":[0,0,0,1]},{"op":"newnode","path":"${path}.vco_1_cv","kind":"inlet"},{"op":"newnode","path":"${path}.index_cv","kind":"inlet"},{"op":"newnode","path":"${path}.vco_2_cv","kind":"inlet"},{"op":"newnode","path":"${path}.feedback_cv","kind":"inlet"},{"op":"newnode","path":"${path}.vco_1_rate","kind":"large_knob","range":[0,6000],"taper":"log 3.8","value":120,"unit":"Hz"},{"op":"newnode","path":"${path}.vco_1_waveform","kind":"n_switch","throws":["Sine","Phasor","Triangle"],"value":"Sine"},{"op":"newnode","path":"${path}.vco_2_rate","kind":"large_knob","range":[0,6000],"taper":"log 3.8","value":3,"unit":"Hz"},{"op":"newnode","path":"${path}.vco_2_waveform","kind":"n_switch","throws":["Sine","Phasor","Triangle"],"value":"Sine"},{"op":"newnode","path":"${path}.feedback","kind":"small_knob","range":[0,6],"taper":"linear","value":0.25,"unit":"float"},{"op":"newnode","path":"${path}.vco_1","kind":"outlet"},{"op":"newnode","path":"${path}.vco_2","kind":"outlet"},{"op":"newnode","path":"${path}.master","kind":"outlet"}]`;
+        let deltas = JSON.parse(json);
+        let op0 = deltas[0]
+        op0.pos = pos;
+        op0.orient = orient;
+        return deltas;
+    },
+
+	"vca": function(path, pos, orient) { 
+        let json = `[{"op":"newnode","path":"${path}","kind":"vca","pos":[0,1.8,0],"orient":[0,0,0,1]},{"op":"newnode","path":"${path}.signal","kind":"inlet"},{"op":"newnode","path":"${path}.cv","kind":"inlet"},{"op":"newnode","path":"${path}.cv_amount","kind":"large_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"},{"op":"newnode","path":"${path}.bias","kind":"large_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"},{"op":"newnode","path":"${path}.output","kind":"outlet"}]`;
+        let deltas = JSON.parse(json);
+        let op0 = deltas[0]
+        op0.pos = pos;
+        op0.orient = orient;
+        return deltas;
+    },
+
+	"comparator": function(path, pos, orient) { 
+        let json = `[{"op":"newnode","path":"${path}","kind":"comparator","pos":[0,0.8,0],"orient":[0,0,0,1]},{"op":"newnode","path":"${path}.A","kind":"inlet"},{"op":"newnode","path":"${path}.B","kind":"inlet"},{"op":"newnode","path":"${path}.max","kind":"outlet"},{"op":"newnode","path":"${path}.min","kind":"outlet"}]`;
+        let deltas = JSON.parse(json);
+        let op0 = deltas[0]
+        op0.pos = pos;
+        op0.orient = orient;
+        return deltas;
+    },
+
+	"outs": function(path, pos, orient) { 
+        let json = `[{"op":"newnode","path":"${path}","kind":"outs","pos":[0,0.8,0],"orient":[0,0,0,1]},{"op":"newnode","path":"${path}.left_(mono)","kind":"inlet"},{"op":"newnode","path":"${path}.right_(stereo)","kind":"inlet"},{"op":"newnode","path":"${path}.volume","kind":"small_knob","range":[0,1],"taper":"log 3.8","value":0.25,"unit":"float"},{"op":"newnode","path":"${path}.left","kind":"outlet"},{"op":"newnode","path":"${path}.right","kind":"outlet"}]`;
+        let deltas = JSON.parse(json);
+        let op0 = deltas[0]
+        op0.pos = pos;
+        op0.orient = orient;
+        return deltas;
+    },
+
+	"noise": function(path, pos, orient) { 
+        let json = `[{"op":"newnode","path":"${path}","kind":"noise","pos":[0,0.8,0],"orient":[0,0,0,1]},{"op":"newnode","path":"${path}.out","kind":"outlet"}]`;
+        let deltas = JSON.parse(json);
+        let op0 = deltas[0]
+        op0.pos = pos;
+        op0.orient = orient;
+        return deltas;
+    },
 }
 
+let module_names = Object.keys(module_constructors)
+
 function spawnRandomModule(pos, orient) {
-  let opname = "noise";
-
+  let opname = module_names[Math.floor(Math.random() * module_names.length)]
   let path = gensym(opname)
+  let deltas = module_constructors[opname](path, pos, orient);
+  return deltas; 
 
-  return [
-      { op:"newnode", kind:opname, path:path, pos:[pos.x, pos.y, pos.z], orient:[orient._x, orient._y, orient._z, orient._w] },
-      { op:"newnode", kind:"outlet", path: path+".out" },
-      { op:"newnode", kind:"outlet", path: path+".out1" },
-      { op:"newnode", kind:"outlet", path: path+".out2" },
-      { op:"newnode", kind:"outlet", path: path+".out3" },
-      { op:"newnode", kind:"outlet", path: path+".out4" },
-      { op:"newnode", kind:"outlet", path: path+".out5" },
-      { op:"newnode", kind:"small_knob", path: path+".knob" },
-      { op:"newnode", kind:"large_knob", path: path+".lknob1" },
-      { op:"newnode", kind:"large_knob", path: path+".lknob2" },
-      { op:"newnode", kind:"large_knob", path: path+".lknob3" },
-      { op:"newnode", kind:"inlet", path: path+".in" },
-      { op:"newnode", kind:"inlet", path: path+".in1" },
-      { op:"newnode", kind:"inlet", path: path+".in2" },
-      { op:"newnode", kind:"inlet", path: path+".in3" },
-      { op:"newnode", kind:"inlet", path: path+".in4" },
-      { op:"newnode", kind:"n_switch", path: path+".nswtich", throws: ["Sine", "Phasor","Triangle"], value: 1 }
-  ];
+  // return [
+  //   { op:"newnode", kind:opname, path:path, pos:pos, orient:orient },
+  //   { op:"newnode", kind:"outlet", path: path+".out" },
+  //   { op:"newnode", kind:"outlet", path: path+".out1" },
+  //   { op:"newnode", kind:"outlet", path: path+".out2" },
+  //   { op:"newnode", kind:"outlet", path: path+".out3" },
+  //   { op:"newnode", kind:"outlet", path: path+".out4" },
+  //   { op:"newnode", kind:"outlet", path: path+".out5" },
+  //   { op:"newnode", kind:"small_knob", path: path+".knob" },
+  //   { op:"newnode", kind:"large_knob", path: path+".lknob1" },
+  //   { op:"newnode", kind:"large_knob", path: path+".lknob2" },
+  //   { op:"newnode", kind:"large_knob", path: path+".lknob3" },
+  //   { op:"newnode", kind:"inlet", path: path+".in" },
+  //   { op:"newnode", kind:"inlet", path: path+".in1" },
+  //   { op:"newnode", kind:"inlet", path: path+".in2" },
+  //   { op:"newnode", kind:"inlet", path: path+".in3" },
+  //   { op:"newnode", kind:"inlet", path: path+".in4" },
+  //   { op:"newnode", kind:"n_switch", path: path+".nswtich", throws: ["Sine", "Phasor","Triangle"], value: 1 }
+  // ];
 }
