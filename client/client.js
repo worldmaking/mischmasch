@@ -1038,7 +1038,6 @@ function enactDeltaObjectValue(delta) {
         case "small_knob":
         case "large_knob": {
             object.userData.value = value;
-
             //Update once server says:
             let derived_angle = (value * Math.PI * 2) - Math.PI;
             // set rotation of knob by this angle, and normal axis of knob:
@@ -1135,10 +1134,10 @@ function onSelectEnd(event) {
             }
 
         }
-        if(object && object.userData.turnable){
-            outgoingDeltas.push(
-                { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: currentKnobValue });
-        }
+        // if(object && object.userData.turnable){
+        //     outgoingDeltas.push(
+        //         { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: currentKnobValue });
+        // }
     }
 
     //syncLocalPatch();

@@ -346,8 +346,8 @@ let graphFromDeltas = function(deltas) {
 	return applyDeltasToGraph(makeGraph(), deltas);
 }
 
-let deltasFromGraph = function(graph, deltas) {
-	nodesToDeltas(graph.nodes, deltas, "");
+let deltasFromGraph = function(graph, deltas, pathprefix="") {
+	nodesToDeltas(graph.nodes, deltas, pathprefix);
 
 	for (let a of graph.arcs) {
 		// TODO: assert that the paths exist?
