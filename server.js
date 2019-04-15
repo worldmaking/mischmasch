@@ -219,6 +219,7 @@ wss.on('connection', function(ws, req) {
 function handlemessage(msg, sock, id) {
 	switch (msg.cmd) {
 		case "deltas": {
+
 			// TODO: merge OTs
 			let response = {
 				cmd: "deltas",
@@ -226,7 +227,7 @@ function handlemessage(msg, sock, id) {
 				data: msg.data
 			};
 
-			console.log("forwarding deltas", JSON.stringify(sessionJSON, null, "  "))
+			console.log("forwarding deltas", response)
 
 			sessionJSON.push(response)
 			fs.writeFileSync(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")
