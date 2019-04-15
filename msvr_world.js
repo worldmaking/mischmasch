@@ -161,6 +161,33 @@ var handleDelta = function(delta) {
 				
 
 			 break;
+			
+			case "delnode":
+				var deleted = delta.path.replace('.', '__');
+				gen_patcher.message("script", "delete", deleted)
+			break;
+			case "disconnect":
+				
+				var setOutlet = delta.paths[0].replace('.','__')
+				var setInlet = delta.paths[1].replace('.','__')
+				var input;
+				var output;
+    				for (var i = 0; i < inletsTable.length; i++) {
+						var inletsIndexes = inletsTable[i]
+        				input = JSON.stringify(inletsIndexes[setInlet]);
+        				//Do something
+    				}
+    				for (var i = 0; i < outletsTable.length; i++) {
+						var outletsIndexes = outletsTable[i]
+        				output = JSON.stringify(outletsIndexes[setOutlet]);
+        				//Do something
+    				}
+
+				//post(setOutlet)
+				gen_patcher.message("script", "disconnect", delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
+			
+			break;
+			
 			case "connect": 
 				//post('newconnection: ', delta.paths[0])
 				
