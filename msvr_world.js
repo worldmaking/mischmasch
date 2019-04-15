@@ -1,6 +1,6 @@
 
 inlets = 2
-outlets = 4
+outlets = 5
 	// get a reference to "thegen"'s embedded gen patcher:
 var varnameCount = 0
 
@@ -82,14 +82,15 @@ var handleDelta = function(delta) {
 					gen_patcher.message("script", "connect", param.varname, 0, setparam.varname, 0);
 				
 					//gen_patcher.message("script", "send", param.varname, paramValue);
-					outlet(1, paramName, paramValue)
+					post('\n\n', delta.value)
+					outlet(1, paramName, delta.value, delta.range)
 					paramCounter++
 					
 					break;
 					
 					case "inlet": 
 					case "outlet":
-					post('found ', kind)
+					//post('found ', kind)
 					break;
 						// TEMP HACK!!!!
 					// so we can ignore UI objects that we don't need to patcher script at this point
@@ -106,6 +107,32 @@ var handleDelta = function(delta) {
 									
 				for (var k in delta){
 					if (delta.hasOwnProperty(k)) {
+						//post("\n\n",k, delta[k])
+						switch (k){
+							case 'path':
+							
+							break;
+							
+							case 'range':
+							
+							outlet(4, delta.path.replace('.','__'), delta.value, delta.range)
+							break;
+							
+							case 'value'
+							
+							break;
+							
+							case 'taper':
+							
+							break;
+							
+							default:
+							
+							
+							break;
+							
+							
+							}
 						//	post("Key is " + k + ", value is" + delta[k]);
 					}
 				}
