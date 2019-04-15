@@ -9,7 +9,7 @@
 
   "modules": {
     "sample_and_hold": {
-        "_props":{ "kind":"sample_and_hold","pos": [0.0, 1.5, 0.0], "orient": [0, 0, 0, 1] },
+        "_props":{ "kind":"sample_and_hold","pos": [0,0,0], "orient": [0, 0, 0, 1] },
         "signal":{"_props":{"kind":"inlet"}},
         "trigger":{"_props":{"kind":"inlet"}},
         "threshold":{ "_props":{"kind":"small_knob","range":[0,1],    "taper":"linear","value":0,"unit":"float"}},
@@ -17,7 +17,7 @@
     },
      
     "freevoib":{
-        "_props":{ "kind":"freevoib","pos": [0.0, 1.5, 0.0], "orient": [0, 0, 0, 1] },
+        "_props":{ "kind":"freevoib","pos": [0,0,0], "orient": [0, 0, 0, 1] },
         "signal":{"_props":{"kind":"inlet"}},
         "feedback_1":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0.9,"unit":"float"}},
         "feedback_2":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
@@ -27,7 +27,7 @@
     },
     
     "shifter":{
-      "_props":{"kind":"shifter","pos": [0.0, 1.5, 0.0], "orient": [0, 0, 0, 1] },
+      "_props":{"kind":"shifter","pos": [0,0,0], "orient": [0, 0, 0, 1] },
       "signal":{"_props":{"kind":"inlet"}},
       "cv":{"_props":{"kind":"inlet"}},
       "range":{"_props":{"kind":"small_knob"}},
@@ -36,13 +36,13 @@
     },
 
     "constant":{
-      "_props":{"kind":"constant","pos": [0.0, 1.5, 0.0], "orient": [0, 0, 0, 1] },
+      "_props":{"kind":"constant","pos": [0,0,0], "orient": [0, 0, 0, 1] },
       "voltage":{"_props":{"kind":"large_knob"}},
       "out":{"_props":{"kind":"outlet"}}
     },
 
     "lfo":{
-        "_props":{"kind":"lfo","pos": [0.0, 1.5, 0.0], "orient": [0, 0, 0, 1] },
+        "_props":{"kind":"lfo","pos": [0,0,0], "orient": [0, 0, 0, 1] },
         "fm_cv":{"_props":{"kind":"inlet"}},
         "phasor_sync":{"_props":{"kind":"inlet"}},
         "pulse_width_cv":{"_props":{"kind":"inlet"}},
@@ -58,7 +58,7 @@
 
 
     "dualvco":{
-        "_props":{"kind":"dualvco","pos": [0.0, 0.5, 0.0], "orient": [0, 0, 0, 1] },
+        "_props":{"kind":"dualvco","pos": [0,0,0], "orient": [0, 0, 0, 1] },
         "vco_1_cv":{"_props":{"kind":"inlet"}},
         "index_cv":{"_props":{"kind":"inlet"}},
         "vco_2_cv":{"_props":{"kind":"inlet"}},
@@ -74,7 +74,7 @@
     },
 
     "vca":{
-        "_props":{"kind":"vca","pos": [0.0, 1.8, 0.0], "orient": [0, 0, 0, 1] },
+        "_props":{"kind":"vca","pos": [0,0,0], "orient": [0, 0, 0, 1] },
         "signal":{"_props":{"kind":"inlet"}},
         "cv":{"_props":{"kind":"inlet"}},
         "cv_amount":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
@@ -83,7 +83,7 @@
     },
 
     "comparator":{
-        "_props":{"kind":"comparator","pos": [0.0, 0.8, 0.0], "orient": [0, 0, 0, 1] },
+        "_props":{"kind":"comparator","pos": [0,0,0], "orient": [0, 0, 0, 1] },
         "A":{"_props":{"kind":"inlet"}},
         "B":{"_props":{"kind":"inlet"}},
         "max":{"_props":{"kind":"outlet"}},
@@ -91,7 +91,7 @@
     },
 
     "outs":{
-        "_props":{"kind":"outs","pos": [0.0, 0.8, 0.0], "orient": [0, 0, 0, 1] },
+        "_props":{"kind":"outs","pos": [0,0,0], "orient": [0, 0, 0, 1] },
         "left_(mono)":{"_props":{"kind":"inlet"}},
         "right_(stereo)":{"_props":{"kind":"inlet"}},
         "volume":{"_props":{"kind":"small_knob","range":[0,1],"taper":"log 3.8","value":0.25,"unit":"float"}},
@@ -100,7 +100,7 @@
     },
 
     "noise":{
-      "_props":{"kind":"noise","pos": [0.0, 0.8, 0.0], "orient": [0, 0, 0, 1] },
+      "_props":{"kind":"noise","pos": [0,0,0], "orient": [0, 0, 0, 1] },
       "out":{"_props":{"kind":"outlet"}}
     }
 
