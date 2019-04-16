@@ -13,18 +13,22 @@ const express = require('express');
 const WebSocket = require('ws');
 const { vec2, vec3, vec4, quat, mat3, mat4 } = require("gl-matrix");
 
+const vorpal = require('vorpal')();
+
+
+
 const got = require("./got/got")
 console.log(got)
 
 const scenefile = "scene_edited.json"
-const sessionJSON = []
-const sessionRecording = __dirname + "/session_recordings/session_" + Date.now() + ".json"
-console.log(sessionRecording)
+var sessionJSON = []
+var sessionRecording;
 
-fs.writeFileSync(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")
+
+
 
 const MaxAPI = (() => {
-    try {
+    try {Mutation
         return require("max-api");
     } catch(e) {
         console.log("not running in Max")
@@ -134,7 +138,39 @@ console.log("client_path", client_path);
 }
 
 ////////////////////////
+/*
+////////// interactive shell ///////////
+function showShell(){
+  // show disperf shell cmd
+vorpal
+.delimiter('msvr$')
+.show();
+}
+showShell();
+	
+vorpal
+  .command('record', 'Outputs "recording session."')
+  .action(function(args, callback) {
+		sessionJSON.length = 0
+		this.log('recording will be stored at ', sessionRecording);
+		sessionRecording = __dirname + "/session_recordings/session_" + Date.now() + ".json"
 
+		fs.writeFile(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")
+
+
+		showShell()
+	});
+
+	
+vorpal
+  .command('stoprecord', 'Outputs "stopped recording & saved file."')
+  .action(function(args, callback) {
+		console.log('saved session with ' + sessionJSON.length + ' deltas');
+		callback()
+		showShell()
+	});
+*/
+	////////////
 
 const app = express();
 app.use(express.static(client_path))
@@ -232,7 +268,6 @@ function handlemessage(msg, sock, id) {
 			//console.log("forwarding deltas", response)
 
 			sessionJSON.push(response)
-			fs.writeFileSync(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")
 			send_all_clients(JSON.stringify(response));
 		} break;
 		case "clear_scene": {

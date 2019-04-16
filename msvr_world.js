@@ -250,7 +250,7 @@ function client(msg){
 			gen_patcher.apply(function(b) { 
 			
 				// prevent erasing our audio outputs from genpatcher
-				if(b.varname !== "dac_right" && b.varname !== "dac_left"){
+				if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment"){
 					gen_patcher.remove(b); 		
 				}
 			});
@@ -617,7 +617,7 @@ function clear(){
 	gen_patcher = this.patcher.getnamed("world").subpatcher();
 	gen_patcher.apply(function(b) { 
 		// prevent erasing our audio outputs from genpatcher
-		if(b.varname !== "dac_right" && b.varname !== "dac_left"){
+		if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment"){
 		gen_patcher.remove(b); 				
 		}
 	});			
