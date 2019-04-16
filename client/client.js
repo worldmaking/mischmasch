@@ -781,7 +781,6 @@ function enactDeltaNewNode(delta) {
             container.add(label);
             
             // container.userData.moveable = true;
-            subInletCount++;
             container.userData.selectable = true;
         } break;
         case "outlet":{
@@ -809,7 +808,6 @@ function enactDeltaNewNode(delta) {
                 
             //container.userData.moveable = true;
             container.userData.selectable = true;
-            subOutletCount++;
         } break;
         case "large_knob": {
             container = new THREE.Mesh(large_knob_geometry, knob_material);
@@ -826,7 +824,6 @@ function enactDeltaNewNode(delta) {
             container.add(label);
             container.userData.turnable = true;
             container.userData.selectable = true;
-            subObjCount++;
           
         } break;
         case "small_knob": {
@@ -845,7 +842,6 @@ function enactDeltaNewNode(delta) {
 
             container.userData.turnable = true;
             container.userData.selectable = true;
-            subObjCount++;
             
         } break;
         case "n_switch": {
@@ -868,7 +864,7 @@ function enactDeltaNewNode(delta) {
                 for(let l =0; l < delta.throws.length; l++){
                     let labelN = generateLabel(delta.throws[l], .01);
 
-                    labelN.position.y = y - container.geometry.parameters.height / 3.5;
+                    labelN.position.y = y - container.geometry.parameters.height / 3;
                     y = labelN.position.y;
                     labelN.position.z = 0;
                     labelN.position.x = -0.01;
@@ -893,11 +889,10 @@ function enactDeltaNewNode(delta) {
 
             }
 
-            subObjCount++;
             container.userData.positions = switchPositions;
             container.userData.selectable = false;
             container.userData.slideable = false;
-
+            console.log(container)
         } break;
         default: {
             container = new THREE.Mesh(generic_geometry, material);
@@ -926,12 +921,6 @@ function enactDeltaNewNode(delta) {
     } else {
         container.quaternion = parent.quaternion.clone();
     }
-
-
-
-    subObjCount = 0;   
-    subInletCount = 0;
-    subOutletCount = 0;
 
     container.name = name;
     container.userData.name = name;
@@ -1105,7 +1094,12 @@ function enactDeltaObjectValue(delta) {
             object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
         } break;
         case "n_switch": {
-
+            object.userData.value = value;
+            for(let child of object.children){
+                if(child.userData.selectable){
+                    child.position.fromArray( object.userData.positions[value]);
+                }
+            }
         } break;
         default:{
 
@@ -1564,27 +1558,24 @@ function controllerGamepadControls(controller){
         } else if (object.userData.slideable){
 
   
-            //     let controllerPos = new THREE.Vector3();
-            //     controller1.getWorldPosition(controllerPos);
+                let controllerPos = new THREE.Vector3();
+                controller1.getWorldPosition(controllerPos);
     
-            //     if(controllerPrevPos !== undefined){
-            //         console.log(object.parent.userData.localPatchNode._props.value)
-            //         if(controllerPrevPos.y < controllerPos.y){
-            //             if(object.parent.userData.localPatchNode._props.value > 0){
-            //                 object.parent.userData.localPatchNode._props.value -= 1;
-            //                 object.position.fromArray(object.parent.userData.positions[object.parent.userData.localPatchNode._props.value]);
-            //             } 
-            //         } else if(controllerPrevPos.y > controllerPos.y){
-            //             if(object.parent.userData.localPatchNode._props.value < object.parent.userData.positions.length - 1){
-            //                 object.parent.userData.localPatchNode._props.value += 1;
-            //                 object.position.fromArray(object.parent.userData.positions[object.parent.userData.localPatchNode._props.value]);
-            //             }
-            //         }   
-            //     }
-            //     controllerPrevPos = controllerPos;
-            //  
-           
-          
+                let nswitchPos = new THREE.Vector3()
+                object.getWorldPosition(nswitchPos.parent);
+    
+                let relPos = new THREE.Vector3();
+                relPos.subVectors(controllerPos, nswitchPos);
+                let value = 0;
+                if( relPos.y < 1.00){
+                   value = 2;
+                 } else if( relPos.y > 1.04){
+                    value = 0;
+                 } else {
+                    value = 1;
+                }
+                outgoingDeltas.push(
+                    { op:"propchange", path: object.parent.userData.path, name:"value", from: object.parent.userData.value, to: value });
         }
         
  
