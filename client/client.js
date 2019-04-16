@@ -161,7 +161,7 @@ let outgoingDeltas = [];
 
 let allNodes = {};
 let allCables = [];
-
+let uiLine;
 
 let currentKnobValue = 0;
 let frames = 0;
@@ -469,7 +469,7 @@ class Cable {
             new THREE.Vector3(),
             new THREE.Vector3(),
             new THREE.Vector3(),
-            new THREE.Vector3()
+            new THREE.Vector3() 
         ];
 
         this.geometry = new THREE.BufferGeometry();
@@ -600,6 +600,9 @@ function onSelectStart(event) {
     let intersection = intersections[0];
 
     let object = intersection.object;
+
+
+
     // while (object && !object.userData.moveable) {
     //     object = object.parent;
     // }
@@ -661,7 +664,25 @@ function onSelectStart(event) {
         }
         controller.userData.selected = object;
     }
- 
+
+    controller.userData.rotation = controller.rotation.clone();
+    object.userData.rotation = object.rotation.clone();
+   
+    if(object && object.userData.turnable){
+        let line = controller.getObjectByName("line");
+        line.scale.z = 0;
+    
+        let lineGeom = new THREE.Geometry();
+        lineGeom.vertices.push(new THREE.Vector3());
+        lineGeom.vertices.push(new THREE.Vector3());
+        let lineMat = new THREE.LineBasicMaterial({
+            color: "yellow"
+        });
+        uiLine = new THREE.Line(lineGeom, lineMat);
+        uiLine.name = "uiLine";
+        world.add(uiLine);
+    }
+
 }
 
 function enactDelta(delta) {
@@ -1090,6 +1111,7 @@ function enactDeltaObjectValue(delta) {
             object.userData.value = value;
             //Update once server says:
             let derived_angle = (value * Math.PI * 2) - Math.PI;
+            
             // set rotation of knob by this angle, and normal axis of knob:
             object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
         } break;
@@ -1202,10 +1224,12 @@ function onSelectEnd(event) {
             }
 
         }
-        // if(object && object.userData.turnable){
-        //     outgoingDeltas.push(
-        //         { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: currentKnobValue });
-        // }
+        if(object && object.userData.turnable){
+            let line = controller.getObjectByName("line");
+            line.scale.z = 1;
+
+            world.remove(world.getObjectByName("uiLine"));
+        }
     }
 
     //syncLocalPatch();
@@ -1516,27 +1540,33 @@ function controllerGamepadControls(controller){
             //put controller into knob space using matrix
             //set angle to the knob
             //take controller out of knob space
+            
+            // let controllerPos = new THREE.Vector3()
+            // controller.getWorldPosition(controllerPos)
 
-            let controllerPos = new THREE.Vector3()
-            controller.getWorldPosition(controllerPos)
+            // let knobPos = new THREE.Vector3()
+            // object.getWorldPosition(knobPos);
 
-            let knobPos = new THREE.Vector3()
-            object.getWorldPosition(knobPos);
+            // let relPos = new THREE.Vector3();
+            // relPos.subVectors(controllerPos, knobPos);
 
-            let relPos = new THREE.Vector3();
-            relPos.subVectors(controllerPos, knobPos);
+            // let moduleQuat = new THREE.Quaternion();
+            // moduleQuat.copy(object.parent.quaternion)
+            // moduleQuat.inverse();
 
-            let moduleQuat = new THREE.Quaternion();
-            moduleQuat.copy(object.parent.quaternion)
-            moduleQuat.inverse();
+            // // now rotate this into the knob's perspective:
+            // relPos.applyQuaternion(moduleQuat);
+            // // //get controller angle via x and y
+            // // (This ranges from -PI to +PI)
+            // let angle = Math.atan2(relPos.x, -relPos.y);
+            // // map this to a 0..1 range:
+            // let value = (angle + Math.PI) / (2 * Math.PI);
 
-            // now rotate this into the knob's perspective:
-            relPos.applyQuaternion(moduleQuat);
-            // //get controller angle via x and y
-            // (This ranges from -PI to +PI)
-            let angle = Math.atan2(relPos.x, -relPos.y);
-            // map this to a 0..1 range:
-            let value = (angle + Math.PI) / (2 * Math.PI);
+            controller.rotation.z += object.userData.rotation._z;
+            object.rotation.z = controller.rotation.z - controller.userData.rotation.z;
+
+            let value =  (object.rotation.z + Math.PI) / (2 * Math.PI);
+            
             //currentKnobValue = value;
             // TODO: Sending delta every frame got very laggy. Possibly bring this back so other person can see knob turning...?
             if(frames >= FRAME_WAIT_AMOUNT){
@@ -1553,7 +1583,18 @@ function controllerGamepadControls(controller){
             //this just means that you can see the rotation before the final position is sent to the server instead of constantly sending it.
             //let derived_angle = (value * Math.PI * 2) - Math.PI;
             // set rotation of knob by this angle, and normal axis of knob:
-            //object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);            
+            //object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);  
+      
+            let controllerPos = new THREE.Vector3();
+            let objectPos = new THREE.Vector3();
+            controller.getWorldPosition(controllerPos);
+            object.getWorldPosition(objectPos);          
+          
+            if(uiLine !== undefined){
+                uiLine.geometry.vertices[0] = controllerPos;
+                uiLine.geometry.vertices[1] = objectPos;
+                uiLine.geometry.verticesNeedUpdate = true;
+            }
 
         } else if (object.userData.slideable){
 
