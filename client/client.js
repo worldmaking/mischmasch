@@ -15,6 +15,8 @@ let loadedController;
 let viveHeadsetModelPath = "models/viveHeadset/"
 let loadedHeadsetModel;
 
+let texturesPath = "textures/";
+
 // turn FontLoader into something we can await:
 async function loadFont(fontFile) {
     return new Promise(resolve => new THREE.FontLoader().load(fontFile, resolve));
@@ -31,6 +33,11 @@ async function loadTexture(filename) {
     return new Promise(resolve => viveTextureLoader.load(filename, resolve));
 }
 
+let floorTexture;
+let floorTextureLoader = new THREE.TextureLoader();
+async function loadFloorTexture(filename) {
+    return new Promise(resolve => floorTextureLoader.load(filename, resolve));
+}
 //////////////////////////////////////////////////////////////////////////////////////////
 // COMMON MATERIALS
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -43,7 +50,7 @@ const CABLE_CONTROL_POINT_DISTANCE = 0.1;
 const NUM_CABLE_SEGMENTS = 128;
 // how tall the cable jack cylinders are
 const CABLE_JACK_HEIGHT = 0.03;
-const CABLE_JACK_RADIUS = CABLE_JACK_HEIGHT * 0.2;
+const CABLE_JACK_RADIUS = CABLE_JACK_HEIGHT * 0.4;
 
 const NLET_RADIUS = 0.025;
 const NLET_HEIGHT = 0.01;
@@ -244,6 +251,13 @@ async function init() {
         await loadTexture(viveHeadsetModelPath + 'foam.png'),
         await loadTexture(viveHeadsetModelPath + 'black.png'), //await loadTexture(viveHeadsetModelPath + 'screen.png')
     ];
+
+    //floorTexture = await loadFloorTexture( texturesPath + "checkerboard.jpg");
+    //floorTexture = await loadFloorTexture( texturesPath + "noise_pattern_6.jpg");
+    floorTexture = await loadFloorTexture( texturesPath + "rubber1.jpg");
+    //floorTexture = await loadFloorTexture( texturesPath + "carpet1.jpg");
+    //floorTexture = await loadFloorTexture( texturesPath + "carpet2.jpg");
+    
     // TODO: where do these normal maps apply?
     //let viveHeadsetNormalsPNG = await loadTexture(viveHeadsetModelPath + 'normals.png');
 
@@ -372,7 +386,23 @@ async function init() {
     floorGrid.position.y = 0;
     floorGrid.material.opacity = 0.25;
     floorGrid.material.transparent = true;
-    scene.add(floorGrid);
+   // scene.add(floorGrid);
+
+
+	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
+	floorTexture.repeat.set( 10, 10 );
+	let floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide, transparent: false, opacity: .1, } );
+    let floorGeometry = new THREE.PlaneBufferGeometry(10, 10, 10, 10);
+    let uvs = floorGeometry.attributes.uv.array;
+    let uvscale = 2;
+    for ( var i = 0, len=uvs.length; i<len; i++ ) { uvs[i] *= uvscale; }
+
+
+
+	let floor = new THREE.Mesh(floorGeometry, floorMaterial);
+	//floor.position.y = -0.5;
+	floor.rotation.x = Math.PI / 2;
+	scene.add(floor);
 
     // hook up server:
     connect_to_server();
@@ -724,7 +754,7 @@ function enactDeltaNewNode(delta) {
     
     switch(delta.kind){
         case "inlet": {
-            inlet_material.blending = THREE.NoBlending;
+            //inlet_material.blending = THREE.NoBlending;
             container = new THREE.Mesh(inlet_geometry, inlet_material);
             container.castShadow = true;
             container.receiveShadow = true;
@@ -755,7 +785,7 @@ function enactDeltaNewNode(delta) {
             container.userData.selectable = true;
         } break;
         case "outlet":{
-            outlet_material.blending = THREE.NoBlending;
+           // outlet_material.blending = THREE.NoBlending;
             container = new THREE.Mesh(outlet_geometry, outlet_material);
             container.castShadow = false;
             container.receiveShadow = false;
@@ -931,12 +961,14 @@ function enactDeltaDeleteNode(delta) {
     let kind = delta.kind;
 
     //Removing all Cables that are attached to this node
-    for(let c =0; c < allCables.length; c++){
-        if((allCables[c].dst !== null && allCables[c].dst.parent.name === kind) || (allCables[c].src !== null && allCables[c].src.parent.name === kind)){
-            allCables[c].destroy();
-            c = 0;
-        } 
-    }
+
+    let deleteCable = allCables.filter(cable => {
+        return (cable.src != null && cable.src.parent.name == kind) || (cable.dst != null && cable.dst.parent.name == kind);
+    });
+
+    deleteCable.forEach(cable => {
+        cable.destroy();
+    });
 
     //Removing from allNodes
     for(let name in allNodes){
@@ -1099,6 +1131,10 @@ function onSelectEnd(event) {
             object.getWorldPosition(objPos);
             let cable = object.userData.cable
             if (object.userData.kind == "jack_outlet" || object.userData.kind == "jack_inlet") {
+                
+
+                let intersections = getIntersectionsWithKind(object, 0, 0, -1, CABLE_JACK_HEIGHT * 2, object.userData.kind == "jack_outlet" ? "outlet" : "inlet");
+
                 // take it out of controller-space
                 object.matrix.premultiply(controller.matrixWorld);
                 tempMatrix.getInverse(parent.matrixWorld);
@@ -1107,12 +1143,10 @@ function onSelectEnd(event) {
                 //world.add(object);
                 parent.add(object);
 
-                let intersections = getIntersections(object, 0, 0, -1);
-
                 if (intersections.length > 0) {
                     let intersection = intersections[0];
                     let o = intersection.object;
-                    
+
                     // if it is a jack, see if we can hook up?
                     if (object.userData.kind == "jack_outlet" && o.userData.kind == "outlet") {
                         // we have a hit! connect
@@ -1207,14 +1241,57 @@ function onSpawn(event) {
 
 }
 
-function getIntersections(controller, x, y, z) {
+function highlightNlet(controller){
+    if (controller.userData.selected !== undefined) {
+        let object = controller.userData.selected;
+
+        if (object && object.userData.moveable) {
+            if (object.userData.kind == "jack_outlet" || object.userData.kind == "jack_inlet") {
+
+                let intersections = getIntersectionsWithKind(object, 0, 0, -1, CABLE_JACK_HEIGHT * 2, object.userData.kind == "jack_outlet" ? "outlet" : "inlet");
+
+                if (intersections.length > 0) {
+                    let intersection = intersections[0];
+                    let o = intersection.object;
+
+                    // if it is a jack, see if we can hook up?
+                    if ((object.userData.kind == "jack_outlet" && o.userData.kind == "outlet")||(object.userData.kind == "jack_inlet" && o.userData.kind == "inlet")) {
+                        object.material.emissive.r = .5;
+                        object.material.emissive.g = .5;
+                        object.material.emissive.b = .5;
+                    } else {
+                        object.material.emissive.r = 0;
+                        object.material.emissive.g = 0;
+                        object.material.emissive.b = 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+function getIntersections(controller, x, y, z, offset =0) {
     tempMatrix.identity().extractRotation(controller.matrixWorld);
-    raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
+    let origin = new THREE.Vector3(0, 0, offset).applyMatrix4(tempMatrix);
+    raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld).add(origin);
     raycaster.ray.direction.set(x, y, z).applyMatrix4(tempMatrix);
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
     let intersections = raycaster.intersectObjects(world.children, true);
     while (intersections.length > 0 && !intersections[0].object.userData.selectable) intersections.shift();
+    return intersections;
+}
+
+
+function getIntersectionsWithKind(controller, x, y, z, offset =0, kind) {
+    tempMatrix.identity().extractRotation(controller.matrixWorld);
+    let origin = new THREE.Vector3(0, 0, offset).applyMatrix4(tempMatrix);
+    raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld).add(origin);
+    raycaster.ray.direction.set(x, y, z).applyMatrix4(tempMatrix);
+    // argument here is just any old array of objects
+    // 2nd arg is recursive (recursive breaks grabbing)
+    let intersections = raycaster.intersectObjects(world.children, true);
+    while (intersections.length > 0 && !intersections[0].object.userData.selectable && kind != intersections[0].object.userData.kind) intersections.shift();
     return intersections;
 }
 
@@ -1590,7 +1667,8 @@ function render() {
 
     controllerGamepadControls(controller1);
     controllerGamepadControls(controller2);
-
+    highlightNlet(controller1);
+    highlightNlet(controller2);
 
     if (sock && sock.socket && sock.socket.readyState === 1) {
 
