@@ -15,6 +15,8 @@ let loadedController;
 let viveHeadsetModelPath = "models/viveHeadset/"
 let loadedHeadsetModel;
 
+let texturesPath = "textures/";
+
 // turn FontLoader into something we can await:
 async function loadFont(fontFile) {
     return new Promise(resolve => new THREE.FontLoader().load(fontFile, resolve));
@@ -31,6 +33,11 @@ async function loadTexture(filename) {
     return new Promise(resolve => viveTextureLoader.load(filename, resolve));
 }
 
+let floorTexture;
+let floorTextureLoader = new THREE.TextureLoader();
+async function loadFloorTexture(filename) {
+    return new Promise(resolve => floorTextureLoader.load(filename, resolve));
+}
 //////////////////////////////////////////////////////////////////////////////////////////
 // COMMON MATERIALS
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -43,7 +50,7 @@ const CABLE_CONTROL_POINT_DISTANCE = 0.1;
 const NUM_CABLE_SEGMENTS = 128;
 // how tall the cable jack cylinders are
 const CABLE_JACK_HEIGHT = 0.03;
-const CABLE_JACK_RADIUS = CABLE_JACK_HEIGHT * 0.2;
+const CABLE_JACK_RADIUS = CABLE_JACK_HEIGHT * 0.4;
 
 const NLET_RADIUS = 0.025;
 const NLET_HEIGHT = 0.01;
@@ -57,6 +64,8 @@ const SMALL_KNOB_HEIGHT = 0.02;
 const CONTROLLER_HIT_DISTANCE = 0.03;
 
 const FRAME_WAIT_AMOUNT = 0;
+
+const GRID_DIVISIONS = 60;
 
 // let inlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
 // let outlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
@@ -118,6 +127,12 @@ let generic_material = new THREE.MeshStandardMaterial({
     
 });
 
+let outline_material = new THREE.MeshStandardMaterial({
+    color: 0x888888,
+    side: THREE.BackSide
+    
+});
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // SCENE COMPONENTS
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -146,7 +161,7 @@ let outgoingDeltas = [];
 
 let allNodes = {};
 let allCables = [];
-
+let uiLine;
 
 let currentKnobValue = 0;
 let frames = 0;
@@ -236,6 +251,13 @@ async function init() {
         await loadTexture(viveHeadsetModelPath + 'foam.png'),
         await loadTexture(viveHeadsetModelPath + 'black.png'), //await loadTexture(viveHeadsetModelPath + 'screen.png')
     ];
+
+    //floorTexture = await loadFloorTexture( texturesPath + "checkerboard.jpg");
+    //floorTexture = await loadFloorTexture( texturesPath + "noise_pattern_6.jpg");
+    floorTexture = await loadFloorTexture( texturesPath + "rubber1.jpg");
+    //floorTexture = await loadFloorTexture( texturesPath + "carpet1.jpg");
+    //floorTexture = await loadFloorTexture( texturesPath + "carpet2.jpg");
+    
     // TODO: where do these normal maps apply?
     //let viveHeadsetNormalsPNG = await loadTexture(viveHeadsetModelPath + 'normals.png');
 
@@ -360,11 +382,27 @@ async function init() {
 
 
     // floor
-    let floorGrid = new THREE.GridHelper(30, 30);
+    let floorGrid = new THREE.GridHelper(10, GRID_DIVISIONS);
     floorGrid.position.y = 0;
     floorGrid.material.opacity = 0.25;
     floorGrid.material.transparent = true;
-    scene.add(floorGrid);
+   // scene.add(floorGrid);
+
+
+	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
+	floorTexture.repeat.set( 10, 10 );
+	let floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide, transparent: false, opacity: .1, } );
+    let floorGeometry = new THREE.PlaneBufferGeometry(10, 10, 10, 10);
+    let uvs = floorGeometry.attributes.uv.array;
+    let uvscale = 2;
+    for ( var i = 0, len=uvs.length; i<len; i++ ) { uvs[i] *= uvscale; }
+
+
+
+	let floor = new THREE.Mesh(floorGeometry, floorMaterial);
+	//floor.position.y = -0.5;
+	floor.rotation.x = Math.PI / 2;
+	scene.add(floor);
 
     // hook up server:
     connect_to_server();
@@ -431,7 +469,7 @@ class Cable {
             new THREE.Vector3(),
             new THREE.Vector3(),
             new THREE.Vector3(),
-            new THREE.Vector3()
+            new THREE.Vector3() 
         ];
 
         this.geometry = new THREE.BufferGeometry();
@@ -562,10 +600,12 @@ function onSelectStart(event) {
     let intersection = intersections[0];
 
     let object = intersection.object;
+
+
+
     // while (object && !object.userData.moveable) {
     //     object = object.parent;
     // }
-
 
     if (object && object.userData.moveable) {
 
@@ -590,14 +630,18 @@ function onSelectStart(event) {
         object.matrix.premultiply(parent.matrixWorld);
         object.matrix.premultiply(tempMatrix);
         object.matrix.decompose(object.position, object.quaternion, object.scale);
-        if (object.material)
-            object.material.emissive.b = 1;
+        if (object.material){
+            object.material.emissive.r = .2;
+            object.material.emissive.g = .2;
+            object.material.emissive.b = .2;
+        }
+
 
         controller.userData.selected = object;
         object.userData.originalParent = parent;
+        
         controller.add(object); //removes from previous parent
     }
-
 
     if (object && !object.userData.moveable) {
         let kind = object.userData.kind;
@@ -607,18 +651,38 @@ function onSelectStart(event) {
             // now set object = line.dstJackMesh
             let cable = new Cable(object, null);
             object = cable.dstJackMesh;
+            object.position.z = -0.07;
             controller.add(object); //removes from previous parent
 
         } else if (kind == "inlet") {
             //...
             let cable = new Cable(null, object);
+
             object = cable.srcJackMesh;
-            controller.userData.selected = object;
+            object.position.z = -0.07;
             controller.add(object); //removes from previous parent
         }
-
         controller.userData.selected = object;
     }
+
+    controller.userData.rotation = controller.rotation.clone();
+    object.userData.rotation = object.rotation.clone();
+   
+    if(object && object.userData.turnable){
+        let line = controller.getObjectByName("line");
+        line.scale.z = 0;
+    
+        let lineGeom = new THREE.Geometry();
+        lineGeom.vertices.push(new THREE.Vector3());
+        lineGeom.vertices.push(new THREE.Vector3());
+        let lineMat = new THREE.LineBasicMaterial({
+            color: "yellow"
+        });
+        uiLine = new THREE.Line(lineGeom, lineMat);
+        uiLine.name = "uiLine";
+        world.add(uiLine);
+    }
+
 }
 
 function enactDelta(delta) {
@@ -702,13 +766,16 @@ function enactDeltaNewNode(delta) {
     material.color.set(Math.random() * 0xffffff);
     
     let outlet_material = material.clone();
+
     let inlet_material = material.clone();
     let knob_material = material.clone();
     let n_switch_material = material.clone();
     let n_switch_slider_material = material.clone();
+    let outline_mat = outline_material.clone();
     
     switch(delta.kind){
         case "inlet": {
+            //inlet_material.blending = THREE.NoBlending;
             container = new THREE.Mesh(inlet_geometry, inlet_material);
             container.castShadow = true;
             container.receiveShadow = true;
@@ -716,12 +783,18 @@ function enactDeltaNewNode(delta) {
                 0, 
                 0,
                 generic_geometry.parameters.depth/2 - NLET_HEIGHT]);
-            
             //backplate to show which is inlet
-            material.color.set(0x00ff00);    
-            let backplate = new THREE.Mesh(inlet_backplate_geometry, material);
-            backplate.position.z += -NLET_HEIGHT;
-            container.add(backplate);
+            // material.color.set(0x00ff00);    
+            // let backplate = new THREE.Mesh(inlet_backplate_geometry, material);
+            // backplate.position.z += -NLET_HEIGHT;
+            // container.add(backplate);
+
+            outline_mat.color.set(0x00ff00);    
+            let outline = new THREE.Mesh(inlet_geometry, outline_mat);
+            outline.scale.multiplyScalar(1.18);
+            outline.castShadow = true;
+            outline.receiveShadow = true;
+            container.add(outline);
 
             let label = generateLabel(name, NLET_HEIGHT);
             label.position.z = 0.01;
@@ -729,23 +802,25 @@ function enactDeltaNewNode(delta) {
             container.add(label);
             
             // container.userData.moveable = true;
-            subInletCount++;
             container.userData.selectable = true;
         } break;
         case "outlet":{
+           // outlet_material.blending = THREE.NoBlending;
             container = new THREE.Mesh(outlet_geometry, outlet_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
+            container.castShadow = false;
+            container.receiveShadow = false;
             container.position.fromArray([
                 0, 
                 0,
                 generic_geometry.parameters.depth/2 - NLET_HEIGHT]);
 
             //backplate to show which is outlet
-            material.color.set(0xff0000);    
-            let backplate = new THREE.Mesh(outlet_backplate_geometry, material);
-            backplate.position.z += -NLET_HEIGHT;
-            container.add(backplate);
+            outline_mat.color.set(0xff0000);    
+            let outline = new THREE.Mesh(outlet_geometry, outline_mat);
+            outline.scale.multiplyScalar(1.18);
+            outline.castShadow = false;
+            outline.receiveShadow = false;
+            container.add(outline);
 
             let label = generateLabel(name, SMALL_KNOB_HEIGHT/2.7);
             label.position.z = 0.01;
@@ -754,7 +829,6 @@ function enactDeltaNewNode(delta) {
                 
             //container.userData.moveable = true;
             container.userData.selectable = true;
-            subOutletCount++;
         } break;
         case "large_knob": {
             container = new THREE.Mesh(large_knob_geometry, knob_material);
@@ -771,7 +845,6 @@ function enactDeltaNewNode(delta) {
             container.add(label);
             container.userData.turnable = true;
             container.userData.selectable = true;
-            subObjCount++;
           
         } break;
         case "small_knob": {
@@ -790,7 +863,6 @@ function enactDeltaNewNode(delta) {
 
             container.userData.turnable = true;
             container.userData.selectable = true;
-            subObjCount++;
             
         } break;
         case "n_switch": {
@@ -813,7 +885,7 @@ function enactDeltaNewNode(delta) {
                 for(let l =0; l < delta.throws.length; l++){
                     let labelN = generateLabel(delta.throws[l], .01);
 
-                    labelN.position.y = y - container.geometry.parameters.height / 3.5;
+                    labelN.position.y = y - container.geometry.parameters.height / 3;
                     y = labelN.position.y;
                     labelN.position.z = 0;
                     labelN.position.x = -0.01;
@@ -838,11 +910,10 @@ function enactDeltaNewNode(delta) {
 
             }
 
-            subObjCount++;
             container.userData.positions = switchPositions;
             container.userData.selectable = false;
             container.userData.slideable = false;
-
+            console.log(container)
         } break;
         default: {
             container = new THREE.Mesh(generic_geometry, material);
@@ -872,12 +943,6 @@ function enactDeltaNewNode(delta) {
         container.quaternion = parent.quaternion.clone();
     }
 
-
-
-    subObjCount = 0;   
-    subInletCount = 0;
-    subOutletCount = 0;
-
     container.name = name;
     container.userData.name = name;
     container.userData.path = path;
@@ -906,12 +971,14 @@ function enactDeltaDeleteNode(delta) {
     let kind = delta.kind;
 
     //Removing all Cables that are attached to this node
-    for(let c =0; c < allCables.length; c++){
-        if((allCables[c].dst !== null && allCables[c].dst.parent.name === kind) || (allCables[c].src !== null && allCables[c].src.parent.name === kind)){
-            allCables[c].destroy();
-            c = 0;
-        } 
-    }
+
+    let deleteCable = allCables.filter(cable => {
+        return (cable.src != null && cable.src.parent.name == kind) || (cable.dst != null && cable.dst.parent.name == kind);
+    });
+
+    deleteCable.forEach(cable => {
+        cable.destroy();
+    });
 
     //Removing from allNodes
     for(let name in allNodes){
@@ -1044,11 +1111,17 @@ function enactDeltaObjectValue(delta) {
             object.userData.value = value;
             //Update once server says:
             let derived_angle = (value * Math.PI * 2) - Math.PI;
+            
             // set rotation of knob by this angle, and normal axis of knob:
             object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
         } break;
         case "n_switch": {
-
+            object.userData.value = value;
+            for(let child of object.children){
+                if(child.userData.selectable){
+                    child.position.fromArray( object.userData.positions[value]);
+                }
+            }
         } break;
         default:{
 
@@ -1064,12 +1137,20 @@ function onSelectEnd(event) {
         if (parent == undefined) parent = world; //object.parent;
         controller.userData.selected = undefined;
 
+        object.material.emissive.r = 0;
+        object.material.emissive.g = 0;
         object.material.emissive.b = 0;
 
        
         if (object && object.userData.moveable) {
-           
+            let objPos = new THREE.Vector3();
+            object.getWorldPosition(objPos);
+            let cable = object.userData.cable
             if (object.userData.kind == "jack_outlet" || object.userData.kind == "jack_inlet") {
+                
+
+                let intersections = getIntersectionsWithKind(object, 0, 0, -1, CABLE_JACK_HEIGHT * 2, object.userData.kind == "jack_outlet" ? "outlet" : "inlet");
+
                 // take it out of controller-space
                 object.matrix.premultiply(controller.matrixWorld);
                 tempMatrix.getInverse(parent.matrixWorld);
@@ -1078,12 +1159,9 @@ function onSelectEnd(event) {
                 //world.add(object);
                 parent.add(object);
 
-                let intersections = getIntersections(object, 0, 0, -1);
-
                 if (intersections.length > 0) {
                     let intersection = intersections[0];
                     let o = intersection.object;
-                    let cable = object.userData.cable
 
                     // if it is a jack, see if we can hook up?
                     if (object.userData.kind == "jack_outlet" && o.userData.kind == "outlet") {
@@ -1113,6 +1191,15 @@ function onSelectEnd(event) {
                     }
                 }
 
+                if(cable.src == null && cable.dst == null){
+                    cable.destroy();
+                }
+
+                if(cable.src == null || cable.dst == null){
+                    if(objPos.y < 0){
+                        cable.destroy();
+                    }
+                }
                 
 
             } else {
@@ -1129,8 +1216,7 @@ function onSelectEnd(event) {
                 );
             }
 
-            let objPos = new THREE.Vector3();
-            object.getWorldPosition(objPos)
+
             if(objPos.y < 0){
                 outgoingDeltas.push(
                     { op:"delnode", path:object.userData.path, kind:object.userData.name}
@@ -1138,10 +1224,12 @@ function onSelectEnd(event) {
             }
 
         }
-        // if(object && object.userData.turnable){
-        //     outgoingDeltas.push(
-        //         { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: currentKnobValue });
-        // }
+        if(object && object.userData.turnable){
+            let line = controller.getObjectByName("line");
+            line.scale.z = 1;
+
+            world.remove(world.getObjectByName("uiLine"));
+        }
     }
 
     //syncLocalPatch();
@@ -1171,14 +1259,57 @@ function onSpawn(event) {
 
 }
 
-function getIntersections(controller, x, y, z) {
+function highlightNlet(controller){
+    if (controller.userData.selected !== undefined) {
+        let object = controller.userData.selected;
+
+        if (object && object.userData.moveable) {
+            if (object.userData.kind == "jack_outlet" || object.userData.kind == "jack_inlet") {
+
+                let intersections = getIntersectionsWithKind(object, 0, 0, -1, CABLE_JACK_HEIGHT * 2, object.userData.kind == "jack_outlet" ? "outlet" : "inlet");
+
+                if (intersections.length > 0) {
+                    let intersection = intersections[0];
+                    let o = intersection.object;
+
+                    // if it is a jack, see if we can hook up?
+                    if ((object.userData.kind == "jack_outlet" && o.userData.kind == "outlet")||(object.userData.kind == "jack_inlet" && o.userData.kind == "inlet")) {
+                        object.material.emissive.r = .5;
+                        object.material.emissive.g = .5;
+                        object.material.emissive.b = .5;
+                    } else {
+                        object.material.emissive.r = 0;
+                        object.material.emissive.g = 0;
+                        object.material.emissive.b = 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+function getIntersections(controller, x, y, z, offset =0) {
     tempMatrix.identity().extractRotation(controller.matrixWorld);
-    raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
+    let origin = new THREE.Vector3(0, 0, offset).applyMatrix4(tempMatrix);
+    raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld).add(origin);
     raycaster.ray.direction.set(x, y, z).applyMatrix4(tempMatrix);
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
     let intersections = raycaster.intersectObjects(world.children, true);
     while (intersections.length > 0 && !intersections[0].object.userData.selectable) intersections.shift();
+    return intersections;
+}
+
+
+function getIntersectionsWithKind(controller, x, y, z, offset =0, kind) {
+    tempMatrix.identity().extractRotation(controller.matrixWorld);
+    let origin = new THREE.Vector3(0, 0, offset).applyMatrix4(tempMatrix);
+    raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld).add(origin);
+    raycaster.ray.direction.set(x, y, z).applyMatrix4(tempMatrix);
+    // argument here is just any old array of objects
+    // 2nd arg is recursive (recursive breaks grabbing)
+    let intersections = raycaster.intersectObjects(world.children, true);
+    while (intersections.length > 0 && !intersections[0].object.userData.selectable && kind != intersections[0].object.userData.kind) intersections.shift();
     return intersections;
 }
 
@@ -1190,8 +1321,12 @@ function intersectObjects(controller) {
     if (intersections.length > 0) {
         let intersection = intersections[0];
         let object = intersection.object;
-        if (object.material.emissive)
-            object.material.emissive.r = 1;
+        if (object.material.emissive){
+            object.material.emissive.r = .15;
+            object.material.emissive.g = .15;
+            object.material.emissive.b = .15;
+        }
+
         intersected.push(object);
         line.scale.z = intersection.distance;
     } else {
@@ -1202,8 +1337,11 @@ function intersectObjects(controller) {
 function cleanIntersected() {
     while (intersected.length) {
         let object = intersected.pop();
-        if (object.material.emissive)
+        if (object.material.emissive){
             object.material.emissive.r = 0;
+            object.material.emissive.g = 0;
+            object.material.emissive.b = 0;
+        }
     }
 }
           
@@ -1388,7 +1526,6 @@ function controllerGamepadControls(controller){
             let s = 1. + (controller.userData.thumbpadDY);
             let r = 1. + (controller.userData.thumbpadDX);
             object.position.multiplyScalar(s);
-            
             let rot = new THREE.Vector3(object.rotation.x, object.rotation.y, object.rotation.z);
             rot.multiplyScalar(r);
             //object.rotation.x = rot.x;
@@ -1403,27 +1540,33 @@ function controllerGamepadControls(controller){
             //put controller into knob space using matrix
             //set angle to the knob
             //take controller out of knob space
+            
+            // let controllerPos = new THREE.Vector3()
+            // controller.getWorldPosition(controllerPos)
 
-            let controllerPos = new THREE.Vector3()
-            controller.getWorldPosition(controllerPos)
+            // let knobPos = new THREE.Vector3()
+            // object.getWorldPosition(knobPos);
 
-            let knobPos = new THREE.Vector3()
-            object.getWorldPosition(knobPos);
+            // let relPos = new THREE.Vector3();
+            // relPos.subVectors(controllerPos, knobPos);
 
-            let relPos = new THREE.Vector3();
-            relPos.subVectors(controllerPos, knobPos);
+            // let moduleQuat = new THREE.Quaternion();
+            // moduleQuat.copy(object.parent.quaternion)
+            // moduleQuat.inverse();
 
-            let moduleQuat = new THREE.Quaternion();
-            moduleQuat.copy(object.parent.quaternion)
-            moduleQuat.inverse();
+            // // now rotate this into the knob's perspective:
+            // relPos.applyQuaternion(moduleQuat);
+            // // //get controller angle via x and y
+            // // (This ranges from -PI to +PI)
+            // let angle = Math.atan2(relPos.x, -relPos.y);
+            // // map this to a 0..1 range:
+            // let value = (angle + Math.PI) / (2 * Math.PI);
 
-            // now rotate this into the knob's perspective:
-            relPos.applyQuaternion(moduleQuat);
-            // //get controller angle via x and y
-            // (This ranges from -PI to +PI)
-            let angle = Math.atan2(relPos.x, -relPos.y);
-            // map this to a 0..1 range:
-            let value = (angle + Math.PI) / (2 * Math.PI);
+            controller.rotation.z += object.userData.rotation._z;
+            object.rotation.z = controller.rotation.z - controller.userData.rotation.z;
+
+            let value =  (object.rotation.z + Math.PI) / (2 * Math.PI);
+            
             //currentKnobValue = value;
             // TODO: Sending delta every frame got very laggy. Possibly bring this back so other person can see knob turning...?
             if(frames >= FRAME_WAIT_AMOUNT){
@@ -1440,32 +1583,40 @@ function controllerGamepadControls(controller){
             //this just means that you can see the rotation before the final position is sent to the server instead of constantly sending it.
             //let derived_angle = (value * Math.PI * 2) - Math.PI;
             // set rotation of knob by this angle, and normal axis of knob:
-            //object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);            
+            //object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);  
+      
+            let controllerPos = new THREE.Vector3();
+            let objectPos = new THREE.Vector3();
+            controller.getWorldPosition(controllerPos);
+            object.getWorldPosition(objectPos);          
+          
+            if(uiLine !== undefined){
+                uiLine.geometry.vertices[0] = controllerPos;
+                uiLine.geometry.vertices[1] = objectPos;
+                uiLine.geometry.verticesNeedUpdate = true;
+            }
 
         } else if (object.userData.slideable){
 
   
-            //     let controllerPos = new THREE.Vector3();
-            //     controller1.getWorldPosition(controllerPos);
+                let controllerPos = new THREE.Vector3();
+                controller1.getWorldPosition(controllerPos);
     
-            //     if(controllerPrevPos !== undefined){
-            //         console.log(object.parent.userData.localPatchNode._props.value)
-            //         if(controllerPrevPos.y < controllerPos.y){
-            //             if(object.parent.userData.localPatchNode._props.value > 0){
-            //                 object.parent.userData.localPatchNode._props.value -= 1;
-            //                 object.position.fromArray(object.parent.userData.positions[object.parent.userData.localPatchNode._props.value]);
-            //             } 
-            //         } else if(controllerPrevPos.y > controllerPos.y){
-            //             if(object.parent.userData.localPatchNode._props.value < object.parent.userData.positions.length - 1){
-            //                 object.parent.userData.localPatchNode._props.value += 1;
-            //                 object.position.fromArray(object.parent.userData.positions[object.parent.userData.localPatchNode._props.value]);
-            //             }
-            //         }   
-            //     }
-            //     controllerPrevPos = controllerPos;
-            //  
-           
-          
+                let nswitchPos = new THREE.Vector3()
+                object.getWorldPosition(nswitchPos.parent);
+    
+                let relPos = new THREE.Vector3();
+                relPos.subVectors(controllerPos, nswitchPos);
+                let value = 0;
+                if( relPos.y < 1.00){
+                   value = 2;
+                 } else if( relPos.y > 1.04){
+                    value = 0;
+                 } else {
+                    value = 1;
+                }
+                outgoingDeltas.push(
+                    { op:"propchange", path: object.parent.userData.path, name:"value", from: object.parent.userData.value, to: value });
         }
         
  
@@ -1548,7 +1699,8 @@ function render() {
 
     controllerGamepadControls(controller1);
     controllerGamepadControls(controller2);
-
+    highlightNlet(controller1);
+    highlightNlet(controller2);
 
     if (sock && sock.socket && sock.socket.readyState === 1) {
 
