@@ -323,7 +323,7 @@ async function init() {
         }
         headsetMesh.castShadow = true;
         headsetMesh.receiveShadow = true;
-        console.log(loadedHeadsetModel)
+        console.log("HEADSET MODEL VVVVVVVV",loadedHeadsetModel)
     }
 
     {
@@ -363,7 +363,6 @@ async function init() {
 
     // 'world' represents the root node of the patch:
     scene.add(world);
-
 
 
     // floor
@@ -882,7 +881,6 @@ function enactDeltaNewNode(delta) {
             container.userData.positions = switchPositions;
             container.userData.selectable = false;
             container.userData.slideable = false;
-            console.log(container)
         } break;
         default: {
             container = new THREE.Mesh(generic_geometry, material);
@@ -1330,7 +1328,7 @@ function generateLabel(message, label_size) {
 }
 
 function updateDirtyNode(dirtyPath) {
-    console.log("cleaning", dirtyPath)
+    //console.log("cleaning", dirtyPath)
     let parentNode = getObjectByPath(dirtyPath);
     if (!parentNode) return;
 
@@ -1352,7 +1350,7 @@ function updateDirtyNode(dirtyPath) {
         numrows = 1;
     }
 
-    console.log("building module ", numchildren, parentNode.children.length, numrows, numcols)
+    //console.log("building module ", numchildren, parentNode.children.length, numrows, numcols)
 
     let LARGEST_MODULE = LARGE_KNOB_RADIUS;
     let widget_diameter = LARGEST_MODULE*2;
@@ -1392,7 +1390,7 @@ function updateDirty(){
         allNodes[path].userData.dirty = false;
     }
     if (dirtyObjects.length) {
-        console.log(dirtyObjects)
+        //console.log(dirtyObjects)
     }
 
     for (let dirtyPath of dirtyObjects) {
