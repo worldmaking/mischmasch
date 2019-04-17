@@ -1527,14 +1527,14 @@ function controllerGamepadControls(controller){
                 controller1.getWorldPosition(controllerPos);
     
                 let nswitchPos = new THREE.Vector3()
-                object.getWorldPosition(nswitchPos.parent);
+                object.parent.getWorldPosition(nswitchPos);
     
                 let relPos = new THREE.Vector3();
                 relPos.subVectors(controllerPos, nswitchPos);
                 let value = 0;
-                if( relPos.y < 1.00){
+                if( relPos.y < -0.01){
                    value = 2;
-                 } else if( relPos.y > 1.04){
+                 } else if( relPos.y > 0.015){
                     value = 0;
                  } else {
                     value = 1;
