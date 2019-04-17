@@ -1502,7 +1502,7 @@ function controllerGamepadControls(controller){
             } else {
                 controller.rotation.z += object.userData.rotation._z;
                 object.rotation.z = controller.rotation.z - controller.userData.rotation.z;
-    
+
                 value =  (object.rotation.z + Math.PI) / (2 * Math.PI);
             }
             
@@ -1531,6 +1531,13 @@ function controllerGamepadControls(controller){
     
                 let relPos = new THREE.Vector3();
                 relPos.subVectors(controllerPos, nswitchPos);
+
+                let moduleQuat = new THREE.Quaternion();
+                moduleQuat.copy(object.parent.quaternion)
+                moduleQuat.inverse();
+
+                relPos.applyQuaternion(moduleQuat);
+
                 let value = 0;
                 if( relPos.y < -0.01){
                    value = 2;
@@ -1539,6 +1546,14 @@ function controllerGamepadControls(controller){
                  } else {
                     value = 1;
                 }
+                // write(controllerPos.angleTo(nswitchPos))
+                // if( controllerPos.angleTo(nswitchPos) < 0 && relPos.y < -0.01){
+                //     value = 2;
+                //   } else if( controllerPos.angleTo(nswitchPos) > 0.015){
+                //      value = 0;
+                //   } else {
+                //      value = 1;
+                //  }
                 outgoingDeltas.push(
                     { op:"propchange", path: object.parent.userData.path, name:"value", from: object.parent.userData.value, to: value });
         }
