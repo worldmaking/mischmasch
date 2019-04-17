@@ -1537,44 +1537,64 @@ function controllerGamepadControls(controller){
             // do UI effeect
             //object.rotateY(Math.PI / 90);
             
-            //put controller into knob space using matrix
-            //set angle to the knob
-            //take controller out of knob space
+            let controllerPos = new THREE.Vector3();
+            let objectPos = new THREE.Vector3();
+            controller.getWorldPosition(controllerPos);
+            object.getWorldPosition(objectPos); 
             
-            // let controllerPos = new THREE.Vector3()
-            // controller.getWorldPosition(controllerPos)
+            let value = 0;
+            if(controllerPos.distanceTo(objectPos) > 1){
+                
 
-            // let knobPos = new THREE.Vector3()
-            // object.getWorldPosition(knobPos);
+                //put controller into knob space using matrix
+                //set angle to the knob
+                //take controller out of knob space
+                
+                let controllerPos = new THREE.Vector3()
+                controller.getWorldPosition(controllerPos)
 
-            // let relPos = new THREE.Vector3();
-            // relPos.subVectors(controllerPos, knobPos);
+                let knobPos = new THREE.Vector3()
+                object.getWorldPosition(knobPos);
 
-            // let moduleQuat = new THREE.Quaternion();
-            // moduleQuat.copy(object.parent.quaternion)
-            // moduleQuat.inverse();
+                let relPos = new THREE.Vector3();
+                relPos.subVectors(controllerPos, knobPos);
 
-            // // now rotate this into the knob's perspective:
-            // relPos.applyQuaternion(moduleQuat);
-            // // //get controller angle via x and y
-            // // (This ranges from -PI to +PI)
-            // let angle = Math.atan2(relPos.x, -relPos.y);
-            // // map this to a 0..1 range:
-            // let value = (angle + Math.PI) / (2 * Math.PI);
+                let moduleQuat = new THREE.Quaternion();
+                moduleQuat.copy(object.parent.quaternion)
+                moduleQuat.inverse();
 
-            controller.rotation.z += object.userData.rotation._z;
-            object.rotation.z = controller.rotation.z - controller.userData.rotation.z;
-
-            let value =  (object.rotation.z + Math.PI) / (2 * Math.PI);
+                // now rotate this into the knob's perspective:
+                relPos.applyQuaternion(moduleQuat);
+                // //get controller angle via x and y
+                // (This ranges from -PI to +PI)
+                let angle = Math.atan2(relPos.x, -relPos.y);
+                // map this to a 0..1 range:
+                value = (angle + Math.PI) / (2 * Math.PI);
+            } else {
+                controller.rotation.z += object.userData.rotation._z;
+                object.rotation.z = controller.rotation.z - controller.userData.rotation.z;
+    
+                value =  (object.rotation.z + Math.PI) / (2 * Math.PI);
+            }
             
+
+            outgoingDeltas.push(
+                { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: value });
+
+                      
+            if(uiLine !== undefined){
+                uiLine.geometry.vertices[0] = controllerPos;
+                uiLine.geometry.vertices[1] = objectPos;
+                uiLine.geometry.verticesNeedUpdate = true;
+            }
+
             //currentKnobValue = value;
             // TODO: Sending delta every frame got very laggy. Possibly bring this back so other person can see knob turning...?
-            if(frames >= FRAME_WAIT_AMOUNT){
-                outgoingDeltas.push(
-                    { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: value });
-                frames = 0;
-            }
-            frames++;
+            // if(frames >= FRAME_WAIT_AMOUNT){
+ 
+            //     frames = 0;
+            // }
+            // frames++;
 
             // TODO: send delta with this value
             // TODO: enact delta by mapping value back to angular range:
@@ -1584,18 +1604,6 @@ function controllerGamepadControls(controller){
             //let derived_angle = (value * Math.PI * 2) - Math.PI;
             // set rotation of knob by this angle, and normal axis of knob:
             //object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);  
-      
-            let controllerPos = new THREE.Vector3();
-            let objectPos = new THREE.Vector3();
-            controller.getWorldPosition(controllerPos);
-            object.getWorldPosition(objectPos);          
-          
-            if(uiLine !== undefined){
-                uiLine.geometry.vertices[0] = controllerPos;
-                uiLine.geometry.vertices[1] = objectPos;
-                uiLine.geometry.verticesNeedUpdate = true;
-            }
-
         } else if (object.userData.slideable){
 
   
