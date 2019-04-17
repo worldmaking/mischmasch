@@ -21,7 +21,7 @@ const sessionJSON = []
 const sessionRecording = __dirname + "/session_recordings/session_" + Date.now() + ".json"
 console.log(sessionRecording)
 
-fs.writeFileSync(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")
+//fs.writeFileSync(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")
 
 const MaxAPI = (() => {
     try {

@@ -1543,7 +1543,7 @@ function controllerGamepadControls(controller){
             object.getWorldPosition(objectPos); 
             
             let value = 0;
-            if(controllerPos.distanceTo(objectPos) > 1){
+            if(controllerPos.distanceTo(objectPos) > .7){
                 
 
                 //put controller into knob space using matrix
