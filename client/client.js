@@ -67,9 +67,6 @@ const FRAME_WAIT_AMOUNT = 0;
 
 const GRID_DIVISIONS = 60;
 
-// let inlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
-// let outlet_geometry = new THREE.BoxBufferGeometry(0.05, 0.03, 0.05);
-
 let inlet_geometry = new THREE.CylinderGeometry(NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT, 8);
 let outlet_geometry = inlet_geometry;
 inlet_geometry.rotateX(Math.PI/2)
@@ -140,9 +137,6 @@ let outline_material = new THREE.MeshStandardMaterial({
 
 let camera, scene, renderer;
 let world = new THREE.Group();
-// temp hack
-//world.position.set(-2, 0, -1);
-//world.rotateY(-Math.PI/2.)
 
 let controller1, controller2;
 let controllerMesh;
@@ -348,15 +342,6 @@ async function init() {
         controller1.add(controllerMesh.clone());
         controller2.add(controllerMesh.clone());
         // pivot.material = pivot.material.clone();
-
-        //Extra Controllers
-        // let controllers = controllerMesh.clone();
-        // controllers.position.fromArray([
-        //     1.0056755443927932,
-        //     1.5397452991727987,
-        //     0.054924342380011204
-        // ]);
-        // scene.add(controllers);
     }
     
     controller1.userData.thumbpadDX = 0;
@@ -410,8 +395,6 @@ async function init() {
     // now we can start rendering:
     animate();
 
-    // outgoingDeltas.push(spawnRandomModule([1, 2, 3], [4, 5, 6, 7]))
-    // outgoingDeltas.push(spawnRandomModule([1, 2, 3], [4, 5, 6, 7]))
     // outgoingDeltas.push(spawnRandomModule([1, 2, 3], [4, 5, 6, 7]))
 }
 
@@ -511,10 +494,7 @@ class Cable {
                 .applyQuaternion(this.srcJackMesh.quaternion)
                 .add(this.positions[0]);
             // set source jack position accordingly
-            this.srcJackMesh.position //.copy(this.positions[1]);
-                // .set(0, -(NLET_HEIGHT + CABLE_JACK_HEIGHT) / 2, 0)
-                // .applyQuaternion(this.srcJackMesh.quaternion)
-                // .add(this.positions[0]);
+            this.srcJackMesh.position
                 .copy(this.positions[0])
             //Color Set
             this.curve.mesh.material.color.copy(this.src.material.color);
@@ -542,11 +522,8 @@ class Cable {
                 .applyQuaternion(this.dstJackMesh.quaternion)
                 .add(this.positions[3]);
 
-            this.dstJackMesh.position //.copy(this.positions[2]);
-            //    .set(0, (NLET_HEIGHT + CABLE_JACK_HEIGHT) / 2, 0)
-            //      .applyQuaternion(this.dstJackMesh.quaternion)
-            //     .add(this.positions[3]);
-            .copy(this.positions[3])
+            this.dstJackMesh.position
+                .copy(this.positions[3])
         } else {
             let q = new THREE.Quaternion();
             this.dstJackMesh.getWorldQuaternion(q);
@@ -783,12 +760,7 @@ function enactDeltaNewNode(delta) {
                 0, 
                 0,
                 generic_geometry.parameters.depth/2 - NLET_HEIGHT]);
-            //backplate to show which is inlet
-            // material.color.set(0x00ff00);    
-            // let backplate = new THREE.Mesh(inlet_backplate_geometry, material);
-            // backplate.position.z += -NLET_HEIGHT;
-            // container.add(backplate);
-
+            //Outline
             outline_mat.color.set(0x00ff00);    
             let outline = new THREE.Mesh(inlet_geometry, outline_mat);
             outline.scale.multiplyScalar(1.18);
@@ -801,7 +773,6 @@ function enactDeltaNewNode(delta) {
             label.position.x = -NLET_RADIUS /2;
             container.add(label);
             
-            // container.userData.moveable = true;
             container.userData.selectable = true;
         } break;
         case "outlet":{
@@ -814,7 +785,7 @@ function enactDeltaNewNode(delta) {
                 0,
                 generic_geometry.parameters.depth/2 - NLET_HEIGHT]);
 
-            //backplate to show which is outlet
+            //Outline
             outline_mat.color.set(0xff0000);    
             let outline = new THREE.Mesh(outlet_geometry, outline_mat);
             outline.scale.multiplyScalar(1.18);
@@ -826,8 +797,6 @@ function enactDeltaNewNode(delta) {
             label.position.z = 0.01;
             label.position.x = -NLET_RADIUS /2;
             container.add(label);
-                
-            //container.userData.moveable = true;
             container.userData.selectable = true;
         } break;
         case "large_knob": {
@@ -1231,8 +1200,6 @@ function onSelectEnd(event) {
             world.remove(world.getObjectByName("uiLine"));
         }
     }
-
-    //syncLocalPatch();
 }
 
 
@@ -1435,40 +1402,6 @@ function updateDirty(){
     
 }
 
-// function syncLocalPatchNode(obj) {
-//     let v = new THREE.Vector3();
-//     let q = new THREE.Quaternion();
-    
-//     obj.getWorldPosition(v);
-//     obj.getWorldQuaternion(q);
-//     // update the pos and orient props in the corresponding object in the localPatch
-//     let props = obj.userData.localPatchNode._props;
-//     if(props.pos && props.orient){
-//         props.pos[0] = v.x;
-//         props.pos[1] = v.y;
-//         props.pos[2] = v.z;
-//         props.orient[0] = q.x;
-//         props.orient[1] = q.y;
-//         props.orient[2] = q.z;
-//         props.orient[3] = q.w;
-//     }
-
-//     if (sock) {
-//         sock.send({
-//             cmd: "updated_scene",
-//             date: Date.now(),
-//             scene: localPatch,
-//         });
-//     }
-// }
-
-// function syncLocalPatch() {
-//     for (let path in allNodes) {
-//         syncLocalPatchNode(allNodes[path])
-//     }
-// }
-
-
 function onKeyPress(e) {
 
     if (e.keyCode == 13) {
@@ -1534,8 +1467,6 @@ function controllerGamepadControls(controller){
             //object.quaternion.multiply(r);
 
         } else if (object.userData.turnable) {
-            // do UI effeect
-            //object.rotateY(Math.PI / 90);
             
             let controllerPos = new THREE.Vector3();
             let objectPos = new THREE.Vector3();
@@ -1543,7 +1474,7 @@ function controllerGamepadControls(controller){
             object.getWorldPosition(objectPos); 
             
             let value = 0;
-            if(controllerPos.distanceTo(objectPos) > .7){
+            if(controllerPos.distanceTo(objectPos) > .3){
                 
 
                 //put controller into knob space using matrix
@@ -1588,22 +1519,9 @@ function controllerGamepadControls(controller){
                 uiLine.geometry.verticesNeedUpdate = true;
             }
 
-            //currentKnobValue = value;
-            // TODO: Sending delta every frame got very laggy. Possibly bring this back so other person can see knob turning...?
-            // if(frames >= FRAME_WAIT_AMOUNT){
- 
-            //     frames = 0;
-            // }
-            // frames++;
-
             // TODO: send delta with this value
             // TODO: enact delta by mapping value back to angular range:
 
-            //This is locally only, the knob rotation gets updated from the delta's once they are sent back. Theoretically you should never actually see a difference,
-            //this just means that you can see the rotation before the final position is sent to the server instead of constantly sending it.
-            //let derived_angle = (value * Math.PI * 2) - Math.PI;
-            // set rotation of knob by this angle, and normal axis of knob:
-            //object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);  
         } else if (object.userData.slideable){
 
   
@@ -1626,28 +1544,6 @@ function controllerGamepadControls(controller){
                 outgoingDeltas.push(
                     { op:"propchange", path: object.parent.userData.path, name:"value", from: object.parent.userData.value, to: value });
         }
-        
- 
-        // // if it is a jack, see if we can hook up?
-        // if (object.userData.kind == "jack_outlet") {
-
-        //     let intersections = getIntersections(object, 0, 1, 0);
-        //     if (intersections.length > 0) {
-        //         let intersection = intersections[0];
-        //         let o = intersection.object;
-        //         if (o.userData.kind == "outlet") {
-        //             // we have a hit! disconnect
-        //             //object.userData.cable.src = o;
-        //             o.getWorldPosition(object.userData.positions[0])
-        //         }
-        //     }
-
-
-
-
-        // } else if (object.userData.kind == "jack_inlet") {
-        //     object.userData.cable.dst = null;
-        // }
 
     } else {
         let targetPos = new THREE.Vector3();
