@@ -1710,12 +1710,23 @@ function connect_to_server() {
 let count = 0;
 function handlemessage(msg, sock) {
     switch (msg.cmd) {
-        case "deltas": {
 
+        case "clear_scene":
+            clearScene();
+        break;
+        case "deltas": {
+            console.log('deltas',msg.data)
             //console.log("got deltas", msg.data)
 
             // insert into our TODO list:
             incomingDeltas.push.apply(incomingDeltas, msg.data);
+        } break;
+
+        case "playback": {
+            console.log('playback',msg.data)
+
+            incomingDeltas.push.apply(incomingDeltas, msg.data);
+
         } break;
         case "user_pose": {
             let id = msg.pose.id;

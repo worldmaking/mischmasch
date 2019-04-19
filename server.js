@@ -16,7 +16,13 @@ const { vec2, vec3, vec4, quat, mat3, mat4 } = require("gl-matrix");
 const got = require("./got/got")
 console.log(got)
 
-const scenefile = "scene_edited.json"
+// 1st cli arg can be the scenefile 
+let scenefile;
+if (process.argv[2]){
+	scenefile = process.argv[2]
+} else {
+	scenefile = "scene_edited.json"
+}
 const sessionJSON = []
 const sessionRecording = __dirname + "/session_recordings/session_" + Date.now() + ".json"
 console.log(sessionRecording)
@@ -221,7 +227,7 @@ wss.on('connection', function(ws, req) {
 function handlemessage(msg, sock, id) {
 	switch (msg.cmd) {
 		case "deltas": {
-
+			//console.log(msg.data)
 			// TODO: merge OTs
 			let response = {
 				cmd: "deltas",
@@ -235,8 +241,40 @@ function handlemessage(msg, sock, id) {
 			fs.writeFileSync(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")
 			send_all_clients(JSON.stringify(response));
 		} break;
+
+		case "playback":{
+			console.log(msg)
+			let response = {
+				cmd: "deltas",
+				date: Date.now(),
+				data: msg.data
+			};
+			// NOTE: this is copied from the deltas case, but i've commented out recording the playback since for now it'd just be redundant. 
+			// we might, though, at some point want to record when a playback occurred, and note when playback was stopped/looped/overdubbed/etc
+			//sessionJSON.push(response)
+			//fs.writeFileSync(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")
+			send_all_clients(JSON.stringify(response));
+
+		} break;
 		case "clear_scene": {
-			
+			console.log(msg)
+			send_all_clients(JSON.stringify({
+				cmd: "clear_scene",
+				date: Date.now(),
+				data: "clear"
+			}));
+
+			blankScene = JSON.parse(fs.readFileSync('scene_blank.json', "utf-8")); 
+			// turn this into deltas:
+			let deltas = got.deltasFromGraph(blankScene, []);
+			//console.log(deltas)
+
+			send_all_clients(JSON.stringify({
+				cmd: "deltas",
+				date: Date.now(),
+				data: deltas
+			}));
+
 		} break;
 		case "get_scene": {
 			demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
