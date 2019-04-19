@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 807.0, 85.0, 851.0, 921.0 ],
+		"rect" : [ 88.0, 85.0, 849.0, 921.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -38,6 +38,17 @@
 		"style" : "",
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-21",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 618.0, 915.0, 158.0, 22.0 ]
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-4",
 					"linecount" : 2,
@@ -354,12 +365,13 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-10",
+					"linecount" : 6,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 694.0, 16.0, 763.0, 22.0 ],
-					"text" : "{\\\"cmd\\\":\\\"clear_world\\\"\\,\\\"date\\\":1555097353555}"
+					"patching_rect" : [ 691.0, 173.0, 763.0, 89.0 ],
+					"text" : "\"{\\\"cmd\\\":\\\"deltas\\\",\\\"date\\\":1555702600446,\\\"data\\\":[[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1\\\",\\\"kind\\\":\\\"outs\\\",\\\"pos\\\":[-2.0605223497200336,0.46826704387316614,-2.0405112532755187],\\\"orient\\\":[-0.3121451653567321,0.369889483526838,0.14650496286711281,0.8627186456637955]},[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.left_(mono)\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.right_(stereo)\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.volume\\\",\\\"kind\\\":\\\"small_knob\\\",\\\"range\\\":[0,1],\\\"taper\\\":\\\"log 3.8\\\",\\\"value\\\":1,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.left\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.right\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":0}]]]}\""
 				}
 
 			}
@@ -1785,18 +1797,6 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-139",
-					"maxclass" : "message",
-					"numinlets" : 2,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 721.0, 785.0, 171.0, 22.0 ],
-					"text" : "needs to be an op propchange"
-				}
-
-			}
-, 			{
-				"box" : 				{
 					"id" : "obj-137",
 					"maxclass" : "newobj",
 					"numinlets" : 5,
@@ -1974,13 +1974,13 @@
 										"boxes" : [ 											{
 												"box" : 												{
 													"id" : "obj-3",
-													"linecount" : 223,
+													"linecount" : 4,
 													"maxclass" : "message",
 													"numinlets" : 2,
 													"numoutlets" : 1,
 													"outlettype" : [ "" ],
 													"patching_rect" : [ 50.0, 100.0, 51.0, 585.0 ],
-													"text" : "lfo_1__rate lfo_1__index lfo_1__pulse_width lfo_1__onset lfo_2__rate lfo_2__index lfo_2__pulse_width lfo_2__onset dualvco_1__vco_1_rate dualvco_1__vco_1_waveform dualvco_1__vco_2_rate dualvco_1__vco_2_waveform dualvco_1__feedback vca_1__cv_amount vca_1__bias deltas outs_1__volume clear_world lfo_0_0__rate lfo_0_0__index lfo_0_0__pulse_width lfo_0_0__onset outs_0_0__volume freevoib_0_1__feedback_1 freevoib_0_1__feedback_2 freevoib_0_1__damping freevoib_0_1__spread freevoib_0_2__feedback_1 freevoib_0_2__feedback_2 freevoib_0_2__damping freevoib_0_2__spread shifter_0_3__range dualvco_0_6__vco_1_rate dualvco_0_6__vco_1_waveform dualvco_0_6__vco_2_rate dualvco_0_6__vco_2_waveform dualvco_0_6__feedback sample_and_hold_0_10__threshold shifter_0_12__range sample_and_hold_0_13__threshold constant_0_15__voltage sample_and_hold_0_16__threshold constant_0_18__voltage dualvco_0_22__vco_1_rate dualvco_0_22__vco_1_waveform dualvco_0_22__vco_2_rate dualvco_0_22__vco_2_waveform dualvco_0_22__feedback constant_0_3__voltage outs_0_6__volume lfo_0_12__rate lfo_0_12__index lfo_0_12__pulse_width lfo_0_12__onset constant_0_0__voltage constant_0_2__voltage vca_0_4__cv_amount vca_0_4__bias shifter_0_6__range freevoib_0_9__feedback_1 freevoib_0_9__feedback_2 freevoib_0_9__damping freevoib_0_9__spread lfo_0_11__rate lfo_0_11__index lfo_0_11__pulse_width lfo_0_11__onset"
+													"text" : "deltas outs_1__volume"
 												}
 
 											}
@@ -2495,7 +2495,7 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-119",
-					"items" : [ "lfo_1__rate", ",", "lfo_1__index", ",", "lfo_1__pulse_width", ",", "lfo_1__onset", ",", "lfo_2__rate", ",", "lfo_2__index", ",", "lfo_2__pulse_width", ",", "lfo_2__onset", ",", "dualvco_1__vco_1_rate", ",", "dualvco_1__vco_1_waveform", ",", "dualvco_1__vco_2_rate", ",", "dualvco_1__vco_2_waveform", ",", "dualvco_1__feedback", ",", "vca_1__cv_amount", ",", "vca_1__bias", ",", "deltas", ",", "outs_1__volume", ",", "clear_world", ",", "lfo_0_0__rate", ",", "lfo_0_0__index", ",", "lfo_0_0__pulse_width", ",", "lfo_0_0__onset", ",", "outs_0_0__volume", ",", "freevoib_0_1__feedback_1", ",", "freevoib_0_1__feedback_2", ",", "freevoib_0_1__damping", ",", "freevoib_0_1__spread", ",", "freevoib_0_2__feedback_1", ",", "freevoib_0_2__feedback_2", ",", "freevoib_0_2__damping", ",", "freevoib_0_2__spread", ",", "shifter_0_3__range", ",", "dualvco_0_6__vco_1_rate", ",", "dualvco_0_6__vco_1_waveform", ",", "dualvco_0_6__vco_2_rate", ",", "dualvco_0_6__vco_2_waveform", ",", "dualvco_0_6__feedback", ",", "sample_and_hold_0_10__threshold", ",", "shifter_0_12__range", ",", "sample_and_hold_0_13__threshold", ",", "constant_0_15__voltage", ",", "sample_and_hold_0_16__threshold", ",", "constant_0_18__voltage", ",", "dualvco_0_22__vco_1_rate", ",", "dualvco_0_22__vco_1_waveform", ",", "dualvco_0_22__vco_2_rate", ",", "dualvco_0_22__vco_2_waveform", ",", "dualvco_0_22__feedback", ",", "constant_0_3__voltage", ",", "outs_0_6__volume", ",", "lfo_0_12__rate", ",", "lfo_0_12__index", ",", "lfo_0_12__pulse_width", ",", "lfo_0_12__onset", ",", "constant_0_0__voltage", ",", "constant_0_2__voltage", ",", "vca_0_4__cv_amount", ",", "vca_0_4__bias", ",", "shifter_0_6__range", ",", "freevoib_0_9__feedback_1", ",", "freevoib_0_9__feedback_2", ",", "freevoib_0_9__damping", ",", "freevoib_0_9__spread", ",", "lfo_0_11__rate", ",", "lfo_0_11__index", ",", "lfo_0_11__pulse_width", ",", "lfo_0_11__onset" ],
+					"items" : [ "deltas", ",", "outs_1__volume" ],
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
@@ -2863,6 +2863,14 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-6", 0 ],
+					"order" : 2,
+					"source" : [ "obj-12", 2 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-84", 0 ],
 					"source" : [ "obj-12", 3 ]
 				}
@@ -2902,7 +2910,15 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-142", 0 ],
-					"order" : 1,
+					"order" : 2,
+					"source" : [ "obj-137", 2 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-21", 1 ],
+					"order" : 0,
 					"source" : [ "obj-137", 2 ]
 				}
 
@@ -2910,7 +2926,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-56", 0 ],
-					"order" : 0,
+					"order" : 1,
 					"source" : [ "obj-137", 2 ]
 				}
 
@@ -3253,6 +3269,13 @@
 			}
 , 			{
 				"name" : "world.gendsp",
+				"bootpath" : "D:/github/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "outs.gendsp",
 				"bootpath" : "D:/github/msvr",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",

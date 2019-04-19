@@ -1,0 +1,6579 @@
+[
+  {
+    "cmd": "deltas",
+    "date": 1555702708903,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1,
+        "to": 0.31187063049866776
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702708913,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31187063049866776,
+        "to": 0.31194186581553995
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702708924,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31194186581553995,
+        "to": 0.31198507853813023
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702708935,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31198507853813023,
+        "to": 0.3120553163685943
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702708946,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3120553163685943,
+        "to": 0.3120892336174288
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702708958,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3120892336174288,
+        "to": 0.31212353709688107
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702708968,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31212353709688107,
+        "to": 0.31213828169169294
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702708979,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31213828169169294,
+        "to": 0.3121577277445455
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702708990,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3121577277445455,
+        "to": 0.3121516973178693
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709002,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3121516973178693,
+        "to": 0.31213345136240955
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709013,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31213345136240955,
+        "to": 0.3121206770478366
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709024,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3121206770478366,
+        "to": 0.31208006258361726
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709035,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31208006258361726,
+        "to": 0.3120521612173774
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709046,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3120521612173774,
+        "to": 0.31204815067951
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709057,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31204815067951,
+        "to": 0.3120553134848708
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709068,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3120553134848708,
+        "to": 0.3120583130579225
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709079,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3120583130579225,
+        "to": 0.3120401184647317
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709090,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3120401184647317,
+        "to": 0.3120785000647391
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709101,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3120785000647391,
+        "to": 0.3120569601894963
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709112,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3120569601894963,
+        "to": 0.3120467058356916
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709123,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3120467058356916,
+        "to": 0.3120350677274191
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709134,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3120350677274191,
+        "to": 0.31204171729253394
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709145,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31204171729253394,
+        "to": 0.3120446514980458
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709157,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3120446514980458,
+        "to": 0.3120431049188914
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709168,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3120431049188914,
+        "to": 0.31202260421694356
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709179,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31202260421694356,
+        "to": 0.31200431601887824
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709190,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31200431601887824,
+        "to": 0.3121308764105476
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709201,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3121308764105476,
+        "to": 0.311982302085227
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709212,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.311982302085227,
+        "to": 0.3119461334859091
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709224,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3119461334859091,
+        "to": 0.31188251233855485
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709234,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31188251233855485,
+        "to": 0.3118273674728449
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709246,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3118273674728449,
+        "to": 0.31179909070144396
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709257,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31179909070144396,
+        "to": 0.3117566650715212
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709268,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3117566650715212,
+        "to": 0.3116909122238199
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709279,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3116909122238199,
+        "to": 0.31166073865342847
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709290,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31166073865342847,
+        "to": 0.3115955656468728
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709301,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3115955656468728,
+        "to": 0.31157428881256666
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709312,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31157428881256666,
+        "to": 0.31157501493794426
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709323,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31157501493794426,
+        "to": 0.3115495813901538
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709334,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3115495813901538,
+        "to": 0.3115177125677732
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709346,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3115177125677732,
+        "to": 0.3114977058685797
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709357,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3114977058685797,
+        "to": 0.31149808511094534
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709368,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31149808511094534,
+        "to": 0.3114784056107444
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709379,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3114784056107444,
+        "to": 0.3114807823787285
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709390,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3114807823787285,
+        "to": 0.3115711858801419
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709401,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3115711858801419,
+        "to": 0.3115828018300907
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709412,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3115828018300907,
+        "to": 0.3115698027377731
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709423,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3115698027377731,
+        "to": 0.31154104278746514
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709434,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31154104278746514,
+        "to": 0.3114780615070543
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709446,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3114780615070543,
+        "to": 0.3114215075091987
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709456,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3114215075091987,
+        "to": 0.3113795295162798
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709467,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3113795295162798,
+        "to": 0.31128338054137233
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709479,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31128338054137233,
+        "to": 0.3111814127760741
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709490,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3111814127760741,
+        "to": 0.3110589293381276
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709501,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3110589293381276,
+        "to": 0.3109082732587322
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709512,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3109082732587322,
+        "to": 0.31075588635704116
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709523,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31075588635704116,
+        "to": 0.31062616547195276
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709534,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31062616547195276,
+        "to": 0.3104749889823549
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709545,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3104749889823549,
+        "to": 0.31033438897069227
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709556,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31033438897069227,
+        "to": 0.31026759851547425
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709568,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31026759851547425,
+        "to": 0.310126185246397
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709579,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.310126185246397,
+        "to": 0.3099717407684599
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709590,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3099717407684599,
+        "to": 0.30986942702031767
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709601,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30986942702031767,
+        "to": 0.3097358243991936
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709612,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3097358243991936,
+        "to": 0.30955553657782814
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709624,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30955553657782814,
+        "to": 0.3095238382559145
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709635,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3095238382559145,
+        "to": 0.30946595158302176
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709646,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30946595158302176,
+        "to": 0.30941678180782684
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709657,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30941678180782684,
+        "to": 0.3094156246612747
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709669,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3094156246612747,
+        "to": 0.30941514949202514
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709681,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30941514949202514,
+        "to": 0.3093792208237647
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709691,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3093792208237647,
+        "to": 0.3094852202692237
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709703,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3094852202692237,
+        "to": 0.3095117252483061
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709714,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3095117252483061,
+        "to": 0.3095372656016169
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709726,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3095372656016169,
+        "to": 0.30956486712851083
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709737,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30956486712851083,
+        "to": 0.3095561151158442
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709748,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3095561151158442,
+        "to": 0.309514616311591
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709759,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.309514616311591,
+        "to": 0.30953308552011183
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709770,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30953308552011183,
+        "to": 0.3095955905938472
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709781,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3095955905938472,
+        "to": 0.30966531194519903
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709792,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30966531194519903,
+        "to": 0.3097289617939397
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709804,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3097289617939397,
+        "to": 0.30973301865288866
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709814,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30973301865288866,
+        "to": 0.30970466252312134
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709825,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30970466252312134,
+        "to": 0.3096017020928571
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709836,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3096017020928571,
+        "to": 0.3094423183843182
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709848,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3094423183843182,
+        "to": 0.3091403981900061
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709859,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3091403981900061,
+        "to": 0.30875235322204336
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709870,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30875235322204336,
+        "to": 0.30833419235413473
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709881,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30833419235413473,
+        "to": 0.30794672887517144
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709892,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30794672887517144,
+        "to": 0.30733945827623865
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709903,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30733945827623865,
+        "to": 0.3068436865089334
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709915,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3068436865089334,
+        "to": 0.30634112405510594
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709925,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30634112405510594,
+        "to": 0.30579708844032183
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709936,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30579708844032183,
+        "to": 0.3052149308710508
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709948,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3052149308710508,
+        "to": 0.3045526036829072
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709959,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3045526036829072,
+        "to": 0.3039707663274599
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709970,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3039707663274599,
+        "to": 0.3033970631409392
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709981,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3033970631409392,
+        "to": 0.3028063615318166
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702709992,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3028063615318166,
+        "to": 0.3024181550117824
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710005,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3024181550117824,
+        "to": 0.30194245065567804
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710015,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30194245065567804,
+        "to": 0.3014980331319465
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710023,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3014980331319465,
+        "to": 0.3012478245865313
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710034,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3012478245865313,
+        "to": 0.3009648926260768
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710045,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3009648926260768,
+        "to": 0.30073917119521165
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710056,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30073917119521165,
+        "to": 0.30050008826347313
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710067,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30050008826347313,
+        "to": 0.3002869842076191
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710079,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3002869842076191,
+        "to": 0.3001857146456013
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710090,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3001857146456013,
+        "to": 0.30018072722615574
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710101,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30018072722615574,
+        "to": 0.3000013114727667
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710112,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3000013114727667,
+        "to": 0.3000032756224473
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710123,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3000032756224473,
+        "to": 0.30002479020733275
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710134,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30002479020733275,
+        "to": 0.30006272635997594
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710145,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30006272635997594,
+        "to": 0.3001279881047673
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710156,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3001279881047673,
+        "to": 0.30018693257363693
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710167,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30018693257363693,
+        "to": 0.30015514713876434
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710178,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30015514713876434,
+        "to": 0.30014913168914026
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710189,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30014913168914026,
+        "to": 0.30013189745394936
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710201,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30013189745394936,
+        "to": 0.30010568927095943
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710212,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30010568927095943,
+        "to": 0.3000619147966004
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710223,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3000619147966004,
+        "to": 0.29999763409817226
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710234,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.29999763409817226,
+        "to": 0.29993862283184847
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710245,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.29993862283184847,
+        "to": 0.29992260788210895
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710256,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.29992260788210895,
+        "to": 0.29990115657049954
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710267,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.29990115657049954,
+        "to": 0.2998008379847891
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710278,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2998008379847891,
+        "to": 0.29968784991393155
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710290,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.29968784991393155,
+        "to": 0.2995354466954343
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710300,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2995354466954343,
+        "to": 0.29932667283671216
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710312,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.29932667283671216,
+        "to": 0.2990464412582705
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710323,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2990464412582705,
+        "to": 0.2987041392311091
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710334,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2987041392311091,
+        "to": 0.29831798727229514
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710346,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.29831798727229514,
+        "to": 0.29786402505586007
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710356,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.29786402505586007,
+        "to": 0.2973203177406731
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710367,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2973203177406731,
+        "to": 0.29664227503217366
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710378,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.29664227503217366,
+        "to": 0.2959003773131129
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710389,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2959003773131129,
+        "to": 0.2950658883616677
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710400,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2950658883616677,
+        "to": 0.29414826821153794
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710412,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.29414826821153794,
+        "to": 0.29325759378047783
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710423,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.29325759378047783,
+        "to": 0.29218019351554225
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710434,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.29218019351554225,
+        "to": 0.2910501578933799
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710445,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2910501578933799,
+        "to": 0.2899645056718415
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710456,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2899645056718415,
+        "to": 0.28866900492121306
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710468,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.28866900492121306,
+        "to": 0.28749049233344004
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710479,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.28749049233344004,
+        "to": 0.28638859607091915
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710490,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.28638859607091915,
+        "to": 0.28526556061468566
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710501,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.28526556061468566,
+        "to": 0.2840238284957213
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710513,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2840238284957213,
+        "to": 0.2828516870082953
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710523,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2828516870082953,
+        "to": 0.2814247829473119
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710534,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2814247829473119,
+        "to": 0.2803734249266234
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710545,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2803734249266234,
+        "to": 0.2791892700019383
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710556,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2791892700019383,
+        "to": 0.278049141337481
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710567,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.278049141337481,
+        "to": 0.276890613884574
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710578,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.276890613884574,
+        "to": 0.27590771894598765
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710589,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.27590771894598765,
+        "to": 0.27479909328706537
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710601,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.27479909328706537,
+        "to": 0.2737340587376361
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710612,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2737340587376361,
+        "to": 0.27270473247168403
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710623,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.27270473247168403,
+        "to": 0.27185077985465916
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710634,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.27185077985465916,
+        "to": 0.2710940054316329
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710645,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2710940054316329,
+        "to": 0.2703752873998014
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710656,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2703752873998014,
+        "to": 0.26983141185970455
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710667,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.26983141185970455,
+        "to": 0.2694143792112189
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710679,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2694143792112189,
+        "to": 0.26909047220328164
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710689,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.26909047220328164,
+        "to": 0.268932840814335
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710700,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.268932840814335,
+        "to": 0.2687663791951988
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710712,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2687663791951988,
+        "to": 0.268595552009044
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710723,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.268595552009044,
+        "to": 0.26852039770406777
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710734,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.26852039770406777,
+        "to": 0.2684451439115536
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710745,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2684451439115536,
+        "to": 0.26845140728268624
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710756,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.26845140728268624,
+        "to": 0.26846558108827934
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710767,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.26846558108827934,
+        "to": 0.26856172959747815
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710778,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.26856172959747815,
+        "to": 0.2687312506582465
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710790,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2687312506582465,
+        "to": 0.2689054458414998
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710800,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2689054458414998,
+        "to": 0.2690345052851763
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710811,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2690345052851763,
+        "to": 0.26923079099304725
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710823,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.26923079099304725,
+        "to": 0.26939229378958124
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710834,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.26939229378958124,
+        "to": 0.2696050295125804
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710845,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2696050295125804,
+        "to": 0.26992406229943267
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710856,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.26992406229943267,
+        "to": 0.2702798401825674
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710867,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2702798401825674,
+        "to": 0.2708785973079556
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710878,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2708785973079556,
+        "to": 0.27146510070314717
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710890,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.27146510070314717,
+        "to": 0.27200292200906284
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710900,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.27200292200906284,
+        "to": 0.2725179778156917
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710912,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2725179778156917,
+        "to": 0.27306807873002825
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710923,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.27306807873002825,
+        "to": 0.27352473857913745
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710934,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.27352473857913745,
+        "to": 0.2741210359486674
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710945,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2741210359486674,
+        "to": 0.27486340270011755
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710957,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.27486340270011755,
+        "to": 0.2755491186204445
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710968,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2755491186204445,
+        "to": 0.27628596951125
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710980,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.27628596951125,
+        "to": 0.2771478298727257
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702710991,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2771478298727257,
+        "to": 0.2781731645973127
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702711002,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2781731645973127,
+        "to": 0.2789505182365699
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702711013,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2789505182365699,
+        "to": 0.27975364633649574
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702711025,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.27975364633649574,
+        "to": 0.2804930687161536
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702711036,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2804930687161536,
+        "to": 0.2811939144998325
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702711048,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2811939144998325,
+        "to": 0.28177921126799776
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702711059,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.28177921126799776,
+        "to": 0.28228800509261476
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702711070,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.28228800509261476,
+        "to": 0.28287840736462355
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702711082,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.28287840736462355,
+        "to": 0.2834211554866544
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702711093,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2834211554866544,
+        "to": 0.2838425894973207
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702711104,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2838425894973207,
+        "to": 0.28443686369071375
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702711115,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.28443686369071375,
+        "to": 0.2849842507892381
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702716224,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1",
+        "name": "pos",
+        "from": [
+          0,
+          0,
+          0
+        ],
+        "to": [
+          -1.8830824290063632,
+          0.7753651100044157,
+          -1.480943048524853
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "outs_1",
+        "name": "orient",
+        "from": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "to": [
+          -0.15809909050708923,
+          0.010138124712992283,
+          0.08664289802721799,
+          0.9835623540341186
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702717921,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2849842507892381,
+        "to": 0.2849842507892381
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702717931,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2849842507892381,
+        "to": 0.28461001080853815
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702717942,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.28461001080853815,
+        "to": 0.2840973592212142
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702717953,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2840973592212142,
+        "to": 0.28333214795427947
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702717964,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.28333214795427947,
+        "to": 0.28248493197340035
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702717975,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.28248493197340035,
+        "to": 0.2814397202367739
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702717986,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2814397202367739,
+        "to": 0.2803516073980694
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702717998,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2803516073980694,
+        "to": 0.2791771340537505
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718008,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2791771340537505,
+        "to": 0.2779725959640042
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718020,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2779725959640042,
+        "to": 0.27675992616046863
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718031,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.27675992616046863,
+        "to": 0.27555846260615846
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718042,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.27555846260615846,
+        "to": 0.2747930480135565
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718053,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2747930480135565,
+        "to": 0.2742411918723805
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718064,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2742411918723805,
+        "to": 0.27369778515630017
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718075,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.27369778515630017,
+        "to": 0.27312145364080054
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718086,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.27312145364080054,
+        "to": 0.27258150478956567
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718098,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.27258150478956567,
+        "to": 0.272156901904162
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718109,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.272156901904162,
+        "to": 0.27175864409445166
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718120,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.27175864409445166,
+        "to": 0.2714726929718801
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718131,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2714726929718801,
+        "to": 0.2711682579211557
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718142,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2711682579211557,
+        "to": 0.2706587331011278
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718153,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2706587331011278,
+        "to": 0.2698343220860096
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718164,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2698343220860096,
+        "to": 0.26881043255213727
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718176,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.26881043255213727,
+        "to": 0.2670404897689344
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718186,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2670404897689344,
+        "to": 0.2650541936110014
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718198,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2650541936110014,
+        "to": 0.2629263321509237
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718209,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2629263321509237,
+        "to": 0.26071492563299953
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718220,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.26071492563299953,
+        "to": 0.25783849173060697
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718231,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.25783849173060697,
+        "to": 0.25487569119684556
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718242,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.25487569119684556,
+        "to": 0.2509989914356415
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718253,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2509989914356415,
+        "to": 0.24658391204797356
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718264,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.24658391204797356,
+        "to": 0.2413203875797312
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718276,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2413203875797312,
+        "to": 0.23584676312050828
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718287,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.23584676312050828,
+        "to": 0.23012094270333408
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718300,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.23012094270333408,
+        "to": 0.22451386361276598
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718310,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.22451386361276598,
+        "to": 0.21825058645740997
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718322,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.21825058645740997,
+        "to": 0.21231832348009302
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718332,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.21231832348009302,
+        "to": 0.20571696304344309
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718344,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.20571696304344309,
+        "to": 0.20007786609189965
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718355,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.20007786609189965,
+        "to": 0.19361497344775033
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718366,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.19361497344775033,
+        "to": 0.18684519338481453
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718377,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.18684519338481453,
+        "to": 0.17933158848551423
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718388,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.17933158848551423,
+        "to": 0.17180945827237828
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718400,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.17180945827237828,
+        "to": 1.1637867793447978
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718411,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1637867793447978,
+        "to": 1.1551401177102143
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718422,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1551401177102143,
+        "to": 1.1467474800953583
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718433,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1467474800953583,
+        "to": 1.1378471647532358
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718444,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1378471647532358,
+        "to": 1.129449878835829
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718455,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.129449878835829,
+        "to": 1.12246989320995
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718467,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.12246989320995,
+        "to": 1.116241222239918
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718478,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.116241222239918,
+        "to": 1.1102338894755994
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718489,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1102338894755994,
+        "to": 1.1052377759903922
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718499,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1052377759903922,
+        "to": 1.100575453510403
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718510,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.100575453510403,
+        "to": 1.096992392641195
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718521,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.096992392641195,
+        "to": 1.0930384287508288
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718532,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0930384287508288,
+        "to": 1.089330850636322
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718543,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.089330850636322,
+        "to": 1.0862992889577905
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718554,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0862992889577905,
+        "to": 1.0841323854922071
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718565,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0841323854922071,
+        "to": 1.082048406548511
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718576,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.082048406548511,
+        "to": 1.0805564300881456
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718587,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0805564300881456,
+        "to": 1.0794201650175734
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718599,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0794201650175734,
+        "to": 1.0784851205492376
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718610,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0784851205492376,
+        "to": 1.0779171360634239
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718621,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0779171360634239,
+        "to": 1.0772907606312752
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718632,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0772907606312752,
+        "to": 1.0768258012543095
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718643,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0768258012543095,
+        "to": 1.0770447627828748
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718654,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0770447627828748,
+        "to": 1.0772230333383115
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718665,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0772230333383115,
+        "to": 1.0775048798913978
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718677,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0775048798913978,
+        "to": 1.0782119150266303
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718687,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0782119150266303,
+        "to": 1.0790867834178366
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718699,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0790867834178366,
+        "to": 1.0803436840486405
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718709,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0803436840486405,
+        "to": 1.0816808737666392
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718721,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0816808737666392,
+        "to": 1.08319466427612
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718732,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.08319466427612,
+        "to": 1.0849681321173925
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718743,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0849681321173925,
+        "to": 1.087044900934614
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718754,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.087044900934614,
+        "to": 1.0896502480657644
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718765,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0896502480657644,
+        "to": 1.0927968556087637
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718776,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0927968556087637,
+        "to": 1.096026366137542
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718787,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.096026366137542,
+        "to": 1.0993199240722547
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718799,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0993199240722547,
+        "to": 1.1030311816307485
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718809,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1030311816307485,
+        "to": 1.1075616669644506
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718819,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1075616669644506,
+        "to": 1.1123015738607178
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718831,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1123015738607178,
+        "to": 1.118533112970339
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718842,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.118533112970339,
+        "to": 1.124556979035208
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718853,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.124556979035208,
+        "to": 1.1311947409391117
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718864,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1311947409391117,
+        "to": 1.1382905740634255
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718876,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1382905740634255,
+        "to": 1.1455750284270418
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718886,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1455750284270418,
+        "to": 1.1536057222241916
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718897,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1536057222241916,
+        "to": 1.160836056923556
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718908,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.160836056923556,
+        "to": 0.16802701462365338
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718929,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.160836056923556,
+        "to": 0.17473486002673055
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718931,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.16802701462365338,
+        "to": 0.18101181081179804
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718942,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.18101181081179804,
+        "to": 0.18697428863800306
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718953,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.18697428863800306,
+        "to": 0.19251642664659518
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718964,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.19251642664659518,
+        "to": 0.19769386580434978
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718975,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.19769386580434978,
+        "to": 0.20297185033084297
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718986,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.20297185033084297,
+        "to": 0.20770917293365887
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702718997,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.20770917293365887,
+        "to": 0.21216533108151034
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719008,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.21216533108151034,
+        "to": 0.21651510742092328
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719019,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.21651510742092328,
+        "to": 0.22079942149463158
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719030,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.22079942149463158,
+        "to": 0.22508110236321446
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719042,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.22508110236321446,
+        "to": 0.22948123575827015
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719053,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.22948123575827015,
+        "to": 0.23417919564863382
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719065,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.23417919564863382,
+        "to": 0.23962131904441974
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719075,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.23962131904441974,
+        "to": 0.24575117422677772
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719086,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.24575117422677772,
+        "to": 0.25107556427418803
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719097,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.25107556427418803,
+        "to": 0.25728487688883406
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719109,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.25728487688883406,
+        "to": 0.2632143412892523
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719119,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2632143412892523,
+        "to": 0.26948293599666234
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719130,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.26948293599666234,
+        "to": 0.27525896784144954
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719144,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.27525896784144954,
+        "to": 0.2809859421500703
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719153,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2809859421500703,
+        "to": 0.2865999564756729
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719164,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2865999564756729,
+        "to": 0.29188104543190946
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719176,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.29188104543190946,
+        "to": 0.2973861222240381
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719186,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2973861222240381,
+        "to": 0.30295020198927897
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719198,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30295020198927897,
+        "to": 0.30878255717702124
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719209,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30878255717702124,
+        "to": 0.31534641437240374
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719220,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31534641437240374,
+        "to": 0.3203634234744627
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719231,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3203634234744627,
+        "to": 0.32602837531604256
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719242,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.32602837531604256,
+        "to": 0.33117109925756183
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719253,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.33117109925756183,
+        "to": 0.3358642288178245
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719264,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3358642288178245,
+        "to": 0.34003147844001463
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719276,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.34003147844001463,
+        "to": 0.3441652228027455
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719286,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3441652228027455,
+        "to": 0.34817110533057055
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719298,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.34817110533057055,
+        "to": 0.3527355711129725
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719308,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3527355711129725,
+        "to": 0.3580570989248471
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719320,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3580570989248471,
+        "to": 0.363218874054543
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719331,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.363218874054543,
+        "to": 0.36811245606093396
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719342,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.36811245606093396,
+        "to": 0.37185019224198035
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719353,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.37185019224198035,
+        "to": 0.37492020015875777
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719364,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.37492020015875777,
+        "to": 0.376795222810312
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719375,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.376795222810312,
+        "to": 0.37871306024624574
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719386,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.37871306024624574,
+        "to": 0.3807033967957022
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719398,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3807033967957022,
+        "to": 0.383136849508992
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719409,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.383136849508992,
+        "to": 0.3856877784778348
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719420,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3856877784778348,
+        "to": 0.388039470357152
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719431,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.388039470357152,
+        "to": 0.3899286827772973
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719442,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3899286827772973,
+        "to": 0.3915809445730597
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719453,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3915809445730597,
+        "to": 0.392486841029451
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719464,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.392486841029451,
+        "to": 0.3933289279778378
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719475,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3933289279778378,
+        "to": 0.39416518443188786
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719486,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.39416518443188786,
+        "to": 0.39523102607684035
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719498,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.39523102607684035,
+        "to": 0.3964163995993637
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719509,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3964163995993637,
+        "to": 0.3978000789168406
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719520,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3978000789168406,
+        "to": 0.3990032048154106
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719531,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3990032048154106,
+        "to": 0.3998559881204773
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719543,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3998559881204773,
+        "to": 0.4003370270897993
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719554,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4003370270897993,
+        "to": 0.40047873362772457
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719566,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.40047873362772457,
+        "to": 0.3989298335331879
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719576,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3989298335331879,
+        "to": 0.3989298335331879
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719586,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3989298335331879,
+        "to": 0.39737406929732244
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719597,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.39737406929732244,
+        "to": 0.395473478101644
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719608,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.395473478101644,
+        "to": 0.39244945018967503
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719619,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.39244945018967503,
+        "to": 0.3890821784592604
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719630,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3890821784592604,
+        "to": 0.38523963535085115
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719641,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.38523963535085115,
+        "to": 0.38114011910968976
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719662,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.38114011910968976,
+        "to": 0.3766322379778901
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719675,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3766322379778901,
+        "to": 0.3718124542760414
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719685,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3718124542760414,
+        "to": 0.3615174806429696
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719696,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3615174806429696,
+        "to": 0.3561166067447426
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719708,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3561166067447426,
+        "to": 0.3506419195446879
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719719,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3506419195446879,
+        "to": 0.34487630813913833
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719730,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.34487630813913833,
+        "to": 0.3387637692838141
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719741,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3387637692838141,
+        "to": 0.3324522193708682
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719752,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3324522193708682,
+        "to": 0.3257779093029382
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719763,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3257779093029382,
+        "to": 0.31891009741533716
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719774,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.31891009741533716,
+        "to": 0.3121543795888884
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719786,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3121543795888884,
+        "to": 0.3053910513782916
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719796,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3053910513782916,
+        "to": 0.2983042988455374
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719808,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2983042988455374,
+        "to": 0.29173522836446614
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719819,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.29173522836446614,
+        "to": 0.28446292144554736
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719830,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.28446292144554736,
+        "to": 0.2771138107009395
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719841,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2771138107009395,
+        "to": 0.26976327947858253
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719852,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.26976327947858253,
+        "to": 0.26251116174175765
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719863,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.26251116174175765,
+        "to": 0.2551483971685252
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719874,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2551483971685252,
+        "to": 0.24781791271285344
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719885,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.24781791271285344,
+        "to": 0.2404614470521695
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719896,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2404614470521695,
+        "to": 0.23298941797923026
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719908,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.23298941797923026,
+        "to": 0.2256258488265487
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719919,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2256258488265487,
+        "to": 0.21784997234158152
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719930,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.21784997234158152,
+        "to": 0.21038257167368246
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719941,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.21038257167368246,
+        "to": 0.20297508193902625
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719952,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.20297508193902625,
+        "to": 0.19599113411282343
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719963,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.19599113411282343,
+        "to": 0.18886595766477401
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719974,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.18886595766477401,
+        "to": 0.18215240911592254
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719986,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.18215240911592254,
+        "to": 0.1759556031347827
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702719997,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.1759556031347827,
+        "to": 0.16975427979174268
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720008,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.16975427979174268,
+        "to": 1.1644340542854854
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720019,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1644340542854854,
+        "to": 1.1592942365174814
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720030,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1592942365174814,
+        "to": 1.1539346955257896
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720041,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1539346955257896,
+        "to": 1.1479431688934205
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720052,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1479431688934205,
+        "to": 1.1413221765235282
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720063,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1413221765235282,
+        "to": 1.1328713352279132
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720074,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1328713352279132,
+        "to": 1.1228568126275222
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720086,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1228568126275222,
+        "to": 1.1123555229987407
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720096,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1123555229987407,
+        "to": 1.1008539309953664
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720109,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1008539309953664,
+        "to": 1.0923115618913162
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720119,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0923115618913162,
+        "to": 1.0849658942831029
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720130,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0849658942831029,
+        "to": 1.0808897398698925
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720141,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0808897398698925,
+        "to": 1.077297408426314
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720152,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.077297408426314,
+        "to": 1.075530791535143
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720164,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.075530791535143,
+        "to": 1.073082638304113
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720175,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.073082638304113,
+        "to": 1.0703653482151225
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720186,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0703653482151225,
+        "to": 1.06680414613421
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720197,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.06680414613421,
+        "to": 1.063970373611686
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720209,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.063970373611686,
+        "to": 1.0615344822832125
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720220,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0615344822832125,
+        "to": 1.059604396475804
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720231,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.059604396475804,
+        "to": 1.0584208221521572
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720242,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0584208221521572,
+        "to": 1.057411888741524
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720253,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.057411888741524,
+        "to": 1.056851761437541
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720265,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.056851761437541,
+        "to": 1.0562817996954408
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720276,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0562817996954408,
+        "to": 1.0557466151715222
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720287,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0557466151715222,
+        "to": 1.0550014271000687
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720298,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0550014271000687,
+        "to": 1.0542533140859187
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720309,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0542533140859187,
+        "to": 1.0535601949374456
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720321,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0535601949374456,
+        "to": 1.0530487049931274
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720332,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0530487049931274,
+        "to": 1.052810775319107
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720343,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.052810775319107,
+        "to": 1.0529014981379317
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720354,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0529014981379317,
+        "to": 1.0531204967513632
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720365,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0531204967513632,
+        "to": 1.0535002178100465
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720377,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0535002178100465,
+        "to": 1.0540928568539885
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720388,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0540928568539885,
+        "to": 1.0547875420343107
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720399,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0547875420343107,
+        "to": 1.0555908788366861
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720410,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0555908788366861,
+        "to": 1.0563869868149716
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720421,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0563869868149716,
+        "to": 1.0572322460587458
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720432,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0572322460587458,
+        "to": 1.058508006722256
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720443,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.058508006722256,
+        "to": 1.0602550817844552
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720454,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0602550817844552,
+        "to": 1.0622027294240248
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720466,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0622027294240248,
+        "to": 1.0673808832503842
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720475,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0673808832503842,
+        "to": 1.0673808832503842
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720485,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0673808832503842,
+        "to": 1.0700024531315966
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720496,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0700024531315966,
+        "to": 1.0731556165376464
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720507,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0731556165376464,
+        "to": 1.076799583036448
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720519,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.076799583036448,
+        "to": 1.0811713405943155
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720531,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0811713405943155,
+        "to": 1.0863803512417127
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720541,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.0863803512417127,
+        "to": 1.092895961048794
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720552,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.092895961048794,
+        "to": 1.1004933190074906
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720563,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1004933190074906,
+        "to": 1.110484436617082
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720574,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.110484436617082,
+        "to": 1.1213569392864464
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720585,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1213569392864464,
+        "to": 1.1348981667590943
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720596,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1348981667590943,
+        "to": 1.1501576107212275
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720608,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 1.1501576107212275,
+        "to": 0.16644864190803263
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720618,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.16644864190803263,
+        "to": 0.18314107964024673
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720629,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.18314107964024673,
+        "to": 0.19973024983896118
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720641,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.19973024983896118,
+        "to": 0.21558408221009875
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720652,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.21558408221009875,
+        "to": 0.2302848796651247
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720663,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2302848796651247,
+        "to": 0.24318564302547274
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720674,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.24318564302547274,
+        "to": 0.2548476767862435
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720685,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2548476767862435,
+        "to": 0.2641364264783641
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720699,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2641364264783641,
+        "to": 0.27216502472074566
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720707,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.27216502472074566,
+        "to": 0.2822621833877973
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720718,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2822621833877973,
+        "to": 0.288327882399531
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720730,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.288327882399531,
+        "to": 0.2965727063619956
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720741,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.2965727063619956,
+        "to": 0.30566407721989386
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720752,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.30566407721989386,
+        "to": 0.3154197296691515
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720763,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3154197296691515,
+        "to": 0.3262015667259244
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720774,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3262015667259244,
+        "to": 0.33706420146791716
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720785,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.33706420146791716,
+        "to": 0.34826172942739675
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720796,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.34826172942739675,
+        "to": 0.35938954062029177
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720807,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.35938954062029177,
+        "to": 0.3706904918927468
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720819,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3706904918927468,
+        "to": 0.38195291372927
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720830,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.38195291372927,
+        "to": 0.3935301309513919
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720842,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.3935301309513919,
+        "to": 0.4051829344072115
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720853,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4051829344072115,
+        "to": 0.41614679493969153
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720864,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.41614679493969153,
+        "to": 0.42640758228931597
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720875,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.42640758228931597,
+        "to": 0.43536996164634795
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720887,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.43536996164634795,
+        "to": 0.43945906483584946
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720898,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.43945906483584946,
+        "to": 0.4424313883472203
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720909,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4424313883472203,
+        "to": 0.4430925151215759
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720920,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4430925151215759,
+        "to": 0.4437882647800744
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720931,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4437882647800744,
+        "to": 0.4453076833115146
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720942,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4453076833115146,
+        "to": 0.447260833708509
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720953,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.447260833708509,
+        "to": 0.4494452201130451
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720964,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4494452201130451,
+        "to": 0.45147334061673355
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720975,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.45147334061673355,
+        "to": 0.45273094590579394
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720986,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.45273094590579394,
+        "to": 0.45343092612122876
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702720997,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.45343092612122876,
+        "to": 0.4538828622044033
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721009,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4538828622044033,
+        "to": 0.4541402763386173
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721020,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4541402763386173,
+        "to": 0.4545037786202587
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721031,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4545037786202587,
+        "to": 0.4552219742586392
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721042,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4552219742586392,
+        "to": 0.45605306367998705
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721053,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.45605306367998705,
+        "to": 0.45674994071086256
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721065,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.45674994071086256,
+        "to": 0.45698963679492816
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721075,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.45698963679492816,
+        "to": 0.4570189881419268
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721087,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4570189881419268,
+        "to": 0.4569211540993447
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721098,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4569211540993447,
+        "to": 0.45663261476083716
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721109,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.45663261476083716,
+        "to": 0.4566319550470501
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721121,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4566319550470501,
+        "to": 0.45699321276232663
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721132,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.45699321276232663,
+        "to": 0.45743470334240954
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721142,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.45743470334240954,
+        "to": 0.4579417455452294
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721152,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4579417455452294,
+        "to": 0.4580494928739631
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721163,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4580494928739631,
+        "to": 0.4578934726599002
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721175,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4578934726599002,
+        "to": 0.4572044932416805
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721185,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4572044932416805,
+        "to": 0.4564747994899655
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721196,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4564747994899655,
+        "to": 0.456012032222666
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721208,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.456012032222666,
+        "to": 0.45616139870083855
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721219,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.45616139870083855,
+        "to": 0.4566732817431443
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721230,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4566732817431443,
+        "to": 0.45706563422054053
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721241,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.45706563422054053,
+        "to": 0.45712163226287006
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721252,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.45712163226287006,
+        "to": 0.4566396354580052
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721263,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4566396354580052,
+        "to": 0.4558596352351881
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721274,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.4558596352351881,
+        "to": 0.45495943450499077
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1555702721285,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "outs_1.volume",
+        "name": "value",
+        "from": 0.45495943450499077,
+        "to": 0.45416064876198114
+      }
+    ]
+  }
+]

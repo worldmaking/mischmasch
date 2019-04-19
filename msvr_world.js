@@ -269,6 +269,7 @@ function client(msg){
 			nodeName;
 			counter = 1;
 			feedbackConnections = 0	
+			outlet(2, 'clear')
 
 		break;
 		case "deltas": {

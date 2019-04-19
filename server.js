@@ -257,6 +257,8 @@ function handlemessage(msg, sock, id) {
 
 		} break;
 		case "clear_scene": {
+
+			scenefile = 'scene_blank.json'
 			console.log(msg)
 			send_all_clients(JSON.stringify({
 				cmd: "clear_scene",
@@ -264,7 +266,7 @@ function handlemessage(msg, sock, id) {
 				data: "clear"
 			}));
 
-			blankScene = JSON.parse(fs.readFileSync('scene_blank.json', "utf-8")); 
+			blankScene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
 			// turn this into deltas:
 			let deltas = got.deltasFromGraph(blankScene, []);
 			//console.log(deltas)
