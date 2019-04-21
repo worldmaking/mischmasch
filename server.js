@@ -21,12 +21,8 @@ const got = require("./got/got")
 console.log(got)
 
 // 1st cli arg can be the scenefile 
-let scenefile;
-if (process.argv[2]){
-	scenefile = process.argv[2]
-} else {
-	scenefile = "scene_edited.json"
-}
+let scenefile = __dirname + "/scene_files/scene_edited.json"
+
 // declare array for temp storage of OTs for recording sessions
 let sessionJSON = []
 // declare var for recording status
@@ -292,9 +288,11 @@ function handlemessage(msg, sock, id) {
 
 		} break;
 
-		case "getSessions":{
+		case "initController":{
 
-			// the max patch "control.maxpat" will request the current available sessions from the server:
+			// the max patch "control.maxpat" will request the current available sessions & scene files from the server:
+
+			// get recorded sessions
 			function fromDir(startPath,filter,callback){		
 				if (!fs.existsSync(startPath)){
 						console.log("no dir ",startPath);
@@ -314,6 +312,32 @@ function handlemessage(msg, sock, id) {
 				filename = filename.split('\\').pop().split('/').pop();
 				filesFound = {
 					cmd: "sessionRecordings",
+					date: Date.now(),
+					data: filename
+				};
+				send_all_clients(JSON.stringify(filesFound));
+			});
+
+			// get scene files
+			function fromDir(startPath,filter,callback){		
+				if (!fs.existsSync(startPath)){
+						console.log("no dir ",startPath);
+						return;
+				}
+				var files=fs.readdirSync(startPath);
+				for (var i=0;i<files.length;i++){
+					var filename=path.join(startPath,files[i]);
+					var stat = fs.lstatSync(filename);
+					if (stat.isDirectory()){
+							fromDir(filename,filter,callback); //recurse
+					} else if (filter.test(filename)) callback(filename);
+				};
+			};
+		
+			fromDir(__dirname + '/scene_files',/\.json$/,function(filename){
+				filename = filename.split('\\').pop().split('/').pop();
+				filesFound = {
+					cmd: "scene_files",
 					date: Date.now(),
 					data: filename
 				};
@@ -339,11 +363,10 @@ function handlemessage(msg, sock, id) {
 			console.log('session saved at', sessionRecording)
 
 		} break;
-		
-		case "clear_scene": {
 
-			scenefile = 'scene_blank.json'
-			console.log(msg)
+		case "clear_scene": {
+			
+			scenefile = __dirname + '/scene_files/scene_blank.json'
 			send_all_clients(JSON.stringify({
 				cmd: "clear_scene",
 				date: Date.now(),
@@ -353,7 +376,6 @@ function handlemessage(msg, sock, id) {
 			blankScene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
 			// turn this into deltas:
 			let deltas = got.deltasFromGraph(blankScene, []);
-			//console.log(deltas)
 
 			send_all_clients(JSON.stringify({
 				cmd: "deltas",
@@ -380,6 +402,28 @@ function handlemessage(msg, sock, id) {
 			let scenestr = JSON.stringify(msg.scene, null, "\t");
 			fs.writeFileSync(scenefile, scenestr, "utf-8");
 		} break;
+
+		case "loadScene": {
+			scenefile = __dirname + '/scene_files/' + msg.data
+			//console.log(msg)
+			send_all_clients(JSON.stringify({
+				cmd: "clear_scene",
+				date: Date.now(),
+				data: "clear"
+			}));
+
+			loadedScene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
+			// turn this into deltas:
+			let deltas = got.deltasFromGraph(loadedScene, []);
+			//console.log(deltas)
+
+			send_all_clients(JSON.stringify({
+				cmd: "deltas",
+				date: Date.now(),
+				data: deltas
+			}));
+		} break;
+
 		case "user_pose": {
 			//console.log(JSON.stringify(msg.pose))
 			// broadcast this data... 

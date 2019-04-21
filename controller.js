@@ -15,57 +15,83 @@ const WebSocket = require('ws');
 
 const MaxAPI = require("max-api");
 
+const ReconnectingWebSocket = require('reconnecting-websocket');
+
+const options = {
+    WebSocket: WebSocket, // custom WebSocket constructor
+    connectionTimeout: 1000,
+   // maxRetries: 10,
+};
+//const rws = new ReconnectingWebSocket('ws://my.site.com', [], options);
+
+
+
 let sessionList = []
+let sceneList = []
 
 //const scenefile = "scene_edited.json"
 //const playbackSessionJSON = []
-var connection = new WebSocket('ws://localhost:8080');
+//function connect (){
 
 
-connection.onopen = function () {
-	// first clear the filename umenu in this patch
+	var connection = new ReconnectingWebSocket('ws://localhost:8080', [], options);
+
+connection.addEventListener('open', () => {
+			// first clear the filename umenu in this patch
 	MaxAPI.outlet('clearPlaybackList', 'clear')
 	connection.send(JSON.stringify({
-		cmd: "getSessions",
+		cmd: "initController",
 		date: Date.now(),
 		data: null
 	}));
-
-
-};
-
-// Log errors
-connection.onerror = function (error) {
-  console.error('WebSocket Error ' + error);
-};
-
-
-connection.on('message', function incoming(data) {
-	//console.log(data);
-	
-	/*	MaxAPI.post('unhandled message received', e)
-
-*/
-data = JSON.parse(data)
-	switch(data.cmd){
-
-		case "sessionRecordings":{
-			sessionList.push(data.data)
-			MaxAPI.outlet('playbackList','append',data.data)
-		} break;
-
-		default: {
-		//	MaxAPI.post('unhandled message received', data)
-		} break;
-	} 
-
 });
 
-//
+connection.addEventListener('message', (data) => {
+
+	data = JSON.parse(data.data)
+		
+		switch(data.cmd){
+	
+			case "sessionRecordings":{
+				sessionList.push(data.data)
+				MaxAPI.outlet('playbackList','append',data.data)
+			} break;
+	
+			case "scene_files":{
+				sceneList.push(data.data)
+				MaxAPI.outlet('sceneList','append',data.data)
+			} break;
+	
+			default: {
+			//	MaxAPI.post('unhandled message received', data)
+			} break;
+		} 
+})
+
+//////////////////////////////////// LOAD SCENE ////////////////////////////////
+MaxAPI.addHandler("loadScene", (sceneName) => {
+	MaxAPI.post(sceneName)
+	connection.send(JSON.stringify({
+		cmd: "loadScene",
+		date: Date.now(),
+		data: sceneName
+	}));
+})
+
+//////////////////////////////////// CLEAR SCENE ////////////////////////////////
+MaxAPI.addHandler("clearScene", () => {
+	connection.send(JSON.stringify({
+		cmd: "clear_scene",
+		date: Date.now(),
+		data: null
+	}));
+})
+
 //////////////////////////////////// SESSION RECORDER ////////////////////////////////
-MaxAPI.outlet("recordStatus", 0)
 MaxAPI.addHandler("record", (filename) => {
-	if (sessionList.includes(filename.replace(/\s/g, "_") + '.json') === 0 ){
+	checkSpace = filename.replace(/\s/g, "_")
+	recordingExists = sessionList.includes(checkSpace)
+	if (recordingExists === false || recordingExists === 0){
 
 		connection.send(JSON.stringify({
 			cmd: "record",
@@ -74,9 +100,10 @@ MaxAPI.addHandler("record", (filename) => {
 		}));
 		filename = filename.replace(/\s/g, "_")
 		MaxAPI.outlet('playbackList','append',filename + '.json')
+		MaxAPI.outlet("recordStatus", 1)
 	} else {
-
 		MaxAPI.outlet('filenameExists','set', 'invalid: session filename already taken')
+		MaxAPI.outlet("recordStatus", 0)
 	}
 
 })

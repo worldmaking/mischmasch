@@ -20,8 +20,9 @@
   "dependencies": {
     "express": "^4.16.4",
     "gl-matrix": "^3.0.0",
-    "vorpal": "^1.12.0",
     "nodemon": "^1.18.11",
+    "reconnecting-websocket": "^4.1.10",
+    "vorpal": "^1.12.0",
     "ws": "^6.2.0"
   },
   "nodemonConfig": {
