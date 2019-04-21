@@ -20,7 +20,7 @@ const got = require("./got/got")
 //const sessionJSON = []
 let session;
 if (process.argv[2]){
-    session = JSON.parse(fs.readFileSync("D:\\github\\msvr\\session_recordings\\session_" + process.argv[2] + ".json"))
+    session = JSON.parse(fs.readFileSync(__dirname + "/session_recordings/session_" + process.argv[2] + ".json"))
 } else {
     console.log('error! first argument required: supply the utc time stamp of the session recording to playback \n\nhint: its the number in the filename, i.e. node playback.js 1555683230855')
     process.exit()
