@@ -16,6 +16,8 @@ var nodeName;
 var counter = 1;
 var feedbackConnections = 0
 
+gen_patcher = this.patcher.getnamed("world").subpatcher();
+
 var handleDelta = function(delta) {
 
 	if (Array.isArray(delta)) {
@@ -25,6 +27,8 @@ var handleDelta = function(delta) {
 		}
 	} else {
 		switch (delta.op){
+			
+			
 			
 			// create an object!
 			case "newnode": 
@@ -244,7 +248,7 @@ function client(msg){
 	cmd = ot.cmd
 
 	switch(cmd){
-		case "clear_world":
+		case "clear_scene":
 			gen_patcher = this.patcher.getnamed("world").subpatcher();
 
 			gen_patcher.apply(function(b) { 
@@ -254,6 +258,18 @@ function client(msg){
 					gen_patcher.remove(b); 		
 				}
 			});
+			
+			inletsTable = new Array();
+			outletsTable = new Array();
+
+			//store varnames per node
+			varnamesTable = new Array();
+
+			object = {};
+			nodeName;
+			counter = 1;
+			feedbackConnections = 0	
+			outlet(2, 'clear')
 
 		break;
 		case "deltas": {

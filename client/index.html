@@ -55,11 +55,23 @@
     <script src="js/three-r102/examples/js/vr/ViveController.js"></script>
 
     <script>
+
         let canvas = document.getElementById("webgl-canvas");
 
         let log = document.getElementById("log");
+        let msgs = [];
+
         function write(msg) {
-            log.innerText += "\n" + msg;
+
+            if(msgs.length > 15){
+                msgs.shift();
+            }
+
+            msgs.push(msg);
+            let fMsg = msgs.join("\n");
+
+            log.innerText = "";
+            log.innerText +=  "Log: \n " + fMsg;
             console.log(msg);
         }
 
