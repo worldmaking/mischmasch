@@ -15,13 +15,21 @@ const WebSocket = require('ws');
 
 const MaxAPI = require("max-api");
 
+let sessionList = []
+
 //const scenefile = "scene_edited.json"
-//const sessionJSON = []
+//const playbackSessionJSON = []
 var connection = new WebSocket('ws://localhost:8080');
 
 
 connection.onopen = function () {
-    
+	// first clear the filename umenu in this patch
+	MaxAPI.outlet('clearPlaybackList', 'clear')
+	connection.send(JSON.stringify({
+		cmd: "getSessions",
+		date: Date.now(),
+		data: null
+	}));
 
 
 };
@@ -31,27 +39,72 @@ connection.onerror = function (error) {
   console.error('WebSocket Error ' + error);
 };
 
-// Log messages from the server
-connection.onmessage = function (e) {
 
-};
+connection.on('message', function incoming(data) {
+	//console.log(data);
+	
+	/*	MaxAPI.post('unhandled message received', e)
 
+*/
+data = JSON.parse(data)
+	switch(data.cmd){
+
+		case "sessionRecordings":{
+			sessionList.push(data.data)
+			MaxAPI.outlet('playbackList','append',data.data)
+		} break;
+
+		default: {
+		//	MaxAPI.post('unhandled message received', data)
+		} break;
+	} 
+
+});
+
+//
+//////////////////////////////////// SESSION RECORDER ////////////////////////////////
+MaxAPI.outlet("recordStatus", 0)
+MaxAPI.addHandler("record", (filename) => {
+	if (sessionList.includes(filename.replace(/\s/g, "_") + '.json') === 0 ){
+
+		connection.send(JSON.stringify({
+			cmd: "record",
+			date: Date.now(),
+			data: filename
+		}));
+		filename = filename.replace(/\s/g, "_")
+		MaxAPI.outlet('playbackList','append',filename + '.json')
+	} else {
+
+		MaxAPI.outlet('filenameExists','set', 'invalid: session filename already taken')
+	}
+
+})
+MaxAPI.addHandler("stopRecord", () => {
+	connection.send(JSON.stringify({
+		cmd: "stopRecord",
+		date: Date.now(),
+		data: null
+	}));
+})
+
+//////////////////////////////////// SESSION PLAYER ////////////////////////////////
 MaxAPI.outlet("playbackStatus", 0)
 
-let session;
+let playbackSession;
 let previous;
 let next;
 let times = []
 
 MaxAPI.addHandler("playback", (filename) => {
-	session = JSON.parse(fs.readFileSync(__dirname + "/session_recordings/" + filename))
+	playbackSession = JSON.parse(fs.readFileSync(__dirname + "/session_recordings/" + filename))
 
-		// console.log(JSON.parse(session))
+		// console.log(JSON.parse(playbackSession))
 	previous = undefined;
 	next = undefined;
 	times = []
-	for (var i = 0, l = session.length; i < l; i++) {
-			var obj = session[i];
+	for (var i = 0, l = playbackSession.length; i < l; i++) {
+			var obj = playbackSession[i];
 
 			if (previous){
 					next = obj.date
@@ -67,7 +120,7 @@ MaxAPI.addHandler("playback", (filename) => {
 			}
 
 	}
-	// reset the counter to 0 before running a new playback session
+	// reset the counter to 0 before running a new playback playbackSession
 	counter = 0;
 	MaxAPI.post("starting playback")
 	MaxAPI.outlet("playbackStatus", 1)
@@ -78,7 +131,7 @@ MaxAPI.addHandler("playback", (filename) => {
 
 MaxAPI.addHandler("stopPlayback", () => {
 	// force the timeout to stop by increasing the counter past the array length limit...
-	counter = session.length + 10;
+	counter = playbackSession.length + 10;
 	MaxAPI.post("playback ended")
 
 });
@@ -86,16 +139,16 @@ MaxAPI.addHandler("stopPlayback", () => {
 
 let index = 0
 //counter = 0
-//console.log('size',session.length)
+//console.log('size',playbackSession.length)
 let counter = 0;
 let playback = function() {
 
 
 
     //counter *= 10;
-    if (counter < session.length){
-        data = session[counter].data
-       // connection.send(session[counter])
+    if (counter < playbackSession.length){
+        data = playbackSession[counter].data
+       // connection.send(playbackSession[counter])
        connection.send(JSON.stringify({
         cmd: "playback",
         date: Date.now(),
@@ -103,8 +156,8 @@ let playback = function() {
 				
 		}));
 			MaxAPI.outlet("playback", data)
-        console.log(session[counter])
-        //connection.send(JSON.stringify(session[counter]));
+        console.log(playbackSession[counter])
+        //connection.send(JSON.stringify(playbackSession[counter]));
         setTimeout(playback, times[counter]);
         counter++
        //console.log(counter)
@@ -116,20 +169,20 @@ let playback = function() {
         //process.exit()
     }
 
-//    if(counter > session.length)
+//    if(counter > playbackSession.length)
 //    {
        
-//     console.log(counter, session.length)
+//     console.log(counter, playbackSession.length)
 //     clearTimeout(playback, 0);
 //     //counter = 0;
 //     return;
 //     }
 
 
-function firstAndLast(session) {
+function firstAndLast(playbackSession) {
 
-	var firstItem = session[0].date;
-	var lastItem = session[session.length-1].date;
+	var firstItem = playbackSession[0].date;
+	var lastItem = playbackSession[playbackSession.length-1].date;
 	
 	var objOutput = {};
 	objOutput[firstItem]=lastItem
@@ -137,7 +190,7 @@ function firstAndLast(session) {
 	return objOutput;
 	}
 	
-	var display = firstAndLast(session);
+	var display = firstAndLast(playbackSession);
 	
 	console.log(display, times);
     

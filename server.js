@@ -27,11 +27,10 @@ if (process.argv[2]){
 } else {
 	scenefile = "scene_edited.json"
 }
-const sessionJSON = []
-const sessionRecording = __dirname + "/session_recordings/session_" + Date.now() + ".json"
-console.log(sessionRecording)
-
-//fs.writeFileSync(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")
+// declare array for temp storage of OTs for recording sessions
+let sessionJSON = []
+// declare var for recording status
+let recordStatus;
 
 const MaxAPI = (() => {
     try {Mutation
@@ -270,15 +269,16 @@ function handlemessage(msg, sock, id) {
 				date: Date.now(),
 				data: msg.data
 			};
-
-			//console.log("forwarding deltas", response)
-
-			sessionJSON.push(response)
+			// check if the recording status is active, if so push received delta(s) to the sessionJSON
+			if (recordStatus === 1){
+				sessionJSON.push(response)
+			}
+			
 			send_all_clients(JSON.stringify(response));
 		} break;
 
 		case "playback":{
-			console.log(msg)
+			//console.log(msg)
 			let response = {
 				cmd: "deltas",
 				date: Date.now(),
@@ -291,6 +291,55 @@ function handlemessage(msg, sock, id) {
 			send_all_clients(JSON.stringify(response));
 
 		} break;
+
+		case "getSessions":{
+
+			// the max patch "control.maxpat" will request the current available sessions from the server:
+			function fromDir(startPath,filter,callback){		
+				if (!fs.existsSync(startPath)){
+						console.log("no dir ",startPath);
+						return;
+				}
+				var files=fs.readdirSync(startPath);
+				for (var i=0;i<files.length;i++){
+					var filename=path.join(startPath,files[i]);
+					var stat = fs.lstatSync(filename);
+					if (stat.isDirectory()){
+							fromDir(filename,filter,callback); //recurse
+					} else if (filter.test(filename)) callback(filename);
+				};
+			};
+		
+			fromDir(__dirname + '/session_recordings',/\.json$/,function(filename){
+				filename = filename.split('\\').pop().split('/').pop();
+				filesFound = {
+					cmd: "sessionRecordings",
+					date: Date.now(),
+					data: filename
+				};
+				send_all_clients(JSON.stringify(filesFound));
+			});
+		} break;
+
+		case "record":{
+			// reset session
+			sessionJSON = []
+			let recording = msg.data.replace(/\s/g, "_")
+			// save session name as filename provided in this message
+			sessionRecording = __dirname + "/session_recordings/" + recording + ".json"
+			// push all received deltas to the sessionJSON:
+			recordStatus = 1
+			console.log('session will be stored at', sessionRecording)
+
+		} break;
+
+		case "stopRecord":{
+			recordStatus = 0
+			fs.writeFileSync(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")
+			console.log('session saved at', sessionRecording)
+
+		} break;
+		
 		case "clear_scene": {
 
 			scenefile = 'scene_blank.json'
