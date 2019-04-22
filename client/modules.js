@@ -1207,7 +1207,7 @@ let module_constructors = {
 					"Phasor",
 					"Triangle"
 				],
-				"value": "Sine"
+				"value": 1
 			},
 			{
 				"op": "newnode",
@@ -1230,7 +1230,7 @@ let module_constructors = {
 					"Phasor",
 					"Triangle"
 				],
-				"value": "Sine"
+				"value": 2
 			},
 			{
 				"op": "newnode",
@@ -1426,11 +1426,9 @@ let module_names = Object.keys(module_constructors)
 function spawnRandomModule(pos, orient) {
   let opname, ctor
   if (Math.random() < 0.5) {
-    console.log("Mod")
     opname = module_names[Math.floor(Math.random() * module_names.length)]
     ctor = module_constructors[opname]
   } else {
-    console.log("Op")
     opname = operator_names[Math.floor(Math.random() * module_names.length)]
     ctor = operator_constructors[opname]
   }
