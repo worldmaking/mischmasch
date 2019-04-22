@@ -176,33 +176,33 @@ let counter = 0;
 let playback = function() {
 	//counter *= 10;
 	if (counter < playbackSession.length){
-			data = playbackSession[counter].data
-			// connection.send(playbackSession[counter])
-			connection.send(JSON.stringify({
-			cmd: "playback",
-			date: Date.now(),
-			data: data
+		data = playbackSession[counter].data
+		// connection.send(playbackSession[counter])
+		connection.send(JSON.stringify({
+		cmd: "playback",
+		date: Date.now(),
+		data: data
 	}));
 		MaxAPI.outlet("playback", data)
-			console.log(playbackSession[counter])
-			//connection.send(JSON.stringify(playbackSession[counter]));
-			setTimeout(playback, times[counter]);
-			counter++
-			//console.log(counter)
+		console.log(playbackSession[counter])
+		//connection.send(JSON.stringify(playbackSession[counter]));
+		setTimeout(playback, times[counter]);
+		counter++
+		//console.log(counter)
 	} else {
 		MaxAPI.post("playback ended")
 		MaxAPI.outlet("playbackStatus", 0)
 	}
-// get first and last delta in OT recording
-function firstAndLast(playbackSession) {
+	// get first and last delta in OT recording
+	function firstAndLast(playbackSession) {
 
-	var firstItem = playbackSession[0].date;
-	var lastItem = playbackSession[playbackSession.length-1].date;
-	
-	var objOutput = {};
-	objOutput[firstItem]=lastItem
-	console.log(firstItem, lastItem, lastItem - firstItem )
-	return objOutput;
+		var firstItem = playbackSession[0].date;
+		var lastItem = playbackSession[playbackSession.length-1].date;
+		
+		var objOutput = {};
+		objOutput[firstItem]=lastItem
+		console.log(firstItem, lastItem, lastItem - firstItem )
+		return objOutput;
 	}
 	var display = firstAndLast(playbackSession);
 	console.log(display, times);
