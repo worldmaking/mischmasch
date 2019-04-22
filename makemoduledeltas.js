@@ -30,7 +30,9 @@ let operator_constructors = []
 //console.log(operators[0])
 
 for (let op of operators) {
+  
   let name = op.op
+  
   let ctors = op.constructors
   let inputs = op.inputs
   let outputs = op.outputs
@@ -38,7 +40,7 @@ for (let op of operators) {
   let default_ctor = ctors[ctors.length-1]
   let ninlets = default_ctor.inlets.length
   let noutlets = outputs.length
-
+  console.log(name,ninlets,noutlets)
   // skip objects that need args
   if (Array.isArray(default_ctor.arguments) && default_ctor.arguments.length > 0) continue;
 
@@ -57,12 +59,12 @@ for (let op of operators) {
     for (let i=0; i<in_names.length; i++) {
       let inlet_name = in_names[i]
       codes.push(`
-      { "op":"newnode", "kind":"inlet", "path":"\${path}.${inlet_name}" }`);
+      { "op":"newnode", "kind":"inlet", "path":"\${path}.${inlet_name}", "index":${i} }`);
     }
     for (let i=0; i<out_names.length; i++) {
       let outlet_name = out_names[i]
       codes.push(`
-      { "op":"newnode", "kind":"outlet", "path":"\${path}.${outlet_name}" }`);
+      { "op":"newnode", "kind":"outlet", "path":"\${path}.${outlet_name}","index":${i} }`);
     }
 
 
