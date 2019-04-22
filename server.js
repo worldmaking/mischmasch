@@ -399,8 +399,16 @@ function handlemessage(msg, sock, id) {
 		} break;
 		case "updated_scene": {
 			// // Example sending some greetings:
-			let scenestr = JSON.stringify(msg.scene, null, "\t");
-			fs.writeFileSync(scenefile, scenestr, "utf-8");
+
+			// ensure the blank scene isn't overwritten
+			ensureBlank = __dirname + '/scene_files/blank_scene.json'
+			if (scenefile === ensureBlank){
+				console.log('writing to blank scene prevented')
+			} else {
+				let scenestr = JSON.stringify(msg.scene, null, "\t");
+				fs.writeFileSync(scenefile, scenestr, "utf-8");
+			}
+
 		} break;
 
 		case "loadScene": {
