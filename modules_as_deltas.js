@@ -367,7 +367,7 @@ let module_constructors = {
 					"Phasor",
 					"Triangle"
 				],
-				"value": "Sine"
+				"value": 1
 			},
 			{
 				"op": "newnode",
@@ -390,7 +390,7 @@ let module_constructors = {
 					"Phasor",
 					"Triangle"
 				],
-				"value": "Sine"
+				"value": 2
 			},
 			{
 				"op": "newnode",
