@@ -917,6 +917,7 @@ function enactDeltaNewNode(delta) {
     if(delta.value) container.userData.value = delta.value;
 
     // add to our library of nodes:
+    console.log(container)
     addObjectByPath(path, container);
     // add to proper parent:
     parent.add(container);
@@ -1204,24 +1205,53 @@ function onSelectEnd(event) {
 function onSpawn(event) {
     let controller = event.target;
     if(controller.getButtonState('thumbpad') === undefined) return;
+    let pos = new THREE.Vector3();
+    let orient = new THREE.Quaternion();
+    controller.getWorldPosition(pos);
+    controller.getWorldQuaternion(orient);
+
+    // adjust spawn location:
+    let tilt = new THREE.Quaternion();
+    tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
+    orient.multiply(tilt);
+    let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
+    pos.add(rel.applyQuaternion(orient));
     if(controller.getButtonState('trigger') == false){
-
-        let pos = new THREE.Vector3();
-        let orient = new THREE.Quaternion();
-        controller.getWorldPosition(pos);
-        controller.getWorldQuaternion(orient);
-
-        // adjust spawn location:
-        let tilt = new THREE.Quaternion();
-        tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
-        orient.multiply(tilt);
-        let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
-        pos.add(rel.applyQuaternion(orient));
-
         let deltas = spawnRandomModule([pos.x, pos.y, pos.z], [orient._x, orient._y, orient._z, orient._w]);
         outgoingDeltas = outgoingDeltas.concat(deltas);
+    } else {
+        let deltas = copyModule([pos.x, pos.y, pos.z], [orient._x, orient._y, orient._z, orient._w], controller);
+        outgoingDeltas = outgoingDeltas.concat(deltas);
+    }
+    
+}
+
+function copyModule(pos, orient, controller){
+    let module_names = Object.keys(module_constructors)
+    let object = controller.userData.selected;
+    let opname, ctor;
+
+    for(let i in module_names){
+
+        if(module_names[i] == object.userData.kind){
+            opname = module_names[i];
+            ctor = module_constructors[opname];
+        }
     }
 
+    for(let j in operator_names){
+
+        if(operator_names[j] == object.userData.kind){
+            opname = operator_names[i];
+            ctor = operator_constructors[opname];
+        }
+    }
+
+    let path = gensym(opname);
+    let deltas = ctor(path);
+    deltas[0].pos = pos;
+    deltas[0].orient = orient;
+    return deltas;
 }
 
 function highlightNlet(controller){
