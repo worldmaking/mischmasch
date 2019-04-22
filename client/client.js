@@ -157,6 +157,7 @@ let outgoingDeltas = [];
 let allNodes = {};
 let allCables = [];
 let uiLine;
+let grabLineLength;
 
 let currentKnobValue = 0;
 let frames = 0;
@@ -647,7 +648,7 @@ function onSelectStart(event) {
    
     if(object && object.userData.turnable){
         let line = controller.getObjectByName("line");
-        line.scale.z = 0;
+        grabLineLength = line.scale.z;
     
         let lineGeom = new THREE.Geometry();
         lineGeom.vertices.push(new THREE.Vector3());
@@ -1469,6 +1470,7 @@ function controllerGamepadControls(controller){
             let objectPos = new THREE.Vector3();
             controller.getWorldPosition(controllerPos);
             object.getWorldPosition(objectPos); 
+            let line = controller.getObjectByName("line");
             
             let value = 0;
             if(controllerPos.distanceTo(objectPos) > .3){
@@ -1480,6 +1482,7 @@ function controllerGamepadControls(controller){
                 
                 let controllerPos = new THREE.Vector3()
                 controller.getWorldPosition(controllerPos)
+               
 
                 let knobPos = new THREE.Vector3()
                 object.getWorldPosition(knobPos);
@@ -1498,11 +1501,26 @@ function controllerGamepadControls(controller){
                 let angle = Math.atan2(relPos.x, -relPos.y);
                 // map this to a 0..1 range:
                 value = (angle + Math.PI) / (2 * Math.PI);
+                if(uiLine !== undefined){
+                    uiLine.geometry.vertices[0] = controllerPos;
+                    uiLine.geometry.vertices[1] = objectPos;
+                    uiLine.geometry.verticesNeedUpdate = true;
+
+                    line.scale.z = 0;
+                }
             } else {
                 controller.rotation.z += object.userData.rotation._z;
                 object.rotation.z = controller.rotation.z - controller.userData.rotation.z;
 
                 value =  (object.rotation.z + Math.PI) / (2 * Math.PI);
+
+                if(uiLine !== undefined){
+                    uiLine.geometry.vertices[0] = 0;
+                    uiLine.geometry.vertices[1] = 0;
+                    uiLine.geometry.verticesNeedUpdate = true;
+                   
+                    line.scale.z = grabLineLength;
+                }
             }
             
 
@@ -1510,11 +1528,7 @@ function controllerGamepadControls(controller){
                 { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: value });
 
                       
-            if(uiLine !== undefined){
-                uiLine.geometry.vertices[0] = controllerPos;
-                uiLine.geometry.vertices[1] = objectPos;
-                uiLine.geometry.verticesNeedUpdate = true;
-            }
+
 
             // TODO: send delta with this value
             // TODO: enact delta by mapping value back to angular range:
