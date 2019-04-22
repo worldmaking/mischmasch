@@ -107,9 +107,10 @@ var handleDelta = function(delta) {
 							break;
 							
 							case "inlet": 
-					
+							post(delta.index)
 							object[delta.path.replace('.','__')] = delta.index
 							inletsTable.push(object)
+							
 							
 							//post(JSON.stringify(inletsTable))
 							case "outlet":
@@ -131,7 +132,7 @@ var handleDelta = function(delta) {
 								//	post(kind, delta.path,"\n")
 
 								//	post(Object.keys(delta),"\n")
-									
+
 						for (var k in delta){
 							if (delta.hasOwnProperty(k)) {
 								//post("\n\n",k, delta[k])
@@ -172,7 +173,8 @@ var handleDelta = function(delta) {
 			break;
 
 			// create a patchcord!
-			case "connect": 			
+			case "connect": 
+				
 				var setOutlet = delta.paths[0].replace('.','__')
 				var setInlet = delta.paths[1].replace('.','__')
 				var input;
@@ -192,11 +194,14 @@ var handleDelta = function(delta) {
 					feedbackConnections++
 					var history = gen_patcher.newdefault([150,10, "history"])
 					history.varname = "feedback_" + feedbackConnections
+					//post('connect')
 					gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
 					gen_patcher.message("script", "connect", history.varname, 0, delta.paths[1].split('.')[0], parseInt(input));
 
 				} else {
 					// if not self-patch connection exists, just connect them. 
+					post(JSON.stringify(inletsTable),JSON.stringify(outletsTable))
+					post("script", "connect", delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input))
 					gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
 				}
 			break;
@@ -240,6 +245,24 @@ var handleDelta = function(delta) {
 	}
 }
 
+// this is only for working within max
+function clear(){	
+	counter = 1;
+	gen_patcher = this.patcher.getnamed("world").subpatcher();
+	gen_patcher.apply(function(b) { 
+		// prevent erasing our audio outputs from genpatcher
+		if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment"){
+		gen_patcher.remove(b); 				
+		}
+	});		
+			inletsTable = [];
+			outletsTable = [];
+
+			//store varnames per node
+			varnamesTable = [];	
+}
+
+
 function client(msg){
 
 	//post(msg)
@@ -259,11 +282,12 @@ function client(msg){
 				}
 			});
 			
-			inletsTable = new Array();
-			outletsTable = new Array();
+			inletsTable = [];
+			outletsTable = [];
 
 			//store varnames per node
-			varnamesTable = new Array();
+			varnamesTable = [];
+			
 
 			object = {};
 			nodeName;
@@ -628,14 +652,4 @@ function read(file){
 	}
 }
 	
-function clear(){	
-	counter = 1;
-	gen_patcher = this.patcher.getnamed("world").subpatcher();
-	gen_patcher.apply(function(b) { 
-		// prevent erasing our audio outputs from genpatcher
-		if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment"){
-		gen_patcher.remove(b); 				
-		}
-	});			
-}
 

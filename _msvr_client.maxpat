@@ -4,13 +4,13 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 0,
-			"revision" : 3,
+			"revision" : 0,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 286.0, 85.0, 849.0, 921.0 ],
+		"rect" : [ 88.0, 85.0, 1558.0, 921.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -38,6 +38,94 @@
 		"style" : "",
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-39",
+					"maxclass" : "toggle",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "int" ],
+					"parameter_enable" : 0,
+					"patching_rect" : [ 751.0, 349.0, 24.0, 24.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-36",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "bang" ],
+					"patching_rect" : [ 730.0, 382.0, 69.0, 22.0 ],
+					"text" : "metro 1000"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-35",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 5,
+					"outlettype" : [ "", "", "", "", "" ],
+					"patching_rect" : [ 730.0, 406.0, 61.0, 22.0 ],
+					"text" : "cycle 5"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-31",
+					"linecount" : 2,
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 979.0, 683.0, 576.0, 35.0 ],
+					"text" : "{\\\"cmd\\\":\\\"deltas\\\"\\,\\\"date\\\":1555954072905\\,\\\"data\\\":[{\\\"op\\\":\\\"disconnect\\\"\\,\\\"paths\\\":[\\\"freevoib_0_14.out\\\"\\,\\\"shifter_0_13.cv\\\"]}]}"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-29",
+					"linecount" : 2,
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 979.0, 632.0, 546.0, 35.0 ],
+					"text" : "{\\\"cmd\\\":\\\"deltas\\\"\\,\\\"date\\\":1555954036860\\,\\\"data\\\":[{\\\"op\\\":\\\"connect\\\"\\,\\\"paths\\\":[\\\"freevoib_0_14.out\\\"\\,\\\"shifter_0_13.cv\\\"]}]}"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-24",
+					"linecount" : 10,
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 979.0, 472.0, 564.0, 143.0 ],
+					"text" : "{\\\"cmd\\\":\\\"deltas\\\"\\,\\\"date\\\":1555954016507\\,\\\"data\\\":[{\\\"op\\\":\\\"newnode\\\"\\,\\\"path\\\":\\\"freevoib_0_14\\\"\\,\\\"kind\\\":\\\"freevoib\\\"\\,\\\"category\\\":\\\"abstraction\\\"\\,\\\"pos\\\":[-1.584932209491134\\,1.7000772345696031\\,-2.307397125932173]\\,\\\"orient\\\":[0.1977853730900342\\,0.7125797225836124\\,-0.5227304755746963\\,0.4241036720292349]}\\,{\\\"op\\\":\\\"newnode\\\"\\,\\\"path\\\":\\\"freevoib_0_14.signal\\\"\\,\\\"kind\\\":\\\"inlet\\\"}\\,{\\\"op\\\":\\\"newnode\\\"\\,\\\"path\\\":\\\"freevoib_0_14.feedback_1\\\"\\,\\\"kind\\\":\\\"small_knob\\\"\\,\\\"range\\\":[0\\,1]\\,\\\"taper\\\":\\\"linear\\\"\\,\\\"value\\\":0.9\\,\\\"unit\\\":\\\"float\\\"}\\,{\\\"op\\\":\\\"newnode\\\"\\,\\\"path\\\":\\\"freevoib_0_14.feedback_2\\\"\\,\\\"kind\\\":\\\"small_knob\\\"\\,\\\"range\\\":[0\\,1]\\,\\\"taper\\\":\\\"linear\\\"\\,\\\"value\\\":0.5\\,\\\"unit\\\":\\\"float\\\"}\\,{\\\"op\\\":\\\"newnode\\\"\\,\\\"path\\\":\\\"freevoib_0_14.damping\\\"\\,\\\"kind\\\":\\\"small_knob\\\"\\,\\\"range\\\":[0\\,1]\\,\\\"taper\\\":\\\"linear\\\"\\,\\\"value\\\":0.5\\,\\\"unit\\\":\\\"float\\\"}\\,{\\\"op\\\":\\\"newnode\\\"\\,\\\"path\\\":\\\"freevoib_0_14.spread\\\"\\,\\\"kind\\\":\\\"small_knob\\\"\\,\\\"range\\\":[0\\,400]\\,\\\"taper\\\":\\\"linear\\\"\\,\\\"value\\\":100\\,\\\"unit\\\":\\\"float\\\"}\\,{\\\"op\\\":\\\"newnode\\\"\\,\\\"path\\\":\\\"freevoib_0_14.out\\\"\\,\\\"kind\\\":\\\"outlet\\\"}]}"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-17",
+					"linecount" : 7,
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 979.0, 360.0, 574.0, 102.0 ],
+					"text" : "{\\\"cmd\\\":\\\"deltas\\\"\\,\\\"date\\\":1555953991306\\,\\\"data\\\":[{\\\"op\\\":\\\"newnode\\\"\\,\\\"path\\\":\\\"shifter_0_13\\\"\\,\\\"kind\\\":\\\"shifter\\\"\\,\\\"category\\\":\\\"abstraction\\\"\\,\\\"pos\\\":[-1.2788917841714809\\,1.2276385454595908\\,-2.1019180841236245]\\,\\\"orient\\\":[0.050268432223601875\\,0.9505612779495255\\,-0.2914166018897395\\,0.094777141585421]}\\,{\\\"op\\\":\\\"newnode\\\"\\,\\\"path\\\":\\\"shifter_0_13.signal\\\"\\,\\\"kind\\\":\\\"inlet\\\"}\\,{\\\"op\\\":\\\"newnode\\\"\\,\\\"path\\\":\\\"shifter_0_13.cv\\\"\\,\\\"kind\\\":\\\"inlet\\\"}\\,{\\\"op\\\":\\\"newnode\\\"\\,\\\"path\\\":\\\"shifter_0_13.range\\\"\\,\\\"kind\\\":\\\"small_knob\\\"}\\,{\\\"op\\\":\\\"newnode\\\"\\,\\\"path\\\":\\\"shifter_0_13.out\\\"\\,\\\"kind\\\":\\\"outlet\\\"}\\,{\\\"op\\\":\\\"newnode\\\"\\,\\\"path\\\":\\\"shifter_0_13.>\\\"\\,\\\"kind\\\":\\\"outlet\\\"}]}"
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-21",
 					"maxclass" : "message",
@@ -86,7 +174,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 3,
+							"revision" : 0,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -119,6 +207,7 @@
 						"tags" : "",
 						"style" : "",
 						"subpatcher_template" : "",
+						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
 									"comment" : "",
@@ -350,19 +439,6 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-15",
-					"linecount" : 49,
-					"maxclass" : "message",
-					"numinlets" : 2,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 979.0, 458.0, 763.0, 665.0 ],
-					"text" : "\"{\\\"cmd\\\":\\\"deltas\\\",\\\"date\\\":1555686616133,\\\"data\\\":[[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1\\\",\\\"kind\\\":\\\"lfo\\\",\\\"pos\\\":[-2.326367085370336,1.5209056349935186,-0.7035861792005239],\\\"orient\\\":[0.12358177055502231,0.41713355199484253,0.13623412932103282,0.8900378687419946]},[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.fm_cv\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.phasor_sync\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.pulse_width_cv\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":2}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.rate\\\",\\\"kind\\\":\\\"large_knob\\\",\\\"range\\\":[0,80],\\\"taper\\\":\\\"log 3.8\\\",\\\"value\\\":0.17,\\\"unit\\\":\\\"Hz\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.index\\\",\\\"kind\\\":\\\"small_knob\\\",\\\"range\\\":[0,10],\\\"taper\\\":\\\"linear\\\",\\\"value\\\":3,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.pulse_width\\\",\\\"kind\\\":\\\"small_knob\\\",\\\"range\\\":[0,1],\\\"taper\\\":\\\"linear\\\",\\\"value\\\":5,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.onset\\\",\\\"kind\\\":\\\"small_knob\\\",\\\"range\\\":[0,1],\\\"taper\\\":\\\"linear\\\",\\\"value\\\":2.8,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.sine\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.phasor\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.pulse\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":2}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_1.sine_index\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":3}]],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2\\\",\\\"kind\\\":\\\"lfo\\\",\\\"pos\\\":[-2.424671389806588,0.9688708758277417,-0.18653185392820404],\\\"orient\\\":[-0.19209762519910564,0.5831224304667423,0.22962993689028358,0.7552064787613966]},[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.fm_cv\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.phasor_sync\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.pulse_width_cv\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":2}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.rate\\\",\\\"kind\\\":\\\"large_knob\\\",\\\"range\\\":[0,80],\\\"taper\\\":\\\"log 3.8\\\",\\\"value\\\":375,\\\"unit\\\":\\\"Hz\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.index\\\",\\\"kind\\\":\\\"small_knob\\\",\\\"range\\\":[0,10],\\\"taper\\\":\\\"linear\\\",\\\"value\\\":21.9,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.pulse_width\\\",\\\"kind\\\":\\\"small_knob\\\",\\\"range\\\":[0,1],\\\"taper\\\":\\\"linear\\\",\\\"value\\\":0.6,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.onset\\\",\\\"kind\\\":\\\"small_knob\\\",\\\"range\\\":[0,1],\\\"taper\\\":\\\"linear\\\",\\\"value\\\":0.74,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.sine\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.phasor\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.pulse\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":2}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"lfo_2.sine_index\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":3}]],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1\\\",\\\"kind\\\":\\\"dualvco\\\",\\\"pos\\\":[-2.3443101728993065,1.0586006732132194,-0.7830673231770153],\\\"orient\\\":[0.2342255713614243,0.35412725955930197,0.07915509581778843,0.9019239084110882]},[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.vco_1_cv\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.index_cv\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.vco_2_cv\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.feedback_cv\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":2}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.vco_1_rate\\\",\\\"kind\\\":\\\"large_knob\\\",\\\"range\\\":[0,6000],\\\"taper\\\":\\\"log 3.8\\\",\\\"value\\\":61,\\\"unit\\\":\\\"Hz\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.vco_1_waveform\\\",\\\"kind\\\":\\\"n_switch\\\",\\\"throws\\\":[\\\"Sine\\\",\\\"Phasor\\\",\\\"Triangle\\\"],\\\"value\\\":2}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.vco_2_rate\\\",\\\"kind\\\":\\\"large_knob\\\",\\\"range\\\":[0,6000],\\\"taper\\\":\\\"log 3.8\\\",\\\"value\\\":17.6,\\\"unit\\\":\\\"Hz\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.vco_2_waveform\\\",\\\"kind\\\":\\\"n_switch\\\",\\\"throws\\\":[\\\"Sine\\\",\\\"Phasor\\\",\\\"Triangle\\\"],\\\"value\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.feedback\\\",\\\"kind\\\":\\\"small_knob\\\",\\\"range\\\":[0,6],\\\"taper\\\":\\\"linear\\\",\\\"value\\\":6.7,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.vco_1\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.vco_2\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"dualvco_1.master\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":2}]],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"vca_1\\\",\\\"kind\\\":\\\"vca\\\",\\\"pos\\\":[-1.8874404486624103,1.6447142321669945,-1.27836666000946],\\\"orient\\\":[-0.00320043028644092,0.5635363501996354,0.20483018876733974,0.8002881562407327]},[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"vca_1.signal\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"vca_1.cv\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"vca_1.cv_amount\\\",\\\"kind\\\":\\\"large_knob\\\",\\\"range\\\":[0,1],\\\"taper\\\":\\\"linear\\\",\\\"value\\\":0.762,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"vca_1.bias\\\",\\\"kind\\\":\\\"large_knob\\\",\\\"range\\\":[0,1],\\\"taper\\\":\\\"linear\\\",\\\"value\\\":0,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"vca_1.output\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":0}]],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"comparator_1\\\",\\\"kind\\\":\\\"comparator\\\",\\\"pos\\\":[-2.0809666515777456,0.8417822341996655,-0.9555356411990519],\\\"orient\\\":[-0.04273939274318167,0.48753902180372916,0.0518319148711431,0.8705127794164756]},[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"comparator_1.A\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"comparator_1.B\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"comparator_1.max\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"comparator_1.min\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":1}]],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1\\\",\\\"kind\\\":\\\"outs\\\",\\\"pos\\\":[-2.0605223497200336,0.46826704387316614,-1.0405112532755187],\\\"orient\\\":[-0.3121451653567321,0.369889483526838,0.14650496286711281,0.8627186456637955]},[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.left_(mono)\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.right_(stereo)\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.volume\\\",\\\"kind\\\":\\\"small_knob\\\",\\\"range\\\":[0,1],\\\"taper\\\":\\\"log 3.8\\\",\\\"value\\\":1,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.left\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.right\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":0}]],{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"lfo_1.sine\\\",\\\"vca_1.signal\\\"]},{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"lfo_1.sine\\\",\\\"lfo_2.fm_cv\\\"]},{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"lfo_2.sine\\\",\\\"vca_1.cv\\\"]},{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"lfo_1.phasor\\\",\\\"dualvco_1.feedback_cv\\\"]},{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"lfo_1.pulse\\\",\\\"dualvco_1.vco_1_cv\\\"]},{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"dualvco_1.master\\\",\\\"comparator_1.B\\\"]},{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"comparator_1.max\\\",\\\"outs_1.left_(mono)\\\"]},{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"comparator_1.min\\\",\\\"outs_1.right_(stereo)\\\"]},{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"dualvco_1.master\\\",\\\"dualvco_1.vco_2_cv\\\"]},{\\\"op\\\":\\\"connect\\\",\\\"paths\\\":[\\\"vca_1.output\\\",\\\"comparator_1.A\\\"]}]}\""
-				}
-
-			}
-, 			{
-				"box" : 				{
 					"id" : "obj-10",
 					"linecount" : 6,
 					"maxclass" : "message",
@@ -411,7 +487,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 3,
+							"revision" : 0,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -444,6 +520,7 @@
 						"tags" : "",
 						"style" : "",
 						"subpatcher_template" : "",
+						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
 									"id" : "obj-150",
@@ -595,7 +672,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 3,
+							"revision" : 0,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -653,7 +730,7 @@
 										"appversion" : 										{
 											"major" : 8,
 											"minor" : 0,
-											"revision" : 3,
+											"revision" : 0,
 											"architecture" : "x64",
 											"modernui" : 1
 										}
@@ -895,7 +972,7 @@
 										"appversion" : 										{
 											"major" : 8,
 											"minor" : 0,
-											"revision" : 3,
+											"revision" : 0,
 											"architecture" : "x64",
 											"modernui" : 1
 										}
@@ -1020,7 +1097,7 @@
 										"appversion" : 										{
 											"major" : 8,
 											"minor" : 0,
-											"revision" : 3,
+											"revision" : 0,
 											"architecture" : "x64",
 											"modernui" : 1
 										}
@@ -1234,7 +1311,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 3,
+							"revision" : 0,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -1509,7 +1586,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 3,
+							"revision" : 0,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -1805,7 +1882,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 3,
+							"revision" : 0,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -1936,7 +2013,7 @@
 										"appversion" : 										{
 											"major" : 8,
 											"minor" : 0,
-											"revision" : 3,
+											"revision" : 0,
 											"architecture" : "x64",
 											"modernui" : 1
 										}
@@ -1972,13 +2049,13 @@
 										"boxes" : [ 											{
 												"box" : 												{
 													"id" : "obj-3",
-													"linecount" : 4,
+													"linecount" : 23,
 													"maxclass" : "message",
 													"numinlets" : 2,
 													"numoutlets" : 1,
 													"outlettype" : [ "" ],
 													"patching_rect" : [ 50.0, 100.0, 51.0, 585.0 ],
-													"text" : "deltas outs_1__volume"
+													"text" : "deltas outs_1__volume shifter_0_13__range freevoib_0_14__feedback_1 freevoib_0_14__feedback_2 freevoib_0_14__damping freevoib_0_14__spread"
 												}
 
 											}
@@ -2493,7 +2570,7 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-119",
-					"items" : [ "deltas", ",", "outs_1__volume" ],
+					"items" : "<empty>",
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
@@ -2952,6 +3029,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-14", 0 ],
+					"source" : [ "obj-17", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-83", 0 ],
 					"midpoints" : [ 187.5, 721.25, 344.5, 721.25 ],
 					"source" : [ "obj-18", 0 ]
@@ -2988,6 +3072,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-14", 0 ],
+					"source" : [ "obj-24", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-44", 0 ],
 					"source" : [ "obj-26", 0 ]
 				}
@@ -3004,6 +3095,20 @@
 				"patchline" : 				{
 					"destination" : [ "obj-82", 0 ],
 					"source" : [ "obj-28", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-14", 0 ],
+					"source" : [ "obj-29", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-14", 0 ],
+					"source" : [ "obj-31", 0 ]
 				}
 
 			}
@@ -3030,6 +3135,48 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-17", 0 ],
+					"source" : [ "obj-35", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-24", 0 ],
+					"source" : [ "obj-35", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-29", 0 ],
+					"source" : [ "obj-35", 2 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-31", 0 ],
+					"source" : [ "obj-35", 3 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-64", 0 ],
+					"source" : [ "obj-35", 4 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-35", 0 ],
+					"source" : [ "obj-36", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-1", 0 ],
 					"source" : [ "obj-38", 0 ]
 				}
@@ -3039,6 +3186,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-41", 0 ],
 					"source" : [ "obj-38", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-36", 0 ],
+					"source" : [ "obj-39", 0 ]
 				}
 
 			}
@@ -3260,21 +3414,49 @@
  ],
 		"dependency_cache" : [ 			{
 				"name" : "msvr_world.js",
-				"bootpath" : "D:/github/msvr",
+				"bootpath" : "~/msvr",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "world.gendsp",
-				"bootpath" : "D:/github/msvr",
+				"bootpath" : "~/msvr",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ws.client.mxe64",
-				"type" : "mx64"
+				"name" : "shifter.gendsp",
+				"bootpath" : "~/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "freevoib.gendsp",
+				"bootpath" : "~/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "freeverb_allpass.gendsp",
+				"bootpath" : "~/Library/Application Support/Cycling '74/Max 8/Examples/gen",
+				"patcherrelativepath" : "../Library/Application Support/Cycling '74/Max 8/Examples/gen",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "freeverb_comb.gendsp",
+				"bootpath" : "~/Library/Application Support/Cycling '74/Max 8/Examples/gen",
+				"patcherrelativepath" : "../Library/Application Support/Cycling '74/Max 8/Examples/gen",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "ws.client.mxo",
+				"type" : "iLaX"
 			}
  ],
 		"autosave" : 0
