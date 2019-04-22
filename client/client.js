@@ -246,11 +246,11 @@ async function init() {
         await loadTexture(viveHeadsetModelPath + 'black.png'), //await loadTexture(viveHeadsetModelPath + 'screen.png')
     ];
 
-    //floorTexture = await loadFloorTexture( texturesPath + "checkerboard.jpg");
-    //floorTexture = await loadFloorTexture( texturesPath + "noise_pattern_6.jpg");
+    // floorTexture = await loadFloorTexture( texturesPath + "checkerboard.jpg");
+    // floorTexture = await loadFloorTexture( texturesPath + "noise_pattern_6.jpg");
     floorTexture = await loadFloorTexture( texturesPath + "rubber1.jpg");
-    //floorTexture = await loadFloorTexture( texturesPath + "carpet1.jpg");
-    //floorTexture = await loadFloorTexture( texturesPath + "carpet2.jpg");
+    // floorTexture = await loadFloorTexture( texturesPath + "carpet1.jpg");
+    // floorTexture = await loadFloorTexture( texturesPath + "carpet2.jpg");
     
     // TODO: where do these normal maps apply?
     //let viveHeadsetNormalsPNG = await loadTexture(viveHeadsetModelPath + 'normals.png');

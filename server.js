@@ -13,8 +13,6 @@ const express = require('express');
 const WebSocket = require('ws');
 const { vec2, vec3, vec4, quat, mat3, mat4 } = require("gl-matrix");
 
-const vorpal = require('vorpal')();
-
 
 
 const got = require("./got/got")

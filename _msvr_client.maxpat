@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 88.0, 85.0, 849.0, 921.0 ],
+		"rect" : [ 286.0, 85.0, 849.0, 921.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -119,7 +119,6 @@
 						"tags" : "",
 						"style" : "",
 						"subpatcher_template" : "",
-						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
 									"comment" : "",
@@ -445,7 +444,6 @@
 						"tags" : "",
 						"style" : "",
 						"subpatcher_template" : "",
-						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
 									"id" : "obj-150",
@@ -3269,13 +3267,6 @@
 			}
 , 			{
 				"name" : "world.gendsp",
-				"bootpath" : "D:/github/msvr",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "outs.gendsp",
 				"bootpath" : "D:/github/msvr",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
