@@ -172,10 +172,11 @@ var handleDelta = function(delta) {
 			
 			// delete an object
 			case "delnode":
+				post('\n',JSON.stringify(delta))
 				var deleted = delta.path.replace('.', '__');
 				//post('\n',deleted)
 				var deleteSetParam = 'setparam_' + deleted
-				
+				post('\n',deleteSetParam, '\n',deleted)
 				gen_patcher.message("script", "delete", deleted)
 				gen_patcher.message("script", "delete", deleteSetParam)
 			break;
