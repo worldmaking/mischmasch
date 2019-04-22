@@ -33,12 +33,14 @@ let sceneList = []
 //const playbackSessionJSON = []
 //function connect (){
 
+// create a ws connection which can automatically attempt reconnections if server goes down
+let connection = new ReconnectingWebSocket('ws://localhost:8080', [], options);
 
-	var connection = new ReconnectingWebSocket('ws://localhost:8080', [], options);
-
+// run function when ws opens...
 connection.addEventListener('open', () => {
-			// first clear the filename umenu in this patch
+	// clear the filename umenu in the controller.maxpat
 	MaxAPI.outlet('clearPlaybackList', 'clear')
+	// request the list of sessions and scenes from the server
 	connection.send(JSON.stringify({
 		cmd: "initController",
 		date: Date.now(),
@@ -46,31 +48,31 @@ connection.addEventListener('open', () => {
 	}));
 });
 
+// listen for messages from the server
 connection.addEventListener('message', (data) => {
-
+	// the ReconnectingWebSocket package adds an extra layer of JSON stringification... took me a while to figure this out. So, need to parse data.data :(
 	data = JSON.parse(data.data)
-		
-		switch(data.cmd){
-	
-			case "sessionRecordings":{
-				sessionList.push(data.data)
-				MaxAPI.outlet('playbackList','append',data.data)
-			} break;
-	
-			case "scene_files":{
-				sceneList.push(data.data)
-				MaxAPI.outlet('sceneList','append',data.data)
-			} break;
-	
-			default: {
-			//	MaxAPI.post('unhandled message received', data)
-			} break;
-		} 
+	switch(data.cmd){
+		// retrieve list of session recording filenames
+		case "sessionRecordings":{
+			sessionList.push(data.data)
+			MaxAPI.outlet('playbackList','append',data.data)
+		} break;
+		// retrieve list of sceneJSON filenames
+		case "scene_files":{
+			sceneList.push(data.data)
+			MaxAPI.outlet('sceneList','append',data.data)
+		} break;
+
+		default: {
+		//	MaxAPI.post('unhandled message received', data) // probably don't want to print everything else since the server and other clients talk to each other a LOT
+		} break;
+	} 
 })
 
 //////////////////////////////////// LOAD SCENE ////////////////////////////////
+// request a scene from the server (and subsequently send it to all clients)
 MaxAPI.addHandler("loadScene", (sceneName) => {
-	MaxAPI.post(sceneName)
 	connection.send(JSON.stringify({
 		cmd: "loadScene",
 		date: Date.now(),
@@ -79,6 +81,7 @@ MaxAPI.addHandler("loadScene", (sceneName) => {
 })
 
 //////////////////////////////////// CLEAR SCENE ////////////////////////////////
+// clear the scene (except for 1 'outs' module)
 MaxAPI.addHandler("clearScene", () => {
 	connection.send(JSON.stringify({
 		cmd: "clear_scene",
@@ -88,25 +91,29 @@ MaxAPI.addHandler("clearScene", () => {
 })
 
 //////////////////////////////////// SESSION RECORDER ////////////////////////////////
+// record a sequence of OT deltas as a playable session
 MaxAPI.addHandler("record", (filename) => {
+	// ensure filename has no spaces (replace them with underscores...)
 	checkSpace = filename.replace(/\s/g, "_")
 	recordingExists = sessionList.includes(checkSpace)
+	// if the filename doesn't already exist, create it
 	if (recordingExists === false || recordingExists === 0){
-
+		// tell the server to start recording under the provided filename
 		connection.send(JSON.stringify({
 			cmd: "record",
 			date: Date.now(),
 			data: filename
 		}));
-		filename = filename.replace(/\s/g, "_")
-		MaxAPI.outlet('playbackList','append',filename + '.json')
+		// add playback filename to maxpat's list
+		MaxAPI.outlet('playbackList','append',checkSpace + '.json')
 		MaxAPI.outlet("recordStatus", 1)
 	} else {
+		// if filename already exists, ignore recording request and throw warning in maxpat
 		MaxAPI.outlet('filenameExists','set', 'invalid: session filename already taken')
 		MaxAPI.outlet("recordStatus", 0)
 	}
-
 })
+// tell server to stop the recording, and it will also save the file. 
 MaxAPI.addHandler("stopRecord", () => {
 	connection.send(JSON.stringify({
 		cmd: "stopRecord",
@@ -117,7 +124,6 @@ MaxAPI.addHandler("stopRecord", () => {
 
 //////////////////////////////////// SESSION PLAYER ////////////////////////////////
 MaxAPI.outlet("playbackStatus", 0)
-
 let playbackSession;
 let previous;
 let next;
@@ -130,29 +136,28 @@ MaxAPI.addHandler("playback", (filename) => {
 	previous = undefined;
 	next = undefined;
 	times = []
+	// add each OT's UTC into an array, the 'playback' function will then step through each array element and wait the UTC length before stepping to the next element. 
 	for (var i = 0, l = playbackSession.length; i < l; i++) {
-			var obj = playbackSession[i];
+		var obj = playbackSession[i];
 
-			if (previous){
-					next = obj.date
-					times.push(next - previous)
-					// console.log(obj.date)
-					// ...
-					previous = next;
-			} else{
-					previous = obj.date
-					times.push(0)
-					// console.log(obj.date)
-					// ...
-			}
-
+		if (previous){
+			next = obj.date
+			times.push(next - previous)
+			// console.log(obj.date)
+			// ...
+			previous = next;
+		} else{
+			previous = obj.date
+			times.push(0)
+			// console.log(obj.date)
+			// ...
+		}
 	}
 	// reset the counter to 0 before running a new playback playbackSession
 	counter = 0;
 	MaxAPI.post("starting playback")
 	MaxAPI.outlet("playbackStatus", 1)
 	setTimeout(playback, times[counter]);
-
 });
 
 
@@ -160,7 +165,6 @@ MaxAPI.addHandler("stopPlayback", () => {
 	// force the timeout to stop by increasing the counter past the array length limit...
 	counter = playbackSession.length + 10;
 	MaxAPI.post("playback ended")
-
 });
 
 
@@ -168,44 +172,28 @@ let index = 0
 //counter = 0
 //console.log('size',playbackSession.length)
 let counter = 0;
+// step through each OT, sending each one to the server as playback
 let playback = function() {
-
-
-
-    //counter *= 10;
-    if (counter < playbackSession.length){
-        data = playbackSession[counter].data
-       // connection.send(playbackSession[counter])
-       connection.send(JSON.stringify({
-        cmd: "playback",
-        date: Date.now(),
-				data: data
-				
-		}));
-			MaxAPI.outlet("playback", data)
-        console.log(playbackSession[counter])
-        //connection.send(JSON.stringify(playbackSession[counter]));
-        setTimeout(playback, times[counter]);
-        counter++
-       //console.log(counter)
-    } else {
-			MaxAPI.post("playback ended")
-			MaxAPI.outlet("playbackStatus", 0)
-
-			// return;
-        //process.exit()
-    }
-
-//    if(counter > playbackSession.length)
-//    {
-       
-//     console.log(counter, playbackSession.length)
-//     clearTimeout(playback, 0);
-//     //counter = 0;
-//     return;
-//     }
-
-
+	//counter *= 10;
+	if (counter < playbackSession.length){
+			data = playbackSession[counter].data
+			// connection.send(playbackSession[counter])
+			connection.send(JSON.stringify({
+			cmd: "playback",
+			date: Date.now(),
+			data: data
+	}));
+		MaxAPI.outlet("playback", data)
+			console.log(playbackSession[counter])
+			//connection.send(JSON.stringify(playbackSession[counter]));
+			setTimeout(playback, times[counter]);
+			counter++
+			//console.log(counter)
+	} else {
+		MaxAPI.post("playback ended")
+		MaxAPI.outlet("playbackStatus", 0)
+	}
+// get first and last delta in OT recording
 function firstAndLast(playbackSession) {
 
 	var firstItem = playbackSession[0].date;
@@ -216,10 +204,7 @@ function firstAndLast(playbackSession) {
 	console.log(firstItem, lastItem, lastItem - firstItem )
 	return objOutput;
 	}
-	
 	var display = firstAndLast(playbackSession);
-	
 	console.log(display, times);
-    
 }
 
