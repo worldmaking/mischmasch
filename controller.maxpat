@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 1131.0, 107.0, 839.0, 596.0 ],
+		"rect" : [ 807.0, 107.0, 443.0, 596.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 1,
 		"default_fontsize" : 12.0,
@@ -1272,8 +1272,7 @@
 					"numoutlets" : 0,
 					"patching_rect" : [ 844.0, 91.0, 150.0, 20.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 256.0, 80.0, 150.0, 20.0 ],
-					"text" : "Session Name: test6"
+					"presentation_rect" : [ 256.0, 80.0, 150.0, 20.0 ]
 				}
 
 			}
@@ -1892,7 +1891,7 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-14",
-					"items" : [ "session_1555102538709.json", ",", "session_1555106414852.json", ",", "session_1555280609921.json", ",", "session_1555682724259.json", ",", "session_1555683177511.json", ",", "session_1555683230855.json", ",", "session_1555686987618.json", ",", "session_1555692104873.json", ",", "session_1555695817446.json", ",", "session_1555697209683.json", ",", "session_1555697602960.json", ",", "session_1555697907030.json", ",", "session_1555697953299.json", ",", "session_1555697963042.json", ",", "session_1555697999312.json", ",", "session_1555698648105.json", ",", "session_1555698867726.json", ",", "session_1555700251396.json", ",", "session_1555700818327.json", ",", "session_1555702202079.json", ",", "session_1555702734498.json", ",", "session_1555703001037.json", ",", "test6.json" ],
+					"items" : [ "session_1555102538709.json", ",", "session_1555106414852.json", ",", "session_1555280609921.json", ",", "session_1555682724259.json", ",", "session_1555683177511.json", ",", "session_1555683230855.json", ",", "session_1555686987618.json", ",", "session_1555692104873.json", ",", "session_1555695817446.json", ",", "session_1555697209683.json", ",", "session_1555697602960.json", ",", "session_1555697907030.json", ",", "session_1555697953299.json", ",", "session_1555697963042.json", ",", "session_1555697999312.json", ",", "session_1555698648105.json", ",", "session_1555698867726.json", ",", "session_1555700251396.json", ",", "session_1555700818327.json", ",", "session_1555702202079.json", ",", "session_1555702734498.json", ",", "session_1555703001037.json" ],
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
