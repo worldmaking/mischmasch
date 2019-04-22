@@ -26,10 +26,13 @@ function getVarnames(target){
 		if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment"){
 			if (b.varname.indexOf(target) != -1){
 							post(b.varname)	
+							gen_patcher.remove(b); 	
 
 			}
 	
 		}
+		
+
 	});
 	
 	}
@@ -188,20 +191,23 @@ var handleDelta = function(delta) {
 			// delete an object
 			case "delnode":
 				var deleteMe = delta.path.replace('.', '__');
-				//post('\n',deleted)
+				post('\n',deleteMe,0)
 				
-				gen_patcher.apply(function(deleteMe) { 
+				gen_patcher.apply(function(b) { 
+					post('\n',b,1)
 					// prevent erasing our audio outputs from genpatcher
-					if(deleteMe.varname !== "dac_right" && deleteMe.varname !== "dac_left" && deleteMe.varname !== "out_comment"){
-						if (deleteMe.varname.indexOf(target) != -1){
-							post('\nremoving ',deleteMe.varname)	
-							gen_patcher.remove(deleteMe); 				
+					if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment"){
+						//post('\n',deleteMe,2)
+						if (b.varname.indexOf(deleteMe) != -1){
+							post('\n',b,3)
+							post('\nremoving ',b.varname)	
+							gen_patcher.remove(b); 				
 						}
 					}
 				});
 				/*
 				var deleteSetParam = 'setparam_' + deleted
-				
+				post('\n',deleteSetParam, '\n',deleted)
 				gen_patcher.message("script", "delete", deleted)
 				gen_patcher.message("script", "delete", deleteSetParam)*/
 			break;

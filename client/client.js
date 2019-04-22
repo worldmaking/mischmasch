@@ -1471,7 +1471,7 @@ function controllerGamepadControls(controller){
             controller.getWorldPosition(controllerPos);
             object.getWorldPosition(objectPos); 
             let line = controller.getObjectByName("line");
-            
+
             let value = 0;
             if(controllerPos.distanceTo(objectPos) > .3){
                 
@@ -1728,7 +1728,7 @@ function handlemessage(msg, sock) {
             clearScene();
         break;
         case "deltas": {
-            console.log('deltas',msg.data)
+            //console.log('deltas',msg.data)
             //console.log("got deltas", msg.data)
 
             // insert into our TODO list:
@@ -1789,6 +1789,14 @@ function handlemessage(msg, sock) {
             other.head.quaternion._z = msg.pose.head.orient._z;
             other.head.quaternion._w = msg.pose.head.orient._w;
             other.head.matrixWorldNeedsUpdate = true;
+
+        } break;
+        case "scene_files":
+        case "initController":
+        case "sessionRecordings":
+        case "record":
+        case "stopRecord":
+        case "loadScene": {
 
         } break;
         default:
