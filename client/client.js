@@ -121,13 +121,14 @@ let generic_material = new THREE.MeshStandardMaterial({
     side: THREE.DoubleSide,
     depthWrite: false,
     blending: THREE.AdditiveBlending
+
     
 });
 
 let outline_material = new THREE.MeshStandardMaterial({
     color: 0x888888,
-    side: THREE.BackSide
-    
+    side: THREE.BackSide,
+    blending: THREE.NormalBlending
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -751,7 +752,7 @@ function enactDeltaNewNode(delta) {
     
     switch(delta.kind){
         case "inlet": {
-            //inlet_material.blending = THREE.NoBlending;
+            inlet_material.blending = THREE.NormalBlending;
             container = new THREE.Mesh(inlet_geometry, inlet_material);
             container.castShadow = true;
             container.receiveShadow = true;
@@ -762,7 +763,7 @@ function enactDeltaNewNode(delta) {
             //Outline
             outline_mat.color.set(0x00ff00);    
             let outline = new THREE.Mesh(inlet_geometry, outline_mat);
-            outline.scale.multiplyScalar(1.18);
+            outline.scale.multiplyScalar(1.28);
             outline.castShadow = true;
             outline.receiveShadow = true;
             container.add(outline);
@@ -775,7 +776,7 @@ function enactDeltaNewNode(delta) {
             container.userData.selectable = true;
         } break;
         case "outlet":{
-           // outlet_material.blending = THREE.NoBlending;
+            outlet_material.blending = THREE.NormalBlending;
             container = new THREE.Mesh(outlet_geometry, outlet_material);
             container.castShadow = false;
             container.receiveShadow = false;
@@ -787,7 +788,7 @@ function enactDeltaNewNode(delta) {
             //Outline
             outline_mat.color.set(0xff0000);    
             let outline = new THREE.Mesh(outlet_geometry, outline_mat);
-            outline.scale.multiplyScalar(1.18);
+            outline.scale.multiplyScalar(1.28);
             outline.castShadow = false;
             outline.receiveShadow = false;
             container.add(outline);
@@ -859,8 +860,7 @@ function enactDeltaNewNode(delta) {
                     labelN.position.x = -0.01;
                     switchPositions[l] = [labelN.position.x + -0.02,
                         labelN.position.y,
-                        labelN.position.z + n_switch_slider_geometry.parameters.width/2];
-
+                        labelN.position.z + n_switch_slider_geometry.parameters.width/2];  
                     if(delta.value !== undefined && delta.value === l){
                         n_switch_slider = new THREE.Mesh(n_switch_slider_geometry, n_switch_slider_material);
                         n_switch_slider.castShadow = true;
@@ -868,7 +868,6 @@ function enactDeltaNewNode(delta) {
                         n_switch_slider.userData.slideable = true;
                         n_switch_slider.userData.selectable = true;
                         n_switch_slider.position.fromArray(switchPositions[l]);
-                       
                         container.add(n_switch_slider);
 
                     }
