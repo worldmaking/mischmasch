@@ -19,6 +19,10 @@ var feedbackConnections = 0
 gen_patcher = this.patcher.getnamed("world").subpatcher();
 
 var handleDelta = function(delta) {
+				if (counter > 100){
+				counter = 1
+				}
+			
 
 	if (Array.isArray(delta)) {
 		for (var i=0; i<delta.length; i++) {
@@ -28,10 +32,7 @@ var handleDelta = function(delta) {
 	} else {
 		switch (delta.op){
 			// prevent new objects from being srcipted too low on the patcher page (we encountered a bug when objects were written above 1000 on the y axis)
-			if (counter > 100){
-				counter = 1
-				}
-			
+
 			// create an object!
 			case "newnode": 
 				// individual delta to handle:
@@ -88,6 +89,7 @@ var handleDelta = function(delta) {
 							nodeName = delta.path.split('.')[0]
 							paramName = delta.path.replace('.','__')
 							setparamName = delta.path.split('.')[1]
+							
 							//post(nodeName)
 							
 							paramX = paramCounter * 150
@@ -171,7 +173,11 @@ var handleDelta = function(delta) {
 			// delete an object
 			case "delnode":
 				var deleted = delta.path.replace('.', '__');
+				//post('\n',deleted)
+				var deleteSetParam = 'setparam_' + deleted
+				
 				gen_patcher.message("script", "delete", deleted)
+				gen_patcher.message("script", "delete", deleteSetParam)
 			break;
 
 			// create a patchcord!
