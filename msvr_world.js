@@ -16,8 +16,23 @@ var nodeName;
 var counter = 1;
 var feedbackConnections = 0
 
+
+
 gen_patcher = this.patcher.getnamed("world").subpatcher();
 
+function getVarnames(target){
+	gen_patcher.apply(function(b) { 
+		// prevent erasing our audio outputs from genpatcher
+		if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment"){
+			if (b.varname.indexOf(target) != -1){
+							post(b.varname)	
+
+			}
+	
+		}
+	});
+	
+	}
 var handleDelta = function(delta) {
 				if (counter > 100){
 				counter = 1
@@ -172,13 +187,28 @@ var handleDelta = function(delta) {
 			
 			// delete an object
 			case "delnode":
+<<<<<<< HEAD
 				post('\n',JSON.stringify(delta))
 				var deleted = delta.path.replace('.', '__');
+=======
+				var deleteMe = delta.path.replace('.', '__');
+>>>>>>> c258672d7d3fef0ab2d3e5ef9e3a76d215908d62
 				//post('\n',deleted)
+				
+				gen_patcher.apply(function(deleteMe) { 
+					// prevent erasing our audio outputs from genpatcher
+					if(deleteMe.varname !== "dac_right" && deleteMe.varname !== "dac_left" && deleteMe.varname !== "out_comment"){
+						if (deleteMe.varname.indexOf(target) != -1){
+							post('\nremoving ',deleteMe.varname)	
+							gen_patcher.remove(deleteMe); 				
+						}
+					}
+				});
+				/*
 				var deleteSetParam = 'setparam_' + deleted
 				post('\n',deleteSetParam, '\n',deleted)
 				gen_patcher.message("script", "delete", deleted)
-				gen_patcher.message("script", "delete", deleteSetParam)
+				gen_patcher.message("script", "delete", deleteSetParam)*/
 			break;
 
 			// create a patchcord!
