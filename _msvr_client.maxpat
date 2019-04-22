@@ -4,13 +4,13 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 0,
-			"revision" : 0,
+			"revision" : 3,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 530.0, 85.0, 858.0, 921.0 ],
+		"rect" : [ 530.0, 81.0, 858.0, 921.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -39,6 +39,30 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-35",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 4,
+					"outlettype" : [ "signal", "signal", "list", "list" ],
+					"patching_rect" : [ 99.0, 796.0, 71.0, 22.0 ],
+					"text" : "omx.comp~"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-23",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 164.0, 523.0, 151.0, 22.0 ],
+					"text" : "getVarnames dualvco_0_7"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-30",
 					"linecount" : 9,
 					"maxclass" : "message",
@@ -46,7 +70,6 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 915.0, 758.0, 635.0, 129.0 ],
-					"presentation_linecount" : 10,
 					"text" : "{\\\"cmd\\\":\\\"deltas\\\"\\,\\\"date\\\":1555954016507\\,\\\"data\\\":[{\\\"op\\\":\\\"delnode\\\"\\,\\\"path\\\":\\\"freevoib_0_14\\\"\\,\\\"kind\\\":\\\"freevoib\\\"\\,\\\"category\\\":\\\"abstraction\\\"\\,\\\"pos\\\":[-1.584932209491134\\,1.7000772345696031\\,-2.307397125932173]\\,\\\"orient\\\":[0.1977853730900342\\,0.7125797225836124\\,-0.5227304755746963\\,0.4241036720292349]}\\,{\\\"op\\\":\\\"delnode\\\"\\,\\\"path\\\":\\\"freevoib_0_14.signal\\\"\\,\\\"kind\\\":\\\"inlet\\\"}\\,{\\\"op\\\":\\\"delnode\\\"\\,\\\"path\\\":\\\"freevoib_0_14.feedback_1\\\"\\,\\\"kind\\\":\\\"small_knob\\\"\\,\\\"range\\\":[0\\,1]\\,\\\"taper\\\":\\\"linear\\\"\\,\\\"value\\\":0.9\\,\\\"unit\\\":\\\"float\\\"}\\,{\\\"op\\\":\\\"delnode\\\"\\,\\\"path\\\":\\\"freevoib_0_14.feedback_2\\\"\\,\\\"kind\\\":\\\"small_knob\\\"\\,\\\"range\\\":[0\\,1]\\,\\\"taper\\\":\\\"linear\\\"\\,\\\"value\\\":0.5\\,\\\"unit\\\":\\\"float\\\"}\\,{\\\"op\\\":\\\"delnode\\\"\\,\\\"path\\\":\\\"freevoib_0_14.damping\\\"\\,\\\"kind\\\":\\\"small_knob\\\"\\,\\\"range\\\":[0\\,1]\\,\\\"taper\\\":\\\"linear\\\"\\,\\\"value\\\":0.5\\,\\\"unit\\\":\\\"float\\\"}\\,{\\\"op\\\":\\\"delnode\\\"\\,\\\"path\\\":\\\"freevoib_0_14.spread\\\"\\,\\\"kind\\\":\\\"small_knob\\\"\\,\\\"range\\\":[0\\,400]\\,\\\"taper\\\":\\\"linear\\\"\\,\\\"value\\\":100\\,\\\"unit\\\":\\\"float\\\"}\\,{\\\"op\\\":\\\"delnode\\\"\\,\\\"path\\\":\\\"freevoib_0_14.out\\\"\\,\\\"kind\\\":\\\"outlet\\\"}]}"
 				}
 
@@ -122,7 +145,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 618.0, 915.0, 158.0, 22.0 ]
+					"patching_rect" : [ 618.0, 915.0, 158.0, 22.0 ],
+					"text" : "outs_1__volume 0.717356"
 				}
 
 			}
@@ -166,7 +190,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 0,
+							"revision" : 3,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -214,11 +238,13 @@
 , 							{
 								"box" : 								{
 									"id" : "obj-10",
+									"linecount" : 2,
 									"maxclass" : "message",
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 226.0, 372.0, 50.0, 22.0 ]
+									"patching_rect" : [ 226.0, 372.0, 50.0, 22.0 ],
+									"text" : "connected 0"
 								}
 
 							}
@@ -555,13 +581,13 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-10",
-					"linecount" : 6,
+					"linecount" : 2,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 691.0, 173.0, 763.0, 89.0 ],
-					"text" : "\"{\\\"cmd\\\":\\\"deltas\\\",\\\"date\\\":1555702600446,\\\"data\\\":[[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1\\\",\\\"kind\\\":\\\"outs\\\",\\\"pos\\\":[-2.0605223497200336,0.46826704387316614,-2.0405112532755187],\\\"orient\\\":[-0.3121451653567321,0.369889483526838,0.14650496286711281,0.8627186456637955]},[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.left_(mono)\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.right_(stereo)\\\",\\\"kind\\\":\\\"inlet\\\",\\\"index\\\":1}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.volume\\\",\\\"kind\\\":\\\"small_knob\\\",\\\"range\\\":[0,1],\\\"taper\\\":\\\"log 3.8\\\",\\\"value\\\":1,\\\"unit\\\":\\\"float\\\"}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.left\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":0}],[{\\\"op\\\":\\\"newnode\\\",\\\"path\\\":\\\"outs_1.right\\\",\\\"kind\\\":\\\"outlet\\\",\\\"index\\\":0}]]]}\""
+					"patching_rect" : [ 691.0, 173.0, 763.0, 35.0 ],
+					"text" : "{\\\"cmd\\\":\\\"deltas\\\"\\,\\\"date\\\":1555964511287\\,\\\"data\\\":[{\\\"op\\\":\\\"propchange\\\"\\,\\\"path\\\":\\\"outs_1.volume\\\"\\,\\\"name\\\":\\\"value\\\"\\,\\\"from\\\":0.7133519148048447\\,\\\"to\\\":0.717356386148448}]}"
 				}
 
 			}
@@ -602,7 +628,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 0,
+							"revision" : 3,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -786,7 +812,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 0,
+							"revision" : 3,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -844,7 +870,7 @@
 										"appversion" : 										{
 											"major" : 8,
 											"minor" : 0,
-											"revision" : 0,
+											"revision" : 3,
 											"architecture" : "x64",
 											"modernui" : 1
 										}
@@ -1086,7 +1112,7 @@
 										"appversion" : 										{
 											"major" : 8,
 											"minor" : 0,
-											"revision" : 0,
+											"revision" : 3,
 											"architecture" : "x64",
 											"modernui" : 1
 										}
@@ -1211,7 +1237,7 @@
 										"appversion" : 										{
 											"major" : 8,
 											"minor" : 0,
-											"revision" : 0,
+											"revision" : 3,
 											"architecture" : "x64",
 											"modernui" : 1
 										}
@@ -1425,7 +1451,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 0,
+							"revision" : 3,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -1558,7 +1584,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "signal" ],
 					"patching_rect" : [ 383.5, 754.0, 40.0, 22.0 ],
-					"text" : "*~ 0.5"
+					"text" : "*~ 0.2"
 				}
 
 			}
@@ -1570,7 +1596,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "signal" ],
 					"patching_rect" : [ 335.0, 754.0, 40.0, 22.0 ],
-					"text" : "*~ 0.5"
+					"text" : "*~ 0.2"
 				}
 
 			}
@@ -1700,7 +1726,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 0,
+							"revision" : 3,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -1996,7 +2022,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 0,
+							"revision" : 3,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -2029,7 +2055,6 @@
 						"tags" : "",
 						"style" : "",
 						"subpatcher_template" : "",
-						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
 									"id" : "obj-6",
@@ -2128,7 +2153,7 @@
 										"appversion" : 										{
 											"major" : 8,
 											"minor" : 0,
-											"revision" : 0,
+											"revision" : 3,
 											"architecture" : "x64",
 											"modernui" : 1
 										}
@@ -2164,13 +2189,13 @@
 										"boxes" : [ 											{
 												"box" : 												{
 													"id" : "obj-3",
-													"linecount" : 4,
+													"linecount" : 9,
 													"maxclass" : "message",
 													"numinlets" : 2,
 													"numoutlets" : 1,
 													"outlettype" : [ "" ],
 													"patching_rect" : [ 50.0, 100.0, 273.0, 62.0 ],
-													"text" : "deltas outs_1__volume shifter_0_13__range freevoib_0_14__feedback_1 freevoib_0_14__feedback_2 freevoib_0_14__damping freevoib_0_14__spread"
+													"text" : "deltas lfo_1__rate lfo_1__index lfo_1__pulse_width lfo_1__onset lfo_2__rate lfo_2__index lfo_2__pulse_width lfo_2__onset dualvco_1__vco_1_rate dualvco_1__vco_1_waveform dualvco_1__vco_2_rate dualvco_1__vco_2_waveform dualvco_1__feedback vca_1__cv_amount vca_1__bias outs_1__volume"
 												}
 
 											}
@@ -2685,7 +2710,7 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-119",
-					"items" : [ "deltas", ",", "outs_1__volume", ",", "shifter_0_13__range", ",", "freevoib_0_14__feedback_1", ",", "freevoib_0_14__feedback_2", ",", "freevoib_0_14__damping", ",", "freevoib_0_14__spread" ],
+					"items" : [ "deltas", ",", "lfo_1__rate", ",", "lfo_1__index", ",", "lfo_1__pulse_width", ",", "lfo_1__onset", ",", "lfo_2__rate", ",", "lfo_2__index", ",", "lfo_2__pulse_width", ",", "lfo_2__onset", ",", "dualvco_1__vco_1_rate", ",", "dualvco_1__vco_1_waveform", ",", "dualvco_1__vco_2_rate", ",", "dualvco_1__vco_2_waveform", ",", "dualvco_1__feedback", ",", "vca_1__cv_amount", ",", "vca_1__bias", ",", "outs_1__volume" ],
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
@@ -3187,6 +3212,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-12", 0 ],
+					"source" : [ "obj-23", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-14", 0 ],
 					"source" : [ "obj-24", 0 ]
 				}
@@ -3501,42 +3533,56 @@
  ],
 		"dependency_cache" : [ 			{
 				"name" : "msvr_world.js",
-				"bootpath" : "~/msvr",
+				"bootpath" : "D:/github/msvr",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "world.gendsp",
-				"bootpath" : "~/msvr",
+				"bootpath" : "D:/github/msvr",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
-				"name" : "freevoib.gendsp",
-				"bootpath" : "~/msvr",
+				"name" : "lfo.gendsp",
+				"bootpath" : "D:/github/msvr",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
-				"name" : "freeverb_allpass.gendsp",
-				"bootpath" : "~/Library/Application Support/Cycling '74/Max 8/Examples/gen",
-				"patcherrelativepath" : "../Library/Application Support/Cycling '74/Max 8/Examples/gen",
+				"name" : "dualvco.gendsp",
+				"bootpath" : "D:/github/msvr",
+				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
-				"name" : "freeverb_comb.gendsp",
-				"bootpath" : "~/Library/Application Support/Cycling '74/Max 8/Examples/gen",
-				"patcherrelativepath" : "../Library/Application Support/Cycling '74/Max 8/Examples/gen",
+				"name" : "vca.gendsp",
+				"bootpath" : "D:/github/msvr",
+				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ws.client.mxo",
-				"type" : "iLaX"
+				"name" : "comparator.gendsp",
+				"bootpath" : "D:/github/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "outs.gendsp",
+				"bootpath" : "D:/github/msvr",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "ws.client.mxe64",
+				"type" : "mx64"
 			}
  ],
 		"autosave" : 0
