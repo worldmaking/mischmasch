@@ -2,8 +2,6 @@
 .DS_Store
 */.DS_Store
 
-# session recordings
-/session_recordings/
 # Logs
 logs
 *.log
