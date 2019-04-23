@@ -100,7 +100,6 @@ var handleDelta = function(delta) {
 							case 'tuning_knob':
 							case 'slider':
 							case 'momentary':
-							case 'n_switch':
 							case 'led':
 							//post(kind, delta.path)
 						
@@ -126,6 +125,31 @@ var handleDelta = function(delta) {
 							outlet(1, paramName, delta.value, delta.range)
 							paramCounter++
 							
+							break;
+							
+							case 'n_switch':
+							nodeName = delta.path.split('.')[0]
+							paramName = delta.path.replace('.','__')
+							setparamName = delta.path.split('.')[1]
+														post(kind, nodeName)
+
+							//post(nodeName)
+							
+							paramX = paramCounter * 150
+							// generate the subparam which the param will bind to
+							var setparam = gen_patcher.newdefault([275, counter * 2, "setparam", setparamName])
+							setparam.varname = 'setparam_' + paramName
+							gen_patcher.message("script", "connect", setparam.varname, 0, nodeName, 0);
+						
+							// generate the param which the js script will bind to
+							var param = gen_patcher.newdefault([450, counter * 1.5, "param", paramName, delta.value])
+							param.varname = paramName
+							gen_patcher.message("script", "connect", param.varname, 0, setparam.varname, 0);
+						
+							//gen_patcher.message("script", "send", param.varname, paramValue);
+							//post('\n\n', delta.value)
+							outlet(1, paramName, delta.value, 'n_switch')
+							paramCounter++
 							break;
 							
 							case "inlet": 

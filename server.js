@@ -21,6 +21,11 @@ console.log(got)
 // 1st cli arg can be the scenefile 
 let scenefile = __dirname + "/scene_files/scene_edited.json"
 
+			//demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
+			// turn this into deltas:
+			//let deltas = got.deltasFromGraph(demo_scene, []);
+			//console.log(deltas)
+
 // declare array for temp storage of OTs for recording sessions
 let sessionJSON = []
 // declare var for recording status
@@ -72,7 +77,8 @@ if (MaxAPI) {
 }
 
 //////////////////////// 
-
+let OTHistory = [];
+////////////////////////
 let demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
 /*{
 	"nodes": {
@@ -199,14 +205,16 @@ function send_all_clients(msg, ignore) {
 // whenever a client connects to this websocket:
 let sessionId = 0;
 wss.on('connection', function(ws, req) {
+
+
+// do any
 	console.log("server received a connection");
 	console.log("server has "+wss.clients.size+" connected clients");
-	
+	//	ws.id = uuid.v4();
 	const id = ++sessionId;
 	const location = url.parse(req.url, true);
 	// You might use location.query.access_token to authenticate or share sessions
 	// or req.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
-	console.log(id)
 	
 	ws.on('error', function (e) {
 		if (e.message === "read ECONNRESET") {
@@ -267,7 +275,7 @@ function handlemessage(msg, sock, id) {
 			if (recordStatus === 1){
 				sessionJSON.push(response)
 			}
-			
+			OTHistory.push(response)
 			send_all_clients(JSON.stringify(response));
 		} break;
 
@@ -345,6 +353,12 @@ function handlemessage(msg, sock, id) {
 
 		case "record":{
 			// reset session
+
+			// take OTHistory, turn it into a graph. 
+			// take that graph turn it back into an OT history (will this remove all redundant deltas? (we want this...))
+			// set these deltas as the header for the recorded session file
+			// then append the sessionJSON in the stopRecord section. 
+			/*
 			sessionJSON = []
 			let recording = msg.data.replace(/\s/g, "_")
 			// save session name as filename provided in this message
@@ -352,7 +366,7 @@ function handlemessage(msg, sock, id) {
 			// push all received deltas to the sessionJSON:
 			recordStatus = 1
 			console.log('session will be stored at', sessionRecording)
-
+			*/
 		} break;
 
 		case "stopRecord":{
@@ -383,15 +397,16 @@ function handlemessage(msg, sock, id) {
 
 		} break;
 		case "get_scene": {
-			demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
+			
+			//demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
 			// turn this into deltas:
-			let deltas = got.deltasFromGraph(demo_scene, []);
+			//let deltas = got.deltasFromGraph(demo_scene, []);
 			//console.log(deltas)
 
 			send_all_clients(JSON.stringify({
 				cmd: "deltas",
 				date: Date.now(),
-				data: deltas
+				data: OTHistory
 			}));
 
 		} break;

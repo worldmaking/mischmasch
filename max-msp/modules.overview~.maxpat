@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 45.0, 85.0, 1840.0, 920.0 ],
+		"rect" : [ 34.0, 85.0, 982.0, 920.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -38,6 +38,38 @@
 		"style" : "",
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
+				"box" : 				{
+					"annotation" : "lfo\n",
+					"bgmode" : 0,
+					"border" : 0,
+					"clickthrough" : 0,
+					"enablehscroll" : 0,
+					"enablevscroll" : 0,
+					"id" : "obj-49",
+					"lockeddragscroll" : 0,
+					"maxclass" : "bpatcher",
+					"name" : "lfo.maxpat",
+					"numinlets" : 3,
+					"numoutlets" : 3,
+					"offset" : [ 0.0, 0.0 ],
+					"outlettype" : [ "signal", "signal", "signal" ],
+					"patching_rect" : [ 253.5, 583.0, 144.0, 234.0 ],
+					"viewvisibility" : 1
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-31",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 0,
+					"patching_rect" : [ 431.5, 902.0, 133.0, 22.0 ],
+					"text" : "dac~"
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"fontface" : 0,
 					"fontname" : "Arial",
@@ -492,7 +524,7 @@
 					"numoutlets" : 2,
 					"offset" : [ 0.0, 0.0 ],
 					"outlettype" : [ "signal", "signal" ],
-					"patching_rect" : [ 672.5, 1052.0, 133.0, 178.0 ],
+					"patching_rect" : [ 431.5, 677.0, 133.0, 178.0 ],
 					"viewvisibility" : 1
 				}
 
@@ -626,13 +658,13 @@
 					"patching_rect" : [ 1122.0, 980.0, 104.0, 136.0 ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
-							"parameter_type" : 0,
-							"parameter_unitstyle" : 4,
 							"parameter_mmin" : -70.0,
 							"parameter_longname" : "live.gain~[1]",
 							"parameter_mmax" : 6.0,
 							"parameter_initial" : [ 0.0 ],
-							"parameter_shortname" : "live.gain~"
+							"parameter_shortname" : "live.gain~",
+							"parameter_type" : 0,
+							"parameter_unitstyle" : 4
 						}
 
 					}
@@ -853,6 +885,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-49", 0 ],
+					"source" : [ "obj-11", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-9", 1 ],
 					"order" : 2,
 					"source" : [ "obj-11", 2 ]
@@ -869,6 +908,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-7", 0 ],
+					"disabled" : 1,
 					"source" : [ "obj-12", 0 ]
 				}
 
@@ -876,6 +916,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-7", 1 ],
+					"disabled" : 1,
 					"source" : [ "obj-13", 1 ]
 				}
 
@@ -883,6 +924,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-7", 0 ],
+					"disabled" : 1,
 					"source" : [ "obj-13", 0 ]
 				}
 
@@ -905,6 +947,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-25", 0 ],
 					"source" : [ "obj-19", 3 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-48", 0 ],
+					"source" : [ "obj-19", 1 ]
 				}
 
 			}
@@ -1005,6 +1054,20 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-31", 1 ],
+					"source" : [ "obj-4", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-31", 0 ],
+					"source" : [ "obj-4", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-27", 0 ],
 					"source" : [ "obj-40", 1 ]
 				}
@@ -1036,7 +1099,23 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-11", 1 ],
+					"order" : 1,
 					"source" : [ "obj-48", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-49", 2 ],
+					"order" : 0,
+					"source" : [ "obj-48", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-4", 0 ],
+					"source" : [ "obj-49", 2 ]
 				}
 
 			}
@@ -1109,49 +1188,53 @@
 			}
  ],
 		"parameters" : 		{
-			"obj-40::obj-17" : [ "onset[12]", "onset", 0 ],
-			"obj-23::obj-1" : [ "rate[30]", "rate", 0 ],
-			"obj-48::obj-15" : [ "pulse_width[13]", "pulse_width", 0 ],
-			"obj-9::obj-15" : [ "pulse_width[9]", "pulse_width", 0 ],
-			"obj-11::obj-1" : [ "rate[28]", "rate", 0 ],
-			"obj-34::obj-12" : [ "index[15]", "index", 0 ],
-			"obj-40::obj-1" : [ "rate[2]", "rate", 0 ],
-			"obj-40::obj-15" : [ "pulse_width[12]", "pulse_width", 0 ],
-			"obj-23::obj-17" : [ "onset[10]", "onset", 0 ],
-			"obj-9::obj-12" : [ "index[17]", "index", 0 ],
-			"obj-11::obj-17" : [ "onset[8]", "onset", 0 ],
-			"obj-4::obj-7" : [ "volume[1]", "volume", 0 ],
-			"obj-30::obj-12" : [ "index[14]", "index", 0 ],
 			"obj-33::obj-9" : [ "bias[3]", "bias", 0 ],
-			"obj-34::obj-1" : [ "rate[27]", "rate", 0 ],
 			"obj-23::obj-12" : [ "index[18]", "index", 0 ],
-			"obj-32::obj-9" : [ "bias", "bias", 0 ],
 			"obj-13::obj-7" : [ "volume[2]", "volume", 0 ],
-			"obj-9::obj-1" : [ "rate[29]", "rate", 0 ],
-			"obj-15::obj-12" : [ "index[2]", "index", 0 ],
+			"obj-48::obj-15" : [ "pulse_width[13]", "pulse_width", 0 ],
+			"obj-11::obj-1" : [ "rate[28]", "rate", 0 ],
+			"obj-32::obj-9" : [ "bias", "bias", 0 ],
 			"obj-10::obj-9" : [ "bias[1]", "bias", 0 ],
-			"obj-54" : [ "live.gain~[1]", "live.gain~", 0 ],
-			"obj-30::obj-15" : [ "pulse_width", "pulse_width", 0 ],
-			"obj-34::obj-17" : [ "onset[7]", "onset", 0 ],
-			"obj-40::obj-12" : [ "index[3]", "index", 0 ],
-			"obj-23::obj-15" : [ "pulse_width[10]", "pulse_width", 0 ],
-			"obj-30::obj-17" : [ "onset", "onset", 0 ],
-			"obj-48::obj-17" : [ "onset[13]", "onset", 0 ],
-			"obj-9::obj-17" : [ "onset[9]", "onset", 0 ],
-			"obj-32::obj-12" : [ "cv", "cv", 0 ],
-			"obj-11::obj-15" : [ "pulse_width[8]", "pulse_width", 0 ],
-			"obj-30::obj-1" : [ "rate[15]", "rate", 0 ],
-			"obj-48::obj-1" : [ "rate[3]", "rate", 0 ],
-			"obj-48::obj-12" : [ "index[4]", "index", 0 ],
-			"obj-15::obj-1" : [ "rate[1]", "rate", 0 ],
-			"obj-33::obj-12" : [ "cv[3]", "cv", 0 ],
-			"obj-15::obj-17" : [ "onset[11]", "onset", 0 ],
-			"obj-45::obj-1" : [ "threshold", "threshold", 0 ],
-			"obj-15::obj-15" : [ "pulse_width[11]", "pulse_width", 0 ],
-			"obj-11::obj-12" : [ "index[16]", "index", 0 ],
+			"obj-34::obj-1" : [ "rate[27]", "rate", 0 ],
+			"obj-23::obj-17" : [ "onset[10]", "onset", 0 ],
+			"obj-49::obj-15" : [ "pulse_width[14]", "pulse_width", 0 ],
 			"obj-12::obj-7" : [ "volume", "volume", 0 ],
+			"obj-40::obj-1" : [ "rate[2]", "rate", 0 ],
+			"obj-9::obj-17" : [ "onset[9]", "onset", 0 ],
+			"obj-15::obj-12" : [ "index[2]", "index", 0 ],
+			"obj-11::obj-15" : [ "pulse_width[8]", "pulse_width", 0 ],
+			"obj-34::obj-17" : [ "onset[7]", "onset", 0 ],
+			"obj-15::obj-1" : [ "rate[1]", "rate", 0 ],
+			"obj-30::obj-15" : [ "pulse_width", "pulse_width", 0 ],
+			"obj-40::obj-15" : [ "pulse_width[12]", "pulse_width", 0 ],
+			"obj-23::obj-1" : [ "rate[30]", "rate", 0 ],
+			"obj-15::obj-15" : [ "pulse_width[11]", "pulse_width", 0 ],
+			"obj-9::obj-1" : [ "rate[29]", "rate", 0 ],
+			"obj-48::obj-12" : [ "index[4]", "index", 0 ],
+			"obj-11::obj-12" : [ "index[16]", "index", 0 ],
+			"obj-30::obj-1" : [ "rate[15]", "rate", 0 ],
+			"obj-49::obj-12" : [ "index[5]", "index", 0 ],
+			"obj-33::obj-12" : [ "cv[3]", "cv", 0 ],
+			"obj-49::obj-1" : [ "rate[4]", "rate", 0 ],
+			"obj-34::obj-12" : [ "index[15]", "index", 0 ],
+			"obj-23::obj-15" : [ "pulse_width[10]", "pulse_width", 0 ],
+			"obj-40::obj-17" : [ "onset[12]", "onset", 0 ],
+			"obj-4::obj-7" : [ "volume[1]", "volume", 0 ],
+			"obj-48::obj-17" : [ "onset[13]", "onset", 0 ],
+			"obj-9::obj-15" : [ "pulse_width[9]", "pulse_width", 0 ],
+			"obj-32::obj-12" : [ "cv", "cv", 0 ],
 			"obj-10::obj-12" : [ "cv[1]", "cv", 0 ],
 			"obj-34::obj-15" : [ "pulse_width[7]", "pulse_width", 0 ],
+			"obj-40::obj-12" : [ "index[3]", "index", 0 ],
+			"obj-9::obj-12" : [ "index[17]", "index", 0 ],
+			"obj-30::obj-17" : [ "onset", "onset", 0 ],
+			"obj-48::obj-1" : [ "rate[3]", "rate", 0 ],
+			"obj-15::obj-17" : [ "onset[11]", "onset", 0 ],
+			"obj-45::obj-1" : [ "threshold", "threshold", 0 ],
+			"obj-11::obj-17" : [ "onset[8]", "onset", 0 ],
+			"obj-54" : [ "live.gain~[1]", "live.gain~", 0 ],
+			"obj-49::obj-17" : [ "onset[14]", "onset", 0 ],
+			"obj-30::obj-12" : [ "index[14]", "index", 0 ],
 			"parameterbanks" : 			{
 
 			}
@@ -1160,35 +1243,35 @@
 ,
 		"dependency_cache" : [ 			{
 				"name" : "complexLFO.gendsp",
-				"bootpath" : "~/msvr",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "noise.gendsp",
-				"bootpath" : "~/msvr",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "outs.gendsp",
-				"bootpath" : "~/msvr",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "lfo.gendsp",
-				"bootpath" : "~/msvr",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "freevoib.gendsp",
-				"bootpath" : "~/msvr",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
@@ -1196,118 +1279,118 @@
 , 			{
 				"name" : "freeverb_allpass.gendsp",
 				"bootpath" : "~/Library/Application Support/Cycling '74/Max 8/Examples/gen",
-				"patcherrelativepath" : "../Library/Application Support/Cycling '74/Max 8/Examples/gen",
+				"patcherrelativepath" : "../../Library/Application Support/Cycling '74/Max 8/Examples/gen",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "freeverb_comb.gendsp",
 				"bootpath" : "~/Library/Application Support/Cycling '74/Max 8/Examples/gen",
-				"patcherrelativepath" : "../Library/Application Support/Cycling '74/Max 8/Examples/gen",
+				"patcherrelativepath" : "../../Library/Application Support/Cycling '74/Max 8/Examples/gen",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "lfo.maxpat",
-				"bootpath" : "~/msvr",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "sample_and_hold.maxpat",
-				"bootpath" : "~/msvr",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "sample_and_hold.gendsp",
-				"bootpath" : "~/msvr",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "ffm.gendsp",
-				"bootpath" : "~/msvr",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "infiniterecursion~.maxpat",
-				"bootpath" : "~/msvr",
-				"patcherrelativepath" : ".",
+				"bootpath" : "~/msvr/archive",
+				"patcherrelativepath" : "../archive",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "outs.maxpat",
-				"bootpath" : "~/msvr",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "complex_compare.gendsp",
-				"bootpath" : "~/msvr",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "logic.gendsp",
-				"bootpath" : "~/msvr",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "comparator.gendsp",
-				"bootpath" : "~/msvr",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "foldcomb.gendsp",
-				"bootpath" : "~/msvr",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "shaper.gendsp",
-				"bootpath" : "~/msvr",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "shifter.gendsp",
-				"bootpath" : "~/msvr",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "vca.maxpat",
-				"bootpath" : "~/msvr",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "vca.gendsp",
-				"bootpath" : "~/msvr",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "constant.gendsp",
-				"bootpath" : "~/msvr",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1

@@ -34,7 +34,7 @@ let sceneList = []
 //function connect (){
 
 // create a ws connection which can automatically attempt reconnections if server goes down
-let connection = new ReconnectingWebSocket('ws://localhost:8080', [], options);
+let connection = new ReconnectingWebSocket('ws://localhost:8080/?token=abc123', [], options);
 
 // run function when ws opens...
 connection.addEventListener('open', () => {
