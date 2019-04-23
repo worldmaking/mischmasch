@@ -917,7 +917,6 @@ function enactDeltaNewNode(delta) {
     if(delta.value) container.userData.value = delta.value;
 
     // add to our library of nodes:
-    console.log(container)
     addObjectByPath(path, container);
     // add to proper parent:
     parent.add(container);
@@ -1538,6 +1537,8 @@ function controllerGamepadControls(controller){
 
                     line.scale.z = 0;
                 }
+                object.userData.rotation = object.rotation.clone();
+                
             } else {
                 controller.rotation.z += object.userData.rotation._z;
                 object.rotation.z = controller.rotation.z - controller.userData.rotation.z;
