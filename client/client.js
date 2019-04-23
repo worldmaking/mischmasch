@@ -914,8 +914,10 @@ function enactDeltaNewNode(delta) {
     container.userData.name = name;
     container.userData.path = path;
     container.userData.kind = delta.kind;
-    if(delta.value) container.userData.value = delta.value;
-
+    if(delta.value){
+        container.userData.value = delta.value;
+    } 
+    
     // add to our library of nodes:
     addObjectByPath(path, container);
     // add to proper parent:
@@ -1086,7 +1088,7 @@ function enactDeltaObjectValue(delta) {
             object.userData.value = value;
             for(let child of object.children){
                 if(child.userData.selectable){
-                    child.position.fromArray( object.userData.positions[value]);
+                    child.position.fromArray( object.userData.positions[value -1]);
                 }
             }
         } break;
@@ -1598,8 +1600,9 @@ function controllerGamepadControls(controller){
                 //   } else {
                 //      value = 1;
                 //  }
+
                 outgoingDeltas.push(
-                    { op:"propchange", path: object.parent.userData.path, name:"value", from: object.parent.userData.value, to: value });
+                    { op:"propchange", path: object.parent.userData.path, name:"value", from: object.parent.userData.value, to: value + 1 });
         }
 
     } else {

@@ -4,13 +4,13 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 0,
-			"revision" : 0,
+			"revision" : 5,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "dsp.gen",
-		"rect" : [ 59.0, 104.0, 1389.0, 809.0 ],
+		"rect" : [ 217.0, 84.0, 1390.0, 810.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -45,7 +45,7 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 40.0, 587.0, 127.0, 23.0 ],
+					"patching_rect" : [ 40.0, 587.0, 145.0, 23.0 ],
 					"text" : "out 1 @comment vco1"
 				}
 
@@ -273,8 +273,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 201.0, 180.0, 214.0, 22.0 ],
-					"text" : "param waveform_1 1 @min 1 @max 3"
+					"patching_rect" : [ 201.0, 180.0, 240.0, 22.0 ],
+					"text" : "param vco_1_waveform 1 @min 1 @max 3"
 				}
 
 			}
@@ -285,8 +285,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 585.0, 180.0, 214.0, 22.0 ],
-					"text" : "param waveform_2 1 @min 1 @max 3"
+					"patching_rect" : [ 585.0, 180.0, 240.0, 22.0 ],
+					"text" : "param vco_2_waveform 1 @min 1 @max 3"
 				}
 
 			}
@@ -334,7 +334,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 963.0, 274.0, 150.0, 21.0 ],
+					"patching_rect" : [ 963.0, 274.0, 156.0, 21.0 ],
 					"text" : "amount of self-influence"
 				}
 
@@ -361,7 +361,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 286.0, 600.5, 150.0, 35.0 ],
+					"patching_rect" : [ 286.0, 600.5, 164.0, 36.0 ],
 					"text" : "to do: get other functions to outputs 4 5 6..."
 				}
 
@@ -387,7 +387,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 540.0, 362.0, 150.0, 21.0 ],
+					"patching_rect" : [ 540.0, 362.0, 156.0, 21.0 ],
 					"text" : "output modulates phase"
 				}
 
@@ -401,7 +401,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 540.0, 392.0, 150.0, 35.0 ],
+					"patching_rect" : [ 540.0, 392.0, 150.0, 36.0 ],
 					"text" : "using history node to accumulate phase"
 				}
 
@@ -414,7 +414,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 30.0, 30.0, 285.0, 21.0 ],
+					"patching_rect" : [ 30.0, 30.0, 305.0, 21.0 ],
 					"text" : "One form of feedback FM (actually, feedback PM)"
 				}
 
@@ -428,7 +428,7 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 105.0, 362.0, 100.0, 23.0 ],
+					"patching_rect" : [ 105.0, 362.0, 116.0, 23.0 ],
 					"text" : "param index 0.01"
 				}
 
@@ -456,7 +456,7 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 888.0, 274.0, 70.0, 23.0 ],
+					"patching_rect" : [ 888.0, 274.0, 76.0, 23.0 ],
 					"text" : "param fb 0"
 				}
 
@@ -470,7 +470,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 480.0, 392.0, 47.0, 23.0 ],
+					"patching_rect" : [ 480.0, 392.0, 51.0, 23.0 ],
 					"text" : "history"
 				}
 
@@ -497,7 +497,7 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 435.0, 497.0, 127.0, 23.0 ],
+					"patching_rect" : [ 435.0, 497.0, 145.0, 23.0 ],
 					"text" : "out 2 @comment vco2"
 				}
 
@@ -553,7 +553,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 191.0, 542.0, 46.0, 23.0 ],
+					"patching_rect" : [ 191.0, 542.0, 48.0, 23.0 ],
 					"text" : "accum"
 				}
 
@@ -567,8 +567,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 449.0, 90.0, 85.0, 23.0 ],
-					"text" : "param vco_2 3"
+					"patching_rect" : [ 449.0, 90.0, 131.0, 23.0 ],
+					"text" : "param vco_2_rate 3"
 				}
 
 			}
@@ -581,8 +581,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 90.0, 90.0, 99.0, 23.0 ],
-					"text" : "param vco_1 200"
+					"patching_rect" : [ 90.0, 90.0, 146.0, 23.0 ],
+					"text" : "param vco_1_rate 200"
 				}
 
 			}
@@ -594,7 +594,7 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 190.999969482421875, 748.0, 138.0, 23.0 ],
+					"patching_rect" : [ 190.999969482421875, 748.0, 160.0, 23.0 ],
 					"text" : "out 3 @comment master"
 				}
 
