@@ -24,6 +24,7 @@ if (!Array.prototype.flat) {
     })(this, depth);
   };
 }
+// console.log('test')
 
 let operators = JSON.parse(fs.readFileSync("operators.json", "utf-8"))
 let operator_constructors = []
@@ -36,11 +37,14 @@ for (let op of operators) {
   let ctors = op.constructors
   let inputs = op.inputs
   let outputs = op.outputs
+  let specification = op.category
+  console.log(op.category)
+  //console.log(op)
 
   let default_ctor = ctors[ctors.length-1]
   let ninlets = default_ctor.inlets.length
   let noutlets = outputs.length
-  console.log(name,ninlets,noutlets)
+  //console.log(name,ninlets,noutlets)
   // skip objects that need args
   if (Array.isArray(default_ctor.arguments) && default_ctor.arguments.length > 0) continue;
 
@@ -52,17 +56,21 @@ for (let op of operators) {
 
     let in_names = default_ctor.inlets
     let out_names = outputs.map(o => o.name)
+    //console.log(outputs.map(o => o.name))
 
     let codes = [`
-      { "op":"newnode", "path":"\${path}", "kind":"${name}", "category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] }`];
+      { "op":"newnode", "path":"\${path}", "kind":"${name}", "specification":"${specification}",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] }`];
 
     for (let i=0; i<in_names.length; i++) {
       let inlet_name = in_names[i]
+      
+      
       codes.push(`
       { "op":"newnode", "kind":"inlet", "path":"\${path}.${inlet_name}", "index":${i} }`);
     }
     for (let i=0; i<out_names.length; i++) {
       let outlet_name = out_names[i]
+      //console.log(outlet_name)
       codes.push(`
       { "op":"newnode", "kind":"outlet", "path":"\${path}.${outlet_name}","index":${i} }`);
     }
