@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 638.0, 222.0, 641.0, 480.0 ],
+		"rect" : [ 638.0, 222.0, 642.0, 480.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -38,6 +38,22 @@
 		"style" : "",
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
+				"box" : 				{
+					"fontface" : 0,
+					"fontname" : "Arial",
+					"fontsize" : 12.0,
+					"id" : "obj-8",
+					"maxclass" : "number~",
+					"mode" : 2,
+					"numinlets" : 2,
+					"numoutlets" : 2,
+					"outlettype" : [ "signal", "float" ],
+					"patching_rect" : [ 302.0, 598.0, 56.0, 22.0 ],
+					"sig" : 0.0
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-9",
 					"maxclass" : "toggle",
@@ -88,12 +104,13 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-43",
+					"linecount" : 2,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 175.0, 553.0, 35.0, 22.0 ],
-					"text" : "open"
+					"patching_rect" : [ 175.0, 553.0, 35.0, 35.0 ],
+					"text" : "signal"
 				}
 
 			}
@@ -115,8 +132,8 @@
 					"id" : "obj-83",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
-					"numoutlets" : 2,
-					"outlettype" : [ "signal", "signal" ],
+					"numoutlets" : 3,
+					"outlettype" : [ "signal", "signal", "signal" ],
 					"patching_rect" : [ 175.0, 580.5, 68.0, 22.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 35.0, 144.5, 68.0, 22.0 ],
@@ -164,7 +181,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 622.0, 886.0, 158.0, 35.0 ],
-					"text" : "dualvco_1__vco_2_waveform 12."
+					"text" : "dualvco_1__vco_2_rate 607.616028"
 				}
 
 			}
@@ -881,13 +898,13 @@
 										"boxes" : [ 											{
 												"box" : 												{
 													"id" : "obj-3",
-													"linecount" : 10,
+													"linecount" : 9,
 													"maxclass" : "message",
 													"numinlets" : 2,
 													"numoutlets" : 1,
 													"outlettype" : [ "" ],
 													"patching_rect" : [ 50.0, 100.0, 273.0, 62.0 ],
-													"text" : "deltas lfo_1__rate lfo_1__index lfo_1__pulse_width lfo_1__onset lfo_2__rate lfo_2__index lfo_2__pulse_width lfo_2__onset dualvco_1__vco_1_rate dualvco_1__vco_1_waveform dualvco_1__vco_2_rate dualvco_1__vco_2_waveform dualvco_1__feedback vca_1__cv_amount vca_1__bias outs_1__volume sessionRecordings scene_files"
+													"text" : "deltas lfo_1__rate lfo_1__index lfo_1__pulse_width lfo_1__onset lfo_2__rate lfo_2__index lfo_2__pulse_width lfo_2__onset dualvco_1__vco_1_rate dualvco_1__vco_1_waveform dualvco_1__vco_2_rate dualvco_1__vco_2_waveform dualvco_1__feedback vca_1__cv_amount vca_1__bias outs_1__volume"
 												}
 
 											}
@@ -1402,7 +1419,7 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-119",
-					"items" : "<empty>",
+					"items" : [ "deltas", ",", "lfo_1__rate", ",", "lfo_1__index", ",", "lfo_1__pulse_width", ",", "lfo_1__onset", ",", "lfo_2__rate", ",", "lfo_2__index", ",", "lfo_2__pulse_width", ",", "lfo_2__onset", ",", "dualvco_1__vco_1_rate", ",", "dualvco_1__vco_1_waveform", ",", "dualvco_1__vco_2_rate", ",", "dualvco_1__vco_2_waveform", ",", "dualvco_1__feedback", ",", "vca_1__cv_amount", ",", "vca_1__bias", ",", "outs_1__volume" ],
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
@@ -1483,15 +1500,13 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-41",
-					"linecount" : 2,
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 191.0, 257.0, 150.0, 33.0 ],
+					"patching_rect" : [ 191.0, 257.0, 150.0, 20.0 ],
 					"presentation" : 1,
-					"presentation_linecount" : 2,
-					"presentation_rect" : [ 35.0, 68.0, 150.0, 33.0 ],
-					"text" : "ws connection closed. reopenning..."
+					"presentation_rect" : [ 35.0, 68.0, 150.0, 20.0 ],
+					"text" : "ws connected to server"
 				}
 
 			}
@@ -1561,7 +1576,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 226.0, 372.0, 50.0, 22.0 ],
-									"text" : "connected 0"
+									"text" : "connected 1"
 								}
 
 							}
@@ -2354,6 +2369,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-8", 0 ],
+					"source" : [ "obj-83", 2 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-122", 0 ],
 					"source" : [ "obj-84", 0 ]
 				}
@@ -2390,6 +2412,41 @@
 			}
 , 			{
 				"name" : "world.gendsp",
+				"bootpath" : "C:/GitHub/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "lfo.gendsp",
+				"bootpath" : "C:/GitHub/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "dualvco.gendsp",
+				"bootpath" : "C:/GitHub/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "vca.gendsp",
+				"bootpath" : "C:/GitHub/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "comparator.gendsp",
+				"bootpath" : "C:/GitHub/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "outs.gendsp",
 				"bootpath" : "C:/GitHub/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
