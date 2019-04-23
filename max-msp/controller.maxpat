@@ -4,13 +4,13 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 0,
-			"revision" : 3,
+			"revision" : 0,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 947.0, 146.0, 839.0, 596.0 ],
+		"rect" : [ 807.0, 146.0, 839.0, 596.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 1,
 		"default_fontsize" : 12.0,
@@ -61,7 +61,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 3,
+							"revision" : 0,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -198,7 +198,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 3,
+							"revision" : 0,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -420,7 +420,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 3,
+							"revision" : 0,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -665,7 +665,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 3,
+							"revision" : 0,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -876,7 +876,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "bang" ],
-									"patching_rect" : [ 448.0, 110.0, 144.0, 22.0 ],
+									"patching_rect" : [ 448.0, 110.0, 142.0, 35.0 ],
 									"text" : "dialog Enter Session Title"
 								}
 
@@ -1154,7 +1154,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 3,
+							"revision" : 0,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -1382,7 +1382,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 3,
+							"revision" : 0,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -1439,13 +1439,13 @@
 										"appversion" : 										{
 											"major" : 8,
 											"minor" : 0,
-											"revision" : 3,
+											"revision" : 0,
 											"architecture" : "x64",
 											"modernui" : 1
 										}
 ,
 										"classnamespace" : "box",
-										"rect" : [ 0.0, 0.0, 640.0, 480.0 ],
+										"rect" : [ 59.0, 104.0, 640.0, 480.0 ],
 										"bglocked" : 0,
 										"openinpresentation" : 0,
 										"default_fontsize" : 12.0,
@@ -1472,14 +1472,27 @@
 										"tags" : "",
 										"style" : "",
 										"subpatcher_template" : "",
+										"visible" : 1,
 										"boxes" : [ 											{
+												"box" : 												{
+													"id" : "obj-1",
+													"maxclass" : "newobj",
+													"numinlets" : 1,
+													"numoutlets" : 5,
+													"outlettype" : [ "", "", "", "", "" ],
+													"patching_rect" : [ 82.5, 89.0, 81.0, 22.0 ],
+													"text" : "regexp (.+)/.+"
+												}
+
+											}
+, 											{
 												"box" : 												{
 													"id" : "obj-20",
 													"maxclass" : "newobj",
 													"numinlets" : 1,
 													"numoutlets" : 1,
 													"outlettype" : [ "" ],
-													"patching_rect" : [ 50.0, 100.0, 87.0, 22.0 ],
+													"patching_rect" : [ 34.5, 10.0, 87.0, 22.0 ],
 													"text" : "loadmess path"
 												}
 
@@ -1487,13 +1500,12 @@
 , 											{
 												"box" : 												{
 													"id" : "obj-12",
-													"linecount" : 2,
 													"maxclass" : "newobj",
 													"numinlets" : 1,
 													"numoutlets" : 1,
 													"outlettype" : [ "" ],
-													"patching_rect" : [ 98.0, 175.5, 129.0, 35.0 ],
-													"text" : "sprintf symout %ssession_recordings"
+													"patching_rect" : [ 98.0, 175.5, 210.0, 22.0 ],
+													"text" : "sprintf symout %s/session_recordings"
 												}
 
 											}
@@ -1504,7 +1516,7 @@
 													"numinlets" : 1,
 													"numoutlets" : 2,
 													"outlettype" : [ "", "" ],
-													"patching_rect" : [ 50.0, 126.0, 67.0, 22.0 ],
+													"patching_rect" : [ 34.5, 36.0, 67.0, 22.0 ],
 													"save" : [ "#N", "thispatcher", ";", "#Q", "end", ";" ],
 													"text" : "thispatcher"
 												}
@@ -1537,6 +1549,13 @@
  ],
 										"lines" : [ 											{
 												"patchline" : 												{
+													"destination" : [ "obj-12", 0 ],
+													"source" : [ "obj-1", 1 ]
+												}
+
+											}
+, 											{
+												"patchline" : 												{
 													"destination" : [ "obj-6", 0 ],
 													"source" : [ "obj-12", 0 ]
 												}
@@ -1558,7 +1577,7 @@
 											}
 , 											{
 												"patchline" : 												{
-													"destination" : [ "obj-12", 0 ],
+													"destination" : [ "obj-1", 0 ],
 													"source" : [ "obj-7", 1 ]
 												}
 
@@ -1652,7 +1671,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 0,
-							"revision" : 3,
+							"revision" : 0,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -1904,7 +1923,7 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-14",
-					"items" : [ "session_1555102538709.json", ",", "session_1555106414852.json", ",", "session_1555280609921.json", ",", "session_1555682724259.json", ",", "session_1555683177511.json", ",", "session_1555683230855.json", ",", "session_1555686987618.json", ",", "session_1555692104873.json", ",", "session_1555695817446.json", ",", "session_1555697209683.json", ",", "session_1555697602960.json", ",", "session_1555697907030.json", ",", "session_1555697953299.json", ",", "session_1555697963042.json", ",", "session_1555697999312.json", ",", "session_1555698648105.json", ",", "session_1555698867726.json", ",", "session_1555700251396.json", ",", "session_1555700818327.json", ",", "session_1555702202079.json", ",", "session_1555702734498.json", ",", "session_1555703001037.json" ],
+					"items" : [ "example.json", ",", "First_Test_Session.json", ",", "forTesting.json" ],
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
@@ -2255,13 +2274,6 @@
 			}
  ],
 		"dependency_cache" : [ 			{
-				"name" : "controller.js",
-				"bootpath" : "D:/github/msvr",
-				"patcherrelativepath" : ".",
-				"type" : "TEXT",
-				"implicit" : 1
-			}
-, 			{
 				"name" : "n4m.monitor.maxpat",
 				"bootpath" : "C74:/packages/Node For Max/patchers/debug-monitor",
 				"type" : "JSON",
@@ -2269,12 +2281,6 @@
 			}
 , 			{
 				"name" : "resize_n4m_monitor_patcher.js",
-				"bootpath" : "C74:/packages/Node For Max/patchers/debug-monitor",
-				"type" : "TEXT",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "fit_jweb_to_bounds.js",
 				"bootpath" : "C74:/packages/Node For Max/patchers/debug-monitor",
 				"type" : "TEXT",
 				"implicit" : 1
