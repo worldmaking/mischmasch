@@ -162,6 +162,9 @@ let grabLineLength;
 let currentKnobValue = 0;
 let frames = 0;
 
+let createObjFromMenu = true;
+let menuPos = 0;
+
 function getObjectByPath(path) {
     return allNodes[path];
 }
@@ -917,7 +920,10 @@ function enactDeltaNewNode(delta) {
     if(delta.value){
         container.userData.value = delta.value;
     } 
-    
+    if(delta.menu == true){
+        container.userData.menu = delta.menu;
+        container.scale.set(.2,.2,.2)
+    }
     // add to our library of nodes:
     addObjectByPath(path, container);
     // add to proper parent:
@@ -1243,7 +1249,7 @@ function copyModule(pos, orient, controller){
     for(let j in operator_names){
 
         if(operator_names[j] == object.userData.kind){
-            opname = operator_names[i];
+            opname = operator_names[j];
             ctor = operator_constructors[opname];
         }
     }
@@ -1252,6 +1258,58 @@ function copyModule(pos, orient, controller){
     let deltas = ctor(path);
     deltas[0].pos = pos;
     deltas[0].orient = orient;
+    return deltas;
+}
+
+function cloneModuleMenu(pos, orient, object){
+    let module_names = Object.keys(module_constructors)
+    let opname, ctor;
+
+    for(let i in module_names){
+
+        if(module_names[i] == object.userData.kind){
+            opname = module_names[i];
+            ctor = module_constructors[opname];
+        }
+    }
+
+    for(let j in operator_names){
+
+        if(operator_names[j] == object.userData.kind){
+            opname = operator_names[j];
+            ctor = operator_constructors[opname];
+        }
+    }
+
+    let path = gensym(opname);
+    let deltas = ctor(path);
+    deltas[0].pos = pos;
+    deltas[0].orient = orient;
+    return deltas;
+
+   
+}
+
+function generateNewModule(pos, orient, name){
+    //let module_names = Object.keys(module_constructors)
+    let opname, ctor;
+
+
+            ctor = module_constructors[name];
+
+    // for(let j in operator_names){
+
+    //     if(operator_names[j] == object.userData.kind){
+    //         opname = operator_names[i];
+    //         ctor = operator_constructors[opname];
+    //     }
+    // }
+
+    let path = gensym(opname);
+    let deltas = ctor(path);
+    deltas[0].pos = pos;
+    deltas[0].orient = orient;
+    deltas[0].menu = true;
     return deltas;
 }
 
@@ -1445,6 +1503,7 @@ function onKeyPress(e) {
 
 function controllerGamepadControls(controller){
     //console.log(controller)
+    let touched = false;
     let gamepad = controller.getGamepad();
     if (gamepad) {
         let button0 = gamepad.buttons[0];
@@ -1452,6 +1511,7 @@ function controllerGamepadControls(controller){
         if (button0.touched) {
             if (!controller.userData.touched) {
                 controller.userData.touched = true;
+                touched = true;
                 //console.log("touchstart", gamepad.axes[1])
                 controller.userData.thumbpadDX = 0;
                 controller.userData.thumbpadDY = 0;
@@ -1472,6 +1532,54 @@ function controllerGamepadControls(controller){
             controller.userData.thumbpadDY = 0;
             // touch release event
             //console.log("release")
+        }
+    }
+
+    if(controller.userData.selected === undefined){
+        let controllerPos = new THREE.Vector3();
+        controller.getWorldPosition(controllerPos);
+        let controllerQuat = new THREE.Quaternion();    
+        controller.getWorldQuaternion(controllerQuat);
+
+        if (controller.userData.touched){
+            createObjFromMenu = true;
+            //create objects to choose from
+            if(touched){
+                let opname = ["lfo", "vca"];
+                for(let i of opname){
+                    //need to always get the top node otherwise CTOR throws error
+                    //NEED TO REARRANGE MENU AND FIGURE OUT WHICH OBJECTS otherwise code is working!!!
+                    let deltas = generateNewModule([controllerPos.x - .1 + menuPos, controllerPos.y + .2, controllerPos.z + .2 + menuPos], [controllerQuat._x, controllerQuat._y, controllerQuat._z, controllerQuat._w], i);
+                    outgoingDeltas = outgoingDeltas.concat(deltas);
+                    touched = false;
+                    menuPos += .1;
+                }
+            }
+
+        } else if(controller.userData.touched == false){
+            let intersections = getIntersections(controller, 0, 0, -1);
+            if (intersections.length > 0) {
+                if(createObjFromMenu){
+                let intersection = intersections[0];
+                let object = intersection.object;
+
+
+                let deltas = cloneModuleMenu([controllerPos.x, controllerPos.y, controllerPos.z], [controllerQuat._x, controllerQuat._y, controllerQuat._z, controllerQuat._w], object);
+                outgoingDeltas = outgoingDeltas.concat(deltas);
+                }
+                createObjFromMenu = false;
+
+            }
+
+            for (let path in allNodes) {
+                
+                if (allNodes[path].userData.menu) {
+                    outgoingDeltas.push(
+                        { op:"delnode", path:allNodes[path].userData.path, kind:allNodes[path].userData.name}
+                    );
+                }
+            }
+            menuPos = 0;
         }
     }
 
