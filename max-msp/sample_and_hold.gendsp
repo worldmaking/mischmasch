@@ -4,7 +4,7 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 0,
-			"revision" : 0,
+			"revision" : 5,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
@@ -39,13 +39,13 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
-					"id" : "obj-1",
+					"id" : "obj-2",
 					"maxclass" : "newobj",
-					"numinlets" : 0,
+					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 278.0, 214.0, 215.0, 22.0 ],
-					"text" : "param threshold 0.5 @min 0. @max 1."
+					"patching_rect" : [ 187.0, 78.0, 28.0, 22.0 ],
+					"text" : "abs"
 				}
 
 			}
@@ -67,7 +67,7 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 187.0, 113.0, 28.0, 22.0 ],
+					"patching_rect" : [ 187.0, 14.0, 28.0, 22.0 ],
 					"text" : "in 2"
 				}
 
@@ -117,11 +117,11 @@
 					"fontsize" : 12.0,
 					"id" : "obj-20",
 					"maxclass" : "newobj",
-					"numinlets" : 2,
+					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 187.0, 223.0, 29.5, 22.0 ],
-					"text" : ">"
+					"patching_rect" : [ 188.0, 223.0, 36.0, 22.0 ],
+					"text" : "> 0.5"
 				}
 
 			}
@@ -148,7 +148,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 187.0, 166.0, 63.0, 22.0 ],
+					"patching_rect" : [ 231.0, 141.0, 63.0, 22.0 ],
 					"text" : "triangle 0."
 				}
 
@@ -156,15 +156,15 @@
  ],
 		"lines" : [ 			{
 				"patchline" : 				{
-					"destination" : [ "obj-20", 1 ],
-					"source" : [ "obj-1", 0 ]
+					"destination" : [ "obj-7", 0 ],
+					"source" : [ "obj-11", 0 ]
 				}
 
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-7", 0 ],
-					"source" : [ "obj-11", 0 ]
+					"destination" : [ "obj-48", 0 ],
+					"source" : [ "obj-2", 0 ]
 				}
 
 			}
@@ -198,7 +198,7 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-48", 0 ],
+					"destination" : [ "obj-2", 0 ],
 					"source" : [ "obj-6", 0 ]
 				}
 
