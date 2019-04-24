@@ -1395,7 +1395,8 @@
 					"numoutlets" : 0,
 					"patching_rect" : [ 844.0, 91.0, 150.0, 20.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 256.0, 80.0, 150.0, 20.0 ]
+					"presentation_rect" : [ 256.0, 80.0, 150.0, 20.0 ],
+					"text" : "Session Name: test3"
 				}
 
 			}
@@ -2054,7 +2055,7 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-14",
-					"items" : [ "First_Test_Session.json", ",", "example.json", ",", "forTesting.json", ",", "session_1555103217536.json", ",", "session_1555358410128.json", ",", "session_1555358432443.json", ",", "session_1555358577456.json" ],
+					"items" : [ "First_Test_Session.json", ",", "example.json", ",", "forTesting.json", ",", "session_1555103217536.json", ",", "session_1555358410128.json", ",", "session_1555358432443.json", ",", "session_1555358577456.json", ",", "test.json", ",", "test2.json", ",", "test3.json" ],
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
@@ -2074,6 +2075,8 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 235.0, 186.0, 190.0, 22.0 ],
+					"presentation" : 1,
+					"presentation_rect" : [ 141.0, 335.0, 190.0, 22.0 ],
 					"saved_object_attributes" : 					{
 						"autostart" : 0,
 						"defer" : 0,
