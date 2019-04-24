@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ -1854.0, 139.0, 1323.0, 907.0 ],
+		"rect" : [ -1804.0, 139.0, 1359.0, 907.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 1,
 		"default_fontsize" : 12.0,
@@ -39,6 +39,17 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-3",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 222.0, 508.0, 54.0, 22.0 ],
+					"text" : "onecopy"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"bgmode" : 0,
 					"border" : 0,
 					"clickthrough" : 0,
@@ -47,10 +58,11 @@
 					"id" : "obj-4",
 					"lockeddragscroll" : 0,
 					"maxclass" : "bpatcher",
-					"name" : "_msvr_client.maxpat",
+					"name" : "_msvr_audio.maxpat",
 					"numinlets" : 1,
-					"numoutlets" : 0,
+					"numoutlets" : 1,
 					"offset" : [ 0.0, 0.0 ],
+					"outlettype" : [ "" ],
 					"patching_rect" : [ 725.0, 307.0, 443.0, 245.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 3.0, 591.0, 431.0, 271.0 ],
@@ -225,7 +237,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 0.0, 640.0, 480.0 ],
+						"rect" : [ 84.0, 129.0, 640.0, 480.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
@@ -254,12 +266,60 @@
 						"subpatcher_template" : "",
 						"boxes" : [ 							{
 								"box" : 								{
+									"id" : "obj-9",
+									"maxclass" : "newobj",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "bang" ],
+									"patching_rect" : [ 390.0, 170.0, 48.0, 22.0 ],
+									"text" : "del 500"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-8",
+									"maxclass" : "newobj",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "bang" ],
+									"patching_rect" : [ 390.0, 230.0, 55.0, 22.0 ],
+									"text" : "del 1500"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-7",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 390.0, 200.0, 54.0, 22.0 ],
+									"text" : "deferlow"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-6",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 1,
+									"outlettype" : [ "bang" ],
+									"patching_rect" : [ 390.0, 140.0, 58.0, 22.0 ],
+									"text" : "loadbang"
+								}
+
+							}
+, 							{
+								"box" : 								{
 									"id" : "obj-137",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 50.0, 232.2545166015625, 54.0, 22.0 ],
+									"patching_rect" : [ 50.0, 248.2545166015625, 54.0, 22.0 ],
 									"text" : "deferlow"
 								}
 
@@ -283,7 +343,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 196.0, 145.2545166015625, 119.0, 22.0 ],
+									"patching_rect" : [ 50.0, 274.2545166015625, 119.0, 22.0 ],
 									"text" : "loadmess script start"
 								}
 
@@ -368,10 +428,39 @@
 								}
 
 							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-9", 0 ],
+									"source" : [ "obj-6", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-8", 0 ],
+									"source" : [ "obj-7", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-37", 0 ],
+									"disabled" : 1,
+									"source" : [ "obj-8", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-7", 0 ],
+									"source" : [ "obj-9", 0 ]
+								}
+
+							}
  ]
 					}
 ,
-					"patching_rect" : [ 1205.0, 340.0, 47.0, 22.0 ],
+					"patching_rect" : [ 1227.0, 246.0, 47.0, 22.0 ],
 					"saved_object_attributes" : 					{
 						"description" : "",
 						"digest" : "",
@@ -391,7 +480,7 @@
 					"numoutlets" : 3,
 					"outlettype" : [ "", "", "int" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 1205.0, 313.0, 112.0, 22.2545166015625 ],
+					"patching_rect" : [ 1227.0, 217.0, 112.0, 22.2545166015625 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 12.0, 335.0, 108.0, 20.0 ],
 					"text" : "Restart Controller",
@@ -1908,7 +1997,7 @@
 					"patching_rect" : [ 391.0, 301.0, 150.0, 20.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 10.0, 114.0, 150.0, 20.0 ],
-					"text" : "playback active"
+					"text" : "playback inactive"
 				}
 
 			}
@@ -1988,6 +2077,8 @@
 					"saved_object_attributes" : 					{
 						"autostart" : 0,
 						"defer" : 0,
+						"node_bin_path" : "",
+						"npm_bin_path" : "",
 						"watch" : 1
 					}
 ,
@@ -2194,7 +2285,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-2", 0 ],
-					"midpoints" : [ 1214.5, 278.0, 732.5, 278.0, 732.5, 177.0, 244.5, 177.0 ],
+					"midpoints" : [ 1236.5, 278.0, 732.5, 278.0, 732.5, 177.0, 244.5, 177.0 ],
 					"source" : [ "obj-143", 0 ]
 				}
 
@@ -2302,6 +2393,14 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-2", 0 ],
+					"midpoints" : [ 734.5, 562.0, 175.5, 562.0, 175.5, 175.0, 244.5, 175.0 ],
+					"source" : [ "obj-4", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-11", 0 ],
 					"midpoints" : [ 319.5, 305.0, 290.0, 305.0, 290.0, 268.0, 244.5, 268.0 ],
 					"source" : [ "obj-42", 0 ]
@@ -2379,7 +2478,7 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "_msvr_client.maxpat",
+				"name" : "_msvr_audio.maxpat",
 				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
@@ -2401,15 +2500,8 @@
 			}
 , 			{
 				"name" : "outs.gendsp",
-				"bootpath" : "~/msvr/max-msp",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "lfo.gendsp",
-				"bootpath" : "~/msvr/max-msp",
-				"patcherrelativepath" : ".",
+				"bootpath" : "~/msvr/max-msp/abstractions",
+				"patcherrelativepath" : "./abstractions",
 				"type" : "gDSP",
 				"implicit" : 1
 			}

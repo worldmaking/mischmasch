@@ -437,7 +437,7 @@ function handlemessage(msg, sock, id) {
 			// turn this into deltas:
 			let deltas = got.deltasFromGraph(loadedScene, []);
 			//console.log(deltas)
-
+			console.log(deltas)
 			send_all_clients(JSON.stringify({
 				cmd: "deltas",
 				date: Date.now(),

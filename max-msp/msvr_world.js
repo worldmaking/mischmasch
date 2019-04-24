@@ -1,6 +1,6 @@
 
 inlets = 2
-outlets = 5
+outlets = 6
 	// get a reference to "thegen"'s embedded gen patcher:
 var varnameCount = 0
 
@@ -15,11 +15,28 @@ var object = {};
 var nodeName;
 var counter = 1;
 var feedbackConnections = 0
-
+var checkOuts = new Array();
 
 
 gen_patcher = this.patcher.getnamed("world").subpatcher();
-
+var hasOuts;
+function ensureOuts(){
+	hasOuts = 0;
+	gen_patcher.apply(function(b) { 
+		scriptname = b.varname.indexOf('outs_')
+		//post('\n',scriptname)
+		if(scriptname > -1){
+		hasOuts = 1
+		
+		}
+	})
+	// always keep an outs module in the scene
+	if (hasOuts === 0){
+		// spawn an outs module
+		post('ensureOuts')
+		outlet(5, 'ensureOuts')
+		}	
+	}
 function getVarnames(target){
 	gen_patcher.apply(function(b) { 
 		// prevent erasing our audio outputs from genpatcher
