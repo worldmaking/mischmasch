@@ -1,4 +1,886 @@
 [
+	
+	{
+		"domain": "common",
+		"box_expr": "generic",
+		"category": "math",
+		"inputs": {
+			"value1": {
+				"label": "input value 1",
+				"optional": true,
+				"type": {
+					"name": "vector",
+					"params": [
+						"float"
+					]
+				},
+				"digest": "input value 1",
+				"name": "value1",
+				"default": "0"
+			},
+			"value2": {
+				"label": "input value 2",
+				"optional": true,
+				"type": {
+					"name": "vector",
+					"params": [
+						"float"
+					]
+				},
+				"digest": "input value 2",
+				"name": "value2",
+				"default": "0"
+			}
+		},
+		"op": "add",
+		"arguments": [
+			"value1",
+			"value2"
+		],
+		"constructors": [
+			{
+				"inlets": [
+					"value1"
+				],
+				"arguments": [
+					"value2"
+				]
+			},
+			{
+				"inlets": [
+					"value1",
+					"value2"
+				],
+				"arguments": {}
+			}
+		],
+		"description": "Add inputs",
+		"expr_type": "expr_type_coerce",
+		"digest": "Add inputs",
+		"seealso": [
+			"div",
+			"mod",
+			"mul",
+			"neg",
+			"sub"
+		],
+		"outputs": [
+			{
+				"name": "sum",
+				"label": "in1 + in2"
+			}
+		],
+		"stateful": false,
+		"expr_outputs": "generic",
+		"attributes": {},
+		"aliases": [
+			"+"
+		],
+		"has_constant_expr": true
+	},
+	{
+		"domain": "common",
+		"box_expr": "generic",
+		"category": "math",
+		"inputs": {
+			"value1": {
+				"label": "input value 1",
+				"optional": true,
+				"type": {
+					"name": "vector",
+					"params": [
+						"float"
+					]
+				},
+				"digest": "input value 1",
+				"name": "value1",
+				"default": "1"
+			},
+			"value2": {
+				"label": "input value 2",
+				"optional": true,
+				"type": {
+					"name": "vector",
+					"params": [
+						"float"
+					]
+				},
+				"digest": "input value 2",
+				"name": "value2",
+				"default": "1"
+			}
+		},
+		"op": "mul",
+		"arguments": [
+			"value1",
+			"value2"
+		],
+		"constructors": [
+			{
+				"inlets": [
+					"value1"
+				],
+				"arguments": [
+					"value2"
+				]
+			},
+			{
+				"inlets": [
+					"value1",
+					"value2"
+				],
+				"arguments": {}
+			}
+		],
+		"description": "Multiply inputs",
+		"expr_type": "expr_type_coerce",
+		"digest": "Multiply inputs",
+		"seealso": [
+			"add",
+			"div",
+			"mod",
+			"neg",
+			"sub"
+		],
+		"outputs": [
+			{
+				"name": "product",
+				"label": "in1 * in2"
+			}
+		],
+		"stateful": false,
+		"expr_outputs": "generic",
+		"attributes": {},
+		"aliases": [
+			"*"
+		],
+		"has_constant_expr": true
+	},
+	{
+		"domain": "common",
+		"box_expr": "generic",
+		"category": "route",
+		"inputs": {
+			"loval": {
+				"label": "output if interp is 0",
+				"optional": true,
+				"type": {
+					"name": "float"
+				},
+				"digest": "output if interp is 0",
+				"name": "loval",
+				"default": "0"
+			},
+			"hival": {
+				"label": "output if interp is 1",
+				"optional": true,
+				"type": {
+					"name": "float"
+				},
+				"digest": "output if interp is 1",
+				"name": "hival",
+				"default": "1"
+			},
+			"interp": {
+				"label": "interpolation factor between inputs",
+				"optional": true,
+				"type": {
+					"name": "float"
+				},
+				"digest": "interpolation factor between inputs",
+				"name": "interp",
+				"default": "0.5"
+			}
+		},
+		"op": "mix",
+		"arguments": [
+			"loval",
+			"hival",
+			"interp"
+		],
+		"constructors": [
+			{
+				"inlets": {},
+				"arguments": [
+					"loval",
+					"hival",
+					"interp"
+				]
+			},
+			{
+				"inlets": [
+					"interp"
+				],
+				"arguments": [
+					"loval",
+					"hival"
+				]
+			},
+			{
+				"inlets": [
+					"loval",
+					"hival"
+				],
+				"arguments": [
+					"interp"
+				]
+			},
+			{
+				"inlets": [
+					"loval",
+					"hival",
+					"interp"
+				],
+				"arguments": {}
+			}
+		],
+		"description": "Mixes (interpolates) between inputs a and b according to the value of the third input t, using linear interpolation. The factor (t) should vary between 0 (for a) and 1 (for b). If one argument is given, it specifies the mix (interpolation) factor.",
+		"expr_type": "expr_type_coerce",
+		"digest": "Linear crossfade of inputs",
+		"seealso": [
+			"gate",
+			"selector",
+			"smoothstep",
+			"switch"
+		],
+		"outputs": [
+			{
+				"name": "out1",
+				"label": "interpolated result"
+			}
+		],
+		"stateful": false,
+		"expr_outputs": "generic",
+		"attributes": {},
+		"aliases": {},
+		"has_constant_expr": true
+	},
+	{
+		"domain": "dsp",
+		"box_expr": "generic",
+		"expr_type": "expr_type_sample_signal",
+		"stateful": true,
+		"category": "buffer",
+		"seealso": [
+			"phasor",
+			"train",
+			"buffer",
+			"data"
+		],
+		"has_constant_expr": false,
+		"inputs": {
+			"freq": {
+				"label": "wave frequency",
+				"optional": true,
+				"type": {
+					"name": "float"
+				},
+				"digest": "wave frequency",
+				"name": "freq",
+				"default": "440"
+			},
+			"phase": {
+				"label": "wave phase (0..1)",
+				"optional": true,
+				"type": {
+					"name": "float"
+				},
+				"digest": "wave phase (0..1)",
+				"name": "phase",
+				"default": "0"
+			}
+		},
+		"op": "cycle",
+		"expr_outputs": "generic",
+		"digest": "Sine / wavetable lookup oscillator",
+		"outputs": [
+			{
+				"name": "out1",
+				"label": "interpolated waveform"
+			},
+			{
+				"name": "out2",
+				"label": "index (in samples)"
+			}
+		],
+		"attributes": {
+			"name": {
+				"optional": true,
+				"digest": "Specify data or buffer to play",
+				"description": "Specify the data or buffer object to use for playback. If not specified, cycle will use a built-in sine wavetable.\"",
+				"type": "string"
+			},
+			"index": {
+				"optional": true,
+				"enums": {
+					"phase": true,
+					"freq": true
+				},
+				"digest": "Specify the index mode",
+				"description": "Specify the index mode: \"phase\" maps the input signal range 0..1 to the span of the buffer, \"freq\" cycles through the buffer at a frequency given by the input signal.",
+				"type": "enum",
+				"default": "freq"
+			}
+		},
+		"constructors": [
+			{
+				"constraints": {
+					"index": [
+						"phase"
+					]
+				},
+				"inlets": {},
+				"arguments": [
+					"buffer",
+					"phase"
+				]
+			},
+			{
+				"arguments": [
+					"buffer"
+				],
+				"inlets": [
+					"phase"
+				],
+				"constraints": {
+					"index": [
+						"phase"
+					]
+				}
+			},
+			{
+				"constraints": {
+					"index": [
+						"phase"
+					]
+				},
+				"inlets": [
+					"phase"
+				],
+				"arguments": {}
+			},
+			{
+				"inlets": {},
+				"arguments": [
+					"buffer",
+					"freq"
+				]
+			},
+			{
+				"inlets": [
+					"freq"
+				],
+				"arguments": [
+					"buffer"
+				]
+			},
+			{
+				"inlets": [
+					"freq"
+				],
+				"arguments": {}
+			}
+		],
+		"aliases": {},
+		"description": "An interpolating oscillator that reads repeatedly through one cycle of a sine wave. By default it is driven by a frequency input, but if the @index attribute is set to 'phase', it can be driven by a phase input instead."
+	},
+	{
+		"domain": "common",
+		"box_expr": "generic",
+		"category": "range",
+		"inputs": {
+			"input": {
+				"label": "input to clamp",
+				"optional": true,
+				"type": {
+					"name": "float"
+				},
+				"digest": "input to clamp",
+				"name": "input",
+				"default": "0"
+			},
+			"min": {
+				"label": "lower bound",
+				"optional": true,
+				"type": {
+					"name": "float"
+				},
+				"digest": "lower bound",
+				"name": "min",
+				"default": "0"
+			},
+			"max": {
+				"label": "upper bound",
+				"optional": true,
+				"type": {
+					"name": "float"
+				},
+				"digest": "upper bound",
+				"name": "max",
+				"default": "1"
+			}
+		},
+		"op": "clamp",
+		"arguments": [
+			"input",
+			"min",
+			"max"
+		],
+		"constructors": [
+			{
+				"inlets": {},
+				"arguments": [
+					"input",
+					"min",
+					"max"
+				]
+			},
+			{
+				"inlets": [
+					"input"
+				],
+				"arguments": [
+					"min",
+					"max"
+				]
+			},
+			{
+				"inlets": [
+					"input",
+					"min"
+				],
+				"arguments": [
+					"max"
+				]
+			},
+			{
+				"inlets": [
+					"input",
+					"min",
+					"max"
+				],
+				"arguments": {}
+			}
+		],
+		"description": "Clamps the input value between specified min and max. Ranges are inclusive (both min and max values may be output)",
+		"expr_type": "expr_type_coerce",
+		"digest": "Clamp values in a specified range",
+		"seealso": [
+			"clip",
+			"fold",
+			"max",
+			"min",
+			"scale",
+			"wrap"
+		],
+		"outputs": [
+			{
+				"name": "clamped",
+				"label": "clamped input"
+			}
+		],
+		"stateful": false,
+		"expr_outputs": "generic",
+		"attributes": {},
+		"aliases": [
+			"clip"
+		],
+		"has_constant_expr": true
+	},
+
+	{
+		"domain": "common",
+		"box_expr": "generic",
+		"category": "range",
+		"inputs": {
+			"input": {
+				"label": "input to fold",
+				"optional": true,
+				"type": {
+					"name": "float"
+				},
+				"digest": "input to fold",
+				"name": "input",
+				"default": "0"
+			},
+			"min": {
+				"label": "lower bound",
+				"optional": true,
+				"type": {
+					"name": "float"
+				},
+				"digest": "lower bound",
+				"name": "min",
+				"default": "0"
+			},
+			"max": {
+				"label": "upper bound",
+				"optional": true,
+				"type": {
+					"name": "float"
+				},
+				"digest": "upper bound",
+				"name": "max",
+				"default": "1"
+			}
+		},
+		"op": "fold",
+		"arguments": [
+			"input",
+			"min",
+			"max"
+		],
+		"constructors": [
+			{
+				"inlets": {},
+				"arguments": [
+					"input",
+					"min",
+					"max"
+				]
+			},
+			{
+				"inlets": [
+					"input"
+				],
+				"arguments": [
+					"min",
+					"max"
+				]
+			},
+			{
+				"inlets": [
+					"input",
+					"min"
+				],
+				"arguments": [
+					"max"
+				]
+			},
+			{
+				"inlets": [
+					"input",
+					"min",
+					"max"
+				],
+				"arguments": {}
+			}
+		],
+		"description": "Low and high values can be specified by arguments or by inlets. The default range is 0..1.",
+		"expr_type": "expr_type_coerce",
+		"digest": "Fold input to a range within a low and high output value",
+		"seealso": [
+			"clamp",
+			"scale",
+			"wrap"
+		],
+		"outputs": [
+			{
+				"name": "out1",
+				"label": "folded input"
+			}
+		],
+		"stateful": false,
+		"expr_outputs": "generic",
+		"attributes": {},
+		"aliases": {},
+		"has_constant_expr": true
+	},
+
+	{
+		"domain": "common",
+		"box_expr": "generic",
+		"expr_type": "expr_type_sample_signal",
+		"stateful": false,
+		"category": "waveform",
+		"has_constant_expr": false,
+		"expr_outputs": "generic",
+		"outputs": [
+			{
+				"name": "random-stream",
+				"label": "random numbers"
+			}
+		],
+		"op": "noise",
+		"arguments": {},
+		"digest": "A random number generator",
+		"inputs": {},
+		"attributes": {},
+		"constructors": [
+			{
+				"inlets": [],
+				"arguments": {}
+			}
+		],
+		"aliases": {},
+		"description": "A random number generator"
+	},
+
+	{
+		"domain": "common",
+		"box_expr": "generic",
+		"category": "trigonometry",
+		"inputs": {
+			"value": {
+				"label": "input value",
+				"optional": true,
+				"type": {
+					"name": "vector",
+					"params": [
+						"float"
+					]
+				},
+				"digest": "input value",
+				"name": "value",
+				"default": "0"
+			}
+		},
+		"op": "tanh",
+		"arguments": [
+			"value"
+		],
+		"constructors": [
+			{
+				"inlets": {},
+				"arguments": [
+					"value"
+				]
+			},
+			{
+				"inlets": [
+					"value"
+				],
+				"arguments": {}
+			}
+		],
+		"description": "The hyperbolic tangent of the input",
+		"expr_type": "expr_type_sample_coerce",
+		"digest": "The hyperbolic tangent of the input",
+		"seealso": [
+			"atanh",
+			"cosh",
+			"sinh"
+		],
+		"outputs": [
+			{
+				"name": "out1",
+				"label": "tanh(input)"
+			}
+		],
+		"stateful": false,
+		"expr_outputs": "generic",
+		"attributes": {},
+		"aliases": {},
+		"has_constant_expr": true
+	},
+
+	{
+		"domain": "dsp",
+		"box_expr": "generic",
+		"category": "filter",
+		"inputs": {
+			"input": {
+				"label": "input to sample",
+				"optional": true,
+				"type": {
+					"name": "float"
+				},
+				"digest": "input to sample",
+				"name": "input",
+				"default": "0"
+			},
+			"control": {
+				"label": "control: allows input through when non-zero",
+				"optional": true,
+				"type": {
+					"name": "float"
+				},
+				"digest": "control: allows input through when non-zero",
+				"name": "control",
+				"default": "0"
+			}
+		},
+		"op": "latch",
+		"arguments": [
+			"input",
+			"control"
+		],
+		"constructors": [
+			{
+				"inlets": [
+					"input",
+					"control"
+				],
+				"arguments": {}
+			}
+		],
+		"description": "Conditionally passes or holds input. The first inlet is the 'input' and the second inlet is the 'control'. When the control is non-zero, the input value is passed through. When the control is zero, the previous input value is output. It can be used to periodically sample & hold a source signal with a simpler trigger logic than the sah operator.",
+		"expr_type": "expr_type_coerce",
+		"digest": "Conditionally pass or hold input",
+		"seealso": [
+			"sah",
+			"slide",
+			"delta",
+			"change",
+			"sah"
+		],
+		"outputs": [
+			{
+				"name": "out1",
+				"label": "current or previous input"
+			}
+		],
+		"stateful": true,
+		"expr_outputs": "generic",
+		"attributes": {
+			"init": {
+				"optional": true,
+				"digest": "Specify the initially held value",
+				"description": "Specify the initially held value",
+				"type": "float",
+				"default": 0
+			}
+		},
+		"aliases": {},
+		"has_constant_expr": false
+	},
+
+	{
+		"domain": "dsp",
+		"box_expr": "generic",
+		"category": "filter",
+		"inputs": {
+			"input": {
+				"label": "value to analyze",
+				"optional": true,
+				"type": {
+					"name": "float"
+				},
+				"digest": "value to analyze",
+				"name": "input",
+				"default": "0"
+			}
+		},
+		"op": "change",
+		"arguments": [
+			"input"
+		],
+		"constructors": [
+			{
+				"inlets": [
+					"input"
+				],
+				"arguments": {}
+			}
+		],
+		"description": "Returns the sign of the difference between the current and previous input: 1 if the input is increasing, -1 if decreasing, and 0 if unchanging.",
+		"expr_type": "expr_type_int_signal",
+		"digest": "The sign of the derivative of the input",
+		"seealso": [
+			"slide",
+			"delta",
+			"change",
+			"sah"
+		],
+		"outputs": [
+			{
+				"name": "out1",
+				"label": "0 if unchanged; -1 or 1 if changed"
+			}
+		],
+		"stateful": true,
+		"expr_outputs": "generic",
+		"attributes": {
+			"init": {
+				"optional": true,
+				"digest": "Specify the first value to compare against",
+				"description": "Specify the first value to compare against",
+				"type": "float",
+				"default": 0
+			}
+		},
+		"aliases": {},
+		"has_constant_expr": true
+	},
+
+	{
+		"domain": "common",
+		"box_expr": "generic",
+		"category": "powers",
+		"inputs": {
+			"value1": {
+				"label": "input value 1",
+				"optional": true,
+				"type": {
+					"name": "vector",
+					"params": [
+						"float"
+					]
+				},
+				"digest": "input value 1",
+				"name": "value1",
+				"default": "0"
+			},
+			"value2": {
+				"label": "input value 2",
+				"optional": true,
+				"type": {
+					"name": "vector",
+					"params": [
+						"float"
+					]
+				},
+				"digest": "input value 2",
+				"name": "value2",
+				"default": "0"
+			}
+		},
+		"op": "pow",
+		"arguments": [
+			"value1",
+			"value2"
+		],
+		"constructors": [
+			{
+				"inlets": [
+					"value1"
+				],
+				"arguments": [
+					"value2"
+				]
+			},
+			{
+				"inlets": [
+					"value1",
+					"value2"
+				],
+				"arguments": {}
+			}
+		],
+		"description": "Raise in1 to the power of in2",
+		"expr_type": "expr_type_sample_coerce",
+		"digest": "Raise in1 to the power of in2",
+		"seealso": [
+			"exp",
+			"exp2",
+			"log",
+			"log10",
+			"log2",
+			"sqrt"
+		],
+		"outputs": [
+			{
+				"name": "out1",
+				"label": "sign of input"
+			}
+		],
+		"stateful": false,
+		"expr_outputs": "generic",
+		"attributes": {},
+		"aliases": {},
+		"has_constant_expr": true
+	},
+	
 	{
 		"domain": "common",
 		"box_expr": "generic",
@@ -128,182 +1010,8 @@
 		"aliases": {},
 		"has_constant_expr": true
 	},
-	{
-		"domain": "common",
-		"box_expr": "generic",
-		"category": "math",
-		"inputs": {
-			"value1": {
-				"label": "input value 1",
-				"optional": true,
-				"type": {
-					"name": "vector",
-					"params": [
-						"float"
-					]
-				},
-				"digest": "input value 1",
-				"name": "value1",
-				"default": "1"
-			},
-			"value2": {
-				"label": "input value 2",
-				"optional": true,
-				"type": {
-					"name": "vector",
-					"params": [
-						"float"
-					]
-				},
-				"digest": "input value 2",
-				"name": "value2",
-				"default": "1"
-			}
-		},
-		"op": "mul",
-		"arguments": [
-			"value1",
-			"value2"
-		],
-		"constructors": [
-			{
-				"inlets": [
-					"value1"
-				],
-				"arguments": [
-					"value2"
-				]
-			},
-			{
-				"inlets": [
-					"value1",
-					"value2"
-				],
-				"arguments": {}
-			}
-		],
-		"description": "Multiply inputs",
-		"expr_type": "expr_type_coerce",
-		"digest": "Multiply inputs",
-		"seealso": [
-			"add",
-			"div",
-			"mod",
-			"neg",
-			"sub"
-		],
-		"outputs": [
-			{
-				"name": "product",
-				"label": "in1 * in2"
-			}
-		],
-		"stateful": false,
-		"expr_outputs": "generic",
-		"attributes": {},
-		"aliases": [
-			"*"
-		],
-		"has_constant_expr": true
-	},
-	{
-		"domain": "common",
-		"box_expr": "generic",
-		"category": "range",
-		"inputs": {
-			"input": {
-				"label": "input to fold",
-				"optional": true,
-				"type": {
-					"name": "float"
-				},
-				"digest": "input to fold",
-				"name": "input",
-				"default": "0"
-			},
-			"min": {
-				"label": "lower bound",
-				"optional": true,
-				"type": {
-					"name": "float"
-				},
-				"digest": "lower bound",
-				"name": "min",
-				"default": "0"
-			},
-			"max": {
-				"label": "upper bound",
-				"optional": true,
-				"type": {
-					"name": "float"
-				},
-				"digest": "upper bound",
-				"name": "max",
-				"default": "1"
-			}
-		},
-		"op": "fold",
-		"arguments": [
-			"input",
-			"min",
-			"max"
-		],
-		"constructors": [
-			{
-				"inlets": {},
-				"arguments": [
-					"input",
-					"min",
-					"max"
-				]
-			},
-			{
-				"inlets": [
-					"input"
-				],
-				"arguments": [
-					"min",
-					"max"
-				]
-			},
-			{
-				"inlets": [
-					"input",
-					"min"
-				],
-				"arguments": [
-					"max"
-				]
-			},
-			{
-				"inlets": [
-					"input",
-					"min",
-					"max"
-				],
-				"arguments": {}
-			}
-		],
-		"description": "Low and high values can be specified by arguments or by inlets. The default range is 0..1.",
-		"expr_type": "expr_type_coerce",
-		"digest": "Fold input to a range within a low and high output value",
-		"seealso": [
-			"clamp",
-			"scale",
-			"wrap"
-		],
-		"outputs": [
-			{
-				"name": "out1",
-				"label": "folded input"
-			}
-		],
-		"stateful": false,
-		"expr_outputs": "generic",
-		"attributes": {},
-		"aliases": {},
-		"has_constant_expr": true
-	},
+	
+	
 	{
 		"domain": "common",
 		"box_expr": "revop",
@@ -456,105 +1164,7 @@
 		],
 		"has_constant_expr": true
 	},
-	{
-		"domain": "common",
-		"box_expr": "generic",
-		"category": "route",
-		"inputs": {
-			"loval": {
-				"label": "output if interp is 0",
-				"optional": true,
-				"type": {
-					"name": "float"
-				},
-				"digest": "output if interp is 0",
-				"name": "loval",
-				"default": "0"
-			},
-			"hival": {
-				"label": "output if interp is 1",
-				"optional": true,
-				"type": {
-					"name": "float"
-				},
-				"digest": "output if interp is 1",
-				"name": "hival",
-				"default": "1"
-			},
-			"interp": {
-				"label": "interpolation factor between inputs",
-				"optional": true,
-				"type": {
-					"name": "float"
-				},
-				"digest": "interpolation factor between inputs",
-				"name": "interp",
-				"default": "0.5"
-			}
-		},
-		"op": "mix",
-		"arguments": [
-			"loval",
-			"hival",
-			"interp"
-		],
-		"constructors": [
-			{
-				"inlets": {},
-				"arguments": [
-					"loval",
-					"hival",
-					"interp"
-				]
-			},
-			{
-				"inlets": [
-					"interp"
-				],
-				"arguments": [
-					"loval",
-					"hival"
-				]
-			},
-			{
-				"inlets": [
-					"loval",
-					"hival"
-				],
-				"arguments": [
-					"interp"
-				]
-			},
-			{
-				"inlets": [
-					"loval",
-					"hival",
-					"interp"
-				],
-				"arguments": {}
-			}
-		],
-		"description": "Mixes (interpolates) between inputs a and b according to the value of the third input t, using linear interpolation. The factor (t) should vary between 0 (for a) and 1 (for b). If one argument is given, it specifies the mix (interpolation) factor.",
-		"expr_type": "expr_type_coerce",
-		"digest": "Linear crossfade of inputs",
-		"seealso": [
-			"gate",
-			"selector",
-			"smoothstep",
-			"switch"
-		],
-		"outputs": [
-			{
-				"name": "out1",
-				"label": "interpolated result"
-			}
-		],
-		"stateful": false,
-		"expr_outputs": "generic",
-		"attributes": {},
-		"aliases": {},
-		"has_constant_expr": true
-	},
+	
 	{
 		"domain": "common",
 		"box_expr": "generic",
@@ -668,63 +1278,7 @@
 		],
 		"has_constant_expr": true
 	},
-	{
-		"domain": "common",
-		"box_expr": "generic",
-		"category": "trigonometry",
-		"inputs": {
-			"value": {
-				"label": "input value",
-				"optional": true,
-				"type": {
-					"name": "vector",
-					"params": [
-						"float"
-					]
-				},
-				"digest": "input value",
-				"name": "value",
-				"default": "0"
-			}
-		},
-		"op": "tanh",
-		"arguments": [
-			"value"
-		],
-		"constructors": [
-			{
-				"inlets": {},
-				"arguments": [
-					"value"
-				]
-			},
-			{
-				"inlets": [
-					"value"
-				],
-				"arguments": {}
-			}
-		],
-		"description": "The hyperbolic tangent of the input",
-		"expr_type": "expr_type_sample_coerce",
-		"digest": "The hyperbolic tangent of the input",
-		"seealso": [
-			"atanh",
-			"cosh",
-			"sinh"
-		],
-		"outputs": [
-			{
-				"name": "out1",
-				"label": "tanh(input)"
-			}
-		],
-		"stateful": false,
-		"expr_outputs": "generic",
-		"attributes": {},
-		"aliases": {},
-		"has_constant_expr": true
-	},
+	
 	{
 		"domain": "common",
 		"box_expr": "generic",
@@ -2611,84 +3165,6 @@
 		"expr_outputs": "generic",
 		"attributes": {},
 		"aliases": {},
-		"has_constant_expr": true
-	},
-	{
-		"domain": "common",
-		"box_expr": "generic",
-		"category": "math",
-		"inputs": {
-			"value1": {
-				"label": "input value 1",
-				"optional": true,
-				"type": {
-					"name": "vector",
-					"params": [
-						"float"
-					]
-				},
-				"digest": "input value 1",
-				"name": "value1",
-				"default": "0"
-			},
-			"value2": {
-				"label": "input value 2",
-				"optional": true,
-				"type": {
-					"name": "vector",
-					"params": [
-						"float"
-					]
-				},
-				"digest": "input value 2",
-				"name": "value2",
-				"default": "0"
-			}
-		},
-		"op": "add",
-		"arguments": [
-			"value1",
-			"value2"
-		],
-		"constructors": [
-			{
-				"inlets": [
-					"value1"
-				],
-				"arguments": [
-					"value2"
-				]
-			},
-			{
-				"inlets": [
-					"value1",
-					"value2"
-				],
-				"arguments": {}
-			}
-		],
-		"description": "Add inputs",
-		"expr_type": "expr_type_coerce",
-		"digest": "Add inputs",
-		"seealso": [
-			"div",
-			"mod",
-			"mul",
-			"neg",
-			"sub"
-		],
-		"outputs": [
-			{
-				"name": "sum",
-				"label": "in1 + in2"
-			}
-		],
-		"stateful": false,
-		"expr_outputs": "generic",
-		"attributes": {},
-		"aliases": [
-			"+"
-		],
 		"has_constant_expr": true
 	},
 	{
@@ -4830,109 +5306,7 @@
 		"aliases": {},
 		"has_constant_expr": true
 	},
-	{
-		"domain": "common",
-		"box_expr": "generic",
-		"category": "range",
-		"inputs": {
-			"input": {
-				"label": "input to clamp",
-				"optional": true,
-				"type": {
-					"name": "float"
-				},
-				"digest": "input to clamp",
-				"name": "input",
-				"default": "0"
-			},
-			"min": {
-				"label": "lower bound",
-				"optional": true,
-				"type": {
-					"name": "float"
-				},
-				"digest": "lower bound",
-				"name": "min",
-				"default": "0"
-			},
-			"max": {
-				"label": "upper bound",
-				"optional": true,
-				"type": {
-					"name": "float"
-				},
-				"digest": "upper bound",
-				"name": "max",
-				"default": "1"
-			}
-		},
-		"op": "clamp",
-		"arguments": [
-			"input",
-			"min",
-			"max"
-		],
-		"constructors": [
-			{
-				"inlets": {},
-				"arguments": [
-					"input",
-					"min",
-					"max"
-				]
-			},
-			{
-				"inlets": [
-					"input"
-				],
-				"arguments": [
-					"min",
-					"max"
-				]
-			},
-			{
-				"inlets": [
-					"input",
-					"min"
-				],
-				"arguments": [
-					"max"
-				]
-			},
-			{
-				"inlets": [
-					"input",
-					"min",
-					"max"
-				],
-				"arguments": {}
-			}
-		],
-		"description": "Clamps the input value between specified min and max. Ranges are inclusive (both min and max values may be output)",
-		"expr_type": "expr_type_coerce",
-		"digest": "Clamp values in a specified range",
-		"seealso": [
-			"clip",
-			"fold",
-			"max",
-			"min",
-			"scale",
-			"wrap"
-		],
-		"outputs": [
-			{
-				"name": "clamped",
-				"label": "clamped input"
-			}
-		],
-		"stateful": false,
-		"expr_outputs": "generic",
-		"attributes": {},
-		"aliases": [
-			"clip"
-		],
-		"has_constant_expr": true
-	},
+	
 	{
 		"domain": "common",
 		"box_expr": "constant",
@@ -4967,111 +5341,8 @@
 		],
 		"has_constant_expr": true
 	},
-	{
-		"domain": "common",
-		"box_expr": "generic",
-		"expr_type": "expr_type_sample_signal",
-		"stateful": false,
-		"category": "waveform",
-		"has_constant_expr": false,
-		"expr_outputs": "generic",
-		"outputs": [
-			{
-				"name": "random-stream",
-				"label": "random numbers"
-			}
-		],
-		"op": "noise",
-		"arguments": {},
-		"digest": "A random number generator",
-		"inputs": {},
-		"attributes": {},
-		"constructors": [
-			{
-				"inlets": [],
-				"arguments": {}
-			}
-		],
-		"aliases": {},
-		"description": "A random number generator"
-	},
-	{
-		"domain": "common",
-		"box_expr": "generic",
-		"category": "powers",
-		"inputs": {
-			"value1": {
-				"label": "input value 1",
-				"optional": true,
-				"type": {
-					"name": "vector",
-					"params": [
-						"float"
-					]
-				},
-				"digest": "input value 1",
-				"name": "value1",
-				"default": "0"
-			},
-			"value2": {
-				"label": "input value 2",
-				"optional": true,
-				"type": {
-					"name": "vector",
-					"params": [
-						"float"
-					]
-				},
-				"digest": "input value 2",
-				"name": "value2",
-				"default": "0"
-			}
-		},
-		"op": "pow",
-		"arguments": [
-			"value1",
-			"value2"
-		],
-		"constructors": [
-			{
-				"inlets": [
-					"value1"
-				],
-				"arguments": [
-					"value2"
-				]
-			},
-			{
-				"inlets": [
-					"value1",
-					"value2"
-				],
-				"arguments": {}
-			}
-		],
-		"description": "Raise in1 to the power of in2",
-		"expr_type": "expr_type_sample_coerce",
-		"digest": "Raise in1 to the power of in2",
-		"seealso": [
-			"exp",
-			"exp2",
-			"log",
-			"log10",
-			"log2",
-			"sqrt"
-		],
-		"outputs": [
-			{
-				"name": "out1",
-				"label": "sign of input"
-			}
-		],
-		"stateful": false,
-		"expr_outputs": "generic",
-		"attributes": {},
-		"aliases": {},
-		"has_constant_expr": true
-	},
+	
+	
 	{
 		"domain": "common",
 		"box_expr": "generic",
@@ -8338,76 +8609,7 @@
 		"aliases": {},
 		"description": "Linear interpolated multi-channel lookup of a data/buffer object. The first argument should be a name of a data or buffer object in the gen patcher. The second argument specifies the number of output channels. The last inlet specifies a channel offset (default 0)."
 	},
-	{
-		"domain": "dsp",
-		"box_expr": "generic",
-		"category": "filter",
-		"inputs": {
-			"input": {
-				"label": "input to sample",
-				"optional": true,
-				"type": {
-					"name": "float"
-				},
-				"digest": "input to sample",
-				"name": "input",
-				"default": "0"
-			},
-			"control": {
-				"label": "control: allows input through when non-zero",
-				"optional": true,
-				"type": {
-					"name": "float"
-				},
-				"digest": "control: allows input through when non-zero",
-				"name": "control",
-				"default": "0"
-			}
-		},
-		"op": "latch",
-		"arguments": [
-			"input",
-			"control"
-		],
-		"constructors": [
-			{
-				"inlets": [
-					"input",
-					"control"
-				],
-				"arguments": {}
-			}
-		],
-		"description": "Conditionally passes or holds input. The first inlet is the 'input' and the second inlet is the 'control'. When the control is non-zero, the input value is passed through. When the control is zero, the previous input value is output. It can be used to periodically sample & hold a source signal with a simpler trigger logic than the sah operator.",
-		"expr_type": "expr_type_coerce",
-		"digest": "Conditionally pass or hold input",
-		"seealso": [
-			"sah",
-			"slide",
-			"delta",
-			"change",
-			"sah"
-		],
-		"outputs": [
-			{
-				"name": "out1",
-				"label": "current or previous input"
-			}
-		],
-		"stateful": true,
-		"expr_outputs": "generic",
-		"attributes": {
-			"init": {
-				"optional": true,
-				"digest": "Specify the initially held value",
-				"description": "Specify the initially held value",
-				"type": "float",
-				"default": 0
-			}
-		},
-		"aliases": {},
-		"has_constant_expr": false
-	},
+	
 	{
 		"domain": "dsp",
 		"box_expr": "generic",
@@ -8788,63 +8990,7 @@
 		"aliases": {},
 		"has_constant_expr": false
 	},
-	{
-		"domain": "dsp",
-		"box_expr": "generic",
-		"category": "filter",
-		"inputs": {
-			"input": {
-				"label": "value to analyze",
-				"optional": true,
-				"type": {
-					"name": "float"
-				},
-				"digest": "value to analyze",
-				"name": "input",
-				"default": "0"
-			}
-		},
-		"op": "change",
-		"arguments": [
-			"input"
-		],
-		"constructors": [
-			{
-				"inlets": [
-					"input"
-				],
-				"arguments": {}
-			}
-		],
-		"description": "Returns the sign of the difference between the current and previous input: 1 if the input is increasing, -1 if decreasing, and 0 if unchanging.",
-		"expr_type": "expr_type_int_signal",
-		"digest": "The sign of the derivative of the input",
-		"seealso": [
-			"slide",
-			"delta",
-			"change",
-			"sah"
-		],
-		"outputs": [
-			{
-				"name": "out1",
-				"label": "0 if unchanged; -1 or 1 if changed"
-			}
-		],
-		"stateful": true,
-		"expr_outputs": "generic",
-		"attributes": {
-			"init": {
-				"optional": true,
-				"digest": "Specify the first value to compare against",
-				"description": "Specify the first value to compare against",
-				"type": "float",
-				"default": 0
-			}
-		},
-		"aliases": {},
-		"has_constant_expr": true
-	},
+	
 	{
 		"domain": "dsp",
 		"box_expr": "constant",
@@ -10614,135 +10760,7 @@
 			}
 		]
 	},
-	{
-		"domain": "dsp",
-		"box_expr": "generic",
-		"expr_type": "expr_type_sample_signal",
-		"stateful": true,
-		"category": "buffer",
-		"seealso": [
-			"phasor",
-			"train",
-			"buffer",
-			"data"
-		],
-		"has_constant_expr": false,
-		"inputs": {
-			"freq": {
-				"label": "wave frequency",
-				"optional": true,
-				"type": {
-					"name": "float"
-				},
-				"digest": "wave frequency",
-				"name": "freq",
-				"default": "440"
-			},
-			"phase": {
-				"label": "wave phase (0..1)",
-				"optional": true,
-				"type": {
-					"name": "float"
-				},
-				"digest": "wave phase (0..1)",
-				"name": "phase",
-				"default": "0"
-			}
-		},
-		"op": "cycle",
-		"expr_outputs": "generic",
-		"digest": "Sine / wavetable lookup oscillator",
-		"outputs": [
-			{
-				"name": "out1",
-				"label": "interpolated waveform"
-			},
-			{
-				"name": "out2",
-				"label": "index (in samples)"
-			}
-		],
-		"attributes": {
-			"name": {
-				"optional": true,
-				"digest": "Specify data or buffer to play",
-				"description": "Specify the data or buffer object to use for playback. If not specified, cycle will use a built-in sine wavetable.\"",
-				"type": "string"
-			},
-			"index": {
-				"optional": true,
-				"enums": {
-					"phase": true,
-					"freq": true
-				},
-				"digest": "Specify the index mode",
-				"description": "Specify the index mode: \"phase\" maps the input signal range 0..1 to the span of the buffer, \"freq\" cycles through the buffer at a frequency given by the input signal.",
-				"type": "enum",
-				"default": "freq"
-			}
-		},
-		"constructors": [
-			{
-				"constraints": {
-					"index": [
-						"phase"
-					]
-				},
-				"inlets": {},
-				"arguments": [
-					"buffer",
-					"phase"
-				]
-			},
-			{
-				"arguments": [
-					"buffer"
-				],
-				"inlets": [
-					"phase"
-				],
-				"constraints": {
-					"index": [
-						"phase"
-					]
-				}
-			},
-			{
-				"constraints": {
-					"index": [
-						"phase"
-					]
-				},
-				"inlets": [
-					"phase"
-				],
-				"arguments": {}
-			},
-			{
-				"inlets": {},
-				"arguments": [
-					"buffer",
-					"freq"
-				]
-			},
-			{
-				"inlets": [
-					"freq"
-				],
-				"arguments": [
-					"buffer"
-				]
-			},
-			{
-				"inlets": [
-					"freq"
-				],
-				"arguments": {}
-			}
-		],
-		"aliases": {},
-		"description": "An interpolating oscillator that reads repeatedly through one cycle of a sine wave. By default it is driven by a frequency input, but if the @index attribute is set to 'phase', it can be driven by a phase input instead."
-	},
+	
 	{
 		"domain": "dsp",
 		"box_expr": "generic",
