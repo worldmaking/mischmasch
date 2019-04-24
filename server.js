@@ -271,7 +271,11 @@ function handlemessage(msg, sock, id) {
 		case "deltas": {
 
 			// synchronize our local copy:
-			got.applyDeltasToGraph(localGraph, msg.data);
+			try {
+				got.applyDeltasToGraph(localGraph, msg.data);
+			} catch (e) {
+				console.warn(e);
+			}
 
 			//console.log(msg.data)
 			// TODO: merge OTs
