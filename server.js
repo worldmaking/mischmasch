@@ -394,9 +394,9 @@ function handlemessage(msg, sock, id) {
 				data: "clear"
 			}));
 
-			blankScene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
+			localGraph = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
 			// turn this into deltas:
-			let deltas = got.deltasFromGraph(blankScene, []);
+			let deltas = got.deltasFromGraph(localGraph, []);
 
 			send_all_clients(JSON.stringify({
 				cmd: "deltas",
@@ -443,9 +443,9 @@ function handlemessage(msg, sock, id) {
 				data: "clear"
 			}));
 
-			loadedScene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
+			localGraph = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
 			// turn this into deltas:
-			let deltas = got.deltasFromGraph(loadedScene, []);
+			let deltas = got.deltasFromGraph(localGraph, []);
 			//console.log(deltas)
 			console.log(deltas)
 			send_all_clients(JSON.stringify({
