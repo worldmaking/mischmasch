@@ -12,7 +12,7 @@ const { exec, execSync, spawn, spawnSync, fork } = require('child_process');
 const express = require('express');
 const WebSocket = require('ws');
 const { vec2, vec3, vec4, quat, mat3, mat4 } = require("gl-matrix");
-
+const bottleneck = require('Bottleneck')
 
 
 const got = require("./got/got")
@@ -20,6 +20,7 @@ console.log(got)
 
 // 1st cli arg can be the scenefile 
 let scenefile = __dirname + "/scene_files/scene_edited.json"
+let OTHistoryFile;
 
 			//demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
 			// turn this into deltas:
@@ -267,6 +268,8 @@ wss.on('connection', function(ws, req) {
 
 
 function handlemessage(msg, sock, id) {
+
+
 	switch (msg.cmd) {
 		case "deltas": {
 
@@ -390,7 +393,8 @@ function handlemessage(msg, sock, id) {
 		} break;
 
 		case "clear_scene": {
-			
+			fs.writeFileSync(OTHistoryFile, JSON.stringify(OTHistory, null, "  "), "utf-8")
+
 			scenefile = __dirname + '/scene_files/scene_blank.json'
 			send_all_clients(JSON.stringify({
 				cmd: "clear_scene",
@@ -407,7 +411,7 @@ function handlemessage(msg, sock, id) {
 				date: Date.now(),
 				data: deltas
 			}));
-
+			OTHistoryFile = __dirname + '/histories/OT_' + Date.now() + '.json'
 		} break;
 		case "get_scene": {
 			
@@ -462,11 +466,23 @@ function handlemessage(msg, sock, id) {
 		case "user_pose": {
 			//console.log(JSON.stringify(msg.pose))
 			// broadcast this data... 
-			send_all_clients(JSON.stringify({
+			let poseDelta = JSON.stringify({
 				cmd: "user_pose",
 				date: Date.now(),
 				pose: msg.pose
-			}));
+			})
+			send_all_clients(poseDelta);
+
+			//OTHistory.push(poseDelta)
+			const limiter = new Bottleneck({
+				maxConcurrent: 1,
+				minTime: 30
+			});
+			// Limit storing of pose data to rate of 30fps
+			limiter.schedule(() => storePoses())
+			.then(() => {
+				OTHistory.push(poseDelta)
+			});
 		} break;
 		default: console.log("received JSON", msg, typeof msg);
 	}

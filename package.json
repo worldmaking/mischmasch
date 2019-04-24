@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/worldmaking/msvr#readme",
   "dependencies": {
+    "bottleneck": "^2.18.0",
     "express": "^4.16.4",
     "gl-matrix": "^3.0.0",
     "nodemon": "^1.18.11",
