@@ -154,6 +154,8 @@ let otherUsers = {};
 let incomingDeltas = [];
 let outgoingDeltas = [];
 
+let clientDeltas = [];
+
 let allNodes = {};
 let allCables = [];
 let uiLine;
@@ -1261,6 +1263,7 @@ function copyModule(pos, orient, controller){
     return deltas;
 }
 
+//copy's a module (but this takes the object from an interestection instead of from controller.userdata.selected)
 function cloneModuleMenu(pos, orient, object){
     let module_names = Object.keys(module_constructors)
     let opname, ctor;
@@ -1290,12 +1293,13 @@ function cloneModuleMenu(pos, orient, object){
    
 }
 
+//Generates a new Module inside the radial Menu (Honestly need to probably refarctor this so it isn't so redundant to other code)
 function generateNewModule(pos, orient, name){
     //let module_names = Object.keys(module_constructors)
     let opname, ctor;
 
 
-            ctor = module_constructors[name];
+    ctor = module_constructors[name];
 
     // for(let j in operator_names){
 
@@ -1312,6 +1316,15 @@ function generateNewModule(pos, orient, name){
     deltas[0].menu = true;
     return deltas;
 }
+
+//send delta's client side only (No round trip)
+function clientSideDeltas(){
+    while (clientDeltas.length > 0) {
+        let delta = clientDeltas.shift();
+        enactDelta(delta);
+    }
+}
+
 
 function highlightNlet(controller){
     if (controller.userData.selected !== undefined) {
@@ -1545,38 +1558,49 @@ function controllerGamepadControls(controller){
             createObjFromMenu = true;
             //create objects to choose from
             if(touched){
-                let opname = ["lfo", "vca"];
+                let opname = ["sample_and_hold", "freevoib", "shifter", "constant", "lfo", "dualvco", "vca", "comparator", "outs"];
                 for(let i of opname){
-                    //need to always get the top node otherwise CTOR throws error
+
                     //NEED TO REARRANGE MENU AND FIGURE OUT WHICH OBJECTS otherwise code is working!!!
-                    let deltas = generateNewModule([controllerPos.x - .1 + menuPos, controllerPos.y + .2, controllerPos.z + .2 + menuPos], [controllerQuat._x, controllerQuat._y, controllerQuat._z, controllerQuat._w], i);
-                    outgoingDeltas = outgoingDeltas.concat(deltas);
+                    let deltas = generateNewModule([controllerPos.x - .6 + menuPos, controllerPos.y + .1, controllerPos.z - .1], [0, 0, 0, 1], i);
+                    clientDeltas = clientDeltas.concat(deltas);
+                    clientSideDeltas(clientDeltas);
                     touched = false;
-                    menuPos += .1;
+                    menuPos += .15;
                 }
             }
 
         } else if(controller.userData.touched == false){
+           
             let intersections = getIntersections(controller, 0, 0, -1);
             if (intersections.length > 0) {
                 if(createObjFromMenu){
                 let intersection = intersections[0];
                 let object = intersection.object;
+                console.log(object)
+                    //need to always get the top node otherwise CTOR throws error cause it doesn't know the object to clone
+                    for(let name of module_names){
+                        let obj = object;
+                        //N_Switch slider only doesn't have a kind so this will never be true (only object without a kind) probably should add a kind????
+                        while(obj.userData.kind !== name && obj.userData.kind !== undefined){
+                            obj = obj.parent;
+                        }
+                        if(obj.userData.kind === name){
+                            let deltas = cloneModuleMenu([controllerPos.x, controllerPos.y, controllerPos.z], [controllerQuat._x, controllerQuat._y, controllerQuat._z, controllerQuat._w], obj);
+                            outgoingDeltas = outgoingDeltas.concat(deltas);
+                        }
 
-
-                let deltas = cloneModuleMenu([controllerPos.x, controllerPos.y, controllerPos.z], [controllerQuat._x, controllerQuat._y, controllerQuat._z, controllerQuat._w], object);
-                outgoingDeltas = outgoingDeltas.concat(deltas);
+                    } 
                 }
-                createObjFromMenu = false;
-
             }
-
+            createObjFromMenu = false;
             for (let path in allNodes) {
                 
                 if (allNodes[path].userData.menu) {
-                    outgoingDeltas.push(
+                    clientDeltas.push(
                         { op:"delnode", path:allNodes[path].userData.path, kind:allNodes[path].userData.name}
                     );
+                    clientSideDeltas(clientDeltas);
                 }
             }
             menuPos = 0;
@@ -1746,6 +1770,7 @@ function render() {
     while (incomingDeltas.length > 0) {
         let delta = incomingDeltas.shift();
         enactDelta(delta);
+        //console.log("incoming deltas")
     }
     
     updateDirty();
@@ -1785,6 +1810,7 @@ function render() {
             };
             sock.send(message);
             outgoingDeltas.length = 0;
+            //console.log("Sending Deltas")
         }
         
         // send VR poses to the server:
