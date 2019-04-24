@@ -62,7 +62,7 @@ for (let op of operators) {
     //console.log(outputs.map(o => o.name))
 
     let codes = [`
-      { "op":"newnode", "path":"\${path}", "kind":"${name}", "specification":"${specification}",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] }`];
+      { "op":"newnode", "path":"\${path}", "kind":"${name}", "specification":"${specification}","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] }`];
 
     for (let i=0; i<in_names.length; i++) {
       let inlet_name = in_names[i]

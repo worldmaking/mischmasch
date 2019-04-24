@@ -6,14 +6,14 @@ let operator_constructors = {
   
   "ceil": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"ceil", "specification":"numeric",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"ceil", "specification":"numeric","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "fastpow": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"fastpow", "specification":"powers",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"fastpow", "specification":"powers","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -21,7 +21,7 @@ let operator_constructors = {
   },
   "mul": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"mul", "specification":"math",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"mul", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.product","index":0 }
@@ -29,7 +29,7 @@ let operator_constructors = {
   },
   "fold": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"fold", "specification":"range",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"fold", "specification":"range","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.min", "index":1 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.max", "index":2 },
@@ -38,7 +38,7 @@ let operator_constructors = {
   },
   "rdiv": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"rdiv", "specification":"math",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"rdiv", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.quotient","index":0 }
@@ -46,7 +46,7 @@ let operator_constructors = {
   },
   "min": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"min", "specification":"comparison",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"min", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -54,7 +54,7 @@ let operator_constructors = {
   },
   "mix": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"mix", "specification":"route",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"mix", "specification":"route","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.loval", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.hival", "index":1 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.interp", "index":2 },
@@ -63,7 +63,7 @@ let operator_constructors = {
   },
   "cartopol": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"cartopol", "specification":"math",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"cartopol", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.x", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.y", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.distance","index":0 },
@@ -72,14 +72,14 @@ let operator_constructors = {
   },
   "tanh": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"tanh", "specification":"trigonometry",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"tanh", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "scale": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"scale", "specification":"range",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"scale", "specification":"range","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.ilo", "index":1 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.ihi", "index":2 },
@@ -91,7 +91,7 @@ let operator_constructors = {
   },
   "eqp": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"eqp", "specification":"comparison",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"eqp", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -99,21 +99,21 @@ let operator_constructors = {
   },
   "sin": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"sin", "specification":"trigonometry",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"sin", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "exp": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"exp", "specification":"powers",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"exp", "specification":"powers","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "eq": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"eq", "specification":"comparison",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"eq", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -121,14 +121,14 @@ let operator_constructors = {
   },
   "exp2": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"exp2", "specification":"powers",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"exp2", "specification":"powers","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "ltep": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"ltep", "specification":"comparison",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"ltep", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -136,7 +136,7 @@ let operator_constructors = {
   },
   "poltocar": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"poltocar", "specification":"math",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"poltocar", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.r", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.theta", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.x","index":0 },
@@ -145,28 +145,28 @@ let operator_constructors = {
   },
   "fract": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"fract", "specification":"numeric",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"fract", "specification":"numeric","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.fract","index":0 }
     ]`);
   },
   "sqrt": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"sqrt", "specification":"powers",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"sqrt", "specification":"powers","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "radians": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"radians", "specification":"trigonometry",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"radians", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.degrees", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "neqp": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"neqp", "specification":"comparison",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"neqp", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -174,14 +174,14 @@ let operator_constructors = {
   },
   "atan": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"atan", "specification":"trigonometry",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"atan", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "mod": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"mod", "specification":"math",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"mod", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.modulo","index":0 }
@@ -189,35 +189,35 @@ let operator_constructors = {
   },
   "atanh": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"atanh", "specification":"trigonometry",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"atanh", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "fastexp": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"fastexp", "specification":"powers",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"fastexp", "specification":"powers","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "sinh": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"sinh", "specification":"trigonometry",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"sinh", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "acos": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"acos", "specification":"trigonometry",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"acos", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "rmod": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"rmod", "specification":"math",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"rmod", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.modulo","index":0 }
@@ -225,7 +225,7 @@ let operator_constructors = {
   },
   "sub": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"sub", "specification":"math",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"sub", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.difference","index":0 }
@@ -233,7 +233,7 @@ let operator_constructors = {
   },
   "neq": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"neq", "specification":"comparison",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"neq", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -241,7 +241,7 @@ let operator_constructors = {
   },
   "ltp": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"ltp", "specification":"comparison",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"ltp", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -249,14 +249,14 @@ let operator_constructors = {
   },
   "bool": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"bool", "specification":"logic",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"bool", "specification":"logic","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.bool","index":0 }
     ]`);
   },
   "add": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"add", "specification":"math",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"add", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.sum","index":0 }
@@ -264,7 +264,7 @@ let operator_constructors = {
   },
   "max": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"max", "specification":"comparison",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"max", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -272,7 +272,7 @@ let operator_constructors = {
   },
   "hypot": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"hypot", "specification":"trigonometry",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"hypot", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.x", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.y", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -280,21 +280,21 @@ let operator_constructors = {
   },
   "floor": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"floor", "specification":"numeric",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"floor", "specification":"numeric","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "abs": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"abs", "specification":"numeric",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"abs", "specification":"numeric","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.abs","index":0 }
     ]`);
   },
   "absdiff": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"absdiff", "specification":"math",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"absdiff", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.abs-diff","index":0 }
@@ -302,28 +302,28 @@ let operator_constructors = {
   },
   "log2": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"log2", "specification":"powers",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"log2", "specification":"powers","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "degrees": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"degrees", "specification":"trigonometry",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"degrees", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.radians", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "selector": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"selector", "specification":"route",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"selector", "specification":"route","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}....", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "switch": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"switch", "specification":"route",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"switch", "specification":"route","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.condition", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.iftrue", "index":1 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.iffalse", "index":2 },
@@ -332,20 +332,20 @@ let operator_constructors = {
   },
   "cosh": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"cosh", "specification":"trigonometry",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"cosh", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "out": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"out", "specification":"input-output",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"out", "specification":"input-output","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 }
     ]`);
   },
   "wrap": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"wrap", "specification":"range",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"wrap", "specification":"range","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.min", "index":1 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.max", "index":2 },
@@ -354,7 +354,7 @@ let operator_constructors = {
   },
   "smoothstep": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"smoothstep", "specification":"route",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"smoothstep", "specification":"route","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.loval", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.hival", "index":1 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.interp", "index":2 },
@@ -363,14 +363,14 @@ let operator_constructors = {
   },
   "acosh": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"acosh", "specification":"trigonometry",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"acosh", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "step": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"step", "specification":"comparison",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"step", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -378,7 +378,7 @@ let operator_constructors = {
   },
   "gtep": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"gtep", "specification":"comparison",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"gtep", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -386,7 +386,7 @@ let operator_constructors = {
   },
   "or": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"or", "specification":"logic",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"or", "specification":"logic","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -394,42 +394,42 @@ let operator_constructors = {
   },
   "fastsin": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"fastsin", "specification":"trigonometry",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"fastsin", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "fastcos": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"fastcos", "specification":"trigonometry",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"fastcos", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "sign": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"sign", "specification":"numeric",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"sign", "specification":"numeric","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "log10": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"log10", "specification":"powers",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"log10", "specification":"powers","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "log": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"log", "specification":"powers",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"log", "specification":"powers","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "lte": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"lte", "specification":"comparison",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"lte", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -437,7 +437,7 @@ let operator_constructors = {
   },
   "gte": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"gte", "specification":"comparison",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"gte", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -445,14 +445,14 @@ let operator_constructors = {
   },
   "asinh": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"asinh", "specification":"trigonometry",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"asinh", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "clamp": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"clamp", "specification":"range",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"clamp", "specification":"range","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.min", "index":1 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.max", "index":2 },
@@ -461,13 +461,13 @@ let operator_constructors = {
   },
   "noise": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"noise", "specification":"waveform",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"noise", "specification":"waveform","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"outlet", "path":"${path}.random-stream","index":0 }
     ]`);
   },
   "pow": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"pow", "specification":"powers",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"pow", "specification":"powers","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -475,14 +475,14 @@ let operator_constructors = {
   },
   "fasttan": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"fasttan", "specification":"trigonometry",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"fasttan", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "lt": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"lt", "specification":"comparison",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"lt", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -490,7 +490,7 @@ let operator_constructors = {
   },
   "and": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"and", "specification":"logic",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"and", "specification":"logic","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -498,7 +498,7 @@ let operator_constructors = {
   },
   "div": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"div", "specification":"math",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"div", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.quotient","index":0 }
@@ -506,7 +506,7 @@ let operator_constructors = {
   },
   "xor": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"xor", "specification":"logic",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"xor", "specification":"logic","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -514,7 +514,7 @@ let operator_constructors = {
   },
   "atan2": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"atan2", "specification":"trigonometry",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"atan2", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.opposite", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.adjacent", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -522,7 +522,7 @@ let operator_constructors = {
   },
   "gt": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"gt", "specification":"comparison",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"gt", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -530,7 +530,7 @@ let operator_constructors = {
   },
   "gtp": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"gtp", "specification":"comparison",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"gtp", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -538,28 +538,28 @@ let operator_constructors = {
   },
   "not": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"not", "specification":"logic",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"not", "specification":"logic","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "pass": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"pass", "specification":"ignore",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"pass", "specification":"ignore","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "asin": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"asin", "specification":"trigonometry",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"asin", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "rsub": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"rsub", "specification":"math",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"rsub", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.difference","index":0 }
@@ -567,35 +567,35 @@ let operator_constructors = {
   },
   "tan": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"tan", "specification":"trigonometry",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"tan", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "trunc": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"trunc", "specification":"numeric",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"trunc", "specification":"numeric","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "cos": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"cos", "specification":"trigonometry",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"cos", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "neg": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"neg", "specification":"math",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"neg", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "rate": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"rate", "specification":"waveform",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"rate", "specification":"waveform","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.phase", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.multiplier", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -603,7 +603,7 @@ let operator_constructors = {
   },
   "ftom": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"ftom", "specification":"convert",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"ftom", "specification":"convert","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.freq", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.tuning", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -611,7 +611,7 @@ let operator_constructors = {
   },
   "sah": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"sah", "specification":"filter",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"sah", "specification":"filter","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.control", "index":1 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.thresh", "index":2 },
@@ -620,7 +620,7 @@ let operator_constructors = {
   },
   "counter": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"counter", "specification":"integrator",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"counter", "specification":"integrator","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.incr", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.reset", "index":1 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.max", "index":2 },
@@ -631,14 +631,14 @@ let operator_constructors = {
   },
   "sampstoms": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"sampstoms", "specification":"convert",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"sampstoms", "specification":"convert","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.period", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "train": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"train", "specification":"waveform",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"train", "specification":"waveform","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.period", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.width", "index":1 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.onset", "index":2 },
@@ -647,14 +647,14 @@ let operator_constructors = {
   },
   "dbtoa": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"dbtoa", "specification":"convert",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"dbtoa", "specification":"convert","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.db", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "latch": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"latch", "specification":"filter",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"latch", "specification":"filter","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.control", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -662,7 +662,7 @@ let operator_constructors = {
   },
   "mulequals": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"mulequals", "specification":"integrator",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"mulequals", "specification":"integrator","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.incr", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.reset", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -670,20 +670,20 @@ let operator_constructors = {
   },
   "elapsed": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"elapsed", "specification":"global",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"elapsed", "specification":"global","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "change": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"change", "specification":"filter",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"change", "specification":"filter","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "triangle": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"triangle", "specification":"waveform",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"triangle", "specification":"waveform","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.phase", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.duty", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -691,14 +691,14 @@ let operator_constructors = {
   },
   "phasewrap": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"phasewrap", "specification":"filter",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"phasewrap", "specification":"filter","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.phase", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "mtof": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"mtof", "specification":"convert",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"mtof", "specification":"convert","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.note", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.tuning", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -706,42 +706,42 @@ let operator_constructors = {
   },
   "isnan": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"isnan", "specification":"dsp",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"isnan", "specification":"dsp","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "t60time": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"t60time", "specification":"dsp",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"t60time", "specification":"dsp","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.multiplier", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "delta": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"delta", "specification":"filter",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"delta", "specification":"filter","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "history": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"history", "specification":"feedback",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"history", "specification":"feedback","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "t60": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"t60", "specification":"dsp",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"t60", "specification":"dsp","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.time", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "plusequals": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"plusequals", "specification":"integrator",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"plusequals", "specification":"integrator","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.incr", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.reset", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -749,21 +749,21 @@ let operator_constructors = {
   },
   "fixnan": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"fixnan", "specification":"dsp",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"fixnan", "specification":"dsp","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "mstosamps": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"mstosamps", "specification":"convert",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"mstosamps", "specification":"convert","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.period", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "round": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"round", "specification":"numeric",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"round", "specification":"numeric","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.base", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -771,7 +771,7 @@ let operator_constructors = {
   },
   "interp": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"interp", "specification":"filter",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"interp", "specification":"filter","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.t", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.a", "index":1 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.b", "index":2 },
@@ -780,7 +780,7 @@ let operator_constructors = {
   },
   "slide": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"slide", "specification":"filter",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"slide", "specification":"filter","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.up", "index":1 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.down", "index":2 },
@@ -789,14 +789,14 @@ let operator_constructors = {
   },
   "atodb": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"atodb", "specification":"convert",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"atodb", "specification":"convert","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.amplitude", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "cycle": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"cycle", "specification":"buffer",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"cycle", "specification":"buffer","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.freq", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out2","index":1 }
@@ -804,14 +804,14 @@ let operator_constructors = {
   },
   "dcblock": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"dcblock", "specification":"filter",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"dcblock", "specification":"filter","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "phasor": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"phasor", "specification":"waveform",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"phasor", "specification":"waveform","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.freq", "index":0 },
       { "op":"newnode", "kind":"inlet", "path":"${path}.reset", "index":1 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
@@ -819,14 +819,14 @@ let operator_constructors = {
   },
   "isdenorm": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"isdenorm", "specification":"dsp",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"isdenorm", "specification":"dsp","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
   "fixdenorm": function(path) { 
     return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"fixdenorm", "specification":"dsp",category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
+      { "op":"newnode", "path":"${path}", "kind":"fixdenorm", "specification":"dsp","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
       { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
@@ -1202,7 +1202,7 @@ let module_constructors = {
 			{
 				"op": "newnode",
 				"path": "${path}",
-				"kind": "dualvco",
+				"kind": "vco",
 				"category": "abstraction",
 				"pos": [
 					0,
