@@ -1634,7 +1634,6 @@ function controllerGamepadControls(controller){
                             let deltas = cloneModuleMenu([controllerPos.x, controllerPos.y, controllerPos.z], [controllerQuat._x, controllerQuat._y, controllerQuat._z, controllerQuat._w], obj);
                             outgoingDeltas = outgoingDeltas.concat(deltas);
                         }
-
                     } 
                 }
             }
