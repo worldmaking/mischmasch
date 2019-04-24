@@ -1574,6 +1574,82 @@ let module_constructors = {
 			}
 		]`);
     },
+
+	"resofilter": function(path) { 
+    return JSON.parse(`[
+			{
+				"op": "newnode",
+				"path": "${path}",
+				"kind": "resofilter",
+				"category": "abstraction",
+				"pos": [
+					0,
+					0,
+					0
+				],
+				"orient": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.source",
+				"kind": "inlet",
+				"index": 0
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.frequency",
+				"kind": "big_knob",
+				"range": [
+					1,
+					10000
+				],
+				"taper": "log 3.8",
+				"value": 0.25,
+				"unit": "float"
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.freq_cv",
+				"kind": "inlet",
+				"index": 1
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.resonance",
+				"kind": "small_knob",
+				"range": [
+					0,
+					1
+				],
+				"taper": "log 3.8",
+				"value": 0.5,
+				"unit": "float"
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.res_cv",
+				"kind": "inlet",
+				"index": 2
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.lopass",
+				"kind": "outlet",
+				"index": 0
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.hipass",
+				"kind": "outlet",
+				"index": 1
+			}
+		]`);
+    },
 }
 
 let operator_names = Object.keys(operator_constructors)
