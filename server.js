@@ -473,9 +473,9 @@ function handlemessage(msg, sock, id) {
 				pose: msg.pose
 			})
 			send_all_clients(poseDelta);
-
+/*
 			//OTHistory.push(poseDelta)
-			const limiter = new Bottleneck({
+			const limiter = new bottleneck({
 				maxConcurrent: 1,
 				minTime: 30
 			});
@@ -483,7 +483,7 @@ function handlemessage(msg, sock, id) {
 			limiter.schedule(() => storePoses())
 			.then(() => {
 				OTHistory.push(poseDelta)
-			});
+			});*/
 		} break;
 		default: console.log("received JSON", msg, typeof msg);
 	}
