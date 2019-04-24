@@ -169,6 +169,7 @@ let frames = 0;
 let createObjFromMenu = true;
 let menuPos = 0;
 let menuNames = [];
+let menuScaleSize = .4;
 
 function getObjectByPath(path) {
     return allNodes[path];
@@ -919,7 +920,7 @@ function enactDeltaNewNode(delta) {
 
     if(delta.menu == true){
         container.userData.menu = delta.menu;
-        container.scale.set(.2,.2,.2);
+        container.scale.set(menuScaleSize, menuScaleSize, menuScaleSize);
 
     }
 
@@ -1350,11 +1351,11 @@ function makeMenu(){
         for(let col = 0; col < names_per_row && i < menuNames.length; col++, i++){
             let name = menuNames[i];
             let theta = col * (2 * Math.PI) / names_per_row;
-            let r = .6;
+            let r = .5;
             let x = r * Math.sin(theta);
             let z = r * Math.cos(theta);
             //console.log(i, name);
-            let y = -.1 * (row + 1);
+            let y = -.2 * (row + 1);
     
             let e = new THREE.Euler(0, theta + Math.PI, 0);
             let q = new THREE.Quaternion();
@@ -1609,8 +1610,7 @@ function controllerGamepadControls(controller){
             createObjFromMenu = true;
             //create objects to choose from
             if(touched){
-                console.log(headsetPos)
-                menu.position.fromArray([headsetPos.x, headsetPos.y, headsetPos.z]);
+                menu.position.fromArray([headsetPos.x, headsetPos.y + .25, headsetPos.z]);
                 //menu.rotation.fromArray([0, -controller.rotation.y, 0]);
                 world.add(menu);
 
