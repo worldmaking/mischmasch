@@ -1577,7 +1577,6 @@ function controllerGamepadControls(controller){
                 if(createObjFromMenu){
                 let intersection = intersections[0];
                 let object = intersection.object;
-                console.log(object)
                     //need to always get the top node otherwise CTOR throws error cause it doesn't know the object to clone
                     for(let name of module_names){
                         let obj = object;
