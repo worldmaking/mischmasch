@@ -31,6 +31,12 @@ let sessionJSON = []
 // declare var for recording status
 let recordStatus;
 
+// a local copy of the current graph state, for synchronization purposes
+let localGraph = {
+	nodes: {},
+	arcs: []
+}
+
 const MaxAPI = (() => {
     try {Mutation
         return require("max-api");
@@ -133,12 +139,12 @@ console.log("client_path", client_path);
 	stdin.setEncoding( 'utf8' );
 	// on any data into stdin
 	stdin.on( 'data', function( key ){
-	// ctrl-c ( end of text )
-	if ( key === '\u0003' ) {
-		process.exit();
-	}
-	// write the key to stdout all normal like
-	process.stdout.write( key );
+		// ctrl-c ( end of text )
+		if ( key === '\u0003' ) {
+			process.exit();
+		}
+		// write the key to stdout all normal like
+		process.stdout.write( key );
 	});
 }
 
@@ -206,8 +212,7 @@ function send_all_clients(msg, ignore) {
 let sessionId = 0;
 wss.on('connection', function(ws, req) {
 
-
-// do any
+	// do any
 	console.log("server received a connection");
 	console.log("server has "+wss.clients.size+" connected clients");
 	//	ws.id = uuid.v4();
@@ -264,6 +269,10 @@ wss.on('connection', function(ws, req) {
 function handlemessage(msg, sock, id) {
 	switch (msg.cmd) {
 		case "deltas": {
+
+			// synchronize our local copy:
+			got.applyDeltasToGraph(localGraph, msg.data);
+
 			//console.log(msg.data)
 			// TODO: merge OTs
 			let response = {
@@ -385,9 +394,9 @@ function handlemessage(msg, sock, id) {
 				data: "clear"
 			}));
 
-			blankScene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
+			localGraph = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
 			// turn this into deltas:
-			let deltas = got.deltasFromGraph(blankScene, []);
+			let deltas = got.deltasFromGraph(localGraph, []);
 
 			send_all_clients(JSON.stringify({
 				cmd: "deltas",
@@ -400,13 +409,14 @@ function handlemessage(msg, sock, id) {
 			
 			//demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
 			// turn this into deltas:
-			//let deltas = got.deltasFromGraph(demo_scene, []);
+			let deltas = got.deltasFromGraph(localGraph, []);
 			//console.log(deltas)
 
-			send_all_clients(JSON.stringify({
+			// reply only to the requester:
+			sock.send(JSON.stringify({
 				cmd: "deltas",
 				date: Date.now(),
-				data: OTHistory
+				data: deltas //OTHistory
 			}));
 
 		} break;
@@ -433,9 +443,9 @@ function handlemessage(msg, sock, id) {
 				data: "clear"
 			}));
 
-			loadedScene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
+			localGraph = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
 			// turn this into deltas:
-			let deltas = got.deltasFromGraph(loadedScene, []);
+			let deltas = got.deltasFromGraph(localGraph, []);
 			//console.log(deltas)
 			console.log(deltas)
 			send_all_clients(JSON.stringify({

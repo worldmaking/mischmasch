@@ -4,13 +4,13 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 0,
-			"revision" : 0,
+			"revision" : 5,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "dsp.gen",
-		"rect" : [ 850.0, 384.0, 796.0, 485.0 ],
+		"rect" : [ 320.0, 341.0, 796.0, 485.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -38,6 +38,18 @@
 		"style" : "",
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-3",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 466.0, 253.0, 67.0, 22.0 ],
+					"text" : "clamp 0. 1."
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-10",
 					"maxclass" : "newobj",
@@ -92,8 +104,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 514.0, 109.0, 171.0, 22.0 ],
-					"text" : "param cv 1. @min 0. @max 1."
+					"patching_rect" : [ 514.0, 109.0, 218.0, 22.0 ],
+					"text" : "param cv_amount 1. @min 0. @max 1."
 				}
 
 			}
@@ -104,7 +116,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 466.0, 109.0, 28.0, 22.0 ],
+					"patching_rect" : [ 466.0, 64.0, 28.0, 22.0 ],
 					"text" : "abs"
 				}
 
@@ -116,7 +128,7 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 466.0, 79.0, 108.0, 22.0 ],
+					"patching_rect" : [ 466.0, 40.0, 108.0, 22.0 ],
 					"text" : "in 2 @comment cv"
 				}
 
@@ -168,6 +180,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-8", 1 ],
+					"source" : [ "obj-3", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-10", 0 ],
 					"source" : [ "obj-5", 0 ]
 				}
@@ -196,7 +215,7 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-8", 1 ],
+					"destination" : [ "obj-3", 0 ],
 					"source" : [ "obj-9", 0 ]
 				}
 
