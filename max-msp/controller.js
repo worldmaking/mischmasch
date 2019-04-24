@@ -48,6 +48,12 @@ connection.addEventListener('open', () => {
 		date: Date.now(),
 		data: null
 	}));
+	connection.send(JSON.stringify({
+		cmd: "get_scene",
+		date: Date.now(),
+		data: null
+	}));
+	
 });
 
 // listen for messages from the server
