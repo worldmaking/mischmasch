@@ -139,6 +139,8 @@ let outline_material = new THREE.MeshStandardMaterial({
 let camera, scene, renderer;
 let world = new THREE.Group();
 
+let menu = new THREE.Group();
+
 let controller1, controller2;
 let controllerMesh;
 
@@ -379,6 +381,8 @@ async function init() {
     floorGrid.material.transparent = true;
    // scene.add(floorGrid);
 
+   //MakeMenu
+   makeMenu();
 
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
 	floorTexture.repeat.set( 10, 10 );
@@ -724,7 +728,7 @@ function enactDeltaNewNode(delta) {
 
     //console.log(delta)
 
-    let parent = world;
+    let parent = (delta.menu == true) ? menu : world;
     
     // first, find parent.
     let path = delta.path;
@@ -904,6 +908,20 @@ function enactDeltaNewNode(delta) {
         } break;
     }    
 
+    container.name = name;
+    container.userData.name = name;
+    container.userData.path = path;
+    container.userData.kind = delta.kind;
+    if(delta.value){
+        container.userData.value = delta.value;
+    } 
+
+    if(delta.menu == true){
+        container.userData.menu = delta.menu;
+        container.scale.set(.2,.2,.2);
+
+    }
+
     if (delta.pos) {
         container.position.fromArray(delta.pos);
     } else {
@@ -914,23 +932,14 @@ function enactDeltaNewNode(delta) {
     } else {
         container.quaternion = parent.quaternion.clone();
     }
-
-    container.name = name;
-    container.userData.name = name;
-    container.userData.path = path;
-    container.userData.kind = delta.kind;
-    if(delta.value){
-        container.userData.value = delta.value;
-    } 
-    if(delta.menu == true){
-        container.userData.menu = delta.menu;
-        container.scale.set(.2,.2,.2)
-    }
     // add to our library of nodes:
     addObjectByPath(path, container);
     // add to proper parent:
     parent.add(container);
+    
 
+
+    
     // NOTE: not all nodes will have a pos, orient
     // e.g. outlet, knob, etc.
     // they need to find their parent and position accordingly
@@ -1080,7 +1089,8 @@ function enactDeltaObjectOrient(delta) {
 function enactDeltaObjectValue(delta) {
     let object = getObjectByPath(delta.path);
     let kind = object.userData.kind; // small_knob, nswitch, etc.
-
+    console.log(delta.to)
+    console.log(delta)
     let value = delta.to;
     switch(kind){
         case "small_knob":
@@ -1214,6 +1224,7 @@ function onSelectEnd(event) {
 function onSpawn(event) {
     let controller = event.target;
     if(controller.getButtonState('thumbpad') === undefined) return;
+
     let pos = new THREE.Vector3();
     let orient = new THREE.Quaternion();
     controller.getWorldPosition(pos);
@@ -1314,6 +1325,7 @@ function generateNewModule(pos, orient, name){
     deltas[0].pos = pos;
     deltas[0].orient = orient;
     deltas[0].menu = true;
+
     return deltas;
 }
 
@@ -1323,6 +1335,20 @@ function clientSideDeltas(){
         let delta = clientDeltas.shift();
         enactDelta(delta);
     }
+}
+
+function makeMenu(){
+    let opname = ["sample_and_hold", "freevoib", "shifter", "constant", "lfo", "dualvco", "vca", "comparator", "outs"];
+    for(let i of opname){
+
+        //NEED TO REARRANGE MENU AND FIGURE OUT WHICH OBJECTS otherwise code is working!!!
+        let deltas = generateNewModule([0 - .6 + menuPos, 0 + .1, 0 - .1], [0, 0, 0, 1], i);
+        clientDeltas = clientDeltas.concat(deltas);
+        clientSideDeltas(clientDeltas);
+        touched = false;
+        menuPos += .15;
+    }
+    menuPos = 0;
 }
 
 
@@ -1441,7 +1467,6 @@ function updateDirtyNode(dirtyPath) {
             nodesToClean.push(getObjectByPath(path));
         }
     }
-
     let numchildren = nodesToClean.length;
     // attempt an automatic layout
     let numcols = Math.ceil(Math.sqrt(numchildren));
@@ -1558,16 +1583,10 @@ function controllerGamepadControls(controller){
             createObjFromMenu = true;
             //create objects to choose from
             if(touched){
-                let opname = ["sample_and_hold", "freevoib", "shifter", "constant", "lfo", "dualvco", "vca", "comparator", "outs"];
-                for(let i of opname){
+                menu.position.fromArray([controllerPos.x, controllerPos.y, controllerPos.z]);
+                menu.rotation.fromArray([0, -controller.rotation.y, 0]);
+                world.add(menu);
 
-                    //NEED TO REARRANGE MENU AND FIGURE OUT WHICH OBJECTS otherwise code is working!!!
-                    let deltas = generateNewModule([controllerPos.x - .6 + menuPos, controllerPos.y + .1, controllerPos.z - .1], [0, 0, 0, 1], i);
-                    clientDeltas = clientDeltas.concat(deltas);
-                    clientSideDeltas(clientDeltas);
-                    touched = false;
-                    menuPos += .15;
-                }
             }
 
         } else if(controller.userData.touched == false){
@@ -1593,16 +1612,7 @@ function controllerGamepadControls(controller){
                 }
             }
             createObjFromMenu = false;
-            for (let path in allNodes) {
-                
-                if (allNodes[path].userData.menu) {
-                    clientDeltas.push(
-                        { op:"delnode", path:allNodes[path].userData.path, kind:allNodes[path].userData.name}
-                    );
-                    clientSideDeltas(clientDeltas);
-                }
-            }
-            menuPos = 0;
+            world.remove(menu);
         }
     }
 
