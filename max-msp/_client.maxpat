@@ -65,7 +65,7 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 725.0, 307.0, 443.0, 245.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 3.0, 591.0, 431.0, 271.0 ],
+					"presentation_rect" : [ 10.0, 594.0, 415.0, 316.0 ],
 					"viewvisibility" : 1
 				}
 
@@ -2077,8 +2077,6 @@
 					"saved_object_attributes" : 					{
 						"autostart" : 0,
 						"defer" : 0,
-						"node_bin_path" : "",
-						"npm_bin_path" : "",
 						"watch" : 1
 					}
 ,
@@ -2171,7 +2169,7 @@
 					"numoutlets" : 0,
 					"patching_rect" : [ 353.5, 136.0, 24.0, 27.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 3.0, 591.0, 431.0, 264.0 ],
+					"presentation_rect" : [ 3.0, 591.0, 431.0, 322.0 ],
 					"proportion" : 0.5
 				}
 
@@ -2500,8 +2498,8 @@
 			}
 , 			{
 				"name" : "outs.gendsp",
-				"bootpath" : "~/msvr/max-msp/abstractions",
-				"patcherrelativepath" : "./abstractions",
+				"bootpath" : "~/msvr/max-msp",
+				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
