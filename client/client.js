@@ -154,6 +154,8 @@ let otherUsers = {};
 let incomingDeltas = [];
 let outgoingDeltas = [];
 
+let clientDeltas = [];
+
 let allNodes = {};
 let allCables = [];
 let uiLine;
@@ -161,6 +163,9 @@ let grabLineLength;
 
 let currentKnobValue = 0;
 let frames = 0;
+
+let createObjFromMenu = true;
+let menuPos = 0;
 
 function getObjectByPath(path) {
     return allNodes[path];
@@ -917,7 +922,10 @@ function enactDeltaNewNode(delta) {
     if(delta.value){
         container.userData.value = delta.value;
     } 
-    
+    if(delta.menu == true){
+        container.userData.menu = delta.menu;
+        container.scale.set(.2,.2,.2)
+    }
     // add to our library of nodes:
     addObjectByPath(path, container);
     // add to proper parent:
@@ -1243,7 +1251,7 @@ function copyModule(pos, orient, controller){
     for(let j in operator_names){
 
         if(operator_names[j] == object.userData.kind){
-            opname = operator_names[i];
+            opname = operator_names[j];
             ctor = operator_constructors[opname];
         }
     }
@@ -1254,6 +1262,69 @@ function copyModule(pos, orient, controller){
     deltas[0].orient = orient;
     return deltas;
 }
+
+//copy's a module (but this takes the object from an interestection instead of from controller.userdata.selected)
+function cloneModuleMenu(pos, orient, object){
+    let module_names = Object.keys(module_constructors)
+    let opname, ctor;
+
+    for(let i in module_names){
+
+        if(module_names[i] == object.userData.kind){
+            opname = module_names[i];
+            ctor = module_constructors[opname];
+        }
+    }
+
+    for(let j in operator_names){
+
+        if(operator_names[j] == object.userData.kind){
+            opname = operator_names[j];
+            ctor = operator_constructors[opname];
+        }
+    }
+
+    let path = gensym(opname);
+    let deltas = ctor(path);
+    deltas[0].pos = pos;
+    deltas[0].orient = orient;
+    return deltas;
+
+   
+}
+
+//Generates a new Module inside the radial Menu (Honestly need to probably refarctor this so it isn't so redundant to other code)
+function generateNewModule(pos, orient, name){
+    //let module_names = Object.keys(module_constructors)
+    let opname, ctor;
+
+
+    ctor = module_constructors[name];
+
+    // for(let j in operator_names){
+
+    //     if(operator_names[j] == object.userData.kind){
+    //         opname = operator_names[i];
+    //         ctor = operator_constructors[opname];
+    //     }
+    // }
+
+    let path = gensym(opname);
+    let deltas = ctor(path);
+    deltas[0].pos = pos;
+    deltas[0].orient = orient;
+    deltas[0].menu = true;
+    return deltas;
+}
+
+//send delta's client side only (No round trip)
+function clientSideDeltas(){
+    while (clientDeltas.length > 0) {
+        let delta = clientDeltas.shift();
+        enactDelta(delta);
+    }
+}
+
 
 function highlightNlet(controller){
     if (controller.userData.selected !== undefined) {
@@ -1445,6 +1516,7 @@ function onKeyPress(e) {
 
 function controllerGamepadControls(controller){
     //console.log(controller)
+    let touched = false;
     let gamepad = controller.getGamepad();
     if (gamepad) {
         let button0 = gamepad.buttons[0];
@@ -1452,6 +1524,7 @@ function controllerGamepadControls(controller){
         if (button0.touched) {
             if (!controller.userData.touched) {
                 controller.userData.touched = true;
+                touched = true;
                 //console.log("touchstart", gamepad.axes[1])
                 controller.userData.thumbpadDX = 0;
                 controller.userData.thumbpadDY = 0;
@@ -1472,6 +1545,64 @@ function controllerGamepadControls(controller){
             controller.userData.thumbpadDY = 0;
             // touch release event
             //console.log("release")
+        }
+    }
+
+    if(controller.userData.selected === undefined){
+        let controllerPos = new THREE.Vector3();
+        controller.getWorldPosition(controllerPos);
+        let controllerQuat = new THREE.Quaternion();    
+        controller.getWorldQuaternion(controllerQuat);
+
+        if (controller.userData.touched){
+            createObjFromMenu = true;
+            //create objects to choose from
+            if(touched){
+                let opname = ["sample_and_hold", "freevoib", "shifter", "constant", "lfo", "dualvco", "vca", "comparator", "outs"];
+                for(let i of opname){
+
+                    //NEED TO REARRANGE MENU AND FIGURE OUT WHICH OBJECTS otherwise code is working!!!
+                    let deltas = generateNewModule([controllerPos.x - .6 + menuPos, controllerPos.y + .1, controllerPos.z - .1], [0, 0, 0, 1], i);
+                    clientDeltas = clientDeltas.concat(deltas);
+                    clientSideDeltas(clientDeltas);
+                    touched = false;
+                    menuPos += .15;
+                }
+            }
+
+        } else if(controller.userData.touched == false){
+           
+            let intersections = getIntersections(controller, 0, 0, -1);
+            if (intersections.length > 0) {
+                if(createObjFromMenu){
+                let intersection = intersections[0];
+                let object = intersection.object;
+                    //need to always get the top node otherwise CTOR throws error cause it doesn't know the object to clone
+                    for(let name of module_names){
+                        let obj = object;
+                        //N_Switch slider only doesn't have a kind so this will never be true (only object without a kind) probably should add a kind????
+                        while(obj.userData.kind !== name && obj.userData.kind !== undefined){
+                            obj = obj.parent;
+                        }
+                        if(obj.userData.kind === name){
+                            let deltas = cloneModuleMenu([controllerPos.x, controllerPos.y, controllerPos.z], [controllerQuat._x, controllerQuat._y, controllerQuat._z, controllerQuat._w], obj);
+                            outgoingDeltas = outgoingDeltas.concat(deltas);
+                        }
+
+                    } 
+                }
+            }
+            createObjFromMenu = false;
+            for (let path in allNodes) {
+                
+                if (allNodes[path].userData.menu) {
+                    clientDeltas.push(
+                        { op:"delnode", path:allNodes[path].userData.path, kind:allNodes[path].userData.name}
+                    );
+                    clientSideDeltas(clientDeltas);
+                }
+            }
+            menuPos = 0;
         }
     }
 
@@ -1638,6 +1769,7 @@ function render() {
     while (incomingDeltas.length > 0) {
         let delta = incomingDeltas.shift();
         enactDelta(delta);
+        //console.log("incoming deltas")
     }
     
     updateDirty();
@@ -1677,6 +1809,7 @@ function render() {
             };
             sock.send(message);
             outgoingDeltas.length = 0;
+            //console.log("Sending Deltas")
         }
         
         // send VR poses to the server:
