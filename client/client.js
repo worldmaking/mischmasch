@@ -1597,7 +1597,10 @@ function controllerGamepadControls(controller){
 
     if(controller.userData.selected === undefined){
         let headsetPos = new THREE.Vector3();
-        headsetMesh.getWorldPosition(headsetPos);
+        camera.getWorldPosition(headsetPos);
+
+        let controllerPos = new THREE.Vector3();
+        controller.getWorldPosition(controllerPos);
         let controllerQuat = new THREE.Quaternion();    
         controller.getWorldQuaternion(controllerQuat);
 
@@ -1605,7 +1608,8 @@ function controllerGamepadControls(controller){
             createObjFromMenu = true;
             //create objects to choose from
             if(touched){
-                menu.position.fromArray([headsetMesh.x, headsetMesh.y, headsetMesh.z]);
+                console.log(headsetPos)
+                menu.position.fromArray([headsetPos.x, headsetPos.y, headsetPos.z]);
                 //menu.rotation.fromArray([0, -controller.rotation.y, 0]);
                 world.add(menu);
 
