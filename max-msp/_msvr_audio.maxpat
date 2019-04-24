@@ -68,7 +68,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "bang" ],
 					"patching_rect" : [ 463.5, 320.0, 126.0, 22.0 ],
-					"text" : "metro 2000 @active 1"
+					"text" : "metro 1000 @active 1"
 				}
 
 			}
@@ -79,7 +79,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 491.0, 383.0, 71.0, 22.0 ],
+					"patching_rect" : [ 463.5, 347.0, 71.0, 22.0 ],
 					"text" : "ensureOuts"
 				}
 

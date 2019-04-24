@@ -28,6 +28,9 @@ if (!Array.prototype.flat) {
 
 let operators = JSON.parse(fs.readFileSync("operators.json", "utf-8"))
 let operator_constructors = []
+
+// need to make a skip list so that we don't get certin gen ops that are unlikely to be useful. 
+
 //console.log(operators[0])
 
 for (let op of operators) {

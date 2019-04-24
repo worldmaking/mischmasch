@@ -4,7 +4,7 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 0,
-			"revision" : 3,
+			"revision" : 5,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
@@ -44,8 +44,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 176.0, 137.0, 101.0, 22.0 ],
-					"text" : "param constant 1"
+					"patching_rect" : [ 176.0, 137.0, 82.0, 22.0 ],
+					"text" : "param knob 1"
 				}
 
 			}

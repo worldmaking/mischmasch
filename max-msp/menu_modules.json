@@ -1,0 +1,36 @@
+[  
+  {
+  "kind":"outs", "category":"abstraction"
+  },
+  {
+    "kind":"lfo", "category":"abstraction"
+  },
+  {
+    "kind":"vco", "category":"abstraction"
+  },
+  {
+    "kind":"vca", "category":"abstraction"
+  },
+  {
+    "kind":"feedback_phase_mod", "category":"abstraction"
+  },
+  {
+    "kind":"sample_and_hold", "category":"abstraction"
+  },
+  {
+    "kind":"freevoib", "category":"abstraction"
+  },
+  {
+    "kind":"comparator", "category":"abstraction"
+  },
+  {
+    "kind":"logic", "category":"abstraction"
+  }, 
+  {
+    "kind":"knob", "category":"abstraction"
+  },
+  {
+    "kind":"shifter", "category":"abstraction"
+  }
+]
+
