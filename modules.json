@@ -119,6 +119,16 @@
       "or":{"_props":{"kind":"outlet","index":7}},
       "xor":{"_props":{"kind":"outlet","index":8}},
       ">":{"_props":{"kind":"outlet","index":9}}
+    },
+    "resofilter": {
+      "_props":{"kind":"resofilter","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
+      "source":{"_props":{"kind":"inlet","index":0}},
+      "frequency":{"_props":{"kind":"big_knob","range":[1,10000],"taper":"log 3.8","value":0.25,"unit":"float"}},
+      "freq_cv":{"_props":{"kind":"inlet","index":1}},
+      "resonance":{"_props":{"kind":"small_knob","range":[0,1],"taper":"log 3.8","value":0.5,"unit":"float"}},
+      "res_cv":{"_props":{"kind":"inlet","index":2}},
+      "lopass":{"_props":{"kind":"outlet","index":0}},
+      "hipass":{"_props":{"kind":"outlet","index":1}}
     }
   }
 }
