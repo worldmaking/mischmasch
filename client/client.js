@@ -1094,9 +1094,10 @@ function enactDeltaObjectValue(delta) {
     switch(kind){
         case "small_knob":
         case "large_knob": {
-            object.userData.value = value;
             value = value.toFixed(2);
-            //Update once server says:
+            object.userData.value = value;
+
+            //Update once server says: 
             let derived_angle = (value * Math.PI * 2) - Math.PI;
             
             // set rotation of knob by this angle, and normal axis of knob:
@@ -1709,10 +1710,11 @@ function controllerGamepadControls(controller){
                 object.userData.rotation = object.rotation.clone();
                 
             } else {
-                controller.rotation.z += object.userData.rotation._z;
-                object.rotation.z = controller.rotation.z - controller.userData.rotation.z;
-
-                value =  (object.rotation.z + Math.PI) / (2 * Math.PI);
+                //controller.rotation.z += object.userData.rotation._z;
+                //object.rotation.z = (controller.rotation.z - object.userData.rotation._z);
+                //console.log(object, controller)
+                value = object.userData.rotation._z + (controller.rotation.z - controller.userData.rotation._z);
+                value = (value + Math.PI) / (2 * Math.PI);
 
                 if(uiLine !== undefined){
                     uiLine.geometry.vertices[0] = 0;
@@ -1720,15 +1722,11 @@ function controllerGamepadControls(controller){
                     uiLine.geometry.verticesNeedUpdate = true;
                    
                     line.scale.z = grabLineLength;
-                }
+                }         
             }
-            
 
             outgoingDeltas.push(
                 { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: value });
-
-                      
-
 
             // TODO: send delta with this value
             // TODO: enact delta by mapping value back to angular range:
