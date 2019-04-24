@@ -20,7 +20,8 @@ console.log(got)
 
 // 1st cli arg can be the scenefile 
 let scenefile = __dirname + "/scene_files/scene_edited.json"
-let OTHistoryFile;
+let OTHistoryFile = __dirname + '/histories/OT_' + Date.now() + '.json'
+
 
 			//demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
 			// turn this into deltas:
