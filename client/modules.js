@@ -1603,7 +1603,7 @@ let module_constructors = {
 			{
 				"op": "newnode",
 				"path": "${path}.frequency",
-				"kind": "big_knob",
+				"kind": "large_knob",
 				"range": [
 					1,
 					10000
