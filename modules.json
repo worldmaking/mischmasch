@@ -62,7 +62,7 @@
 
 
     "vco":{
-      "_props":{"kind":"dualvco", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
+      "_props":{"kind":"vco", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
       "rate":{"_props":{"kind":"large_knob","range":[20,6000],"taper":"linear","value":440,"unit":"float"}},
       "rate_cv":{"_props":{"kind":"inlet","index":0}},
       "sine":{"_props":{"kind":"outlet","index":0}},
