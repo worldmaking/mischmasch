@@ -168,6 +168,7 @@ let frames = 0;
 
 let createObjFromMenu = true;
 let menuPos = 0;
+let menuNames = [];
 
 function getObjectByPath(path) {
     return allNodes[path];
@@ -1089,13 +1090,12 @@ function enactDeltaObjectOrient(delta) {
 function enactDeltaObjectValue(delta) {
     let object = getObjectByPath(delta.path);
     let kind = object.userData.kind; // small_knob, nswitch, etc.
-    console.log(delta.to)
-    console.log(delta)
     let value = delta.to;
     switch(kind){
         case "small_knob":
         case "large_knob": {
             object.userData.value = value;
+            value = value.toFixed(2);
             //Update once server says:
             let derived_angle = (value * Math.PI * 2) - Math.PI;
             
@@ -1335,19 +1335,19 @@ function clientSideDeltas(deltas){
 }
 
 function makeMenu(){
-    let opname = [].concat(module_names); //["sample_and_hold", "freevoib", "shifter", "knob", "lfo", "vco", "vca", "comparator", "outs"];
+    menuNames = [].concat(module_names); //["sample_and_hold", "freevoib", "shifter", "knob", "lfo", "vco", "vca", "comparator", "outs"];
 
-    for (let i=0; opname.length < 48; i++) {
-        opname.push(operator_names[i])
+    for (let i=0; menuNames.length < 48; i++) {
+        menuNames.push(operator_names[i])
     }
 
     
     let nrows = 3;
-    let names_per_row = Math.ceil(opname.length / nrows);
+    let names_per_row = Math.ceil(menuNames.length / nrows);
     let i = 0;
     for (let row = 0; row < nrows; row++) {
-        for(let col = 0; col < names_per_row && i < opname.length; col++, i++){
-            let name = opname[i];
+        for(let col = 0; col < names_per_row && i < menuNames.length; col++, i++){
+            let name = menuNames[i];
             let theta = col * (2 * Math.PI) / names_per_row;
             let r = .6;
             let x = r * Math.sin(theta);
@@ -1620,10 +1620,10 @@ function controllerGamepadControls(controller){
             let intersections = getIntersections(controller, 0, 0, -1);
             if (intersections.length > 0) {
                 if(createObjFromMenu){
-                let intersection = intersections[0];
-                let object = intersection.object;
+                    let intersection = intersections[0];
+                    let object = intersection.object;
                     //need to always get the top node otherwise CTOR throws error cause it doesn't know the object to clone
-                    for(let name of module_names){
+                    for(let name of menuNames){
                         let obj = object;
                         //N_Switch slider only doesn't have a kind so this will never be true (only object without a kind) probably should add a kind????
                         while(obj.userData.kind !== name && obj.userData.kind !== undefined){
