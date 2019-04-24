@@ -8,13 +8,6 @@
   },
 
   "modules": {
-    "sample_and_hold": {
-      "_props":{ "kind":"sample_and_hold", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "signal":{"_props":{"kind":"inlet", "index":0}},
-      "trigger":{"_props":{"kind":"inlet","index":1}},
-      "threshold":{ "_props":{"kind":"small_knob","range":[0,1],    "taper":"linear","value":0,"unit":"float"}},
-      "out":{"_props":{"kind":"outlet","index":0}}
-    },
      
     "freevoib":{
       "_props":{ "kind":"freevoib", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
