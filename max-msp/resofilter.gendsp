@@ -105,8 +105,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 517.0, 64.0, 206.0, 23.0 ],
-					"text" : "param resonance 0.5 @min 0 @max 1"
+					"patching_rect" : [ 517.0, 64.0, 186.0, 23.0 ],
+					"text" : "param resonance @min 0 @max 1"
 				}
 
 			}
@@ -137,13 +137,12 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-15",
-					"linecount" : 2,
 					"maxclass" : "newobj",
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 222.5, 64.0, 143.0, 37.0 ],
-					"text" : "param frequency 2000 @min 1 @max 10000"
+					"patching_rect" : [ 222.5, 64.0, 212.0, 23.0 ],
+					"text" : "param frequency @min 1 @max 10000"
 				}
 
 			}
