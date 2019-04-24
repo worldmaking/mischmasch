@@ -47,7 +47,7 @@
 
     "lfo":{
       "_props":{"kind":"lfo", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "rate":{"_props":{"kind":"large_knob","range":[0.1,80],"taper":"log 3.8","value":60,"unit":"Hz"}},
+      "rate":{"_props":{"kind":"large_knob","range":[0.1,30],"taper":"log 3.8","value":10,"unit":"Hz"}},
       "fm_cv":{"_props":{"kind":"inlet","index":0}},
       "index":{"_props":{"kind":"small_knob","range":[0,10],"taper":"linear","value":1,"unit":"float"}},
       "pulse_width":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0.25,"unit":"float"}},
