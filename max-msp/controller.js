@@ -79,7 +79,7 @@ connection.addEventListener('message', (data) => {
 		case "patch":	
 		dataGen = JSON.stringify(data)
 		MaxAPI.outlet('toGen', dataGen)
-		MaxAPI.post(JSON.stringify(dataGen))
+		//MaxAPI.post(JSON.stringify(dataGen))
 		{
 
 		}break;
@@ -161,7 +161,7 @@ let times = []
 
 MaxAPI.addHandler("playback", (filename) => {
 	sessionDir = __dirname.substring(0, __dirname.lastIndexOf('/')) + '/session_recordings/'  + filename
-	MaxAPI.post(sessionDir)
+	//MaxAPI.post(sessionDir)
 	playbackSession = JSON.parse(fs.readFileSync(sessionDir))
 		// console.log(JSON.parse(playbackSession))
 	previous = undefined;

@@ -297,7 +297,9 @@ function handlemessage(msg, sock, id) {
 		} break;
 
 		case "playback":{
-			//console.log(msg)
+			//console.log(msg)/
+			console.log(msg.data)
+			/*
 			let response = {
 				cmd: "deltas",
 				date: Date.now(),
@@ -308,7 +310,7 @@ function handlemessage(msg, sock, id) {
 			//sessionJSON.push(response)
 			//fs.writeFileSync(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")
 			send_all_clients(JSON.stringify(response));
-
+			*/
 		} break;
 
 		case "initController":{
@@ -374,16 +376,21 @@ function handlemessage(msg, sock, id) {
 			// take OTHistory, turn it into a graph. 
 			// take that graph turn it back into an OT history (will this remove all redundant deltas? (we want this...))
 			// set these deltas as the header for the recorded session file
-			// then append the sessionJSON in the stopRecord section. 
-			/*
+			// then append the sessionJSON in the stopRecord section.
+			let header = {}
+
+			header['header'] = localGraph
+			console.log(header)
+			
 			sessionJSON = []
+			sessionJSON.push(JSON.stringify(header))
 			let recording = msg.data.replace(/\s/g, "_")
 			// save session name as filename provided in this message
 			sessionRecording = __dirname + "/session_recordings/" + recording + ".json"
 			// push all received deltas to the sessionJSON:
 			recordStatus = 1
 			console.log('session will be stored at', sessionRecording)
-			*/
+			
 		} break;
 
 		case "stopRecord":{
