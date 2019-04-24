@@ -409,14 +409,14 @@ function handlemessage(msg, sock, id) {
 			
 			//demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
 			// turn this into deltas:
-			//let deltas = got.deltasFromGraph(demo_scene, []);
+			let deltas = got.deltasFromGraph(localGraph, []);
 			//console.log(deltas)
 
 			// reply only to the requester:
 			sock.send(JSON.stringify({
 				cmd: "deltas",
 				date: Date.now(),
-				data: OTHistory
+				data: deltas //OTHistory
 			}));
 
 		} break;
