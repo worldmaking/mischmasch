@@ -1307,11 +1307,8 @@ function cloneModuleMenu(pos, orient, object){
 //Generates a new Module inside the radial Menu (Honestly need to probably refarctor this so it isn't so redundant to other code)
 function generateNewModule(pos, orient, name){
     //let module_names = Object.keys(module_constructors)
-    let opname, ctor;
-
-
-    ctor = module_constructors[name];
-
+    let ctor = module_constructors[name];
+    if (ctor == undefined) ctor = operator_constructors[name]
     // for(let j in operator_names){
 
     //     if(operator_names[j] == object.userData.kind){
@@ -1320,7 +1317,7 @@ function generateNewModule(pos, orient, name){
     //     }
     // }
 
-    let path = gensym(opname);
+    let path = gensym(name);
     let deltas = ctor(path);
     deltas[0].pos = pos;
     deltas[0].orient = orient;
@@ -1330,24 +1327,49 @@ function generateNewModule(pos, orient, name){
 }
 
 //send delta's client side only (No round trip)
-function clientSideDeltas(){
-    while (clientDeltas.length > 0) {
-        let delta = clientDeltas.shift();
+function clientSideDeltas(deltas){
+    while (deltas.length > 0) {
+        let delta = deltas.shift();
         enactDelta(delta);
     }
 }
 
 function makeMenu(){
-    let opname = ["sample_and_hold", "freevoib", "shifter", "constant", "lfo", "dualvco", "vca", "comparator", "outs"];
-    for(let i of opname){
+    let opname = [].concat(module_names); //["sample_and_hold", "freevoib", "shifter", "knob", "lfo", "vco", "vca", "comparator", "outs"];
 
-        //NEED TO REARRANGE MENU AND FIGURE OUT WHICH OBJECTS otherwise code is working!!!
-        let deltas = generateNewModule([0 - .6 + menuPos, 0 + .1, 0 - .1], [0, 0, 0, 1], i);
-        clientDeltas = clientDeltas.concat(deltas);
-        clientSideDeltas(clientDeltas);
-        touched = false;
-        menuPos += .15;
+    for (let i=0; opname.length < 48; i++) {
+        opname.push(operator_names[i])
     }
+
+    
+    let nrows = 3;
+    let names_per_row = Math.ceil(opname.length / nrows);
+    let i = 0;
+    for (let row = 0; row < nrows; row++) {
+        for(let col = 0; col < names_per_row && i < opname.length; col++, i++){
+            let name = opname[i];
+            let theta = col * (2 * Math.PI) / names_per_row;
+            let r = .6;
+            let x = r * Math.sin(theta);
+            let z = r * Math.cos(theta);
+            //console.log(i, name);
+            let y = -.1 * (row + 1);
+    
+            let e = new THREE.Euler(0, theta + Math.PI, 0);
+            let q = new THREE.Quaternion();
+            q.setFromEuler(e);
+    
+            //NEED TO REARRANGE MENU AND FIGURE OUT WHICH OBJECTS otherwise code is working!!!
+            let deltas = generateNewModule([x, y, z], [q._x, q._y, q._z, q._w], name);
+
+           // clientDeltas = clientDeltas.concat(deltas);
+            clientSideDeltas(deltas);
+            touched = false;
+            //menuPos += .15;
+        }
+    }
+
+    
     menuPos = 0;
 }
 
@@ -1574,8 +1596,8 @@ function controllerGamepadControls(controller){
     }
 
     if(controller.userData.selected === undefined){
-        let controllerPos = new THREE.Vector3();
-        controller.getWorldPosition(controllerPos);
+        let headsetPos = new THREE.Vector3();
+        headsetMesh.getWorldPosition(headsetPos);
         let controllerQuat = new THREE.Quaternion();    
         controller.getWorldQuaternion(controllerQuat);
 
@@ -1583,8 +1605,8 @@ function controllerGamepadControls(controller){
             createObjFromMenu = true;
             //create objects to choose from
             if(touched){
-                menu.position.fromArray([controllerPos.x, controllerPos.y, controllerPos.z]);
-                menu.rotation.fromArray([0, -controller.rotation.y, 0]);
+                menu.position.fromArray([headsetMesh.x, headsetMesh.y, headsetMesh.z]);
+                //menu.rotation.fromArray([0, -controller.rotation.y, 0]);
                 world.add(menu);
 
             }
