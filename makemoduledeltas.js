@@ -129,7 +129,7 @@ let module_names = Object.keys(module_constructors)
 
 function spawnRandomModule(pos, orient) {
   let opname, ctor
-  if (Math.random() < 0.5) {
+  if (Math.random() < 0.7) {
     opname = module_names[Math.floor(Math.random() * module_names.length)]
     ctor = module_constructors[opname]
   } else {

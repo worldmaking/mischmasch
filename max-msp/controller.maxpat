@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 806.0, 146.0, 840.0, 596.0 ],
+		"rect" : [ -1854.0, 139.0, 1323.0, 907.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 1,
 		"default_fontsize" : 12.0,
@@ -38,6 +38,27 @@
 		"style" : "",
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
+				"box" : 				{
+					"bgmode" : 0,
+					"border" : 0,
+					"clickthrough" : 0,
+					"enablehscroll" : 0,
+					"enablevscroll" : 0,
+					"id" : "obj-4",
+					"lockeddragscroll" : 0,
+					"maxclass" : "bpatcher",
+					"name" : "_msvr_client.maxpat",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"offset" : [ 0.0, 0.0 ],
+					"patching_rect" : [ 725.0, 307.0, 443.0, 245.0 ],
+					"presentation" : 1,
+					"presentation_rect" : [ 3.0, 591.0, 431.0, 271.0 ],
+					"viewvisibility" : 1
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-1",
 					"maxclass" : "ezdac~",
@@ -350,7 +371,7 @@
  ]
 					}
 ,
-					"patching_rect" : [ 1167.0, 342.0, 47.0, 22.0 ],
+					"patching_rect" : [ 1205.0, 340.0, 47.0, 22.0 ],
 					"saved_object_attributes" : 					{
 						"description" : "",
 						"digest" : "",
@@ -370,7 +391,7 @@
 					"numoutlets" : 3,
 					"outlettype" : [ "", "", "int" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 1167.0, 315.0, 112.0, 22.2545166015625 ],
+					"patching_rect" : [ 1205.0, 313.0, 112.0, 22.2545166015625 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 12.0, 335.0, 108.0, 20.0 ],
 					"text" : "Restart Controller",
@@ -385,7 +406,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 551.0, 522.0, 151.0, 47.0 ],
+					"patching_rect" : [ 1189.0, 698.0, 151.0, 47.0 ],
 					"presentation" : 1,
 					"presentation_linecount" : 3,
 					"presentation_rect" : [ 263.0, 263.0, 151.0, 47.0 ],
@@ -400,7 +421,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 551.0, 480.0, 150.0, 33.0 ],
+					"patching_rect" : [ 1189.0, 656.0, 150.0, 33.0 ],
 					"presentation" : 1,
 					"presentation_linecount" : 2,
 					"presentation_rect" : [ 263.0, 228.0, 150.0, 33.0 ],
@@ -612,7 +633,7 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-113",
-					"items" : [ "deltas_simple.json", ",", "scene.json", ",", "scene_blank.json", ",", "scene_edited.json", ",", "scene_edited_deltas.json", ",", "scene_group.json", ",", "scene_rich.json", ",", "scene_simple.json", ",", "scene_ungroup.json" ],
+					"items" : [ "deltas_simple.json", ",", "dualvco.json", ",", "scene.json", ",", "scene_blank.json", ",", "scene_edited.json", ",", "scene_edited_deltas.json", ",", "scene_group.json", ",", "scene_rich.json", ",", "scene_simple.json", ",", "scene_ungroup.json" ],
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
@@ -1337,7 +1358,7 @@
 					"numoutlets" : 1,
 					"offset" : [ 0.0, 0.0 ],
 					"outlettype" : [ "bang" ],
-					"patching_rect" : [ 1137.0, 374.0, 400.0, 220.0 ],
+					"patching_rect" : [ 1175.0, 372.0, 400.0, 220.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 10.0, 359.0, 400.0, 220.0 ],
 					"viewvisibility" : 1
@@ -1446,7 +1467,7 @@
 										}
 ,
 										"classnamespace" : "box",
-										"rect" : [ 58.0, 104.0, 640.0, 480.0 ],
+										"rect" : [ -1014.0, 79.0, 640.0, 480.0 ],
 										"bglocked" : 0,
 										"openinpresentation" : 0,
 										"default_fontsize" : 12.0,
@@ -1474,6 +1495,18 @@
 										"style" : "",
 										"subpatcher_template" : "",
 										"boxes" : [ 											{
+												"box" : 												{
+													"id" : "obj-3",
+													"maxclass" : "message",
+													"numinlets" : 2,
+													"numoutlets" : 1,
+													"outlettype" : [ "" ],
+													"patching_rect" : [ 309.0, 300.0, 197.0, 22.0 ],
+													"text" : "\"Macintosh HD:/Users/mp/msvr\""
+												}
+
+											}
+, 											{
 												"box" : 												{
 													"id" : "obj-1",
 													"maxclass" : "newobj",
@@ -1550,6 +1583,15 @@
 										"lines" : [ 											{
 												"patchline" : 												{
 													"destination" : [ "obj-12", 0 ],
+													"order" : 1,
+													"source" : [ "obj-1", 1 ]
+												}
+
+											}
+, 											{
+												"patchline" : 												{
+													"destination" : [ "obj-3", 1 ],
+													"order" : 0,
 													"source" : [ "obj-1", 1 ]
 												}
 
@@ -1866,7 +1908,7 @@
 					"patching_rect" : [ 391.0, 301.0, 150.0, 20.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 10.0, 114.0, 150.0, 20.0 ],
-					"text" : "playback inactive"
+					"text" : "playback active"
 				}
 
 			}
@@ -1886,11 +1928,11 @@
 				"box" : 				{
 					"id" : "obj-26",
 					"maxclass" : "newobj",
-					"numinlets" : 8,
-					"numoutlets" : 8,
-					"outlettype" : [ "", "", "", "", "", "", "", "" ],
-					"patching_rect" : [ 235.0, 221.0, 543.0, 22.0 ],
-					"text" : "route playback playbackStatus clearPlaybackList playbackList filenameExists sceneList recordStatus"
+					"numinlets" : 9,
+					"numoutlets" : 9,
+					"outlettype" : [ "", "", "", "", "", "", "", "", "" ],
+					"patching_rect" : [ 235.0, 221.0, 579.0, 22.0 ],
+					"text" : "route playback playbackStatus clearPlaybackList playbackList filenameExists sceneList recordStatus toGen"
 				}
 
 			}
@@ -1923,7 +1965,7 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-14",
-					"items" : [ "example.json", ",", "First_Test_Session.json", ",", "forTesting.json" ],
+					"items" : [ "First_Test_Session.json", ",", "example.json", ",", "forTesting.json", ",", "session_1555103217536.json", ",", "session_1555358410128.json", ",", "session_1555358432443.json", ",", "session_1555358577456.json" ],
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
@@ -1946,8 +1988,6 @@
 					"saved_object_attributes" : 					{
 						"autostart" : 0,
 						"defer" : 0,
-						"node_bin_path" : "",
-						"npm_bin_path" : "",
 						"watch" : 1
 					}
 ,
@@ -2023,6 +2063,24 @@
 					"patching_rect" : [ 338.5, 121.0, 24.0, 27.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 3.0, 325.0, 431.0, 264.0 ],
+					"proportion" : 0.5
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"angle" : 270.0,
+					"bgcolor" : [ 0.756862745098039, 0.756862745098039, 0.756862745098039, 1.0 ],
+					"border" : 3,
+					"bordercolor" : [ 0.0, 0.0, 0.0, 1.0 ],
+					"id" : "obj-5",
+					"maxclass" : "panel",
+					"mode" : 0,
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 353.5, 136.0, 24.0, 27.0 ],
+					"presentation" : 1,
+					"presentation_rect" : [ 3.0, 591.0, 431.0, 264.0 ],
 					"proportion" : 0.5
 				}
 
@@ -2136,7 +2194,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-2", 0 ],
-					"midpoints" : [ 1176.5, 278.0, 732.5, 278.0, 732.5, 177.0, 244.5, 177.0 ],
+					"midpoints" : [ 1214.5, 278.0, 732.5, 278.0, 732.5, 177.0, 244.5, 177.0 ],
 					"source" : [ "obj-143", 0 ]
 				}
 
@@ -2167,7 +2225,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-55", 0 ],
-					"midpoints" : [ 415.5, 214.0, 1146.5, 214.0 ],
+					"midpoints" : [ 415.5, 214.0, 1184.5, 214.0 ],
 					"source" : [ "obj-2", 1 ]
 				}
 
@@ -2196,7 +2254,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-113", 0 ],
-					"midpoints" : [ 618.785714285714221, 253.0, 1155.464285714285779, 253.0, 1155.464285714285779, 110.0, 1170.0, 110.0 ],
+					"midpoints" : [ 594.5, 253.0, 1155.464285714285779, 253.0, 1155.464285714285779, 110.0, 1170.0, 110.0 ],
 					"source" : [ "obj-26", 5 ]
 				}
 
@@ -2204,7 +2262,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-113", 0 ],
-					"midpoints" : [ 394.214285714285722, 253.0, 1155.535714285714221, 253.0, 1155.535714285714221, 110.0, 1170.0, 110.0 ],
+					"midpoints" : [ 384.5, 253.0, 1155.535714285714221, 253.0, 1155.535714285714221, 110.0, 1170.0, 110.0 ],
 					"order" : 0,
 					"source" : [ "obj-26", 2 ]
 				}
@@ -2213,7 +2271,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-14", 0 ],
-					"midpoints" : [ 469.071428571428555, 253.0, 215.5, 253.0, 215.5, 52.0, 318.0, 52.0 ],
+					"midpoints" : [ 454.5, 253.0, 215.5, 253.0, 215.5, 52.0, 318.0, 52.0 ],
 					"source" : [ "obj-26", 3 ]
 				}
 
@@ -2221,7 +2279,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-14", 0 ],
-					"midpoints" : [ 394.214285714285722, 253.0, 215.75, 253.0, 215.75, 52.0, 318.0, 52.0 ],
+					"midpoints" : [ 384.5, 253.0, 215.75, 253.0, 215.75, 52.0, 318.0, 52.0 ],
 					"order" : 1,
 					"source" : [ "obj-26", 2 ]
 				}
@@ -2229,8 +2287,15 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-4", 0 ],
+					"source" : [ "obj-26", 7 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-42", 0 ],
-					"midpoints" : [ 319.35714285714289, 263.5, 319.5, 263.5 ],
+					"midpoints" : [ 314.5, 263.5, 319.5, 263.5 ],
 					"source" : [ "obj-26", 1 ]
 				}
 
@@ -2273,9 +2338,24 @@
 
 			}
  ],
+		"parameters" : 		{
+			"obj-4::obj-3" : [ "live.gain~[1]", "live.gain~", 0 ],
+			"parameterbanks" : 			{
+
+			}
+,
+			"parameter_overrides" : 			{
+				"obj-4::obj-3" : 				{
+					"parameter_longname" : "live.gain~[1]"
+				}
+
+			}
+
+		}
+,
 		"dependency_cache" : [ 			{
 				"name" : "controller.js",
-				"bootpath" : "C:/GitHub/msvr/max-msp",
+				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1
@@ -2296,6 +2376,41 @@
 				"name" : "fit_jweb_to_bounds.js",
 				"bootpath" : "C74:/packages/Node For Max/patchers/debug-monitor",
 				"type" : "TEXT",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "_msvr_client.maxpat",
+				"bootpath" : "~/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "JSON",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "msvr_world.js",
+				"bootpath" : "~/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "TEXT",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "world.gendsp",
+				"bootpath" : "~/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "outs.gendsp",
+				"bootpath" : "~/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "lfo.gendsp",
+				"bootpath" : "~/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
 				"implicit" : 1
 			}
  ],

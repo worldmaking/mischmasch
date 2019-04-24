@@ -64,6 +64,20 @@ connection.addEventListener('message', (data) => {
 			MaxAPI.outlet('sceneList','append',data.data)
 		} break;
 
+		///////// GEN~ Client ///////////////////////
+
+		case "clear_scene":
+		case "deltas":
+		case "patch":	
+		dataGen = JSON.stringify(data)
+		MaxAPI.outlet('toGen', dataGen)
+		MaxAPI.post(JSON.stringify(dataGen))
+		{
+
+		}break;
+
+
+		///////////////////////
 		default: {
 		//	MaxAPI.post('unhandled message received', data) // probably don't want to print everything else since the server and other clients talk to each other a LOT
 		} break;
@@ -130,8 +144,9 @@ let next;
 let times = []
 
 MaxAPI.addHandler("playback", (filename) => {
-	playbackSession = JSON.parse(fs.readFileSync(__dirname + "/session_recordings/" + filename))
-
+	sessionDir = __dirname.substring(0, __dirname.lastIndexOf('/')) + '/session_recordings/'  + filename
+	MaxAPI.post(sessionDir)
+	playbackSession = JSON.parse(fs.readFileSync(sessionDir))
 		// console.log(JSON.parse(playbackSession))
 	previous = undefined;
 	next = undefined;

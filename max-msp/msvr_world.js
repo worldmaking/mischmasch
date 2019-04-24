@@ -328,7 +328,7 @@ function clear(){
 
 
 function client(msg){
-
+	post(msg)
 	//post(msg)
 	var ot = JSON.parse(msg)
 	outlet(1, ot.cmd)
