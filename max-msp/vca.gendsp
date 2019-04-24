@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "dsp.gen",
-		"rect" : [ 320.0, 341.0, 796.0, 485.0 ],
+		"rect" : [ 163.0, 319.0, 796.0, 485.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -92,8 +92,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 514.0, 165.0, 188.0, 22.0 ],
-					"text" : "param bias 0.5 @min 0. @max 1."
+					"patching_rect" : [ 514.0, 165.0, 168.0, 22.0 ],
+					"text" : "param bias @min 0. @max 1."
 				}
 
 			}
@@ -104,8 +104,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 514.0, 109.0, 218.0, 22.0 ],
-					"text" : "param cv_amount 1. @min 0. @max 1."
+					"patching_rect" : [ 514.0, 109.0, 214.0, 22.0 ],
+					"text" : "param cv_amount 1 @min 0. @max 1."
 				}
 
 			}
@@ -220,8 +220,7 @@
 				}
 
 			}
- ],
-		"autosave" : 0
+ ]
 	}
 
 }
