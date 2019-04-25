@@ -149,25 +149,19 @@ let controllerMesh;
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
-let sock
+let sock;
 let userPose = createUserPose();
 let otherUsers = {};
 
 let incomingDeltas = [];
 let outgoingDeltas = [];
 
-let clientDeltas = [];
-
 let allNodes = {};
 let allCables = [];
 let uiLine;
-let grabLineLength;
+let getControllerLineLength;
 
-let currentKnobValue = 0;
-let frames = 0;
-
-let createObjFromMenu = true;
-let menuPos = 0;
+let createObjFromMenu = true;;
 let menuNames = [];
 let menuScaleSize = .4;
 
@@ -186,6 +180,10 @@ function iterateAllNodes(fun) {
     }
 }
 
+function randomIntFromInterval(min,max) // min and max included
+{
+    return Math.floor(Math.random()*(max-min+1)+min);
+}
 
 function createUserPose(id=0) {
     return {
@@ -224,10 +222,6 @@ let delta;
 let localPatch;
 let spawn = false;
 let controllerPrevPos;
-
-let subObjCount = 0;
-let subInletCount = 0;
-let subOutletCount = 0;
 
 //Simple debug hack
 let once = true;
@@ -318,10 +312,6 @@ async function init() {
     scene.add(controller1);
     scene.add(controller2);
 
-
-    //Keypress
-    document.addEventListener("keyup", onKeyPress);
-
     {
         
         headsetMesh = loadedHeadsetModel.children[0]
@@ -358,9 +348,6 @@ async function init() {
     controller1.userData.thumbpadDX = 0;
     controller1.userData.thumbpadDY = 0;
 
-
-
-
     // controllers geometry
     let geometry = new THREE.BufferGeometry().setFromPoints([
         new THREE.Vector3(0, 0, 0),
@@ -372,9 +359,17 @@ async function init() {
     controller1.add(line.clone());
     controller2.add(line.clone());
 
+    let lineGeom = new THREE.Geometry();
+    lineGeom.vertices.push(new THREE.Vector3());
+    lineGeom.vertices.push(new THREE.Vector3());
+    let lineMat = new THREE.LineBasicMaterial({
+        color: "yellow"
+    });
+    uiLine = new THREE.Line(lineGeom, lineMat);
+    uiLine.name = "uiLine";
+
     // 'world' represents the root node of the patch:
     scene.add(world);
-
 
     // floor
     let floorGrid = new THREE.GridHelper(10, GRID_DIVISIONS);
@@ -386,13 +381,17 @@ async function init() {
    //MakeMenu
    makeMenu();
 
+   //Stupid hack just to get it load in the buffer
+   world.add(menu);
+   world.remove(menu);
+
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
 	floorTexture.repeat.set( 10, 10 );
 	let floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide, transparent: false, opacity: .1, } );
     let floorGeometry = new THREE.PlaneBufferGeometry(10, 10, 10, 10);
     let uvs = floorGeometry.attributes.uv.array;
     let uvscale = 2;
-    for ( var i = 0, len=uvs.length; i<len; i++ ) { uvs[i] *= uvscale; }
+    for ( let i = 0, len=uvs.length; i<len; i++ ) { uvs[i] *= uvscale; }
 
 
 
@@ -577,11 +576,6 @@ class Cable {
     }
 }
 
-function randomIntFromInterval(min,max) // min and max included
-{
-    return Math.floor(Math.random()*(max-min+1)+min);
-}
-
 function onSelectStart(event) {
     let controller = event.target;
     let intersections = getIntersections(controller, 0, 0, -1);
@@ -589,8 +583,6 @@ function onSelectStart(event) {
     let intersection = intersections[0];
 
     let object = intersection.object;
-
-
 
     // while (object && !object.userData.moveable) {
     //     object = object.parent;
@@ -659,16 +651,8 @@ function onSelectStart(event) {
    
     if(object && object.userData.turnable){
         let line = controller.getObjectByName("line");
-        grabLineLength = line.scale.z;
-    
-        let lineGeom = new THREE.Geometry();
-        lineGeom.vertices.push(new THREE.Vector3());
-        lineGeom.vertices.push(new THREE.Vector3());
-        let lineMat = new THREE.LineBasicMaterial({
-            color: "yellow"
-        });
-        uiLine = new THREE.Line(lineGeom, lineMat);
-        uiLine.name = "uiLine";
+        getControllerLineLength = line.scale.z;
+
         world.add(uiLine);
     }
 
@@ -766,8 +750,6 @@ function enactDeltaNewNode(delta) {
         case "inlet": {
             inlet_material.blending = THREE.NormalBlending;
             container = new THREE.Mesh(inlet_geometry, inlet_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
             container.position.fromArray([
                 0, 
                 0,
@@ -776,8 +758,8 @@ function enactDeltaNewNode(delta) {
             outline_mat.color.set(0x00ff00);    
             let outline = new THREE.Mesh(inlet_geometry, outline_mat);
             outline.scale.multiplyScalar(1.28);
-            outline.castShadow = true;
-            outline.receiveShadow = true;
+            outline.castShadow = false;
+            outline.receiveShadow = false;
             container.add(outline);
 
             let label = generateLabel(name, NLET_HEIGHT);
@@ -790,8 +772,6 @@ function enactDeltaNewNode(delta) {
         case "outlet":{
             outlet_material.blending = THREE.NormalBlending;
             container = new THREE.Mesh(outlet_geometry, outlet_material);
-            container.castShadow = false;
-            container.receiveShadow = false;
             container.position.fromArray([
                 0, 
                 0,
@@ -813,8 +793,6 @@ function enactDeltaNewNode(delta) {
         } break;
         case "large_knob": {
             container = new THREE.Mesh(large_knob_geometry, knob_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
             //generic_geometry.parameters.width
             container.position.fromArray([
                 0, 
@@ -826,12 +804,11 @@ function enactDeltaNewNode(delta) {
             container.add(label);
             container.userData.turnable = true;
             container.userData.selectable = true;
+            container.userData.range = delta.range;
           
         } break;
         case "small_knob": {
             container = new THREE.Mesh(small_knob_geometry, knob_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
             container.position.fromArray([
                 0, 
                 0,
@@ -844,14 +821,13 @@ function enactDeltaNewNode(delta) {
 
             container.userData.turnable = true;
             container.userData.selectable = true;
+            container.userData.range = delta.range;
             
         } break;
         case "n_switch": {
             container = new THREE.Mesh(n_switch_geometry, n_switch_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
             container.position.fromArray([
-                (subObjCount / 8) + 0.25,
+                (0 / 8) + 0.25,
                 -generic_geometry.parameters.height/2 - LARGE_KNOB_HEIGHT/2, 
                 generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
             
@@ -895,8 +871,6 @@ function enactDeltaNewNode(delta) {
         } break;
         default: {
             container = new THREE.Mesh(generic_geometry, material);
-            container.castShadow = true;
-            container.receiveShadow = true;
             
             let label = generateLabel(labelName);
             label.position.y = -LABEL_SIZE;
@@ -909,6 +883,9 @@ function enactDeltaNewNode(delta) {
             container.userData.dirty = true;
         } break;
     }    
+
+    container.castShadow = true;
+    container.receiveShadow = true;
 
     container.name = name;
     container.userData.name = name;
@@ -926,11 +903,13 @@ function enactDeltaNewNode(delta) {
 
     if (delta.pos) {
         container.position.fromArray(delta.pos);
+        container.userData.fromPos  = delta.pos;
     } else {
         container.position = parent.position.clone();
     }
     if (delta.orient) {
         container.quaternion.fromArray(delta.orient);
+        container.userData.fromOri  = delta.orient;
     } else {
         container.quaternion = parent.quaternion.clone();
     }
@@ -993,7 +972,7 @@ function enactDeltaRepath(delta) {
     { op:"disconnect", paths:["x", "y"] }
 */
 function enactDeltaDisconnect(delta) {
-    console.log(delta)
+    //console.log(delta)
     let src = getObjectByPath(delta.paths[0]);
     let dst = getObjectByPath(delta.paths[1]);
     if (!src || !dst) {
@@ -1004,16 +983,16 @@ function enactDeltaDisconnect(delta) {
     }
 
     // find any matching cables and destroy them!!
-    console.log("disconnecting", delta.paths)
+    //console.log("disconnecting", delta.paths)
 
     let found = allCables.filter(cable => {
         return cable.src == src && cable.dst == dst;
     });
 
-    console.log("found matches:", found.length)
+    //console.log("found matches:", found.length)
 
     found.forEach(cable => {
-        console.log("removing cable", cable);
+        //console.log("removing cable", cable);
         cable.destroy();
     });
 }
@@ -1044,7 +1023,7 @@ function enactDeltaObjectPos(delta) {
 
     let object = getObjectByPath(delta.path);
     // assert (object, "path not found")
-
+    object.userData.fromPos = delta.to;
     // TODO: assert delta.from is roughly equal to current object.position
 
     // what the object should be part of:
@@ -1069,7 +1048,7 @@ function enactDeltaObjectOrient(delta) {
 
     let object = getObjectByPath(delta.path);
     // assert (object, "path not found")
-
+    object.userData.fromOri = delta.to;
     // TODO: assert delta.from is roughly equal to current object.quaternion
 
     // what the object should be part of:
@@ -1192,16 +1171,17 @@ function onSelectEnd(event) {
                 
 
             } else {
-
                 let pos = new THREE.Vector3();
                 let orient = new THREE.Quaternion();
                 object.getWorldPosition(pos);
                 object.getWorldQuaternion(orient);
                 let path = object.userData.path;
+                let fromPos = object.userData.fromPos;
+                let fromOri = object.userData.fromOri;
 
                 outgoingDeltas.push(
-                    { op:"propchange", path:path, name:"pos", from:[0, 0, 0], to:[pos.x, pos.y, pos.z] }, 
-                    { op:"propchange", path:path, name:"orient", from:[0, 0, 0, 1], to:[orient._x, orient._y, orient._z, orient._w] }
+                    { op:"propchange", path:path, name:"pos", from:[fromPos.x, fromPos.y, fromPos.z], to:[pos.x, pos.y, pos.z] }, 
+                    { op:"propchange", path:path, name:"orient", from:[fromOri._x, fromOri._y, fromOri._z, fromOri._w], to:[orient._x, orient._y, orient._z, orient._w] }
                 );
             }
 
@@ -1217,7 +1197,7 @@ function onSelectEnd(event) {
             let line = controller.getObjectByName("line");
             line.scale.z = 1;
 
-            world.remove(world.getObjectByName("uiLine"));
+            world.remove(uiLine);
         }
     }
 }
@@ -1227,6 +1207,7 @@ function onSpawn(event) {
     let controller = event.target;
     if(controller.getButtonState('thumbpad') === undefined) return;
 
+    //Should put this in own function relPosController()??
     let pos = new THREE.Vector3();
     let orient = new THREE.Quaternion();
     controller.getWorldPosition(pos);
@@ -1361,18 +1342,12 @@ function makeMenu(){
             let q = new THREE.Quaternion();
             q.setFromEuler(e);
     
-            //NEED TO REARRANGE MENU AND FIGURE OUT WHICH OBJECTS otherwise code is working!!!
             let deltas = generateNewModule([x, y, z], [q._x, q._y, q._z, q._w], name);
 
-           // clientDeltas = clientDeltas.concat(deltas);
             clientSideDeltas(deltas);
             touched = false;
-            //menuPos += .15;
         }
     }
-
-    
-    menuPos = 0;
 }
 
 
@@ -1426,7 +1401,7 @@ function getIntersectionsWithKind(controller, x, y, z, offset =0, kind) {
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
     let intersections = raycaster.intersectObjects(world.children, true);
-    while (intersections.length > 0 && !intersections[0].object.userData.selectable && kind != intersections[0].object.userData.kind) intersections.shift();
+    while (intersections.length > 0 /*&& !intersections[0].object.userData.selectable*/ && kind != intersections[0].object.userData.kind) intersections.shift();
     return intersections;
 }
 
@@ -1551,18 +1526,6 @@ function updateDirty(){
     
 }
 
-function onKeyPress(e) {
-
-    if (e.keyCode == 13) {
-        //syncLocalPatch();
-        console.log(localPatch)
-    }
-    if (e.keyCode == 83){
-        console.log("saving image")
-        webutils.saveCanvasToPNG(canvas);
-    }
-}
-
 function controllerGamepadControls(controller){
     //console.log(controller)
     let touched = false;
@@ -1631,6 +1594,15 @@ function controllerGamepadControls(controller){
                             obj = obj.parent;
                         }
                         if(obj.userData.kind === name){
+
+                             //Should put this in own function relPosController()??
+                            // adjust spawn location:
+                            let tilt = new THREE.Quaternion();
+                            tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
+                            controllerQuat.multiply(tilt);
+                            let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
+                            controllerPos.add(rel.applyQuaternion(controllerQuat));
+
                             let deltas = cloneModuleMenu([controllerPos.x, controllerPos.y, controllerPos.z], [controllerQuat._x, controllerQuat._y, controllerQuat._z, controllerQuat._w], obj);
                             outgoingDeltas = outgoingDeltas.concat(deltas);
                         }
@@ -1698,8 +1670,11 @@ function controllerGamepadControls(controller){
                 // (This ranges from -PI to +PI)
                 let angle = Math.atan2(relPos.x, -relPos.y);
                 // map this to a 0..1 range:
+
+                // For 270 degrees. Need to clamp everything
+                // add PI * .75 / (2 * Math.PI) * .75
                 value = (angle + Math.PI) / (2 * Math.PI);
-                if(uiLine !== undefined){
+                if(world.getObjectByName("uiLine") !== undefined){
                     uiLine.geometry.vertices[0] = controllerPos;
                     uiLine.geometry.vertices[1] = objectPos;
                     uiLine.geometry.verticesNeedUpdate = true;
@@ -1710,17 +1685,17 @@ function controllerGamepadControls(controller){
                 
             } else {
                 //controller.rotation.z += object.userData.rotation._z;
-                //object.rotation.z = (controller.rotation.z - object.userData.rotation._z);
+                //object.rotation.z = (controller.rotation.z - controller.userData.rotation._z);
                 //console.log(object, controller)
                 value = object.userData.rotation._z + (controller.rotation.z - controller.userData.rotation._z);
                 value = (value + Math.PI) / (2 * Math.PI);
-
-                if(uiLine !== undefined){
+                
+                if(world.getObjectByName("uiLine") !== undefined){
                     uiLine.geometry.vertices[0] = 0;
                     uiLine.geometry.vertices[1] = 0;
                     uiLine.geometry.verticesNeedUpdate = true;
                    
-                    line.scale.z = grabLineLength;
+                    line.scale.z = getControllerLineLength;
                 }         
             }
 
