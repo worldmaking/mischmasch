@@ -1,0 +1,38 @@
+linear and logarithmic quantizer
+
+delay
+
+weird karplus
+
+function generator
+
+waveset 1 and 2
+
+trigger (multi clock out)
+
+euclid
+
+pulsar
+
+waveshaper (curve)
+
+sampler (drum machine, live looper, granular)
+
+sound on sound looper  (when record head is open apply some waveshaping and filtering so that it degrades the older loops over time)
+
+resonator (could look at the feedback delay network from one of the reverbm may e the gigaverb; could take waveguide. Noiseburst for the strum input; knobs determine the degree of influence of the cv input)
+
+envelope follower
+
+degrade bitcrusher
+
+dynamics module (combined waveshaper and env follower)
+
+'kinks': phase flip, rectifier (DC block into abs)
+
+DONE - add bandlimited saw to lfo and vco
+
+-- to do:
+
+- set max audio scheduler crossfader
+- set list of operators for menu (organize by category?)
