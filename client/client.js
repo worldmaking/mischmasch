@@ -312,10 +312,6 @@ async function init() {
     scene.add(controller1);
     scene.add(controller2);
 
-
-    //Keypress
-    document.addEventListener("keyup", onKeyPress);
-
     {
         
         headsetMesh = loadedHeadsetModel.children[0]
@@ -352,9 +348,6 @@ async function init() {
     controller1.userData.thumbpadDX = 0;
     controller1.userData.thumbpadDY = 0;
 
-
-
-
     // controllers geometry
     let geometry = new THREE.BufferGeometry().setFromPoints([
         new THREE.Vector3(0, 0, 0),
@@ -366,9 +359,17 @@ async function init() {
     controller1.add(line.clone());
     controller2.add(line.clone());
 
+    let lineGeom = new THREE.Geometry();
+    lineGeom.vertices.push(new THREE.Vector3());
+    lineGeom.vertices.push(new THREE.Vector3());
+    let lineMat = new THREE.LineBasicMaterial({
+        color: "yellow"
+    });
+    uiLine = new THREE.Line(lineGeom, lineMat);
+    uiLine.name = "uiLine";
+
     // 'world' represents the root node of the patch:
     scene.add(world);
-
 
     // floor
     let floorGrid = new THREE.GridHelper(10, GRID_DIVISIONS);
@@ -653,15 +654,7 @@ function onSelectStart(event) {
     if(object && object.userData.turnable){
         let line = controller.getObjectByName("line");
         getControllerLineLength = line.scale.z;
-    
-        let lineGeom = new THREE.Geometry();
-        lineGeom.vertices.push(new THREE.Vector3());
-        lineGeom.vertices.push(new THREE.Vector3());
-        let lineMat = new THREE.LineBasicMaterial({
-            color: "yellow"
-        });
-        uiLine = new THREE.Line(lineGeom, lineMat);
-        uiLine.name = "uiLine";
+
         world.add(uiLine);
     }
 
@@ -979,7 +972,7 @@ function enactDeltaRepath(delta) {
     { op:"disconnect", paths:["x", "y"] }
 */
 function enactDeltaDisconnect(delta) {
-    console.log(delta)
+    //console.log(delta)
     let src = getObjectByPath(delta.paths[0]);
     let dst = getObjectByPath(delta.paths[1]);
     if (!src || !dst) {
@@ -990,16 +983,16 @@ function enactDeltaDisconnect(delta) {
     }
 
     // find any matching cables and destroy them!!
-    console.log("disconnecting", delta.paths)
+    //console.log("disconnecting", delta.paths)
 
     let found = allCables.filter(cable => {
         return cable.src == src && cable.dst == dst;
     });
 
-    console.log("found matches:", found.length)
+    //console.log("found matches:", found.length)
 
     found.forEach(cable => {
-        console.log("removing cable", cable);
+        //console.log("removing cable", cable);
         cable.destroy();
     });
 }
@@ -1205,7 +1198,7 @@ function onSelectEnd(event) {
             let line = controller.getObjectByName("line");
             line.scale.z = 1;
 
-            world.remove(world.getObjectByName("uiLine"));
+            world.remove(uiLine);
         }
     }
 }
@@ -1409,7 +1402,7 @@ function getIntersectionsWithKind(controller, x, y, z, offset =0, kind) {
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
     let intersections = raycaster.intersectObjects(world.children, true);
-    while (intersections.length > 0 && !intersections[0].object.userData.selectable && kind != intersections[0].object.userData.kind) intersections.shift();
+    while (intersections.length > 0 /*&& !intersections[0].object.userData.selectable*/ && kind != intersections[0].object.userData.kind) intersections.shift();
     return intersections;
 }
 
@@ -1532,18 +1525,6 @@ function updateDirty(){
     }
     
     
-}
-
-function onKeyPress(e) {
-
-    if (e.keyCode == 13) {
-        //syncLocalPatch();
-        console.log(localPatch)
-    }
-    if (e.keyCode == 83){
-        console.log("saving image")
-        webutils.saveCanvasToPNG(canvas);
-    }
 }
 
 function controllerGamepadControls(controller){
@@ -1694,7 +1675,7 @@ function controllerGamepadControls(controller){
                 // For 270 degrees. Need to clamp everything
                 // add PI * .75 / (2 * Math.PI) * .75
                 value = (angle + Math.PI) / (2 * Math.PI);
-                if(uiLine !== undefined){
+                if(world.getObjectByName("uiLine") !== undefined){
                     uiLine.geometry.vertices[0] = controllerPos;
                     uiLine.geometry.vertices[1] = objectPos;
                     uiLine.geometry.verticesNeedUpdate = true;
@@ -1705,12 +1686,12 @@ function controllerGamepadControls(controller){
                 
             } else {
                 //controller.rotation.z += object.userData.rotation._z;
-                //object.rotation.z = (controller.rotation.z - object.userData.rotation._z);
+                //object.rotation.z = (controller.rotation.z - controller.userData.rotation._z);
                 //console.log(object, controller)
                 value = object.userData.rotation._z + (controller.rotation.z - controller.userData.rotation._z);
                 value = (value + Math.PI) / (2 * Math.PI);
-
-                if(uiLine !== undefined){
+                
+                if(world.getObjectByName("uiLine") !== undefined){
                     uiLine.geometry.vertices[0] = 0;
                     uiLine.geometry.vertices[1] = 0;
                     uiLine.geometry.verticesNeedUpdate = true;
