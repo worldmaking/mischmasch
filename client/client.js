@@ -584,8 +584,6 @@ function onSelectStart(event) {
 
     let object = intersection.object;
 
-
-
     // while (object && !object.userData.moveable) {
     //     object = object.parent;
     // }
@@ -905,11 +903,13 @@ function enactDeltaNewNode(delta) {
 
     if (delta.pos) {
         container.position.fromArray(delta.pos);
+        container.userData.fromPos  = delta.pos;
     } else {
         container.position = parent.position.clone();
     }
     if (delta.orient) {
         container.quaternion.fromArray(delta.orient);
+        container.userData.fromOri  = delta.orient;
     } else {
         container.quaternion = parent.quaternion.clone();
     }
@@ -1171,7 +1171,6 @@ function onSelectEnd(event) {
                 
 
             } else {
-
                 let pos = new THREE.Vector3();
                 let orient = new THREE.Quaternion();
                 object.getWorldPosition(pos);
