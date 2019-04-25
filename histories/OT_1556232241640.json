@@ -1,0 +1,5060 @@
+[
+  {
+    "cmd": "deltas",
+    "date": 1556232299910,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "logic_0_48",
+        "kind": "logic",
+        "category": "abstraction",
+        "pos": [
+          -1.1092418472164887,
+          0.8504221695123609,
+          0.09010185606575433
+        ],
+        "orient": [
+          0.04425361288423153,
+          0.4705764445253834,
+          -0.01348629700456628,
+          0.8811455884228152
+        ]
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_48.in_1",
+        "kind": "inlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_48.in_2",
+        "kind": "inlet",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_48.not_1",
+        "kind": "outlet",
+        "index": 2
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_48.not_2",
+        "kind": "outlet",
+        "index": 3
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_48.and",
+        "kind": "outlet",
+        "index": 4
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_48.boolean_1",
+        "kind": "outlet",
+        "index": 5
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_48.boolean_2",
+        "kind": "outlet",
+        "index": 6
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_48.or",
+        "kind": "outlet",
+        "index": 7
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_48.xor",
+        "kind": "outlet",
+        "index": 8
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_48.>",
+        "kind": "outlet",
+        "index": 9
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232300602,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "logic_0_48",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.0284044370639227,
+          0.8341242951679522,
+          -0.47393649724577286
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "logic_0_48",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.023073592919054246,
+          0.07709562649929007,
+          0.015296101754465824,
+          0.9966393043404518
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232301797,
+    "data": [
+      {
+        "op": "connect",
+        "paths": [
+          "logic_0_48.boolean_1",
+          "logic_0_48.in_2"
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232302389,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "logic_0_48",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.0426347868138874,
+          0.6876856290829965,
+          -0.3185452633066706
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "logic_0_48",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.13569126509782004,
+          0.2591798080928207,
+          0.15711301098912572,
+          0.9432545839604211
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232303579,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "logic_0_49",
+        "kind": "logic",
+        "category": "abstraction",
+        "pos": [
+          -1.037736032966888,
+          0.7095116497416838,
+          0.1468407097998447
+        ],
+        "orient": [
+          0.08286529434849879,
+          0.4849059346206836,
+          0.05622186295626249,
+          0.868814526147042
+        ]
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_49.in_1",
+        "kind": "inlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_49.in_2",
+        "kind": "inlet",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_49.not_1",
+        "kind": "outlet",
+        "index": 2
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_49.not_2",
+        "kind": "outlet",
+        "index": 3
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_49.and",
+        "kind": "outlet",
+        "index": 4
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_49.boolean_1",
+        "kind": "outlet",
+        "index": 5
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_49.boolean_2",
+        "kind": "outlet",
+        "index": 6
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_49.or",
+        "kind": "outlet",
+        "index": 7
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_49.xor",
+        "kind": "outlet",
+        "index": 8
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_49.>",
+        "kind": "outlet",
+        "index": 9
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232304670,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "logic_0_49",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.1464119202465564,
+          1.120448457998781,
+          -0.02994795361694147
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "logic_0_49",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.23774942333064694,
+          0.3292035219379855,
+          0.030430885800991788,
+          0.9133313820876809
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232305741,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "scale_0_50",
+        "kind": "scale",
+        "specification": "range",
+        "category": "operator",
+        "pos": [
+          -0.988318030010839,
+          0.6471980287872399,
+          0.3955221220841265
+        ],
+        "orient": [
+          -0.063351345021228,
+          0.7525436262880737,
+          0.2049706367939563,
+          0.6226168462285533
+        ]
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "scale_0_50.input",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "scale_0_50.ilo",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "scale_0_50.ihi",
+        "index": 2
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "scale_0_50.olo",
+        "index": 3
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "scale_0_50.ohi",
+        "index": 4
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "scale_0_50.exp",
+        "index": 5
+      },
+      {
+        "op": "newnode",
+        "kind": "outlet",
+        "path": "scale_0_50.out1",
+        "index": 0
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232306901,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "scale_0_50",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.2138671529284093,
+          0.7020824165918589,
+          -0.05321292543834688
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "scale_0_50",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.008776589885922267,
+          0.449725503517789,
+          0.12877498428938092,
+          0.8837912349129728
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232311023,
+    "data": [
+      {
+        "op": "connect",
+        "paths": [
+          "logic_0_49.xor",
+          "scale_0_50.ihi"
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232312352,
+    "data": [
+      {
+        "op": "connect",
+        "paths": [
+          "logic_0_49.>",
+          "scale_0_50.ilo"
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232313181,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "logic_0_49",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.9766071006754786,
+          1.2951056472826696,
+          -0.04302542449085536
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "logic_0_49",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.2630908946712545,
+          0.3857831038633033,
+          -0.053930559168181146,
+          0.8826358666503555
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232314340,
+    "data": [
+      {
+        "op": "connect",
+        "paths": [
+          "logic_0_48.and",
+          "scale_0_50.exp"
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232315090,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "logic_0_48",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.8860598049966543,
+          0.7209311845069274,
+          -0.4465450637455131
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "logic_0_48",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.07559382298146129,
+          0.23658277043404133,
+          0.1112567224477504,
+          0.9622557397213904
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232316485,
+    "data": [
+      {
+        "op": "connect",
+        "paths": [
+          "scale_0_50.out1",
+          "logic_0_48.in_1"
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232317055,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "logic_0_48",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.8816738911867941,
+          0.739479641262984,
+          -0.41123512341739604
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "logic_0_48",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.03673915577477832,
+          0.38922283580156675,
+          -0.015427507284491802,
+          0.9202813755475837
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232318350,
+    "data": [
+      {
+        "op": "connect",
+        "paths": [
+          "logic_0_48.>",
+          "scale_0_50.ohi"
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232319010,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "logic_0_48",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.8529524112958189,
+          0.6195233762423838,
+          -0.5823416383773521
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "logic_0_48",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.026827585795543608,
+          0.13642000449980773,
+          0.1822134179258779,
+          0.9733797477377084
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232320406,
+    "data": [
+      {
+        "op": "connect",
+        "paths": [
+          "logic_0_48.boolean_2",
+          "logic_0_49.in_2"
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232321077,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "logic_0_49",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.0465027194584655,
+          1.0745991755504534,
+          -0.14663174687800207
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "logic_0_49",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.288224427511382,
+          0.3100812344804358,
+          0.06965540359201496,
+          0.9032853524626179
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232323768,
+    "data": [
+      {
+        "op": "connect",
+        "paths": [
+          "logic_0_49.boolean_1",
+          "logic_0_48.in_2"
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232324897,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "logic_0_48",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.8771523395544989,
+          0.7538090618636741,
+          -0.39808904622869823
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "logic_0_48",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.010317177357651915,
+          0.3132134463349346,
+          -0.0029936087828354306,
+          0.9496219939219614
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232328895,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "logic_0_48",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.9014247290121304,
+          -0.35001256506801703,
+          -0.4024557122204065
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "logic_0_48",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.5680189506217996,
+          0.3408869799845437,
+          0.4340744322339456,
+          0.6105161137362338
+        ]
+      },
+      {
+        "op": "delnode",
+        "path": "logic_0_48",
+        "kind": "logic_0_48"
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232330248,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "scale_0_50",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.9077802817812712,
+          -0.34849685767854466,
+          -0.4949685118758387
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "scale_0_50",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.4394978227080158,
+          0.14537903431391835,
+          0.4862593925172979,
+          0.7411196906226288
+        ]
+      },
+      {
+        "op": "delnode",
+        "path": "scale_0_50",
+        "kind": "scale_0_50"
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232331676,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "comparator_0_51",
+        "kind": "comparator",
+        "category": "abstraction",
+        "pos": [
+          -0.9029945870531575,
+          0.820621845793412,
+          -0.06098739847690332
+        ],
+        "orient": [
+          0.194210927875651,
+          0.19260916653122143,
+          0.00020913956713475984,
+          0.9618647416833572
+        ]
+      },
+      {
+        "op": "newnode",
+        "path": "comparator_0_51.A",
+        "kind": "inlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "comparator_0_51.B",
+        "kind": "inlet",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "path": "comparator_0_51.max",
+        "kind": "outlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "comparator_0_51.min",
+        "kind": "outlet",
+        "index": 1
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232333184,
+    "data": [
+      {
+        "op": "connect",
+        "paths": [
+          "logic_0_49.boolean_1",
+          "comparator_0_51.B"
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232333723,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "logic_0_49",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.9584236084092177,
+          1.0939593179545728,
+          -0.14551044574365218
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "logic_0_49",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.30221020338870247,
+          0.29697970885947433,
+          0.022763537085377584,
+          0.9055130399625191
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232334850,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "comparator_0_51",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.9866544219298418,
+          0.6251754619662853,
+          -0.33498185122922897
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "comparator_0_51",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.0862185725004275,
+          0.17468428944040404,
+          0.10109101908174987,
+          0.9756189641862798
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232335543,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "logic_0_49",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.926997313701244,
+          1.0556426497887166,
+          -0.11930845149592004
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "logic_0_49",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.20352954349381236,
+          0.2972949409029546,
+          0.01578750338007859,
+          0.9327069191415827
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232336725,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "vca_0_52",
+        "kind": "vca",
+        "category": "abstraction",
+        "pos": [
+          -0.7653215693400603,
+          0.8728128086854666,
+          -0.11259099034697496
+        ],
+        "orient": [
+          0.2959247563530559,
+          -0.08514560799566816,
+          -0.08400797747587471,
+          0.947692684067071
+        ]
+      },
+      {
+        "op": "newnode",
+        "path": "vca_0_52.signal",
+        "kind": "inlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "vca_0_52.cv",
+        "kind": "inlet",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "path": "vca_0_52.cv_amount",
+        "kind": "large_knob",
+        "range": [
+          0,
+          1
+        ],
+        "taper": "linear",
+        "value": 0.5,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "vca_0_52.bias",
+        "kind": "large_knob",
+        "range": [
+          0,
+          1
+        ],
+        "taper": "linear",
+        "value": 0.5,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "vca_0_52.output",
+        "kind": "outlet",
+        "index": 0
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232337787,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.5820397775215296,
+          0.9317383787736733,
+          -0.4101350517985433
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "vca_0_52",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.11332838714991438,
+          -0.035571247536207586,
+          0.0601868990900608,
+          0.9910947987627108
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232339137,
+    "data": [
+      {
+        "op": "connect",
+        "paths": [
+          "comparator_0_51.max",
+          "vca_0_52.signal"
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232339988,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "comparator_0_51",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.0239882144763492,
+          0.5892363564355101,
+          -0.2288355389015235
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "comparator_0_51",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.059202647071074616,
+          0.24220870514348083,
+          0.05477893114194376,
+          0.9668656882373093
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232340277,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": 0.5,
+        "to": 0.5
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232340288,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "0.50",
+        "to": 0.48955392961667327
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232340300,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.47710963320496697
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232340312,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "0.48",
+        "to": 0.4582939217058016
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232340323,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "0.46",
+        "to": 0.43431582181989464
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232340345,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "0.43",
+        "to": 1.409760102826434
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232340356,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "1.41",
+        "to": 1.3519484757132003
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232340367,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "1.35",
+        "to": 1.3245759724209496
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232340388,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "1.32",
+        "to": 1.3021556781684438
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232340400,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "1.30",
+        "to": 1.2768641554346507
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232340411,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "1.28",
+        "to": 1.270913698169468
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232340422,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "1.27",
+        "to": 1.2711690803748157
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232340434,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "1.27",
+        "to": 1.2752815375399245
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232340445,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "1.28",
+        "to": 1.2797423688627219
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232340456,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "1.28",
+        "to": 1.282820971917222
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232340474,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "1.28",
+        "to": 1.2838879995393957
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232340478,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "1.28",
+        "to": 1.2826228868110061
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232340489,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "1.28",
+        "to": 1.2806414825578323
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232340502,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "1.28",
+        "to": 1.2794320929144027
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341718,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": 0.5,
+        "to": 0.5
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341729,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.50",
+        "to": 0.4969150205341199
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341741,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.50",
+        "to": 0.4935140164803325
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341752,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.4900976747940785
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341763,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.4878300331448834
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341775,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.48613371072572886
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341785,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.48552212656909893
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341796,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.48605902187287603
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341808,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.48838143420514857
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341819,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.49105958163314545
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341833,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.4952277767506643
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341841,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.50",
+        "to": 0.5043113800283731
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341852,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.50",
+        "to": 0.520584464093249
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341863,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.52",
+        "to": 0.5411735443827729
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341874,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.54",
+        "to": 0.5704485100331266
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341887,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.57",
+        "to": 0.6043415604629778
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341897,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.60",
+        "to": 0.6382193371360049
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341909,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.64",
+        "to": 0.6743246805803066
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341920,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.67",
+        "to": 0.7089975732667197
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341930,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.71",
+        "to": 0.7414756419814232
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341942,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.74",
+        "to": 0.7630281149086733
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341953,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7747737764934519
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341964,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7780867176870586
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341977,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7716622760981842
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341986,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7619195852747359
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232341997,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7581182614700789
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232342008,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7593167624706753
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232342020,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7625489142892201
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232342702,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.47235225402788683,
+          0.9291014199080525,
+          -0.44609148097952456
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "vca_0_52",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.10175680467702028,
+          -0.10229166573132653,
+          0.017560573160513362,
+          0.9893804093616168
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232342958,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7599999999999999
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232342969,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7442237416693805
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232342980,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.74",
+        "to": 0.7256927307546461
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232342991,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.73",
+        "to": 0.7015129906354272
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343002,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.70",
+        "to": 0.675573272198409
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343013,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6485178408916009
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343027,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.65",
+        "to": 0.6203883706948494
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343037,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.62",
+        "to": 0.5926204377394197
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343050,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.59",
+        "to": 0.5687704361379425
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343060,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.57",
+        "to": 0.552583761730984
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343069,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.55",
+        "to": 0.5391093551034734
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343081,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.54",
+        "to": 0.534897090144856
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343092,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.53",
+        "to": 1.5318789537357174
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343104,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "1.53",
+        "to": 0.5349681604170512
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343114,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.53",
+        "to": 0.5372860250437698
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343126,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.54",
+        "to": 0.5435226069072311
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343137,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.54",
+        "to": 0.552552200378217
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343148,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.55",
+        "to": 0.5626742142781302
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343159,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.56",
+        "to": 0.5765287769816859
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343170,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.58",
+        "to": 0.5943941346953026
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343181,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.59",
+        "to": 0.6158305914919529
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343192,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.62",
+        "to": 0.6413933050326021
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343207,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.64",
+        "to": 0.6674824681743697
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343215,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.67",
+        "to": 0.695034603051661
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343226,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.70",
+        "to": 0.7187558837657391
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343237,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.72",
+        "to": 0.7324937818217716
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343249,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.73",
+        "to": 0.7356973720851986
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343260,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.74",
+        "to": 0.7362363739692598
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343271,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.74",
+        "to": 0.7328269531548548
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343282,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.73",
+        "to": 0.7269602861255794
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343293,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.73",
+        "to": 0.7213908964391902
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343304,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.72",
+        "to": 0.7140283854029922
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343316,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.71",
+        "to": 0.7028279008740872
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343327,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.70",
+        "to": 0.6867791201018733
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343339,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.69",
+        "to": 0.6635432738368934
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343350,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.66",
+        "to": 0.6361808173460008
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343366,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.64",
+        "to": 0.6105403862875824
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343372,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.61",
+        "to": 0.5843786792526107
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343384,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.58",
+        "to": 0.561047316319666
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343394,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.56",
+        "to": 0.5503708157909656
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343405,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.55",
+        "to": 0.5434288591224989
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343417,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.54",
+        "to": 0.5525234963771203
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343428,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.55",
+        "to": 0.5733132991414974
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343440,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.57",
+        "to": 0.5980640518746518
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343450,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.60",
+        "to": 0.6248491107274012
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343462,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.62",
+        "to": 0.6483652029592722
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343472,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.65",
+        "to": 0.6612407248903868
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343485,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.66",
+        "to": 0.6591233824250994
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343495,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.66",
+        "to": 0.6467242443189335
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343505,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.65",
+        "to": 0.632035979561787
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343517,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.63",
+        "to": 0.6163529378238213
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343527,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.62",
+        "to": 0.603307800111585
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343539,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.60",
+        "to": 0.5963284821942963
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343550,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.60",
+        "to": 0.6065944171806473
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343561,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.61",
+        "to": 0.6308882970386033
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343573,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.63",
+        "to": 0.6581179922359801
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343583,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.66",
+        "to": 0.6811505658941266
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343594,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.701123073583534
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343605,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.70",
+        "to": 0.7100378540820292
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343618,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.71",
+        "to": 0.7078226927102124
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343628,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.71",
+        "to": 0.7016188995288687
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343640,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.70",
+        "to": 0.6902550017856447
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232343652,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.cv_amount",
+        "name": "value",
+        "from": "0.69",
+        "to": 0.6794705810732752
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344545,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "1.28",
+        "to": 0.2800000000000001
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344555,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "0.28",
+        "to": 0.2800000000000001
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344566,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "0.28",
+        "to": 0.2811287975124508
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344578,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "0.28",
+        "to": 0.2838315420234817
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344590,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "0.28",
+        "to": 0.28886249743007664
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344600,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "0.29",
+        "to": -0.7039206367049338
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344611,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.70",
+        "to": -0.6944651189975238
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344622,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.69",
+        "to": -0.6828724058182218
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344634,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.68",
+        "to": -0.6661452301708829
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344645,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.67",
+        "to": -0.6462035533410461
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344656,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.65",
+        "to": -0.6237222603372934
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344669,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.62",
+        "to": -0.6002556149315107
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344678,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.60",
+        "to": -0.5753166000277687
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344689,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.58",
+        "to": -0.5500896376839546
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344701,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.55",
+        "to": -0.5239939940776038
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344713,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.52",
+        "to": -0.5061587674015793
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344726,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.51",
+        "to": -0.4943605465134673
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344734,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.49",
+        "to": -0.5013356355794427
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344746,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.50",
+        "to": -0.5060961685388209
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344756,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.51",
+        "to": -0.5166424321404594
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344768,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.52",
+        "to": -0.5275999796440787
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344779,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.53",
+        "to": -0.5433943776446656
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344792,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.54",
+        "to": -0.5607898314359364
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344802,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.56",
+        "to": -0.5847879625730018
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344813,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.58",
+        "to": -0.6079737497192261
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344824,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.61",
+        "to": -0.6340487633393469
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344835,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.63",
+        "to": -0.6611076134761054
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344846,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.66",
+        "to": -0.6870332829041019
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344857,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "-0.69",
+        "to": 0.2875989998830663
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344868,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "0.29",
+        "to": 0.26886329052927577
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344880,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "0.27",
+        "to": 0.2522109020568616
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344890,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "0.25",
+        "to": 0.2369972707759005
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344903,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "0.24",
+        "to": 0.226642139309315
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344913,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "0.23",
+        "to": 0.21857989276989992
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344924,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "0.22",
+        "to": 0.21481570841364359
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344935,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "0.21",
+        "to": 0.211996032927392
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344946,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "0.21",
+        "to": 0.21273259181836707
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232344957,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "vca_0_52.bias",
+        "name": "value",
+        "from": "0.21",
+        "to": 0.21584127775631243
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232345652,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "logic_0_49",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.0301999743619286,
+          0.9066857746551922,
+          -0.21750507667316665
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "logic_0_49",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.21513054623038588,
+          0.1529369467226398,
+          0.16295002329942282,
+          0.9506715673311261
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232346824,
+    "data": [
+      {
+        "op": "connect",
+        "paths": [
+          "logic_0_49.boolean_2",
+          "comparator_0_51.A"
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232347617,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "comparator_0_51",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.9409945304770228,
+          0.5089695701572894,
+          -0.2850406693272548
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "comparator_0_51",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.009437247134170221,
+          0.1967349195032853,
+          0.14827621573469016,
+          0.9691338785430994
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232354094,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "resofilter_0_53",
+        "kind": "resofilter",
+        "category": "abstraction",
+        "pos": [
+          -0.9241477464816062,
+          0.6678447137514714,
+          0.3118840206990673
+        ],
+        "orient": [
+          0.12146691469317207,
+          0.6152422736815215,
+          0.05215851972561234,
+          0.7771758014336364
+        ]
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_53.source",
+        "kind": "inlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_53.frequency",
+        "kind": "large_knob",
+        "range": [
+          1,
+          10000
+        ],
+        "taper": "log 3.8",
+        "value": 0.25,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_53.freq_cv",
+        "kind": "inlet",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_53.resonance",
+        "kind": "small_knob",
+        "range": [
+          0,
+          1
+        ],
+        "taper": "log 3.8",
+        "value": 0.5,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_53.res_cv",
+        "kind": "inlet",
+        "index": 2
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_53.lopass",
+        "kind": "outlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_53.hipass",
+        "kind": "outlet",
+        "index": 1
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232355189,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.9918226269348711,
+          0.7356137008171426,
+          -0.17787452343455828
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.13219231321300148,
+          0.1866557517721779,
+          0.07637325306675827,
+          0.9704905713398896
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232355893,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "logic_0_49",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.054588894817876,
+          0.8877161367070361,
+          -0.1948625233189207
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "logic_0_49",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.21777577300496875,
+          0.17812800580634347,
+          0.17797850656404904,
+          0.9429569344839279
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232356954,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "resofilter_0_54",
+        "kind": "resofilter",
+        "category": "abstraction",
+        "pos": [
+          -1.054375789349567,
+          0.7593875995998182,
+          0.2967797762000401
+        ],
+        "orient": [
+          0.013265560559691802,
+          0.6449714914433275,
+          0.11508201709182675,
+          0.7553753573725784
+        ]
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_54.source",
+        "kind": "inlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_54.frequency",
+        "kind": "large_knob",
+        "range": [
+          1,
+          10000
+        ],
+        "taper": "log 3.8",
+        "value": 0.25,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_54.freq_cv",
+        "kind": "inlet",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_54.resonance",
+        "kind": "small_knob",
+        "range": [
+          0,
+          1
+        ],
+        "taper": "log 3.8",
+        "value": 0.5,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_54.res_cv",
+        "kind": "inlet",
+        "index": 2
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_54.lopass",
+        "kind": "outlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_54.hipass",
+        "kind": "outlet",
+        "index": 1
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232358172,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_54",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.1998547496429395,
+          0.8337428171617627,
+          0.01850565076784355
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "resofilter_0_54",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.03840744387956257,
+          0.46674540089725886,
+          0.06150595801040839,
+          0.8814139870581298
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232359065,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_54",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.0732784854637507,
+          0.8558438002800576,
+          -0.36302963465550164
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "resofilter_0_54",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.07039389110122182,
+          0.10629744667669357,
+          0.03450840404058795,
+          0.9912389837845926
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232359959,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "logic_0_55",
+        "kind": "logic",
+        "category": "abstraction",
+        "pos": [
+          -1.1809281411233212,
+          0.7839379240737474,
+          0.09336506932037203
+        ],
+        "orient": [
+          0.016680871624339455,
+          0.4692008735915446,
+          0.08519248539977113,
+          0.8788142749751597
+        ]
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_55.in_1",
+        "kind": "inlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_55.in_2",
+        "kind": "inlet",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_55.not_1",
+        "kind": "outlet",
+        "index": 2
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_55.not_2",
+        "kind": "outlet",
+        "index": 3
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_55.and",
+        "kind": "outlet",
+        "index": 4
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_55.boolean_1",
+        "kind": "outlet",
+        "index": 5
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_55.boolean_2",
+        "kind": "outlet",
+        "index": 6
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_55.or",
+        "kind": "outlet",
+        "index": 7
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_55.xor",
+        "kind": "outlet",
+        "index": 8
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_55.>",
+        "kind": "outlet",
+        "index": 9
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232361455,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "logic_0_55",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.152790359798762,
+          0.8749108939967221,
+          -0.19030654680305967
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "logic_0_55",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.2216716804531442,
+          0.17188625393482157,
+          0.057844616329640705,
+          0.9581079181565963
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232362853,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "cartopol_0_56",
+        "kind": "cartopol",
+        "specification": "math",
+        "category": "operator",
+        "pos": [
+          -1.109699683679327,
+          0.6104390234770072,
+          0.3086728427552826
+        ],
+        "orient": [
+          0.027587700466709206,
+          0.6797492613346777,
+          0.24824629460397224,
+          0.6896039724106833
+        ]
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "cartopol_0_56.x",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "cartopol_0_56.y",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "kind": "outlet",
+        "path": "cartopol_0_56.distance",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "kind": "outlet",
+        "path": "cartopol_0_56.angle",
+        "index": 1
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232363858,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "cartopol_0_56",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.28983753981277,
+          0.7020732439604261,
+          -0.04680026446166817
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "cartopol_0_56",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.07051103430393556,
+          0.429776449923648,
+          0.1323461601687365,
+          0.8903959187261783
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232364975,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "add_0_57",
+        "kind": "add",
+        "specification": "math",
+        "category": "operator",
+        "pos": [
+          -0.9747388182710508,
+          0.7286966389612989,
+          0.43569874799923397
+        ],
+        "orient": [
+          0.1740833508310971,
+          0.7859824366654203,
+          0.12745836679095218,
+          0.5793798164781487
+        ]
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "add_0_57.value1",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "add_0_57.value2",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "kind": "outlet",
+        "path": "add_0_57.sum",
+        "index": 0
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232366192,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "add_0_57",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.3197626674235639,
+          0.784138947546029,
+          0.03419874071828077
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "add_0_57",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.08800057031669406,
+          0.4389266000655199,
+          0.11132348888474364,
+          0.8872465424439205
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232367859,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "mul_0_58",
+        "kind": "mul",
+        "specification": "math",
+        "category": "operator",
+        "pos": [
+          -0.8692801829751235,
+          0.6778382738571482,
+          0.4935631198283938
+        ],
+        "orient": [
+          0.2569263204282339,
+          0.8243419604142271,
+          0.1457006970749289,
+          0.4829291020811042
+        ]
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "mul_0_58.value1",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "mul_0_58.value2",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "kind": "outlet",
+        "path": "mul_0_58.product",
+        "index": 0
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232369142,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "mul_0_58",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.276059696002071,
+          0.9437811456212711,
+          0.08024127370393874
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "mul_0_58",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.20795952624032207,
+          0.41340129955741384,
+          -0.0021866338677227746,
+          0.8864803549952769
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232370537,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "cartopol_0_59",
+        "kind": "cartopol",
+        "specification": "math",
+        "category": "operator",
+        "pos": [
+          -1.2154316815299064,
+          0.7379426639657505,
+          0.24404226645955518
+        ],
+        "orient": [
+          -0.08452839976084363,
+          0.6216695363556296,
+          0.07387807139268154,
+          0.7751928584410899
+        ]
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "cartopol_0_59.x",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "cartopol_0_59.y",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "kind": "outlet",
+        "path": "cartopol_0_59.distance",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "kind": "outlet",
+        "path": "cartopol_0_59.angle",
+        "index": 1
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232371655,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "cartopol_0_59",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.2950603652530024,
+          0.3553580717996062,
+          -0.08810142468532695
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "cartopol_0_59",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.25714644123351676,
+          0.38172397795714885,
+          0.2327308265394841,
+          0.8567373455026243
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232372828,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "logic_0_60",
+        "kind": "logic",
+        "category": "abstraction",
+        "pos": [
+          -1.1875204367529633,
+          0.8015708039602021,
+          0.09239569948216714
+        ],
+        "orient": [
+          0.01483471815382939,
+          0.44781807467317536,
+          0.008216596635220098,
+          0.8939638644960411
+        ]
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_60.in_1",
+        "kind": "inlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_60.in_2",
+        "kind": "inlet",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_60.not_1",
+        "kind": "outlet",
+        "index": 2
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_60.not_2",
+        "kind": "outlet",
+        "index": 3
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_60.and",
+        "kind": "outlet",
+        "index": 4
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_60.boolean_1",
+        "kind": "outlet",
+        "index": 5
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_60.boolean_2",
+        "kind": "outlet",
+        "index": 6
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_60.or",
+        "kind": "outlet",
+        "index": 7
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_60.xor",
+        "kind": "outlet",
+        "index": 8
+      },
+      {
+        "op": "newnode",
+        "path": "logic_0_60.>",
+        "kind": "outlet",
+        "index": 9
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232373967,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "logic_0_60",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.9268937471349393,
+          0.6357089290357505,
+          -0.5897457924013711
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "logic_0_60",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.11004960149628773,
+          -0.1027474027829024,
+          0.0029364459005745956,
+          0.9885966992518007
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232375430,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "min_0_61",
+        "kind": "min",
+        "specification": "comparison",
+        "category": "operator",
+        "pos": [
+          -1.2110922626004108,
+          0.7302990853969598,
+          0.05669708058628076
+        ],
+        "orient": [
+          -0.09026519196505617,
+          0.45410860983241436,
+          0.016147581624323837,
+          0.8862148843734824
+        ]
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "min_0_61.value1",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "min_0_61.value2",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "kind": "outlet",
+        "path": "min_0_61.out1",
+        "index": 0
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232376346,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "min_0_61",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.1143865938398991,
+          0.5897039173257621,
+          -0.39506809118623953
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "min_0_61",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.18865528405828202,
+          0.12739282165646693,
+          0.03473442638137139,
+          0.9731257742964939
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232377956,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "scale_0_62",
+        "kind": "scale",
+        "specification": "range",
+        "category": "operator",
+        "pos": [
+          -0.9388445950864356,
+          0.5577839604219147,
+          0.3422663323972581
+        ],
+        "orient": [
+          0.05576513314255419,
+          0.8238192812602511,
+          0.2965400450214998,
+          0.47987086579036026
+        ]
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "scale_0_62.input",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "scale_0_62.ilo",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "scale_0_62.ihi",
+        "index": 2
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "scale_0_62.olo",
+        "index": 3
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "scale_0_62.ohi",
+        "index": 4
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "scale_0_62.exp",
+        "index": 5
+      },
+      {
+        "op": "newnode",
+        "kind": "outlet",
+        "path": "scale_0_62.out1",
+        "index": 0
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232379585,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "scale_0_62",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.299220092312087,
+          0.7389349384570613,
+          -0.12992180924690616
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "scale_0_62",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.052859669826223483,
+          0.3809561042685484,
+          0.055285272294009855,
+          0.9214238117355371
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232381093,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53.resonance",
+        "name": "value",
+        "from": 0.5,
+        "to": 0.5
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232381116,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53.resonance",
+        "name": "value",
+        "from": "0.50",
+        "to": 0.49642707410391296
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232381139,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53.resonance",
+        "name": "value",
+        "from": "0.50",
+        "to": 0.49200076579673924
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232381160,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53.resonance",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.4880006975438183
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232381182,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53.resonance",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.48663506377008203
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232381205,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53.resonance",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.48751190573796466
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232381227,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53.resonance",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.4872853944492834
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232381256,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53.resonance",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.4863538221204248
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232381272,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53.resonance",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.4848627412203054
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232381294,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53.resonance",
+        "name": "value",
+        "from": "0.48",
+        "to": 0.4841528135775477
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232381316,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53.resonance",
+        "name": "value",
+        "from": "0.48",
+        "to": 0.4858268593515908
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232381339,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53.resonance",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.4883848691854228
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232381361,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53.resonance",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.48906416616569937
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232381384,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53.resonance",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.48945126899953584
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232381406,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53.resonance",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.4909073534188138
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232381428,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53.resonance",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.4924074579426956
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232381451,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53.resonance",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.49399096419132404
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232381473,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53.resonance",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.4949704472925356
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232381496,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53.resonance",
+        "name": "value",
+        "from": "0.49",
+        "to": 0.4937660846218825
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232382623,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "resofilter_0_63",
+        "kind": "resofilter",
+        "category": "abstraction",
+        "pos": [
+          -0.9918381667844935,
+          0.8208987666457563,
+          -0.03759039602443742
+        ],
+        "orient": [
+          0.08224145283865057,
+          0.2977063956737648,
+          -0.13176222936328968,
+          0.9419373445941929
+        ]
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_63.source",
+        "kind": "inlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_63.frequency",
+        "kind": "large_knob",
+        "range": [
+          1,
+          10000
+        ],
+        "taper": "log 3.8",
+        "value": 0.25,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_63.freq_cv",
+        "kind": "inlet",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_63.resonance",
+        "kind": "small_knob",
+        "range": [
+          0,
+          1
+        ],
+        "taper": "log 3.8",
+        "value": 0.5,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_63.res_cv",
+        "kind": "inlet",
+        "index": 2
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_63.lopass",
+        "kind": "outlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_63.hipass",
+        "kind": "outlet",
+        "index": 1
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232383048,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.972731918626757,
+          0.7569782816661954,
+          -0.0989891926456436
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "resofilter_0_53",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.2070061380920808,
+          0.19383757042743585,
+          0.05069428298182568,
+          0.9576040653576887
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232383920,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_63",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.1110656309893625,
+          0.7373683783505705,
+          0.2677306459880166
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "resofilter_0_63",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.19894995228718457,
+          0.5677452362570583,
+          0.05923369596743605,
+          0.7966025566452821
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232384678,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "resofilter_0_64",
+        "kind": "resofilter",
+        "category": "abstraction",
+        "pos": [
+          -1.1431903296351953,
+          0.7249283098334959,
+          0.16506753564497229
+        ],
+        "orient": [
+          0.037339783508744145,
+          0.5489605225588707,
+          0.02320193234491027,
+          0.8346914140025007
+        ]
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_64.source",
+        "kind": "inlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_64.frequency",
+        "kind": "large_knob",
+        "range": [
+          1,
+          10000
+        ],
+        "taper": "log 3.8",
+        "value": 0.25,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_64.freq_cv",
+        "kind": "inlet",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_64.resonance",
+        "kind": "small_knob",
+        "range": [
+          0,
+          1
+        ],
+        "taper": "log 3.8",
+        "value": 0.5,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_64.res_cv",
+        "kind": "inlet",
+        "index": 2
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_64.lopass",
+        "kind": "outlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_64.hipass",
+        "kind": "outlet",
+        "index": 1
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232385160,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_63",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.1122396880511376,
+          0.701809624128588,
+          0.21923348990893693
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "resofilter_0_63",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.20228970337335928,
+          0.5343522083694778,
+          0.06498285867480877,
+          0.8181221324193563
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232385874,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_63",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.9543503250510139,
+          0.907703428887695,
+          -0.24507138148882518
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "resofilter_0_63",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.091253327136541,
+          0.09791750186894181,
+          -0.20752954630798268,
+          0.9690286273753361
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232386411,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_64",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.0991602242413059,
+          0.8235904609522839,
+          -0.23698927066972453
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "resofilter_0_64",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.027891875829079805,
+          0.16394147272140686,
+          -0.10619888416941996,
+          0.9803402643017959
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232387459,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "scale_0_65",
+        "kind": "scale",
+        "specification": "range",
+        "category": "operator",
+        "pos": [
+          -1.1410660237047185,
+          0.7185875927730216,
+          0.12824617862302062
+        ],
+        "orient": [
+          -0.04942143377224224,
+          0.5571202571493638,
+          -0.004849491662124394,
+          0.8289457303144214
+        ]
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "scale_0_65.input",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "scale_0_65.ilo",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "scale_0_65.ihi",
+        "index": 2
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "scale_0_65.olo",
+        "index": 3
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "scale_0_65.ohi",
+        "index": 4
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "scale_0_65.exp",
+        "index": 5
+      },
+      {
+        "op": "newnode",
+        "kind": "outlet",
+        "path": "scale_0_65.out1",
+        "index": 0
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232387806,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "scale_0_62",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.2715297951413729,
+          0.6962634841674531,
+          -0.053375287657353374
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "scale_0_62",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.004029449335800381,
+          0.3503165393433857,
+          0.09593677537355157,
+          0.931696421526915
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232388544,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "scale_0_65",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.2395765765453244,
+          0.6975616392599605,
+          0.3346332418239454
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "scale_0_65",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.03996370008998628,
+          0.7594070731432552,
+          0.08759556530928508,
+          0.6434522676110628
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232389326,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "add_0_66",
+        "kind": "add",
+        "specification": "math",
+        "category": "operator",
+        "pos": [
+          -1.1641247346344523,
+          0.9059976645870907,
+          0.22833438739419137
+        ],
+        "orient": [
+          0.15451670611317003,
+          0.5949323512807071,
+          -0.1091783912534499,
+          0.7811915058412863
+        ]
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "add_0_66.value1",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "kind": "inlet",
+        "path": "add_0_66.value2",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "kind": "outlet",
+        "path": "add_0_66.sum",
+        "index": 0
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556232389493,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "add_0_57",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.2995136692991112,
+          0.8023971001307473,
+          0.04155217069695932
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "add_0_57",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.11602672974190242,
+          0.3885155703782373,
+          0.10293384544109685,
+          0.9082940467846223
+        ]
+      }
+    ]
+  }
+]
