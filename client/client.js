@@ -149,7 +149,7 @@ let controllerMesh;
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
-let sock
+let sock;
 let userPose = createUserPose();
 let otherUsers = {};
 
@@ -166,8 +166,7 @@ let grabLineLength;
 let currentKnobValue = 0;
 let frames = 0;
 
-let createObjFromMenu = true;
-let menuPos = 0;
+let createObjFromMenu = true;;
 let menuNames = [];
 let menuScaleSize = .4;
 
@@ -385,6 +384,10 @@ async function init() {
 
    //MakeMenu
    makeMenu();
+
+   //Stupid hack just to get it load in the buffer
+   world.add(menu);
+   world.remove(menu);
 
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
 	floorTexture.repeat.set( 10, 10 );
@@ -826,6 +829,7 @@ function enactDeltaNewNode(delta) {
             container.add(label);
             container.userData.turnable = true;
             container.userData.selectable = true;
+            container.userData.range = delta.range;
           
         } break;
         case "small_knob": {
@@ -844,6 +848,7 @@ function enactDeltaNewNode(delta) {
 
             container.userData.turnable = true;
             container.userData.selectable = true;
+            container.userData.range = delta.range;
             
         } break;
         case "n_switch": {
@@ -1044,7 +1049,7 @@ function enactDeltaObjectPos(delta) {
 
     let object = getObjectByPath(delta.path);
     // assert (object, "path not found")
-
+    object.userData.fromPos = delta.to;
     // TODO: assert delta.from is roughly equal to current object.position
 
     // what the object should be part of:
@@ -1069,7 +1074,7 @@ function enactDeltaObjectOrient(delta) {
 
     let object = getObjectByPath(delta.path);
     // assert (object, "path not found")
-
+    object.userData.fromOri = delta.to;
     // TODO: assert delta.from is roughly equal to current object.quaternion
 
     // what the object should be part of:
@@ -1198,10 +1203,12 @@ function onSelectEnd(event) {
                 object.getWorldPosition(pos);
                 object.getWorldQuaternion(orient);
                 let path = object.userData.path;
+                let fromPos = object.userData.fromPos;
+                let fromOri = object.userData.fromOri;
 
                 outgoingDeltas.push(
-                    { op:"propchange", path:path, name:"pos", from:[0, 0, 0], to:[pos.x, pos.y, pos.z] }, 
-                    { op:"propchange", path:path, name:"orient", from:[0, 0, 0, 1], to:[orient._x, orient._y, orient._z, orient._w] }
+                    { op:"propchange", path:path, name:"pos", from:[fromPos.x, fromPos.y, fromPos.z], to:[pos.x, pos.y, pos.z] }, 
+                    { op:"propchange", path:path, name:"orient", from:[fromOri._x, fromOri._y, fromOri._z, fromOri._w], to:[orient._x, orient._y, orient._z, orient._w] }
                 );
             }
 
@@ -1227,6 +1234,7 @@ function onSpawn(event) {
     let controller = event.target;
     if(controller.getButtonState('thumbpad') === undefined) return;
 
+    //Should put this in own function relPosController()??
     let pos = new THREE.Vector3();
     let orient = new THREE.Quaternion();
     controller.getWorldPosition(pos);
@@ -1367,12 +1375,8 @@ function makeMenu(){
            // clientDeltas = clientDeltas.concat(deltas);
             clientSideDeltas(deltas);
             touched = false;
-            //menuPos += .15;
         }
     }
-
-    
-    menuPos = 0;
 }
 
 
@@ -1631,6 +1635,15 @@ function controllerGamepadControls(controller){
                             obj = obj.parent;
                         }
                         if(obj.userData.kind === name){
+
+                             //Should put this in own function relPosController()??
+                            // adjust spawn location:
+                            let tilt = new THREE.Quaternion();
+                            tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
+                            controllerQuat.multiply(tilt);
+                            let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
+                            controllerPos.add(rel.applyQuaternion(controllerQuat));
+
                             let deltas = cloneModuleMenu([controllerPos.x, controllerPos.y, controllerPos.z], [controllerQuat._x, controllerQuat._y, controllerQuat._z, controllerQuat._w], obj);
                             outgoingDeltas = outgoingDeltas.concat(deltas);
                         }
@@ -1698,6 +1711,9 @@ function controllerGamepadControls(controller){
                 // (This ranges from -PI to +PI)
                 let angle = Math.atan2(relPos.x, -relPos.y);
                 // map this to a 0..1 range:
+
+                // For 270 degrees. Need to clamp everything
+                // add PI * .75 / (2 * Math.PI) * .75
                 value = (angle + Math.PI) / (2 * Math.PI);
                 if(uiLine !== undefined){
                     uiLine.geometry.vertices[0] = controllerPos;
