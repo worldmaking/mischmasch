@@ -156,15 +156,10 @@ let otherUsers = {};
 let incomingDeltas = [];
 let outgoingDeltas = [];
 
-let clientDeltas = [];
-
 let allNodes = {};
 let allCables = [];
 let uiLine;
-let grabLineLength;
-
-let currentKnobValue = 0;
-let frames = 0;
+let getControllerLineLength;
 
 let createObjFromMenu = true;;
 let menuNames = [];
@@ -185,6 +180,10 @@ function iterateAllNodes(fun) {
     }
 }
 
+function randomIntFromInterval(min,max) // min and max included
+{
+    return Math.floor(Math.random()*(max-min+1)+min);
+}
 
 function createUserPose(id=0) {
     return {
@@ -223,10 +222,6 @@ let delta;
 let localPatch;
 let spawn = false;
 let controllerPrevPos;
-
-let subObjCount = 0;
-let subInletCount = 0;
-let subOutletCount = 0;
 
 //Simple debug hack
 let once = true;
@@ -395,7 +390,7 @@ async function init() {
     let floorGeometry = new THREE.PlaneBufferGeometry(10, 10, 10, 10);
     let uvs = floorGeometry.attributes.uv.array;
     let uvscale = 2;
-    for ( var i = 0, len=uvs.length; i<len; i++ ) { uvs[i] *= uvscale; }
+    for ( let i = 0, len=uvs.length; i<len; i++ ) { uvs[i] *= uvscale; }
 
 
 
@@ -580,11 +575,6 @@ class Cable {
     }
 }
 
-function randomIntFromInterval(min,max) // min and max included
-{
-    return Math.floor(Math.random()*(max-min+1)+min);
-}
-
 function onSelectStart(event) {
     let controller = event.target;
     let intersections = getIntersections(controller, 0, 0, -1);
@@ -662,7 +652,7 @@ function onSelectStart(event) {
    
     if(object && object.userData.turnable){
         let line = controller.getObjectByName("line");
-        grabLineLength = line.scale.z;
+        getControllerLineLength = line.scale.z;
     
         let lineGeom = new THREE.Geometry();
         lineGeom.vertices.push(new THREE.Vector3());
@@ -769,8 +759,6 @@ function enactDeltaNewNode(delta) {
         case "inlet": {
             inlet_material.blending = THREE.NormalBlending;
             container = new THREE.Mesh(inlet_geometry, inlet_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
             container.position.fromArray([
                 0, 
                 0,
@@ -779,8 +767,8 @@ function enactDeltaNewNode(delta) {
             outline_mat.color.set(0x00ff00);    
             let outline = new THREE.Mesh(inlet_geometry, outline_mat);
             outline.scale.multiplyScalar(1.28);
-            outline.castShadow = true;
-            outline.receiveShadow = true;
+            outline.castShadow = false;
+            outline.receiveShadow = false;
             container.add(outline);
 
             let label = generateLabel(name, NLET_HEIGHT);
@@ -793,8 +781,6 @@ function enactDeltaNewNode(delta) {
         case "outlet":{
             outlet_material.blending = THREE.NormalBlending;
             container = new THREE.Mesh(outlet_geometry, outlet_material);
-            container.castShadow = false;
-            container.receiveShadow = false;
             container.position.fromArray([
                 0, 
                 0,
@@ -816,8 +802,6 @@ function enactDeltaNewNode(delta) {
         } break;
         case "large_knob": {
             container = new THREE.Mesh(large_knob_geometry, knob_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
             //generic_geometry.parameters.width
             container.position.fromArray([
                 0, 
@@ -834,8 +818,6 @@ function enactDeltaNewNode(delta) {
         } break;
         case "small_knob": {
             container = new THREE.Mesh(small_knob_geometry, knob_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
             container.position.fromArray([
                 0, 
                 0,
@@ -853,10 +835,8 @@ function enactDeltaNewNode(delta) {
         } break;
         case "n_switch": {
             container = new THREE.Mesh(n_switch_geometry, n_switch_material);
-            container.castShadow = true;
-            container.receiveShadow = true;
             container.position.fromArray([
-                (subObjCount / 8) + 0.25,
+                (0 / 8) + 0.25,
                 -generic_geometry.parameters.height/2 - LARGE_KNOB_HEIGHT/2, 
                 generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
             
@@ -900,8 +880,6 @@ function enactDeltaNewNode(delta) {
         } break;
         default: {
             container = new THREE.Mesh(generic_geometry, material);
-            container.castShadow = true;
-            container.receiveShadow = true;
             
             let label = generateLabel(labelName);
             label.position.y = -LABEL_SIZE;
@@ -914,6 +892,9 @@ function enactDeltaNewNode(delta) {
             container.userData.dirty = true;
         } break;
     }    
+
+    container.castShadow = true;
+    container.receiveShadow = true;
 
     container.name = name;
     container.userData.name = name;
@@ -1369,10 +1350,8 @@ function makeMenu(){
             let q = new THREE.Quaternion();
             q.setFromEuler(e);
     
-            //NEED TO REARRANGE MENU AND FIGURE OUT WHICH OBJECTS otherwise code is working!!!
             let deltas = generateNewModule([x, y, z], [q._x, q._y, q._z, q._w], name);
 
-           // clientDeltas = clientDeltas.concat(deltas);
             clientSideDeltas(deltas);
             touched = false;
         }
@@ -1736,7 +1715,7 @@ function controllerGamepadControls(controller){
                     uiLine.geometry.vertices[1] = 0;
                     uiLine.geometry.verticesNeedUpdate = true;
                    
-                    line.scale.z = grabLineLength;
+                    line.scale.z = getControllerLineLength;
                 }         
             }
 
