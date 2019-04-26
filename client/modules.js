@@ -1599,12 +1599,12 @@ let module_constructors = {
 		]`);
     },
 
-	"kinks": function(path) { 
+	"pulsars": function(path) { 
     return JSON.parse(`[
 			{
 				"op": "newnode",
 				"path": "${path}",
-				"kind": "kinks",
+				"kind": "pulsars",
 				"category": "abstraction",
 				"pos": [
 					0,
@@ -1626,103 +1626,157 @@ let module_constructors = {
 			},
 			{
 				"op": "newnode",
-				"path": "${path}.flip",
-				"kind": "outlet",
-				"index": 0
-			},
-			{
-				"op": "newnode",
-				"path": "${path}.rectifier",
-				"kind": "outlet",
-				"index": 1
-			}
-		]`);
-    },
-
-	"SOS_Looper": function(path) { 
-    return JSON.parse(`[
-			{
-				"op": "newnode",
-				"path": "${path}",
-				"kind": "SOS_Looper",
-				"category": "abstraction",
-				"pos": [
-					0,
-					0,
-					0
-				],
-				"orient": [
-					0,
-					0,
-					0,
-					1
-				]
-			},
-			{
-				"op": "newnode",
-				"path": "${path}.signal",
-				"kind": "inlet",
-				"index": 0
-			},
-			{
-				"op": "newnode",
-				"path": "${path}.rate_cv",
-				"kind": "inlet",
-				"index": 1
-			},
-			{
-				"op": "newnode",
-				"path": "${path}.grab",
+				"path": "${path}.period",
 				"kind": "large_knob",
 				"range": [
 					0,
 					1
 				],
-				"taper": "lin",
-				"value": 0,
+				"taper": "log 3.8",
+				"value": 0.25,
 				"unit": "float"
 			},
 			{
 				"op": "newnode",
-				"path": "${path}.trigger",
+				"path": "${path}.period_cv",
+				"kind": "inlet",
+				"index": 1
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.formant",
+				"kind": "large_knob",
+				"range": [
+					0,
+					1000
+				],
+				"taper": "log 3.8",
+				"value": 0.25,
+				"unit": "float"
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.formant_cv",
 				"kind": "inlet",
 				"index": 2
 			},
 			{
 				"op": "newnode",
-				"path": "${path}.crinkle",
-				"kind": "large_knob",
-				"range": [
+				"path": "${path}.hipass",
+				"kind": "outlet",
+				"index": 0
+			}
+		]`);
+    },
+
+	"granola": function(path) { 
+    return JSON.parse(`[
+			{
+				"op": "newnode",
+				"path": "${path}",
+				"kind": "granola",
+				"category": "abstraction",
+				"pos": [
+					0,
+					0,
+					0
+				],
+				"orient": [
+					0,
+					0,
 					0,
 					1
+				]
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.signal",
+				"kind": "inlet",
+				"index": 0
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.density",
+				"kind": "large_knob",
+				"range": [
+					0.1,
+					100
 				],
-				"taper": "lin",
-				"value": 0,
+				"taper": "log 3.8",
+				"value": 10,
 				"unit": "float"
 			},
 			{
 				"op": "newnode",
-				"path": "${path}.overdub_level",
+				"path": "${path}.density_cv",
+				"kind": "inlet",
+				"index": 1
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.rate",
 				"kind": "large_knob",
 				"range": [
-					0,
-					1
+					1,
+					2000
 				],
-				"taper": "lin",
+				"taper": "log 3.8",
+				"value": 100,
+				"unit": "float"
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.rate_cv",
+				"kind": "inlet",
+				"index": 2
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.speed",
+				"kind": "large_knob",
+				"range": [
+					1,
+					2000
+				],
+				"taper": "log 3.8",
 				"value": 1,
 				"unit": "float"
 			},
 			{
 				"op": "newnode",
-				"path": "${path}.crinkle_cv",
+				"path": "${path}.speed_cv",
 				"kind": "inlet",
 				"index": 3
 			},
 			{
 				"op": "newnode",
-				"path": "${path}.out",
+				"path": "${path}.lookahead",
+				"kind": "large_knob",
+				"range": [
+					0,
+					1
+				],
+				"taper": "log 3.8",
+				"value": 0,
+				"unit": "float"
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.lookahead_cv",
+				"kind": "inlet",
+				"index": 3
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.left",
 				"kind": "outlet",
 				"index": 0
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.right",
+				"kind": "outlet",
+				"index": 1
 			}
 		]`);
     },

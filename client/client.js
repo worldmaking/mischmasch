@@ -61,6 +61,11 @@ const LARGE_KNOB_HEIGHT = 0.02;
 const SMALL_KNOB_RADIUS = 0.035;
 const SMALL_KNOB_HEIGHT = 0.02;
 
+const KNOB_SWEEP = -Math.PI * 0.75;
+
+const KNOB_TWIST_DISTANCE = 0.3;
+const KNOB_SWING_DISTANCE = 0.2;
+
 const CONTROLLER_HIT_DISTANCE = 0.03;
 
 const FRAME_WAIT_AMOUNT = 0;
@@ -818,10 +823,19 @@ function enactDeltaNewNode(delta) {
             container.userData.turnable = true;
             container.userData.selectable = true;
             container.userData.range = delta.range;
-            let derived_angle = (delta.value * Math.PI * 2) - Math.PI;
+
+            let min = delta.range[0];
+            let max = delta.range[1];
+            let scaledValue = (delta.value - min) / (max - min);
+            scaledValue = wrap(scaledValue, 1);
+
+            // if value == 0, angle should be -sweep
+            // if value == 1, angle should be sweep 
+            let derived_angle = KNOB_SWEEP * ((scaledValue*2) - 1);
             
             // set rotation of knob by this angle, and normal axis of knob:
             container.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
+            console.log("Initial Value",scaledValue)
 
         } break;
         case "small_knob": {
@@ -844,7 +858,15 @@ function enactDeltaNewNode(delta) {
             container.userData.selectable = true;
             container.userData.range = delta.range;
             
-            let derived_angle = (delta.value * Math.PI * 2) - Math.PI;
+
+            let min = delta.range[0];
+            let max = delta.range[1];
+            let scaledValue = (delta.value - min) / (max - min);
+            scaledValue = wrap(scaledValue, 1);
+
+            // if value == 0, angle should be -sweep
+            // if value == 1, angle should be sweep 
+            let derived_angle = KNOB_SWEEP * ((scaledValue*2) - 1);
             
             // set rotation of knob by this angle, and normal axis of knob:
             container.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
@@ -1102,9 +1124,12 @@ function enactDeltaObjectValue(delta) {
         case "large_knob": {
             value = value.toFixed(2);
             object.userData.value = value;
-
-            //Update once server says: 
-            let derived_angle = (value * Math.PI * 2) - Math.PI;
+            //console.log("Back from server Value", value)
+            //Update once server says:
+            
+            // if value == 0, angle should be -sweep
+            // if value == 1, angle should be sweep 
+            let derived_angle = KNOB_SWEEP * ((value*2) - 1);
             
             // set rotation of knob by this angle, and normal axis of knob:
             object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
@@ -1669,9 +1694,28 @@ function controllerGamepadControls(controller){
             let line = controller.getObjectByName("line");
 
             let value = 0;
-            if(controllerPos.distanceTo(objectPos) > .3){
-                
+            let dist = controllerPos.distanceTo(objectPos);
 
+            if (dist < KNOB_TWIST_DISTANCE) {
+                //controller.rotation.z += object.userData.rotation._z;
+                //object.rotation.z = (controller.rotation.z - controller.userData.rotation._z);
+                //console.log(object, controller)
+                let angle = object.userData.rotation._z + (controller.rotation.z - controller.userData.rotation._z);
+                if (angle < KNOB_SWEEP) angle = KNOB_SWEEP;
+                if (angle > -KNOB_SWEEP) angle = -KNOB_SWEEP;
+                // turn angle back into a 0..1 value:
+                value = (((angle / KNOB_SWEEP) + 1)/2);
+                
+                if (world.getObjectByName("uiLine") !== undefined){
+                    uiLine.geometry.vertices[0] = 0;
+                    uiLine.geometry.vertices[1] = 0;
+                    uiLine.geometry.verticesNeedUpdate = true;
+                   
+                    line.scale.z = getControllerLineLength;
+                }         
+            }
+            
+            if (dist > KNOB_SWING_DISTANCE) {
                 //put controller into knob space using matrix
                 //set angle to the knob
                 //take controller out of knob space
@@ -1694,13 +1738,23 @@ function controllerGamepadControls(controller){
                 relPos.applyQuaternion(moduleQuat);
                 // //get controller angle via x and y
                 // (This ranges from -PI to +PI)
-                let angle = Math.atan2(relPos.x, -relPos.y);
+                let angle = Math.atan2(-relPos.x, relPos.y);
                 // map this to a 0..1 range:
 
-                // For 270 degrees. Need to clamp everything
-                // add PI * .75 / (2 * Math.PI) * .75
-                value = (angle + Math.PI) / (2 * Math.PI);
-                value = wrap(value, 1);
+                if (angle < KNOB_SWEEP) angle = KNOB_SWEEP;
+                if (angle > -KNOB_SWEEP) angle = -KNOB_SWEEP;
+                // turn angle back into a 0..1 value:
+                let bigValue = (((angle / KNOB_SWEEP) + 1)/2);
+
+                if (dist < KNOB_TWIST_DISTANCE) {
+                    let factor = (dist - KNOB_SWING_DISTANCE) / (KNOB_TWIST_DISTANCE - KNOB_SWING_DISTANCE);
+                   
+                    value = value + factor * (bigValue - value);
+
+                } else {
+                    value = bigValue;
+                }
+
                 if(world.getObjectByName("uiLine") !== undefined){
                     uiLine.geometry.vertices[0] = controllerPos;
                     uiLine.geometry.vertices[1] = objectPos;
@@ -1710,23 +1764,12 @@ function controllerGamepadControls(controller){
                 }
                 object.userData.rotation = object.rotation.clone();
                 
-            } else {
-                //controller.rotation.z += object.userData.rotation._z;
-                //object.rotation.z = (controller.rotation.z - controller.userData.rotation._z);
-                //console.log(object, controller)
-                value = object.userData.rotation._z + (controller.rotation.z - controller.userData.rotation._z);
-                value = (value + Math.PI) / (2 * Math.PI);
-                value = wrap(value, 1);
-                
-                if(world.getObjectByName("uiLine") !== undefined){
-                    uiLine.geometry.vertices[0] = 0;
-                    uiLine.geometry.vertices[1] = 0;
-                    uiLine.geometry.verticesNeedUpdate = true;
-                   
-                    line.scale.z = getControllerLineLength;
-                }         
             }
+            
 
+            
+
+            //console.log("prev value", object.userData.value, "New Value", value)
             outgoingDeltas.push(
                 { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: value });
 
