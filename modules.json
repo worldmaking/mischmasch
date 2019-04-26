@@ -113,23 +113,21 @@
       "res_cv":{"_props":{"kind":"inlet","index":2}},
       "lopass":{"_props":{"kind":"outlet","index":0}},
       "hipass":{"_props":{"kind":"outlet","index":1}}
+    
     },
-    "kinks": {
-      "_props":{"kind":"kinks","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
+    "pulsars": {
+      "_props":{"kind":"pulsars","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
       "signal":{"_props":{"kind":"inlet","index":0}},
-      "flip":{"_props":{"kind":"outlet","index":0}},
-      "rectifier":{"_props":{"kind":"outlet","index":1}}
-    },
-    "SOS_Looper": {
-      "_props":{"kind":"SOS_Looper","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "signal":{"_props":{"kind":"inlet","index":0}},
-      "rate_cv":{"_props":{"kind":"inlet","index":1}},
-      "grab":{"_props":{"kind":"large_knob","range":[0,1],"taper":"lin","value":0,"unit":"float"}},
-      "trigger":{"_props":{"kind":"inlet","index":2}},
-      "crinkle":{"_props":{"kind":"large_knob","range":[0,1],"taper":"lin","value":0,"unit":"float"}},
-      "overdub_level":{"_props":{"kind":"large_knob","range":[0,1],"taper":"lin","value":1,"unit":"float"}},
-      "crinkle_cv":{"_props":{"kind":"inlet","index":3}},
-      "out":{"_props":{"kind":"outlet","index":0}}
+      "period":{"_props":{"kind":"large_knob","range":[0,1],"taper":"log 3.8","value":0.25,"unit":"float"}},
+      "period_cv":{"_props":{"kind":"inlet","index":1}},
+
+
+      "formant":{"_props":{"kind":"large_knob","range":[0,1000],"taper":"log 3.8","value":0.25,"unit":"float"}},
+      "formant_cv":{"_props":{"kind":"inlet","index":2}},
+
+
+      "hipass":{"_props":{"kind":"outlet","index":0}}
+    
     }
   }
 }
