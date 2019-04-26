@@ -97,6 +97,9 @@ n_switch_geometry.computeBoundingBox();
 let n_switch_slider_geometry = new THREE.BoxGeometry( NLET_HEIGHT + .01 , NLET_HEIGHT+ .01 , NLET_HEIGHT, 8 );
 n_switch_slider_geometry.computeBoundingBox();
 
+let knob_point_geometry = new THREE.BoxGeometry( NLET_HEIGHT + .001 , NLET_HEIGHT+.001 , NLET_HEIGHT, 8 );
+knob_point_geometry.computeBoundingBox();
+
 let generic_geometry = new THREE.BoxBufferGeometry(0.6, 0.2, 0.05);
 generic_geometry.translate(generic_geometry.parameters.width/2, -generic_geometry.parameters.height/2, -generic_geometry.parameters.depth/2);
 
@@ -183,6 +186,10 @@ function iterateAllNodes(fun) {
 function randomIntFromInterval(min,max) // min and max included
 {
     return Math.floor(Math.random()*(max-min+1)+min);
+}
+
+function wrap(n,m){
+    return ((n%m)+m)%m;
 }
 
 function createUserPose(id=0) {
@@ -745,6 +752,7 @@ function enactDeltaNewNode(delta) {
     let n_switch_material = material.clone();
     let n_switch_slider_material = material.clone();
     let outline_mat = outline_material.clone();
+    let knob_point_material = material.clone();
     
     switch(delta.kind){
         case "inlet": {
@@ -798,6 +806,11 @@ function enactDeltaNewNode(delta) {
                 0, 
                 0,
                 generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
+
+            knobPoint = new THREE.Mesh(knob_point_geometry, knob_point_material);
+            knobPoint.position.y = LARGE_KNOB_RADIUS;
+            container.add(knobPoint);
+            
             let label = generateLabel(name, LARGE_KNOB_HEIGHT/2);
             label.position.z = 0.01;
             label.position.x = -LARGE_KNOB_RADIUS /2;
@@ -805,7 +818,11 @@ function enactDeltaNewNode(delta) {
             container.userData.turnable = true;
             container.userData.selectable = true;
             container.userData.range = delta.range;
-          
+            let derived_angle = (delta.value * Math.PI * 2) - Math.PI;
+            
+            // set rotation of knob by this angle, and normal axis of knob:
+            container.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
+
         } break;
         case "small_knob": {
             container = new THREE.Mesh(small_knob_geometry, knob_material);
@@ -813,6 +830,10 @@ function enactDeltaNewNode(delta) {
                 0, 
                 0,
                 generic_geometry.parameters.depth/2 - SMALL_KNOB_HEIGHT]);
+
+            knobPoint = new THREE.Mesh(knob_point_geometry, knob_point_material);
+            knobPoint.position.y = SMALL_KNOB_RADIUS;
+            container.add(knobPoint);
             //Label
             let label = generateLabel(name, SMALL_KNOB_HEIGHT/2.7);
             label.position.z = 0.01;
@@ -823,6 +844,11 @@ function enactDeltaNewNode(delta) {
             container.userData.selectable = true;
             container.userData.range = delta.range;
             
+            let derived_angle = (delta.value * Math.PI * 2) - Math.PI;
+            
+            // set rotation of knob by this angle, and normal axis of knob:
+            container.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
+
         } break;
         case "n_switch": {
             container = new THREE.Mesh(n_switch_geometry, n_switch_material);
@@ -1219,13 +1245,13 @@ function onSpawn(event) {
     orient.multiply(tilt);
     let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
     pos.add(rel.applyQuaternion(orient));
-    if(controller.getButtonState('trigger') == false){
+    /*if(controller.getButtonState('trigger') == false){
         let deltas = spawnRandomModule([pos.x, pos.y, pos.z], [orient._x, orient._y, orient._z, orient._w]);
         outgoingDeltas = outgoingDeltas.concat(deltas);
-    } else {
+    } else { */
         let deltas = copyModule([pos.x, pos.y, pos.z], [orient._x, orient._y, orient._z, orient._w], controller);
         outgoingDeltas = outgoingDeltas.concat(deltas);
-    }
+    //}
     
 }
 
@@ -1674,6 +1700,7 @@ function controllerGamepadControls(controller){
                 // For 270 degrees. Need to clamp everything
                 // add PI * .75 / (2 * Math.PI) * .75
                 value = (angle + Math.PI) / (2 * Math.PI);
+                value = wrap(value, 1);
                 if(world.getObjectByName("uiLine") !== undefined){
                     uiLine.geometry.vertices[0] = controllerPos;
                     uiLine.geometry.vertices[1] = objectPos;
@@ -1689,6 +1716,7 @@ function controllerGamepadControls(controller){
                 //console.log(object, controller)
                 value = object.userData.rotation._z + (controller.rotation.z - controller.userData.rotation._z);
                 value = (value + Math.PI) / (2 * Math.PI);
+                value = wrap(value, 1);
                 
                 if(world.getObjectByName("uiLine") !== undefined){
                     uiLine.geometry.vertices[0] = 0;
