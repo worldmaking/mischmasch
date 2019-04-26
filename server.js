@@ -480,17 +480,16 @@ function handlemessage(msg, sock, id) {
 				pose: msg.pose
 			})
 			send_all_clients(poseDelta);
-/*
+
 			//OTHistory.push(poseDelta)
 			const limiter = new bottleneck({
 				maxConcurrent: 1,
 				minTime: 30
 			});
 			// Limit storing of pose data to rate of 30fps
-			limiter.schedule(() => storePoses())
-			.then(() => {
-				OTHistory.push(poseDelta)
-			});*/
+			limiter.schedule(() => {
+				OTHistory.push(msg.pose)
+			});
 		} break;
 		default: console.log("received JSON", msg, typeof msg);
 	}
