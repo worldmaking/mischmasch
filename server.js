@@ -283,6 +283,7 @@ function handlemessage(msg, sock, id) {
 
 			//console.log(msg.data)
 			// TODO: merge OTs
+			
 			let response = {
 				cmd: "deltas",
 				date: Date.now(),
@@ -293,7 +294,7 @@ function handlemessage(msg, sock, id) {
 				sessionJSON.push(response)
 			}
 
-			fs.appendFileSync(OTHistoryFile, JSON.stringify(',' + response, null, "  "), "utf-8")
+			fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(response), "utf-8")
 
 			//OTHistory.push(JSON.stringify(response))
 			send_all_clients(JSON.stringify(response));
@@ -408,7 +409,7 @@ function handlemessage(msg, sock, id) {
 
 		case "clear_scene": {
 			// JSON not streamable format so close out the history file 
-			fs.appendFileSync(OTHistoryFile, JSON.stringify(']', null, "  "), "utf-8")
+			fs.appendFileSync(OTHistoryFile, ']', "utf-8")
 
 
 
@@ -427,7 +428,7 @@ function handlemessage(msg, sock, id) {
 			OTHistoryFile = __dirname + '/histories/OT_' + Date.now() + '.json'
 			let header = {}
 			header['header'] = deltas
-			fs.writeFileSync(OTHistoryFile, JSON.stringify(header, null, "  "), "utf-8")
+			fs.writeFileSync(OTHistoryFile, '[' + JSON.stringify(header), "utf-8")
 
 			send_all_clients(JSON.stringify({
 				cmd: "deltas",
@@ -489,21 +490,25 @@ function handlemessage(msg, sock, id) {
 		case "user_pose": {
 			//console.log(JSON.stringify(msg.pose))
 			// broadcast this data... 
-			let poseDelta = JSON.stringify({
+
+			recordPose = {
 				cmd: "user_pose",
 				date: Date.now(),
 				pose: msg.pose
-			})
+			}
+			let poseDelta = JSON.stringify(recordPose)
 			send_all_clients(poseDelta);
 
 			const limiter = new bottleneck({
 				maxConcurrent: 1,
 				minTime: 30
 			});
+
+
 			// Limit storing of pose data to rate of 30fps
 			limiter.schedule(() => {
 				//OTHistory.push(poseDelta)
-				fs.appendFileSync(OTHistoryFile, JSON.stringify(',' + poseDelta, null, "  "), "utf-8")
+				fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(recordPose), "utf-8")
 
 			});
 		} break;
