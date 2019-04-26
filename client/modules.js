@@ -834,58 +834,6 @@ let operator_constructors = {
 }
 
 let module_constructors = {
-	"sample_and_hold": function(path) { 
-    return JSON.parse(`[
-			{
-				"op": "newnode",
-				"path": "${path}",
-				"kind": "sample_and_hold",
-				"category": "abstraction",
-				"pos": [
-					0,
-					0,
-					0
-				],
-				"orient": [
-					0,
-					0,
-					0,
-					1
-				]
-			},
-			{
-				"op": "newnode",
-				"path": "${path}.signal",
-				"kind": "inlet",
-				"index": 0
-			},
-			{
-				"op": "newnode",
-				"path": "${path}.trigger",
-				"kind": "inlet",
-				"index": 1
-			},
-			{
-				"op": "newnode",
-				"path": "${path}.threshold",
-				"kind": "small_knob",
-				"range": [
-					0,
-					1
-				],
-				"taper": "linear",
-				"value": 0,
-				"unit": "float"
-			},
-			{
-				"op": "newnode",
-				"path": "${path}.out",
-				"kind": "outlet",
-				"index": 0
-			}
-		]`);
-    },
-
 	"freevoib": function(path) { 
     return JSON.parse(`[
 			{
@@ -1110,10 +1058,10 @@ let module_constructors = {
 				"kind": "large_knob",
 				"range": [
 					0.1,
-					80
+					30
 				],
 				"taper": "log 3.8",
-				"value": 60,
+				"value": 10,
 				"unit": "Hz"
 			},
 			{
@@ -1193,6 +1141,12 @@ let module_constructors = {
 				"path": "${path}.sine_index",
 				"kind": "outlet",
 				"index": 3
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.saw",
+				"kind": "outlet",
+				"index": 4
 			}
 		]`);
     },
@@ -1251,6 +1205,12 @@ let module_constructors = {
 				"path": "${path}.triangle",
 				"kind": "outlet",
 				"index": 2
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.saw",
+				"kind": "outlet",
+				"index": 3
 			}
 		]`);
     },
@@ -1477,18 +1437,6 @@ let module_constructors = {
 				"taper": "log 3.8",
 				"value": 0.25,
 				"unit": "float"
-			},
-			{
-				"op": "newnode",
-				"path": "${path}.dac_1",
-				"kind": "outlet",
-				"index": 0
-			},
-			{
-				"op": "newnode",
-				"path": "${path}.dac_2",
-				"kind": "outlet",
-				"index": 1
 			}
 		]`);
     },
@@ -1647,6 +1595,134 @@ let module_constructors = {
 				"path": "${path}.hipass",
 				"kind": "outlet",
 				"index": 1
+			}
+		]`);
+    },
+
+	"kinks": function(path) { 
+    return JSON.parse(`[
+			{
+				"op": "newnode",
+				"path": "${path}",
+				"kind": "kinks",
+				"category": "abstraction",
+				"pos": [
+					0,
+					0,
+					0
+				],
+				"orient": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.signal",
+				"kind": "inlet",
+				"index": 0
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.flip",
+				"kind": "outlet",
+				"index": 0
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.rectifier",
+				"kind": "outlet",
+				"index": 1
+			}
+		]`);
+    },
+
+	"SOS_Looper": function(path) { 
+    return JSON.parse(`[
+			{
+				"op": "newnode",
+				"path": "${path}",
+				"kind": "SOS_Looper",
+				"category": "abstraction",
+				"pos": [
+					0,
+					0,
+					0
+				],
+				"orient": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.signal",
+				"kind": "inlet",
+				"index": 0
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.rate_cv",
+				"kind": "inlet",
+				"index": 1
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.grab",
+				"kind": "large_knob",
+				"range": [
+					0,
+					1
+				],
+				"taper": "lin",
+				"value": 0,
+				"unit": "float"
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.trigger",
+				"kind": "inlet",
+				"index": 2
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.crinkle",
+				"kind": "large_knob",
+				"range": [
+					0,
+					1
+				],
+				"taper": "lin",
+				"value": 0,
+				"unit": "float"
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.overdub_level",
+				"kind": "large_knob",
+				"range": [
+					0,
+					1
+				],
+				"taper": "lin",
+				"value": 1,
+				"unit": "float"
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.crinkle_cv",
+				"kind": "inlet",
+				"index": 3
+			},
+			{
+				"op": "newnode",
+				"path": "${path}.out",
+				"kind": "outlet",
+				"index": 0
 			}
 		]`);
     },

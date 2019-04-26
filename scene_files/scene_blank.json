@@ -15,13 +15,13 @@
 					0.8627186456637955
 				]
 			},
-			"left_(mono)": {
+			"left": {
 				"_props": {
 					"kind": "inlet",
 					"index": 0
 				}
 			},
-			"right_(stereo)": {
+			"right": {
 				"_props": {
 					"kind": "inlet",
 					"index": 1
@@ -37,18 +37,6 @@
 					"taper": "log 3.8",
 					"value": 1,
 					"unit": "float"
-				}
-			},
-			"left": {
-				"_props": {
-					"kind": "outlet",
-					"index": 0
-				}
-			},
-			"right": {
-				"_props": {
-					"kind": "outlet",
-					"index": 0
 				}
 			}
 		}
