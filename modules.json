@@ -87,9 +87,7 @@
       "_props":{"kind":"outs","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
       "left":{"_props":{"kind":"inlet","index":0}},
       "right":{"_props":{"kind":"inlet","index":1}},
-      "volume":{"_props":{"kind":"small_knob","range":[0,1],"taper":"log 3.8","value":0.25,"unit":"float"}},
-      "dac_1":{"_props":{"kind":"outlet","index":0}},
-      "dac_2":{"_props":{"kind":"outlet","index":1}}
+      "volume":{"_props":{"kind":"small_knob","range":[0,1],"taper":"log 3.8","value":0.25,"unit":"float"}}
     },
     "logic":{
       "_props":{"kind":"logic","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
