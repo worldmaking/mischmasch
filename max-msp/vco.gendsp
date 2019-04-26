@@ -39,29 +39,13 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
-					"code" : "// @see http://musicdsp.org/archive.php?classid=1#90\r\n\t\r\n// oscillator state:\r\nHistory cps(0), period(0);\r\nHistory phase(1);\r\n\r\n// DSF parameters:\r\nHistory num_partials(1);\r\nHistory rolloff(0.25), partial_rolloff(0.25);\r\n\r\n// amplitude at Nyquist:\r\nParam amp_at_nyquist(0.5, min=0, max=0.9999);\r\n\r\n// lowpass filter state:\r\nHistory lpa(0), lpb(0);\r\nHistory lpx1(0), lpy1(0);\r\n\r\nsmoothing = 0.0001;\t\r\n\r\n// only update wave parameters at cycle boundaries:\r\nif (phase >= 1 || cps == 0) {\r\n\tphase = phase - 1;\r\n\t\r\n\t// new cycle, update freq etc.\r\n\tfreq = in1;\r\n\t// valid only above zero and below Nyquist:\r\n\tcps = clip(freq/samplerate, 0.0001, 0.5);\r\n\tperiod = 1/cps;\r\n\tP2 = period/2;\r\n\t// number of partials including DC:\r\n\tnum_partials = 1 + floor(P2); \r\n\t// roll-off paramters:\r\n\trolloff = pow(amp_at_nyquist, 1/P2);\r\n\tpartial_rolloff = pow(rolloff, num_partials);\r\n} \r\n\r\n// DSF section:\r\nbeta = twopi * phase;\r\nbeta_n = num_partials * beta;\r\ncosbeta = cos(beta);\r\n\r\n// The DSF BLIT is scaled by 1 / period \r\n// to give approximately the same peak-to-peak \r\n// over a wide range of frequencies.\r\nn = 1 - \r\n\tpartial_rolloff * cos(beta_n) - \r\n\trolloff * (cosbeta - partial_rolloff * cos(beta_n - beta));\r\nd = period * (1 + rolloff * (-2 * cosbeta + rolloff));\r\n\r\n// division can fail only if |a| == 1\r\n// subtracting fundamental freq gets rid of DC\r\nx = n / d - cps;\r\n\r\n// lowpass filter:\r\nomega = atan(pi * smoothing);\r\nlpa = -(1-omega)/(1+omega);\r\nlpb = (1-lpb)/2;\r\ny = lpb * (x + lpx1) - lpa * lpy1;\r\nlpx1 = x;\r\nlpy1 = y;\r\n\r\n// post-scale to -0.5..0.5:\r\nout1 = y * -pi;\r\n\r\n// update phase\r\nphase = phase + cps;\r\n",
-					"fontface" : 0,
-					"fontname" : "Menlo",
-					"fontsize" : 12.0,
-					"id" : "obj-25",
-					"maxclass" : "codebox",
+					"id" : "obj-14",
+					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 571.0, -28.0, 536.0, 734.0 ]
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"fontname" : "Lato",
-					"fontsize" : 12.0,
-					"id" : "obj-26",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 0,
-					"patching_rect" : [ 571.0, 716.0, 123.0, 23.0 ],
-					"text" : "out 4 @comment saw"
+					"patching_rect" : [ 252.5, 25.0, 28.0, 22.0 ],
+					"text" : "abs"
 				}
 
 			}
@@ -79,18 +63,6 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-5",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 242.0, 117.0, 71.0, 22.0 ],
-					"text" : "fold 0. 6000"
-				}
-
-			}
-, 			{
-				"box" : 				{
 					"id" : "obj-2",
 					"maxclass" : "newobj",
 					"numinlets" : 2,
@@ -98,18 +70,6 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 242.0, 87.0, 29.5, 22.0 ],
 					"text" : "*"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-10",
-					"maxclass" : "newobj",
-					"numinlets" : 2,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 252.5, 56.0, 111.0, 22.0 ],
-					"text" : "scale -1. 1. 0. 2000"
 				}
 
 			}
@@ -173,7 +133,7 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 252.5, 18.0, 135.0, 22.0 ],
+					"patching_rect" : [ 252.5, -8.0, 135.0, 22.0 ],
 					"text" : "in 1 @comment rate_cv"
 				}
 
@@ -239,13 +199,13 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-2", 1 ],
-					"source" : [ "obj-10", 0 ]
+					"source" : [ "obj-14", 0 ]
 				}
 
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-5", 0 ],
+					"destination" : [ "obj-1", 1 ],
 					"source" : [ "obj-2", 0 ]
 				}
 
@@ -266,36 +226,14 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-26", 0 ],
-					"source" : [ "obj-25", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-10", 0 ],
+					"destination" : [ "obj-14", 0 ],
 					"source" : [ "obj-41", 0 ]
 				}
 
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-1", 1 ],
-					"source" : [ "obj-5", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-22", 0 ],
-					"order" : 2,
-					"source" : [ "obj-6", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-24", 0 ],
 					"order" : 1,
 					"source" : [ "obj-6", 0 ]
 				}
@@ -303,7 +241,7 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-25", 0 ],
+					"destination" : [ "obj-24", 0 ],
 					"order" : 0,
 					"source" : [ "obj-6", 0 ]
 				}
@@ -312,7 +250,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-9", 0 ],
-					"order" : 3,
+					"order" : 2,
 					"source" : [ "obj-6", 0 ]
 				}
 

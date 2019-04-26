@@ -16,7 +16,7 @@ var nodeName;
 var counter = 1;
 var feedbackConnections = 0
 var checkOuts = new Array();
-var paramY;
+var Ycounter;
 
 gen_patcher = this.patcher.getnamed("world").subpatcher();
 
@@ -51,7 +51,7 @@ function getVarnames(target){
 	
 	}
 var handleDelta = function(delta) {
-				if (counter > 100){
+				if (counter > 20){
 				counter = 1
 				}
 			
@@ -62,9 +62,9 @@ var handleDelta = function(delta) {
 		}
 	} else {
 
-		paramY = counter * 25
-		if (paramY > 500){
-			paramY = 50
+		Ycounter = counter * 5 + 10
+		if (Ycounter > 500){
+			Ycounter = 50
 		}
 		switch (delta.op){
 			// prevent new objects from being srcipted too low on the patcher page (we encountered a bug when objects were written above 1000 on the y axis)
@@ -497,7 +497,7 @@ function client(msg){
 				}
 			})
 			
-			counter++
+			//counter++
 		}
 	})
 	//post(JSON.stringify(object))
