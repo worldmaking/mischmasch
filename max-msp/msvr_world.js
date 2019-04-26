@@ -16,7 +16,7 @@ var nodeName;
 var counter = 1;
 var feedbackConnections = 0
 var checkOuts = new Array();
-
+var paramY;
 
 gen_patcher = this.patcher.getnamed("world").subpatcher();
 
@@ -61,6 +61,11 @@ var handleDelta = function(delta) {
 			handleDelta(delta[i]);
 		}
 	} else {
+
+		paramY = counter * 25
+		if (paramY > 500){
+			paramY = 50
+		}
 		switch (delta.op){
 			// prevent new objects from being srcipted too low on the patcher page (we encountered a bug when objects were written above 1000 on the y axis)
 
@@ -95,7 +100,7 @@ var handleDelta = function(delta) {
 						break;	
 					}
 					
-					var newModule = gen_patcher.newdefault([125, counter * 2, kind])
+					var newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
 					newModule.varname = delta.path.split('.')[0]
 
 					// if kind is outs, connect its outlets to the out1 and out2 in gen~ world
@@ -122,12 +127,12 @@ var handleDelta = function(delta) {
 							
 							paramX = paramCounter * 150
 							// generate the subparam which the param will bind to
-							var setparam = gen_patcher.newdefault([275, counter * 2, "setparam", setparamName])
+							var setparam = gen_patcher.newdefault([275, Ycounter * 2, "setparam", setparamName])
 							setparam.varname = 'setparam_' + paramName
 							gen_patcher.message("script", "connect", setparam.varname, 0, nodeName, 0);
 						
 							// generate the param which the js script will bind to
-							var param = gen_patcher.newdefault([450, counter * 1.5, "param", paramName, delta.value])
+							var param = gen_patcher.newdefault([450, Ycounter * 1.5, "param", paramName, delta.value])
 							param.varname = paramName
 							gen_patcher.message("script", "connect", param.varname, 0, setparam.varname, 0);
 						
@@ -147,12 +152,12 @@ var handleDelta = function(delta) {
 							
 							paramX = paramCounter * 150
 							// generate the subparam which the param will bind to
-							var setparam = gen_patcher.newdefault([275, counter * 2, "setparam", setparamName])
+							var setparam = gen_patcher.newdefault([275, Ycounter * 2, "setparam", setparamName])
 							setparam.varname = 'setparam_' + paramName
 							gen_patcher.message("script", "connect", setparam.varname, 0, nodeName, 0);
 						
 							// generate the param which the js script will bind to
-							var param = gen_patcher.newdefault([450, counter * 1.5, "param", paramName, delta.value])
+							var param = gen_patcher.newdefault([450, Ycounter * 1.5, "param", paramName, delta.value])
 							param.varname = paramName
 							gen_patcher.message("script", "connect", param.varname, 0, setparam.varname, 0);
 						

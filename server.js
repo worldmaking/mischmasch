@@ -85,9 +85,9 @@ if (MaxAPI) {
 }
 
 //////////////////////// 
-let OTHistory = [];
+// let OTHistory = [];
 ////////////////////////
-let demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
+//let demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
 /*{
 	"nodes": {
 		"a": {
@@ -292,7 +292,10 @@ function handlemessage(msg, sock, id) {
 			if (recordStatus === 1){
 				sessionJSON.push(response)
 			}
-			OTHistory.push(response)
+
+			fs.appendFileSync(OTHistoryFile, JSON.stringify(',' + response, null, "  "), "utf-8")
+
+			//OTHistory.push(JSON.stringify(response))
 			send_all_clients(JSON.stringify(response));
 		} break;
 
@@ -395,13 +398,19 @@ function handlemessage(msg, sock, id) {
 
 		case "stopRecord":{
 			recordStatus = 0
+
+			
 			fs.writeFileSync(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")
+			
 			console.log('session saved at', sessionRecording)
 
 		} break;
 
 		case "clear_scene": {
-			fs.writeFileSync(OTHistoryFile, JSON.stringify(OTHistory, null, "  "), "utf-8")
+			// JSON not streamable format so close out the history file 
+			fs.appendFileSync(OTHistoryFile, JSON.stringify(']', null, "  "), "utf-8")
+
+
 
 			scenefile = __dirname + '/scene_files/scene_blank.json'
 			send_all_clients(JSON.stringify({
@@ -414,12 +423,18 @@ function handlemessage(msg, sock, id) {
 			// turn this into deltas:
 			let deltas = got.deltasFromGraph(localGraph, []);
 
+			// create new history file & add scene as header
+			OTHistoryFile = __dirname + '/histories/OT_' + Date.now() + '.json'
+			let header = {}
+			header['header'] = deltas
+			fs.writeFileSync(OTHistoryFile, JSON.stringify(header, null, "  "), "utf-8")
+
 			send_all_clients(JSON.stringify({
 				cmd: "deltas",
 				date: Date.now(),
 				data: deltas
 			}));
-			OTHistoryFile = __dirname + '/histories/OT_' + Date.now() + '.json'
+			//OTHistoryFile = __dirname + '/histories/OT_' + Date.now() + '.json'
 		} break;
 		case "get_scene": {
 			
@@ -481,14 +496,15 @@ function handlemessage(msg, sock, id) {
 			})
 			send_all_clients(poseDelta);
 
-			//OTHistory.push(poseDelta)
 			const limiter = new bottleneck({
 				maxConcurrent: 1,
 				minTime: 30
 			});
 			// Limit storing of pose data to rate of 30fps
 			limiter.schedule(() => {
-				OTHistory.push(msg.pose)
+				//OTHistory.push(poseDelta)
+				fs.appendFileSync(OTHistoryFile, JSON.stringify(',' + poseDelta, null, "  "), "utf-8")
+
 			});
 		} break;
 		default: console.log("received JSON", msg, typeof msg);
