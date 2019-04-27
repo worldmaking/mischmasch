@@ -169,7 +169,7 @@ let allCables = [];
 let uiLine;
 let getControllerLineLength;
 
-let createObjFromMenu = true;;
+let createObjFromMenu = true;
 let menuNames = [];
 let menuScaleSize = .4;
 
@@ -318,6 +318,8 @@ async function init() {
     controller2.addEventListener("triggerdown", onSelectStart);
     controller2.addEventListener("triggerup", onSelectEnd);
     controller1.addEventListener("thumbpadup", onSpawn);
+    controller2.addEventListener("thumbpaddown", onMenuSpawn);
+    controller1.addEventListener("thumbpaddown", onMenuSpawn);
     controller2.addEventListener("thumbpadup", onSpawn);
     controller1.addEventListener("gripsdown", onGrips);
     controller2.addEventListener("gripsdown", onGrips);
@@ -827,7 +829,7 @@ function enactDeltaNewNode(delta) {
             let min = delta.range[0];
             let max = delta.range[1];
             let scaledValue = (delta.value - min) / (max - min);
-            scaledValue = wrap(scaledValue, 1);
+            //scaledValue = wrap(scaledValue, 1);
 
             // if value == 0, angle should be -sweep
             // if value == 1, angle should be sweep 
@@ -862,7 +864,7 @@ function enactDeltaNewNode(delta) {
             let min = delta.range[0];
             let max = delta.range[1];
             let scaledValue = (delta.value - min) / (max - min);
-            scaledValue = wrap(scaledValue, 1);
+            //scaledValue = wrap(scaledValue, 1);
 
             // if value == 0, angle should be -sweep
             // if value == 1, angle should be sweep 
@@ -1253,31 +1255,77 @@ function onSelectEnd(event) {
     }
 }
 
+function onMenuSpawn(){
+        // let headsetPos = new THREE.Vector3();
+        // camera.getWorldPosition(headsetPos);
+        // menu.position.fromArray([headsetPos.x, headsetPos.y + .25, headsetPos.z]);
+        // //menu.rotation.fromArray([0, -controller.rotation.y, 0]);
+        // world.add(menu);
+        // createObjFromMenu = true;
+}
 
 function onSpawn(event) {
-    let controller = event.target;
-    if(controller.getButtonState('thumbpad') === undefined) return;
+    // let controller = event.target;
+    // if(controller.getButtonState('thumbpad') === undefined) return;
 
-    //Should put this in own function relPosController()??
-    let pos = new THREE.Vector3();
-    let orient = new THREE.Quaternion();
-    controller.getWorldPosition(pos);
-    controller.getWorldQuaternion(orient);
+    // //Should put this in own function relPosController()??
+    // let pos = new THREE.Vector3();
+    // let orient = new THREE.Quaternion();
+    // controller.getWorldPosition(pos);
+    // controller.getWorldQuaternion(orient);
 
-    // adjust spawn location:
-    let tilt = new THREE.Quaternion();
-    tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
-    orient.multiply(tilt);
-    let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
-    pos.add(rel.applyQuaternion(orient));
-    /*if(controller.getButtonState('trigger') == false){
-        let deltas = spawnRandomModule([pos.x, pos.y, pos.z], [orient._x, orient._y, orient._z, orient._w]);
-        outgoingDeltas = outgoingDeltas.concat(deltas);
-    } else { */
-        let deltas = copyModule([pos.x, pos.y, pos.z], [orient._x, orient._y, orient._z, orient._w], controller);
-        outgoingDeltas = outgoingDeltas.concat(deltas);
-    //}
-    
+    // // adjust spawn location:
+    // let tilt = new THREE.Quaternion();
+    // tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
+    // orient.multiply(tilt);
+    // let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
+    // pos.add(rel.applyQuaternion(orient));
+    // if(controller.getButtonState('trigger') == false){
+    //     // let deltas = spawnRandomModule([pos.x, pos.y, pos.z], [orient._x, orient._y, orient._z, orient._w]);
+    //     // outgoingDeltas = outgoingDeltas.concat(deltas);
+        
+    //     if(controller.userData.selected === undefined){
+    //         let controllerPos = new THREE.Vector3();
+    //         controller.getWorldPosition(controllerPos);
+    //         let controllerQuat = new THREE.Quaternion();    
+    //         controller.getWorldQuaternion(controllerQuat);
+
+    //         let intersections = getIntersections(controller, 0, 0, -1);
+    //         if (intersections.length > 0) {
+    //                 let intersection = intersections[0];
+    //                 let object = intersection.object;
+    //                 //need to always get the top node otherwise CTOR throws error cause it doesn't know the object to clone
+    //                 for(let name of menuNames){
+    //                     let obj = object;
+    //                     //N_Switch slider only doesn't have a kind so this will never be true (only object without a kind) probably should add a kind????
+    //                     while(obj.userData.kind !== name && obj.userData.kind !== undefined){
+    //                         obj = obj.parent;
+    //                     }
+    //                     if(obj.userData.kind === name){
+
+    //                         //Should put this in own function relPosController()??
+    //                         // adjust spawn location:
+    //                         let tilt = new THREE.Quaternion();
+    //                         tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
+    //                         controllerQuat.multiply(tilt);
+    //                         let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
+    //                         controllerPos.add(rel.applyQuaternion(controllerQuat));
+
+    //                         let deltas = cloneModuleMenu([controllerPos.x, controllerPos.y, controllerPos.z], [controllerQuat._x, controllerQuat._y, controllerQuat._z, controllerQuat._w], obj);
+    //                         outgoingDeltas = outgoingDeltas.concat(deltas);
+    //                     }
+    //                 } 
+    //             }
+                
+    //         }
+    // } else { 
+    //     if(!createObjFromMenu){
+    //         let deltas = copyModule([pos.x, pos.y, pos.z], [orient._x, orient._y, orient._z, orient._w], controller);
+    //         outgoingDeltas = outgoingDeltas.concat(deltas);
+    //     }
+    // }
+    // world.remove(menu);
+    // createObjFromMenu = false;
 }
 
 function copyModule(pos, orient, controller){
@@ -1701,6 +1749,10 @@ function controllerGamepadControls(controller){
                 //object.rotation.z = (controller.rotation.z - controller.userData.rotation._z);
                 //console.log(object, controller)
                 let angle = object.userData.rotation._z + (controller.rotation.z - controller.userData.rotation._z);
+
+                // angle should be in range -PI to PI
+                angle = wrap(angle + Math.PI, Math.PI * 2) - Math.PI;
+
                 if (angle < KNOB_SWEEP) angle = KNOB_SWEEP;
                 if (angle > -KNOB_SWEEP) angle = -KNOB_SWEEP;
                 // turn angle back into a 0..1 value:
@@ -1713,9 +1765,7 @@ function controllerGamepadControls(controller){
                    
                     line.scale.z = getControllerLineLength;
                 }         
-            }
-            
-            if (dist > KNOB_SWING_DISTANCE) {
+            } else if (dist > KNOB_SWING_DISTANCE) {
                 //put controller into knob space using matrix
                 //set angle to the knob
                 //take controller out of knob space
@@ -1744,16 +1794,16 @@ function controllerGamepadControls(controller){
                 if (angle < KNOB_SWEEP) angle = KNOB_SWEEP;
                 if (angle > -KNOB_SWEEP) angle = -KNOB_SWEEP;
                 // turn angle back into a 0..1 value:
-                let bigValue = (((angle / KNOB_SWEEP) + 1)/2);
+                value = (((angle / KNOB_SWEEP) + 1)/2);
 
-                if (dist < KNOB_TWIST_DISTANCE) {
-                    let factor = (dist - KNOB_SWING_DISTANCE) / (KNOB_TWIST_DISTANCE - KNOB_SWING_DISTANCE);
+                // if (dist < KNOB_TWIST_DISTANCE) {
+                //     let factor = (dist - KNOB_SWING_DISTANCE) / (KNOB_TWIST_DISTANCE - KNOB_SWING_DISTANCE);
                    
-                    value = value + factor * (bigValue - value);
+                //     value = value + factor * (bigValue - value);
 
-                } else {
-                    value = bigValue;
-                }
+                // } else {
+                //     value = bigValue;
+                // }
 
                 if(world.getObjectByName("uiLine") !== undefined){
                     uiLine.geometry.vertices[0] = controllerPos;

@@ -172,12 +172,12 @@
 					"presentation_rect" : [ 2.5, 30.0, 68.0, 137.0 ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
-							"parameter_type" : 0,
-							"parameter_unitstyle" : 4,
 							"parameter_mmin" : -70.0,
 							"parameter_longname" : "live.gain~[1]",
 							"parameter_mmax" : 6.0,
-							"parameter_shortname" : "live.gain~"
+							"parameter_shortname" : "live.gain~",
+							"parameter_type" : 0,
+							"parameter_unitstyle" : 4
 						}
 
 					}
@@ -642,7 +642,7 @@
 									"numinlets" : 3,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 169.0, 34.0, 136.0, 38.0 ],
+									"patching_rect" : [ 211.0, 25.0, 136.0, 38.0 ],
 									"text" : "pong 0. 1. @mode wrap"
 								}
 
@@ -1224,7 +1224,7 @@
 							}
 , 							{
 								"patchline" : 								{
-									"destination" : [ "obj-23", 0 ],
+									"destination" : [ "obj-6", 0 ],
 									"source" : [ "obj-132", 0 ]
 								}
 
@@ -1295,6 +1295,7 @@
 , 							{
 								"patchline" : 								{
 									"destination" : [ "obj-6", 0 ],
+									"disabled" : 1,
 									"source" : [ "obj-23", 0 ]
 								}
 

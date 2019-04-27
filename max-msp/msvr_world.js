@@ -321,6 +321,7 @@ var handleDelta = function(delta) {
 // this is only for working within max
 function clear(){	
 	counter = 1;
+	feedbackConnections = 0
 	gen_patcher = this.patcher.getnamed("world").subpatcher();
 	gen_patcher.apply(function(b) { 
 		// prevent erasing our audio outputs from genpatcher
