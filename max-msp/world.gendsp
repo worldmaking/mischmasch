@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "dsp.gen",
-		"rect" : [ 674.0, 86.0, 656.0, 914.0 ],
+		"rect" : [ 1064.0, 50.0, 652.0, 721.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -39,13 +39,14 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
+					"fontsize" : 20.0,
 					"id" : "obj-19662",
-					"linecount" : 9,
+					"linecount" : 6,
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 24.0, 327.0, 54.0, 127.0 ],
-					"text" : "please don't ever delete these out objects (out 1, out 2)",
+					"patching_rect" : [ 24.0, 327.0, 116.0, 141.0 ],
+					"text" : "VR patching scripts objects in this Gen~ patcher!",
 					"varname" : "out_comment"
 				}
 
@@ -76,12 +77,12 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-110",
+					"id" : "obj-7",
 					"maxclass" : "newobj",
 					"numinlets" : 2,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 125.0, 18.0, 100.0, 22.0 ],
+					"patching_rect" : [ 125.0, 40.0, 100.0, 22.0 ],
 					"text" : "outs",
 					"varname" : "outs_1"
 				}
@@ -89,12 +90,12 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-111",
+					"id" : "obj-8",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 275.0, 18.0, 102.0, 22.0 ],
+					"patching_rect" : [ 275.0, 50.0, 102.0, 22.0 ],
 					"text" : "setparam volume",
 					"varname" : "setparam_outs_1__volume"
 				}
@@ -102,13 +103,13 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-112",
+					"id" : "obj-9",
 					"linecount" : 3,
 					"maxclass" : "newobj",
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 450.0, 13.0, 100.0, 49.0 ],
+					"patching_rect" : [ 450.0, 37.0, 100.0, 49.0 ],
 					"text" : "param outs_1__volume 1",
 					"varname" : "outs_1__volume"
 				}
@@ -118,28 +119,28 @@
 		"lines" : [ 			{
 				"patchline" : 				{
 					"destination" : [ "obj-918", 0 ],
-					"source" : [ "obj-110", 0 ]
+					"source" : [ "obj-7", 0 ]
 				}
 
 			}
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-919", 0 ],
-					"source" : [ "obj-110", 1 ]
+					"source" : [ "obj-7", 1 ]
 				}
 
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-110", 0 ],
-					"source" : [ "obj-111", 0 ]
+					"destination" : [ "obj-7", 0 ],
+					"source" : [ "obj-8", 0 ]
 				}
 
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-111", 0 ],
-					"source" : [ "obj-112", 0 ]
+					"destination" : [ "obj-8", 0 ],
+					"source" : [ "obj-9", 0 ]
 				}
 
 			}

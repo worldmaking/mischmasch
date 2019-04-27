@@ -360,13 +360,6 @@ let operator_constructors = {
       { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
     ]`);
   },
-  "selector": function(path) { 
-    return JSON.parse(`[
-      { "op":"newnode", "path":"${path}", "kind":"selector", "specification":"route","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}....", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
-    ]`);
-  },
   "switch": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"switch", "specification":"route","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },

@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ -1804.0, 139.0, 1359.0, 907.0 ],
+		"rect" : [ 146.0, 138.0, 1360.0, 908.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 1,
 		"default_fontsize" : 12.0,
@@ -1395,8 +1395,7 @@
 					"numoutlets" : 0,
 					"patching_rect" : [ 844.0, 91.0, 150.0, 20.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 256.0, 80.0, 150.0, 20.0 ],
-					"text" : "Session Name: test3"
+					"presentation_rect" : [ 256.0, 80.0, 150.0, 20.0 ]
 				}
 
 			}
@@ -1592,7 +1591,7 @@
 													"numoutlets" : 1,
 													"outlettype" : [ "" ],
 													"patching_rect" : [ 309.0, 300.0, 197.0, 22.0 ],
-													"text" : "\"Macintosh HD:/Users/mp/msvr\""
+													"text" : "C:/GitHub/msvr"
 												}
 
 											}
@@ -2055,7 +2054,7 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-14",
-					"items" : [ "First_Test_Session.json", ",", "example.json", ",", "forTesting.json", ",", "session_1555103217536.json", ",", "session_1555358410128.json", ",", "session_1555358432443.json", ",", "session_1555358577456.json", ",", "test.json", ",", "test2.json", ",", "test3.json" ],
+					"items" : [ "example.json", ",", "First_Test_Session.json", ",", "forTesting.json", ",", "session_1555103217536.json", ",", "session_1555358410128.json", ",", "session_1555358432443.json", ",", "session_1555358577456.json", ",", "test.json", ",", "test2.json", ",", "test3.json" ],
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
@@ -2080,6 +2079,8 @@
 					"saved_object_attributes" : 					{
 						"autostart" : 0,
 						"defer" : 0,
+						"node_bin_path" : "",
+						"npm_bin_path" : "",
 						"watch" : 1
 					}
 ,
@@ -2455,7 +2456,7 @@
 ,
 		"dependency_cache" : [ 			{
 				"name" : "controller.js",
-				"bootpath" : "~/msvr/max-msp",
+				"bootpath" : "C:/GitHub/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1
@@ -2480,29 +2481,64 @@
 			}
 , 			{
 				"name" : "_msvr_audio.maxpat",
-				"bootpath" : "~/msvr/max-msp",
+				"bootpath" : "C:/GitHub/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "msvr_world.js",
-				"bootpath" : "~/msvr/max-msp",
+				"bootpath" : "C:/GitHub/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "world.gendsp",
-				"bootpath" : "~/msvr/max-msp",
+				"bootpath" : "C:/GitHub/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "outs.gendsp",
-				"bootpath" : "~/msvr/max-msp",
+				"bootpath" : "C:/GitHub/msvr/max-msp",
 				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "vco.gendsp",
+				"bootpath" : "C:/GitHub/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "lfo.gendsp",
+				"bootpath" : "C:/GitHub/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "freevoib.gendsp",
+				"bootpath" : "C:/GitHub/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "freeverb_allpass.gendsp",
+				"bootpath" : "~/AppData/Roaming/Cycling '74/Max 8/examples/gen",
+				"patcherrelativepath" : "../../../Users/alice/AppData/Roaming/Cycling '74/Max 8/examples/gen",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "freeverb_comb.gendsp",
+				"bootpath" : "~/AppData/Roaming/Cycling '74/Max 8/examples/gen",
+				"patcherrelativepath" : "../../../Users/alice/AppData/Roaming/Cycling '74/Max 8/examples/gen",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
