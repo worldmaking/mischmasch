@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "dsp.gen",
-		"rect" : [ 136.0, 239.0, 1175.0, 644.0 ],
+		"rect" : [ 48.0, 175.0, 1175.0, 644.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -39,6 +39,17 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-2",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 729.0, 305.0, 35.0, 22.0 ],
+					"text" : "out 2"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-31",
 					"maxclass" : "newobj",
 					"numinlets" : 0,
@@ -51,25 +62,13 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-29",
-					"maxclass" : "newobj",
-					"numinlets" : 0,
-					"numoutlets" : 2,
-					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 263.666655999999989, 625.0, 138.0, 22.0 ],
-					"text" : "data loopy samplerate*4"
-				}
-
-			}
-, 			{
-				"box" : 				{
 					"id" : "obj-28",
 					"maxclass" : "newobj",
-					"numinlets" : 2,
+					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 947.0, 456.0, 90.0, 22.0 ],
-					"text" : "scale 0. 1. 0. 6."
+					"patching_rect" : [ 947.0, 456.0, 67.0, 22.0 ],
+					"text" : "clamp 0. 1."
 				}
 
 			}
@@ -80,8 +79,8 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 876.0, 328.0, 53.0, 22.0 ],
-					"text" : "clip 0. 1."
+					"patching_rect" : [ 876.0, 328.0, 28.0, 22.0 ],
+					"text" : "abs"
 				}
 
 			}
@@ -143,7 +142,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 540.166687000000024, 259.0, 29.5, 22.0 ],
+					"patching_rect" : [ 540.166687000000024, 229.0, 29.5, 22.0 ],
 					"text" : "or"
 				}
 
@@ -191,8 +190,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 263.666655999999989, 574.0, 138.0, 22.0 ],
-					"text" : "data loopy samplerate*4"
+					"patching_rect" : [ 263.666655999999989, 574.0, 133.0, 22.0 ],
+					"text" : "data tape samplerate*4"
 				}
 
 			}
@@ -317,8 +316,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 10.0, 574.0, 241.0, 22.0 ],
-					"text" : "sample loopy @index phase @interp spline"
+					"patching_rect" : [ 10.0, 574.0, 234.0, 22.0 ],
+					"text" : "sample tape @index phase @interp spline"
 				}
 
 			}
@@ -525,15 +524,8 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-13", 1 ],
-					"source" : [ "obj-12", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-33", 1 ],
-					"source" : [ "obj-13", 0 ]
+					"source" : [ "obj-12", 0 ]
 				}
 
 			}
