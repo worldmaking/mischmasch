@@ -173,10 +173,26 @@ let createObjFromMenu = true;
 let menuNames = [];
 let menuScaleSize = .4;
 
+/**
+ * Find an object in allNodes via a path
+ * @param {PATH} path - path to object
+ */
 function getObjectByPath(path) {
     return allNodes[path];
 }
-
+/**
+ * Delete object from allNodes[] via a path
+ * @param {PATH} path - path to object 
+ */
+function deleteObjectByPath(path){
+    //need to also remove from the world...
+    delete allNodes[path];
+}
+/**
+ * Adding object to allNodes[] via a path
+ * @param {PATH} path - the path location of the object being added
+ * @param {OBJECT} object - object to add to allNodes[]
+ */
 function addObjectByPath(path, object) {
     allNodes[path] = object;
 }
@@ -188,11 +204,20 @@ function iterateAllNodes(fun) {
     }
 }
 
+/**
+ * Generate a random integer between a range (min, max)
+ * @param {INT} min - minimum value for random int
+ * @param {INT} max - maximum value for random int
+ */
 function randomIntFromInterval(min,max) // min and max included
 {
     return Math.floor(Math.random()*(max-min+1)+min);
 }
-
+/**
+ * Keep a value between two amounts and wrap excess
+ * @param {NUMBER} n - Value to wrap
+ * @param {NUMBER} m - Top value to wrap around
+ */
 function wrap(n,m){
     return ((n%m)+m)%m;
 }
@@ -598,11 +623,7 @@ function onSelectStart(event) {
 
     let object = intersection.object;
 
-    // while (object && !object.userData.moveable) {
-    //     object = object.parent;
-    // }
-
-    if (object && object.userData.moveable) {
+    if (object && object.userData.moveable && object.userData.menu == false) {
 
         let kind = object.userData.kind;
         if (kind == "jack_inlet" || kind == "jack_outlet") {
@@ -638,7 +659,7 @@ function onSelectStart(event) {
         controller.add(object); //removes from previous parent
     }
 
-    if (object && !object.userData.moveable) {
+    if (object && !object.userData.moveable && object.userData.menu == false) {
         let kind = object.userData.kind;
         if (kind == "outlet") {
             // create a new line
@@ -668,6 +689,16 @@ function onSelectStart(event) {
         getControllerLineLength = line.scale.z;
 
         world.add(uiLine);
+    }
+
+    //maybe can use object.userData.moveable (should be the top most node always anyway...)
+    while (object && !object.userData.menu) {
+        object = object.parent;
+    }
+
+    if(object && object.userData.menu && createObjFromMenu == true){
+        copyModule(controller, object);
+        createObjFromMenu = false;
     }
 
 }
@@ -837,7 +868,7 @@ function enactDeltaNewNode(delta) {
             
             // set rotation of knob by this angle, and normal axis of knob:
             container.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
-            console.log("Initial Value",scaledValue)
+           // console.log("Initial Value", scaledValue)
 
         } break;
         case "small_knob": {
@@ -1255,96 +1286,84 @@ function onSelectEnd(event) {
     }
 }
 
-function onMenuSpawn(){
-        // let headsetPos = new THREE.Vector3();
-        // camera.getWorldPosition(headsetPos);
-        // menu.position.fromArray([headsetPos.x, headsetPos.y + .25, headsetPos.z]);
-        // //menu.rotation.fromArray([0, -controller.rotation.y, 0]);
-        // world.add(menu);
-        // createObjFromMenu = true;
+function onMenuSpawn(event){
+    let controller = event.target;
+    if(controller.getButtonState('trigger') == false){
+        let headsetPos = new THREE.Vector3();
+        camera.getWorldPosition(headsetPos);
+        menu.position.fromArray([headsetPos.x, headsetPos.y + .25, headsetPos.z]);
+        //menu.rotation.fromArray([0, -controller.rotation.y, 0]);
+        world.add(menu);
+        createObjFromMenu = true;
+    }
 }
 
 function onSpawn(event) {
-    // let controller = event.target;
-    // if(controller.getButtonState('thumbpad') === undefined) return;
+    let controller = event.target;
+    if(controller.getButtonState('thumbpad') === undefined) return;
 
-    // //Should put this in own function relPosController()??
-    // let pos = new THREE.Vector3();
-    // let orient = new THREE.Quaternion();
-    // controller.getWorldPosition(pos);
-    // controller.getWorldQuaternion(orient);
-
-    // // adjust spawn location:
-    // let tilt = new THREE.Quaternion();
-    // tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
-    // orient.multiply(tilt);
-    // let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
-    // pos.add(rel.applyQuaternion(orient));
-    // if(controller.getButtonState('trigger') == false){
-    //     // let deltas = spawnRandomModule([pos.x, pos.y, pos.z], [orient._x, orient._y, orient._z, orient._w]);
-    //     // outgoingDeltas = outgoingDeltas.concat(deltas);
+    if(controller.getButtonState('trigger') == false){
         
-    //     if(controller.userData.selected === undefined){
-    //         let controllerPos = new THREE.Vector3();
-    //         controller.getWorldPosition(controllerPos);
-    //         let controllerQuat = new THREE.Quaternion();    
-    //         controller.getWorldQuaternion(controllerQuat);
-
-    //         let intersections = getIntersections(controller, 0, 0, -1);
-    //         if (intersections.length > 0) {
-    //                 let intersection = intersections[0];
-    //                 let object = intersection.object;
-    //                 //need to always get the top node otherwise CTOR throws error cause it doesn't know the object to clone
-    //                 for(let name of menuNames){
-    //                     let obj = object;
-    //                     //N_Switch slider only doesn't have a kind so this will never be true (only object without a kind) probably should add a kind????
-    //                     while(obj.userData.kind !== name && obj.userData.kind !== undefined){
-    //                         obj = obj.parent;
-    //                     }
-    //                     if(obj.userData.kind === name){
-
-    //                         //Should put this in own function relPosController()??
-    //                         // adjust spawn location:
-    //                         let tilt = new THREE.Quaternion();
-    //                         tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
-    //                         controllerQuat.multiply(tilt);
-    //                         let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
-    //                         controllerPos.add(rel.applyQuaternion(controllerQuat));
-
-    //                         let deltas = cloneModuleMenu([controllerPos.x, controllerPos.y, controllerPos.z], [controllerQuat._x, controllerQuat._y, controllerQuat._z, controllerQuat._w], obj);
-    //                         outgoingDeltas = outgoingDeltas.concat(deltas);
-    //                     }
-    //                 } 
-    //             }
-                
-    //         }
-    // } else { 
-    //     if(!createObjFromMenu){
-    //         let deltas = copyModule([pos.x, pos.y, pos.z], [orient._x, orient._y, orient._z, orient._w], controller);
-    //         outgoingDeltas = outgoingDeltas.concat(deltas);
-    //     }
-    // }
-    // world.remove(menu);
-    // createObjFromMenu = false;
+        if(controller.userData.selected === undefined){
+            let intersections = getIntersections(controller, 0, 0, -1);
+            if (intersections.length > 0) {
+                let intersection = intersections[0];
+                let object = intersection.object;
+                copyModule(controller, object);
+            }
+        }
+    } else { 
+        if(!createObjFromMenu){
+            copyModule(controller);
+        }
+    }
+    world.remove(menu);
+    createObjFromMenu = false;
 }
 
-function copyModule(pos, orient, controller){
+/**
+ * Used to copy a specific module
+ * @param {controller} controller - Vive Controller
+ * @param {object} object - Object to copy (OPTIONAL: default is controller.userData.selected)
+ */
+
+function copyModule(controller, object = undefined){
+    if(object == undefined){
+        object = controller.userData.selected;
+    }
+
+    //Should put this in own function relPosController()??
+    let pos = new THREE.Vector3();
+    let orient = new THREE.Quaternion();
+    controller.getWorldPosition(pos);
+    controller.getWorldQuaternion(orient);
+
+    // adjust spawn location:
+    let tilt = new THREE.Quaternion();
+    tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
+    orient.multiply(tilt);
+    let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
+    pos.add(rel.applyQuaternion(orient));
+
     let module_names = Object.keys(module_constructors)
-    let object = controller.userData.selected;
+
     let opname, ctor;
 
-    for(let i in module_names){
+    for(let i in menuNames){
+
+        //Always get the top most parent to avoid unknown paths for copying
+        //This shouldn't even be needed..... 
+        while(object.userData.kind !== menuNames[i] && object.userData.kind !== undefined){
+            object = object.parent;
+        }
 
         if(module_names[i] == object.userData.kind){
             opname = module_names[i];
             ctor = module_constructors[opname];
         }
-    }
 
-    for(let j in operator_names){
-
-        if(operator_names[j] == object.userData.kind){
-            opname = operator_names[j];
+        if(operator_names[i] == object.userData.kind){
+            opname = operator_names[i];
             ctor = operator_constructors[opname];
         }
     }
@@ -1353,38 +1372,67 @@ function copyModule(pos, orient, controller){
     let deltas = ctor(path);
     deltas[0].pos = pos;
     deltas[0].orient = orient;
-    return deltas;
+    outgoingDeltas = outgoingDeltas.concat(deltas);
+    //return deltas;
 }
 
 //copy's a module (but this takes the object from an interestection instead of from controller.userdata.selected)
-function cloneModuleMenu(pos, orient, object){
-    let module_names = Object.keys(module_constructors)
-    let opname, ctor;
+// Pass in a controller and if the object is highlighted. It will copy it.
+// function cloneModuleMenu(controller){
 
-    for(let i in module_names){
+//     let pos = new THREE.Vector3();
+//     controller.getWorldPosition(pos);
+//     let orient = new THREE.Quaternion();    
+//     controller.getWorldQuaternion(orient);
 
-        if(module_names[i] == object.userData.kind){
-            opname = module_names[i];
-            ctor = module_constructors[opname];
-        }
-    }
+//     let intersections = getIntersections(controller, 0, 0, -1);
+//     if (intersections.length > 0) {
+//         let intersection = intersections[0];
+//         let object = intersection.object;
+//         //need to always get the top node otherwise CTOR throws error cause it doesn't know the object to clone
+//         for(let name of menuNames){ 
+//             let obj = object;
+//             //N_Switch slider only doesn't have a kind so this will never be true (only object without a kind) probably should add a kind????
+//             while(obj.userData.kind !== name && obj.userData.kind !== undefined){
+//                 obj = obj.parent;
+//             }
+//             if(obj.userData.kind === name && object.userData.menu == true){
 
-    for(let j in operator_names){
+//                 //Should put this in own function relPosController()??
+//                 // adjust spawn location:
+//                 let tilt = new THREE.Quaternion();
+//                 tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
+//                 orient.multiply(tilt);
+//                 let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
+//                 pos.add(rel.applyQuaternion(orient));
 
-        if(operator_names[j] == object.userData.kind){
-            opname = operator_names[j];
-            ctor = operator_constructors[opname];
-        }
-    }
-
-    let path = gensym(opname);
-    let deltas = ctor(path);
-    deltas[0].pos = pos;
-    deltas[0].orient = orient;
-    return deltas;
-
-   
-}
+//                 let module_names = Object.keys(module_constructors)
+//                 let opname, ctor;
+            
+//                 for(let i in menuNames){
+            
+//                     if(module_names[i] == object.userData.kind){
+//                         opname = module_names[i];
+//                         ctor = module_constructors[opname];
+//                     }
+            
+//                     if(operator_names[i] == object.userData.kind){
+//                         opname = operator_names[i];
+//                         ctor = operator_constructors[opname];
+//                     }
+//                 }
+            
+//                 let path = gensym(opname);
+//                 let deltas = ctor(path);
+//                 deltas[0].pos = pos;
+//                 deltas[0].orient = orient;
+//                 return deltas;
+            
+//             }
+//         } 
+//     }
+//     return;
+// }
 
 //Generates a new Module inside the radial Menu (Honestly need to probably refarctor this so it isn't so redundant to other code)
 function generateNewModule(pos, orient, name){
@@ -1500,7 +1548,7 @@ function getIntersectionsWithKind(controller, x, y, z, offset =0, kind) {
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
     let intersections = raycaster.intersectObjects(world.children, true);
-    while (intersections.length > 0 /*&& !intersections[0].object.userData.selectable*/ && kind != intersections[0].object.userData.kind) intersections.shift();
+    while (intersections.length > 0 /*&& !intersections[0].object.userData.selectable*/ && kind !== intersections[0].object.userData.kind) intersections.shift();
     return intersections;
 }
 
@@ -1659,59 +1707,59 @@ function controllerGamepadControls(controller){
         }
     }
 
-    if(controller.userData.selected === undefined){
-        let headsetPos = new THREE.Vector3();
-        camera.getWorldPosition(headsetPos);
+    // if(controller.userData.selected === undefined){
+    //     let headsetPos = new THREE.Vector3();
+    //     camera.getWorldPosition(headsetPos);
 
-        let controllerPos = new THREE.Vector3();
-        controller.getWorldPosition(controllerPos);
-        let controllerQuat = new THREE.Quaternion();    
-        controller.getWorldQuaternion(controllerQuat);
+    //     let controllerPos = new THREE.Vector3();
+    //     controller.getWorldPosition(controllerPos);
+    //     let controllerQuat = new THREE.Quaternion();    
+    //     controller.getWorldQuaternion(controllerQuat);
 
-        if (controller.userData.touched){
-            createObjFromMenu = true;
-            //create objects to choose from
-            if(touched){
-                menu.position.fromArray([headsetPos.x, headsetPos.y + .25, headsetPos.z]);
-                //menu.rotation.fromArray([0, -controller.rotation.y, 0]);
-                world.add(menu);
+    //     if (controller.userData.touched){
+    //         createObjFromMenu = true;
+    //         //create objects to choose from
+    //         if(touched){
+    //             menu.position.fromArray([headsetPos.x, headsetPos.y + .25, headsetPos.z]);
+    //             //menu.rotation.fromArray([0, -controller.rotation.y, 0]);
+    //             world.add(menu);
 
-            }
+    //         }
 
-        } else if(controller.userData.touched == false){
+    //     } else if(controller.userData.touched == false){
            
-            let intersections = getIntersections(controller, 0, 0, -1);
-            if (intersections.length > 0) {
-                if(createObjFromMenu){
-                    let intersection = intersections[0];
-                    let object = intersection.object;
-                    //need to always get the top node otherwise CTOR throws error cause it doesn't know the object to clone
-                    for(let name of menuNames){
-                        let obj = object;
-                        //N_Switch slider only doesn't have a kind so this will never be true (only object without a kind) probably should add a kind????
-                        while(obj.userData.kind !== name && obj.userData.kind !== undefined){
-                            obj = obj.parent;
-                        }
-                        if(obj.userData.kind === name){
+    //         let intersections = getIntersections(controller, 0, 0, -1);
+    //         if (intersections.length > 0) {
+    //             if(createObjFromMenu){
+    //                 let intersection = intersections[0];
+    //                 let object = intersection.object;
+    //                 //need to always get the top node otherwise CTOR throws error cause it doesn't know the object to clone
+    //                 for(let name of menuNames){
+    //                     let obj = object;
+    //                     //N_Switch slider only doesn't have a kind so this will never be true (only object without a kind) probably should add a kind????
+    //                     while(obj.userData.kind !== name && obj.userData.kind !== undefined){
+    //                         obj = obj.parent;
+    //                     }
+    //                     if(obj.userData.kind === name){
 
-                             //Should put this in own function relPosController()??
-                            // adjust spawn location:
-                            let tilt = new THREE.Quaternion();
-                            tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
-                            controllerQuat.multiply(tilt);
-                            let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
-                            controllerPos.add(rel.applyQuaternion(controllerQuat));
+    //                          //Should put this in own function relPosController()??
+    //                         // adjust spawn location:
+    //                         let tilt = new THREE.Quaternion();
+    //                         tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
+    //                         controllerQuat.multiply(tilt);
+    //                         let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
+    //                         controllerPos.add(rel.applyQuaternion(controllerQuat));
 
-                            let deltas = cloneModuleMenu([controllerPos.x, controllerPos.y, controllerPos.z], [controllerQuat._x, controllerQuat._y, controllerQuat._z, controllerQuat._w], obj);
-                            outgoingDeltas = outgoingDeltas.concat(deltas);
-                        }
-                    } 
-                }
-            }
-            createObjFromMenu = false;
-            world.remove(menu);
-        }
-    }
+    //                         let deltas = cloneModuleMenu([controllerPos.x, controllerPos.y, controllerPos.z], [controllerQuat._x, controllerQuat._y, controllerQuat._z, controllerQuat._w], obj);
+    //                         outgoingDeltas = outgoingDeltas.concat(deltas);
+    //                     }
+    //                 } 
+    //             }
+    //         }
+    //         createObjFromMenu = false;
+    //         world.remove(menu);
+    //     }
+    // }
 
     if (controller.userData.selected) {
         let object = controller.userData.selected;
