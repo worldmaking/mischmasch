@@ -15,6 +15,6 @@ void main() {
     refractedColor.g = textureCube( tCube, vec3( -vRefract[1].x, vRefract[1].yz ) ).g;
     refractedColor.b = textureCube( tCube, vec3( -vRefract[2].x, vRefract[2].yz ) ).b;
 
-    gl_FragColor = mix( refractedColor, reflectedColor, clamp( vReflectionFactor, 0.0, 1.0 ) );
+    gl_FragColor = vec4(0.3, 0.5, 0.2, 0.4);//mix( refractedColor, reflectedColor, clamp( vReflectionFactor, 0.0, 1.0 ) );
 
 }

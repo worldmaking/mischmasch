@@ -199,6 +199,7 @@ function getObjectByPath(path) {
 function deleteObjectByPath(path){
     //need to also remove from the world...
     delete allNodes[path];
+    console.log(world.children[path])
     world.remove(world.children[path]);
 }
 
@@ -1078,7 +1079,7 @@ function enactDeltaDeleteNode(delta) {
     deleteCable.forEach(cable => {
         cable.destroy();
     });
-
+    //deleteObjectByPath(delta.path)
     //Removing from allNodes
     for(let name in allNodes){
         if(name.includes(kind)){
