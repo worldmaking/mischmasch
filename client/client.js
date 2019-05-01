@@ -17,6 +17,12 @@ let loadedHeadsetModel;
 
 let texturesPath = "textures/";
 
+let vShaderFile = 'shaders/shader.vert';
+let fShaderFile = 'shaders/shader.frag';
+
+let loadedVShader;
+let loadedFShader;
+
 // turn FontLoader into something we can await:
 async function loadFont(fontFile) {
     return new Promise(resolve => new THREE.FontLoader().load(fontFile, resolve));
@@ -38,6 +44,12 @@ let floorTextureLoader = new THREE.TextureLoader();
 async function loadFloorTexture(filename) {
     return new Promise(resolve => floorTextureLoader.load(filename, resolve));
 }
+
+let shaderLoader = new THREE.FileLoader();
+async function loadShaders(filename) {
+    return new Promise(resolve => shaderLoader.load(filename, resolve));
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // COMMON MATERIALS
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +84,7 @@ const FRAME_WAIT_AMOUNT = 0;
 
 const GRID_DIVISIONS = 60;
 
-let inlet_geometry = new THREE.CylinderGeometry(NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT, 8);
+let inlet_geometry = new THREE.CylinderBufferGeometry(NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT, 8);
 let outlet_geometry = inlet_geometry;
 inlet_geometry.rotateX(Math.PI/2)
 inlet_geometry.computeBoundingBox();
@@ -82,27 +94,27 @@ let outlet_backplate_geometry = inlet_backplate_geometry;
 //inlet_backplate_geometry.rotateX(Math.PI/2)
 inlet_backplate_geometry.computeBoundingBox();
 
-let small_knob_geometry = new THREE.CylinderGeometry(SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, SMALL_KNOB_HEIGHT, 8);
+let small_knob_geometry = new THREE.CylinderBufferGeometry(SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, SMALL_KNOB_HEIGHT, 8);
 small_knob_geometry.rotateX(Math.PI/2)
 small_knob_geometry.computeBoundingBox();
 
-let large_knob_geometry = new THREE.CylinderGeometry(LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, LARGE_KNOB_HEIGHT, 8);
+let large_knob_geometry = new THREE.CylinderBufferGeometry(LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, LARGE_KNOB_HEIGHT, 8);
 large_knob_geometry.rotateX(Math.PI/2)
 large_knob_geometry.computeBoundingBox();
 
-let plug_geometry = new THREE.CylinderGeometry(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT, 8);
+let plug_geometry = new THREE.CylinderBufferGeometry(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT, 8);
 // fix anchor point
 plug_geometry.translate(0, CABLE_JACK_HEIGHT/2, 0);
 plug_geometry.rotateX(Math.PI/2)
 plug_geometry.computeBoundingBox();
 
-let n_switch_geometry = new THREE.BoxGeometry( LARGE_KNOB_RADIUS + 0.03, LARGE_KNOB_RADIUS  + 0.03, LARGE_KNOB_HEIGHT, 8 );
+let n_switch_geometry = new THREE.BoxBufferGeometry( LARGE_KNOB_RADIUS + 0.03, LARGE_KNOB_RADIUS  + 0.03, LARGE_KNOB_HEIGHT, 8 );
 n_switch_geometry.computeBoundingBox();
 
-let n_switch_slider_geometry = new THREE.BoxGeometry( NLET_HEIGHT + .01 , NLET_HEIGHT+ .01 , NLET_HEIGHT, 8 );
+let n_switch_slider_geometry = new THREE.BoxBufferGeometry( NLET_HEIGHT + .01 , NLET_HEIGHT+ .01 , NLET_HEIGHT, 8 );
 n_switch_slider_geometry.computeBoundingBox();
 
-let knob_point_geometry = new THREE.BoxGeometry( NLET_HEIGHT + .001 , NLET_HEIGHT+.001 , NLET_HEIGHT, 8 );
+let knob_point_geometry = new THREE.BoxBufferGeometry( NLET_HEIGHT + .001 , NLET_HEIGHT+.001 , NLET_HEIGHT, 8 );
 knob_point_geometry.computeBoundingBox();
 
 let generic_geometry = new THREE.BoxBufferGeometry(0.6, 0.2, 0.05);
@@ -187,7 +199,17 @@ function getObjectByPath(path) {
 function deleteObjectByPath(path){
     //need to also remove from the world...
     delete allNodes[path];
+    world.remove(world.children[path]);
 }
+
+function getContainingModule(object){
+    if(object.userData.isBox == true) {
+        console.log(object)
+        return object;
+    } 
+    return getContainingModule(object.parent)
+}
+
 /**
  * Adding object to allNodes[] via a path
  * @param {PATH} path - the path location of the object being added
@@ -296,6 +318,10 @@ async function init() {
     
     // TODO: where do these normal maps apply?
     //let viveHeadsetNormalsPNG = await loadTexture(viveHeadsetModelPath + 'normals.png');
+
+    loadedVShader = await loadShaders(vShaderFile);
+    loadedFShader = await loadShaders(fShaderFile);
+    console.log(loadedVShader, loadedFShader)
 
     // build up the scene
     scene = new THREE.Scene();
@@ -623,7 +649,7 @@ function onSelectStart(event) {
 
     let object = intersection.object;
 
-    if (object && object.userData.moveable && object.userData.menu == false) {
+    if (object && object.userData.moveable && object.userData.interactable === undefined) {
 
         let kind = object.userData.kind;
         if (kind == "jack_inlet" || kind == "jack_outlet") {
@@ -659,7 +685,7 @@ function onSelectStart(event) {
         controller.add(object); //removes from previous parent
     }
 
-    if (object && !object.userData.moveable && object.userData.menu == false) {
+    if (object && !object.userData.moveable && object.userData.interactable === undefined) {
         let kind = object.userData.kind;
         if (kind == "outlet") {
             // create a new line
@@ -692,12 +718,13 @@ function onSelectStart(event) {
     }
 
     //maybe can use object.userData.moveable (should be the top most node always anyway...)
-    while (object && !object.userData.menu) {
-        object = object.parent;
-    }
+    // while (object && !object.userData.menu) {
+    //     object = object.parent;
+    // }
 
-    if(object && object.userData.menu && createObjFromMenu == true){
+    if(object && object.userData.menu == true && createObjFromMenu == true){
         copyModule(controller, object);
+        world.remove(menu);
         createObjFromMenu = false;
     }
 
@@ -791,6 +818,23 @@ function enactDeltaNewNode(delta) {
     let n_switch_slider_material = material.clone();
     let outline_mat = outline_material.clone();
     let knob_point_material = material.clone();
+
+    // SHADERS //
+
+    let shaderMat = new THREE.ShaderMaterial( {
+        uniforms: {
+            "mRefractionRatio": { value: 1.02 },
+            "mFresnelBias": { value: 0.1 },
+            "mFresnelPower": { value: 2.0 },
+            "mFresnelScale": { value: 1.0 },
+            "tCube": { value: null }
+        },
+        vertexShader: loadedVShader,
+        fragmentShader: loadedFShader,
+        side: THREE.DoubleSide,
+        transparent: true
+    } );
+
     
     switch(delta.kind){
         case "inlet": {
@@ -962,6 +1006,7 @@ function enactDeltaNewNode(delta) {
             container.userData.moveable = true; 
             container.userData.selectable = true;
             container.userData.dirty = true;
+            container.userData.isBox = true;
         } break;
     }    
 
@@ -979,7 +1024,13 @@ function enactDeltaNewNode(delta) {
     if(delta.menu == true){
         container.userData.menu = delta.menu;
         container.scale.set(menuScaleSize, menuScaleSize, menuScaleSize);
+       
+    }
 
+    if(delta.interactable == false){
+        container.userData.interactable = delta.interactable;
+        delete container.userData.moveable;
+        delete container.userData.turnable;
     }
 
     if (delta.pos) {
@@ -1309,6 +1360,7 @@ function onSpawn(event) {
             if (intersections.length > 0) {
                 let intersection = intersections[0];
                 let object = intersection.object;
+                if(createObjFromMenu == true)
                 copyModule(controller, object);
             }
         }
@@ -1331,7 +1383,6 @@ function copyModule(controller, object = undefined){
     if(object == undefined){
         object = controller.userData.selected;
     }
-
     //Should put this in own function relPosController()??
     let pos = new THREE.Vector3();
     let orient = new THREE.Quaternion();
@@ -1348,18 +1399,16 @@ function copyModule(controller, object = undefined){
     let module_names = Object.keys(module_constructors)
 
     let opname, ctor;
+    
+    object = getContainingModule(object);
+
 
     for(let i in menuNames){
-
-        //Always get the top most parent to avoid unknown paths for copying
-        //This shouldn't even be needed..... 
-        while(object.userData.kind !== menuNames[i] && object.userData.kind !== undefined){
-            object = object.parent;
-        }
-
+   
         if(module_names[i] == object.userData.kind){
             opname = module_names[i];
             ctor = module_constructors[opname];
+
         }
 
         if(operator_names[i] == object.userData.kind){
@@ -1370,69 +1419,12 @@ function copyModule(controller, object = undefined){
 
     let path = gensym(opname);
     let deltas = ctor(path);
-    deltas[0].pos = pos;
-    deltas[0].orient = orient;
+
+    deltas[0].pos = [pos.x, pos.y, pos.z];
+    deltas[0].orient = [orient._x,orient._y, orient._z, orient._w];
     outgoingDeltas = outgoingDeltas.concat(deltas);
-    //return deltas;
+
 }
-
-//copy's a module (but this takes the object from an interestection instead of from controller.userdata.selected)
-// Pass in a controller and if the object is highlighted. It will copy it.
-// function cloneModuleMenu(controller){
-
-//     let pos = new THREE.Vector3();
-//     controller.getWorldPosition(pos);
-//     let orient = new THREE.Quaternion();    
-//     controller.getWorldQuaternion(orient);
-
-//     let intersections = getIntersections(controller, 0, 0, -1);
-//     if (intersections.length > 0) {
-//         let intersection = intersections[0];
-//         let object = intersection.object;
-//         //need to always get the top node otherwise CTOR throws error cause it doesn't know the object to clone
-//         for(let name of menuNames){ 
-//             let obj = object;
-//             //N_Switch slider only doesn't have a kind so this will never be true (only object without a kind) probably should add a kind????
-//             while(obj.userData.kind !== name && obj.userData.kind !== undefined){
-//                 obj = obj.parent;
-//             }
-//             if(obj.userData.kind === name && object.userData.menu == true){
-
-//                 //Should put this in own function relPosController()??
-//                 // adjust spawn location:
-//                 let tilt = new THREE.Quaternion();
-//                 tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
-//                 orient.multiply(tilt);
-//                 let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
-//                 pos.add(rel.applyQuaternion(orient));
-
-//                 let module_names = Object.keys(module_constructors)
-//                 let opname, ctor;
-            
-//                 for(let i in menuNames){
-            
-//                     if(module_names[i] == object.userData.kind){
-//                         opname = module_names[i];
-//                         ctor = module_constructors[opname];
-//                     }
-            
-//                     if(operator_names[i] == object.userData.kind){
-//                         opname = operator_names[i];
-//                         ctor = operator_constructors[opname];
-//                     }
-//                 }
-            
-//                 let path = gensym(opname);
-//                 let deltas = ctor(path);
-//                 deltas[0].pos = pos;
-//                 deltas[0].orient = orient;
-//                 return deltas;
-            
-//             }
-//         } 
-//     }
-//     return;
-// }
 
 //Generates a new Module inside the radial Menu (Honestly need to probably refarctor this so it isn't so redundant to other code)
 function generateNewModule(pos, orient, name){
@@ -1452,6 +1444,9 @@ function generateNewModule(pos, orient, name){
     deltas[0].pos = pos;
     deltas[0].orient = orient;
     deltas[0].menu = true;
+    for(let i in deltas) {
+        deltas[i].interactable = false;
+    }
 
     return deltas;
 }
