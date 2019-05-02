@@ -192,20 +192,15 @@ let menuScaleSize = .4;
 function getObjectByPath(path) {
     return allNodes[path];
 }
-/**
- * Delete object from allNodes[] via a path
- * @param {PATH} path - path to object 
- */
-function deleteObjectByPath(path){
-    //need to also remove from the world...
-    delete allNodes[path];
-    console.log(world.children[path])
-    world.remove(world.children[path]);
-}
+
+// function deleteObjectByName(name){
+//     //need to also remove from the world...
+//     delete allNodes[name];
+//     world.remove(world.children[name]);
+// }
 
 function getContainingModule(object){
     if(object.userData.isBox == true) {
-        console.log(object)
         return object;
     } 
     return getContainingModule(object.parent)
@@ -673,11 +668,11 @@ function onSelectStart(event) {
         object.matrix.premultiply(parent.matrixWorld);
         object.matrix.premultiply(tempMatrix);
         object.matrix.decompose(object.position, object.quaternion, object.scale);
-        if (object.material){
-            object.material.emissive.r = .2;
-            object.material.emissive.g = .2;
-            object.material.emissive.b = .2;
-        }
+        // if (object.material){
+        //     object.material.emissive.r = .2;
+        //     object.material.emissive.g = .2;
+        //     object.material.emissive.b = .2;
+        // }
 
 
         controller.userData.selected = object;
@@ -802,8 +797,6 @@ function enactDeltaNewNode(delta) {
     }
     
    // console.log(path, name, parentpath, parent)
-
-
     let container;
     let labelName = delta.kind;
 
@@ -828,7 +821,8 @@ function enactDeltaNewNode(delta) {
             "mFresnelBias": { value: 0.1 },
             "mFresnelPower": { value: 2.0 },
             "mFresnelScale": { value: 1.0 },
-            "tCube": { value: null }
+            "tCube": { value: null },
+            "emissive": {value: 0}
         },
         vertexShader: loadedVShader,
         fragmentShader: loadedFShader,
@@ -995,8 +989,12 @@ function enactDeltaNewNode(delta) {
             container.userData.selectable = false;
             container.userData.slideable = false;
         } break;
+        case "group": {
+            //Gonna be used for subpatching
+
+        } break;
         default: {
-            container = new THREE.Mesh(generic_geometry, material);
+            container = new THREE.Mesh(generic_geometry, shaderMat);
             
             let label = generateLabel(labelName);
             label.position.y = -LABEL_SIZE;
@@ -1241,9 +1239,9 @@ function onSelectEnd(event) {
         if (parent == undefined) parent = world; //object.parent;
         controller.userData.selected = undefined;
 
-        object.material.emissive.r = 0;
-        object.material.emissive.g = 0;
-        object.material.emissive.b = 0;
+        // object.material.emissive.r = 0;
+        // object.material.emissive.g = 0;
+        // object.material.emissive.b = 0;
 
        
         if (object && object.userData.moveable) {
@@ -1556,11 +1554,11 @@ function intersectObjects(controller) {
     if (intersections.length > 0) {
         let intersection = intersections[0];
         let object = intersection.object;
-        if (object.material.emissive){
-            object.material.emissive.r = .15;
-            object.material.emissive.g = .15;
-            object.material.emissive.b = .15;
-        }
+        // if (object.material.emissive){
+        //     object.material.emissive.r = .15;
+        //     object.material.emissive.g = .15;
+        //     object.material.emissive.b = .15;
+        // }
 
         intersected.push(object);
         line.scale.z = intersection.distance;
@@ -1572,11 +1570,11 @@ function intersectObjects(controller) {
 function cleanIntersected() {
     while (intersected.length) {
         let object = intersected.pop();
-        if (object.material.emissive){
-            object.material.emissive.r = 0;
-            object.material.emissive.g = 0;
-            object.material.emissive.b = 0;
-        }
+        // if (object.material.emissive){
+        //     object.material.emissive.r = 0;
+        //     object.material.emissive.g = 0;
+        //     object.material.emissive.b = 0;
+        // }
     }
 }
           
