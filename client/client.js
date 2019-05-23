@@ -391,6 +391,7 @@ async function init() {
     controller2.addEventListener("thumbpadup", onSpawn);
     controller1.addEventListener("gripsdown", onGrips);
     controller2.addEventListener("gripsdown", onGrips);
+    document.addEventListener("keydown", onKeypress, false);
     scene.add(controller1);
     scene.add(controller2);
 
@@ -762,6 +763,17 @@ function onGrips(event) {
     let controller = event.target;
     if (controller.getButtonState("grips")) {
 
+    }
+}
+
+function onKeypress(e){
+    if (!renderer.vr.isPresenting()){
+
+        let keyCode = e.which;
+        if(keyCode == 32){
+            let deltas = spawnRandomModule([0 + Math.random(), 0 + Math.random(), 0+ Math.random()], [0,0,0,1]);
+            clientSideDeltas(deltas);
+        }       
     }
 }
 
