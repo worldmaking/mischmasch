@@ -163,6 +163,7 @@ let outline_material = new THREE.MeshStandardMaterial({
 
 let camera, scene, renderer;
 let world = new THREE.Group();
+let controls;
 
 let menu = new THREE.Group();
 
@@ -333,20 +334,35 @@ async function init() {
         0.1,
         10
     );
+    // TODO: does this break VR????
+   
+
+    scene.add(camera)
+    camera.position.set(0, 1.5, 0)
 
     renderer = new THREE.WebGLRenderer({
         antialias: true,
-        canvas: canvas
-    });
+        canvas: canvas});
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.gammaInput = true;
     renderer.gammaOutput = true;
     renderer.shadowMap.enabled = true;
-    renderer.vr.enabled = true;
-    document.body.appendChild(WEBVR.createButton(renderer));
-    window.addEventListener("resize", onWindowResize, false);
 
+    document.body.appendChild(renderer.domElement);
+    document.body.appendChild(WEBVR.createButton(renderer));
+
+    controls = new THREE.OrbitControls( camera, renderer.domElement );
+    controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+    controls.dampingFactor = 0.25;
+    controls.screenSpacePanning = false;
+    controls.minDistance = 0;
+    controls.maxDistance = 500;
+    controls.maxPolarAngle = Math.PI / 2;
+
+    //console.log(controls)
+
+    window.addEventListener("resize", onWindowResize, false);
     // basic lighting:
     scene.add(new THREE.HemisphereLight(0x808080, 0x606060));
     scene.background = new THREE.Color(0x000000);
@@ -645,7 +661,19 @@ class Cable {
           
 
 function animate() {
-   renderer.setAnimationLoop(render);
+  //renderer.setAnimationLoop(render);
+
+   requestAnimationFrame( animate );
+
+    // are we in VR?
+     if (!renderer.vr.isPresenting()){
+        controls.update();
+        renderer.vr.enabled = false;
+     } else {
+        renderer.vr.enabled = true;
+     }
+
+    render();
 }
 
 
@@ -661,6 +689,8 @@ function render() {
     }
     
     updateDirty();
+
+    
 
 
     // make sure all objects' matrices are up to date (TODO might not be needed?)
@@ -723,6 +753,8 @@ function render() {
     intersectObjects(controller2);
     renderer.render(scene, camera);
 
+    //console.log("hi")
+
     stats.end();
 }
 
@@ -741,8 +773,6 @@ function clearScene() {
     allCables = [];
 
 }
-
-
 /////////////////////////////////////////////////////
 // Websocket handling
 /////////////////////////////////////////////////////
