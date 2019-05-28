@@ -23,6 +23,8 @@ let fShaderFile = 'shaders/shader.frag';
 let loadedVShader;
 let loadedFShader;
 
+let renderBypass = false;
+
 // turn FontLoader into something we can await:
 async function loadFont(fontFile) {
     return new Promise(resolve => new THREE.FontLoader().load(fontFile, resolve));
@@ -148,13 +150,15 @@ let generic_material = new THREE.MeshStandardMaterial({
     blending: THREE.AdditiveBlending
 
     
-});
+});;
 
 let outline_material = new THREE.MeshStandardMaterial({
     color: 0x888888,
     side: THREE.BackSide,
     blending: THREE.NormalBlending
 });
+
+let shaderMat;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // SCENE COMPONENTS
@@ -287,6 +291,8 @@ let controllerPrevPos;
 //Simple debug hack
 let once = true;
 
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // BOOT SEQUENCE
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -324,6 +330,23 @@ async function init() {
     loadedVShader = await loadShaders(vShaderFile);
     loadedFShader = await loadShaders(fShaderFile);
     console.log(loadedVShader, loadedFShader)
+
+    shaderMat = new THREE.ShaderMaterial( {
+        uniforms: {
+            "mRefractionRatio": { value: 1.02 },
+            "mFresnelBias": { value: 0.1 },
+            "mFresnelPower": { value: 2.0 },
+            "mFresnelScale": { value: 1.0 },
+            "tCube": { value: null },
+            "emissive": {value: 0}
+        },
+        vertexShader: loadedVShader,
+        fragmentShader: loadedFShader,
+        side: THREE.DoubleSide,
+        transparent: true
+    } );
+
+
 
     // build up the scene
     scene = new THREE.Scene();
@@ -407,7 +430,7 @@ async function init() {
         }
         headsetMesh.castShadow = true;
         headsetMesh.receiveShadow = true;
-        console.log("HEADSET MODEL VVVVVVVV",loadedHeadsetModel)
+        console.log("HEADSET MODEL VVVVVVVV", loadedHeadsetModel)
     }
 
     {
@@ -752,7 +775,7 @@ function render() {
 
     intersectObjects(controller1);
     intersectObjects(controller2);
-    renderer.render(scene, camera);
+    if (!renderBypass) renderer.render(scene, camera);
 
     //console.log("hi")
 
@@ -770,7 +793,7 @@ function onKeypress(e){
     if (!renderer.vr.isPresenting()){
 
         let keyCode = e.which;
-        if(keyCode == 32){
+        if(keyCode == 83){
             let deltas = spawnRandomModule([0 + Math.random(), 0 + Math.random(), 0+ Math.random()], [0,0,0,1]);
             clientSideDeltas(deltas);
         }       
