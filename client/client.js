@@ -127,6 +127,14 @@ instancedGeometry.index = generic_geometry.index;
 instancedGeometry.attributes.position = generic_geometry.attributes.position;
 
 
+///////////////
+
+// instance globals:
+let instBoxLocationAttr, instBoxOrientationAttr, instBoxScaleAttr, instBoxColorAttr
+let instBoxGeometry // a VBO really
+
+///////////////
+
 let op_geometry = new THREE.BoxBufferGeometry(0.2, 0.2, 0.05);
 op_geometry.translate(op_geometry.parameters.width/2, -op_geometry.parameters.height/2, -op_geometry.parameters.depth/2);
 
@@ -346,8 +354,6 @@ async function init() {
         transparent: true
     } );
 
-
-
     // build up the scene
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x20ff80);
@@ -362,6 +368,89 @@ async function init() {
 
     scene.add(camera)
     camera.position.set(0, 1.5, 0)
+
+    
+
+    /// instanceBox
+    {
+        let instances = 50000;
+        let bufferGeometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
+        // copying data from a simple box geometry, but you can specify a custom geometry if you want
+        instBoxGeometry = new THREE.InstancedBufferGeometry();
+        instBoxGeometry.index = bufferGeometry.index;
+        instBoxGeometry.attributes.position = bufferGeometry.attributes.position;
+        instBoxGeometry.attributes.uv = bufferGeometry.attributes.uv;
+        // per instance data
+        let offsets = [];
+        let orientations = [];
+        let scales = [];
+        let colors = [];
+        let vector = new THREE.Vector4();
+        let x, y, z, w;
+        for ( let i = 0; i < instances; i ++ ) {
+            // locations
+            x = (Math.random() - 0.5) * 5
+            y = 1 + Math.random();
+            z = (Math.random() - 0.5) * 5
+            //vector.set( x, y, z, 0 ).normalize();
+            offsets.push( x + vector.x, y + vector.y, z + vector.z );
+            // orientations
+            x = Math.random() * 2 - 1;
+            y = Math.random() * 2 - 1;
+            z = Math.random() * 2 - 1;
+            w = Math.random() * 2 - 1;
+            vector.set( x, y, z, w ).normalize();
+            orientations.push( vector.x, vector.y, vector.z, vector.w );
+
+            scales.push(0.3*Math.random(), 0.05, 0.01)
+            colors.push(Math.random(), Math.random(), Math.random(), 1)
+        }
+        instBoxLocationAttr = new THREE.InstancedBufferAttribute( new Float32Array( offsets ), 3 ).setDynamic( true );;
+        instBoxOrientationAttr = new THREE.InstancedBufferAttribute( new Float32Array( orientations ), 4 ).setDynamic( true );
+        instBoxScaleAttr = new THREE.InstancedBufferAttribute( new Float32Array( scales ), 3 ).setDynamic( true );
+        instBoxColorAttr = new THREE.InstancedBufferAttribute( new Float32Array( colors ), 4 ).setDynamic( true );
+        instBoxGeometry.addAttribute( 'location', instBoxLocationAttr );
+        instBoxGeometry.addAttribute( 'orientation', instBoxOrientationAttr );
+        instBoxGeometry.addAttribute( 'scale', instBoxScaleAttr );
+        instBoxGeometry.addAttribute( 'color', instBoxColorAttr );
+
+        let material = new THREE.RawShaderMaterial( {
+            uniforms: {
+                map: { value: new THREE.TextureLoader().load( 'textures/crate.gif' ) }
+            },
+            vertexShader: `precision highp float;
+            uniform mat4 modelViewMatrix;
+            uniform mat4 projectionMatrix;
+            attribute vec3 position;
+            attribute vec3 location;
+            attribute vec2 uv;
+            attribute vec4 orientation;
+            attribute vec3 scale;
+            attribute vec4 color;
+            varying vec2 vUv;
+            varying vec4 vColor;
+            // http://www.geeks3d.com/20141201/how-to-rotate-a-vertex-by-a-quaternion-in-glsl/
+            vec3 applyQuaternionToVector( vec4 q, vec3 v ){
+                return v + 2.0 * cross( q.xyz, cross( q.xyz, v ) + q.w * v );
+            }
+            void main() {
+                vec3 vPosition = applyQuaternionToVector( orientation, position * scale );
+                vUv = uv;
+                vColor = color;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4( location + vPosition, 1.0 );
+            }`,
+            fragmentShader: `precision highp float;
+            varying vec2 vUv;
+            varying vec4 vColor;
+            void main() {
+                gl_FragColor = vColor * vec4(vUv, 0.5, 1.);
+            }`
+        } );
+
+        instBoxMesh = new THREE.Mesh( instBoxGeometry, material );
+	    world.add( instBoxMesh );
+    }
+    ///
 
     renderer = new THREE.WebGLRenderer({
         antialias: true,
@@ -399,7 +488,6 @@ async function init() {
     light.shadow.mapSize.set(4096, 4096);
     scene.add(light);
     
-
     // VR controllers
     controller1 = new THREE.ViveController(0);
     controller2 = new THREE.ViveController(1);
@@ -701,7 +789,11 @@ function animate() {
     render();
 }
 
-
+// TODO: temp, delete these:
+var lastTime = 0;
+	var moveQ = ( new THREE.Quaternion( .5, .5, .5, 0.0 ) ).normalize();
+	var tmpQ = new THREE.Quaternion();
+	var currentQ = new THREE.Quaternion();
 
 function render() {
     stats.begin();
@@ -776,6 +868,25 @@ function render() {
 
     intersectObjects(controller1);
     intersectObjects(controller2);
+    var time = performance.now();
+    let delta = ( time - lastTime ) / 5000;
+    lastTime = time;
+    tmpQ.set( moveQ.x * delta, moveQ.y * delta, moveQ.z * delta, 1 ).normalize();
+
+    for ( var i = 0, il = instBoxOrientationAttr.count; i < il; i ++ ) {
+        // get ith instance's orientation as vec4:
+        currentQ.fromArray( instBoxOrientationAttr.array, ( i * 4 ) );  // x4 because quaternion is 4 floats
+        currentQ.multiply( tmpQ ); // rotatte it
+        // set it back in the orientation instance array:
+        instBoxOrientationAttr.setXYZW( i, currentQ.x, currentQ.y, currentQ.z, currentQ.w );
+    }
+        
+    instBoxLocationAttr.needsUpdate = true;
+    instBoxOrientationAttr.needsUpdate = true;
+    instBoxScaleAttr.needsUpdate = true;
+    instBoxColorAttr.needsUpdate = true;
+    instBoxGeometry.maxInstancedCount = Math.ceil(Math.random() * 1000);
+
     if (!renderBypass) renderer.render(scene, camera);
 
     //console.log("hi")
@@ -795,8 +906,11 @@ function onKeypress(e){
 
         let keyCode = e.which;
         if(keyCode == 83){
-            let deltas = spawnRandomModule([0 + Math.random(), 0 + Math.random(), 0+ Math.random()], [0,0,0,1]);
-            clientSideDeltas(deltas);
+            for(let i =0; i < 1000; i++){
+                let deltas = spawnRandomModule([0 + Math.random(), 0 + Math.random(), 0+ Math.random()], [0,0,0,1]);
+                clientSideDeltas(deltas);
+            }
+
         }       
     }
 }
