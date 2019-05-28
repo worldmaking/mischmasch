@@ -398,6 +398,7 @@ async function init() {
     light.shadow.camera.left = -2;
     light.shadow.mapSize.set(4096, 4096);
     scene.add(light);
+    
 
     // VR controllers
     controller1 = new THREE.ViveController(0);
