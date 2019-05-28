@@ -90,6 +90,14 @@ function enactDeltaNewNode(delta) {
     
     
     switch(delta.kind){
+        case "inlet": 
+        case "outlet":
+        case "large_knob":
+        case "small_knob":
+        case "n_switch":
+        case "group": {
+        }break;
+        /*
         case "inlet": {
             inlet_material.blending = THREE.NormalBlending;
             container = new THREE.Mesh(inlet_geometry, inlet_material);
@@ -251,14 +259,15 @@ function enactDeltaNewNode(delta) {
             //Gonna be used for subpatching
 
         } break;
+        */
         default: {
             container = new THREE.Mesh(instancedGeometry, shaderMat);
             
-            let label = generateLabel(labelName);
-            label.position.y = -LABEL_SIZE;
-            label.position.z += 0.01;
-            label.position.x = 0.005;
-            container.add(label);
+            // let label = generateLabel(labelName);
+            // label.position.y = -LABEL_SIZE;
+            // label.position.z += 0.01;
+            // label.position.x = 0.005;
+            // container.add(label);
 
             container.userData.moveable = true; 
             container.userData.selectable = true;
@@ -266,7 +275,7 @@ function enactDeltaNewNode(delta) {
             container.userData.isBox = true;
         } break;
     }    
-
+    if(container !== undefined){
     container.castShadow = true;
     container.receiveShadow = true;
 
@@ -307,7 +316,7 @@ function enactDeltaNewNode(delta) {
     // add to proper parent:
     parent.add(container);
     
-
+    }
 
     
     // NOTE: not all nodes will have a pos, orient
