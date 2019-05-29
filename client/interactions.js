@@ -401,6 +401,7 @@ function intersectObjects(controller) {
     if (controller.userData.selected !== undefined) return;
     let line = controller.getObjectByName("line");
     let intersections = getIntersections(controller, 0, 0, -1);
+    //console.log(intersections)
     if (intersections.length > 0) {
         let intersection = intersections[0];
         let object = intersection.object;
