@@ -95,8 +95,7 @@ function enactDeltaNewNode(delta) {
         case "large_knob":
         case "small_knob":
         case "n_switch":
-        case "group": {
-        }break;
+        case "group": break;
         /*
         case "inlet": {
             inlet_material.blending = THREE.NormalBlending;
@@ -261,20 +260,23 @@ function enactDeltaNewNode(delta) {
         } break;
         */
         default: {
-            container = new THREE.Mesh(instancedGeometry, shaderMat);
-            
+            //container = new THREE.Mesh(instancedGeometry, shaderMat);
             // let label = generateLabel(labelName);
             // label.position.y = -LABEL_SIZE;
             // label.position.z += 0.01;
             // label.position.x = 0.005;
             // container.add(label);
 
-            container.userData.moveable = true; 
-            container.userData.selectable = true;
-            container.userData.dirty = true;
-            container.userData.isBox = true;
+            // container.userData.moveable = true; 
+            // container.userData.selectable = true;
+            // container.userData.dirty = true;
+            // container.userData.isBox = true;
+            maxInstances++;
+            instBoxLocationAttr.setXYZ(maxInstances - 1, Math.random()*3, Math.random()*3, Math.random()*3);
+            instBoxScaleAttr.setXYZ(maxInstances - 1, 0.6, 0.2, 0.05);
         } break;
     }    
+
     if(container !== undefined){
     container.castShadow = true;
     container.receiveShadow = true;

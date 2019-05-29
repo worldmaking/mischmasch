@@ -132,6 +132,7 @@ instancedGeometry.attributes.position = generic_geometry.attributes.position;
 // instance globals:
 let instBoxLocationAttr, instBoxOrientationAttr, instBoxScaleAttr, instBoxColorAttr
 let instBoxGeometry // a VBO really
+let maxInstances = 0;
 
 ///////////////
 
@@ -380,6 +381,7 @@ async function init() {
         instBoxGeometry.index = bufferGeometry.index;
         instBoxGeometry.attributes.position = bufferGeometry.attributes.position;
         instBoxGeometry.attributes.uv = bufferGeometry.attributes.uv;
+        
         // per instance data
         let offsets = [];
         let orientations = [];
@@ -574,11 +576,11 @@ async function init() {
    // scene.add(floorGrid);
 
    //MakeMenu
-   makeMenu();
+   //makeMenu();
 
    //Stupid hack just to get it load in the buffer
-   world.add(menu);
-   world.remove(menu);
+   //world.add(menu);
+   //world.remove(menu);
 
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
 	floorTexture.repeat.set( 10, 10 );
@@ -754,7 +756,7 @@ class Cable {
         position.needsUpdate = true;
 
         //this.geometry.computeBoundingBox();
-    }
+    }   
 
     destroy() {
 
@@ -873,19 +875,26 @@ function render() {
     lastTime = time;
     tmpQ.set( moveQ.x * delta, moveQ.y * delta, moveQ.z * delta, 1 ).normalize();
 
-    for ( var i = 0, il = instBoxOrientationAttr.count; i < il; i ++ ) {
-        // get ith instance's orientation as vec4:
-        currentQ.fromArray( instBoxOrientationAttr.array, ( i * 4 ) );  // x4 because quaternion is 4 floats
-        currentQ.multiply( tmpQ ); // rotatte it
-        // set it back in the orientation instance array:
-        instBoxOrientationAttr.setXYZW( i, currentQ.x, currentQ.y, currentQ.z, currentQ.w );
-    }
+    // for ( var i = 0, il = instBoxOrientationAttr.count; i < il; i ++ ) {
+    //     // get ith instance's orientation as vec4:
+    //     currentQ.fromArray( instBoxOrientationAttr.array, ( i * 4 ) );  // x4 because quaternion is 4 floats
+    //     currentQ.multiply( tmpQ ); // rotatte it
+    //     // set it back in the orientation instance array:
+    //     instBoxOrientationAttr.setXYZW( i, currentQ.x, currentQ.y, currentQ.z, currentQ.w );
+    // }
+    // let instIndex = 15;
+    // //for(let i =0, il = instIndex; i < il; i++){
+    //     //currentInst.fromArray(instBoxLocationAttr.array, (i * 3));
+    //         instBoxLocationAttr.setXYZ(instIndex - 1, 0, 1, 0);
+    //         instBoxScaleAttr.setXYZ(instIndex - 1, 0.3, 1, 0.4);
+        //instBoxOrientationAttr.setXYZW( i, 2, 2,2, 1 );
+    //}
         
     instBoxLocationAttr.needsUpdate = true;
     instBoxOrientationAttr.needsUpdate = true;
     instBoxScaleAttr.needsUpdate = true;
     instBoxColorAttr.needsUpdate = true;
-    instBoxGeometry.maxInstancedCount = Math.ceil(Math.random() * 1000);
+    instBoxGeometry.maxInstancedCount = maxInstances//Math.ceil(Math.random() * 5000);
 
     if (!renderBypass) renderer.render(scene, camera);
 
@@ -906,7 +915,7 @@ function onKeypress(e){
 
         let keyCode = e.which;
         if(keyCode == 83){
-            for(let i =0; i < 1000; i++){
+            for(let i =0; i < 1; i++){
                 let deltas = spawnRandomModule([0 + Math.random(), 0 + Math.random(), 0+ Math.random()], [0,0,0,1]);
                 clientSideDeltas(deltas);
             }
