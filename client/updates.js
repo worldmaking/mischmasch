@@ -271,9 +271,11 @@ function enactDeltaNewNode(delta) {
             // container.userData.selectable = true;
             // container.userData.dirty = true;
             // container.userData.isBox = true;
+
+            instBoxLocationAttr.setXYZ(maxInstances, Math.random()*3, Math.random()*3, Math.random()*3);
+            instBoxScaleAttr.setXYZ(maxInstances, 0.6, 0.2, 0.05);
+            instBoxColorAttr.setXYZW(maxInstances, Math.random(), Math.random(), Math.random(), 1);
             maxInstances++;
-            instBoxLocationAttr.setXYZ(maxInstances - 1, Math.random()*3, Math.random()*3, Math.random()*3);
-            instBoxScaleAttr.setXYZ(maxInstances - 1, 0.6, 0.2, 0.05);
         } break;
     }    
 
