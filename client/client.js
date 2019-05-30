@@ -133,6 +133,7 @@ instancedGeometry.attributes.position = generic_geometry.attributes.position;
 let instBoxLocationAttr, instBoxOrientationAttr, instBoxScaleAttr, instBoxColorAttr
 let instBoxGeometry // a VBO really
 let maxInstances = 0;
+let isCylinder = false;
 
 ///////////////
 
@@ -391,20 +392,20 @@ async function init() {
         let x, y, z, w;
         for ( let i = 0; i < instances; i ++ ) {
             // locations
-            x = (Math.random() - 0.5) * 5
-            y = 1 + Math.random();
-            z = (Math.random() - 0.5) * 5
+            x = 0;
+            y = 0;
+            z = 0;
             //vector.set( x, y, z, 0 ).normalize();
             offsets.push( x + vector.x, y + vector.y, z + vector.z );
             // orientations
-            x = Math.random() * 2 - 1;
-            y = Math.random() * 2 - 1;
-            z = Math.random() * 2 - 1;
-            w = Math.random() * 2 - 1;
+            x = 0;
+            y = 0;
+            z = 0;
+            w = 1;
             vector.set( x, y, z, w ).normalize();
             orientations.push( vector.x, vector.y, vector.z, vector.w );
 
-            scales.push(0.3*Math.random(), 0.05, 0.01)
+            scales.push(0,0,0)
             colors.push(Math.random(), Math.random(), Math.random(), 1)
         }
         instBoxLocationAttr = new THREE.InstancedBufferAttribute( new Float32Array( offsets ), 3 ).setDynamic( true );;
@@ -415,7 +416,11 @@ async function init() {
         instBoxGeometry.addAttribute( 'orientation', instBoxOrientationAttr );
         instBoxGeometry.addAttribute( 'scale', instBoxScaleAttr );
         instBoxGeometry.addAttribute( 'color', instBoxColorAttr );
-
+        
+        instBoxGeometry.addAttribute('cylinder', isCylinder);
+        
+       
+        console.log(instBoxGeometry);
         let material = new THREE.RawShaderMaterial( {
             uniforms: {
                 map: { value: new THREE.TextureLoader().load( 'textures/crate.gif' ) }
@@ -921,6 +926,32 @@ function onKeypress(e){
             }
 
         }       
+        if(keyCode == 68){
+            //Will become whatever index we are hitting with a raycast or however we get the module
+            let indexToRemove = 0;
+
+            let tempLoc = instBoxLocationAttr.array;
+            let tempOri = instBoxOrientationAttr.array;
+            let tempScl = instBoxScaleAttr.array;
+            let tempCol = instBoxColorAttr.array;
+
+            for(let i=indexToRemove, k=(i*3)-1, j = (i*4)-1; i<maxInstances; i++, k+=3, j+=4){
+
+                if(k < 0 || j < 0){
+                    k =0;
+                    j=0;
+                }
+
+                instBoxLocationAttr.setXYZ(i, tempLoc[k+3],tempLoc[k+4],tempLoc[k+5]);
+                instBoxOrientationAttr.setXYZW(i,tempOri[j+4],tempOri[j+5],tempOri[j+6],tempOri[j+7]);
+                instBoxScaleAttr.setXYZ(i, tempScl[k+3],tempScl[k+4],tempScl[k+5]);
+                instBoxColorAttr.setXYZW(i,tempCol[j+4],tempCol[j+5],tempCol[j+6],tempCol[j+7]);
+
+            }
+
+            maxInstances--;
+        }
+
     }
 }
 
