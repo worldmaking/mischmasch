@@ -519,6 +519,68 @@ function generateLabel(message, label_size) {
     return text;
 }
 
+function createLabel(text, y,z, uniformScaling=0.009){
+    let mesh;
+    bm_loadFont('shaders/CONSOLA.TTF-msdf.json', function(err, font) {
+    //bm_loadFont('shaders/distanceConsolasNEHE.fnt', function(err, font) {
+        // create a geometry of packed bitmap glyphs, 
+        // word wrapped to 300px and right-aligned
+
+        //default pixel width is 24px
+        let wrapWidth = 240.0;
+       // let uniformScaling = .009;
+
+        //https://github.com/Jam3/three-bmfont-text
+        let geometry = bm_createGeometry({
+            width: wrapWidth,
+            align: 'center',
+            font: font
+        })
+        // change text and other options as desired
+        // the options sepcified in constructor will
+        // be used as defaults
+        geometry.update(
+            { text: text });
+        
+        // the resulting layout has metrics and bounds
+        // console.log(geometry.layout.height)
+        // console.log(geometry.layout.descender)
+            
+        // the texture atlas containing our glyphs
+        let textureLoader = new THREE.TextureLoader();
+        textureLoader.load('shaders/CONSOLATTF.png', function (texture) {
+        //textureLoader.load('shaders/distanceConsolasNEHE.png', function (texture) {
+            if(textMaterial == undefined){
+                textMaterial = new THREE.ShaderMaterial( {
+                    uniforms: {
+                        "u_texture": { value: texture },
+                        "u_time": { value: 0 },
+                        "u_color": {value: 0 }
+                    },
+                    vertexShader: loadedFontVShader,
+                    fragmentShader: loadedFontFShader,
+                    side: THREE.DoubleSide,
+                    transparent: true,
+                    derivatives: true,
+                } );
+            }
+        
+            // now do something with our mesh!
+            mesh = new THREE.Mesh(geometry, textMaterial);
+
+            mesh.scale.set(uniformScaling, -uniformScaling, uniformScaling);
+           // mesh.scale.set(.02,-.02,.02);
+            //mesh.position.set(-3,0.5,0);
+
+            //center text scale * wrapWidth (width) /2 (ex. .009 * 240 / 2)
+            let centerX = (wrapWidth* uniformScaling)/2.0;
+            mesh.position.set(-centerX, y, z);
+            world.add(mesh);
+        });
+
+    });
+}
+
 function updateDirtyNode(dirtyPath) {
     //console.log("cleaning", dirtyPath)
     let parentNode = getObjectByPath(dirtyPath);

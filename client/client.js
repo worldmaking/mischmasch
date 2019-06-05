@@ -7,6 +7,7 @@ let geometry = new THREE.BoxBufferGeometry(0.2, 0.2, 0.2);
 let geometry2 = new THREE.BoxBufferGeometry(0.1, 0.1, 0.1);
 
 let fontFile = 'js/three-r102/examples/fonts/helvetiker_regular.typeface.json';
+//let fontFile = 'shaders/distanceConsolasNEHE.fnt';
 let loadedFont;
 
 let viveControllerPath = 'js/three-r102/examples/models/obj/vive-controller/';
@@ -17,11 +18,16 @@ let loadedHeadsetModel;
 
 let texturesPath = "textures/";
 
-let vShaderFile = 'shaders/shader.vert';
-let fShaderFile = 'shaders/shader.frag';
+let instBoxVShaderFile = 'shaders/instBoxShader.vert';
+let instBoxFShaderFile = 'shaders/instBoxShader.frag';
+let fontVShaderFile = 'shaders/font.vert';
+let fontFShaderFile = 'shaders/font.frag';
 
-let loadedVShader;
-let loadedFShader;
+let loadedInstBoxVShader;
+let loadedInstBoxFShader;
+
+let loadedFontVShader;
+let loadedFontFShader
 
 let renderBypass = false;
 
@@ -130,10 +136,9 @@ instancedGeometry.attributes.position = generic_geometry.attributes.position;
 ///////////////
 
 // instance globals:
-let instBoxLocationAttr, instBoxOrientationAttr, instBoxScaleAttr, instBoxColorAttr
+let instBoxLocationAttr, instBoxOrientationAttr, instBoxScaleAttr, instBoxColorAttr, instBoxShapeAttr;
 let instBoxGeometry // a VBO really
 let maxInstances = 0;
-let isCylinder = false;
 
 ///////////////
 
@@ -169,6 +174,8 @@ let outline_material = new THREE.MeshStandardMaterial({
 });
 
 let shaderMat;
+
+let textMaterial;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // SCENE COMPONENTS
@@ -298,6 +305,8 @@ let localPatch;
 let spawn = false;
 let controllerPrevPos;
 
+let mouse = new THREE.Vector2();
+
 //Simple debug hack
 let once = true;
 
@@ -337,24 +346,11 @@ async function init() {
     // TODO: where do these normal maps apply?
     //let viveHeadsetNormalsPNG = await loadTexture(viveHeadsetModelPath + 'normals.png');
 
-    loadedVShader = await loadShaders(vShaderFile);
-    loadedFShader = await loadShaders(fShaderFile);
-    console.log(loadedVShader, loadedFShader)
+    loadedInstBoxVShader = await loadShaders(instBoxVShaderFile);
+    loadedInstBoxFShader = await loadShaders(instBoxFShaderFile);
 
-    shaderMat = new THREE.ShaderMaterial( {
-        uniforms: {
-            "mRefractionRatio": { value: 1.02 },
-            "mFresnelBias": { value: 0.1 },
-            "mFresnelPower": { value: 2.0 },
-            "mFresnelScale": { value: 1.0 },
-            "tCube": { value: null },
-            "emissive": {value: 0}
-        },
-        vertexShader: loadedVShader,
-        fragmentShader: loadedFShader,
-        side: THREE.DoubleSide,
-        transparent: true
-    } );
+    loadedFontVShader = await loadShaders(fontVShaderFile);
+    loadedFontFShader = await loadShaders(fontFShaderFile);
 
     // build up the scene
     scene = new THREE.Scene();
@@ -371,23 +367,28 @@ async function init() {
     scene.add(camera)
     camera.position.set(0, 1.5, 0)
 
-    
 
     /// instanceBox
     {
         let instances = 50000;
-        let bufferGeometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
+        // box spans signed-normalized range of -1..1 in each axis
+        // with subdivisions in each axis
+        let bufferGeometry = new THREE.BoxBufferGeometry( 2,2,2,  3,3,1 );
+        
         // copying data from a simple box geometry, but you can specify a custom geometry if you want
         instBoxGeometry = new THREE.InstancedBufferGeometry();
         instBoxGeometry.index = bufferGeometry.index;
+        instBoxGeometry.attributes.normal = bufferGeometry.attributes.normal;
         instBoxGeometry.attributes.position = bufferGeometry.attributes.position;
         instBoxGeometry.attributes.uv = bufferGeometry.attributes.uv;
+        console.log("box", bufferGeometry)
         
         // per instance data
         let offsets = [];
         let orientations = [];
         let scales = [];
         let colors = [];
+        let shapes = []; // 0==box, 1== cylinder
         let vector = new THREE.Vector4();
         let x, y, z, w;
         for ( let i = 0; i < instances; i ++ ) {
@@ -406,52 +407,27 @@ async function init() {
             orientations.push( vector.x, vector.y, vector.z, vector.w );
 
             scales.push(0,0,0)
-            colors.push(Math.random(), Math.random(), Math.random(), 1)
+            colors.push(Math.random(), Math.random(), Math.random(), 1);
+
+            shapes.push(Math.round(Math.random()));
         }
         instBoxLocationAttr = new THREE.InstancedBufferAttribute( new Float32Array( offsets ), 3 ).setDynamic( true );;
         instBoxOrientationAttr = new THREE.InstancedBufferAttribute( new Float32Array( orientations ), 4 ).setDynamic( true );
         instBoxScaleAttr = new THREE.InstancedBufferAttribute( new Float32Array( scales ), 3 ).setDynamic( true );
         instBoxColorAttr = new THREE.InstancedBufferAttribute( new Float32Array( colors ), 4 ).setDynamic( true );
+        instBoxShapeAttr = new THREE.InstancedBufferAttribute( new Float32Array( shapes ), 1 ).setDynamic( true );
         instBoxGeometry.addAttribute( 'location', instBoxLocationAttr );
         instBoxGeometry.addAttribute( 'orientation', instBoxOrientationAttr );
         instBoxGeometry.addAttribute( 'scale', instBoxScaleAttr );
         instBoxGeometry.addAttribute( 'color', instBoxColorAttr );
+        instBoxGeometry.addAttribute( 'shape', instBoxShapeAttr );
         
-        instBoxGeometry.addAttribute('cylinder', isCylinder);
-        
-       
-        console.log(instBoxGeometry);
         let material = new THREE.RawShaderMaterial( {
             uniforms: {
                 map: { value: new THREE.TextureLoader().load( 'textures/crate.gif' ) }
             },
-            vertexShader: `precision highp float;
-            uniform mat4 modelViewMatrix;
-            uniform mat4 projectionMatrix;
-            attribute vec3 position;
-            attribute vec3 location;
-            attribute vec2 uv;
-            attribute vec4 orientation;
-            attribute vec3 scale;
-            attribute vec4 color;
-            varying vec2 vUv;
-            varying vec4 vColor;
-            // http://www.geeks3d.com/20141201/how-to-rotate-a-vertex-by-a-quaternion-in-glsl/
-            vec3 applyQuaternionToVector( vec4 q, vec3 v ){
-                return v + 2.0 * cross( q.xyz, cross( q.xyz, v ) + q.w * v );
-            }
-            void main() {
-                vec3 vPosition = applyQuaternionToVector( orientation, position * scale );
-                vUv = uv;
-                vColor = color;
-                gl_Position = projectionMatrix * modelViewMatrix * vec4( location + vPosition, 1.0 );
-            }`,
-            fragmentShader: `precision highp float;
-            varying vec2 vUv;
-            varying vec4 vColor;
-            void main() {
-                gl_FragColor = vColor * vec4(vUv, 0.5, 1.);
-            }`
+            vertexShader: loadedInstBoxVShader,
+            fragmentShader: loadedInstBoxFShader
         } );
 
         instBoxMesh = new THREE.Mesh( instBoxGeometry, material );
@@ -511,6 +487,7 @@ async function init() {
     controller1.addEventListener("gripsdown", onGrips);
     controller2.addEventListener("gripsdown", onGrips);
     document.addEventListener("keydown", onKeypress, false);
+    document.addEventListener( 'mousemove', onDocumentMouseMove, false );
     scene.add(controller1);
     scene.add(controller2);
 
@@ -600,7 +577,19 @@ async function init() {
 	let floor = new THREE.Mesh(floorGeometry, floorMaterial);
 	//floor.position.y = -0.5;
 	floor.rotation.x = Math.PI / 2;
-	scene.add(floor);
+    scene.add(floor);
+    
+    //Add Text for now
+    for(let i =0; i < 1; i++){
+        createLabel('Hello 00000',Math.random(), Math.random(), 0.002);
+    }
+
+    createLabel('what up1!',0.5, 2);
+
+    for(let i =0; i < 30; i++){
+        let deltas = spawnRandomModule([0 + Math.random(), 0 + Math.random(), 0+ Math.random()], [0,0,0,1]);
+        clientSideDeltas(deltas);
+    }
 
     // hook up server:
     connect_to_server();
@@ -778,7 +767,6 @@ class Cable {
     }
 }
 
-          
 
 function animate() {
   //renderer.setAnimationLoop(render);
@@ -793,14 +781,25 @@ function animate() {
         renderer.vr.enabled = true;
      }
 
+    if (textMaterial != undefined) {
+        textMaterial.uniforms.u_time.value = performance.now() * 0.001;
+    }
+    //console.log(raycaster)
+
+
+
     render();
+   
+
+    raycaster.setFromCamera(mouse, camera);
+    intersects = raycaster.intersectObject( instBoxMesh );
 }
 
 // TODO: temp, delete these:
 var lastTime = 0;
-	var moveQ = ( new THREE.Quaternion( .5, .5, .5, 0.0 ) ).normalize();
-	var tmpQ = new THREE.Quaternion();
-	var currentQ = new THREE.Quaternion();
+var moveQ = ( new THREE.Quaternion( .5, .5, .5, 0.0 ) ).normalize();
+var tmpQ = new THREE.Quaternion();
+var currentQ = new THREE.Quaternion();
 
 function render() {
     stats.begin();
@@ -899,6 +898,7 @@ function render() {
     instBoxOrientationAttr.needsUpdate = true;
     instBoxScaleAttr.needsUpdate = true;
     instBoxColorAttr.needsUpdate = true;
+    instBoxShapeAttr.needsUpdate = true;
     instBoxGeometry.maxInstancedCount = maxInstances//Math.ceil(Math.random() * 5000);
 
     if (!renderBypass) renderer.render(scene, camera);
@@ -915,12 +915,18 @@ function onGrips(event) {
     }
 }
 
+function onDocumentMouseMove( event ) {
+    event.preventDefault();
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+}
+
 function onKeypress(e){
     if (!renderer.vr.isPresenting()){
 
         let keyCode = e.which;
         if(keyCode == 83){
-            for(let i =0; i < 1; i++){
+            for(let i =0; i < 1000; i++){
                 let deltas = spawnRandomModule([0 + Math.random(), 0 + Math.random(), 0+ Math.random()], [0,0,0,1]);
                 clientSideDeltas(deltas);
             }
@@ -934,8 +940,9 @@ function onKeypress(e){
             let tempOri = instBoxOrientationAttr.array;
             let tempScl = instBoxScaleAttr.array;
             let tempCol = instBoxColorAttr.array;
+            let tempShp = instBoxShapeAttr.array;
 
-            for(let i=indexToRemove, k=(i*3)-1, j = (i*4)-1; i<maxInstances; i++, k+=3, j+=4){
+            for(let i=indexToRemove, l=i-1, k=(i*3)-1, j = (i*4)-1; i<maxInstances; i++, l++, k+=3, j+=4){
 
                 if(k < 0 || j < 0){
                     k =0;
@@ -946,6 +953,8 @@ function onKeypress(e){
                 instBoxOrientationAttr.setXYZW(i,tempOri[j+4],tempOri[j+5],tempOri[j+6],tempOri[j+7]);
                 instBoxScaleAttr.setXYZ(i, tempScl[k+3],tempScl[k+4],tempScl[k+5]);
                 instBoxColorAttr.setXYZW(i,tempCol[j+4],tempCol[j+5],tempCol[j+6],tempCol[j+7]);
+                instBoxShapeAttr.setX(i, tempShp[l]);
+                //instBoxShapeAttr.setSize()
 
             }
 
