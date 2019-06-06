@@ -815,9 +815,6 @@ function render() {
     
     updateDirty();
 
-    
-
-
     // make sure all objects' matrices are up to date (TODO might not be needed?)
     scene.updateMatrixWorld();
 
