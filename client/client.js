@@ -590,6 +590,7 @@ async function init() {
         let deltas = spawnRandomModule([0 + Math.random(), 0 + Math.random(), 0+ Math.random()], [0,0,0,1]);
         clientSideDeltas(deltas);
     }
+    spoofList();
 
     // hook up server:
     connect_to_server();
@@ -599,6 +600,7 @@ async function init() {
 
     // outgoingDeltas.push(spawnRandomModule([1, 2, 3], [4, 5, 6, 7]))
 }
+
 
 
 
@@ -908,6 +910,40 @@ function render() {
     stats.end();
 }
 
+
+let meshes = [];
+function spoofList(){
+    let boxGeom = new THREE.BoxGeometry(2,2,2);
+    let boxMat = new THREE.MeshStandardMaterial( {
+        color: 0x888888,
+        roughness: 0.7,
+        metalness: 0.0,
+        opacity: 0.3,
+        transparent: true,
+        side: THREE.DoubleSide,});
+    for(let i =0, j=0, k=0; i < maxInstances; i++, j+=3, k+=4){
+        let mesh = new THREE.Mesh(boxGeom, boxMat);
+        mesh.position.fromArray([
+            instBoxLocationAttr.array[j],
+            instBoxLocationAttr.array[j+1],
+            instBoxLocationAttr.array[j+2]]);
+        mesh.quaternion.fromArray([
+            instBoxOrientationAttr.array[k],
+            instBoxOrientationAttr.array[k+1],
+            instBoxOrientationAttr.array[k+2],
+            instBoxOrientationAttr.array[k+3]]);
+        mesh.scale.fromArray([
+            instBoxScaleAttr.array[j],
+            instBoxScaleAttr.array[j+1],
+            instBoxScaleAttr.array[j+2]]);
+            mesh.userData.instaceID = i;
+        meshes.push(mesh);
+        world.add(mesh);
+    }
+
+
+}
+
 function onGrips(event) {
     let controller = event.target;
     if (controller.getButtonState("grips")) {
@@ -926,10 +962,11 @@ function onKeypress(e){
 
         let keyCode = e.which;
         if(keyCode == 83){
-            for(let i =0; i < 1000; i++){
+            for(let i =0; i < 50; i++){
                 let deltas = spawnRandomModule([0 + Math.random(), 0 + Math.random(), 0+ Math.random()], [0,0,0,1]);
                 clientSideDeltas(deltas);
             }
+            spoofList();
 
         }       
         if(keyCode == 68){
