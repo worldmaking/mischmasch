@@ -21,8 +21,10 @@
     "bottleneck": "^2.18.0",
     "express": "^4.16.4",
     "gl-matrix": "^3.0.0",
+    "load-bmfont": "^1.4.0",
     "nodemon": "^1.18.11",
     "reconnecting-websocket": "^4.1.10",
+    "three-bmfont-text": "^2.3.0",
     "ws": "^6.2.0"
   },
   "nodemonConfig": {
