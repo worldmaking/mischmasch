@@ -788,13 +788,18 @@ function animate() {
     }
     //console.log(raycaster)
 
-
-
     render();
    
 
     raycaster.setFromCamera(mouse, camera);
-    intersects = raycaster.intersectObject( instBoxMesh );
+    intersects = raycaster.intersectObjects(meshes, false);
+
+    if ( intersects.length > 0 ) {
+        console.log("Intersected")
+        let intersection = intersects[0];
+        let object = intersection.object;
+
+    }
 }
 
 // TODO: temp, delete these:
@@ -871,8 +876,9 @@ function render() {
         }
     }
 
-    intersectObjects(controller1);
-    intersectObjects(controller2);
+    // intersectObjects(controller1);
+    // intersectObjects(controller2);
+
     var time = performance.now();
     let delta = ( time - lastTime ) / 5000;
     lastTime = time;
@@ -902,22 +908,14 @@ function render() {
 
     if (!renderBypass) renderer.render(scene, camera);
 
-    //console.log("hi")
-
     stats.end();
 }
 
 
 let meshes = [];
+let boxGeom = new THREE.BoxGeometry(2,2,2);
+let boxMat = new THREE.MeshStandardMaterial();
 function spoofList(){
-    let boxGeom = new THREE.BoxGeometry(2,2,2);
-    let boxMat = new THREE.MeshStandardMaterial( {
-        color: 0x888888,
-        roughness: 0.7,
-        metalness: 0.0,
-        opacity: 0.3,
-        transparent: true,
-        side: THREE.DoubleSide,});
     for(let i =0, j=0, k=0; i < maxInstances; i++, j+=3, k+=4){
         let mesh = new THREE.Mesh(boxGeom, boxMat);
         mesh.position.fromArray([
@@ -933,9 +931,10 @@ function spoofList(){
             instBoxScaleAttr.array[j],
             instBoxScaleAttr.array[j+1],
             instBoxScaleAttr.array[j+2]]);
-            mesh.userData.instaceID = i;
+        mesh.userData.instaceID = i;
+        
+        mesh.updateMatrixWorld(true);
         meshes.push(mesh);
-        world.add(mesh);
     }
 
 
@@ -959,7 +958,7 @@ function onKeypress(e){
 
         let keyCode = e.which;
         if(keyCode == 83){
-            for(let i =0; i < 50; i++){
+            for(let i =0; i < 1000; i++){
                 let deltas = spawnRandomModule([0 + Math.random(), 0 + Math.random(), 0+ Math.random()], [0,0,0,1]);
                 clientSideDeltas(deltas);
             }
@@ -988,7 +987,6 @@ function onKeypress(e){
                 instBoxScaleAttr.setXYZ(i, tempScl[k+3],tempScl[k+4],tempScl[k+5]);
                 instBoxColorAttr.setXYZW(i,tempCol[j+4],tempCol[j+5],tempCol[j+6],tempCol[j+7]);
                 instBoxShapeAttr.setX(i, tempShp[l]);
-                //instBoxShapeAttr.setSize()
 
             }
 
