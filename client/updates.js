@@ -518,8 +518,15 @@ function generateLabel(message, label_size) {
 
     return text;
 }
-
-function createLabel(text, y,z, uniformScaling=0.009){
+/**
+ * create a label with 3D space
+ * @param {VALUE} text - text for the label
+ * @param {VALUE} x - x location
+ * @param {VALUE} y - y location
+ * @param {VALUE} z - z location
+ * @param {value} scale - OPTIONAL: single scale size (default: 0.009)
+ */
+function createLabel(text, x, y, z, uniformScaling=0.009){
     let mesh;
     bm_loadFont('shaders/CONSOLA.TTF-msdf.json', function(err, font) {
     //bm_loadFont('shaders/distanceConsolasNEHE.fnt', function(err, font) {
