@@ -379,8 +379,8 @@ function getIntersections(controller, x, y, z, offset =0) {
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
     let intersections = raycaster.intersectObjects(world.children, true);
-    
-    while (intersections.length > 0 && !intersections[0].object.userData.selectable) intersections.shift();
+
+    while (intersections.length > 0 /*&& !intersections[0].object.userData.selectable*/) intersections.shift();
     return intersections;
 }
 
@@ -393,7 +393,7 @@ function getIntersectionsWithKind(controller, x, y, z, offset =0, kind) {
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
     let intersections = raycaster.intersectObjects(world.children, true);
-    while (intersections.length > 0 /*&& !intersections[0].object.userData.selectable*/ && kind !== intersections[0].object.userData.kind) intersections.shift();
+    while (intersections.length > 0 /*&& !intersections[0].object.userData.selectable && kind !== intersections[0].object.userData.kind*/) intersections.shift();
     return intersections;
 }
 
