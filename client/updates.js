@@ -581,7 +581,10 @@ function createLabel(text, x, y, z, uniformScaling=0.009){
 
             //center text scale * wrapWidth (width) /2 (ex. .009 * 240 / 2)
             let centerX = (wrapWidth* uniformScaling)/2.0;
-            mesh.position.set(-centerX, y, z);
+            if(x=="center")
+                mesh.position.set(-centerX, y, z);
+            else
+                mesh.position.set(x,y,z);
             world.add(mesh);
         });
 

@@ -581,14 +581,19 @@ async function init() {
     
     //Add Text for now
     for(let i =0; i < 1; i++){
-        createLabel('Hello 00000',Math.random(), Math.random(), 0.002);
+        createLabel('Hello 00000',"center", Math.random(), Math.random(), 0.002);
     }
 
-    createLabel('what up1!',0.5, 2);
+    createLabel('what up1!', "center", 0.5, 2);
 
-    for(let i =0; i < 30; i++){
+    for(let i =0, j=0; i < 30; i++, j+=3){
         let deltas = spawnRandomModule([0 + Math.random(), 0 + Math.random(), 0+ Math.random()], [0,0,0,1]);
         clientSideDeltas(deltas);
+        //adds a label to each module that is initalized
+        createLabel("Module",
+        instBoxLocationAttr.array[j],
+        instBoxLocationAttr.array[j+1],
+        instBoxLocationAttr.array[j+2]);
     }
     spoofList();
 
