@@ -531,11 +531,10 @@ function createLabel(text, x, y, z, uniformScaling=0.009){
     bm_loadFont('shaders/CONSOLA.TTF-msdf.json', function(err, font) {
     //bm_loadFont('shaders/distanceConsolasNEHE.fnt', function(err, font) {
         // create a geometry of packed bitmap glyphs, 
-        // word wrapped to 300px and right-aligned
+        // word wrapped to 240px (10 characters) and center-aligned
 
         //default pixel width is 24px
         let wrapWidth = 240.0;
-       // let uniformScaling = .009;
 
         //https://github.com/Jam3/three-bmfont-text
         let geometry = bm_createGeometry({
@@ -579,13 +578,15 @@ function createLabel(text, x, y, z, uniformScaling=0.009){
            // mesh.scale.set(.02,-.02,.02);
             //mesh.position.set(-3,0.5,0);
 
-            //center text scale * wrapWidth (width) /2 (ex. .009 * 240 / 2)
+            //center text: scale * Wrap Width (width) /2 (ex. .009 * 240 / 2)
             let centerX = (wrapWidth* uniformScaling)/2.0;
             if(x=="center")
                 mesh.position.set(-centerX, y, z);
             else
                 mesh.position.set(x,y,z);
             world.add(mesh);
+
+            //return mesh;
         });
 
     });
