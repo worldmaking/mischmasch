@@ -987,6 +987,8 @@ function onDocumentMouseDown(event){
                     instBoxScaleAttr.array[j+1] = meshes[i].scale.y
                     instBoxScaleAttr.array[j+2] = meshes[i].scale.z
 
+                    meshes[i].userData.instaceID = i;
+
                     if(i < object.userData.instaceID)
                         instBoxColorAttr.setXYZW(i,tempCol[k],tempCol[k+1],tempCol[k+2],tempCol[k+3]);
                     else
