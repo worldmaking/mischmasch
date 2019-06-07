@@ -956,15 +956,16 @@ function onDocumentMouseDown(event){
     intersects = raycaster.intersectObjects(meshes, false);
 
         if ( intersects.length > 0 ) {
-            console.log("Intersected")
+            console.log("Intersected");
             let intersection = intersects[0];
             let object = intersection.object;
-            console.log(object)
-            let numberOfSplices = 1
+            console.log(object);
+            let numberOfSplices = 1;
 
             for(let o of meshes){
                 if(o.userData.instaceID == object.userData.instaceID){
                     meshes.splice(object.userData.instaceID,numberOfSplices);
+                    console.log(meshes);
                 }
             }
 
