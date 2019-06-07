@@ -951,7 +951,7 @@ function onDocumentMouseMove( event ) {
 
 function onDocumentMouseDown(event){
     event.preventDefault();
-    if(event.button == 0){
+    if(event.button == 2){
 
     raycaster.setFromCamera(mouse, camera);
     intersects = raycaster.intersectObjects(meshes, false);
@@ -1006,6 +1006,12 @@ function onDocumentMouseDown(event){
             maxInstances = meshes.length;
         }
     }
+    if(event.button == 1){
+        let deltas = spawnRandomModule([0 + Math.random(), 0 + Math.random(), 0+ Math.random()], [0,0,0,1]);
+        clientSideDeltas(deltas);
+        spoofList();
+    }
+ 
 }
 
 function onKeypress(e){
@@ -1019,7 +1025,8 @@ function onKeypress(e){
             }
             spoofList();
 
-        }       
+        }    
+        /*   
         if(keyCode == 68){
             //Will become whatever index we are hitting with a raycast or however we get the module
             let indexToRemove = 0;
@@ -1046,7 +1053,7 @@ function onKeypress(e){
             }
 
             maxInstances--;
-        }
+        }*/
 
     }
 }
