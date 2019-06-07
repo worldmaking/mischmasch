@@ -928,8 +928,9 @@ function spoofList(){
             instBoxScaleAttr.array[j+2]]);
         mesh.userData.instaceID = i;
         
-        mesh.updateMatrixWorld(true);
+        //mesh.updateMatrixWorld(true);
         meshes.push(mesh);
+        world.add(mesh);
     }
 
 
@@ -964,6 +965,7 @@ function onDocumentMouseDown(event){
 
             for(let o of meshes){
                 if(o.userData.instaceID == object.userData.instaceID){
+                    world.remove(object);
                     meshes.splice(object.userData.instaceID,numberOfSplices);
                     console.log(meshes);
                 }
