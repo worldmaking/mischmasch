@@ -959,6 +959,7 @@ function onDocumentMouseDown(event){
             console.log("Intersected")
             let intersection = intersects[0];
             let object = intersection.object;
+            console.log(object)
             let numberOfSplices = 1
 
             for(let o of meshes){
@@ -967,21 +968,22 @@ function onDocumentMouseDown(event){
                 }
             }
 
+            let tempCol = instBoxColorAttr.array;
             for(let i=0, j=0, k=0; i < maxInstances; i++, j+=3, k+=4){
                 if(i < meshes.length){
                     
-                    instBoxLocationAttr.array[j] = mesh.position.x
-                    instBoxLocationAttr.array[j+1] = mesh.position.y
-                    instBoxLocationAttr.array[j+2] = mesh.position.z
+                    instBoxLocationAttr.array[j] = meshes[i].position.x
+                    instBoxLocationAttr.array[j+1] = meshes[i].position.y
+                    instBoxLocationAttr.array[j+2] = meshes[i].position.z
                 
-                    instBoxOrientationAttr.array[k] = mesh.quaternion.x
-                    instBoxOrientationAttr.array[k+1] = mesh.quaternion.y
-                    instBoxOrientationAttr.array[k+2] = mesh.quaternion.z
-                    instBoxOrientationAttr.array[k+3] = mesh.quaternion.w
+                    instBoxOrientationAttr.array[k] = meshes[i].quaternion.x
+                    instBoxOrientationAttr.array[k+1] = meshes[i].quaternion.y
+                    instBoxOrientationAttr.array[k+2] = meshes[i].quaternion.z
+                    instBoxOrientationAttr.array[k+3] = meshes[i].quaternion.w
                 
-                    instBoxScaleAttr.array[j] = mesh.scale.x
-                    instBoxScaleAttr.array[j+1] = mesh.scale.y
-                    instBoxScaleAttr.array[j+2] = mesh.scale.z
+                    instBoxScaleAttr.array[j] = meshes[i].scale.x
+                    instBoxScaleAttr.array[j+1] = meshes[i].scale.y
+                    instBoxScaleAttr.array[j+2] = meshes[i].scale.z
 
                     if(i < object.userData.instaceID)
                         instBoxColorAttr.setXYZW(i,tempCol[k],tempCol[k+1],tempCol[k+2],tempCol[k+3]);
