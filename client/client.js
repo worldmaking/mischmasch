@@ -139,6 +139,7 @@ instancedGeometry.attributes.position = generic_geometry.attributes.position;
 let instBoxLocationAttr, instBoxOrientationAttr, instBoxScaleAttr, instBoxColorAttr, instBoxShapeAttr;
 let instBoxGeometry // a VBO really
 let maxInstances = 0;
+let instances = 50000;
 
 ///////////////
 
@@ -370,7 +371,6 @@ async function init() {
 
     /// instanceBox
     {
-        let instances = 50000;
         // box spans signed-normalized range of -1..1 in each axis
         // with subdivisions in each axis
         let bufferGeometry = new THREE.BoxBufferGeometry( 2,2,2,  3,3,1 );
@@ -959,13 +959,44 @@ function onDocumentMouseDown(event){
             console.log("Intersected")
             let intersection = intersects[0];
             let object = intersection.object;
+            let numberOfSplices = 1
 
             for(let o of meshes){
                 if(o.userData.instaceID == object.userData.instaceID){
-                    meshes.splice(object.userData.instaceID,1);
+                    meshes.splice(object.userData.instaceID,numberOfSplices);
                 }
             }
 
+            for(let i=0, j=0, k=0; i < maxInstances; i++, j+=3, k+=4){
+                if(i < meshes.length){
+                    
+                    instBoxLocationAttr.array[j] = mesh.position.x
+                    instBoxLocationAttr.array[j+1] = mesh.position.y
+                    instBoxLocationAttr.array[j+2] = mesh.position.z
+                
+                    instBoxOrientationAttr.array[k] = mesh.quaternion.x
+                    instBoxOrientationAttr.array[k+1] = mesh.quaternion.y
+                    instBoxOrientationAttr.array[k+2] = mesh.quaternion.z
+                    instBoxOrientationAttr.array[k+3] = mesh.quaternion.w
+                
+                    instBoxScaleAttr.array[j] = mesh.scale.x
+                    instBoxScaleAttr.array[j+1] = mesh.scale.y
+                    instBoxScaleAttr.array[j+2] = mesh.scale.z
+
+                    if(i < object.userData.instaceID)
+                        instBoxColorAttr.setXYZW(i,tempCol[k],tempCol[k+1],tempCol[k+2],tempCol[k+3]);
+                    else
+                        instBoxColorAttr.setXYZW(i,tempCol[k+4*numberOfSplices],tempCol[k+4*numberOfSplices+1],tempCol[k+4*numberOfSplices+2],tempCol[k+4*numberOfSplices+3]);
+                    //mesh.userData.instaceID = i;
+                }
+                else{
+                    instBoxLocationAttr.setXYZ(i, 0,0,0);
+                    instBoxOrientationAttr.setXYZW(i, 0,0,0,0);
+                    instBoxScaleAttr.setXYZ(i, 0,0,0);
+                    instBoxColorAttr.setXYZW(i, 0,0,0,0);
+                }
+            }
+            maxInstances = meshes.length;
         }
     }
 }
