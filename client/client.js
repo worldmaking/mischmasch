@@ -591,10 +591,10 @@ async function init() {
         let deltas = spawnRandomModule([0 + Math.random(), 0 + Math.random(), 0+ Math.random()], [0,0,0,1]);
         clientSideDeltas(deltas);
         //adds a label to each module that is initalized
-        createLabel("Module",
-        instBoxLocationAttr.array[j],
-        instBoxLocationAttr.array[j+1],
-        instBoxLocationAttr.array[j+2]);
+        // createLabel("Module",
+        // instBoxLocationAttr.array[j],
+        // instBoxLocationAttr.array[j+1],
+        // instBoxLocationAttr.array[j+2]);
     }
     spoofList();
 
@@ -928,9 +928,9 @@ function spoofList(){
             instBoxScaleAttr.array[j+2]]);
         mesh.userData.instaceID = i;
         
-        //mesh.updateMatrixWorld(true);
+        mesh.updateMatrixWorld(true);
         meshes.push(mesh);
-        world.add(mesh);
+       // world.add(mesh);
     }
 
 
@@ -960,12 +960,12 @@ function onDocumentMouseDown(event){
             console.log("Intersected")
             let intersection = intersects[0];
             let object = intersection.object;
-            console.log(object)
+            //console.log(object)
             let numberOfSplices = 1
 
             for(let o of meshes){
                 if(o.userData.instaceID == object.userData.instaceID){
-                    world.remove(object);
+                   //world.remove(object);
                     meshes.splice(object.userData.instaceID,numberOfSplices);
                 }
             }
