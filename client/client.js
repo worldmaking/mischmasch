@@ -488,6 +488,7 @@ async function init() {
     controller2.addEventListener("gripsdown", onGrips);
     document.addEventListener("keydown", onKeypress, false);
     document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+    document.addEventListener( 'mousedown', onDocumentMouseDown, false );
     scene.add(controller1);
     scene.add(controller2);
 
@@ -794,17 +795,6 @@ function animate() {
     //console.log(raycaster)
 
     render();
-   
-
-    raycaster.setFromCamera(mouse, camera);
-    intersects = raycaster.intersectObjects(meshes, false);
-
-    if ( intersects.length > 0 ) {
-        console.log("Intersected")
-        let intersection = intersects[0];
-        let object = intersection.object;
-
-    }
 }
 
 // TODO: temp, delete these:
@@ -956,6 +946,28 @@ function onDocumentMouseMove( event ) {
     event.preventDefault();
     mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+}
+
+function onDocumentMouseDown(event){
+    event.preventDefault();
+    if(event.button == 0){
+
+    raycaster.setFromCamera(mouse, camera);
+    intersects = raycaster.intersectObjects(meshes, false);
+
+        if ( intersects.length > 0 ) {
+            console.log("Intersected")
+            let intersection = intersects[0];
+            let object = intersection.object;
+
+            for(let o of meshes){
+                if(o.userData.instaceID == object.userData.instaceID){
+                    meshes.splice(object.userData.instaceID,1);
+                }
+            }
+
+        }
+    }
 }
 
 function onKeypress(e){
