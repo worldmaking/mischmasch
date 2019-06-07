@@ -275,6 +275,7 @@ function enactDeltaNewNode(delta) {
             instBoxLocationAttr.setXYZ(maxInstances, Math.random()*3, Math.random()*3, Math.random()*3);
             instBoxScaleAttr.setXYZ(maxInstances, 0.6, 0.2, 0.05);
             instBoxColorAttr.setXYZW(maxInstances, Math.random(), Math.random(), Math.random(), 1);
+
             maxInstances++;
         } break;
     }    

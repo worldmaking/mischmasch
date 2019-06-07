@@ -911,6 +911,7 @@ let meshes = [];
 let boxGeom = new THREE.BoxGeometry(2,2,2);
 let boxMat = new THREE.MeshStandardMaterial();
 function spoofList(){
+    meshes = [];
     for(let i =0, j=0, k=0; i < maxInstances; i++, j+=3, k+=4){
         let mesh = new THREE.Mesh(boxGeom, boxMat);
         mesh.position.fromArray([
@@ -928,9 +929,9 @@ function spoofList(){
             instBoxScaleAttr.array[j+2]]);
         mesh.userData.instaceID = i;
         
-        //mesh.updateMatrixWorld(true);
+        mesh.updateMatrixWorld(true);
         meshes.push(mesh);
-        world.add(mesh);
+        //world.add(mesh);
     }
 
 
@@ -960,14 +961,14 @@ function onDocumentMouseDown(event){
             console.log("Intersected");
             let intersection = intersects[0];
             let object = intersection.object;
-            console.log(object);
+            //console.log(object);
             let numberOfSplices = 1;
 
             for(let o of meshes){
                 if(o.userData.instaceID == object.userData.instaceID){
-                    world.remove(object);
+                   // world.remove(object);
                     meshes.splice(object.userData.instaceID,numberOfSplices);
-                    console.log(meshes);
+                    //console.log(meshes);
                 }
             }
 
