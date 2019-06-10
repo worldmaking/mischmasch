@@ -927,6 +927,8 @@ function spoofList(){
             instBoxScaleAttr.array[j],
             instBoxScaleAttr.array[j+1],
             instBoxScaleAttr.array[j+2]]);
+
+        mesh.userData.shape = instBoxShapeAttr.array[i];
         mesh.userData.instaceID = i;
         
         mesh.updateMatrixWorld(true);
@@ -988,6 +990,8 @@ function onDocumentMouseDown(event){
                     instBoxScaleAttr.array[j] = meshes[i].scale.x
                     instBoxScaleAttr.array[j+1] = meshes[i].scale.y
                     instBoxScaleAttr.array[j+2] = meshes[i].scale.z
+
+                    instBoxShapeAttr.array[i] = meshes[i].userData.shape;
 
                     meshes[i].userData.instaceID = i;
 
