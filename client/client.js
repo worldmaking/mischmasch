@@ -136,7 +136,7 @@ instancedGeometry.attributes.position = generic_geometry.attributes.position;
 ///////////////
 
 // instance globals:
-let instBoxLocationAttr, instBoxOrientationAttr, instBoxScaleAttr, instBoxColorAttr, instBoxShapeAttr;
+let instBoxLocationAttr, instBoxOrientationAttr, instBoxScaleAttr, instBoxColorAttr, instBoxShapeAttr, instBoxParentAttr;
 let instBoxGeometry // a VBO really
 let maxInstances = 0;
 let instances = 50000;
@@ -389,6 +389,7 @@ async function init() {
         let scales = [];
         let colors = [];
         let shapes = []; // 0==box, 1== cylinder
+        let parentID = [];
         let vector = new THREE.Vector4();
         let x, y, z, w;
         for ( let i = 0; i < instances; i ++ ) {
@@ -409,18 +410,22 @@ async function init() {
             scales.push(0,0,0)
             colors.push(Math.random(), Math.random(), Math.random(), 1);
 
-            shapes.push(Math.round(Math.random()));
+            shapes.push(0.);
+            parentID.push(-1);
         }
-        instBoxLocationAttr = new THREE.InstancedBufferAttribute( new Float32Array( offsets ), 3 ).setDynamic( true );;
+        instBoxLocationAttr = new THREE.InstancedBufferAttribute( new Float32Array( offsets ), 3 ).setDynamic( true );
         instBoxOrientationAttr = new THREE.InstancedBufferAttribute( new Float32Array( orientations ), 4 ).setDynamic( true );
         instBoxScaleAttr = new THREE.InstancedBufferAttribute( new Float32Array( scales ), 3 ).setDynamic( true );
         instBoxColorAttr = new THREE.InstancedBufferAttribute( new Float32Array( colors ), 4 ).setDynamic( true );
         instBoxShapeAttr = new THREE.InstancedBufferAttribute( new Float32Array( shapes ), 1 ).setDynamic( true );
+        instBoxParentAttr = new THREE.InstancedBufferAttribute( new Float32Array( parentID ), 1 ).setDynamic( true );
+
         instBoxGeometry.addAttribute( 'location', instBoxLocationAttr );
         instBoxGeometry.addAttribute( 'orientation', instBoxOrientationAttr );
         instBoxGeometry.addAttribute( 'scale', instBoxScaleAttr );
         instBoxGeometry.addAttribute( 'color', instBoxColorAttr );
         instBoxGeometry.addAttribute( 'shape', instBoxShapeAttr );
+        instBoxGeometry.addAttribute( 'parent ', instBoxParentAttr );
         
         let material = new THREE.RawShaderMaterial( {
             uniforms: {
@@ -587,7 +592,7 @@ async function init() {
 
     createLabel('what up1!', "center", 0.5, 2);
 
-    for(let i =0, j=0; i < 30; i++, j+=3){
+    for(let i =0, j=0; i < 2; i++, j+=3){
         let deltas = spawnRandomModule([0 + Math.random(), 0 + Math.random(), 0+ Math.random()], [0,0,0,1]);
         clientSideDeltas(deltas);
         //adds a label to each module that is initalized
@@ -899,6 +904,7 @@ function render() {
     instBoxScaleAttr.needsUpdate = true;
     instBoxColorAttr.needsUpdate = true;
     instBoxShapeAttr.needsUpdate = true;
+    instBoxParentAttr.needsUpdate = true;
     instBoxGeometry.maxInstancedCount = maxInstances//Math.ceil(Math.random() * 5000);
 
     if (!renderBypass) renderer.render(scene, camera);
@@ -930,6 +936,7 @@ function spoofList(){
 
         mesh.userData.shape = instBoxShapeAttr.array[i];
         mesh.userData.instaceID = i;
+        mesh.userData.parentID = instBoxParentAttr.array[i];
         
         mesh.updateMatrixWorld(true);
         meshes.push(mesh);
@@ -964,34 +971,36 @@ function onDocumentMouseDown(event){
             let intersection = intersects[0];
             let object = intersection.object;
             //console.log(object);
-            let numberOfSplices = 1;
+            let numberOfSplices = 0;
 
             for(let o of meshes){
-                if(o.userData.instaceID == object.userData.instaceID){
-                   // world.remove(object);
-                    meshes.splice(object.userData.instaceID,numberOfSplices);
-                    //console.log(meshes);
+                if(o.userData.parentID == object.userData.parentID){
+                    numberOfSplices++;
                 }
             }
 
+            meshes.splice(object.userData.parentID,numberOfSplices);
             let tempCol = instBoxColorAttr.array;
             for(let i=0, j=0, k=0; i < maxInstances; i++, j+=3, k+=4){
                 if(i < meshes.length){
-                    
-                    instBoxLocationAttr.array[j] = meshes[i].position.x
-                    instBoxLocationAttr.array[j+1] = meshes[i].position.y
-                    instBoxLocationAttr.array[j+2] = meshes[i].position.z
+                    if(i >= object.userData.parentID){
+                        meshes[i].userData.parentID -= numberOfSplices;
+                    }
+                    instBoxLocationAttr.array[j] = meshes[i].position.x;
+                    instBoxLocationAttr.array[j+1] = meshes[i].position.y;
+                    instBoxLocationAttr.array[j+2] = meshes[i].position.z;
                 
-                    instBoxOrientationAttr.array[k] = meshes[i].quaternion.x
-                    instBoxOrientationAttr.array[k+1] = meshes[i].quaternion.y
-                    instBoxOrientationAttr.array[k+2] = meshes[i].quaternion.z
-                    instBoxOrientationAttr.array[k+3] = meshes[i].quaternion.w
+                    instBoxOrientationAttr.array[k] = meshes[i].quaternion.x;
+                    instBoxOrientationAttr.array[k+1] = meshes[i].quaternion.y;
+                    instBoxOrientationAttr.array[k+2] = meshes[i].quaternion.z;
+                    instBoxOrientationAttr.array[k+3] = meshes[i].quaternion.w;
                 
-                    instBoxScaleAttr.array[j] = meshes[i].scale.x
-                    instBoxScaleAttr.array[j+1] = meshes[i].scale.y
-                    instBoxScaleAttr.array[j+2] = meshes[i].scale.z
+                    instBoxScaleAttr.array[j] = meshes[i].scale.x;
+                    instBoxScaleAttr.array[j+1] = meshes[i].scale.y;
+                    instBoxScaleAttr.array[j+2] = meshes[i].scale.z;
 
                     instBoxShapeAttr.array[i] = meshes[i].userData.shape;
+                    instBoxParentAttr.array[i] = meshes[i].userData.parentID;
 
                     meshes[i].userData.instaceID = i;
 
