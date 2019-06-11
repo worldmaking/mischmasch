@@ -49,6 +49,7 @@ function enactDelta(delta) {
 /*
     { op:"newnode", path:"x", kind:"noise", pos:[], orient:[], ...properties }
 */
+let parentInstanceID =  -1;
 function enactDeltaNewNode(delta) {
     // create new object etc.
 
@@ -56,6 +57,8 @@ function enactDeltaNewNode(delta) {
 
     let parent = (delta.menu == true) ? menu : world;
     
+
+
     // first, find parent.
     let path = delta.path;
     let name, parentpath;
@@ -88,14 +91,8 @@ function enactDeltaNewNode(delta) {
     // SHADERS //
 
     
-    
     switch(delta.kind){
-        case "inlet": 
-        case "outlet":
-        case "large_knob":
-        case "small_knob":
-        case "n_switch":
-        case "group": break;
+      
         /*
         case "inlet": {
             inlet_material.blending = THREE.NormalBlending;
@@ -259,6 +256,23 @@ function enactDeltaNewNode(delta) {
 
         } break;
         */
+        case "inlet": {
+            instBoxLocationAttr.setXYZ(maxInstances, 
+                instBoxLocationAttr.array[parentInstanceID *3], 
+                instBoxLocationAttr.array[(parentInstanceID*3)+1],  
+                .1+instBoxLocationAttr.array[(parentInstanceID*3)+2]);
+
+            instBoxScaleAttr.setXYZ(maxInstances, 0.2, 0.2, 0.05);
+            instBoxColorAttr.setXYZW(maxInstances, Math.random(), Math.random(), Math.random(), 1);
+            instBoxShapeAttr.setX(maxInstances, 1.);
+            instBoxParentAttr.setX(maxInstances, parentInstanceID);
+            maxInstances++;
+        } break;
+        case "outlet":
+        case "large_knob":
+        case "small_knob":
+        case "n_switch":
+        case "group": break;
         default: {
             //container = new THREE.Mesh(instancedGeometry, shaderMat);
             // let label = generateLabel(labelName);
@@ -273,13 +287,19 @@ function enactDeltaNewNode(delta) {
             // container.userData.isBox = true;
 
             instBoxLocationAttr.setXYZ(maxInstances, Math.random()*3, Math.random()*3, Math.random()*3);
+            //instBoxOrientationAttr.setXYZ(maxInstances, Math.random(), Math.random(), Math.random(), 1);
             instBoxScaleAttr.setXYZ(maxInstances, 0.6, 0.2, 0.05);
             instBoxColorAttr.setXYZW(maxInstances, Math.random(), Math.random(), Math.random(), 1);
-
+            instBoxShapeAttr.setX(maxInstances, 0.);
+            parentInstanceID = maxInstances;
+            instBoxParentAttr.setX(maxInstances, parentInstanceID);
             maxInstances++;
+            createLabel(labelName,  instBoxLocationAttr.array[parentInstanceID *3], 
+                instBoxLocationAttr.array[(parentInstanceID*3)+1],  
+                .5+instBoxLocationAttr.array[(parentInstanceID*3)+2], 0.002);
         } break;
     }    
-
+    console.log(parentInstanceID)
     if(container !== undefined){
     container.castShadow = true;
     container.receiveShadow = true;
