@@ -50,14 +50,15 @@ function enactDelta(delta) {
     { op:"newnode", path:"x", kind:"noise", pos:[], orient:[], ...properties }
 */
 let parentInstanceID =  -1;
+
+
 function enactDeltaNewNode(delta) {
     // create new object etc.
 
     //console.log(delta)
 
-    let parent = (delta.menu == true) ? menu : world;
-    
-
+    //let parent = (delta.menu == true) ? menu : world;
+    let parent = instMeshes;  
 
     // first, find parent.
     let path = delta.path;
@@ -68,7 +69,7 @@ function enactDeltaNewNode(delta) {
         name = path.substring(pathlastdot+1);
         parent = getObjectByPath(parentpath);
     } else {
-        name = delta.path;
+    name = delta.path;
     }
     
    // console.log(path, name, parentpath, parent)
@@ -257,16 +258,21 @@ function enactDeltaNewNode(delta) {
         } break;
         */
         case "inlet": {
-            instBoxLocationAttr.setXYZ(maxInstances, 
-                instBoxLocationAttr.array[parentInstanceID *3], 
-                instBoxLocationAttr.array[(parentInstanceID*3)+1],  
-                .1+instBoxLocationAttr.array[(parentInstanceID*3)+2]);
+            // instBoxLocationAttr.setXYZ(maxInstances, 
+            //     instBoxLocationAttr.array[parentInstanceID *3], 
+            //     instBoxLocationAttr.array[(parentInstanceID*3)+1],  
+            //     .1+instBoxLocationAttr.array[(parentInstanceID*3)+2]);
 
-            instBoxScaleAttr.setXYZ(maxInstances, 0.2, 0.2, 0.05);
-            instBoxColorAttr.setXYZW(maxInstances, Math.random(), Math.random(), Math.random(), 1);
-            instBoxShapeAttr.setX(maxInstances, 1.);
-            instBoxParentAttr.setX(maxInstances, parentInstanceID);
-            maxInstances++;
+            // instBoxScaleAttr.setXYZ(maxInstances, 0.2, 0.2, 0.05);
+            // instBoxColorAttr.setXYZW(maxInstances, Math.random(), Math.random(), Math.random(), 1);
+            // instBoxShapeAttr.setX(maxInstances, 1.);
+            // instBoxParentAttr.setX(maxInstances, parentInstanceID);
+            // maxInstances++;
+
+            container = new THREE.Mesh(boxGeom, boxMat);
+            container.scale.fromArray([0.2, 0.2, 0.05]);
+            container.position.fromArray([Math.random(),Math.random(),Math.random()]);
+            container.userData.shape = 1.;
         } break;
         case "outlet":
         case "large_knob":
@@ -286,60 +292,68 @@ function enactDeltaNewNode(delta) {
             // container.userData.dirty = true;
             // container.userData.isBox = true;
 
-            instBoxLocationAttr.setXYZ(maxInstances, Math.random()*3, Math.random()*3, Math.random()*3);
-            //instBoxOrientationAttr.setXYZ(maxInstances, Math.random(), Math.random(), Math.random(), 1);
-            instBoxScaleAttr.setXYZ(maxInstances, 0.6, 0.2, 0.05);
-            instBoxColorAttr.setXYZW(maxInstances, Math.random(), Math.random(), Math.random(), 1);
-            instBoxShapeAttr.setX(maxInstances, 0.);
-            parentInstanceID = maxInstances;
-            instBoxParentAttr.setX(maxInstances, parentInstanceID);
-            maxInstances++;
-            createLabel(labelName,  instBoxLocationAttr.array[parentInstanceID *3], 
-                instBoxLocationAttr.array[(parentInstanceID*3)+1],  
-                .5+instBoxLocationAttr.array[(parentInstanceID*3)+2], 0.002);
+            // instBoxLocationAttr.setXYZ(maxInstances, Math.random()*3, Math.random()*3, Math.random()*3);
+            // //instBoxOrientationAttr.setXYZ(maxInstances, Math.random(), Math.random(), Math.random(), 1);
+            // instBoxScaleAttr.setXYZ(maxInstances, 0.6, 0.2, 0.05);
+            // instBoxColorAttr.setXYZW(maxInstances, Math.random(), Math.random(), Math.random(), 1);
+            // instBoxShapeAttr.setX(maxInstances, 0.);
+            // parentInstanceID = maxInstances;
+            // instBoxParentAttr.setX(maxInstances, parentInstanceID);
+            // maxInstances++;
+            // createLabel(labelName,  instBoxLocationAttr.array[parentInstanceID *3], 
+            //     instBoxLocationAttr.array[(parentInstanceID*3)+1],  
+            //     .5+instBoxLocationAttr.array[(parentInstanceID*3)+2], 0.002);
+
+            container = new THREE.Mesh(boxGeom, boxMat);
+            container.scale.fromArray([0.6, 0.2, 0.05]);
+            container.position.fromArray([Math.random(),Math.random(),Math.random()])
+
+
         } break;
     }    
-    console.log(parentInstanceID)
-    if(container !== undefined){
-    container.castShadow = true;
-    container.receiveShadow = true;
+    // console.log(parentInstanceID)
+     if(container !== undefined){
+    // container.castShadow = true;
+    // container.receiveShadow = true;
+        container.updateMatrixWorld(true);
+        container.name = name;
+        container.userData.name = name;
+        container.userData.path = path;
+        container.userData.kind = delta.kind;
+    // if(delta.value){
+    //     container.userData.value = delta.value;
+    // } 
 
-    container.name = name;
-    container.userData.name = name;
-    container.userData.path = path;
-    container.userData.kind = delta.kind;
-    if(delta.value){
-        container.userData.value = delta.value;
-    } 
-
-    if(delta.menu == true){
-        container.userData.menu = delta.menu;
-        container.scale.set(menuScaleSize, menuScaleSize, menuScaleSize);
+    // if(delta.menu == true){
+    //     container.userData.menu = delta.menu;
+    //     container.scale.set(menuScaleSize, menuScaleSize, menuScaleSize);
        
-    }
+    // }
 
-    if(delta.interactable == false){
-        container.userData.interactable = delta.interactable;
-        delete container.userData.moveable;
-        delete container.userData.turnable;
-    }
+    // if(delta.interactable == false){
+    //     container.userData.interactable = delta.interactable;
+    //     delete container.userData.moveable;
+    //     delete container.userData.turnable;
+    // }
 
-    if (delta.pos) {
-        container.position.fromArray(delta.pos);
-        container.userData.fromPos  = delta.pos;
-    } else {
-        container.position = parent.position.clone();
-    }
-    if (delta.orient) {
-        container.quaternion.fromArray(delta.orient);
-        container.userData.fromOri  = delta.orient;
-    } else {
-        container.quaternion = parent.quaternion.clone();
-    }
-    // add to our library of nodes:
+    // if (delta.pos) {
+    //     container.position.fromArray(delta.pos);
+    //     container.userData.fromPos  = delta.pos;
+    // } else {
+    //     container.position = parent.position.clone();
+    // }
+    // if (delta.orient) {
+    //     container.quaternion.fromArray(delta.orient);
+    //     container.userData.fromOri  = delta.orient;
+    // } else {
+    //     container.quaternion = parent.quaternion.clone();
+    // }
+    // // add to our library of nodes:
     addObjectByPath(path, container);
-    // add to proper parent:
+    // // add to proper parent:
+
     parent.add(container);
+  
     
     }
 
@@ -691,4 +705,5 @@ function clientSideDeltas(deltas){
         let delta = deltas.shift();
         enactDelta(delta);
     }
+
 }

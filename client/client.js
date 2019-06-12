@@ -141,6 +141,7 @@ let instBoxGeometry // a VBO really
 let maxInstances = 0;
 let instances = 50000;
 
+
 ///////////////
 
 let op_geometry = new THREE.BoxBufferGeometry(0.2, 0.2, 0.05);
@@ -188,6 +189,7 @@ let world = new THREE.Group();
 let controls;
 
 let menu = new THREE.Group();
+let instMeshes = new THREE.Group();
 
 let controller1, controller2;
 let controllerMesh;
@@ -593,7 +595,7 @@ async function init() {
     createLabel('what up1!', "center", 0.5, 2);
 
     for(let i =0, j=0; i < 2; i++, j+=3){
-        let deltas = spawnRandomModule([0 + Math.random(), 0 + Math.random(), 0+ Math.random()], [0,0,0,1]);
+        let deltas = spawnRandomModule([0+Math.random(),0+Math.random(),0+Math.random()], [0,0,0,1]);
         clientSideDeltas(deltas);
         //adds a label to each module that is initalized
         // createLabel("Module",
@@ -601,7 +603,9 @@ async function init() {
         // instBoxLocationAttr.array[j+1],
         // instBoxLocationAttr.array[j+2]);
     }
-    spoofList();
+
+    updateInstaces();
+    //spoofList();
 
     // hook up server:
     connect_to_server();
@@ -817,7 +821,7 @@ function render() {
         enactDelta(delta);
         //console.log("incoming deltas")
     }
-    
+
     updateDirty();
 
     // make sure all objects' matrices are up to date (TODO might not be needed?)
@@ -913,11 +917,44 @@ function render() {
 }
 
 
-let meshes = [];
+
 let boxGeom = new THREE.BoxGeometry(2,2,2);
 let boxMat = new THREE.MeshStandardMaterial();
+
+
+function updateInstaces(recurMeshes=instMeshes){
+
+    if(recurMeshes == instMeshes){
+        maxInstances = 0;
+    }
+    let tempMeshes = recurMeshes.children;
+    for(let i=0, d=maxInstances, j=maxInstances*3, k=maxInstances*4; i < tempMeshes.length; i++, d++, j+=3, k+=4){
+       if(tempMeshes != undefined){
+            instBoxLocationAttr.array[j] = tempMeshes[i].position.x;
+            instBoxLocationAttr.array[j+1] = tempMeshes[i].position.y;
+            instBoxLocationAttr.array[j+2] = tempMeshes[i].position.z;
+
+            instBoxOrientationAttr.array[k] = tempMeshes[i].quaternion.x;
+            instBoxOrientationAttr.array[k+1] = tempMeshes[i].quaternion.y;
+            instBoxOrientationAttr.array[k+2] = tempMeshes[i].quaternion.z;
+            instBoxOrientationAttr.array[k+3] = tempMeshes[i].quaternion.w;
+
+            instBoxScaleAttr.array[j] = tempMeshes[i].scale.x;
+            instBoxScaleAttr.array[j+1] = tempMeshes[i].scale.y;
+            instBoxScaleAttr.array[j+2] = tempMeshes[i].scale.z;
+
+            instBoxShapeAttr.array[d] = tempMeshes[i].userData.shape;
+        }
+    }
+    maxInstances += tempMeshes.length;
+    for(let i = 0; i < recurMeshes.children.length; i++){
+        updateInstaces(recurMeshes.children[i]);
+    }
+
+}
+   
 function spoofList(){
-    meshes = [];
+    instMeshes = [];
     for(let i =0, j=0, k=0; i < maxInstances; i++, j+=3, k+=4){
         let mesh = new THREE.Mesh(boxGeom, boxMat);
         mesh.position.fromArray([
@@ -939,7 +976,7 @@ function spoofList(){
         mesh.userData.parentID = instBoxParentAttr.array[i];
         
         mesh.updateMatrixWorld(true);
-        meshes.push(mesh);
+        instMeshes.add(mesh);
         //world.add(mesh);
     }
 
@@ -964,66 +1001,71 @@ function onDocumentMouseDown(event){
     if(event.button == 2){
 
     raycaster.setFromCamera(mouse, camera);
-    intersects = raycaster.intersectObjects(meshes, false);
+    intersects = raycaster.intersectObjects(instMeshes.children, true);
 
         if ( intersects.length > 0 ) {
             console.log("Intersected");
             let intersection = intersects[0];
             let object = intersection.object;
-            //console.log(object);
-            let numberOfSplices = 0;
 
-            for(let o of meshes){
-                if(o.userData.parentID == object.userData.parentID){
-                    numberOfSplices++;
+            for(let i=0; i<instMeshes.children.length; i++){
+                if(object.userData.path.includes(instMeshes.children[i].userData.path)){
+                    instMeshes.remove(instMeshes.children[i]);
                 }
             }
+            
+            updateInstaces();
+            // for(let o of instMeshes){
+            //     if(o.userData.parentID == object.userData.parentID){
+            //         numberOfSplices++;
+            //     }
+            // }
 
-            meshes.splice(object.userData.parentID,numberOfSplices);
-            let tempCol = instBoxColorAttr.array;
-            for(let i=0, j=0, k=0; i < maxInstances; i++, j+=3, k+=4){
-                if(i < meshes.length){
-                    if(i >= object.userData.parentID){
-                        meshes[i].userData.parentID -= numberOfSplices;
-                    }
-                    instBoxLocationAttr.array[j] = meshes[i].position.x;
-                    instBoxLocationAttr.array[j+1] = meshes[i].position.y;
-                    instBoxLocationAttr.array[j+2] = meshes[i].position.z;
+        //     instMeshes.splice(object.userData.parentID,numberOfSplices);
+        //     let tempCol = instBoxColorAttr.array;
+        //     for(let i=0, j=0, k=0; i < maxInstances; i++, j+=3, k+=4){
+        //         if(i < instMeshes.length){
+        //             if(i >= object.userData.parentID){
+        //                 instMeshes[i].userData.parentID -= numberOfSplices;
+        //             }
+        //             instBoxLocationAttr.array[j] = instMeshes[i].position.x;
+        //             instBoxLocationAttr.array[j+1] = instMeshes[i].position.y;
+        //             instBoxLocationAttr.array[j+2] = instMeshes[i].position.z;
                 
-                    instBoxOrientationAttr.array[k] = meshes[i].quaternion.x;
-                    instBoxOrientationAttr.array[k+1] = meshes[i].quaternion.y;
-                    instBoxOrientationAttr.array[k+2] = meshes[i].quaternion.z;
-                    instBoxOrientationAttr.array[k+3] = meshes[i].quaternion.w;
+        //             instBoxOrientationAttr.array[k] = instMeshes[i].quaternion.x;
+        //             instBoxOrientationAttr.array[k+1] = instMeshes[i].quaternion.y;
+        //             instBoxOrientationAttr.array[k+2] = instMeshes[i].quaternion.z;
+        //             instBoxOrientationAttr.array[k+3] = instMeshes[i].quaternion.w;
                 
-                    instBoxScaleAttr.array[j] = meshes[i].scale.x;
-                    instBoxScaleAttr.array[j+1] = meshes[i].scale.y;
-                    instBoxScaleAttr.array[j+2] = meshes[i].scale.z;
+        //             instBoxScaleAttr.array[j] = instMeshes[i].scale.x;
+        //             instBoxScaleAttr.array[j+1] = instMeshes[i].scale.y;
+        //             instBoxScaleAttr.array[j+2] = instMeshes[i].scale.z;
 
-                    instBoxShapeAttr.array[i] = meshes[i].userData.shape;
-                    instBoxParentAttr.array[i] = meshes[i].userData.parentID;
+        //             instBoxShapeAttr.array[i] = instMeshes[i].userData.shape;
+        //             instBoxParentAttr.array[i] = instMeshes[i].userData.parentID;
 
-                    meshes[i].userData.instaceID = i;
+        //             instMeshes[i].userData.instaceID = i;
 
-                    if(i < object.userData.instaceID)
-                        instBoxColorAttr.setXYZW(i,tempCol[k],tempCol[k+1],tempCol[k+2],tempCol[k+3]);
-                    else
-                        instBoxColorAttr.setXYZW(i,tempCol[k+4*numberOfSplices],tempCol[k+4*numberOfSplices+1],tempCol[k+4*numberOfSplices+2],tempCol[k+4*numberOfSplices+3]);
-                    //mesh.userData.instaceID = i;
-                }
-                else{
-                    instBoxLocationAttr.setXYZ(i, 0,0,0);
-                    instBoxOrientationAttr.setXYZW(i, 0,0,0,0);
-                    instBoxScaleAttr.setXYZ(i, 0,0,0);
-                    instBoxColorAttr.setXYZW(i, 0,0,0,0);
-                }
-            }
-            maxInstances = meshes.length;
+        //             if(i < object.userData.instaceID)
+        //                 instBoxColorAttr.setXYZW(i,tempCol[k],tempCol[k+1],tempCol[k+2],tempCol[k+3]);
+        //             else
+        //                 instBoxColorAttr.setXYZW(i,tempCol[k+4*numberOfSplices],tempCol[k+4*numberOfSplices+1],tempCol[k+4*numberOfSplices+2],tempCol[k+4*numberOfSplices+3]);
+        //             //mesh.userData.instaceID = i;
+        //         }
+        //         else{
+        //             instBoxLocationAttr.setXYZ(i, 0,0,0);
+        //             instBoxOrientationAttr.setXYZW(i, 0,0,0,0);
+        //             instBoxScaleAttr.setXYZ(i, 0,0,0);
+        //             instBoxColorAttr.setXYZW(i, 0,0,0,0);
+        //         }
+        //     }
+        //     maxInstances = instMeshes.length;
         }
     }
     if(event.button == 1){
         let deltas = spawnRandomModule([0 + Math.random(), 0 + Math.random(), 0+ Math.random()], [0,0,0,1]);
         clientSideDeltas(deltas);
-        spoofList();
+        //spoofList();
     }
  
 }
@@ -1037,7 +1079,7 @@ function onKeypress(e){
                 let deltas = spawnRandomModule([0 + Math.random(), 0 + Math.random(), 0+ Math.random()], [0,0,0,1]);
                 clientSideDeltas(deltas);
             }
-            spoofList();
+            //spoofList();
 
         }    
         /*   
