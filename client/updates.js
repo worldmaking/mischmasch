@@ -44,13 +44,12 @@ function enactDelta(delta) {
             }
         }
     }
+    updateInstaces();
 }
 
 /*
     { op:"newnode", path:"x", kind:"noise", pos:[], orient:[], ...properties }
 */
-let parentInstanceID =  -1;
-
 
 function enactDeltaNewNode(delta) {
     // create new object etc.
@@ -271,7 +270,9 @@ function enactDeltaNewNode(delta) {
 
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.fromArray([0.2, 0.2, 0.05]);
-            container.position.fromArray([Math.random(),Math.random(),Math.random()]);
+            container.position.fromArray([0,0,1]);
+            // container.position.fromArray([Math.random(),Math.random(),Math.random()]);
+           //container.rotation.fromArray([Math.random(),Math.random(),Math.random()]);
             container.userData.shape = 1.;
         } break;
         case "outlet":
@@ -306,53 +307,54 @@ function enactDeltaNewNode(delta) {
 
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.fromArray([0.6, 0.2, 0.05]);
-            container.position.fromArray([Math.random(),Math.random(),Math.random()])
-
+            container.userData.dirty = true;
 
         } break;
     }    
     // console.log(parentInstanceID)
-     if(container !== undefined){
-    // container.castShadow = true;
-    // container.receiveShadow = true;
+    if(container !== undefined){
+        // container.castShadow = true;
+        // container.receiveShadow = true;
         container.updateMatrixWorld(true);
         container.name = name;
         container.userData.name = name;
         container.userData.path = path;
         container.userData.kind = delta.kind;
-    // if(delta.value){
-    //     container.userData.value = delta.value;
-    // } 
+        // if(delta.value){
+        //     container.userData.value = delta.value;
+        // } 
 
-    // if(delta.menu == true){
-    //     container.userData.menu = delta.menu;
-    //     container.scale.set(menuScaleSize, menuScaleSize, menuScaleSize);
-       
-    // }
+        // if(delta.menu == true){
+        //     container.userData.menu = delta.menu;
+        //     container.scale.set(menuScaleSize, menuScaleSize, menuScaleSize);
+        
+        // }
 
-    // if(delta.interactable == false){
-    //     container.userData.interactable = delta.interactable;
-    //     delete container.userData.moveable;
-    //     delete container.userData.turnable;
-    // }
+        // if(delta.interactable == false){
+        //     container.userData.interactable = delta.interactable;
+        //     delete container.userData.moveable;
+        //     delete container.userData.turnable;
+        // }
 
-    // if (delta.pos) {
-    //     container.position.fromArray(delta.pos);
-    //     container.userData.fromPos  = delta.pos;
-    // } else {
-    //     container.position = parent.position.clone();
-    // }
-    // if (delta.orient) {
-    //     container.quaternion.fromArray(delta.orient);
-    //     container.userData.fromOri  = delta.orient;
-    // } else {
-    //     container.quaternion = parent.quaternion.clone();
-    // }
-    // // add to our library of nodes:
-    addObjectByPath(path, container);
-    // // add to proper parent:
 
-    parent.add(container);
+        if (delta.pos) {
+            container.position.fromArray(delta.pos);
+            container.userData.fromPos  = delta.pos;
+        } else {
+            container.position = parent.position.clone();
+        }
+
+        if (delta.orient) {
+            container.quaternion.fromArray(delta.orient);
+            container.userData.fromOri  = delta.orient;
+        } else {
+            container.quaternion = parent.quaternion.clone();
+        }
+        // // add to our library of nodes:
+        addObjectByPath(path, container);
+        // // add to proper parent:
+
+        parent.add(container);
   
     
     }
@@ -391,9 +393,9 @@ function enactDeltaDeleteNode(delta) {
         }
     }
     //Removing from the world
-    for(let i=0; i<world.children.length; i++){
-        if(world.children[i].name === kind){
-            world.remove(world.children[i])
+    for(let i=0; i<instMeshes.children.length; i++){
+        if(instMeshes.children[i].name === kind){
+            instMeshes.remove(instMeshes.children[i])
         }
     }
 }
@@ -467,7 +469,7 @@ function enactDeltaObjectPos(delta) {
     let parent = object.userData.originalParent;
     if (parent == undefined) parent = object.parent;
     // temporarily move object to world space to set the position:
-    world.add(object);
+    instMeshes.add(object);
     // set the position & update matrices:
     object.position.fromArray(delta.to);
     object.matrixWorldNeedsUpdate = true;
@@ -492,7 +494,7 @@ function enactDeltaObjectOrient(delta) {
     let parent = object.userData.originalParent;
     if (parent == undefined) parent = object.parent;
     // temporarily move object to world space to set the position:
-    world.add(object);
+    instMeshes.add(object);
     // set the position & update matrices:
     object.quaternion.fromArray(delta.to);
     object.matrixWorldNeedsUpdate = true;
@@ -628,7 +630,7 @@ function createLabel(text, x, y, z, uniformScaling=0.009){
 }
 
 function updateDirtyNode(dirtyPath) {
-    //console.log("cleaning", dirtyPath)
+    console.log("cleaning", dirtyPath)
     let parentNode = getObjectByPath(dirtyPath);
     if (!parentNode) return;
 
@@ -649,7 +651,7 @@ function updateDirtyNode(dirtyPath) {
         numrows = 1;
     }
 
-    //console.log("building module ", numchildren, parentNode.children.length, numrows, numcols)
+    console.log("building module ", numchildren, parentNode.children.length, numrows, numcols)
 
     let LARGEST_MODULE = LARGE_KNOB_RADIUS;
     let widget_diameter = LARGEST_MODULE*2;
@@ -658,9 +660,19 @@ function updateDirtyNode(dirtyPath) {
 
     // TODO: Seems silly to have to create a new geometry everytime.....
     //parentNode.geometry = new THREE.BoxBufferGeometry(width * nodesToClean.length, 0.2, 0.05);
+
+    let tempNode = parentNode;
+
     parentNode.geometry = new THREE.BoxBufferGeometry(grid_spacing * numcols, grid_spacing * numrows, 0.05);
+
     // reset anchor to top left corner:
     parentNode.geometry.translate(parentNode.geometry.parameters.width/2, -parentNode.geometry.parameters.height/2, -parentNode.geometry.parameters.depth/2);
+
+    parentNode.position = tempNode.position;
+    parentNode.rotation = tempNode.rotation;
+    parentNode.quaternion = tempNode.quaternion;
+    parentNode.scale = tempNode.scale;
+    parentNode.userData = tempNode.userData;
 
     for (let r = 0, i=0; r<numrows; r++) {
         for (let c=0; c<numcols && i < numchildren; c++, i++) {
@@ -674,6 +686,7 @@ function updateDirtyNode(dirtyPath) {
     }
 
     // cleansed:
+    updateInstaces();
     parentNode.userData.dirty = false;
 }
 
@@ -689,13 +702,13 @@ function updateDirty(){
         allNodes[path].userData.dirty = false;
     }
     if (dirtyObjects.length) {
-        //console.log(dirtyObjects)
+        console.log(dirtyObjects)
     }
 
     for (let dirtyPath of dirtyObjects) {
         updateDirtyNode(dirtyPath);
     }
-    
+
     
 }
 

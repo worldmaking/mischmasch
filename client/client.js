@@ -595,7 +595,11 @@ async function init() {
     createLabel('what up1!', "center", 0.5, 2);
 
     for(let i =0, j=0; i < 2; i++, j+=3){
-        let deltas = spawnRandomModule([0+Math.random(),0+Math.random(),0+Math.random()], [0,0,0,1]);
+        let ori = new THREE.Quaternion();
+        ori.fromArray([Math.random(),Math.random(),Math.random(),Math.random()]);
+        ori.normalize();
+
+        let deltas = spawnRandomModule([0+Math.random(),0+Math.random(),0+Math.random()], [ori.x,ori.y,ori.z,ori.w]);
         clientSideDeltas(deltas);
         //adds a label to each module that is initalized
         // createLabel("Module",
@@ -604,9 +608,7 @@ async function init() {
         // instBoxLocationAttr.array[j+2]);
     }
 
-    updateInstaces();
-    //spoofList();
-
+    //updateInstaces();
     // hook up server:
     connect_to_server();
 
@@ -822,7 +824,7 @@ function render() {
         //console.log("incoming deltas")
     }
 
-    updateDirty();
+    //updateDirty();
 
     // make sure all objects' matrices are up to date (TODO might not be needed?)
     scene.updateMatrixWorld();
@@ -928,16 +930,29 @@ function updateInstaces(recurMeshes=instMeshes){
         maxInstances = 0;
     }
     let tempMeshes = recurMeshes.children;
+    let pos = new THREE.Vector3();
+    let orient = new THREE.Quaternion();
     for(let i=0, d=maxInstances, j=maxInstances*3, k=maxInstances*4; i < tempMeshes.length; i++, d++, j+=3, k+=4){
        if(tempMeshes != undefined){
-            instBoxLocationAttr.array[j] = tempMeshes[i].position.x;
-            instBoxLocationAttr.array[j+1] = tempMeshes[i].position.y;
-            instBoxLocationAttr.array[j+2] = tempMeshes[i].position.z;
 
-            instBoxOrientationAttr.array[k] = tempMeshes[i].quaternion.x;
-            instBoxOrientationAttr.array[k+1] = tempMeshes[i].quaternion.y;
-            instBoxOrientationAttr.array[k+2] = tempMeshes[i].quaternion.z;
-            instBoxOrientationAttr.array[k+3] = tempMeshes[i].quaternion.w;
+            // instBoxLocationAttr.array[j] = tempMeshes[i].position.x;
+            // instBoxLocationAttr.array[j+1] = tempMeshes[i].position.y;
+            // instBoxLocationAttr.array[j+2] = tempMeshes[i].position.z;
+
+            instBoxLocationAttr.array[j] = tempMeshes[i].getWorldPosition(pos).x;
+            instBoxLocationAttr.array[j+1] = tempMeshes[i].getWorldPosition(pos).y;
+            instBoxLocationAttr.array[j+2] = tempMeshes[i].getWorldPosition(pos).z;
+
+
+            instBoxOrientationAttr.array[k] = tempMeshes[i].getWorldQuaternion(orient).x;
+            instBoxOrientationAttr.array[k+1] = tempMeshes[i].getWorldQuaternion(orient).y;
+            instBoxOrientationAttr.array[k+2] = tempMeshes[i].getWorldQuaternion(orient).z;
+            instBoxOrientationAttr.array[k+3] = tempMeshes[i].getWorldQuaternion(orient).w;
+
+            // instBoxOrientationAttr.array[k] = tempMeshes[i].quaternion.x;
+            // instBoxOrientationAttr.array[k+1] = tempMeshes[i].quaternion.y;
+            // instBoxOrientationAttr.array[k+2] = tempMeshes[i].quaternion.z;
+            // instBoxOrientationAttr.array[k+3] = tempMeshes[i].quaternion.w;
 
             instBoxScaleAttr.array[j] = tempMeshes[i].scale.x;
             instBoxScaleAttr.array[j+1] = tempMeshes[i].scale.y;
@@ -950,7 +965,7 @@ function updateInstaces(recurMeshes=instMeshes){
     for(let i = 0; i < recurMeshes.children.length; i++){
         updateInstaces(recurMeshes.children[i]);
     }
-
+    instMeshes.updateMatrixWorld(true);
 }
    
 function spoofList(){
@@ -1008,13 +1023,17 @@ function onDocumentMouseDown(event){
             let intersection = intersects[0];
             let object = intersection.object;
 
-            for(let i=0; i<instMeshes.children.length; i++){
-                if(object.userData.path.includes(instMeshes.children[i].userData.path)){
-                    instMeshes.remove(instMeshes.children[i]);
-                }
-            }
-            
-            updateInstaces();
+            // for(let i=0; i<instMeshes.children.length; i++){
+            //     if(object.userData.path.includes(instMeshes.children[i].userData.path)){
+            //         instMeshes.remove(instMeshes.children[i]);
+            //     }
+            // }
+
+            outgoingDeltas.push(
+                { op:"delnode", path:object.userData.path, kind:object.userData.name}
+            );
+
+
             // for(let o of instMeshes){
             //     if(o.userData.parentID == object.userData.parentID){
             //         numberOfSplices++;
@@ -1082,34 +1101,40 @@ function onKeypress(e){
             //spoofList();
 
         }    
-        /*   
+          
         if(keyCode == 68){
+            for(let i=0; i< 1000; i++){
+
+    
+            let deltas = spawnRandomModule([0 + Math.random(), 0 + Math.random(), 0+ Math.random()], [0,0,0,1]);
+            clientSideDeltas(deltas);
+        }
             //Will become whatever index we are hitting with a raycast or however we get the module
-            let indexToRemove = 0;
+            // let indexToRemove = 0;
 
-            let tempLoc = instBoxLocationAttr.array;
-            let tempOri = instBoxOrientationAttr.array;
-            let tempScl = instBoxScaleAttr.array;
-            let tempCol = instBoxColorAttr.array;
-            let tempShp = instBoxShapeAttr.array;
+            // let tempLoc = instBoxLocationAttr.array;
+            // let tempOri = instBoxOrientationAttr.array;
+            // let tempScl = instBoxScaleAttr.array;
+            // let tempCol = instBoxColorAttr.array;
+            // let tempShp = instBoxShapeAttr.array;
 
-            for(let i=indexToRemove, l=i-1, k=(i*3)-1, j = (i*4)-1; i<maxInstances; i++, l++, k+=3, j+=4){
+            // for(let i=indexToRemove, l=i-1, k=(i*3)-1, j = (i*4)-1; i<maxInstances; i++, l++, k+=3, j+=4){
 
-                if(k < 0 || j < 0){
-                    k =0;
-                    j=0;
-                }
+            //     if(k < 0 || j < 0){
+            //         k =0;
+            //         j=0;
+            //     }
 
-                instBoxLocationAttr.setXYZ(i, tempLoc[k+3],tempLoc[k+4],tempLoc[k+5]);
-                instBoxOrientationAttr.setXYZW(i,tempOri[j+4],tempOri[j+5],tempOri[j+6],tempOri[j+7]);
-                instBoxScaleAttr.setXYZ(i, tempScl[k+3],tempScl[k+4],tempScl[k+5]);
-                instBoxColorAttr.setXYZW(i,tempCol[j+4],tempCol[j+5],tempCol[j+6],tempCol[j+7]);
-                instBoxShapeAttr.setX(i, tempShp[l]);
+            //     instBoxLocationAttr.setXYZ(i, tempLoc[k+3],tempLoc[k+4],tempLoc[k+5]);
+            //     instBoxOrientationAttr.setXYZW(i,tempOri[j+4],tempOri[j+5],tempOri[j+6],tempOri[j+7]);
+            //     instBoxScaleAttr.setXYZ(i, tempScl[k+3],tempScl[k+4],tempScl[k+5]);
+            //     instBoxColorAttr.setXYZW(i,tempCol[j+4],tempCol[j+5],tempCol[j+6],tempCol[j+7]);
+            //     instBoxShapeAttr.setX(i, tempShp[l]);
 
-            }
+            // }
 
-            maxInstances--;
-        }*/
+            // maxInstances--;
+        }
 
     }
 }
