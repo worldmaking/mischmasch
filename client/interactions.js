@@ -378,7 +378,7 @@ function getIntersections(controller, x, y, z, offset =0) {
     raycaster.ray.direction.set(x, y, z).applyMatrix4(tempMatrix);
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
-    let intersections = raycaster.intersectObjects(world.children, true);
+    let intersections = raycaster.intersectObjects(instMeshes.children, true);
 
     while (intersections.length > 0 /*&& !intersections[0].object.userData.selectable*/) intersections.shift();
     return intersections;
@@ -392,7 +392,7 @@ function getIntersectionsWithKind(controller, x, y, z, offset =0, kind) {
     raycaster.ray.direction.set(x, y, z).applyMatrix4(tempMatrix);
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
-    let intersections = raycaster.intersectObjects(world.children, true);
+    let intersections = raycaster.intersectObjects(instMeshes.children, true);
     while (intersections.length > 0 /*&& !intersections[0].object.userData.selectable && kind !== intersections[0].object.userData.kind*/) intersections.shift();
     return intersections;
 }
