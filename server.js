@@ -428,7 +428,7 @@ function handlemessage(msg, sock, id) {
 			OTHistoryFile = __dirname + '/histories/OT_' + Date.now() + '.json'
 			let header = {}
 			header['header'] = deltas
-			fs.writeFileSync(OTHistoryFile, '[' + JSON.stringify(header), "utf-8")
+			//fs.writeFileSync(OTHistoryFile, '[' + JSON.stringify(header), "utf-8")
 
 			send_all_clients(JSON.stringify({
 				cmd: "deltas",
