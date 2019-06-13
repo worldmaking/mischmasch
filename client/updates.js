@@ -269,7 +269,7 @@ function enactDeltaNewNode(delta) {
             // maxInstances++;
 
             container = new THREE.Mesh(boxGeom, boxMat);
-            container.scale.fromArray([0.2, 0.2, 0.05]);
+            //container.scale.fromArray([0.2, 0.2, 0.05]);
             container.position.fromArray([0,0,1]);
             // container.position.fromArray([Math.random(),Math.random(),Math.random()]);
            //container.rotation.fromArray([Math.random(),Math.random(),Math.random()]);
@@ -305,8 +305,7 @@ function enactDeltaNewNode(delta) {
             //     instBoxLocationAttr.array[(parentInstanceID*3)+1],  
             //     .5+instBoxLocationAttr.array[(parentInstanceID*3)+2], 0.002);
 
-            container = new THREE.Mesh(boxGeom, boxMat);
-            container.scale.fromArray([0.6, 0.2, 0.05]);
+            container = new THREE.Mesh(new THREE.BoxBufferGeometry(0.3 + Math.random(), 0.2, 0.05), boxMat);
             container.userData.dirty = true;
 
         } break;
@@ -660,19 +659,12 @@ function updateDirtyNode(dirtyPath) {
 
     // TODO: Seems silly to have to create a new geometry everytime.....
     //parentNode.geometry = new THREE.BoxBufferGeometry(width * nodesToClean.length, 0.2, 0.05);
-
-    let tempNode = parentNode;
-
-    parentNode.geometry = new THREE.BoxBufferGeometry(grid_spacing * numcols, grid_spacing * numrows, 0.05);
+    parentNode.geometry.scale(grid_spacing * numcols, grid_spacing * numrows, 0.05);
 
     // reset anchor to top left corner:
     parentNode.geometry.translate(parentNode.geometry.parameters.width/2, -parentNode.geometry.parameters.height/2, -parentNode.geometry.parameters.depth/2);
 
-    parentNode.position = tempNode.position;
-    parentNode.rotation = tempNode.rotation;
-    parentNode.quaternion = tempNode.quaternion;
-    parentNode.scale = tempNode.scale;
-    parentNode.userData = tempNode.userData;
+    //parentNode.scale.set(grid_spacing * numcols, grid_spacing * numrows, 0.05);
 
     for (let r = 0, i=0; r<numrows; r++) {
         for (let c=0; c<numcols && i < numchildren; c++, i++) {
