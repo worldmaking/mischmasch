@@ -269,7 +269,7 @@ function enactDeltaNewNode(delta) {
             // maxInstances++;
 
             container = new THREE.Mesh(boxGeom, boxMat);
-            //container.scale.fromArray([0.2, 0.2, 0.05]);
+            container.scale.fromArray([0.2, 0.2, 0.05]);
             container.position.fromArray([0,0,1]);
             // container.position.fromArray([Math.random(),Math.random(),Math.random()]);
            //container.rotation.fromArray([Math.random(),Math.random(),Math.random()]);
@@ -305,7 +305,8 @@ function enactDeltaNewNode(delta) {
             //     instBoxLocationAttr.array[(parentInstanceID*3)+1],  
             //     .5+instBoxLocationAttr.array[(parentInstanceID*3)+2], 0.002);
 
-            container = new THREE.Mesh(new THREE.BoxBufferGeometry(0.3 + Math.random(), 0.2, 0.05), boxMat);
+            container = new THREE.Mesh(boxGeom, boxMat);
+            container.scale.set(0.6,0.2,0.05)
             container.userData.dirty = true;
 
         } break;

@@ -920,7 +920,7 @@ function render() {
 
 
 
-let boxGeom = new THREE.BoxGeometry(0.6, 0.2, 0.05);
+let boxGeom = new THREE.BoxGeometry(2,2,2);
 let boxMat = new THREE.MeshStandardMaterial();
 
 
@@ -954,9 +954,13 @@ function updateInstaces(recurMeshes=instMeshes){
             // instBoxOrientationAttr.array[k+2] = tempMeshes[i].quaternion.z;
             // instBoxOrientationAttr.array[k+3] = tempMeshes[i].quaternion.w;
 
-            instBoxScaleAttr.array[j] = tempMeshes[i].geometry.parameters.width;
-            instBoxScaleAttr.array[j+1] = tempMeshes[i].geometry.parameters.height;
-            instBoxScaleAttr.array[j+2] = tempMeshes[i].geometry.parameters.depth;
+            // instBoxScaleAttr.array[j] = tempMeshes[i].geometry.parameters.width;
+            // instBoxScaleAttr.array[j+1] = tempMeshes[i].geometry.parameters.height;
+            // instBoxScaleAttr.array[j+2] = tempMeshes[i].geometry.parameters.depth;
+
+            instBoxScaleAttr.array[j] = tempMeshes[i].scale.x;
+            instBoxScaleAttr.array[j+1] = tempMeshes[i].scale.y;
+            instBoxScaleAttr.array[j+2] = tempMeshes[i].scale.z;
 
             instBoxShapeAttr.array[d] = tempMeshes[i].userData.shape;
         }
