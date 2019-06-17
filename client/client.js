@@ -3,6 +3,8 @@
 // COMMON GEOMETRIES
 //////////////////////////////////////////////////////////////////////////////////////////
 
+//THREE JS is now r105
+
 let geometry = new THREE.BoxBufferGeometry(0.2, 0.2, 0.2);
 let geometry2 = new THREE.BoxBufferGeometry(0.1, 0.1, 0.1);
 
@@ -926,7 +928,7 @@ let boxMat = new THREE.MeshStandardMaterial();
 
 function updateInstaces(recurMeshes=instMeshes){
 
-    if(recurMeshes == instMeshes){
+    if(recurMeshes == instMeshes){ 
         maxInstances = 0;
     }
     let tempMeshes = recurMeshes.children;
