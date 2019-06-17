@@ -54,11 +54,9 @@ function enactDelta(delta) {
 function enactDeltaNewNode(delta) {
     // create new object etc.
 
-    //console.log(delta)
 
     //let parent = (delta.menu == true) ? menu : world;
     let parent = instMeshes;  
-
     // first, find parent.
     let path = delta.path;
     let name, parentpath;
@@ -68,11 +66,12 @@ function enactDeltaNewNode(delta) {
         name = path.substring(pathlastdot+1);
         parent = getObjectByPath(parentpath);
     } else {
-    name = delta.path;
+        name = delta.path;
     }
-    
+
    // console.log(path, name, parentpath, parent)
     let container;
+    let def = false;
     let labelName = delta.kind;
 
     // generic object:
@@ -270,9 +269,9 @@ function enactDeltaNewNode(delta) {
 
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.fromArray([0.2, 0.2, 0.05]);
-            container.position.fromArray([0,0,1]);
-            // container.position.fromArray([Math.random(),Math.random(),Math.random()]);
-           //container.rotation.fromArray([Math.random(),Math.random(),Math.random()]);
+            container.position.fromArray([0,0,2]);
+        //     container.position.fromArray([Math.random(),Math.random(),Math.random()]);
+        //    container.rotation.fromArray([Math.random(),Math.random(),Math.random()]);
             container.userData.shape = 1.;
         } break;
         case "outlet":
@@ -304,18 +303,20 @@ function enactDeltaNewNode(delta) {
             // createLabel(labelName,  instBoxLocationAttr.array[parentInstanceID *3], 
             //     instBoxLocationAttr.array[(parentInstanceID*3)+1],  
             //     .5+instBoxLocationAttr.array[(parentInstanceID*3)+2], 0.002);
-
-            container = new THREE.Mesh(boxGeom, boxMat);
-            container.scale.set(0.6,0.2,0.05)
-            container.userData.dirty = true;
+            container = new THREE.Mesh();
+            let c = new THREE.Mesh(boxGeom, boxMat);
+            c.scale.set(0.6,0.2,0.05);
+            c.userData.path = path+"."+name;
+            container.add(c);
+           // container.userData.dirty = true;
 
         } break;
     }    
-    // console.log(parentInstanceID)
+
     if(container !== undefined){
         // container.castShadow = true;
         // container.receiveShadow = true;
-        container.updateMatrixWorld(true);
+       // container.updateMatrixWorld(true);
         container.name = name;
         container.userData.name = name;
         container.userData.path = path;
@@ -353,9 +354,7 @@ function enactDeltaNewNode(delta) {
         // // add to our library of nodes:
         addObjectByPath(path, container);
         // // add to proper parent:
-
         parent.add(container);
-  
     
     }
 
@@ -394,10 +393,17 @@ function enactDeltaDeleteNode(delta) {
     }
     //Removing from the world
     for(let i=0; i<instMeshes.children.length; i++){
-        if(instMeshes.children[i].name === kind){
-            instMeshes.remove(instMeshes.children[i])
+        if(delta.path.includes(instMeshes.children[i].userData.path)){
+            instMeshes.remove(instMeshes.children[i]);
         }
     }
+
+    // for(let i=0; i<instMeshes.children.length; i++){
+    //     if(instMeshes.children[i].name === kind){
+    //         instMeshes.remove(instMeshes.children[i])
+
+    //     }
+    // }
 }
 
 /*
