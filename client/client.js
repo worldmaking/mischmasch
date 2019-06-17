@@ -822,7 +822,7 @@ function render() {
         //console.log("incoming deltas")
     }
 
-    //updateDirty();
+    updateDirty();
 
     // make sure all objects' matrices are up to date (TODO might not be needed?)
     scene.updateMatrixWorld();
@@ -919,7 +919,7 @@ function render() {
 
 let boxGeom = new THREE.BoxGeometry(2,2,2);
 let boxMat = new THREE.MeshStandardMaterial();
-
+let thru = false;
 
 function updateInstaces(recurMeshes=instMeshes){
 
@@ -930,7 +930,7 @@ function updateInstaces(recurMeshes=instMeshes){
     let pos = new THREE.Vector3();
     let orient = new THREE.Quaternion();
     for(let i=0, d=maxInstances, j=maxInstances*3, k=maxInstances*4; i < tempMeshes.length; i++, d++, j+=3, k+=4){
-       if(tempMeshes != undefined){
+       if(tempMeshes != undefined && thru == true){
 
             // instBoxLocationAttr.array[j] = tempMeshes[i].position.x;
             // instBoxLocationAttr.array[j+1] = tempMeshes[i].position.y;
@@ -964,8 +964,10 @@ function updateInstaces(recurMeshes=instMeshes){
     }
     maxInstances += tempMeshes.length;
     for(let i = 0; i < recurMeshes.children.length; i++){
+        thru = true;
         updateInstaces(recurMeshes.children[i]);
     }
+    thru = false;
     instMeshes.updateMatrixWorld(true);
 }
 
@@ -993,7 +995,6 @@ function onDocumentMouseDown(event){
             console.log("Intersected");
             let intersection = intersects[0];
             let object = intersection.object;
-
             // for(let i=0; i<instMeshes.children.length; i++){
             //     if(object.userData.path.includes(instMeshes.children[i].userData.path)){
             //         instMeshes.remove(instMeshes.children[i]);
