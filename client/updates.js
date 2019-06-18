@@ -306,6 +306,7 @@ function enactDeltaNewNode(delta) {
             container = new THREE.Mesh();
             let c = new THREE.Mesh(boxGeom, boxMat);
             c.scale.set(0.6,0.2,0.05);
+            c.position.set(0.6/2, -0.2/2, -0.05/2);
 
             // This is a special case to make the backplate
             c.userData.path = path+"."+name;
@@ -668,7 +669,7 @@ function updateDirtyNode(dirtyPath) {
 
     console.log("building module ", numchildren, parentNode.children.length, numrows, numcols)
 
-    let LARGEST_MODULE = 0.2;
+    let LARGEST_MODULE = 0.1;
     let widget_diameter = LARGEST_MODULE*2;
     let widget_padding = LARGEST_MODULE / 4;
     let grid_spacing = widget_diameter + widget_padding;
@@ -686,12 +687,12 @@ function updateDirtyNode(dirtyPath) {
 
     for (let r = 0, i=0; r<numrows; r++) {
         for (let c=0; c<numcols && i < numchildren; c++, i++) {
-            //console.log("adding child" + i + " of " + numchildren + "at ", c, r)
+            console.log("adding child " + i + " of " + numchildren + " at ", c, r)
 
             let widget = nodesToClean[i];
-            widget.position.x = grid_spacing * (c + 0.5);
-            widget.position.y = -grid_spacing * (r + 0.5);
-            widget.position.z = .1;
+            widget.position.x = (grid_spacing * (c + 0.1))*2;
+            widget.position.y = -(grid_spacing * (r + 0.2))*2;
+            widget.position.z = 0.1;
         }
     }
 
