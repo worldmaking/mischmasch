@@ -109,9 +109,13 @@ function getIntersections(controller, x, y, z, offset =0) {
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
     let intersections = raycaster.intersectObjects(instMeshes.children, true);
-    console.log(intersections)
-    while (intersections.length > 0 /*&& !intersections[0].object.userData.selectable*/) //intersections.shift();
+    
+    while (intersections.length > 0 /*&& !intersections[0].object.userData.selectable*/){ 
+        intersections.shift();
+        //console.log(intersections)
+    }
     return intersections;
+    
 }
 
 function intersectObjects(controller) {
@@ -119,7 +123,7 @@ function intersectObjects(controller) {
     if (controller.userData.selected !== undefined) return;
     let line = controller.getObjectByName("line");
     let intersections = getIntersections(controller, 0, 0, -1);
-    console.log(intersections)
+    //console.log(intersections)
     if (intersections.length > 0) {
         let intersection = intersections[0];
         let object = intersection.object;
