@@ -132,18 +132,6 @@ let instancedGeometry = new THREE.InstancedBufferGeometry();
 instancedGeometry.index = generic_geometry.index;
 instancedGeometry.attributes.position = generic_geometry.attributes.position;
 
-
-///////////////
-
-// instance globals:
-let instBoxLocationAttr, instBoxOrientationAttr, instBoxScaleAttr, instBoxColorAttr, instBoxShapeAttr, instBoxParentAttr;
-let instBoxGeometry // a VBO really
-let maxInstances = 0;
-let instances = 50000;
-
-
-///////////////
-
 let op_geometry = new THREE.BoxBufferGeometry(0.2, 0.2, 0.05);
 op_geometry.translate(op_geometry.parameters.width/2, -op_geometry.parameters.height/2, -op_geometry.parameters.depth/2);
 
@@ -178,6 +166,15 @@ let outline_material = new THREE.MeshStandardMaterial({
 let shaderMat;
 
 let textMaterial;
+
+
+/////////////////////////////////////////////
+// instance globals:
+/////////////////////////////////////////////
+let instBoxLocationAttr, instBoxOrientationAttr, instBoxScaleAttr, instBoxColorAttr, instBoxShapeAttr, instBoxParentAttr;
+let instBoxGeometry // a VBO really
+let maxInstances = 0;
+let instances = 50000;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // SCENE COMPONENTS
@@ -364,8 +361,6 @@ async function init() {
         0.1,
         10
     );
-    // TODO: does this break VR????
-   
 
     scene.add(camera)
     camera.position.set(0, 1.5, 0)
@@ -373,6 +368,7 @@ async function init() {
 
     /// instanceBox
     {
+        
         // box spans signed-normalized range of -1..1 in each axis
         // with subdivisions in each axis
         let bufferGeometry = new THREE.BoxBufferGeometry( 2,2,2,  3,3,1 );
@@ -583,7 +579,7 @@ async function init() {
 
 
 	let floor = new THREE.Mesh(floorGeometry, floorMaterial);
-	//floor.position.y = -0.5;
+	// floor.position.y = -0.5;
 	floor.rotation.x = Math.PI / 2;
     scene.add(floor);
     
@@ -792,7 +788,7 @@ function animate() {
 
    requestAnimationFrame( animate );
 
-    // are we in VR?
+    // ? are we in VR?
      if (!renderer.vr.isPresenting()){
         controls.update();
         renderer.vr.enabled = false;
@@ -803,7 +799,7 @@ function animate() {
     if (textMaterial != undefined) {
         textMaterial.uniforms.u_time.value = performance.now() * 0.001;
     }
-    //console.log(raycaster)
+    // console.log(raycaster)
 
     render();
 }
@@ -826,7 +822,7 @@ function render() {
 
     //updateDirty();
 
-    // make sure all objects' matrices are up to date (TODO might not be needed?)
+    // make sure all objects' matrices are up to date (TODO: might not be needed?)
     scene.updateMatrixWorld();
 
     for (let cable of allCables) {
@@ -1183,6 +1179,7 @@ function connect_to_server() {
         console.error(e);
     }
 }
+
 let count = 0;
 function handlemessage(msg, sock) {
     switch (msg.cmd) {
