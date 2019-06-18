@@ -256,59 +256,39 @@ function enactDeltaNewNode(delta) {
         } break;
         */
         case "inlet": {
-            // instBoxLocationAttr.setXYZ(maxInstances, 
-            //     instBoxLocationAttr.array[parentInstanceID *3], 
-            //     instBoxLocationAttr.array[(parentInstanceID*3)+1],  
-            //     .1+instBoxLocationAttr.array[(parentInstanceID*3)+2]);
-
-            // instBoxScaleAttr.setXYZ(maxInstances, 0.2, 0.2, 0.05);
-            // instBoxColorAttr.setXYZW(maxInstances, Math.random(), Math.random(), Math.random(), 1);
-            // instBoxShapeAttr.setX(maxInstances, 1.);
-            // instBoxParentAttr.setX(maxInstances, parentInstanceID);
-            // maxInstances++;
-
             container = new THREE.Mesh(boxGeom, boxMat);
-            container.scale.set(0.2,0.2, 0.05);
-            container.position.set(0,0, .1);
+            container.scale.set(NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT);
+           // container.position.set(0,0, .05);
         //     container.position.fromArray([Math.random(),Math.random(),Math.random()]);
         //    container.rotation.fromArray([Math.random(),Math.random(),Math.random()]);
             container.userData.shape = 1.;
         } break;
-        case "outlet":
-        case "large_knob":
-        case "small_knob":
+        case "outlet":{
+            container = new THREE.Mesh(boxGeom, boxMat);
+            container.scale.set(NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT);
+            container.userData.shape = 1.;
+
+        } break;
+        case "large_knob":{
+            container = new THREE.Mesh(boxGeom, boxMat);
+            container.scale.set(LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, LARGE_KNOB_HEIGHT);
+            container.userData.shape = 1.;
+        }break;
+        case "small_knob":{
+            container = new THREE.Mesh(boxGeom, boxMat);
+            container.scale.set(SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, SMALL_KNOB_HEIGHT);
+            container.userData.shape = 1.;
+        }break;
         case "n_switch":
         case "group": break;
         default: {
-            //container = new THREE.Mesh(instancedGeometry, shaderMat);
-            // let label = generateLabel(labelName);
-            // label.position.y = -LABEL_SIZE;
-            // label.position.z += 0.01;
-            // label.position.x = 0.005;
-            // container.add(label);
 
-            // container.userData.moveable = true; 
-            // container.userData.selectable = true;
-            // container.userData.dirty = true;
-            // container.userData.isBox = true;
-
-            // instBoxLocationAttr.setXYZ(maxInstances, Math.random()*3, Math.random()*3, Math.random()*3);
-            // //instBoxOrientationAttr.setXYZ(maxInstances, Math.random(), Math.random(), Math.random(), 1);
-            // instBoxScaleAttr.setXYZ(maxInstances, 0.6, 0.2, 0.05);
-            // instBoxColorAttr.setXYZW(maxInstances, Math.random(), Math.random(), Math.random(), 1);
-            // instBoxShapeAttr.setX(maxInstances, 0.);
-            // parentInstanceID = maxInstances;
-            // instBoxParentAttr.setX(maxInstances, parentInstanceID);
-            // maxInstances++;
-            // createLabel(labelName,  instBoxLocationAttr.array[parentInstanceID *3], 
-            //     instBoxLocationAttr.array[(parentInstanceID*3)+1],  
-            //     .5+instBoxLocationAttr.array[(parentInstanceID*3)+2], 0.002);
             container = new THREE.Mesh();
             let c = new THREE.Mesh(boxGeom, boxMat);
             //c.scale.set(0.6,0.2,0.05);
-            //c.position.set(0.6/2, -0.2/2, -0.05/2);
+            container.position.set(GEN_GEOM_WIDTH/2, -GEN_GEOM_HEIGHT/2, -GEN_GEOM_DEPTH/2);
 
-            // This is a special case to make the backplate
+            // ! This is a special case to make the backplate
             c.userData.path = path+"."+name;
             c.name = name;
             c.userData.name = name;
@@ -669,15 +649,16 @@ function updateDirtyNode(dirtyPath) {
 
     console.log("building module ", numchildren, parentNode.children.length, numrows, numcols)
 
-    let LARGEST_MODULE = 0.1;
-    let widget_diameter = LARGEST_MODULE*2;
-    let widget_padding = LARGEST_MODULE / 4;
+    let LARGEST_MODULE = LARGE_KNOB_RADIUS;
+    let widget_diameter = LARGEST_MODULE;
+    let widget_padding = LARGEST_MODULE / 2;
     let grid_spacing = widget_diameter + widget_padding;
 
     // TODO: Seems silly to have to create a new geometry everytime.....
     //parentNode.geometry = new THREE.BoxBufferGeometry(width * nodesToClean.length, 0.2, 0.05);
     //parentNode.children[0].scale.set(grid_spacing * numcols, grid_spacing * numrows, 0.05);
-    parentNode.children[0].scale.set(grid_spacing * numcols, grid_spacing * numrows, 0.05);
+    parentNode.children[0].scale.set(grid_spacing * numcols, grid_spacing * numrows, 0.080);
+    parentNode.children[0].position.set((grid_spacing * numcols)/2, -((grid_spacing * numrows)/2), -(0.080 /2))
 
 
     // reset anchor to top left corner:
@@ -690,8 +671,8 @@ function updateDirtyNode(dirtyPath) {
             console.log("adding child " + i + " of " + numchildren + " at ", c, r)
 
             let widget = nodesToClean[i];
-            widget.position.x = (grid_spacing * (c + 0.1))*2;
-            widget.position.y = -(grid_spacing * (r + 0.2))*2;
+            widget.position.x = (grid_spacing * (c))*2;
+            widget.position.y = -(grid_spacing * (r))*2;
             widget.position.z = 0.1;
         }
     }
