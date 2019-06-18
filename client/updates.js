@@ -54,11 +54,9 @@ function enactDelta(delta) {
 function enactDeltaNewNode(delta) {
     // create new object etc.
 
-    //console.log(delta)
 
     //let parent = (delta.menu == true) ? menu : world;
     let parent = instMeshes;  
-
     // first, find parent.
     let path = delta.path;
     let name, parentpath;
@@ -68,11 +66,12 @@ function enactDeltaNewNode(delta) {
         name = path.substring(pathlastdot+1);
         parent = getObjectByPath(parentpath);
     } else {
-    name = delta.path;
+        name = delta.path;
     }
-    
+
    // console.log(path, name, parentpath, parent)
     let container;
+    let def = false;
     let labelName = delta.kind;
 
     // generic object:
@@ -269,10 +268,10 @@ function enactDeltaNewNode(delta) {
             // maxInstances++;
 
             container = new THREE.Mesh(boxGeom, boxMat);
-            container.scale.fromArray([0.2, 0.2, 0.05]);
-            container.position.fromArray([0,0,1]);
-            // container.position.fromArray([Math.random(),Math.random(),Math.random()]);
-           //container.rotation.fromArray([Math.random(),Math.random(),Math.random()]);
+            container.scale.set(0.2,0.2, 0.05);
+            container.position.set(0,0, .1);
+        //     container.position.fromArray([Math.random(),Math.random(),Math.random()]);
+        //    container.rotation.fromArray([Math.random(),Math.random(),Math.random()]);
             container.userData.shape = 1.;
         } break;
         case "outlet":
@@ -304,18 +303,26 @@ function enactDeltaNewNode(delta) {
             // createLabel(labelName,  instBoxLocationAttr.array[parentInstanceID *3], 
             //     instBoxLocationAttr.array[(parentInstanceID*3)+1],  
             //     .5+instBoxLocationAttr.array[(parentInstanceID*3)+2], 0.002);
+            container = new THREE.Mesh();
+            let c = new THREE.Mesh(boxGeom, boxMat);
+            c.scale.set(0.6,0.2,0.05);
 
-            container = new THREE.Mesh(boxGeom, boxMat);
-            container.scale.set(0.6,0.2,0.05)
+            // This is a special case to make the backplate
+            c.userData.path = path+"."+name;
+            c.name = name;
+            c.userData.name = name;
+            c.userData.kind = delta.kind;
+            container.add(c);
+            def = true;
             container.userData.dirty = true;
 
         } break;
     }    
-    // console.log(parentInstanceID)
+
     if(container !== undefined){
         // container.castShadow = true;
         // container.receiveShadow = true;
-        container.updateMatrixWorld(true);
+       // container.updateMatrixWorld(true);
         container.name = name;
         container.userData.name = name;
         container.userData.path = path;
@@ -350,12 +357,12 @@ function enactDeltaNewNode(delta) {
         } else {
             container.quaternion = parent.quaternion.clone();
         }
+
+
         // // add to our library of nodes:
         addObjectByPath(path, container);
         // // add to proper parent:
-
         parent.add(container);
-  
     
     }
 
@@ -392,12 +399,20 @@ function enactDeltaDeleteNode(delta) {
            delete allNodes[name];
         }
     }
+    //console.log("Delete: ", delta)
     //Removing from the world
     for(let i=0; i<instMeshes.children.length; i++){
-        if(instMeshes.children[i].name === kind){
-            instMeshes.remove(instMeshes.children[i])
+        if(delta.path.includes(instMeshes.children[i].userData.path)){
+            instMeshes.remove(instMeshes.children[i]);
         }
     }
+
+    // for(let i=0; i<instMeshes.children.length; i++){
+    //     if(instMeshes.children[i].name === kind){
+    //         instMeshes.remove(instMeshes.children[i])
+
+    //     }
+    // }
 }
 
 /*
@@ -653,17 +668,19 @@ function updateDirtyNode(dirtyPath) {
 
     console.log("building module ", numchildren, parentNode.children.length, numrows, numcols)
 
-    let LARGEST_MODULE = LARGE_KNOB_RADIUS;
+    let LARGEST_MODULE = 0.2;
     let widget_diameter = LARGEST_MODULE*2;
     let widget_padding = LARGEST_MODULE / 4;
     let grid_spacing = widget_diameter + widget_padding;
 
     // TODO: Seems silly to have to create a new geometry everytime.....
     //parentNode.geometry = new THREE.BoxBufferGeometry(width * nodesToClean.length, 0.2, 0.05);
-    parentNode.geometry.scale(grid_spacing * numcols, grid_spacing * numrows, 0.05);
+    //parentNode.children[0].scale.set(grid_spacing * numcols, grid_spacing * numrows, 0.05);
+    parentNode.children[0].scale.set(grid_spacing * numcols, grid_spacing * numrows, 0.05);
+
 
     // reset anchor to top left corner:
-    parentNode.geometry.translate(parentNode.geometry.parameters.width/2, -parentNode.geometry.parameters.height/2, -parentNode.geometry.parameters.depth/2);
+    //parentNode.geometry.translate(parentNode.geometry.parameters.width/2, -parentNode.geometry.parameters.height/2, -parentNode.geometry.parameters.depth/2);
 
     //parentNode.scale.set(grid_spacing * numcols, grid_spacing * numrows, 0.05);
 
@@ -674,7 +691,7 @@ function updateDirtyNode(dirtyPath) {
             let widget = nodesToClean[i];
             widget.position.x = grid_spacing * (c + 0.5);
             widget.position.y = -grid_spacing * (r + 0.5);
-            widget.position.z = 0;
+            widget.position.z = .1;
         }
     }
 
