@@ -913,51 +913,54 @@ function render() {
 
 
 
-let boxGeom = new THREE.BoxGeometry(2,2,2);
+let boxGeom = new THREE.BoxGeometry(1,1,1);
 let boxMat = new THREE.MeshStandardMaterial();
 let thru = false;
 
 function updateInstaces(recurMeshes=instMeshes){
 
     if(recurMeshes == instMeshes){ 
-        maxInstances = 0;
+        maxInstances = 0;  
     }
     let tempMeshes = recurMeshes.children;
     let pos = new THREE.Vector3();
     let orient = new THREE.Quaternion();
-    for(let i=0, d=maxInstances, j=maxInstances*3, k=maxInstances*4; i < tempMeshes.length; i++, d++, j+=3, k+=4){
-       if(tempMeshes != undefined && thru == true){
+    if(recurMeshes != instMeshes){
+        for(let i=0, d=maxInstances, j=maxInstances*3, k=maxInstances*4; i < tempMeshes.length; i++, d++, j+=3, k+=4){
+        if(tempMeshes != undefined && thru == true){
 
-            // instBoxLocationAttr.array[j] = tempMeshes[i].position.x;
-            // instBoxLocationAttr.array[j+1] = tempMeshes[i].position.y;
-            // instBoxLocationAttr.array[j+2] = tempMeshes[i].position.z;
+                // instBoxLocationAttr.array[j] = tempMeshes[i].position.x;
+                // instBoxLocationAttr.array[j+1] = tempMeshes[i].position.y;
+                // instBoxLocationAttr.array[j+2] = tempMeshes[i].position.z;
 
-            instBoxLocationAttr.array[j] = tempMeshes[i].getWorldPosition(pos).x;
-            instBoxLocationAttr.array[j+1] = tempMeshes[i].getWorldPosition(pos).y;
-            instBoxLocationAttr.array[j+2] = tempMeshes[i].getWorldPosition(pos).z;
+                instBoxLocationAttr.array[j] = tempMeshes[i].getWorldPosition(pos).x;
+                instBoxLocationAttr.array[j+1] = tempMeshes[i].getWorldPosition(pos).y;
+                instBoxLocationAttr.array[j+2] = tempMeshes[i].getWorldPosition(pos).z;
 
 
-            instBoxOrientationAttr.array[k] = tempMeshes[i].getWorldQuaternion(orient).x;
-            instBoxOrientationAttr.array[k+1] = tempMeshes[i].getWorldQuaternion(orient).y;
-            instBoxOrientationAttr.array[k+2] = tempMeshes[i].getWorldQuaternion(orient).z;
-            instBoxOrientationAttr.array[k+3] = tempMeshes[i].getWorldQuaternion(orient).w;
+                instBoxOrientationAttr.array[k] = tempMeshes[i].getWorldQuaternion(orient).x;
+                instBoxOrientationAttr.array[k+1] = tempMeshes[i].getWorldQuaternion(orient).y;
+                instBoxOrientationAttr.array[k+2] = tempMeshes[i].getWorldQuaternion(orient).z;
+                instBoxOrientationAttr.array[k+3] = tempMeshes[i].getWorldQuaternion(orient).w;
 
-            // instBoxOrientationAttr.array[k] = tempMeshes[i].quaternion.x;
-            // instBoxOrientationAttr.array[k+1] = tempMeshes[i].quaternion.y;
-            // instBoxOrientationAttr.array[k+2] = tempMeshes[i].quaternion.z;
-            // instBoxOrientationAttr.array[k+3] = tempMeshes[i].quaternion.w;
+                // instBoxOrientationAttr.array[k] = tempMeshes[i].quaternion.x;
+                // instBoxOrientationAttr.array[k+1] = tempMeshes[i].quaternion.y;
+                // instBoxOrientationAttr.array[k+2] = tempMeshes[i].quaternion.z;
+                // instBoxOrientationAttr.array[k+3] = tempMeshes[i].quaternion.w;
 
-            // instBoxScaleAttr.array[j] = tempMeshes[i].geometry.parameters.width;
-            // instBoxScaleAttr.array[j+1] = tempMeshes[i].geometry.parameters.height;
-            // instBoxScaleAttr.array[j+2] = tempMeshes[i].geometry.parameters.depth;
+                // instBoxScaleAttr.array[j] = tempMeshes[i].geometry.parameters.width;
+                // instBoxScaleAttr.array[j+1] = tempMeshes[i].geometry.parameters.height;
+                // instBoxScaleAttr.array[j+2] = tempMeshes[i].geometry.parameters.depth;
 
-            instBoxScaleAttr.array[j] = tempMeshes[i].scale.x;
-            instBoxScaleAttr.array[j+1] = tempMeshes[i].scale.y;
-            instBoxScaleAttr.array[j+2] = tempMeshes[i].scale.z;
+                instBoxScaleAttr.array[j] = tempMeshes[i].scale.x;
+                instBoxScaleAttr.array[j+1] = tempMeshes[i].scale.y;
+                instBoxScaleAttr.array[j+2] = tempMeshes[i].scale.z;
 
-            instBoxShapeAttr.array[d] = tempMeshes[i].userData.shape;
+                instBoxShapeAttr.array[d] = tempMeshes[i].userData.shape;
+            }
         }
     }
+
     maxInstances += tempMeshes.length;
     for(let i = 0; i < recurMeshes.children.length; i++){
         thru = true;

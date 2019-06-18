@@ -305,8 +305,8 @@ function enactDeltaNewNode(delta) {
             //     .5+instBoxLocationAttr.array[(parentInstanceID*3)+2], 0.002);
             container = new THREE.Mesh();
             let c = new THREE.Mesh(boxGeom, boxMat);
-            c.scale.set(0.6,0.2,0.05);
-            c.position.set(0.6/2, -0.2/2, -0.05/2);
+            //c.scale.set(0.6,0.2,0.05);
+            //c.position.set(0.6/2, -0.2/2, -0.05/2);
 
             // This is a special case to make the backplate
             c.userData.path = path+"."+name;
