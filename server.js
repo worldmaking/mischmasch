@@ -294,7 +294,7 @@ function handlemessage(msg, sock, id) {
 				sessionJSON.push(response)
 			}
 
-			fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(response), "utf-8")
+			//fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(response), "utf-8")
 
 			//OTHistory.push(JSON.stringify(response))
 			send_all_clients(JSON.stringify(response));
@@ -409,7 +409,7 @@ function handlemessage(msg, sock, id) {
 
 		case "clear_scene": {
 			// JSON not streamable format so close out the history file 
-			fs.appendFileSync(OTHistoryFile, ']', "utf-8")
+			//fs.appendFileSync(OTHistoryFile, ']', "utf-8")
 
 
 
@@ -508,7 +508,7 @@ function handlemessage(msg, sock, id) {
 			// Limit storing of pose data to rate of 30fps
 			limiter.schedule(() => {
 				//OTHistory.push(poseDelta)
-				fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(recordPose), "utf-8")
+				//fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(recordPose), "utf-8")
 
 			});
 		} break;
