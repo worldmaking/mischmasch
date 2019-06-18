@@ -17,6 +17,12 @@ function onSelectStart(event) {
         object.userData.originalParent = parent;
         
         controller.add(object); //removes from previous parent
+
+        if(controller == controller1){
+            grabbingC1 = true;
+        }else{
+            grabbingC2 = true;
+        }
     }
 
     
@@ -29,6 +35,11 @@ function onSelectStart(event) {
 
 function onSelectEnd(event) {
     let controller = event.target;
+    if(controller == controller1){
+        grabbingC1 = false;
+    }else{
+        grabbingC2 = false;
+    }
     if (controller.userData.selected !== undefined) {
         let object = controller.userData.selected;
         let parent = object.userData.originalParent;
@@ -57,7 +68,9 @@ function onSelectEnd(event) {
                 outgoingDeltas.push(
                     { op:"delnode", path:object.userData.path, kind:object.userData.name}
                 );
-            }
+            }/*else{
+                instMeshes.add(object);
+            }*/
 
         }
     }
@@ -96,8 +109,8 @@ function getIntersections(controller, x, y, z, offset =0) {
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
     let intersections = raycaster.intersectObjects(instMeshes.children, true);
-
-    while (intersections.length > 0 /*&& !intersections[0].object.userData.selectable*/) intersections.shift();
+    console.log(intersections)
+    while (intersections.length > 0 /*&& !intersections[0].object.userData.selectable*/) //intersections.shift();
     return intersections;
 }
 
@@ -106,7 +119,7 @@ function intersectObjects(controller) {
     if (controller.userData.selected !== undefined) return;
     let line = controller.getObjectByName("line");
     let intersections = getIntersections(controller, 0, 0, -1);
-    //console.log(intersections)
+    console.log(intersections)
     if (intersections.length > 0) {
         let intersection = intersections[0];
         let object = intersection.object;
