@@ -180,6 +180,12 @@ let textMaterial;
 let instBoxLocationAttr, instBoxOrientationAttr, instBoxScaleAttr, instBoxColorAttr, instBoxShapeAttr, instBoxParentAttr;
 let instBoxGeometry // a VBO really
 let maxInstances = 0;
+let grabbedInstances = 0;
+let grabbedInstances2 = 0;
+let updatingC1 = false;
+let updatingC2 = false;
+let grabbingC1 = false;
+let grabbingC2 = false;
 let instances = 50000;
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -867,6 +873,13 @@ function render() {
     intersectObjects(controller1);
     intersectObjects(controller2);
 
+    if(grabbingC1){
+        updateGrabbedInstances(controller1);
+    }
+    if(grabbingC2){
+        updateGrabbedInstances(controller2);
+    }
+
     var time = performance.now();
     let delta = ( time - lastTime ) / 5000;
     lastTime = time;
@@ -900,7 +913,7 @@ function updateInstaces(recurMeshes=instMeshes){
     let orient = new THREE.Quaternion();
     if(recurMeshes != instMeshes){
         for(let i=0, d=maxInstances, j=maxInstances*3, k=maxInstances*4; i < tempMeshes.length; i++, d++, j+=3, k+=4){
-        if(tempMeshes != undefined && thru == true){
+            if(tempMeshes != undefined && thru == true){
 
                 // instBoxLocationAttr.array[j] = tempMeshes[i].position.x;
                 // instBoxLocationAttr.array[j+1] = tempMeshes[i].position.y;
@@ -934,15 +947,74 @@ function updateInstaces(recurMeshes=instMeshes){
         }
     }
 
+    //update maxInstances if this isn't the first call
     if(recurMeshes != instMeshes){ 
         maxInstances += tempMeshes.length;
     }
+
+    //recursive call (endcase is tempMeshes.length == 0)
     for(let i = 0; i < tempMeshes.length; i++){
         thru = true;
         updateInstaces(tempMeshes[i]);
     }
     thru = false;
     instMeshes.updateMatrixWorld(true);
+}
+
+function updateGrabbedInstances(recurMeshes=controller1){
+    if(recurMeshes == controller1){ 
+        grabbedInstances = 0;
+        updatingC1 = true;
+    }else if(recurMeshes == controller2){
+        grabbedInstances2 = 0;
+        updatingC2 = true;
+    }
+    let tempMeshes = recurMeshes.children;
+    let pos = new THREE.Vector3();
+    let orient = new THREE.Quaternion();
+    if(recurMeshes != controller1 && recurMeshes != controller2){
+        let startIndex = maxInstances+grabbedInstances+grabbedInstances2;
+        for(let i=0, d=startIndex, j=startIndex*3, k=startIndex*4; i < tempMeshes.length; i++, d++, j+=3, k+=4){
+            if(tempMeshes != undefined && thru == true){
+
+                instBoxLocationAttr.array[j] = tempMeshes[i].getWorldPosition(pos).x;
+                instBoxLocationAttr.array[j+1] = tempMeshes[i].getWorldPosition(pos).y;
+                instBoxLocationAttr.array[j+2] = tempMeshes[i].getWorldPosition(pos).z;
+
+                instBoxOrientationAttr.array[k] = tempMeshes[i].getWorldQuaternion(orient).x;
+                instBoxOrientationAttr.array[k+1] = tempMeshes[i].getWorldQuaternion(orient).y;
+                instBoxOrientationAttr.array[k+2] = tempMeshes[i].getWorldQuaternion(orient).z;
+                instBoxOrientationAttr.array[k+3] = tempMeshes[i].getWorldQuaternion(orient).w;
+
+                instBoxScaleAttr.array[j] = tempMeshes[i].scale.x;
+                instBoxScaleAttr.array[j+1] = tempMeshes[i].scale.y;
+                instBoxScaleAttr.array[j+2] = tempMeshes[i].scale.z;
+
+                instBoxShapeAttr.array[d] = tempMeshes[i].userData.shape;
+            }
+        }
+    }
+
+    //update grabbedInstances if this isn't the first call
+    if(recurMeshes != controller1 && recurMeshes != controller2){
+        if(updatingC1) {grabbedInstances += tempMeshes.length;}
+        else {grabbedInstances2 += tempMeshes.length;}
+    }
+
+    //recursive call (endcase is tempMeshes.length == 0)
+    for(let i = 0; i < tempMeshes.length; i++){
+        thru = true;
+        updateGrabbedInstances(tempMeshes[i]);
+    }
+
+    //reset update flags for each contoller
+    if(recurMeshes == controller1){
+        updatingC1 = false;
+    } else if(recurMeshes == controller2){
+        grabbedInstances2 = 0;
+        updatingC2 = false;
+    }
+    thru = false;
 }
 
 function onGrips(event) {
