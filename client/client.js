@@ -3,6 +3,8 @@
 // COMMON GEOMETRIES
 //////////////////////////////////////////////////////////////////////////////////////////
 
+//THREE JS is now r105
+
 let geometry = new THREE.BoxBufferGeometry(0.2, 0.2, 0.2);
 let geometry2 = new THREE.BoxBufferGeometry(0.1, 0.1, 0.1);
 
@@ -387,7 +389,6 @@ async function init() {
         let scales = [];
         let colors = [];
         let shapes = []; // 0==box, 1== cylinder
-        let parentID = [];
         let vector = new THREE.Vector4();
         let x, y, z, w;
         for ( let i = 0; i < instances; i ++ ) {
@@ -409,21 +410,18 @@ async function init() {
             colors.push(Math.random(), Math.random(), Math.random(), 1);
 
             shapes.push(0.);
-            parentID.push(-1);
         }
         instBoxLocationAttr = new THREE.InstancedBufferAttribute( new Float32Array( offsets ), 3 ).setDynamic( true );
         instBoxOrientationAttr = new THREE.InstancedBufferAttribute( new Float32Array( orientations ), 4 ).setDynamic( true );
         instBoxScaleAttr = new THREE.InstancedBufferAttribute( new Float32Array( scales ), 3 ).setDynamic( true );
         instBoxColorAttr = new THREE.InstancedBufferAttribute( new Float32Array( colors ), 4 ).setDynamic( true );
         instBoxShapeAttr = new THREE.InstancedBufferAttribute( new Float32Array( shapes ), 1 ).setDynamic( true );
-        instBoxParentAttr = new THREE.InstancedBufferAttribute( new Float32Array( parentID ), 1 ).setDynamic( true );
 
         instBoxGeometry.addAttribute( 'location', instBoxLocationAttr );
         instBoxGeometry.addAttribute( 'orientation', instBoxOrientationAttr );
         instBoxGeometry.addAttribute( 'scale', instBoxScaleAttr );
         instBoxGeometry.addAttribute( 'color', instBoxColorAttr );
         instBoxGeometry.addAttribute( 'shape', instBoxShapeAttr );
-        instBoxGeometry.addAttribute( 'parent ', instBoxParentAttr );
         
         let material = new THREE.RawShaderMaterial( {
             uniforms: {
@@ -820,7 +818,7 @@ function render() {
         //console.log("incoming deltas")
     }
 
-    //updateDirty();
+    updateDirty();
 
     // make sure all objects' matrices are up to date (TODO: might not be needed?)
     scene.updateMatrixWorld();
@@ -906,7 +904,6 @@ function render() {
     instBoxScaleAttr.needsUpdate = true;
     instBoxColorAttr.needsUpdate = true;
     instBoxShapeAttr.needsUpdate = true;
-    instBoxParentAttr.needsUpdate = true;
     instBoxGeometry.maxInstancedCount = maxInstances//Math.ceil(Math.random() * 5000);
 
     if (!renderBypass) renderer.render(scene, camera);
@@ -918,18 +915,18 @@ function render() {
 
 let boxGeom = new THREE.BoxGeometry(2,2,2);
 let boxMat = new THREE.MeshStandardMaterial();
-
+let thru = false;
 
 function updateInstaces(recurMeshes=instMeshes){
 
-    if(recurMeshes == instMeshes){
+    if(recurMeshes == instMeshes){ 
         maxInstances = 0;
     }
     let tempMeshes = recurMeshes.children;
     let pos = new THREE.Vector3();
     let orient = new THREE.Quaternion();
     for(let i=0, d=maxInstances, j=maxInstances*3, k=maxInstances*4; i < tempMeshes.length; i++, d++, j+=3, k+=4){
-       if(tempMeshes != undefined){
+       if(tempMeshes != undefined && thru == true){
 
             // instBoxLocationAttr.array[j] = tempMeshes[i].position.x;
             // instBoxLocationAttr.array[j+1] = tempMeshes[i].position.y;
@@ -963,39 +960,11 @@ function updateInstaces(recurMeshes=instMeshes){
     }
     maxInstances += tempMeshes.length;
     for(let i = 0; i < recurMeshes.children.length; i++){
+        thru = true;
         updateInstaces(recurMeshes.children[i]);
     }
+    thru = false;
     instMeshes.updateMatrixWorld(true);
-}
-   
-function spoofList(){
-    instMeshes = [];
-    for(let i =0, j=0, k=0; i < maxInstances; i++, j+=3, k+=4){
-        let mesh = new THREE.Mesh(boxGeom, boxMat);
-        mesh.position.fromArray([
-            instBoxLocationAttr.array[j],
-            instBoxLocationAttr.array[j+1],
-            instBoxLocationAttr.array[j+2]]);
-        mesh.quaternion.fromArray([
-            instBoxOrientationAttr.array[k],
-            instBoxOrientationAttr.array[k+1],
-            instBoxOrientationAttr.array[k+2],
-            instBoxOrientationAttr.array[k+3]]);
-        mesh.scale.fromArray([
-            instBoxScaleAttr.array[j],
-            instBoxScaleAttr.array[j+1],
-            instBoxScaleAttr.array[j+2]]);
-
-        mesh.userData.shape = instBoxShapeAttr.array[i];
-        mesh.userData.instaceID = i;
-        mesh.userData.parentID = instBoxParentAttr.array[i];
-        
-        mesh.updateMatrixWorld(true);
-        instMeshes.add(mesh);
-        //world.add(mesh);
-    }
-
-
 }
 
 function onGrips(event) {
@@ -1022,7 +991,6 @@ function onDocumentMouseDown(event){
             console.log("Intersected");
             let intersection = intersects[0];
             let object = intersection.object;
-
             // for(let i=0; i<instMeshes.children.length; i++){
             //     if(object.userData.path.includes(instMeshes.children[i].userData.path)){
             //         instMeshes.remove(instMeshes.children[i]);
