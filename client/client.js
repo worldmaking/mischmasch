@@ -593,7 +593,7 @@ async function init() {
         ori.fromArray([Math.random(),Math.random(),Math.random(),Math.random()]);
         ori.normalize();
 
-        let deltas = spawnRandomModule([0+Math.random(),0+Math.random(),0+Math.random()], [ori.x,ori.y,ori.z,ori.w]);
+        let deltas = spawnRandomModule([0 ,0+(Math.random() * 4),0], [0,0,0,1]);
         clientSideDeltas(deltas);
         //adds a label to each module that is initalized
         // createLabel("Module",
