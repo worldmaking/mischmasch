@@ -47,16 +47,15 @@ function enactDelta(delta) {
     updateInstaces();
 }
 
-/*
-    { op:"newnode", path:"x", kind:"noise", pos:[], orient:[], ...properties }
+/* 
+*  { op:"newnode", path:"x", kind:"noise", pos:[], orient:[], ...properties }
 */
 
 function enactDeltaNewNode(delta) {
     // create new object etc.
 
-
-    //let parent = (delta.menu == true) ? menu : world;
     let parent = instMeshes;  
+
     // first, find parent.
     let path = delta.path;
     let name, parentpath;
@@ -69,198 +68,19 @@ function enactDeltaNewNode(delta) {
         name = delta.path;
     }
 
-   // console.log(path, name, parentpath, parent)
     let container;
     let def = false;
     let labelName = delta.kind;
 
-    // generic object:
-    let material = generic_material.clone();
-    material.color.set(Math.random() * 0xffffff);
-    
-    let outlet_material = material.clone();
-
-    let inlet_material = material.clone();
-    let knob_material = material.clone();
-    let n_switch_material = material.clone();
-    let n_switch_slider_material = material.clone();
-    let outline_mat = outline_material.clone();
-    let knob_point_material = material.clone();
-
-    // SHADERS //
-
     
     switch(delta.kind){
       
-        /*
-        case "inlet": {
-            inlet_material.blending = THREE.NormalBlending;
-            container = new THREE.Mesh(inlet_geometry, inlet_material);
-            container.position.fromArray([
-                0, 
-                0,
-                generic_geometry.parameters.depth/2 - NLET_HEIGHT]);
-            //Outline
-            outline_mat.color.set(0x00ff00);    
-            let outline = new THREE.Mesh(inlet_geometry, outline_mat);
-            outline.scale.multiplyScalar(1.28);
-            outline.castShadow = false;
-            outline.receiveShadow = false;
-            container.add(outline);
-
-            let label = generateLabel(name, NLET_HEIGHT);
-            label.position.z = 0.01;
-            label.position.x = -NLET_RADIUS /2;
-            container.add(label);
-            
-            container.userData.selectable = true;
-        } break;
-        case "outlet":{
-            outlet_material.blending = THREE.NormalBlending;
-            container = new THREE.Mesh(outlet_geometry, outlet_material);
-            container.position.fromArray([
-                0, 
-                0,
-                generic_geometry.parameters.depth/2 - NLET_HEIGHT]);
-
-            //Outline
-            outline_mat.color.set(0xff0000);    
-            let outline = new THREE.Mesh(outlet_geometry, outline_mat);
-            outline.scale.multiplyScalar(1.28);
-            outline.castShadow = false;
-            outline.receiveShadow = false;
-            container.add(outline);
-
-            let label = generateLabel(name, SMALL_KNOB_HEIGHT/2.7);
-            label.position.z = 0.01;
-            label.position.x = -NLET_RADIUS /2;
-            container.add(label);
-            container.userData.selectable = true;
-        } break;
-        case "large_knob": {
-            container = new THREE.Mesh(large_knob_geometry, knob_material);
-            //generic_geometry.parameters.width
-            container.position.fromArray([
-                0, 
-                0,
-                generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
-
-            knobPoint = new THREE.Mesh(knob_point_geometry, knob_point_material);
-            knobPoint.position.y = LARGE_KNOB_RADIUS;
-            container.add(knobPoint);
-            
-            let label = generateLabel(name, LARGE_KNOB_HEIGHT/2);
-            label.position.z = 0.01;
-            label.position.x = -LARGE_KNOB_RADIUS /2;
-            container.add(label);
-            container.userData.turnable = true;
-            container.userData.selectable = true;
-            container.userData.range = delta.range;
-
-            let min = delta.range[0];
-            let max = delta.range[1];
-            let scaledValue = (delta.value - min) / (max - min);
-            //scaledValue = wrap(scaledValue, 1);
-
-            // if value == 0, angle should be -sweep
-            // if value == 1, angle should be sweep 
-            let derived_angle = KNOB_SWEEP * ((scaledValue*2) - 1);
-            
-            // set rotation of knob by this angle, and normal axis of knob:
-            container.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
-           // console.log("Initial Value", scaledValue)
-
-        } break;
-        case "small_knob": {
-            container = new THREE.Mesh(small_knob_geometry, knob_material);
-            container.position.fromArray([
-                0, 
-                0,
-                generic_geometry.parameters.depth/2 - SMALL_KNOB_HEIGHT]);
-
-            knobPoint = new THREE.Mesh(knob_point_geometry, knob_point_material);
-            knobPoint.position.y = SMALL_KNOB_RADIUS;
-            container.add(knobPoint);
-            //Label
-            let label = generateLabel(name, SMALL_KNOB_HEIGHT/2.7);
-            label.position.z = 0.01;
-            label.position.x = -SMALL_KNOB_RADIUS /2;
-            container.add(label);
-
-            container.userData.turnable = true;
-            container.userData.selectable = true;
-            container.userData.range = delta.range;
-            
-
-            let min = delta.range[0];
-            let max = delta.range[1];
-            let scaledValue = (delta.value - min) / (max - min);
-            //scaledValue = wrap(scaledValue, 1);
-
-            // if value == 0, angle should be -sweep
-            // if value == 1, angle should be sweep 
-            let derived_angle = KNOB_SWEEP * ((scaledValue*2) - 1);
-            
-            // set rotation of knob by this angle, and normal axis of knob:
-            container.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
-
-        } break;
-        case "n_switch": {
-            container = new THREE.Mesh(n_switch_geometry, n_switch_material);
-            container.position.fromArray([
-                (0 / 8) + 0.25,
-                -generic_geometry.parameters.height/2 - LARGE_KNOB_HEIGHT/2, 
-                generic_geometry.parameters.depth/2 - LARGE_KNOB_HEIGHT]);
-            
-            let switchPositions = [];
-            //Draw N_SWTICH Label name itself
-            // let label = generateLabel(parent.userData.name, .01);
-            // label.position.y =  0;
-            // label.position.z = 0;
-            // container.add(label);
-            if(delta.throws !== undefined){
-                let y = -container.position.y / 2;
-                for(let l =0; l < delta.throws.length; l++){
-                    let labelN = generateLabel(delta.throws[l], .01);
-
-                    labelN.position.y = y - container.geometry.parameters.height / 3;
-                    y = labelN.position.y;
-                    labelN.position.z = 0;
-                    labelN.position.x = -0.01;
-                    switchPositions[l] = [labelN.position.x + -0.02,
-                        labelN.position.y,
-                        labelN.position.z + n_switch_slider_geometry.parameters.width/2];  
-                    if(delta.value !== undefined && delta.value === l){
-                        n_switch_slider = new THREE.Mesh(n_switch_slider_geometry, n_switch_slider_material);
-                        n_switch_slider.castShadow = true;
-                        n_switch_slider.receiveShadow = true;
-                        n_switch_slider.userData.slideable = true;
-                        n_switch_slider.userData.selectable = true;
-                        n_switch_slider.position.fromArray(switchPositions[l]);
-                        container.add(n_switch_slider);
-
-                    }
-                    container.add(labelN);
-
-                }
-
-            }
-
-            container.userData.positions = switchPositions;
-            container.userData.selectable = false;
-            container.userData.slideable = false;
-        } break;
-        case "group": {
-            //Gonna be used for subpatching
-
-        } break;
-        */
         case "inlet": {
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT);
-           // container.position.set(0,0, .05);
-        //     container.position.fromArray([Math.random(),Math.random(),Math.random()]);
-        //    container.rotation.fromArray([Math.random(),Math.random(),Math.random()]);
+            //container.position.set(0,0, .05);
+            //container.position.fromArray([Math.random(),Math.random(),Math.random()]);
+            //container.rotation.fromArray([Math.random(),Math.random(),Math.random()]);
             container.userData.shape = 1.;
         } break;
         case "outlet":{
@@ -535,22 +355,6 @@ function enactDeltaObjectValue(delta) {
     }
 }
 
-function generateLabel(message, label_size) {
-    let shapes;
-    let msg = message.replace(/_/g, " ")
-    if(label_size !== undefined){
-        shapes = loadedFont.generateShapes(msg, label_size);
-    } else {
-        shapes = loadedFont.generateShapes(msg, LABEL_SIZE);
-    }
-
-    let shapeGeometry = new THREE.ShapeBufferGeometry(shapes);
-    shapeGeometry.computeBoundingBox();
-
-    text = new THREE.Mesh(shapeGeometry, label_material);
-
-    return text;
-}
 /**
  * create a label with 3D space
  * @param {VALUE} text - text for the label
