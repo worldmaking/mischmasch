@@ -961,10 +961,12 @@ function updateInstaces(recurMeshes=instMeshes){
         }
     }
 
-    maxInstances += tempMeshes.length;
-    for(let i = 0; i < recurMeshes.children.length; i++){
+    if(recurMeshes != instMeshes){ 
+        maxInstances += tempMeshes.length;
+    }
+    for(let i = 0; i < tempMeshes.length; i++){
         thru = true;
-        updateInstaces(recurMeshes.children[i]);
+        updateInstaces(tempMeshes[i]);
     }
     thru = false;
     instMeshes.updateMatrixWorld(true);
