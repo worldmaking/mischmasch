@@ -874,11 +874,14 @@ function render() {
     intersectObjects(controller2);
 
     if(grabbingC1){
+        updateInstaces();
         updateGrabbedInstances(controller1);
     }
     if(grabbingC2){
+        updateInstaces();
         updateGrabbedInstances(controller2);
     }
+
 
     var time = performance.now();
     let delta = ( time - lastTime ) / 5000;
@@ -891,6 +894,14 @@ function render() {
     instBoxColorAttr.needsUpdate = true;
     instBoxShapeAttr.needsUpdate = true;
     instBoxGeometry.maxInstancedCount = maxInstances//Math.ceil(Math.random() * 5000);
+
+    maxInstances -= grabbedInstances;
+    maxInstances -= grabbedInstances2;
+    grabbedInstances = 0;
+    grabbedInstances2 = 0;
+
+    
+
 
     if (!renderBypass) renderer.render(scene, camera);
 
@@ -970,13 +981,12 @@ function updateGrabbedInstances(recurMeshes=controller1){
         updatingC2 = true;
     }
     let tempMeshes = recurMeshes.children;
+   // console.log(tempMeshes);
     let pos = new THREE.Vector3();
     let orient = new THREE.Quaternion();
     if(recurMeshes != controller1 && recurMeshes != controller2){
-        let startIndex = maxInstances+grabbedInstances+grabbedInstances2;
-        for(let i=0, d=startIndex, j=startIndex*3, k=startIndex*4; i < tempMeshes.length; i++, d++, j+=3, k+=4){
+        for(let i=0, d=maxInstances, j=maxInstances*3, k=maxInstances*4; i < tempMeshes.length; i++, d++, j+=3, k+=4){
             if(tempMeshes != undefined && thru == true){
-
                 instBoxLocationAttr.array[j] = tempMeshes[i].getWorldPosition(pos).x;
                 instBoxLocationAttr.array[j+1] = tempMeshes[i].getWorldPosition(pos).y;
                 instBoxLocationAttr.array[j+2] = tempMeshes[i].getWorldPosition(pos).z;
@@ -997,24 +1007,35 @@ function updateGrabbedInstances(recurMeshes=controller1){
 
     //update grabbedInstances if this isn't the first call
     if(recurMeshes != controller1 && recurMeshes != controller2){
-        if(updatingC1) {grabbedInstances += tempMeshes.length;}
-        else {grabbedInstances2 += tempMeshes.length;}
+        if(updatingC1) {
+            grabbedInstances += tempMeshes.length;
+            maxInstances += tempMeshes.length;
+        }
+        else {
+            grabbedInstances2 += tempMeshes.length;
+            maxInstances += tempMeshes.length;
+        }
     }
 
     //recursive call (endcase is tempMeshes.length == 0)
     for(let i = 0; i < tempMeshes.length; i++){
-        thru = true;
-        updateGrabbedInstances(tempMeshes[i]);
+        if((recurMeshes == controller1 || recurMeshes == controller2) && i == 2 || (recurMeshes != controller1 && recurMeshes != controller2)){
+            thru = true;
+            updateGrabbedInstances(tempMeshes[i]);
+        }
     }
 
     //reset update flags for each contoller
     if(recurMeshes == controller1){
         updatingC1 = false;
+        //maxInstances -= grabbedInstances;
     } else if(recurMeshes == controller2){
-        grabbedInstances2 = 0;
         updatingC2 = false;
+        //maxInstances -= grabbedInstances2;
     }
     thru = false;
+    
+
 }
 
 function onGrips(event) {
@@ -1069,11 +1090,11 @@ function onKeypress(e){
         }    
           
         if(keyCode == 68){
-            for(let i=0; i< 1000; i++){
+            for(let i=0; i< 1; i++){
 
     
             let deltas = spawnRandomModule([0 + Math.random(), 0 + Math.random(), 0+ Math.random()], [0,0,0,1]);
-            clientSideDeltas(deltas);
+            outgoingDeltas(deltas);
             }
         }
 
