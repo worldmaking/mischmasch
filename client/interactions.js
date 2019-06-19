@@ -4,8 +4,7 @@ function onSelectStart(event) {
     if (intersections.length < 1) return;
     let intersection = intersections[0];
 
-    let object = intersection.object;
-
+    let object = intersection.object.parent;
     if (object) {
         tempMatrix.getInverse(controller.matrixWorld);
         let parent = object.parent;
@@ -15,9 +14,9 @@ function onSelectStart(event) {
         
         controller.userData.selected = object;
         object.userData.originalParent = parent;
-        
+        object.visible = false;
         controller.add(object); //removes from previous parent
-
+        instMeshes.remove(object);
         if(controller == controller1){
             grabbingC1 = true;
         }else{
@@ -43,10 +42,10 @@ function onSelectEnd(event) {
     if (controller.userData.selected !== undefined) {
         let object = controller.userData.selected;
         let parent = object.userData.originalParent;
-        if (parent == undefined) parent = world; //object.parent;
+        if (parent == undefined) parent = instMeshes; //object.parent;
         controller.userData.selected = undefined;
        
-        if (object && object.userData.moveable) {
+        if (object) {
             let objPos = new THREE.Vector3();
             object.getWorldPosition(objPos);
             let pos = new THREE.Vector3();
@@ -57,21 +56,20 @@ function onSelectEnd(event) {
             let path = object.userData.path;
             let fromPos = object.userData.fromPos;
             let fromOri = object.userData.fromOri;
-
+          
+            instMeshes.add(object);
+            object.visible = true;
             outgoingDeltas.push(
-                { op:"propchange", path:path, name:"pos", from:[fromPos.x, fromPos.y, fromPos.z], to:[pos.x, pos.y, pos.z] }, 
-                { op:"propchange", path:path, name:"orient", from:[fromOri._x, fromOri._y, fromOri._z, fromOri._w], to:[orient._x, orient._y, orient._z, orient._w] }
+                { op:"propchange",name:"pos",  path:path, from:[fromPos.x, fromPos.y, fromPos.z], to:[pos.x, pos.y, pos.z] }, 
+                { op:"propchange",  name:"orient", path:path, from:[fromOri._x, fromOri._y, fromOri._z, fromOri._w], to:[orient._x, orient._y, orient._z, orient._w] }
             );
 
-
+           
             if(objPos.y < 0){
                 outgoingDeltas.push(
                     { op:"delnode", path:object.userData.path, kind:object.userData.name}
                 );
-            }/*else{
-                instMeshes.add(object);
-            }*/
-
+            }
         }
     }
 }
@@ -109,8 +107,8 @@ function getIntersections(controller, x, y, z, offset =0) {
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
     let intersections = raycaster.intersectObjects(instMeshes.children, true);
-    
-    while (intersections.length > 0 /*&& !intersections[0].object.userData.selectable*/){ 
+
+    while (intersections.length > 1 /*&& !intersections[0].object.userData.selectable*/){ 
         intersections.shift();
         //console.log(intersections)
     }
@@ -123,7 +121,8 @@ function intersectObjects(controller) {
     if (controller.userData.selected !== undefined) return;
     let line = controller.getObjectByName("line");
     let intersections = getIntersections(controller, 0, 0, -1);
-    //console.log(intersections)
+    
+   // console.log(intersections)
     if (intersections.length > 0) {
         let intersection = intersections[0];
         let object = intersection.object;

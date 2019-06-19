@@ -5,7 +5,7 @@ function enactDelta(delta) {
         }
     } else {
 
-        //console.log("enacting", delta.op)
+       // console.log("enacting", delta.op)
         switch(delta.op) {
             case "propchange": {
                 switch(delta.name) {
@@ -113,6 +113,22 @@ function enactDeltaNewNode(delta) {
             c.name = name;
             c.userData.name = name;
             c.userData.kind = delta.kind;
+
+            if (delta.pos) {
+                c.position.fromArray(delta.pos);
+                c.userData.fromPos  = delta.pos;
+            } else {
+                c.position = parent.position.clone();
+            }
+    
+            if (delta.orient) {
+                c.quaternion.fromArray(delta.orient);
+                c.userData.fromOri  = delta.orient;
+            } else {
+                c.quaternion = parent.quaternion.clone();
+            }
+            addObjectByPath(c.userData.path, c);
+            c.userData.moveable = true;
             container.add(c);
             def = true;
             container.userData.dirty = true;
@@ -158,11 +174,9 @@ function enactDeltaNewNode(delta) {
         } else {
             container.quaternion = parent.quaternion.clone();
         }
-
-
-        // // add to our library of nodes:
+        // add to our library of nodes:
         addObjectByPath(path, container);
-        // // add to proper parent:
+        // add to proper parent:
         parent.add(container);
     
     }
@@ -275,8 +289,8 @@ function enactDeltaConnect(delta) {
 function enactDeltaObjectPos(delta) {
     // assert(delta.op == "propchange")
     // assert(delta.name == "pos")
-
     let object = getObjectByPath(delta.path);
+
     // assert (object, "path not found")
     object.userData.fromPos = delta.to;
     // TODO: assert delta.from is roughly equal to current object.position
@@ -286,6 +300,7 @@ function enactDeltaObjectPos(delta) {
     if (parent == undefined) parent = object.parent;
     // temporarily move object to world space to set the position:
     instMeshes.add(object);
+   // console.log(instMeshes)
     // set the position & update matrices:
     object.position.fromArray(delta.to);
     object.matrixWorldNeedsUpdate = true;
