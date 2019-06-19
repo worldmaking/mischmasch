@@ -478,25 +478,20 @@ function updateDirtyNode(dirtyPath) {
     //parentNode.geometry = new THREE.BoxBufferGeometry(width * nodesToClean.length, 0.2, 0.05);
     //parentNode.children[0].scale.set(grid_spacing * numcols, grid_spacing * numrows, 0.05);
     parentNode.children[0].scale.set(grid_spacing * numcols, grid_spacing * numrows, 0.02);
-    //parentNode.children[0].position.set((grid_spacing * numcols)/1.5,-(grid_spacing * numrows)/2 - LARGEST_MODULE, 0.)
-
-
     // reset anchor to top left corner:
-    //parentNode.geometry.translate(parentNode.geometry.parameters.width/2, -parentNode.geometry.parameters.height/2, -parentNode.geometry.parameters.depth/2);
+    parentNode.children[0].position.set((grid_spacing * numcols) - grid_spacing,-(grid_spacing * numrows) + grid_spacing, -0.02/2);
 
-    //parentNode.scale.set(grid_spacing * numcols, grid_spacing * numrows, 0.05);
 
     for (let r = 0, i=0; r<numrows; r++) {
         for (let c=0; c<numcols && i < numchildren; c++, i++) {
             console.log("adding child " + i + " of " + numchildren + " at ", c, r)
 
             let widget = nodesToClean[i];
-            widget.position.x = ((grid_spacing * (c))*2) //- ((grid_spacing * numcols) / 2) - widget_padding;
-            widget.position.y = (-(grid_spacing * (r))*2) //+ ((grid_spacing * numrows) / 2) + widget_padding;
+            widget.position.x = ((grid_spacing * (c))*2);
+            widget.position.y = (-(grid_spacing * (r))*2);
             widget.position.z = NLET_HEIGHT * 2;
         }
     }
-    parentNode.children[0].position.set((grid_spacing * numcols) - grid_spacing,-(grid_spacing * numrows) + grid_spacing, -0.02/2);
     // cleansed:
     updateInstaces();
     parentNode.userData.dirty = false;
