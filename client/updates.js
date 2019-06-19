@@ -91,12 +91,12 @@ function enactDeltaNewNode(delta) {
         } break;
         case "large_knob":{
             container = new THREE.Mesh(boxGeom, boxMat);
-            container.scale.set(LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, LARGE_KNOB_HEIGHT);
+            container.scale.set(LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, NLET_HEIGHT);
             container.userData.shape = 1.;
         }break;
         case "small_knob":{
             container = new THREE.Mesh(boxGeom, boxMat);
-            container.scale.set(SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, SMALL_KNOB_HEIGHT);
+            container.scale.set(SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, NLET_HEIGHT);
             container.userData.shape = 1.;
         }break;
         case "n_switch":
@@ -115,17 +115,17 @@ function enactDeltaNewNode(delta) {
             c.userData.kind = delta.kind;
 
             if (delta.pos) {
-                c.position.fromArray(delta.pos);
+                //c.position.fromArray(delta.pos);
                 c.userData.fromPos  = delta.pos;
             } else {
-                c.position = parent.position.clone();
+               // c.position = parent.position.clone();
             }
     
             if (delta.orient) {
-                c.quaternion.fromArray(delta.orient);
+                //c.quaternion.fromArray(delta.orient);
                 c.userData.fromOri  = delta.orient;
             } else {
-                c.quaternion = parent.quaternion.clone();
+                //c.quaternion = parent.quaternion.clone();
             }
             addObjectByPath(c.userData.path, c);
             c.userData.moveable = true;
@@ -452,6 +452,7 @@ function updateDirtyNode(dirtyPath) {
     let nodesToClean = [];
     for(let path in allNodes) {
         if (path === dirtyPath) continue; // skip ourself
+        if(path === dirtyPath + "." + dirtyPath) continue;
         if (path.includes(dirtyPath)) {
             nodesToClean.push(getObjectByPath(path));
         }
@@ -476,8 +477,8 @@ function updateDirtyNode(dirtyPath) {
     // TODO: Seems silly to have to create a new geometry everytime.....
     //parentNode.geometry = new THREE.BoxBufferGeometry(width * nodesToClean.length, 0.2, 0.05);
     //parentNode.children[0].scale.set(grid_spacing * numcols, grid_spacing * numrows, 0.05);
-    parentNode.children[0].scale.set(grid_spacing * numcols, grid_spacing * numrows, 0.080);
-    parentNode.children[0].position.set((grid_spacing * numcols)/2, -((grid_spacing * numrows)/2), -(0.080 /2))
+    parentNode.children[0].scale.set(grid_spacing * numcols, grid_spacing * numrows, 0.02);
+    //parentNode.children[0].position.set((grid_spacing * numcols)/1.5,-(grid_spacing * numrows)/2 - LARGEST_MODULE, 0.)
 
 
     // reset anchor to top left corner:
@@ -490,12 +491,12 @@ function updateDirtyNode(dirtyPath) {
             console.log("adding child " + i + " of " + numchildren + " at ", c, r)
 
             let widget = nodesToClean[i];
-            widget.position.x = (grid_spacing * (c))*2;
-            widget.position.y = -(grid_spacing * (r))*2;
-            widget.position.z = 0.1;
+            widget.position.x = ((grid_spacing * (c))*2) //- ((grid_spacing * numcols) / 2) - widget_padding;
+            widget.position.y = (-(grid_spacing * (r))*2) //+ ((grid_spacing * numrows) / 2) + widget_padding;
+            widget.position.z = NLET_HEIGHT * 2;
         }
     }
-
+    parentNode.children[0].position.set((grid_spacing * numcols) - grid_spacing,-(grid_spacing * numrows) + grid_spacing, -0.02/2);
     // cleansed:
     updateInstaces();
     parentNode.userData.dirty = false;
