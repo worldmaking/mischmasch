@@ -874,13 +874,14 @@ function render() {
     intersectObjects(controller1);
     intersectObjects(controller2);
 
-    if(grabbingC1){
-        updateInstaces();
-        updateGrabbedInstances(controller1);
-    }
-    if(grabbingC2){
-        updateInstaces();
-        updateGrabbedInstances(controller2);
+    if(grabbingC1 || grabbingC2){
+        updateInstances();
+        if(grabbingC1){
+            updateInstances(controller1);
+        }
+        if(grabbingC2){
+            updateInstances(controller2);
+        }
     }
 
 
@@ -915,15 +916,22 @@ let boxGeom = new THREE.BoxGeometry(1,1,1);
 let boxMat = new THREE.MeshStandardMaterial();
 let thru = false;
 
-function updateInstaces(recurMeshes=instMeshes){
+function updateInstances(recurMeshes=instMeshes){
 
     if(recurMeshes == instMeshes){ 
         maxInstances = 0;  
     }
+    else if(recurMeshes == controller1){ 
+        grabbedInstances = 0;
+        updatingC1 = true;
+    }else if(recurMeshes == controller2){
+        grabbedInstances2 = 0;
+        updatingC2 = true;
+    }
     let tempMeshes = recurMeshes.children;
     let pos = new THREE.Vector3();
     let orient = new THREE.Quaternion();
-    if(recurMeshes != instMeshes){
+    if(recurMeshes != instMeshes && recurMeshes != controller1 && recurMeshes != controller2){
         for(let i=0, d=maxInstances, j=maxInstances*3, k=maxInstances*4; i < tempMeshes.length; i++, d++, j+=3, k+=4){
             if(tempMeshes != undefined && thru == true){
 
@@ -971,20 +979,43 @@ function updateInstaces(recurMeshes=instMeshes){
     }
 
     //update maxInstances if this isn't the first call
-    if(recurMeshes != instMeshes){ 
-        maxInstances += tempMeshes.length;
+    if(recurMeshes != controller1 && recurMeshes != controller2){
+        if(updatingC1) {
+            grabbedInstances += tempMeshes.length;
+            maxInstances += tempMeshes.length;
+        }
+        else if(updatingC2) {
+            grabbedInstances2 += tempMeshes.length;
+            maxInstances += tempMeshes.length;
+        }else if(recurMeshes != instMeshes){
+            maxInstances += tempMeshes.length;
+        }
     }
 
     //recursive call (endcase is tempMeshes.length == 0)
     for(let i = 0; i < tempMeshes.length; i++){
-        thru = true;
-        updateInstaces(tempMeshes[i]);
+        if((recurMeshes == controller1 || recurMeshes == controller2) && i == 2 || (recurMeshes != controller1 && recurMeshes != controller2)){ //this if may be redundant
+            thru = true;
+            updateInstances(tempMeshes[i]);
+        }
+    }
+    if(!updatingC1 && !updatingC2){
+        instMeshes.updateMatrixWorld(true);
+    }
+
+    //reset update flags for each contoller
+    if(recurMeshes == controller1){
+        updatingC1 = false;
+        //maxInstances -= grabbedInstances;
+    } else if(recurMeshes == controller2){
+        updatingC2 = false;
+        //maxInstances -= grabbedInstances2;
     }
     thru = false;
-    instMeshes.updateMatrixWorld(true);
+    
 }
 
-function updateGrabbedInstances(recurMeshes=controller1){
+/*function updateGrabbedInstances(recurMeshes=controller1){
     if(recurMeshes == controller1){ 
         grabbedInstances = 0;
         updatingC1 = true;
@@ -1059,7 +1090,7 @@ function updateGrabbedInstances(recurMeshes=controller1){
     thru = false;
     
 
-}
+}*/
 
 function onGrips(event) {
     let controller = event.target;
