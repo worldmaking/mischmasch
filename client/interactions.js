@@ -4,13 +4,12 @@ function onSelectStart(event) {
     if (intersections.length < 1) return;
     let intersection = intersections[0];
     let object = intersection.object;
+   
+    if (object && object.userData.moveable) {
 
-    if(object.userData.moveable == true){
         object.parent.userData.initChild = object;
         object = object.parent;
-    }
-   
-    if (object) {
+
         tempMatrix.getInverse(controller.matrixWorld);
         let parent = object.parent;
         object.matrix.premultiply(parent.matrixWorld);
@@ -27,6 +26,9 @@ function onSelectStart(event) {
         }else{
             grabbingC2 = true;
         }
+    }
+    if (object && !object.userData.moveable) {
+        controller.userData.selected = object;
     }
 
     
@@ -185,11 +187,8 @@ function controllerGamepadControls(controller){
         // then do ray intersection as usual
         // if ray target is inlet/outlet (appropriately)
         // locate jack at ray target
-        if(object.userData.initChild){
-            object.userData.moveable = object.userData.initChild.userData.moveable;
-        }
 
-        if (object.userData.moveable) {
+        if (object.userData.moveable || object.userData.initChild.userData.moveable) {
             let s = 1. + (controller.userData.thumbpadDY);
             let r = 1. + (controller.userData.thumbpadDX);
             object.position.multiplyScalar(s);
