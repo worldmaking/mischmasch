@@ -3,8 +3,12 @@ function onSelectStart(event) {
     let intersections = getIntersections(controller, 0, 0, -1);
     if (intersections.length < 1) return;
     let intersection = intersections[0];
-
-    let object = intersection.object.parent;
+    let object = intersection.object;
+    
+    if(object.userData.kind == object.parent.userData.kind){
+        object = object.parent;
+    }
+   
     if (object) {
         tempMatrix.getInverse(controller.matrixWorld);
         let parent = object.parent;
@@ -177,7 +181,6 @@ function controllerGamepadControls(controller){
     if (controller.userData.selected) {
         let object = controller.userData.selected;
         
-      
         // if what we have selected is a jack,
         // then do ray intersection as usual
         // if ray target is inlet/outlet (appropriately)
