@@ -4,8 +4,9 @@ function onSelectStart(event) {
     if (intersections.length < 1) return;
     let intersection = intersections[0];
     let object = intersection.object;
-    
-    if(object.userData.kind == object.parent.userData.kind){
+
+    if(object.userData.moveable == true){
+        object.parent.userData.initChild = object;
         object = object.parent;
     }
    
@@ -180,17 +181,15 @@ function controllerGamepadControls(controller){
 
     if (controller.userData.selected) {
         let object = controller.userData.selected;
-<<<<<<< HEAD
-        
-=======
-      
->>>>>>> ca693c9c10f5a2c6407da41c11e6c03b7d3be308
         // if what we have selected is a jack,
         // then do ray intersection as usual
         // if ray target is inlet/outlet (appropriately)
         // locate jack at ray target
+        if(object.userData.initChild){
+            object.userData.moveable = object.userData.initChild.userData.moveable;
+        }
 
-        if (object.children[0].userData.moveable) {
+        if (object.userData.moveable) {
             let s = 1. + (controller.userData.thumbpadDY);
             let r = 1. + (controller.userData.thumbpadDX);
             object.position.multiplyScalar(s);
