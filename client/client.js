@@ -377,7 +377,7 @@ async function init() {
     scene.add(camera)
     camera.position.set(0, 1.5, 0)
 
-    world.add(instMeshes)
+    //world.add(instMeshes)
 
     /// instanceBox
     {
@@ -955,7 +955,7 @@ function updateInstaces(recurMeshes=instMeshes){
                 if(tempMeshes[i].userData.shape > 0){
                     instBoxScaleAttr.array[j] = (tempMeshes[i].scale.x)/2.0;
                     instBoxScaleAttr.array[j+1] = (tempMeshes[i].scale.y)/2.0;
-                    instBoxScaleAttr.array[j+2] = (tempMeshes[i].scale.z)/2.0;
+                    instBoxScaleAttr.array[j+2] = (tempMeshes[i].scale.z);
                 }else{
                     instBoxScaleAttr.array[j] = tempMeshes[i].scale.x;
                     instBoxScaleAttr.array[j+1] = tempMeshes[i].scale.y;

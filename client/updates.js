@@ -479,17 +479,16 @@ function updateDirtyNode(dirtyPath) {
     //parentNode.children[0].scale.set(grid_spacing * numcols, grid_spacing * numrows, 0.05);
     parentNode.children[0].scale.set(grid_spacing * numcols, grid_spacing * numrows, 0.02);
     // reset anchor to top left corner:
-    parentNode.children[0].position.set((grid_spacing * numcols) - grid_spacing,-(grid_spacing * numrows) + grid_spacing, -0.02/2);
+    parentNode.children[0].position.set(((grid_spacing * numcols) /2) - (grid_spacing /2) ,(-(grid_spacing * numrows) /2) + (grid_spacing /2), 0.);
 
 
     for (let r = 0, i=0; r<numrows; r++) {
         for (let c=0; c<numcols && i < numchildren; c++, i++) {
             console.log("adding child " + i + " of " + numchildren + " at ", c, r)
-
             let widget = nodesToClean[i];
-            widget.position.x = ((grid_spacing * (c))*2);
-            widget.position.y = (-(grid_spacing * (r))*2);
-            widget.position.z = NLET_HEIGHT * 2;
+            widget.position.x = ((grid_spacing * c));
+            widget.position.y = (-(grid_spacing * r));
+            widget.position.z = NLET_HEIGHT * 1.5;
         }
     }
     // cleansed:
