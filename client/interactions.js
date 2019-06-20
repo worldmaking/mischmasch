@@ -174,8 +174,174 @@ function controllerGamepadControls(controller){
         }
     }
 
-    let targetPos = new THREE.Vector3();
-    let controllerPos = new THREE.Vector3();
-    controller.getWorldPosition(controllerPos);
+    if (controller.userData.selected) {
+        let object = controller.userData.selected;
+        
+      
+        // if what we have selected is a jack,
+        // then do ray intersection as usual
+        // if ray target is inlet/outlet (appropriately)
+        // locate jack at ray target
+
+        if (object.userData.moveable) {
+            let s = 1. + (controller.userData.thumbpadDY);
+            let r = 1. + (controller.userData.thumbpadDX);
+            object.position.multiplyScalar(s);
+            let rot = new THREE.Vector3(object.rotation.x, object.rotation.y, object.rotation.z);
+            rot.multiplyScalar(r);
+            //object.rotation.x = rot.x;
+            object.rotation.y = rot.y;
+            //object.rotation.z = rot.z;
+            //object.quaternion.multiply(r);
+
+        } else if (object.userData.turnable) {
+            
+            let controllerPos = new THREE.Vector3();
+            let objectPos = new THREE.Vector3();
+            controller.getWorldPosition(controllerPos);
+            object.getWorldPosition(objectPos); 
+            let line = controller.getObjectByName("line");
+
+            let value = 0;
+            let dist = controllerPos.distanceTo(objectPos);
+
+            if (dist < KNOB_TWIST_DISTANCE) {
+                //controller.rotation.z += object.userData.rotation._z;
+                //object.rotation.z = (controller.rotation.z - controller.userData.rotation._z);
+                //console.log(object, controller)
+                let angle = object.userData.rotation._z + (controller.rotation.z - controller.userData.rotation._z);
+
+                // angle should be in range -PI to PI
+                angle = wrap(angle + Math.PI, Math.PI * 2) - Math.PI;
+
+                if (angle < KNOB_SWEEP) angle = KNOB_SWEEP;
+                if (angle > -KNOB_SWEEP) angle = -KNOB_SWEEP;
+                // turn angle back into a 0..1 value:
+                value = (((angle / KNOB_SWEEP) + 1)/2);
+                
+                if (world.getObjectByName("uiLine") !== undefined){
+                    uiLine.geometry.vertices[0] = 0;
+                    uiLine.geometry.vertices[1] = 0;
+                    uiLine.geometry.verticesNeedUpdate = true;
+                   
+                    line.scale.z = getControllerLineLength;
+                }         
+            } else if (dist > KNOB_SWING_DISTANCE) {
+                //put controller into knob space using matrix
+                //set angle to the knob
+                //take controller out of knob space
+                
+                let controllerPos = new THREE.Vector3()
+                controller.getWorldPosition(controllerPos)
+               
+
+                let knobPos = new THREE.Vector3()
+                object.getWorldPosition(knobPos);
+
+                let relPos = new THREE.Vector3();
+                relPos.subVectors(controllerPos, knobPos);
+
+                let moduleQuat = new THREE.Quaternion();
+                moduleQuat.copy(object.parent.quaternion)
+                moduleQuat.inverse();
+
+                // now rotate this into the knob's perspective:
+                relPos.applyQuaternion(moduleQuat);
+                // //get controller angle via x and y
+                // (This ranges from -PI to +PI)
+                let angle = Math.atan2(-relPos.x, relPos.y);
+                // map this to a 0..1 range:
+
+                if (angle < KNOB_SWEEP) angle = KNOB_SWEEP;
+                if (angle > -KNOB_SWEEP) angle = -KNOB_SWEEP;
+                // turn angle back into a 0..1 value:
+                value = (((angle / KNOB_SWEEP) + 1)/2);
+
+                // if (dist < KNOB_TWIST_DISTANCE) {
+                //     let factor = (dist - KNOB_SWING_DISTANCE) / (KNOB_TWIST_DISTANCE - KNOB_SWING_DISTANCE);
+                   
+                //     value = value + factor * (bigValue - value);
+
+                // } else {
+                //     value = bigValue;
+                // }
+
+                if(world.getObjectByName("uiLine") !== undefined){
+                    uiLine.geometry.vertices[0] = controllerPos;
+                    uiLine.geometry.vertices[1] = objectPos;
+                    uiLine.geometry.verticesNeedUpdate = true;
+
+                    line.scale.z = 0;
+                }
+                object.userData.rotation = object.rotation.clone();
+                
+            }
+            
+
+            
+
+            //console.log("prev value", object.userData.value, "New Value", value)
+            outgoingDeltas.push(
+                { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: value });
+
+            // TODO: send delta with this value
+            // TODO: enact delta by mapping value back to angular range:
+
+        } else if (object.userData.slideable){
+
+  
+                let controllerPos = new THREE.Vector3();
+                controller1.getWorldPosition(controllerPos);
+    
+                let nswitchPos = new THREE.Vector3()
+                object.parent.getWorldPosition(nswitchPos);
+    
+                let relPos = new THREE.Vector3();
+                relPos.subVectors(controllerPos, nswitchPos);
+
+                let moduleQuat = new THREE.Quaternion();
+                moduleQuat.copy(object.parent.quaternion)
+                moduleQuat.inverse();
+
+                relPos.applyQuaternion(moduleQuat);
+
+                let value = 0;
+                if( relPos.y < -0.01){
+                   value = 2;
+                 } else if( relPos.y > 0.015){
+                    value = 0;
+                 } else {
+                    value = 1;
+                }
+                // write(controllerPos.angleTo(nswitchPos))
+                // if( controllerPos.angleTo(nswitchPos) < 0 && relPos.y < -0.01){
+                //     value = 2;
+                //   } else if( controllerPos.angleTo(nswitchPos) > 0.015){
+                //      value = 0;
+                //   } else {
+                //      value = 1;
+                //  }
+
+                outgoingDeltas.push(
+                    { op:"propchange", path: object.parent.userData.path, name:"value", from: object.parent.userData.value, to: value + 1 });
+        }
+
+    } else {
+        let targetPos = new THREE.Vector3();
+        let controllerPos = new THREE.Vector3();
+        controller.getWorldPosition(controllerPos);
+
+        // for (let name in allNodes) {
+        //     let target = allNodes[name];
+        //     target.getWorldPosition(targetPos);
+
+        //     let d = targetPos.distanceTo(controllerPos);
+        //     if (d < CONTROLLER_HIT_DISTANCE) {
+        //         console.log(name, target.userData.kind);
+
+        //         // if kind is outlet/inlet, start a patch coord
+        //     }
+        // }
+    }
     
 }
