@@ -44,7 +44,7 @@ function enactDelta(delta) {
             }
         }
     }
-    updateInstaces();
+    updateInstances();
 }
 
 /* 
@@ -494,7 +494,7 @@ function updateDirtyNode(dirtyPath) {
         }
     }
     // cleansed:
-    updateInstaces();
+    updateInstances();
     parentNode.userData.dirty = false;
 }
 
