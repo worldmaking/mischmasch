@@ -950,11 +950,17 @@ function updateInstaces(recurMeshes=instMeshes){
                 // instBoxScaleAttr.array[j+1] = tempMeshes[i].geometry.parameters.height;
                 // instBoxScaleAttr.array[j+2] = tempMeshes[i].geometry.parameters.depth;
 
-                instBoxScaleAttr.array[j] = tempMeshes[i].scale.x;
-                instBoxScaleAttr.array[j+1] = tempMeshes[i].scale.y;
-                instBoxScaleAttr.array[j+2] = tempMeshes[i].scale.z;
-
                 instBoxShapeAttr.array[d] = tempMeshes[i].userData.shape;
+
+                if(tempMeshes[i].userData.shape > 0){
+                    instBoxScaleAttr.array[j] = (tempMeshes[i].scale.x)/2.0;
+                    instBoxScaleAttr.array[j+1] = (tempMeshes[i].scale.y)/2.0;
+                    instBoxScaleAttr.array[j+2] = (tempMeshes[i].scale.z)/2.0;
+                }else{
+                    instBoxScaleAttr.array[j] = tempMeshes[i].scale.x;
+                    instBoxScaleAttr.array[j+1] = tempMeshes[i].scale.y;
+                    instBoxScaleAttr.array[j+2] = tempMeshes[i].scale.z;
+                }
             }
         }
     }
