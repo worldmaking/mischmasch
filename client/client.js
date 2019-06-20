@@ -1003,11 +1003,17 @@ function updateGrabbedInstances(recurMeshes=controller1){
                 instBoxOrientationAttr.array[k+2] = tempMeshes[i].getWorldQuaternion(orient).z;
                 instBoxOrientationAttr.array[k+3] = tempMeshes[i].getWorldQuaternion(orient).w;
 
-                instBoxScaleAttr.array[j] = tempMeshes[i].scale.x;
-                instBoxScaleAttr.array[j+1] = tempMeshes[i].scale.y;
-                instBoxScaleAttr.array[j+2] = tempMeshes[i].scale.z;
-
                 instBoxShapeAttr.array[d] = tempMeshes[i].userData.shape;
+
+                if(tempMeshes[i].userData.shape > 0){
+                    instBoxScaleAttr.array[j] = (tempMeshes[i].scale.x)/2.0;
+                    instBoxScaleAttr.array[j+1] = (tempMeshes[i].scale.y)/2.0;
+                    instBoxScaleAttr.array[j+2] = (tempMeshes[i].scale.z);
+                }else{
+                    instBoxScaleAttr.array[j] = tempMeshes[i].scale.x;
+                    instBoxScaleAttr.array[j+1] = tempMeshes[i].scale.y;
+                    instBoxScaleAttr.array[j+2] = tempMeshes[i].scale.z;
+                }
             }
         }
     }
