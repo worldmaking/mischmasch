@@ -129,7 +129,6 @@ function enactDeltaNewNode(delta) {
             }
             addObjectByPath(c.userData.path, c);
             c.userData.moveable = true;
-            c.userData.turnable = true;
             container.add(c);
             def = true;
             container.userData.dirty = true;
