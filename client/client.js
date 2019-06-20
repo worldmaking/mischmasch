@@ -377,13 +377,14 @@ async function init() {
     scene.add(camera)
     camera.position.set(0, 1.5, 0)
 
+    world.add(instMeshes)
 
     /// instanceBox
     {
         
         // box spans signed-normalized range of -1..1 in each axis
         // with subdivisions in each axis
-        let bufferGeometry = new THREE.BoxBufferGeometry( 2,2,2,  3,3,1 );
+        let bufferGeometry = new THREE.BoxBufferGeometry( 1,1,1,  3,3,1 );
         
         // copying data from a simple box geometry, but you can specify a custom geometry if you want
         instBoxGeometry = new THREE.InstancedBufferGeometry();
