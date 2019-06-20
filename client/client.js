@@ -418,7 +418,7 @@ async function init() {
             orientations.push( vector.x, vector.y, vector.z, vector.w );
 
             scales.push(0,0,0)
-            colors.push(Math.random(), Math.random(), Math.random(), 1);
+            colors.push(0,0,0, 1);
 
             shapes.push(0.);
         }
@@ -961,6 +961,11 @@ function updateInstaces(recurMeshes=instMeshes){
                     instBoxScaleAttr.array[j+1] = tempMeshes[i].scale.y;
                     instBoxScaleAttr.array[j+2] = tempMeshes[i].scale.z;
                 }
+
+                instBoxColorAttr.array[k] = tempMeshes[i].userData.color[0];
+                instBoxColorAttr.array[k+1] = tempMeshes[i].userData.color[1];
+                instBoxColorAttr.array[k+2] = tempMeshes[i].userData.color[2];
+                instBoxColorAttr.array[k+3] = tempMeshes[i].userData.color[3];
             }
         }
     }
@@ -1014,6 +1019,11 @@ function updateGrabbedInstances(recurMeshes=controller1){
                     instBoxScaleAttr.array[j+1] = tempMeshes[i].scale.y;
                     instBoxScaleAttr.array[j+2] = tempMeshes[i].scale.z;
                 }
+
+                instBoxColorAttr.array[k] = tempMeshes[i].userData.color[0];
+                instBoxColorAttr.array[k+1] = tempMeshes[i].userData.color[1];
+                instBoxColorAttr.array[k+2] = tempMeshes[i].userData.color[2];
+                instBoxColorAttr.array[k+3] = tempMeshes[i].userData.color[3];
             }
         }
     }

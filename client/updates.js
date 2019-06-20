@@ -113,7 +113,7 @@ function enactDeltaNewNode(delta) {
             c.name = name;
             c.userData.name = name;
             c.userData.kind = delta.kind;
-
+            c.userData.color = [Math.random(), Math.random(), Math.random(), 1];
             if (delta.pos) {
                 //c.position.fromArray(delta.pos);
                 c.userData.fromPos  = delta.pos;
@@ -144,6 +144,8 @@ function enactDeltaNewNode(delta) {
         container.userData.name = name;
         container.userData.path = path;
         container.userData.kind = delta.kind;
+        container.userData.color = [Math.random(), Math.random(), Math.random(), 1];
+
         // if(delta.value){
         //     container.userData.value = delta.value;
         // } 
