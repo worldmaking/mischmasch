@@ -176,14 +176,13 @@ function controllerGamepadControls(controller){
 
     if (controller.userData.selected) {
         let object = controller.userData.selected;
-        
       
         // if what we have selected is a jack,
         // then do ray intersection as usual
         // if ray target is inlet/outlet (appropriately)
         // locate jack at ray target
 
-        if (object.userData.moveable) {
+        if (object.children[0].userData.moveable) {
             let s = 1. + (controller.userData.thumbpadDY);
             let r = 1. + (controller.userData.thumbpadDX);
             object.position.multiplyScalar(s);
