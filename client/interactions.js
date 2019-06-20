@@ -188,7 +188,7 @@ function controllerGamepadControls(controller){
         // if ray target is inlet/outlet (appropriately)
         // locate jack at ray target
 
-        if (object.userData.moveable || object.userData.initChild.userData.moveable) {
+        if (object.userData.moveable || (object.userData.initChild !== undefined && object.userData.initChild.userData.moveable)) {
             let s = 1. + (controller.userData.thumbpadDY);
             let r = 1. + (controller.userData.thumbpadDX);
             object.position.multiplyScalar(s);
