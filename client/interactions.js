@@ -7,6 +7,23 @@ function onSelectStart(event) {
    
     if (object && object.userData.moveable) {
 
+        let kind = object.userData.kind;
+        if (kind == "jack_inlet" || kind == "jack_outlet") {
+            let cable = object.userData.cable;
+            if (cable.dst && cable.src) {
+                // send a delta:
+                outgoingDeltas.push(
+                    { op:"disconnect", paths:[cable.src.userData.path, cable.dst.userData.path] }
+                );
+            }
+
+            if (kind == "jack_outlet") {
+                cable.src = null;
+            } else if (kind == "jack_inlet") {
+                cable.dst = null;
+            }
+        }
+
         object.parent.userData.initChild = object;
         object = object.parent;
 
@@ -28,6 +45,25 @@ function onSelectStart(event) {
         }
     }
     if (object && !object.userData.moveable) {
+        
+        let kind = object.userData.kind;
+        if (kind == "outlet") {
+            // create a new line
+            // line's src == object
+            // now set object = line.dstJackMesh
+            let cable = new Cable(object, null);
+            object = cable.dstJackMesh;
+            object.position.z = -0.07;
+            controller.add(object); //removes from previous parent
+
+        } else if (kind == "inlet") {
+            //...
+            let cable = new Cable(null, object);
+
+            object = cable.srcJackMesh;
+            object.position.z = -0.07;
+            controller.add(object); //removes from previous parent
+        }
         controller.userData.selected = object;
     }
 
