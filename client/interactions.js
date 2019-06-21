@@ -52,7 +52,7 @@ function onSelectEnd(event) {
         if (parent == undefined) parent = instMeshes; //object.parent;
         controller.userData.selected = undefined;
        
-        if (object) {
+        if (object && object.userData.initChild !== undefined && object.userData.initChild.userData.moveable) {
             let objPos = new THREE.Vector3();
             object.getWorldPosition(objPos);
             let pos = new THREE.Vector3();
