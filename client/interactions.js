@@ -217,6 +217,18 @@ function getIntersections(controller, x, y, z, offset =0) {
     
 }
 
+function getIntersectionsWithKind(controller, x, y, z, offset =0, kind) {
+    tempMatrix.identity().extractRotation(controller.matrixWorld);
+    let origin = new THREE.Vector3(0, 0, offset).applyMatrix4(tempMatrix);
+    raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld).add(origin);
+    raycaster.ray.direction.set(x, y, z).applyMatrix4(tempMatrix);
+    // argument here is just any old array of objects
+    // 2nd arg is recursive (recursive breaks grabbing)
+    let intersections = raycaster.intersectObjects(instMeshes.children, true);
+    while (intersections.length > 0 /*&& !intersections[0].object.userData.selectable*/ && kind !== intersections[0].object.userData.kind) intersections.shift();
+    return intersections;
+}
+
 function intersectObjects(controller) {
     // Do not highlight when already selected
     if (controller.userData.selected !== undefined) return;
