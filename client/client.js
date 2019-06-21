@@ -999,9 +999,9 @@ function updateInstances(recurMeshes=instMeshes){
             updateInstances(tempMeshes[i]);
         }
     }
-    if(!updatingC1 && !updatingC2){
+    //if(!updatingC1 && !updatingC2){
         instMeshes.updateMatrixWorld(true);
-    }
+    //}
 
     //reset update flags for each contoller
     if(recurMeshes == controller1){
