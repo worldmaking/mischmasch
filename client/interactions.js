@@ -45,7 +45,7 @@ function onSelectStart(event) {
         }
     }
     if (object && !object.userData.moveable) {
-        
+
         let kind = object.userData.kind;
         if (kind == "outlet") {
             // create a new line
@@ -91,22 +91,80 @@ function onSelectEnd(event) {
         if (object && object.userData.initChild !== undefined && object.userData.initChild.userData.moveable) {
             let objPos = new THREE.Vector3();
             object.getWorldPosition(objPos);
-            let pos = new THREE.Vector3();
-            let orient = new THREE.Quaternion();
-            
-            object.getWorldPosition(pos);
-            object.getWorldQuaternion(orient);
-            let path = object.userData.path;
-            let fromPos = object.userData.fromPos;
-            let fromOri = object.userData.fromOri;
-          
-            instMeshes.add(object);
-            object.visible = true;
-            outgoingDeltas.push(
-                { op:"propchange",name:"pos",  path:path, from:[fromPos.x, fromPos.y, fromPos.z], to:[pos.x, pos.y, pos.z] }, 
-                { op:"propchange",  name:"orient", path:path, from:[fromOri._x, fromOri._y, fromOri._z, fromOri._w], to:[orient._x, orient._y, orient._z, orient._w] }
-            );
+            let cable = object.userData.cable
+            if (object.userData.kind == "jack_outlet" || object.userData.kind == "jack_inlet") {
+                
 
+                let intersections = getIntersectionsWithKind(object, 0, 0, -1, CABLE_JACK_HEIGHT * 2, object.userData.kind == "jack_outlet" ? "outlet" : "inlet");
+
+                // take it out of controller-space
+                object.matrix.premultiply(controller.matrixWorld);
+                tempMatrix.getInverse(parent.matrixWorld);
+                object.matrix.premultiply(tempMatrix);
+                object.matrix.decompose(object.position, object.quaternion, object.scale);
+                //world.add(object);
+                parent.add(object);
+
+                if (intersections.length > 0) {
+                    let intersection = intersections[0];
+                    let o = intersection.object;
+
+                    // if it is a jack, see if we can hook up?
+                    if (object.userData.kind == "jack_outlet" && o.userData.kind == "outlet") {
+                        // we have a hit! connect
+                        cable.src = o;
+
+                        // send a delta:
+                        outgoingDeltas.push(
+                            { op:"connect", paths:[cable.src.userData.path, cable.dst.userData.path] }
+                        );
+
+                        // destroy the cable and its objects
+                        // and remove it from allCables
+                        cable.destroy();
+                                
+                    } else if (object.userData.kind == "jack_inlet" && o.userData.kind == "inlet") {
+                        // we have a hit! connect
+                        cable.dst = o;
+
+                        // send a delta:
+                        outgoingDeltas.push(
+                            { op:"connect", paths:[cable.src.userData.path, cable.dst.userData.path] }
+                        );
+
+                        // destroy the arc
+                        cable.destroy();
+                    }
+                }
+
+                if(cable.src == null && cable.dst == null){
+                    cable.destroy();
+                }
+
+                if(cable.src == null || cable.dst == null){
+                    if(objPos.y < 0){
+                        cable.destroy();
+                    }
+                }
+                
+
+            } else {
+                let pos = new THREE.Vector3();
+                let orient = new THREE.Quaternion();
+                
+                object.getWorldPosition(pos);
+                object.getWorldQuaternion(orient);
+                let path = object.userData.path;
+                let fromPos = object.userData.fromPos;
+                let fromOri = object.userData.fromOri;
+            
+                instMeshes.add(object);
+                object.visible = true;
+                outgoingDeltas.push(
+                    { op:"propchange",name:"pos",  path:path, from:[fromPos.x, fromPos.y, fromPos.z], to:[pos.x, pos.y, pos.z] }, 
+                    { op:"propchange",  name:"orient", path:path, from:[fromOri._x, fromOri._y, fromOri._z, fromOri._w], to:[orient._x, orient._y, orient._z, orient._w] }
+                );
+            }
            
             if(objPos.y < 0){
                 outgoingDeltas.push(
