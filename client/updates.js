@@ -93,11 +93,13 @@ function enactDeltaNewNode(delta) {
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, NLET_HEIGHT);
             container.userData.shape = 1.;
+            container.userData.turnable = true;
         }break;
         case "small_knob":{
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, NLET_HEIGHT);
             container.userData.shape = 1.;
+            container.userData.turnable = true;
         }break;
         case "n_switch":
         case "group": break;
