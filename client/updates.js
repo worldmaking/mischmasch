@@ -81,11 +81,13 @@ function enactDeltaNewNode(delta) {
             //container.position.set(0,0, .05);
             //container.position.fromArray([Math.random(),Math.random(),Math.random()]);
             //container.rotation.fromArray([Math.random(),Math.random(),Math.random()]);
+            container.userData.color = [0, 1, 0, 1];
             container.userData.shape = 1.;
         } break;
         case "outlet":{
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT);
+            container.userData.color = [1, 0, 0, 1];
             container.userData.shape = 1.;
 
         } break;
@@ -93,12 +95,14 @@ function enactDeltaNewNode(delta) {
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, NLET_HEIGHT);
             container.userData.shape = 1.;
+            container.userData.color = [Math.random(), Math.random(), Math.random(), 1];
             container.userData.turnable = true;
         }break;
         case "small_knob":{
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, NLET_HEIGHT);
             container.userData.shape = 1.;
+            container.userData.color = [Math.random(), Math.random(), Math.random(), 1];
             container.userData.turnable = true;
         }break;
         case "n_switch":
@@ -146,7 +150,7 @@ function enactDeltaNewNode(delta) {
         container.userData.name = name;
         container.userData.path = path;
         container.userData.kind = delta.kind;
-        container.userData.color = [Math.random(), Math.random(), Math.random(), 1];
+       // container.userData.color = [Math.random(), Math.random(), Math.random(), 1];
 
         // if(delta.value){
         //     container.userData.value = delta.value;
