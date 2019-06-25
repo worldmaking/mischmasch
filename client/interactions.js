@@ -88,12 +88,13 @@ function onSelectEnd(event) {
     }
     if (controller.userData.selected !== undefined) {
         let object = controller.userData.selected;
-        console.log(object)
         let parent = object.userData.originalParent;
+        if (object.userData.kind == "jack_outlet" || object.userData.kind == "jack_inlet") {
+            if (parent == undefined) parent = world;
+        } else{
         if (parent == undefined) parent = instMeshes; //object.parent;
+        }
         controller.userData.selected = undefined;
-        console.log(object)
-        console.log(object.userData.moveable);
        
         if (object && object.userData.moveable) {
             let objPos = new THREE.Vector3();
@@ -158,7 +159,6 @@ function onSelectEnd(event) {
             } else {
                 let pos = new THREE.Vector3();
                 let orient = new THREE.Quaternion();
-                console.log(object);
                 object.getWorldPosition(pos);
                 object.getWorldQuaternion(orient);
                 let path = object.userData.path;
@@ -215,12 +215,23 @@ function getIntersections(controller, x, y, z, offset =0) {
     raycaster.ray.direction.set(x, y, z).applyMatrix4(tempMatrix);
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
-    let intersections = raycaster.intersectObjects(instMeshes.children, true);
 
+    world.add(instMeshes);
+    //let intersections = raycaster.intersectObjects(instMeshes.children, true);
+    let intersections = raycaster.intersectObjects(world.children, true);
+
+    world.remove(instMeshes);
+
+    // for(let i =0; i < intersections1; i++){
+    //     intersections.push(intersections1[i]);
+    // }
+
+    //console.log(intersections)
     while (intersections.length > 1 /*&& !intersections[0].object.userData.selectable*/){ 
         intersections.pop();
         //console.log(intersections)
     }
+
     return intersections;
     
 }
@@ -232,7 +243,17 @@ function getIntersectionsWithKind(controller, x, y, z, offset =0, kind) {
     raycaster.ray.direction.set(x, y, z).applyMatrix4(tempMatrix);
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
-    let intersections = raycaster.intersectObjects(instMeshes.children, true);
+    world.add(instMeshes);
+    //let intersections = raycaster.intersectObjects(instMeshes.children, true);
+    let intersections = raycaster.intersectObjects(world.children, true);
+
+    world.remove(instMeshes);
+
+    /*for(let i =0; i < intersections1; i++){
+        intersections.push(intersections1[i]);
+    }*/
+
+
     while (intersections.length > 1 /*&& !intersections[0].object.userData.selectable*/ && kind !== intersections[0].object.userData.kind) intersections.pop();
     return intersections;
 }
