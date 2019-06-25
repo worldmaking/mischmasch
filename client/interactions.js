@@ -4,6 +4,7 @@ function onSelectStart(event) {
     if (intersections.length < 1) return;
     let intersection = intersections[0];
     let object = intersection.object;
+    console.log(object)
    
     if (object && object.userData.moveable) {
 
@@ -24,9 +25,12 @@ function onSelectStart(event) {
             }
         }
 
-        object.parent.userData.initChild = object;
-        object = object.parent;
-
+       object.parent.userData.moveable = object.userData.moveable;
+       if(object.userData.backPanel == true){
+            object = object.parent;
+            console.log(object)
+       }
+   
         tempMatrix.getInverse(controller.matrixWorld);
         let parent = object.parent;
         object.matrix.premultiply(parent.matrixWorld);
@@ -84,11 +88,14 @@ function onSelectEnd(event) {
     }
     if (controller.userData.selected !== undefined) {
         let object = controller.userData.selected;
+        console.log(object)
         let parent = object.userData.originalParent;
         if (parent == undefined) parent = instMeshes; //object.parent;
         controller.userData.selected = undefined;
+        console.log(object)
+        console.log(object.userData.moveable);
        
-        if (object && object.userData.initChild !== undefined && object.userData.initChild.userData.moveable) {
+        if (object && object.userData.moveable) {
             let objPos = new THREE.Vector3();
             object.getWorldPosition(objPos);
             let cable = object.userData.cable
@@ -151,12 +158,13 @@ function onSelectEnd(event) {
             } else {
                 let pos = new THREE.Vector3();
                 let orient = new THREE.Quaternion();
-                
+                console.log(object);
                 object.getWorldPosition(pos);
                 object.getWorldQuaternion(orient);
                 let path = object.userData.path;
                 let fromPos = object.userData.fromPos;
                 let fromOri = object.userData.fromOri;
+
             
                 instMeshes.add(object);
                 object.visible = true;
@@ -210,7 +218,7 @@ function getIntersections(controller, x, y, z, offset =0) {
     let intersections = raycaster.intersectObjects(instMeshes.children, true);
 
     while (intersections.length > 1 /*&& !intersections[0].object.userData.selectable*/){ 
-        intersections.shift();
+        intersections.pop();
         //console.log(intersections)
     }
     return intersections;
@@ -225,7 +233,7 @@ function getIntersectionsWithKind(controller, x, y, z, offset =0, kind) {
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
     let intersections = raycaster.intersectObjects(instMeshes.children, true);
-    while (intersections.length > 0 /*&& !intersections[0].object.userData.selectable*/ && kind !== intersections[0].object.userData.kind) intersections.shift();
+    while (intersections.length > 1 /*&& !intersections[0].object.userData.selectable*/ && kind !== intersections[0].object.userData.kind) intersections.pop();
     return intersections;
 }
 
