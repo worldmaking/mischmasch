@@ -119,6 +119,7 @@ function enactDeltaNewNode(delta) {
             c.name = name;
             c.userData.name = name;
             c.userData.kind = delta.kind;
+            c.userData.backPanel = true;
             c.userData.color = [Math.random(), Math.random(), Math.random(), 1];
             if (delta.pos) {
                 //c.position.fromArray(delta.pos);
@@ -135,6 +136,7 @@ function enactDeltaNewNode(delta) {
             }
             addObjectByPath(c.userData.path, c);
             c.userData.moveable = true;
+            //container.userData.moveable = true;
             container.add(c);
             def = true;
             container.userData.dirty = true;
@@ -184,8 +186,10 @@ function enactDeltaNewNode(delta) {
         }
         // add to our library of nodes:
         addObjectByPath(path, container);
+        //console.log(container, delta)
         // add to proper parent:
         parent.add(container);
+        //console.log(parent.children[0]);
     
     }
 
