@@ -448,6 +448,7 @@ function createLabel(text, x, y, z, uniformScaling=0.009){
                 mesh.position.set(-centerX, y, z);
             else
                 mesh.position.set(x,y,z);
+            
             world.add(mesh);
 
             //return mesh;

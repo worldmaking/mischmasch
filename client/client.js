@@ -377,7 +377,7 @@ async function init() {
     scene.add(camera)
     camera.position.set(0, 1.5, 0)
 
-    //world.add(instMeshes)
+   // world.add(instMeshes)
 
     /// instanceBox
     {
@@ -532,6 +532,7 @@ async function init() {
         controller2.add(controllerMesh.clone());
         // pivot.material = pivot.material.clone();
     }
+
     
     controller1.userData.thumbpadDX = 0;
     controller1.userData.thumbpadDY = 0;
