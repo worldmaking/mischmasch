@@ -25,8 +25,9 @@ function onSelectStart(event) {
             }
         }
 
-       object.parent.userData.moveable = object.userData.moveable;
+
        if(object.userData.backPanel == true){
+            object.parent.userData.moveable = object.userData.moveable;
             object = object.parent;
             console.log(object)
        }
@@ -216,20 +217,18 @@ function getIntersections(controller, x, y, z, offset =0) {
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
 
-    world.add(instMeshes);
-    //let intersections = raycaster.intersectObjects(instMeshes.children, true);
+   
     let intersections = raycaster.intersectObjects(world.children, true);
+    let intersections1 = raycaster.intersectObjects(instMeshes.children, true);
+    //console.log(intersections1)
+    for(let i =0; i < intersections1.length; i++){
+        intersections.push(intersections1[i]);
 
-    world.remove(instMeshes);
-
-    // for(let i =0; i < intersections1; i++){
-    //     intersections.push(intersections1[i]);
-    // }
+    }
 
     //console.log(intersections)
-    while (intersections.length > 1 /*&& !intersections[0].object.userData.selectable*/){ 
+    while (intersections.length > 1){ 
         intersections.pop();
-        //console.log(intersections)
     }
 
     return intersections;
@@ -243,18 +242,18 @@ function getIntersectionsWithKind(controller, x, y, z, offset =0, kind) {
     raycaster.ray.direction.set(x, y, z).applyMatrix4(tempMatrix);
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
-    world.add(instMeshes);
+
     //let intersections = raycaster.intersectObjects(instMeshes.children, true);
+    //let intersections = raycaster.intersectObjects(world.children, true);
     let intersections = raycaster.intersectObjects(world.children, true);
+    let intersections1 = raycaster.intersectObjects(instMeshes.children, true);
 
-    world.remove(instMeshes);
-
-    /*for(let i =0; i < intersections1; i++){
+    for(let i =0; i < intersections1.length; i++){
         intersections.push(intersections1[i]);
-    }*/
+    }
 
 
-    while (intersections.length > 1 /*&& !intersections[0].object.userData.selectable*/ && kind !== intersections[0].object.userData.kind) intersections.pop();
+    while (intersections.length > 1 && kind !== intersections[0].object.userData.kind) intersections.pop();
     return intersections;
 }
 
@@ -268,7 +267,6 @@ function intersectObjects(controller) {
     if (intersections.length > 0) {
         let intersection = intersections[0];
         let object = intersection.object;
-
         intersected.push(object);
         line.scale.z = intersection.distance;
     } else {
