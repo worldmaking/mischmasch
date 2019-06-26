@@ -687,7 +687,7 @@ class Cable {
         
         this.update();
 
-        curve.mesh.userData.moveable = true;
+        curve.mesh.userData.selectable = false;
         world.add(curve.mesh);
 
         allCables.push(this);
