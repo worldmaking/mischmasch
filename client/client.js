@@ -554,8 +554,8 @@ async function init() {
     let lineMat = new THREE.LineBasicMaterial({
         color: "yellow"
     });
-    uiLine = new THREE.Line(lineGeom, lineMat);
-    uiLine.name = "uiLine";
+    // uiLine = new THREE.Line(lineGeom, lineMat);
+    // uiLine.name = "uiLine";
 
     // 'world' represents the root node of the patch:
     scene.add(world);
@@ -650,8 +650,8 @@ class Cable {
 
         this.srcJackMesh = new THREE.Mesh(plug_geometry, outlet_material);
         this.dstJackMesh = new THREE.Mesh(plug_geometry, inlet_material);
-        world.add(this.srcJackMesh);
-        world.add(this.dstJackMesh);
+        instMeshes.add(this.srcJackMesh);
+        instMeshes.add(this.dstJackMesh);
         this.srcJackMesh.userData.moveable = true;
         this.srcJackMesh.userData.selectable = true;
         this.srcJackMesh.userData.cable = this;
@@ -660,6 +660,9 @@ class Cable {
         this.dstJackMesh.userData.selectable = true;
         this.dstJackMesh.userData.cable = this;
         this.dstJackMesh.userData.kind = "jack_inlet";
+
+        // this.srcJackMesh.scale.set(CABLE_JACK_RADIUS*3, CABLE_JACK_RADIUS*3, CABLE_JACK_HEIGHT*3);
+        // this.dstJackMesh.scale.set(CABLE_JACK_RADIUS*3, CABLE_JACK_RADIUS*3, CABLE_JACK_HEIGHT*3);
 
         this.positions = [
             new THREE.Vector3(),
@@ -678,7 +681,7 @@ class Cable {
         curve.mesh = new THREE.Line(this.geometry, new THREE.LineBasicMaterial({
             color: 0xD3D3D3,
             opacity: 1,
-            linewidth: 2
+            linewidth: 1
         }));
         curve.mesh.castShadow = true;
         this.curve = curve;

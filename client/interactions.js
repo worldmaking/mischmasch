@@ -91,7 +91,7 @@ function onSelectEnd(event) {
         let object = controller.userData.selected;
         let parent = object.userData.originalParent;
         if (object.userData.kind == "jack_outlet" || object.userData.kind == "jack_inlet") {
-            if (parent == undefined) parent = world;
+            if (parent == undefined) parent = instMeshes;
         } else{
         if (parent == undefined) parent = instMeshes; //object.parent;
         }
@@ -218,13 +218,13 @@ function getIntersections(controller, x, y, z, offset =0) {
     // 2nd arg is recursive (recursive breaks grabbing)
 
    
-    let intersections = raycaster.intersectObjects(world.children, true);
-    let intersections1 = raycaster.intersectObjects(instMeshes.children, true);
-    //console.log(intersections1)
-    for(let i =0; i < intersections1.length; i++){
-        intersections.push(intersections1[i]);
+    let intersections = raycaster.intersectObjects(instMeshes.children, true);
+    // let intersections1 = raycaster.intersectObjects(instMeshes.children, true);
+    // //console.log(intersections1)
+    // for(let i =0; i < intersections1.length; i++){
+    //     intersections.push(intersections1[i]);
 
-    }
+    // }
 
     //console.log(intersections)
     while (intersections.length > 1){ 
@@ -245,12 +245,12 @@ function getIntersectionsWithKind(controller, x, y, z, offset =0, kind) {
 
     //let intersections = raycaster.intersectObjects(instMeshes.children, true);
     //let intersections = raycaster.intersectObjects(world.children, true);
-    let intersections = raycaster.intersectObjects(world.children, true);
-    let intersections1 = raycaster.intersectObjects(instMeshes.children, true);
+    let intersections = raycaster.intersectObjects(instMeshes.children, true);
+    // let intersections1 = raycaster.intersectObjects(instMeshes.children, true);
 
-    for(let i =0; i < intersections1.length; i++){
-        intersections.push(intersections1[i]);
-    }
+    // for(let i =0; i < intersections1.length; i++){
+    //     intersections.push(intersections1[i]);
+    // }
 
 
     while (intersections.length > 1 && kind !== intersections[0].object.userData.kind) intersections.pop();
@@ -357,13 +357,13 @@ function controllerGamepadControls(controller){
                 // turn angle back into a 0..1 value:
                 value = (((angle / KNOB_SWEEP) + 1)/2);
                 
-                if (world.getObjectByName("uiLine") !== undefined){
-                    uiLine.geometry.vertices[0] = 0;
-                    uiLine.geometry.vertices[1] = 0;
-                    uiLine.geometry.verticesNeedUpdate = true;
+                // if (world.getObjectByName("uiLine") !== undefined){
+                //     uiLine.geometry.vertices[0] = 0;
+                //     uiLine.geometry.vertices[1] = 0;
+                //     uiLine.geometry.verticesNeedUpdate = true;
                    
-                    line.scale.z = getControllerLineLength;
-                }         
+                //     line.scale.z = getControllerLineLength;
+                // }         
             } else if (dist > KNOB_SWING_DISTANCE) {
                 //put controller into knob space using matrix
                 //set angle to the knob
@@ -404,13 +404,13 @@ function controllerGamepadControls(controller){
                 //     value = bigValue;
                 // }
 
-                if(world.getObjectByName("uiLine") !== undefined){
-                    uiLine.geometry.vertices[0] = controllerPos;
-                    uiLine.geometry.vertices[1] = objectPos;
-                    uiLine.geometry.verticesNeedUpdate = true;
+                // if(world.getObjectByName("uiLine") !== undefined){
+                //     uiLine.geometry.vertices[0] = controllerPos;
+                //     uiLine.geometry.vertices[1] = objectPos;
+                //     uiLine.geometry.verticesNeedUpdate = true;
 
-                    line.scale.z = 0;
-                }
+                //     line.scale.z = 0;
+                // }
                 object.userData.rotation = object.rotation.clone();
                 
             }
