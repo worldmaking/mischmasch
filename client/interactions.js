@@ -58,18 +58,36 @@ function onSelectStart(event) {
             // now set object = line.dstJackMesh
             let cable = new Cable(object, null);
             object = cable.dstJackMesh;
+            object.visible = false;
             object.position.z = -0.07;
+            //object.scale.set(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT);
             controller.add(object); //removes from previous parent
+
+            if(controller == controller1){
+                grabbingC1 = true;
+            }else{
+                grabbingC2 = true;
+            }
 
         } else if (kind == "inlet") {
             //...
             let cable = new Cable(null, object);
 
             object = cable.srcJackMesh;
+            object.visible = false;
             object.position.z = -0.07;
+            //object.scale.set(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT);
             controller.add(object); //removes from previous parent
+
+            if(controller == controller1){
+                grabbingC1 = true;
+            }else{
+                grabbingC2 = true;
+            }
         }
         controller.userData.selected = object;
+
+        
     }
 
     
@@ -115,34 +133,38 @@ function onSelectEnd(event) {
                 parent.add(object);
 
                 if (intersections.length > 0) {
-                    let intersection = intersections[0];
-                    let o = intersection.object;
+                    for(let i = 0; i < intersections.length; i++){
+                        let intersection = intersections[i];
+                        let o = intersection.object;
 
-                    // if it is a jack, see if we can hook up?
-                    if (object.userData.kind == "jack_outlet" && o.userData.kind == "outlet") {
-                        // we have a hit! connect
-                        cable.src = o;
+                        // if it is a jack, see if we can hook up?
+                        if (object.userData.kind == "jack_outlet" && o.userData.kind == "outlet") {
+                            // we have a hit! connect
+                            cable.src = o;
 
-                        // send a delta:
-                        outgoingDeltas.push(
-                            { op:"connect", paths:[cable.src.userData.path, cable.dst.userData.path] }
-                        );
+                            // send a delta:
+                            outgoingDeltas.push(
+                                { op:"connect", paths:[cable.src.userData.path, cable.dst.userData.path] }
+                            );
 
-                        // destroy the cable and its objects
-                        // and remove it from allCables
-                        cable.destroy();
-                                
-                    } else if (object.userData.kind == "jack_inlet" && o.userData.kind == "inlet") {
-                        // we have a hit! connect
-                        cable.dst = o;
+                            // destroy the cable and its objects
+                            // and remove it from allCables
+                            cable.destroy();
+                            break;
+                                    
+                        } else if (object.userData.kind == "jack_inlet" && o.userData.kind == "inlet") {
+                            // we have a hit! connect
+                            cable.dst = o;
 
-                        // send a delta:
-                        outgoingDeltas.push(
-                            { op:"connect", paths:[cable.src.userData.path, cable.dst.userData.path] }
-                        );
+                            // send a delta:
+                            outgoingDeltas.push(
+                                { op:"connect", paths:[cable.src.userData.path, cable.dst.userData.path] }
+                            );
 
-                        // destroy the arc
-                        cable.destroy();
+                            // destroy the arc
+                            cable.destroy();
+                            break;
+                        }
                     }
                 }
 
@@ -153,6 +175,8 @@ function onSelectEnd(event) {
                 if(cable.src == null || cable.dst == null){
                     if(objPos.y < 0){
                         cable.destroy();
+                    }else{
+                        instMeshes.push(object);
                     }
                 }
                 
