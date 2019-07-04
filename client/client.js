@@ -648,18 +648,26 @@ class Cable {
 
         });
 
-        this.srcJackMesh = new THREE.Mesh(plug_geometry, outlet_material);
-        this.dstJackMesh = new THREE.Mesh(plug_geometry, inlet_material);
+        // this.srcJackMesh = new THREE.Mesh(plug_geometry, outlet_material);
+        // this.dstJackMesh = new THREE.Mesh(plug_geometry, inlet_material);
+        this.srcJackMesh = new THREE.Mesh(boxGeom, boxMat);
+        this.dstJackMesh = new THREE.Mesh(boxGeom, boxMat);
         instMeshes.add(this.srcJackMesh);
         instMeshes.add(this.dstJackMesh);
+        this.srcJackMesh.userData.kind = "jack_outlet";
         this.srcJackMesh.userData.moveable = true;
         this.srcJackMesh.userData.selectable = true;
         this.srcJackMesh.userData.cable = this;
-        this.srcJackMesh.userData.kind = "jack_outlet";
+        this.srcJackMesh.userData.color = [1, 0, 0, 1];
+        this.srcJackMesh.userData.shape = 1.;
+        this.srcJackMesh.scale.set(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT);
+        this.dstJackMesh.userData.kind = "jack_inlet";
         this.dstJackMesh.userData.moveable = true;
         this.dstJackMesh.userData.selectable = true;
         this.dstJackMesh.userData.cable = this;
-        this.dstJackMesh.userData.kind = "jack_inlet";
+        this.dstJackMesh.userData.color = [0, 1, 0, 1];
+        this.dstJackMesh.userData.shape = 1.;
+        this.dstJackMesh.scale.set(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT);
 
         // this.srcJackMesh.scale.set(CABLE_JACK_RADIUS*3, CABLE_JACK_RADIUS*3, CABLE_JACK_HEIGHT*3);
         // this.dstJackMesh.scale.set(CABLE_JACK_RADIUS*3, CABLE_JACK_RADIUS*3, CABLE_JACK_HEIGHT*3);
@@ -980,6 +988,55 @@ function updateInstances(recurMeshes=instMeshes){
                 instBoxColorAttr.array[k+3] = tempMeshes[i].userData.color[3];
             }
         }
+    }else{
+        console.log("Initiall recursive call");
+        for(let i=0, d=maxInstances, j=maxInstances*3, k=maxInstances*4; i < tempMeshes.length; i++){
+            if(tempMeshes != undefined && tempMeshes[i].userData.cable){
+
+                console.log("damn cables, back at it again with the instancing");
+
+                instBoxLocationAttr.array[j] = tempMeshes[i].getWorldPosition(pos).x;
+                instBoxLocationAttr.array[j+1] = tempMeshes[i].getWorldPosition(pos).y;
+                instBoxLocationAttr.array[j+2] = tempMeshes[i].getWorldPosition(pos).z;
+
+                instBoxOrientationAttr.array[k] = tempMeshes[i].getWorldQuaternion(orient).x;
+                instBoxOrientationAttr.array[k+1] = tempMeshes[i].getWorldQuaternion(orient).y;
+                instBoxOrientationAttr.array[k+2] = tempMeshes[i].getWorldQuaternion(orient).z;
+                instBoxOrientationAttr.array[k+3] = tempMeshes[i].getWorldQuaternion(orient).w;
+
+                instBoxShapeAttr.array[d] = tempMeshes[i].userData.shape;
+
+                if(tempMeshes[i].userData.shape > 0){
+                    instBoxScaleAttr.array[j] = (tempMeshes[i].scale.x)/2.0;
+                    instBoxScaleAttr.array[j+1] = (tempMeshes[i].scale.y)/2.0;
+                    instBoxScaleAttr.array[j+2] = (tempMeshes[i].scale.z);
+                }else{
+                    instBoxScaleAttr.array[j] = tempMeshes[i].scale.x;
+                    instBoxScaleAttr.array[j+1] = tempMeshes[i].scale.y;
+                    instBoxScaleAttr.array[j+2] = tempMeshes[i].scale.z;
+                }
+
+                instBoxColorAttr.array[k] = tempMeshes[i].userData.color[0];
+                instBoxColorAttr.array[k+1] = tempMeshes[i].userData.color[1];
+                instBoxColorAttr.array[k+2] = tempMeshes[i].userData.color[2];
+                instBoxColorAttr.array[k+3] = tempMeshes[i].userData.color[3];
+
+                d++;
+                j+=3;
+                k+=4;
+
+                if(updatingC1) {
+                    grabbedInstances += tempMeshes.length;
+                    maxInstances += tempMeshes.length;
+                }
+                else if(updatingC2) {
+                    grabbedInstances2 += tempMeshes.length;
+                    maxInstances += tempMeshes.length;
+                }else if(recurMeshes != instMeshes){
+                    maxInstances += tempMeshes.length;
+                }//*/
+            }
+        }
     }
 
     //update maxInstances if this isn't the first call
@@ -1003,9 +1060,8 @@ function updateInstances(recurMeshes=instMeshes){
             updateInstances(tempMeshes[i]);
         }
     }
-    //if(!updatingC1 && !updatingC2){
-        instMeshes.updateMatrixWorld(true);
-    //}
+
+    instMeshes.updateMatrixWorld(true);
 
     //reset update flags for each contoller
     if(recurMeshes == controller1){
