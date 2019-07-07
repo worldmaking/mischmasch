@@ -20,6 +20,8 @@ var Ycounter;
 
 gen_patcher = this.patcher.getnamed("world").subpatcher();
 
+// TODO: the ensureOuts function was placed in the max-based script out of ease when we were in a push to get ready for expo74. It should instead be
+// run from within the server.js, where the var 'localGraph' should be checked for at least one instance of an 'outs' module. 
 function ensureOuts(){
 	var hasOuts = 0;
 	gen_patcher.apply(function(b) { 
@@ -184,7 +186,7 @@ var handleDelta = function(delta) {
 							// add a cv input to a knob
 							case "addCV"
 							
-							
+								
 							break;
 								// TEMP HACK!!!!
 							// so we can ignore UI objects that we don't need to patcher script at this point
