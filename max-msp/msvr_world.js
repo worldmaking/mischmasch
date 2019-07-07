@@ -180,6 +180,12 @@ var handleDelta = function(delta) {
 							
 							//post(JSON.stringify(outletsTable))
 							break;
+							
+							// add a cv input to a knob
+							case "addCV"
+							
+							
+							break;
 								// TEMP HACK!!!!
 							// so we can ignore UI objects that we don't need to patcher script at this point
 							// NEED TO FIX
