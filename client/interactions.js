@@ -1,7 +1,7 @@
 function onSelectStart(event) {
     let controller = event.target;
     let intersections = getIntersections(controller, 0, 0, -1);
-    instMeshes.remove(menu);
+    //instMeshes.remove(menu);
     if (intersections.length < 1) return;
     let intersection = intersections[0];
     let object = intersection.object;
