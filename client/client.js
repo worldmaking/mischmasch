@@ -377,7 +377,7 @@ async function init() {
     scene.add(camera)
     camera.position.set(0, 1.5, 0)
 
-   // world.add(instMeshes)
+    world.add(instMeshes)
 
     /// instanceBox
     {
@@ -989,11 +989,11 @@ function updateInstances(recurMeshes=instMeshes){
             }
         }
     }else{
-        console.log("Initiall recursive call");
+        //console.log("Initiall recursive call");
         for(let i=0, d=maxInstances, j=maxInstances*3, k=maxInstances*4; i < tempMeshes.length; i++){
             if(tempMeshes != undefined && tempMeshes[i].userData.cable){
 
-                console.log("damn cables, back at it again with the instancing");
+                //console.log("damn cables, back at it again with the instancing");
 
                 instBoxLocationAttr.array[j] = tempMeshes[i].getWorldPosition(pos).x;
                 instBoxLocationAttr.array[j+1] = tempMeshes[i].getWorldPosition(pos).y;

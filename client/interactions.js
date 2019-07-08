@@ -86,8 +86,6 @@ function onSelectStart(event) {
             }
         }
         controller.userData.selected = object;
-
-        
     }
 
     
@@ -108,11 +106,12 @@ function onSelectEnd(event) {
     if (controller.userData.selected !== undefined) {
         let object = controller.userData.selected;
         let parent = object.userData.originalParent;
-        if (object.userData.kind == "jack_outlet" || object.userData.kind == "jack_inlet") {
+        /*if (object.userData.kind == "jack_outlet" || object.userData.kind == "jack_inlet") {
             if (parent == undefined) parent = instMeshes;
         } else{
-        if (parent == undefined) parent = instMeshes; //object.parent;
-        }
+            if (parent == undefined) parent = instMeshes; //object.parent;
+        }*/
+        if (parent == undefined) parent = instMeshes;
         controller.userData.selected = undefined;
        
         if (object && object.userData.moveable) {
@@ -172,11 +171,22 @@ function onSelectEnd(event) {
                     cable.destroy();
                 }
 
+                // console.log("~~Cables VV~~")
+                // console.log(cable.dst)
+                // console.log(cable.src)
+                // console.log("~~~~~~~~~~~~~")
                 if(cable.src == null || cable.dst == null){
+                    
                     if(objPos.y < 0){
                         cable.destroy();
+                        // console.log("Cable byebye");
                     }else{
-                        instMeshes.push(object);
+                        // console.log("Cable call");
+                        // object.scale.set(1,1,1);
+                        // object.position.set(0, 0.3, 0);
+                        let container = new THREE.Mesh(boxGeom, boxMat);
+                        instMeshes.add(container);
+                        // console.log(object);
                     }
                 }
                 
