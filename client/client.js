@@ -377,7 +377,7 @@ async function init() {
     scene.add(camera)
     camera.position.set(0, 1.5, 0)
 
-    world.add(instMeshes)
+    //world.add(instMeshes)
 
     /// instanceBox
     {
@@ -581,6 +581,9 @@ async function init() {
     for ( let i = 0, len=uvs.length; i<len; i++ ) { uvs[i] *= uvscale; }
 
     makeMenu();
+    //Stupid hack just to get it load in the buffer
+    world.add(menu);
+    world.remove(menu);
 
 	let floor = new THREE.Mesh(floorGeometry, floorMaterial);
 	// floor.position.y = -0.5;
@@ -888,6 +891,7 @@ function render() {
     intersectObjects(controller1);
     intersectObjects(controller2);
 
+    updateInstances();
     if(grabbingC1 || grabbingC2){
         updateInstances();
         if(grabbingC1){
@@ -897,6 +901,7 @@ function render() {
             updateInstances(controller2);
         }
     }
+    
 
 
     var time = performance.now();
@@ -945,7 +950,8 @@ function updateInstances(recurMeshes=instMeshes){
     let tempMeshes = recurMeshes.children;
     let pos = new THREE.Vector3();
     let orient = new THREE.Quaternion();
-    if(recurMeshes != instMeshes && recurMeshes != controller1 && recurMeshes != controller2){
+    //let groupTest = new THREE.Group();
+    if(recurMeshes != instMeshes && recurMeshes != controller1 && recurMeshes != controller2 && recurMeshes != menu){
         for(let i=0, d=maxInstances, j=maxInstances*3, k=maxInstances*4; i < tempMeshes.length; i++, d++, j+=3, k+=4){
             if(tempMeshes != undefined && thru == true){
 
@@ -995,7 +1001,7 @@ function updateInstances(recurMeshes=instMeshes){
         for(let i=0, d=maxInstances, j=maxInstances*3, k=maxInstances*4; i < tempMeshes.length; i++){
             if(tempMeshes != undefined && tempMeshes[i].userData.cable){
 
-                //console.log("damn cables, back at it again with the instancing");
+                //console.log("Cables instancing");
 
                 instBoxLocationAttr.array[j] = tempMeshes[i].getWorldPosition(pos).x;
                 instBoxLocationAttr.array[j+1] = tempMeshes[i].getWorldPosition(pos).y;
@@ -1057,7 +1063,8 @@ function updateInstances(recurMeshes=instMeshes){
 
     //recursive call (endcase is tempMeshes.length == 0)
     for(let i = 0; i < tempMeshes.length; i++){
-        if((recurMeshes == controller1 || recurMeshes == controller2) && i == 2 || (recurMeshes != controller1 && recurMeshes != controller2)){ //this if may be redundant
+        //console.log(tempMeshes[i]);
+        if(((recurMeshes == controller1 || recurMeshes == controller2) && i == 2) || (recurMeshes != controller1 && recurMeshes != controller2)){ //this if may be redundant
             thru = true;
             updateInstances(tempMeshes[i]);
         }
