@@ -494,6 +494,8 @@ async function init() {
     controller2.addEventListener("triggerup", onSelectEnd);
     controller1.addEventListener("gripsdown", onGrips);
     controller2.addEventListener("gripsdown", onGrips);
+    controller2.addEventListener("thumbpaddown", onMenuSpawn);
+    controller1.addEventListener("thumbpaddown", onMenuSpawn);
     document.addEventListener("keydown", onKeypress, false);
     document.addEventListener( 'mousemove', onDocumentMouseMove, false );
     document.addEventListener( 'mousedown', onDocumentMouseDown, false );
@@ -578,7 +580,7 @@ async function init() {
     let uvscale = 2;
     for ( let i = 0, len=uvs.length; i<len; i++ ) { uvs[i] *= uvscale; }
 
-
+    makeMenu();
 
 	let floor = new THREE.Mesh(floorGeometry, floorMaterial);
 	// floor.position.y = -0.5;
