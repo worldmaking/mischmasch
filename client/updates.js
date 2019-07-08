@@ -54,7 +54,8 @@ function enactDelta(delta) {
 function enactDeltaNewNode(delta) {
     // create new object etc.
 
-    let parent = instMeshes;  
+    //let parent = instMeshes;
+    let parent = (delta.menu == true) ? menu : instMeshes;  
 
     // first, find parent.
     let path = delta.path;
@@ -184,6 +185,12 @@ function enactDeltaNewNode(delta) {
         } else {
             container.quaternion = parent.quaternion.clone();
         }
+
+        if(delta.menu == true){
+            container.userData.menu = delta.menu;
+            container.scale.set(menuScaleSize, menuScaleSize, menuScaleSize);
+        }
+
         // add to our library of nodes:
         addObjectByPath(path, container);
         //console.log(container, delta)

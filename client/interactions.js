@@ -88,11 +88,14 @@ function onSelectStart(event) {
         controller.userData.selected = object;
     }
 
-    
+    if(object && object.userData.menu == true && createObjFromMenu == true){
+        copyModule(controller, object);
+        world.remove(menu);
+        createObjFromMenu = false;
+    }
 
     controller.userData.rotation = controller.rotation.clone();
     object.userData.rotation = object.rotation.clone();
-   
 
 }
 
@@ -223,11 +226,14 @@ function onMenuSpawn(event){
     if(controller.getButtonState('trigger') == false){
         let headsetPos = new THREE.Vector3();
         camera.getWorldPosition(headsetPos);
+        console.log(headsetPos);
         menu.position.fromArray([headsetPos.x, headsetPos.y + .25, headsetPos.z]);
+        menu.userData.color = [Math.random(), Math.random(), Math.random(), 1];
         //menu.rotation.fromArray([0, -controller.rotation.y, 0]);
-        world.add(menu);
+        instMeshes.add(menu);
         createObjFromMenu = true;
     }
+    //updateInstances();
 }
 
 function makeMenu(){
