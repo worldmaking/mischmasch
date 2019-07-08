@@ -236,6 +236,81 @@ function onMenuSpawn(event){
     //updateInstances();
 }
 
+function onSpawn(event) {
+    let controller = event.target;
+    if(controller.getButtonState('thumbpad') === undefined) return;
+
+    if(controller.getButtonState('trigger') == false){
+        
+        if(controller.userData.selected === undefined){
+            let intersections = getIntersections(controller, 0, 0, -1);
+            if (intersections.length > 0) {
+                let intersection = intersections[0];
+                let object = intersection.object;
+                if(createObjFromMenu == true)
+                copyModule(controller, object);
+            }
+        }
+    } else { 
+        if(!createObjFromMenu){
+            copyModule(controller);
+        }
+    }
+    world.remove(menu);
+    createObjFromMenu = false;
+}
+/**
+ * Used to copy a specific module
+ * @param {controller} controller - Vive Controller
+ * @param {object} object - Object to copy (OPTIONAL: default is controller.userData.selected)
+ */
+function copyModule(controller, object = undefined){
+    if(object == undefined){
+        object = controller.userData.selected;
+    }
+    //Should put this in own function relPosController()??
+    let pos = new THREE.Vector3();
+    let orient = new THREE.Quaternion();
+    controller.getWorldPosition(pos);
+    controller.getWorldQuaternion(orient);
+
+    // adjust spawn location:
+    let tilt = new THREE.Quaternion();
+    tilt.setFromAxisAngle(new THREE.Vector3(1., 0., 0.), -0.25);
+    orient.multiply(tilt);
+    let rel = new THREE.Vector3(-generic_geometry.parameters.width/2, generic_geometry.parameters.height*1.2, -.1);
+    pos.add(rel.applyQuaternion(orient));
+
+    let module_names = Object.keys(module_constructors)
+
+    let opname, ctor;
+    
+    object = getContainingModule(object);
+
+
+    for(let i in menuNames){
+   
+        if(module_names[i] == object.userData.kind){
+            opname = module_names[i];
+            ctor = module_constructors[opname];
+
+        }
+
+        if(operator_names[i] == object.userData.kind){
+            opname = operator_names[i];
+            ctor = operator_constructors[opname];
+        }
+    }
+
+    let path = gensym(opname);
+    let deltas = ctor(path);
+
+    deltas[0].pos = [pos.x, pos.y, pos.z];
+    deltas[0].orient = [orient._x,orient._y, orient._z, orient._w];
+    outgoingDeltas = outgoingDeltas.concat(deltas);
+
+}
+
 function makeMenu(){
     menuNames = [].concat(module_names); //["sample_and_hold", "freevoib", "shifter", "knob", "lfo", "vco", "vca", "comparator", "outs"];
 
