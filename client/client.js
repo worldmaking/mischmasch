@@ -494,8 +494,10 @@ async function init() {
     controller2.addEventListener("triggerup", onSelectEnd);
     controller1.addEventListener("gripsdown", onGrips);
     controller2.addEventListener("gripsdown", onGrips);
+    controller1.addEventListener("thumbpadup", onSpawn);
     controller2.addEventListener("thumbpaddown", onMenuSpawn);
     controller1.addEventListener("thumbpaddown", onMenuSpawn);
+    controller2.addEventListener("thumbpadup", onSpawn);
     document.addEventListener("keydown", onKeypress, false);
     document.addEventListener( 'mousemove', onDocumentMouseMove, false );
     document.addEventListener( 'mousedown', onDocumentMouseDown, false );
