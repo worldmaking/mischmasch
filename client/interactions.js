@@ -42,8 +42,8 @@ function onSelectStart(event) {
         controller.userData.selected = object;
         object.userData.originalParent = parent;
         object.visible = false;
-        controller.add(object); //removes from previous parent
-        instMeshes.remove(object);
+        controller.add(object); 
+        instMeshes.remove(object); //removes from previous parent
         if(controller == controller1){
             grabbingC1 = true;
         }else{
