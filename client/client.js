@@ -377,7 +377,7 @@ async function init() {
     scene.add(camera)
     camera.position.set(0, 1.5, 0)
 
-    //world.add(instMeshes)
+    //world.add(instMeshes);
 
     /// instanceBox
     {
@@ -1003,7 +1003,7 @@ function updateInstances(recurMeshes=instMeshes){
         for(let i=0, d=maxInstances, j=maxInstances*3, k=maxInstances*4; i < tempMeshes.length; i++){
             if(tempMeshes != undefined && tempMeshes[i].userData.cable){
 
-                //console.log("Cables instancing");
+                console.log("Cables instancing");
 
                 instBoxLocationAttr.array[j] = tempMeshes[i].getWorldPosition(pos).x;
                 instBoxLocationAttr.array[j+1] = tempMeshes[i].getWorldPosition(pos).y;
@@ -1042,7 +1042,7 @@ function updateInstances(recurMeshes=instMeshes){
                 else if(updatingC2) {
                     grabbedInstances2 += tempMeshes.length;
                     maxInstances += tempMeshes.length;
-                }else if(recurMeshes != instMeshes){
+                }else{
                     maxInstances += tempMeshes.length;
                 }//*/
             }
