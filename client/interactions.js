@@ -92,6 +92,7 @@ function onSelectStart(event) {
     if(object && object.userData.menu == true && createObjFromMenu == true){
         copyModule(controller, object);
         createObjFromMenu = false;
+        instMeshes.remove(menu);
     }
 
     controller.userData.rotation = controller.rotation.clone();
@@ -187,8 +188,11 @@ function onSelectEnd(event) {
                         // console.log("Cable call");
                         // object.scale.set(1,1,1);
                         // object.position.set(0, 0.3, 0);
-                        let container = new THREE.Mesh(boxGeom, boxMat);
-                        instMeshes.add(container);
+                        object.visible = true;
+                        instMeshes.add(object);
+                        // console.log("<<<<<ObjectCheck>>>>>");
+                        // console.log(object);
+                        // console.log("<<<<<----------->>>>>");
                         // console.log(object);
                     }
                 }
@@ -218,6 +222,9 @@ function onSelectEnd(event) {
                 );
             }
         }
+        // console.log("~~~~~Ungrab~~~~~");
+        // console.log(object);
+        // console.log("~~~~~~~~~~~~~~~~");
     }
 }
 
@@ -256,7 +263,7 @@ function onSpawn(event) {
             copyModule(controller);
         }
     }
-    world.remove(menu);
+    instMeshes.remove(menu);
     createObjFromMenu = false;
 }
 /**

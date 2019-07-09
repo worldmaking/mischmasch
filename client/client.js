@@ -895,7 +895,7 @@ function render() {
 
     updateInstances();
     if(grabbingC1 || grabbingC2){
-        updateInstances();
+        //updateInstances();
         if(grabbingC1){
             updateInstances(controller1);
         }
