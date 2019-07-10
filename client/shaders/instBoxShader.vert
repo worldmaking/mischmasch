@@ -9,9 +9,11 @@ attribute vec3 scale;
 attribute float shape;
 attribute vec3 normal;
 attribute vec4 color;
+attribute vec4 emission;
 varying vec2 vUv;
 varying vec4 vColor;
 varying vec3 vNormal;
+varying vec4 vEmission;
 
 // http://www.geeks3d.com/20141201/how-to-rotate-a-vertex-by-a-quaternion-in-glsl/
 vec3 applyQuaternionToVector( vec4 q, vec3 v ){
