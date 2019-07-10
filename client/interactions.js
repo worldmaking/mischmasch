@@ -301,6 +301,7 @@ function copyModule(controller, object = undefined){
     
 
 
+    //TODO: Menu objects will disapear from the menu when duplicated, need to fix this.
     for(let i in menuNames){
    
         if(module_names[i] == object.userData.kind){
