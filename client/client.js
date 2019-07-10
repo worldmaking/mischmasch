@@ -177,7 +177,7 @@ let textMaterial;
 /////////////////////////////////////////////
 // instance globals:
 /////////////////////////////////////////////
-let instBoxLocationAttr, instBoxOrientationAttr, instBoxScaleAttr, instBoxColorAttr, instBoxShapeAttr, instBoxParentAttr;
+let instBoxLocationAttr, instBoxOrientationAttr, instBoxScaleAttr, instBoxColorAttr, instBoxEmissionAttr, instBoxShapeAttr;
 let instBoxGeometry // a VBO really
 let maxInstances = 0;
 let grabbedInstances = 0;
@@ -399,6 +399,7 @@ async function init() {
         let orientations = [];
         let scales = [];
         let colors = [];
+        let emission = [];
         let shapes = []; // 0==box, 1== cylinder
         let vector = new THREE.Vector4();
         let x, y, z, w;
@@ -419,6 +420,7 @@ async function init() {
 
             scales.push(0,0,0)
             colors.push(0,0,0, 1);
+            emission.push(4.,4.,4.,4.);
 
             shapes.push(0.);
         }
@@ -426,12 +428,14 @@ async function init() {
         instBoxOrientationAttr = new THREE.InstancedBufferAttribute( new Float32Array( orientations ), 4 ).setDynamic( true );
         instBoxScaleAttr = new THREE.InstancedBufferAttribute( new Float32Array( scales ), 3 ).setDynamic( true );
         instBoxColorAttr = new THREE.InstancedBufferAttribute( new Float32Array( colors ), 4 ).setDynamic( true );
+        instBoxEmissionAttr = new THREE.InstancedBufferAttribute( new Float32Array( emission ), 4 ).setDynamic( true );
         instBoxShapeAttr = new THREE.InstancedBufferAttribute( new Float32Array( shapes ), 1 ).setDynamic( true );
 
         instBoxGeometry.addAttribute( 'location', instBoxLocationAttr );
         instBoxGeometry.addAttribute( 'orientation', instBoxOrientationAttr );
         instBoxGeometry.addAttribute( 'scale', instBoxScaleAttr );
         instBoxGeometry.addAttribute( 'color', instBoxColorAttr );
+        instBoxGeometry.addAttribute( 'emission', instBoxEmissionAttr );
         instBoxGeometry.addAttribute( 'shape', instBoxShapeAttr );
         
         let material = new THREE.RawShaderMaterial( {
