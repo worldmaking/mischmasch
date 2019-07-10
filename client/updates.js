@@ -121,6 +121,7 @@ function enactDeltaNewNode(delta) {
             c.userData.name = name;
             c.userData.kind = delta.kind;
             c.userData.backPanel = true;
+            c.userData.isBox = true;
             c.userData.color = [Math.random(), Math.random(), Math.random(), 1];
             if (delta.pos) {
                 //c.position.fromArray(delta.pos);

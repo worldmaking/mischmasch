@@ -247,6 +247,8 @@ function onSpawn(event) {
     let controller = event.target;
     if(controller.getButtonState('thumbpad') === undefined) return;
 
+    
+
     if(controller.getButtonState('trigger') == false){
         
         if(controller.userData.selected === undefined){
@@ -259,8 +261,10 @@ function onSpawn(event) {
             }
         }
     } else { 
+        console.log("Spawnning");
         if(!createObjFromMenu){
             copyModule(controller);
+            console.log("Spawnning again");
         }
     }
     instMeshes.remove(menu);
@@ -292,7 +296,9 @@ function copyModule(controller, object = undefined){
 
     let opname, ctor;
     
-    object = getContainingModule(object);
+    //object = getContainingModule(object);
+    //object = object.parent;
+    
 
 
     for(let i in menuNames){
@@ -307,15 +313,21 @@ function copyModule(controller, object = undefined){
             opname = operator_names[i];
             ctor = operator_constructors[opname];
         }
+
+        // if(ctor == undefined){
+        //     opname = module_names[0];
+        //     ctor = module_constructors[opname];
+        // }
     }
 
     let path = gensym(opname);
     let deltas = ctor(path);
 
+    console.log("Copy module");
+
     deltas[0].pos = [pos.x, pos.y, pos.z];
     deltas[0].orient = [orient._x,orient._y, orient._z, orient._w];
     outgoingDeltas = outgoingDeltas.concat(deltas);
-
 }
 
 function makeMenu(){
