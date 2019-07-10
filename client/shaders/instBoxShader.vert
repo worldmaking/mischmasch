@@ -34,5 +34,6 @@ void main() {
         vNormal = applyQuaternionToVector(orientation, vNormal);
         vUv = uv;
         vColor = color;
+        vEmission = emission;
         gl_Position = projectionMatrix * modelViewMatrix * vec4( location + vPosition, 1.0 );
 }

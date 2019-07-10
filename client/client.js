@@ -420,7 +420,7 @@ async function init() {
 
             scales.push(0,0,0)
             colors.push(0,0,0, 1);
-            emission.push(4.,4.,4.,4.);
+            emission.push(1.,1.,1.,1.);
 
             shapes.push(0.);
         }
@@ -920,6 +920,7 @@ function render() {
     instBoxScaleAttr.needsUpdate = true;
     instBoxColorAttr.needsUpdate = true;
     instBoxShapeAttr.needsUpdate = true;
+    instBoxEmissionAttr.needsUpdate = true;
     instBoxGeometry.maxInstancedCount = maxInstances//Math.ceil(Math.random() * 5000);
 
     maxInstances -= grabbedInstances;
@@ -944,7 +945,7 @@ let thru = false;
 function updateInstances(recurMeshes=instMeshes){
 
     if(recurMeshes == instMeshes){ 
-        maxInstances = 0;  
+        maxInstances = 0;
     }
     else if(recurMeshes == controller1){ 
         grabbedInstances = 0;
@@ -994,6 +995,12 @@ function updateInstances(recurMeshes=instMeshes){
                     instBoxScaleAttr.array[j] = tempMeshes[i].scale.x;
                     instBoxScaleAttr.array[j+1] = tempMeshes[i].scale.y;
                     instBoxScaleAttr.array[j+2] = tempMeshes[i].scale.z;
+                }
+
+                if(recurMeshes.userData.menu || recurMeshes.parent.userData.menu){ //this statement may need to be fixed for objects with more then 2 layers of children from the module's null object
+                    instBoxScaleAttr.array[j] = instBoxScaleAttr.array[j] * menuScaleSize;
+                    instBoxScaleAttr.array[j+1] = instBoxScaleAttr.array[j+1] * menuScaleSize;
+                    instBoxScaleAttr.array[j+2] = instBoxScaleAttr.array[j+2] * menuScaleSize;
                 }
 
                 instBoxColorAttr.array[k] = tempMeshes[i].userData.color[0];
