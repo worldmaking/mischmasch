@@ -997,7 +997,7 @@ function updateInstances(recurMeshes=instMeshes){
                     instBoxScaleAttr.array[j+2] = tempMeshes[i].scale.z;
                 }
 
-                if(recurMeshes.userData.menu || recurMeshes.parent.userData.menu){ //this statement may need to be fixed for objects with more then 2 layers of children from the module's null object
+                if(recurMeshes.userData.menu || recurMeshes.parent.userData.menu){ // ? this statement may need to be fixed for objects with more then 2 layers of children from the module's null object
                     instBoxScaleAttr.array[j] = instBoxScaleAttr.array[j] * menuScaleSize;
                     instBoxScaleAttr.array[j+1] = instBoxScaleAttr.array[j+1] * menuScaleSize;
                     instBoxScaleAttr.array[j+2] = instBoxScaleAttr.array[j+2] * menuScaleSize;
