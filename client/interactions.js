@@ -389,6 +389,35 @@ function generateNewModule(pos, orient, name){
     return deltas;
 }
 
+function highlightNlet(controller){
+    if (controller.userData.selected !== undefined) {
+        let object = controller.userData.selected;
+
+        if (object && object.userData.moveable) {
+            if (object.userData.kind == "jack_outlet" || object.userData.kind == "jack_inlet") {
+
+                let intersections = getIntersectionsWithKind(object, 0, 0, -1, CABLE_JACK_HEIGHT * 2, object.userData.kind == "jack_outlet" ? "outlet" : "inlet");
+
+                if (intersections.length > 0) {
+                    let intersection = intersections[0];
+                    let o = intersection.object;
+
+                    // if it is a jack, see if we can hook up?
+                    if ((object.userData.kind == "jack_outlet" && o.userData.kind == "outlet")||(object.userData.kind == "jack_inlet" && o.userData.kind == "inlet")) {
+                        object.material.emissive.r = .5;
+                        object.material.emissive.g = .5;
+                        object.material.emissive.b = .5;
+                    } else {
+                        object.material.emissive.r = 0;
+                        object.material.emissive.g = 0;
+                        object.material.emissive.b = 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
 function getIntersections(controller, x, y, z, offset =0) {
     tempMatrix.identity().extractRotation(controller.matrixWorld);
     let origin = new THREE.Vector3(0, 0, offset).applyMatrix4(tempMatrix);
