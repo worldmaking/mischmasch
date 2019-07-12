@@ -598,10 +598,10 @@ async function init() {
     
     //Add Text for now
     for(let i =0; i < 1; i++){
-        createLabel('Hello 00000',"center", Math.random(), Math.random(), 0.002);
+        // createLabel('Hello 00000',"center", Math.random(), Math.random(), 0.002);
     }
 
-    createLabel('what up1!', "center", 0.5, 2);
+    // createLabel('what up1!', "center", 0.5, 2);
 
     for(let i =0, j=0; i < 2; i++, j+=3){
         let ori = new THREE.Quaternion();
@@ -860,6 +860,9 @@ function render() {
 
     controllerGamepadControls(controller1);
     controllerGamepadControls(controller2);
+
+    highlightNlet(controller1);
+    highlightNlet(controller2);
 
     if (sock && sock.socket && sock.socket.readyState === 1) {
 

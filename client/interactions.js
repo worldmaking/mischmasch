@@ -257,14 +257,14 @@ function onSpawn(event) {
                 let intersection = intersections[0];
                 let object = intersection.object;
                 if(createObjFromMenu == true)
-                copyModule(controller, object);
+                    copyModule(controller, object);
             }
         }
     } else { 
-        console.log("Spawnning");
+        //console.log("Spawnning");
         if(!createObjFromMenu){
             copyModule(controller);
-            console.log("Spawnning again");
+            //console.log("Spawnning again");
         }
     }
     instMeshes.remove(menu);
@@ -402,15 +402,28 @@ function highlightNlet(controller){
                     let intersection = intersections[0];
                     let o = intersection.object;
 
+
                     // if it is a jack, see if we can hook up?
                     if ((object.userData.kind == "jack_outlet" && o.userData.kind == "outlet")||(object.userData.kind == "jack_inlet" && o.userData.kind == "inlet")) {
-                        object.material.emissive.r = .5;
-                        object.material.emissive.g = .5;
-                        object.material.emissive.b = .5;
+                        if(o.userData.color[0] > 0){
+                            object.userData.color[0] = 3.;
+                        }
+                        if(object.userData.color[1] > 0){
+                            object.userData.color[1] = 3.;
+                        }
+                        if(object.userData.color[2] > 0){
+                            object.userData.color[2] = 3.;
+                        }
                     } else {
-                        object.material.emissive.r = 0;
-                        object.material.emissive.g = 0;
-                        object.material.emissive.b = 0;
+                        if(object.userData.color[0] > 0){
+                            object.userData.color[0] = 1.;
+                        }
+                        if(object.userData.color[1] > 0){
+                            object.userData.color[1] = 1.;
+                        }
+                        if(object.userData.color[2] > 0){
+                            object.userData.color[2] = 1.;
+                        }
                     }
                 }
             }
