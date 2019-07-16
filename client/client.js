@@ -899,10 +899,11 @@ function render() {
 
     intersectObjects(controller1);
     intersectObjects(controller2);
-
-    updateInstances();
+    if(!grabbingC1 && !grabbingC2){
+        updateInstances();
+    }
     if(grabbingC1 || grabbingC2){
-        //updateInstances();
+        updateInstances();
         if(grabbingC1){
             updateInstances(controller1);
         }
