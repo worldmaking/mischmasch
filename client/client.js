@@ -377,7 +377,7 @@ async function init() {
     scene.add(camera)
     camera.position.set(0, 1.5, 0)
 
-    //world.add(instMeshes);
+    world.add(instMeshes);
 
     /// instanceBox
     {
@@ -1050,17 +1050,27 @@ function updateInstances(recurMeshes=instMeshes){
                 j+=3;
                 k+=4;
 
-                if(updatingC1) {
-                    grabbedInstances += tempMeshes.length;
-                    maxInstances += tempMeshes.length;
+                /*if(updatingC1) {
+                    grabbedInstances++;
+                    maxInstances++;
                 }
                 else if(updatingC2) {
-                    grabbedInstances2 += tempMeshes.length;
-                    maxInstances += tempMeshes.length;
+                    grabbedInstances2++;
+                    maxInstances++;
                 }else{
-                    maxInstances += tempMeshes.length;
+                    maxInstances++;
                 }//*/
             }
+        }
+        if(updatingC1) {
+            grabbedInstances += tempMeshes.length;
+            maxInstances += tempMeshes.length;
+        }
+        else if(updatingC2) {
+            grabbedInstances2 += tempMeshes.length;
+            maxInstances += tempMeshes.length;
+        }else if(recurMeshes != instMeshes){
+            maxInstances += tempMeshes.length;
         }
     }
 
