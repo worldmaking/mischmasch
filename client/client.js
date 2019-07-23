@@ -199,8 +199,11 @@ let controls;
 
 let menu = new THREE.Group();
 let instMeshes = new THREE.Group();
+let ghost = new THREE.Group();
 
 let controller1, controller2;
+let ghostController1 = new THREE.Object3D();
+let ghostController1 = new THREE.Object3D();
 let controllerMesh;
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -447,6 +450,7 @@ async function init() {
         } );
 
         instBoxMesh = new THREE.Mesh( instBoxGeometry, material );
+        instBoxMesh.frustumCulled = false;
 	    world.add( instBoxMesh );
     }
     ///
@@ -541,7 +545,11 @@ async function init() {
         // pivot.material = pivot.material.clone();
     }
 
-    
+    ghost.add(blankController1);
+    ghost.add(blankController2);
+    ghost.add(instMeshes);
+    world.add(ghost)
+
     controller1.userData.thumbpadDX = 0;
     controller1.userData.thumbpadDY = 0;
 
@@ -586,10 +594,10 @@ async function init() {
     let uvscale = 2;
     for ( let i = 0, len=uvs.length; i<len; i++ ) { uvs[i] *= uvscale; }
 
-    makeMenu();
+   // makeMenu();
     //Stupid hack just to get it load in the buffer
-    world.add(menu);
-    world.remove(menu);
+   // world.add(menu);
+    //world.remove(menu);
 
 	let floor = new THREE.Mesh(floorGeometry, floorMaterial);
 	// floor.position.y = -0.5;
@@ -840,12 +848,23 @@ function render() {
 
     updateDirty();
 
-    // make sure all objects' matrices are up to date (TODO: might not be needed?)
+    // ? make sure all objects' matrices are up to date (TODO: might not be needed?)
     scene.updateMatrixWorld();
 
     for (let cable of allCables) {
         cable.update();
     }
+
+    let blankPos = new THREE.Vector3();
+    let blankQuat = new THREE.Quaternion();
+    ghostController1.position.x = controller1.getWorldPosition(blankPos).x;
+    ghostController1.position.y = controller1.getWorldPosition(blankPos).y;
+    ghostController1.position.z = controller1.getWorldPosition(blankPos).z;
+    
+    ghostController1.quaternion.x = controller1.getWorldQuaternion(blankQuat).x;
+    ghostController1.quaternion.y = controller1.getWorldQuaternion(blankQuat).y;
+    ghostController1.quaternion.z = controller1.getWorldQuaternion(blankQuat).z;
+    ghostController1.quaternion.w = controller1.getWorldQuaternion(blankQuat).w;
 
     //Objects
     cleanIntersected();
@@ -899,21 +918,7 @@ function render() {
 
     intersectObjects(controller1);
     intersectObjects(controller2);
-    if(!grabbingC1 && !grabbingC2){
-        updateInstances();
-    }
-    if(grabbingC1 || grabbingC2){
-        updateInstances();
-        if(grabbingC1){
-            updateInstances(controller1);
-        }
-        if(grabbingC2){
-            updateInstances(controller2);
-        }
-    }
     
-
-
     var time = performance.now();
     let delta = ( time - lastTime ) / 5000;
     lastTime = time;
@@ -939,254 +944,6 @@ function render() {
 
     stats.end();
 }
-
-
-
-let boxGeom = new THREE.BoxGeometry(1,1,1);
-let boxMat = new THREE.MeshStandardMaterial();
-let thru = false;
-
-function updateInstances(recurMeshes=instMeshes){
-
-    if(recurMeshes == instMeshes){ 
-        maxInstances = 0;
-    }
-    else if(recurMeshes == controller1){ 
-        grabbedInstances = 0;
-        updatingC1 = true;
-    }else if(recurMeshes == controller2){
-        grabbedInstances2 = 0;
-        updatingC2 = true;
-    }
-    let tempMeshes = recurMeshes.children;
-    let pos = new THREE.Vector3();
-    let orient = new THREE.Quaternion();
-    //let groupTest = new THREE.Group();
-    if(recurMeshes != instMeshes && recurMeshes != controller1 && recurMeshes != controller2 && recurMeshes != menu){
-        for(let i=0, d=maxInstances, j=maxInstances*3, k=maxInstances*4; i < tempMeshes.length; i++, d++, j+=3, k+=4){
-            if(tempMeshes != undefined && thru == true){
-
-                // instBoxLocationAttr.array[j] = tempMeshes[i].position.x;
-                // instBoxLocationAttr.array[j+1] = tempMeshes[i].position.y;
-                // instBoxLocationAttr.array[j+2] = tempMeshes[i].position.z;
-
-                instBoxLocationAttr.array[j] = tempMeshes[i].getWorldPosition(pos).x;
-                instBoxLocationAttr.array[j+1] = tempMeshes[i].getWorldPosition(pos).y;
-                instBoxLocationAttr.array[j+2] = tempMeshes[i].getWorldPosition(pos).z;
-
-
-                instBoxOrientationAttr.array[k] = tempMeshes[i].getWorldQuaternion(orient).x;
-                instBoxOrientationAttr.array[k+1] = tempMeshes[i].getWorldQuaternion(orient).y;
-                instBoxOrientationAttr.array[k+2] = tempMeshes[i].getWorldQuaternion(orient).z;
-                instBoxOrientationAttr.array[k+3] = tempMeshes[i].getWorldQuaternion(orient).w;
-
-                // instBoxOrientationAttr.array[k] = tempMeshes[i].quaternion.x;
-                // instBoxOrientationAttr.array[k+1] = tempMeshes[i].quaternion.y;
-                // instBoxOrientationAttr.array[k+2] = tempMeshes[i].quaternion.z;
-                // instBoxOrientationAttr.array[k+3] = tempMeshes[i].quaternion.w;
-
-                // instBoxScaleAttr.array[j] = tempMeshes[i].geometry.parameters.width;
-                // instBoxScaleAttr.array[j+1] = tempMeshes[i].geometry.parameters.height;
-                // instBoxScaleAttr.array[j+2] = tempMeshes[i].geometry.parameters.depth;
-
-                instBoxShapeAttr.array[d] = tempMeshes[i].userData.shape;
-
-                if(tempMeshes[i].userData.shape > 0){
-                    instBoxScaleAttr.array[j] = (tempMeshes[i].scale.x)/2.0;
-                    instBoxScaleAttr.array[j+1] = (tempMeshes[i].scale.y)/2.0;
-                    instBoxScaleAttr.array[j+2] = (tempMeshes[i].scale.z);
-                }else{
-                    instBoxScaleAttr.array[j] = tempMeshes[i].scale.x;
-                    instBoxScaleAttr.array[j+1] = tempMeshes[i].scale.y;
-                    instBoxScaleAttr.array[j+2] = tempMeshes[i].scale.z;
-                }
-
-                if(recurMeshes.userData.menu || recurMeshes.parent.userData.menu){ // ? this statement may need to be fixed for objects with more then 2 layers of children from the module's null object
-                    instBoxScaleAttr.array[j] = instBoxScaleAttr.array[j] * menuScaleSize;
-                    instBoxScaleAttr.array[j+1] = instBoxScaleAttr.array[j+1] * menuScaleSize;
-                    instBoxScaleAttr.array[j+2] = instBoxScaleAttr.array[j+2] * menuScaleSize;
-                }
-
-                instBoxColorAttr.array[k] = tempMeshes[i].userData.color[0];
-                instBoxColorAttr.array[k+1] = tempMeshes[i].userData.color[1];
-                instBoxColorAttr.array[k+2] = tempMeshes[i].userData.color[2];
-                instBoxColorAttr.array[k+3] = tempMeshes[i].userData.color[3];
-            }
-        }
-    }else{
-        //console.log("Initiall recursive call");
-        for(let i=0, d=maxInstances, j=maxInstances*3, k=maxInstances*4; i < tempMeshes.length; i++){
-            if(tempMeshes != undefined && tempMeshes[i].userData.cable){
-
-                console.log("Cables instancing");
-
-                instBoxLocationAttr.array[j] = tempMeshes[i].getWorldPosition(pos).x;
-                instBoxLocationAttr.array[j+1] = tempMeshes[i].getWorldPosition(pos).y;
-                instBoxLocationAttr.array[j+2] = tempMeshes[i].getWorldPosition(pos).z;
-
-                instBoxOrientationAttr.array[k] = tempMeshes[i].getWorldQuaternion(orient).x;
-                instBoxOrientationAttr.array[k+1] = tempMeshes[i].getWorldQuaternion(orient).y;
-                instBoxOrientationAttr.array[k+2] = tempMeshes[i].getWorldQuaternion(orient).z;
-                instBoxOrientationAttr.array[k+3] = tempMeshes[i].getWorldQuaternion(orient).w;
-
-                instBoxShapeAttr.array[d] = tempMeshes[i].userData.shape;
-
-                if(tempMeshes[i].userData.shape > 0){
-                    instBoxScaleAttr.array[j] = (tempMeshes[i].scale.x)/2.0;
-                    instBoxScaleAttr.array[j+1] = (tempMeshes[i].scale.y)/2.0;
-                    instBoxScaleAttr.array[j+2] = (tempMeshes[i].scale.z);
-                }else{
-                    instBoxScaleAttr.array[j] = tempMeshes[i].scale.x;
-                    instBoxScaleAttr.array[j+1] = tempMeshes[i].scale.y;
-                    instBoxScaleAttr.array[j+2] = tempMeshes[i].scale.z;
-                }
-
-                instBoxColorAttr.array[k] = tempMeshes[i].userData.color[0];
-                instBoxColorAttr.array[k+1] = tempMeshes[i].userData.color[1];
-                instBoxColorAttr.array[k+2] = tempMeshes[i].userData.color[2];
-                instBoxColorAttr.array[k+3] = tempMeshes[i].userData.color[3];
-
-                d++;
-                j+=3;
-                k+=4;
-
-                /*if(updatingC1) {
-                    grabbedInstances++;
-                    maxInstances++;
-                }
-                else if(updatingC2) {
-                    grabbedInstances2++;
-                    maxInstances++;
-                }else{
-                    maxInstances++;
-                }//*/
-            }
-        }
-        if(updatingC1) {
-            grabbedInstances += tempMeshes.length;
-            maxInstances += tempMeshes.length;
-        }
-        else if(updatingC2) {
-            grabbedInstances2 += tempMeshes.length;
-            maxInstances += tempMeshes.length;
-        }else if(recurMeshes != instMeshes){
-            maxInstances += tempMeshes.length;
-        }
-    }
-
-    //update maxInstances if this isn't the first call
-    if(recurMeshes != controller1 && recurMeshes != controller2){
-        if(updatingC1) {
-            grabbedInstances += tempMeshes.length;
-            maxInstances += tempMeshes.length;
-        }
-        else if(updatingC2) {
-            grabbedInstances2 += tempMeshes.length;
-            maxInstances += tempMeshes.length;
-        }else if(recurMeshes != instMeshes){
-            maxInstances += tempMeshes.length;
-        }
-    }
-
-    //recursive call (endcase is tempMeshes.length == 0)
-    for(let i = 0; i < tempMeshes.length; i++){
-        //console.log(tempMeshes[i]);
-        if(((recurMeshes == controller1 || recurMeshes == controller2) && i == 2) || (recurMeshes != controller1 && recurMeshes != controller2)){ //this if may be redundant
-            thru = true;
-            updateInstances(tempMeshes[i]);
-        }
-    }
-
-    instMeshes.updateMatrixWorld(true);
-
-    //reset update flags for each contoller
-    if(recurMeshes == controller1){
-        updatingC1 = false;
-        //maxInstances -= grabbedInstances;
-    } else if(recurMeshes == controller2){
-        updatingC2 = false;
-        //maxInstances -= grabbedInstances2;
-    }
-    thru = false;
-    
-}
-
-/*function updateGrabbedInstances(recurMeshes=controller1){
-    if(recurMeshes == controller1){ 
-        grabbedInstances = 0;
-        updatingC1 = true;
-    }else if(recurMeshes == controller2){
-        grabbedInstances2 = 0;
-        updatingC2 = true;
-    }
-    let tempMeshes = recurMeshes.children;
-   // console.log(tempMeshes);
-    let pos = new THREE.Vector3();
-    let orient = new THREE.Quaternion();
-    if(recurMeshes != controller1 && recurMeshes != controller2){
-        for(let i=0, d=maxInstances, j=maxInstances*3, k=maxInstances*4; i < tempMeshes.length; i++, d++, j+=3, k+=4){
-            if(tempMeshes != undefined && thru == true){
-                instBoxLocationAttr.array[j] = tempMeshes[i].getWorldPosition(pos).x;
-                instBoxLocationAttr.array[j+1] = tempMeshes[i].getWorldPosition(pos).y;
-                instBoxLocationAttr.array[j+2] = tempMeshes[i].getWorldPosition(pos).z;
-
-                instBoxOrientationAttr.array[k] = tempMeshes[i].getWorldQuaternion(orient).x;
-                instBoxOrientationAttr.array[k+1] = tempMeshes[i].getWorldQuaternion(orient).y;
-                instBoxOrientationAttr.array[k+2] = tempMeshes[i].getWorldQuaternion(orient).z;
-                instBoxOrientationAttr.array[k+3] = tempMeshes[i].getWorldQuaternion(orient).w;
-
-                instBoxShapeAttr.array[d] = tempMeshes[i].userData.shape;
-
-                if(tempMeshes[i].userData.shape > 0){
-                    instBoxScaleAttr.array[j] = (tempMeshes[i].scale.x)/2.0;
-                    instBoxScaleAttr.array[j+1] = (tempMeshes[i].scale.y)/2.0;
-                    instBoxScaleAttr.array[j+2] = (tempMeshes[i].scale.z);
-                }else{
-                    instBoxScaleAttr.array[j] = tempMeshes[i].scale.x;
-                    instBoxScaleAttr.array[j+1] = tempMeshes[i].scale.y;
-                    instBoxScaleAttr.array[j+2] = tempMeshes[i].scale.z;
-                }
-
-                instBoxColorAttr.array[k] = tempMeshes[i].userData.color[0];
-                instBoxColorAttr.array[k+1] = tempMeshes[i].userData.color[1];
-                instBoxColorAttr.array[k+2] = tempMeshes[i].userData.color[2];
-                instBoxColorAttr.array[k+3] = tempMeshes[i].userData.color[3];
-            }
-        }
-    }
-
-    //update grabbedInstances if this isn't the first call
-    if(recurMeshes != controller1 && recurMeshes != controller2){
-        if(updatingC1) {
-            grabbedInstances += tempMeshes.length;
-            maxInstances += tempMeshes.length;
-        }
-        else {
-            grabbedInstances2 += tempMeshes.length;
-            maxInstances += tempMeshes.length;
-        }
-    }
-
-    //recursive call (endcase is tempMeshes.length == 0)
-    for(let i = 0; i < tempMeshes.length; i++){
-        if((recurMeshes == controller1 || recurMeshes == controller2) && i == 2 || (recurMeshes != controller1 && recurMeshes != controller2)){
-            thru = true;
-            updateGrabbedInstances(tempMeshes[i]);
-        }
-    }
-
-    //reset update flags for each contoller
-    if(recurMeshes == controller1){
-        updatingC1 = false;
-        //maxInstances -= grabbedInstances;
-    } else if(recurMeshes == controller2){
-        updatingC2 = false;
-        //maxInstances -= grabbedInstances2;
-    }
-    thru = false;
-    
-
-}*/
 
 function onGrips(event) {
     let controller = event.target;

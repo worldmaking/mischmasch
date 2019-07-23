@@ -44,12 +44,14 @@ function enactDelta(delta) {
             }
         }
     }
-    updateInstances();
+    //updateInstances();
 }
 
 /* 
 *  { op:"newnode", path:"x", kind:"noise", pos:[], orient:[], ...properties }
 */
+let boxGeom = new THREE.BoxGeometry(1,1,1);
+let boxMat = new THREE.MeshStandardMaterial();
 
 function enactDeltaNewNode(delta) {
     // create new object etc.
@@ -513,7 +515,7 @@ function updateDirtyNode(dirtyPath) {
         }
     }
     // cleansed:
-    updateInstances();
+   // updateInstances();
     parentNode.userData.dirty = false;
 }
 

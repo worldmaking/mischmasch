@@ -1,10 +1,17 @@
 function onSelectStart(event) {
     let controller = event.target;
+
     let intersections = getIntersections(controller, 0, 0, -1);
     //instMeshes.remove(menu);
     if (intersections.length < 1) return;
     let intersection = intersections[0];
     let object = intersection.object;
+    
+    if(controller == controller1){
+        controller = ghostController1;
+    }else{
+        controller = ghostController2;
+    }
     console.log(object)
    
     if (object && object.userData.moveable) {
@@ -41,14 +48,10 @@ function onSelectStart(event) {
         
         controller.userData.selected = object;
         object.userData.originalParent = parent;
-        object.visible = false;
+        object.visible = true;
         controller.add(object); 
         instMeshes.remove(object); //removes from previous parent
-        if(controller == controller1){
-            grabbingC1 = true;
-        }else{
-            grabbingC2 = true;
-        }
+
     }
     if (object && !object.userData.moveable) {
 
@@ -102,11 +105,13 @@ function onSelectStart(event) {
 
 function onSelectEnd(event) {
     let controller = event.target;
+
     if(controller == controller1){
-        grabbingC1 = false;
+        controller = ghostController1;
     }else{
-        grabbingC2 = false;
+        controller = ghostController2;
     }
+
     if (controller.userData.selected !== undefined) {
         let object = controller.userData.selected;
         let parent = object.userData.originalParent;
