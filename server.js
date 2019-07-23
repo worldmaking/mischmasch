@@ -39,6 +39,7 @@ let localGraph = {
 	arcs: []
 }
 
+
 const MaxAPI = (() => {
     try {Mutation
         return require("max-api");
@@ -267,6 +268,29 @@ wss.on('connection', function(ws, req) {
 });
 
 
+function load_scene(filename) {
+	scenefile = __dirname + '/scene_files/' + filename;
+	//console.log(msg)
+	send_all_clients(JSON.stringify({
+		cmd: "clear_scene",
+		date: Date.now(),
+		data: "clear"
+	}));
+	
+	localGraph = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
+	// turn this into deltas:
+	let deltas = got.deltasFromGraph(localGraph, []);
+	//console.log(deltas)
+	console.log(deltas)
+	send_all_clients(JSON.stringify({
+		cmd: "deltas",
+		date: Date.now(),
+		data: deltas
+	}));
+
+	return deltas;
+}
+
 
 function handlemessage(msg, sock, id) {
 
@@ -411,31 +435,12 @@ function handlemessage(msg, sock, id) {
 			// JSON not streamable format so close out the history file 
 			//fs.appendFileSync(OTHistoryFile, ']', "utf-8")
 
-
-
-			scenefile = __dirname + '/scene_files/scene_blank.json'
-			send_all_clients(JSON.stringify({
-				cmd: "clear_scene",
-				date: Date.now(),
-				data: "clear"
-			}));
-
-			localGraph = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
-			// turn this into deltas:
-			let deltas = got.deltasFromGraph(localGraph, []);
-
+			let deltas = load_scene("scene_blank.json")
 			// create new history file & add scene as header
-			OTHistoryFile = __dirname + '/histories/OT_' + Date.now() + '.json'
-			let header = {}
-			header['header'] = deltas
-			//fs.writeFileSync(OTHistoryFile, '[' + JSON.stringify(header), "utf-8")
-
-			send_all_clients(JSON.stringify({
-				cmd: "deltas",
-				date: Date.now(),
-				data: deltas
-			}));
 			//OTHistoryFile = __dirname + '/histories/OT_' + Date.now() + '.json'
+			// let header = {}
+			// header['header'] = deltas
+			//fs.writeFileSync(OTHistoryFile, '[' + JSON.stringify(header), "utf-8")
 		} break;
 		case "get_scene": {
 			
@@ -467,24 +472,7 @@ function handlemessage(msg, sock, id) {
 		} break;
 
 		case "loadScene": {
-			scenefile = __dirname + '/scene_files/' + msg.data
-			//console.log(msg)
-			send_all_clients(JSON.stringify({
-				cmd: "clear_scene",
-				date: Date.now(),
-				data: "clear"
-			}));
-
-			localGraph = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
-			// turn this into deltas:
-			let deltas = got.deltasFromGraph(localGraph, []);
-			//console.log(deltas)
-			console.log(deltas)
-			send_all_clients(JSON.stringify({
-				cmd: "deltas",
-				date: Date.now(),
-				data: deltas
-			}));
+			load_scene(msg.data);
 		} break;
 
 		case "user_pose": {
@@ -521,3 +509,5 @@ server.listen(8080, function() {
 	console.log(`vr view on http://localhost:${server.address().port}/index.html`);
 });
 
+//// TMP HACK
+load_scene("scene_rich.json")
