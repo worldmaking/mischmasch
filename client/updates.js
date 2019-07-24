@@ -56,8 +56,8 @@ let boxMat = new THREE.MeshStandardMaterial();
 function enactDeltaNewNode(delta) {
     // create new object etc.
 
-    //let parent = instMeshes;
-    let parent = (delta.menu == true) ? menu : instMeshes;  
+    //let parent = ghostMeshes;
+    let parent = (delta.menu == true) ? menu : ghostMeshes;  
 
     // first, find parent.
     let path = delta.path;
@@ -238,15 +238,15 @@ function enactDeltaDeleteNode(delta) {
     }
     //console.log("Delete: ", delta)
     //Removing from the world
-    for(let i=0; i<instMeshes.children.length; i++){
-        if(delta.path.includes(instMeshes.children[i].userData.path)){
-            instMeshes.remove(instMeshes.children[i]);
+    for(let i=0; i<ghostMeshes.children.length; i++){
+        if(delta.path.includes(ghostMeshes.children[i].userData.path)){
+            ghostMeshes.remove(ghostMeshes.children[i]);
         }
     }
 
-    // for(let i=0; i<instMeshes.children.length; i++){
-    //     if(instMeshes.children[i].name === kind){
-    //         instMeshes.remove(instMeshes.children[i])
+    // for(let i=0; i<ghostMeshes.children.length; i++){
+    //     if(ghostMeshes.children[i].name === kind){
+    //         ghostMeshes.remove(ghostMeshes.children[i])
 
     //     }
     // }
@@ -321,8 +321,8 @@ function enactDeltaObjectPos(delta) {
     let parent = object.userData.originalParent;
     if (parent == undefined) parent = object.parent;
     // temporarily move object to world space to set the position:
-    instMeshes.add(object);
-   // console.log(instMeshes)
+    ghostMeshes.add(object);
+   // console.log(ghostMeshes)
     // set the position & update matrices:
     object.position.fromArray(delta.to);
     object.matrixWorldNeedsUpdate = true;
@@ -347,7 +347,7 @@ function enactDeltaObjectOrient(delta) {
     let parent = object.userData.originalParent;
     if (parent == undefined) parent = object.parent;
     // temporarily move object to world space to set the position:
-    instMeshes.add(object);
+    ghostMeshes.add(object);
     // set the position & update matrices:
     object.quaternion.fromArray(delta.to);
     object.matrixWorldNeedsUpdate = true;

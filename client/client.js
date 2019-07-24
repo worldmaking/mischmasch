@@ -198,7 +198,7 @@ let world = new THREE.Group();
 let controls;
 
 let menu = new THREE.Group();
-let instMeshes = new THREE.Group();
+let ghostMeshes = new THREE.Group();
 let ghost = new THREE.Group();
 
 let controller1, controller2;
@@ -380,7 +380,7 @@ async function init() {
     scene.add(camera)
     camera.position.set(0, 1.5, 0)
 
-    world.add(instMeshes);
+    //world.add(ghostMeshes);
 
     /// instanceBox
     {
@@ -547,7 +547,7 @@ async function init() {
 
     ghost.add(blankController1);
     ghost.add(blankController2);
-    ghost.add(instMeshes);
+    ghost.add(ghostMeshes);
     world.add(ghost)
 
     controller1.userData.thumbpadDX = 0;
@@ -671,8 +671,8 @@ class Cable {
         // this.dstJackMesh = new THREE.Mesh(plug_geometry, inlet_material);
         this.srcJackMesh = new THREE.Mesh(boxGeom, boxMat);
         this.dstJackMesh = new THREE.Mesh(boxGeom, boxMat);
-        instMeshes.add(this.srcJackMesh);
-        instMeshes.add(this.dstJackMesh);
+        ghostMeshes.add(this.srcJackMesh);
+        ghostMeshes.add(this.dstJackMesh);
         this.srcJackMesh.userData.kind = "jack_outlet";
         this.srcJackMesh.userData.moveable = true;
         this.srcJackMesh.userData.selectable = true;
@@ -963,7 +963,7 @@ function onDocumentMouseDown(event){
     if(event.button == 2){
 
     raycaster.setFromCamera(mouse, camera);
-    intersects = raycaster.intersectObjects(instMeshes.children, true);
+    intersects = raycaster.intersectObjects(ghostMeshes.children, true);
 
         if ( intersects.length > 0 ) {
             console.log("Intersected");
