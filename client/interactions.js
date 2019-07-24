@@ -2,7 +2,7 @@ function onSelectStart(event) {
     let controller = event.target;
 
     let intersections = getIntersections(controller, 0, 0, -1);
-    //instMeshes.remove(menu);
+    //ghostMeshes.remove(menu);
     if (intersections.length < 1) return;
     let intersection = intersections[0];
     let object = intersection.object;
@@ -50,7 +50,7 @@ function onSelectStart(event) {
         object.userData.originalParent = parent;
         object.visible = true;
         controller.add(object); 
-        instMeshes.remove(object); //removes from previous parent
+        ghostMeshes.remove(object); //removes from previous parent
 
     }
     if (object && !object.userData.moveable) {
@@ -67,12 +67,6 @@ function onSelectStart(event) {
             //object.scale.set(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT);
             controller.add(object); //removes from previous parent
 
-            if(controller == controller1){
-                grabbingC1 = true;
-            }else{
-                grabbingC2 = true;
-            }
-
         } else if (kind == "inlet") {
             //...
             let cable = new Cable(null, object);
@@ -83,11 +77,6 @@ function onSelectStart(event) {
             //object.scale.set(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT);
             controller.add(object); //removes from previous parent
 
-            if(controller == controller1){
-                grabbingC1 = true;
-            }else{
-                grabbingC2 = true;
-            }
         }
         controller.userData.selected = object;
     }
@@ -95,7 +84,7 @@ function onSelectStart(event) {
     if(object && object.userData.menu == true && createObjFromMenu == true){
         copyModule(controller, object);
         createObjFromMenu = false;
-        instMeshes.remove(menu);
+        ghostMeshes.remove(menu);
     }
 
     controller.userData.rotation = controller.rotation.clone();
@@ -116,11 +105,11 @@ function onSelectEnd(event) {
         let object = controller.userData.selected;
         let parent = object.userData.originalParent;
         /*if (object.userData.kind == "jack_outlet" || object.userData.kind == "jack_inlet") {
-            if (parent == undefined) parent = instMeshes;
+            if (parent == undefined) parent = ghostMeshes;
         } else{
-            if (parent == undefined) parent = instMeshes; //object.parent;
+            if (parent == undefined) parent = ghostMeshes; //object.parent;
         }*/
-        if (parent == undefined) parent = instMeshes;
+        if (parent == undefined) parent = ghostMeshes;
         controller.userData.selected = undefined;
        
         if (object && object.userData.moveable) {
@@ -194,7 +183,7 @@ function onSelectEnd(event) {
                         // object.scale.set(1,1,1);
                         // object.position.set(0, 0.3, 0);
                         object.visible = true;
-                        instMeshes.add(object);
+                        ghostMeshes.add(object);
                         // console.log("<<<<<ObjectCheck>>>>>");
                         // console.log(object);
                         // console.log("<<<<<----------->>>>>");
@@ -213,7 +202,7 @@ function onSelectEnd(event) {
                 let fromOri = object.userData.fromOri;
 
             
-                instMeshes.add(object);
+                ghostMeshes.add(object);
                 object.visible = true;
                 outgoingDeltas.push(
                     { op:"propchange",name:"pos",  path:path, from:[fromPos.x, fromPos.y, fromPos.z], to:[pos.x, pos.y, pos.z] }, 
@@ -242,7 +231,7 @@ function onMenuSpawn(event){
         menu.position.fromArray([headsetPos.x, headsetPos.y + .25, headsetPos.z]);
         menu.userData.color = [Math.random(), Math.random(), Math.random(), 1];
         //menu.rotation.fromArray([0, -controller.rotation.y, 0]);
-        instMeshes.add(menu);
+        ghostMeshes.add(menu);
         createObjFromMenu = true;
     }
     //updateInstances();
@@ -272,7 +261,7 @@ function onSpawn(event) {
             //console.log("Spawnning again");
         }
     }
-    instMeshes.remove(menu);
+    ghostMeshes.remove(menu);
     createObjFromMenu = false;
 }
 /**
@@ -445,8 +434,8 @@ function getIntersections(controller, x, y, z, offset =0) {
     // 2nd arg is recursive (recursive breaks grabbing)
 
    
-    let intersections = raycaster.intersectObjects(instMeshes.children, true);
-    // let intersections1 = raycaster.intersectObjects(instMeshes.children, true);
+    let intersections = raycaster.intersectObjects(ghostMeshes.children, true);
+    // let intersections1 = raycaster.intersectObjects(ghostMeshes.children, true);
     // //console.log(intersections1)
     // for(let i =0; i < intersections1.length; i++){
     //     intersections.push(intersections1[i]);
@@ -470,10 +459,10 @@ function getIntersectionsWithKind(controller, x, y, z, offset =0, kind) {
     // argument here is just any old array of objects
     // 2nd arg is recursive (recursive breaks grabbing)
 
-    //let intersections = raycaster.intersectObjects(instMeshes.children, true);
+    //let intersections = raycaster.intersectObjects(ghostMeshes.children, true);
     //let intersections = raycaster.intersectObjects(world.children, true);
-    let intersections = raycaster.intersectObjects(instMeshes.children, true);
-    // let intersections1 = raycaster.intersectObjects(instMeshes.children, true);
+    let intersections = raycaster.intersectObjects(ghostMeshes.children, true);
+    // let intersections1 = raycaster.intersectObjects(ghostMeshes.children, true);
 
     // for(let i =0; i < intersections1.length; i++){
     //     intersections.push(intersections1[i]);
