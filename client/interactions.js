@@ -1,18 +1,13 @@
 function onSelectStart(event) {
-    let controller = event.target;
+    let controller = (event.target==controller1) ? ghostController1 : ghostController2;
 
     let intersections = getIntersections(controller, 0, 0, -1);
     //ghostMeshes.remove(menu);
     if (intersections.length < 1) return;
     let intersection = intersections[0];
     let object = intersection.object;
-    
-    if(controller == controller1){
-        controller = ghostController1;
-    }else{
-        controller = ghostController2;
-    }
-    console.log(object)
+
+   // console.log(object)
    
     if (object && object.userData.moveable) {
 
@@ -37,7 +32,6 @@ function onSelectStart(event) {
        if(object.userData.backPanel == true){
             object.parent.userData.moveable = object.userData.moveable;
             object = object.parent;
-            console.log(object)
        }
    
         tempMatrix.getInverse(controller.matrixWorld);
@@ -48,9 +42,9 @@ function onSelectStart(event) {
         
         controller.userData.selected = object;
         object.userData.originalParent = parent;
-        object.visible = true;
         controller.add(object); 
         ghostMeshes.remove(object); //removes from previous parent
+        console.log(controller)
 
     }
     if (object && !object.userData.moveable) {
@@ -62,7 +56,7 @@ function onSelectStart(event) {
             // now set object = line.dstJackMesh
             let cable = new Cable(object, null);
             object = cable.dstJackMesh;
-            object.visible = false;
+          //  object.visible = false;
             object.position.z = -0.07;
             //object.scale.set(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT);
             controller.add(object); //removes from previous parent
@@ -72,7 +66,7 @@ function onSelectStart(event) {
             let cable = new Cable(null, object);
 
             object = cable.srcJackMesh;
-            object.visible = false;
+           // object.visible = false;
             object.position.z = -0.07;
             //object.scale.set(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT);
             controller.add(object); //removes from previous parent
@@ -93,13 +87,7 @@ function onSelectStart(event) {
 }
 
 function onSelectEnd(event) {
-    let controller = event.target;
-
-    if(controller == controller1){
-        controller = ghostController1;
-    }else{
-        controller = ghostController2;
-    }
+    let controller = (event.target==controller1) ? ghostController1 : ghostController2;
 
     if (controller.userData.selected !== undefined) {
         let object = controller.userData.selected;
@@ -182,7 +170,7 @@ function onSelectEnd(event) {
                         // console.log("Cable call");
                         // object.scale.set(1,1,1);
                         // object.position.set(0, 0.3, 0);
-                        object.visible = true;
+                        //object.visible = true;
                         ghostMeshes.add(object);
                         // console.log("<<<<<ObjectCheck>>>>>");
                         // console.log(object);
@@ -201,9 +189,10 @@ function onSelectEnd(event) {
                 let fromPos = object.userData.fromPos;
                 let fromOri = object.userData.fromOri;
 
+                console.log(object)
             
                 ghostMeshes.add(object);
-                object.visible = true;
+                //object.visible = true;
                 outgoingDeltas.push(
                     { op:"propchange",name:"pos",  path:path, from:[fromPos.x, fromPos.y, fromPos.z], to:[pos.x, pos.y, pos.z] }, 
                     { op:"propchange",  name:"orient", path:path, from:[fromOri._x, fromOri._y, fromOri._z, fromOri._w], to:[orient._x, orient._y, orient._z, orient._w] }
@@ -528,6 +517,12 @@ function controllerGamepadControls(controller){
             // touch release event
             //console.log("release")
         }
+    }
+
+    if(controller == controller1){
+        controller = ghostController1;
+    }else{
+        controller = ghostController2;
     }
 
     if (controller.userData.selected) {

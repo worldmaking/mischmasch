@@ -177,16 +177,18 @@ function enactDeltaNewNode(delta) {
 
         if (delta.pos) {
             container.position.fromArray(delta.pos);
-            container.userData.fromPos  = delta.pos;
+            container.userData.fromPos = delta.pos;
         } else {
             container.position = parent.position.clone();
+            container.userData.fromPos = parent.position.clone();
         }
 
         if (delta.orient) {
             container.quaternion.fromArray(delta.orient);
-            container.userData.fromOri  = delta.orient;
+            container.userData.fromOri = delta.orient;
         } else {
             container.quaternion = parent.quaternion.clone();
+            container.userData.fromOri = parent.quaternion.clone();
         }
 
         if(delta.menu == true){
@@ -312,7 +314,6 @@ function enactDeltaObjectPos(delta) {
     // assert(delta.op == "propchange")
     // assert(delta.name == "pos")
     let object = getObjectByPath(delta.path);
-
     // assert (object, "path not found")
     object.userData.fromPos = delta.to;
     // TODO: assert delta.from is roughly equal to current object.position
