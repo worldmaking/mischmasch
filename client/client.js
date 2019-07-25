@@ -199,11 +199,13 @@ let controls;
 
 let menu = new THREE.Group();
 let ghostMeshes = new THREE.Group();
+let ghostCables = new THREE.Group();
+let ghostLabels = new THREE.Group();
 let ghost = new THREE.Group();
 
 let controller1, controller2;
 let ghostController1 = new THREE.Object3D();
-let ghostController1 = new THREE.Object3D();
+let ghostController2 = new THREE.Object3D();
 let controllerMesh;
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -545,8 +547,8 @@ async function init() {
         // pivot.material = pivot.material.clone();
     }
 
-    ghost.add(blankController1);
-    ghost.add(blankController2);
+    ghost.add(ghostController1);
+    ghost.add(ghostController2);
     ghost.add(ghostMeshes);
     world.add(ghost)
 
@@ -671,8 +673,8 @@ class Cable {
         // this.dstJackMesh = new THREE.Mesh(plug_geometry, inlet_material);
         this.srcJackMesh = new THREE.Mesh(boxGeom, boxMat);
         this.dstJackMesh = new THREE.Mesh(boxGeom, boxMat);
-        ghostMeshes.add(this.srcJackMesh);
-        ghostMeshes.add(this.dstJackMesh);
+        ghostCables.add(this.srcJackMesh);
+        ghostCables.add(this.dstJackMesh);
         this.srcJackMesh.userData.kind = "jack_outlet";
         this.srcJackMesh.userData.moveable = true;
         this.srcJackMesh.userData.selectable = true;
