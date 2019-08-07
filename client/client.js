@@ -608,10 +608,10 @@ async function init() {
     
     //Add Text for now
     for(let i =0; i < 1; i++){
-        // createLabel('Hello 00000',"center", Math.random(), Math.random(), 0.002);
+        createLabel('Hello 00000',"center", Math.random(), Math.random(), 0.002);
     }
 
-    // createLabel('what up1!', "center", 0.5, 2);
+     createLabel('what up1!', "center", 0.5, 2);
 
     for(let i =0, j=0; i < 2; i++, j+=3){
         let ori = new THREE.Quaternion();
@@ -1099,6 +1099,12 @@ function handlemessage(msg, sock) {
                 console.log("Created Controller");
             }
             // now copy msg.pose pos/orient etc. into other
+            // ghostController1.position.copy(msg.pose.controller1.pos);
+            // ghostController1.quaternion._x = msg.pose.controller1.orient._x;
+            // ghostController1.quaternion._y = msg.pose.controller1.orient._y;
+            // ghostController1.quaternion._z = msg.pose.controller1.orient._z;
+            // ghostController1.quaternion._w = msg.pose.controller1.orient._w;
+            // ghostController1.matrixWorldNeedsUpdate = true;
 
             other.controller1.position.copy(msg.pose.controller1.pos);
             other.controller1.quaternion._x = msg.pose.controller1.orient._x;
