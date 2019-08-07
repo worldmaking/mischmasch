@@ -67,6 +67,7 @@ function enactDeltaNewNode(delta) {
         parentpath = path.substring(0, pathlastdot);
         name = path.substring(pathlastdot+1);
         parent = getObjectByPath(parentpath);
+
     } else {
         name = delta.path;
     }
@@ -173,8 +174,7 @@ function enactDeltaNewNode(delta) {
         //     delete container.userData.moveable;
         //     delete container.userData.turnable;
         // }
-
-
+        
         if (delta.pos) {
             container.position.fromArray(delta.pos);
             container.userData.fromPos = delta.pos;

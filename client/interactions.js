@@ -1,13 +1,13 @@
 function onSelectStart(event) {
     let controller = (event.target==controller1) ? ghostController1 : ghostController2;
-
     let intersections = getIntersections(controller, 0, 0, -1);
     //ghostMeshes.remove(menu);
+    //console.log(intersections)
     if (intersections.length < 1) return;
     let intersection = intersections[0];
+
     let object = intersection.object;
 
-   // console.log(object)
    
     if (object && object.userData.moveable) {
 
@@ -28,23 +28,24 @@ function onSelectStart(event) {
             }
         }
 
+        // TODO: Backpanel to null object for positioning purposes causes NULL for positions since the null doesnt actually have positions. Need to store the position
 
        if(object.userData.backPanel == true){
             object.parent.userData.moveable = object.userData.moveable;
+            object.parent.position.fromArray([object.position.x,object.position.y,object.position.z]);
             object = object.parent;
        }
-   
+ 
         tempMatrix.getInverse(controller.matrixWorld);
         let parent = object.parent;
         object.matrix.premultiply(parent.matrixWorld);
         object.matrix.premultiply(tempMatrix);
         object.matrix.decompose(object.position, object.quaternion, object.scale);
-        
+
         controller.userData.selected = object;
         object.userData.originalParent = parent;
         controller.add(object); 
         ghostMeshes.remove(object); //removes from previous parent
-        console.log(controller)
 
     }
     if (object && !object.userData.moveable) {
@@ -101,6 +102,7 @@ function onSelectEnd(event) {
         controller.userData.selected = undefined;
        
         if (object && object.userData.moveable) {
+            console.log(object)
             let objPos = new THREE.Vector3();
             object.getWorldPosition(objPos);
             let cable = object.userData.cable
@@ -431,10 +433,10 @@ function getIntersections(controller, x, y, z, offset =0) {
 
     // }
 
-    //console.log(intersections)
     while (intersections.length > 1){ 
         intersections.pop();
-    }
+    } 
+    //console.log(intersections.length)
 
     return intersections;
     
