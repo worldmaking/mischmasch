@@ -79,10 +79,10 @@ connection.addEventListener('message', (data) => {
 		case "patch":	
 		dataGen = JSON.stringify(data)
 		MaxAPI.outlet('toGen', dataGen)
-		//MaxAPI.post(JSON.stringify(dataGen))
-		{
+		
+		MaxAPI.post('line 83 in controller.js', dataGen)
 
-		}break;
+		break;
 
 
 		///////////////////////

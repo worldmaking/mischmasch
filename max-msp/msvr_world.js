@@ -341,11 +341,17 @@ function client(msg){
 	
 	//post(msg)
 	var ot = JSON.parse(msg)
-	outlet(1, ot.cmd)
+	
+	
 	cmd = ot.cmd
+	if (cmd != 'clear_scene'){	
+		outlet(1, ot.cmd)
+	}
+
 
 	switch(cmd){
 		case "clear_scene":
+			post('clear_scene:', cmd)
 			gen_patcher = this.patcher.getnamed("world").subpatcher();
 
 			gen_patcher.apply(function(b) { 

@@ -16,7 +16,7 @@
       "spread_cv":{"_props":{"kind":"inlet", "index":4}},
       "feedback_1":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0.9,"unit":"float"}},
       "feedback_2":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
-      "damping":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
+      "damping":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"flosat"}},
       "spread":{"_props":{"kind":"small_knob","range":[0,400],"taper":"linear","value":100,"unit":"float"}},
       "out":{"_props":{"kind":"outlet","index":0}}
     },
