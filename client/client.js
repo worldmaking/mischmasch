@@ -868,6 +868,16 @@ function render() {
     ghostController1.quaternion.z = controller1.getWorldQuaternion(blankQuat).z;
     ghostController1.quaternion.w = controller1.getWorldQuaternion(blankQuat).w;
 
+    for(let i in controller1.matrixWorld.elements){
+        ghostController1.matrixWorld.elements[i] = controller1.matrixWorld.elements[i];
+    }
+
+    for(let j in controller1.matrix.elements){
+        ghostController1.matrix.elements[j] = controller1.matrix.elements[j];
+    }
+    
+    ghostController1.matrixWorldNeedsUpdate = true;
+
     //Objects
     cleanIntersected();
 

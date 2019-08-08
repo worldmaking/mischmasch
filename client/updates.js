@@ -117,7 +117,6 @@ function enactDeltaNewNode(delta) {
             let c = new THREE.Mesh(boxGeom, boxMat);
             //c.scale.set(0.6,0.2,0.05);
             container.position.set(GEN_GEOM_WIDTH/2, -GEN_GEOM_HEIGHT/2, -GEN_GEOM_DEPTH/2);
-
             // ! This is a special case to make the backplate
             c.userData.path = path+"."+name;
             c.name = name;
