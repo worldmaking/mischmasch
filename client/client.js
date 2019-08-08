@@ -152,12 +152,12 @@ let label_material = new THREE.MeshStandardMaterial({
 
 let generic_material = new THREE.MeshStandardMaterial({
     color: 0x888888,
-    roughness: 0.7,
-    metalness: 0.0,
-    opacity: 0.3,
-    transparent: true,
-    side: THREE.DoubleSide,
-    depthWrite: false,
+   // roughness: 0.7,
+    //metalness: 0.0,
+   // opacity: 1,
+   // transparent: false,
+  //  side: THREE.DoubleSide,
+   // depthWrite: false,
     blending: THREE.AdditiveBlending
 
     
@@ -326,6 +326,8 @@ let mouse = new THREE.Vector2();
 
 //Simple debug hack
 let once = true;
+
+let testCube = new THREE.Mesh(generic_geometry, generic_material);
 
 
 
@@ -550,7 +552,9 @@ async function init() {
     ghost.add(ghostController1);
     ghost.add(ghostController2);
     ghost.add(ghostMeshes);
-    world.add(ghost)
+    world.add(ghost);
+    testCube.position.set(0,1,0);
+    world.add(testCube);
 
     controller1.userData.thumbpadDX = 0;
     controller1.userData.thumbpadDY = 0;
@@ -1037,16 +1041,28 @@ function clearScene() {
 function visualFeedbackSocket() {
     console.log('Creating socket');
     // TODO: Do not hardcode the IP 
-    let vsSocket = new WebSocket('ws://192.168.137.82:8082/');
+    let vsSocket = new WebSocket('ws://192.168.137.82:8083/');
     vsSocket.onopen = function() {
-
-    //   console.log('Socket open.');
-    //   socket.send(JSON.stringify({message: 'What is the meaning of life, the universe and everything?'}));
-    //   console.log('Message sent.')
+        //   console.log('Socket open.');
+        //   socket.send(JSON.stringify({message: 'What is the meaning of life, the universe and everything?'}));
+        //   console.log('Message sent.')
     };
     vsSocket.onmessage = function(message) {
 
-      console.log('Socket server message: ', message);
+     // console.log('Socket server message: ', message.data);
+     let ledJSON = JSON.parse(message.data);
+     let colorVal = ledJSON.LED1;
+
+      xMax = 10;
+      xMin = 0;
+      
+      yMax = 1;
+      yMin = -1;
+      
+      percent = (colorVal - yMin) / (yMax - yMin);
+      // TODO: Clamped to 
+      let vsColorChager = percent * (xMax - xMin) + xMin; 
+
     };
   }
 
