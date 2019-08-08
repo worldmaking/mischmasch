@@ -626,6 +626,8 @@ async function init() {
     // hook up server:
     connect_to_server();
 
+    visualFeedbackSocket();
+
     // now we can start rendering:
     animate();
 
@@ -1031,6 +1033,22 @@ function clearScene() {
 /////////////////////////////////////////////////////
 // Websocket handling
 /////////////////////////////////////////////////////
+
+function visualFeedbackSocket() {
+    console.log('Creating socket');
+    // TODO: Do not hardcode the IP 
+    let vsSocket = new WebSocket('ws://192.168.137.82:8082/');
+    vsSocket.onopen = function() {
+
+    //   console.log('Socket open.');
+    //   socket.send(JSON.stringify({message: 'What is the meaning of life, the universe and everything?'}));
+    //   console.log('Message sent.')
+    };
+    vsSocket.onmessage = function(message) {
+
+      console.log('Socket server message: ', message);
+    };
+  }
 
 
 function connect_to_server() {
