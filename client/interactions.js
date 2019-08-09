@@ -29,19 +29,18 @@ function onSelectStart(event) {
         }
 
         // TODO: Backpanel to null object for positioning purposes causes NULL for positions since the null doesnt actually have positions. Need to store the position
-
        if(object.userData.backPanel == true){
             object.parent.userData.moveable = object.userData.moveable;
-            object.parent.position.fromArray([object.position.x,object.position.y,object.position.z]);
+            // object.parent.position.fromArray([object.position.x,object.position.y,object.position.z]);
             object = object.parent;
        }
- 
+
         tempMatrix.getInverse(controller.matrixWorld);
         let parent = object.parent;
         object.matrix.premultiply(parent.matrixWorld);
         object.matrix.premultiply(tempMatrix);
         object.matrix.decompose(object.position, object.quaternion, object.scale);
-
+    
         controller.userData.selected = object;
         object.userData.originalParent = parent;
         controller.add(object); 
@@ -102,7 +101,7 @@ function onSelectEnd(event) {
         controller.userData.selected = undefined;
        
         if (object && object.userData.moveable) {
-            console.log(object)
+
             let objPos = new THREE.Vector3();
             object.getWorldPosition(objPos);
             let cable = object.userData.cable
@@ -116,7 +115,6 @@ function onSelectEnd(event) {
                 tempMatrix.getInverse(parent.matrixWorld);
                 object.matrix.premultiply(tempMatrix);
                 object.matrix.decompose(object.position, object.quaternion, object.scale);
-                //world.add(object);
                 parent.add(object);
 
                 if (intersections.length > 0) {
@@ -191,8 +189,6 @@ function onSelectEnd(event) {
                 let fromPos = object.userData.fromPos;
                 let fromOri = object.userData.fromOri;
 
-                console.log(object)
-            
                 ghostMeshes.add(object);
                 //object.visible = true;
                 outgoingDeltas.push(
