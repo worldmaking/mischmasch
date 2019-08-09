@@ -17,6 +17,9 @@ var counter = 1;
 var feedbackConnections = 0
 var checkOuts = new Array();
 var Ycounter;
+var newModule;
+// buffer channels for visual feedback
+var bufferChannelCounter = 0;
 
 gen_patcher = this.patcher.getnamed("world").subpatcher();
 
@@ -38,7 +41,7 @@ function ensureOuts(){
 function getVarnames(target){
 	gen_patcher.apply(function(b) { 
 		// prevent erasing our audio outputs from genpatcher
-		if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment"){
+		if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
 			if (b.varname.indexOf(target) != -1){
 				gen_patcher.remove(b); 	
 
@@ -51,6 +54,7 @@ function getVarnames(target){
 	
 	}
 var handleDelta = function(delta) {
+	var index = JSON.stringify(delta.index)
 				if (counter > 20){
 				counter = 1
 				}
@@ -71,6 +75,7 @@ var handleDelta = function(delta) {
 
 			// create an object!
 			case "newnode": 
+
 				// individual delta to handle:
 				paramCounter = 0;
 				
@@ -100,8 +105,9 @@ var handleDelta = function(delta) {
 						break;	
 					}
 					
-					var newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
+					newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
 					newModule.varname = delta.path.split('.')[0]
+					post(newModule.varname)
 
 					// if kind is outs, connect its outlets to the out1 and out2 in gen~ world
 					
@@ -177,8 +183,25 @@ var handleDelta = function(delta) {
 							//post('found ', kind)
 							object[delta.path.replace('.','__')] = delta.index
 							outletsTable.push(object)
+							//outlet(0, outletsTable)
 							
-							//post(JSON.stringify(outletsTable))
+							// pipe all outlets to buffer for visual feedback:
+							if (index){
+								var addPoke = gen_patcher.newdefault([575, Ycounter * 2, "poke", "bruce"])
+								addPoke.varname = 'poke_' + bufferChannelCounter
+								//post("\n", newModule.varname, index, addPoke.varname, kind)						
+								var addConstant = gen_patcher.newdefault([675, Ycounter * 2, "constant", bufferChannelCounter])	
+								addConstant.varname = 'constant_' + bufferChannelCounter
+								gen_patcher.message("script", "connect", addConstant.varname, 0, addPoke.varname, 2);
+								gen_patcher.message("script","connect", newModule.varname, parseInt(index), addPoke.varname, 0)
+					
+								//post(JSON.stringify(outletsTable))
+								// based on the running channel counter, add +1 and then add the delta.index
+								bufferChannelCounter++
+								
+								// TODO: if a module is deleted, find which channels in the buffer are now freed, make those available to the next newnode.
+							}
+
 							break;
 								// TEMP HACK!!!!
 							// so we can ignore UI objects that we don't need to patcher script at this point
@@ -232,7 +255,7 @@ var handleDelta = function(delta) {
 				
 				gen_patcher.apply(function(b) { 
 					// prevent erasing our audio outputs from genpatcher
-					if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment"){
+					if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
 						//post('\n',deleteMe,2)
 						if (b.varname.indexOf(deleteMe) != -1){
 	
@@ -319,13 +342,14 @@ var handleDelta = function(delta) {
 }
 
 // this is only for working within max
-function clear(){	
+function clear(){
+	bufferChannelCounter = 0;	
 	counter = 1;
 	feedbackConnections = 0
 	gen_patcher = this.patcher.getnamed("world").subpatcher();
 	gen_patcher.apply(function(b) { 
 		// prevent erasing our audio outputs from genpatcher
-		if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment"){
+		if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
 		gen_patcher.remove(b); 				
 		}
 	});		
@@ -351,13 +375,14 @@ function client(msg){
 
 	switch(cmd){
 		case "clear_scene":
-			post('clear_scene:', cmd)
+			bufferChannelCounter = 0;
+
 			gen_patcher = this.patcher.getnamed("world").subpatcher();
 
 			gen_patcher.apply(function(b) { 
 			
 				// prevent erasing our audio outputs from genpatcher
-				if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment"){
+				if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
 					gen_patcher.remove(b); 		
 				}
 			});
@@ -396,7 +421,7 @@ function client(msg){
 			gen_patcher.apply(function(b) { 
 			
 			// prevent erasing our audio outputs from genpatcher
-				if(b.varname !== "dac_right" && b.varname !== "dac_left"){
+				if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
 					gen_patcher.remove(b); 		
 				}
 			});

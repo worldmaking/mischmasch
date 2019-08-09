@@ -467,6 +467,7 @@ function handlemessage(msg, sock, id) {
 			} else {
 				let scenestr = JSON.stringify(msg.scene, null, "\t");
 				fs.writeFileSync(scenefile, scenestr, "utf-8");
+				//console.log(scenestr)
 			}
 
 		} break;
@@ -511,3 +512,10 @@ server.listen(8080, function() {
 
 //// TMP HACK
 load_scene("scene_rich.json")
+
+
+function intervalFunc() {
+  console.log(localGraph)
+}
+
+setInterval(intervalFunc, 5500);

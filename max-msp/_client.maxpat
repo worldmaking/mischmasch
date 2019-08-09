@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 149.0, 79.0, 533.0, 908.0 ],
+		"rect" : [ 1016.0, 79.0, 533.0, 908.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 1,
 		"default_fontsize" : 12.0,
@@ -39,24 +39,26 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
-					"id" : "obj-9",
-					"maxclass" : "message",
+					"id" : "obj-10",
+					"maxclass" : "newobj",
 					"numinlets" : 2,
 					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 647.0, 709.0, 71.0, 22.0 ],
-					"text" : "ensureOuts"
+					"outlettype" : [ "bang" ],
+					"patching_rect" : [ 1414.0, 144.0, 126.0, 22.0 ],
+					"text" : "metro 5000 @active 1"
 				}
 
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-7",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 0,
-					"patching_rect" : [ 722.0, 686.0, 97.0, 22.0 ],
-					"text" : "print ensureOuts"
+					"id" : "obj-8",
+					"linecount" : 3,
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 1368.0, 170.0, 50.0, 49.0 ],
+					"text" : "scene_simple.json"
 				}
 
 			}
@@ -66,8 +68,20 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 533.0, 450.0, 99.0, 22.0 ],
-					"text" : "print toGenWorld"
+					"patching_rect" : [ 180.0, 729.0, 32.0, 22.0 ],
+					"text" : "print"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-9",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 647.0, 709.0, 71.0, 22.0 ],
+					"text" : "ensureOuts"
 				}
 
 			}
@@ -1590,7 +1604,7 @@
 										}
 ,
 										"classnamespace" : "box",
-										"rect" : [ -1014.0, 79.0, 640.0, 480.0 ],
+										"rect" : [ 34.0, 79.0, 640.0, 480.0 ],
 										"bglocked" : 0,
 										"openinpresentation" : 0,
 										"default_fontsize" : 12.0,
@@ -1618,18 +1632,6 @@
 										"style" : "",
 										"subpatcher_template" : "",
 										"boxes" : [ 											{
-												"box" : 												{
-													"id" : "obj-3",
-													"maxclass" : "message",
-													"numinlets" : 2,
-													"numoutlets" : 1,
-													"outlettype" : [ "" ],
-													"patching_rect" : [ 309.0, 300.0, 197.0, 22.0 ],
-													"text" : "\"Macintosh HD:/Users/mp/msvr\""
-												}
-
-											}
-, 											{
 												"box" : 												{
 													"id" : "obj-1",
 													"maxclass" : "newobj",
@@ -1706,15 +1708,6 @@
 										"lines" : [ 											{
 												"patchline" : 												{
 													"destination" : [ "obj-12", 0 ],
-													"order" : 1,
-													"source" : [ "obj-1", 1 ]
-												}
-
-											}
-, 											{
-												"patchline" : 												{
-													"destination" : [ "obj-3", 1 ],
-													"order" : 0,
 													"source" : [ "obj-1", 1 ]
 												}
 
@@ -2213,6 +2206,13 @@
  ],
 		"lines" : [ 			{
 				"patchline" : 				{
+					"destination" : [ "obj-8", 0 ],
+					"source" : [ "obj-10", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-2", 0 ],
 					"midpoints" : [ 661.166666666666629, 177.0, 244.5, 177.0 ],
 					"source" : [ "obj-109", 1 ]
@@ -2260,6 +2260,7 @@
 				"patchline" : 				{
 					"destination" : [ "obj-132", 0 ],
 					"midpoints" : [ 1256.5, 145.0, 1170.0, 145.0 ],
+					"order" : 1,
 					"source" : [ "obj-113", 1 ]
 				}
 
@@ -2268,6 +2269,14 @@
 				"patchline" : 				{
 					"destination" : [ "obj-132", 1 ],
 					"source" : [ "obj-113", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-8", 1 ],
+					"order" : 0,
+					"source" : [ "obj-113", 1 ]
 				}
 
 			}
@@ -2413,7 +2422,6 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-4", 0 ],
-					"order" : 1,
 					"source" : [ "obj-26", 7 ]
 				}
 
@@ -2428,25 +2436,8 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-6", 0 ],
-					"order" : 0,
-					"source" : [ "obj-26", 7 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-2", 0 ],
 					"midpoints" : [ 734.5, 562.0, 175.5, 562.0, 175.5, 175.0, 244.5, 175.0 ],
-					"order" : 1,
-					"source" : [ "obj-4", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-7", 0 ],
-					"order" : 0,
 					"source" : [ "obj-4", 0 ]
 				}
 
@@ -2485,6 +2476,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-109", 0 ],
 					"source" : [ "obj-73", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-132", 0 ],
+					"source" : [ "obj-8", 0 ]
 				}
 
 			}
@@ -2565,25 +2563,29 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ffmvco.gendsp",
+				"name" : "outs.gendsp",
 				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
-				"name" : "vca.gendsp",
+				"name" : "dynamic_spill.maxpat",
 				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
-				"type" : "gDSP",
+				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
-				"name" : "comparator.gendsp",
+				"name" : "visualFeedback.js",
 				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
-				"type" : "gDSP",
+				"type" : "TEXT",
 				"implicit" : 1
+			}
+, 			{
+				"name" : "ws.mxo",
+				"type" : "iLaX"
 			}
  ],
 		"autosave" : 0

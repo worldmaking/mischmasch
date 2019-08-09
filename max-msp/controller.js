@@ -60,6 +60,7 @@ connection.addEventListener('open', () => {
 connection.addEventListener('message', (data) => {
 	// the ReconnectingWebSocket package adds an extra layer of JSON stringification... took me a while to figure this out. So, need to parse data.data :(
 	data = JSON.parse(data.data)
+	//MaxAPI.post(data)
 	switch(data.cmd){
 		// retrieve list of session recording filenames
 		case "sessionRecordings":{
@@ -80,8 +81,6 @@ connection.addEventListener('message', (data) => {
 		dataGen = JSON.stringify(data)
 		MaxAPI.outlet('toGen', dataGen)
 		
-		MaxAPI.post('line 83 in controller.js', dataGen)
-
 		break;
 
 
@@ -114,7 +113,8 @@ MaxAPI.addHandler("clearScene", () => {
 
 /////////////////// ENSURE SCENE ALWAYS HAS AT LEAST ONE OUTS MODULE ////////////////
 MaxAPI.addHandler("ensureOuts", () => {
-	let outsRequest = "{\"cmd\":\"deltas\",\"date\":1556119899845,\"data\":[[{\"op\":\"newnode\",\"path\":\"outs_1\",\"kind\":\"outs\",\"pos\":[0.0605223497200336,1,0.0405112532755187],\"orient\":[-0.3121451653567321,0.369889483526838,0.14650496286711281,0.8627186456637955]},[{\"op\":\"newnode\",\"path\":\"outs_1.left\",\"kind\":\"inlet\",\"index\":0}],[{\"op\":\"newnode\",\"path\":\"outs_1.right\",\"kind\":\"inlet\",\"index\":1}],[{\"op\":\"newnode\",\"path\":\"outs_1.volume\",\"kind\":\"small_knob\",\"range\":[0,1],\"taper\":\"log 3.8\",\"value\":1,\"unit\":\"float\"}]]]}"
+	let newDate = Date.now()
+	let outsRequest = '{\"cmd\":\"deltas\",\"date\":' + newDate + ',\"data\":[[{\"op\":\"newnode\",\"path\":\"outs_1\",\"kind\":\"outs\",\"pos\":[0.0605223497200336,1,0.0405112532755187],\"orient\":[-0.3121451653567321,0.369889483526838,0.14650496286711281,0.8627186456637955]},[{\"op\":\"newnode\",\"path\":\"outs_1.left\",\"kind\":\"inlet\",\"index\":0}],[{\"op\":\"newnode\",\"path\":\"outs_1.right\",\"kind\":\"inlet\",\"index\":1}],[{\"op\":\"newnode\",\"path\":\"outs_1.volume\",\"kind\":\"small_knob\",\"range\":[0,1],\"taper\":\"log 3.8\",\"value\":1,\"unit\":\"float\"}]]]}'
 	
 	connection.send(outsRequest);
 })
