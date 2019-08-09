@@ -20,6 +20,7 @@ var Ycounter;
 var newModule;
 // buffer channels for visual feedback
 var bufferChannelCounter = 0;
+var bufferChannelPaths = [];
 
 gen_patcher = this.patcher.getnamed("world").subpatcher();
 
@@ -186,10 +187,12 @@ var handleDelta = function(delta) {
 							//outlet(0, outletsTable)
 							
 							// pipe all outlets to buffer for visual feedback:
-							if (index){
+							// first make sure that the  outlet has an index, and is not an inlet (sometimes this occurs...)
+							if (index && kind !== 'inlet'){
 								var addPoke = gen_patcher.newdefault([575, Ycounter * 2, "poke", "bruce"])
 								addPoke.varname = 'poke_' + bufferChannelCounter
-								//post("\n", newModule.varname, index, addPoke.varname, kind)						
+								//post("\n", newModule.varname, index, addPoke.varname, kind)
+								bufferChannelPaths.push(delta.path)						
 								var addConstant = gen_patcher.newdefault([675, Ycounter * 2, "constant", bufferChannelCounter])	
 								addConstant.varname = 'constant_' + bufferChannelCounter
 								gen_patcher.message("script", "connect", addConstant.varname, 0, addPoke.varname, 2);
@@ -247,6 +250,8 @@ var handleDelta = function(delta) {
 							}
 						}
 					}
+					
+					outlet(0, bufferChannelPaths)
 			break;
 			
 			// delete an object
@@ -343,7 +348,8 @@ var handleDelta = function(delta) {
 
 // this is only for working within max
 function clear(){
-	bufferChannelCounter = 0;	
+	bufferChannelCounter = 0;
+	bufferChannelPaths = []	
 	counter = 1;
 	feedbackConnections = 0
 	gen_patcher = this.patcher.getnamed("world").subpatcher();
@@ -375,7 +381,9 @@ function client(msg){
 
 	switch(cmd){
 		case "clear_scene":
+		post('\n',bufferChannelCounter)
 			bufferChannelCounter = 0;
+			bufferChannelPaths = [];
 
 			gen_patcher = this.patcher.getnamed("world").subpatcher();
 
