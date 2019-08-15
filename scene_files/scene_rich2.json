@@ -73,10 +73,12 @@
         ["lfo_1.sine", "lfo_2.fm_cv"],
         ["lfo_1.phasor","ffmvco_1.feedback_cv"],
         ["lfo_1.pulse","ffmvco_1.vco_1_cv"],
-        ["vca_1.output","comparator_1.A"],
+        ["vca_1.output","lfo_1.sine"],
         ["ffmvco_1.master","comparator_1.B"],
         ["comparator_1.max","lfo_1.sine"],
         ["comparator_1.max","outs_1.left_in"],
-        ["comparator_1.min","outs_1.right_in"]
+        ["comparator_1.min","outs_1.right_in"],
+        ["ffmvco_1.master","lfo_1.sine"]
+
     ]
 }
