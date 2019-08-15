@@ -23,6 +23,7 @@
     "express": "^4.16.4",
     "find-cycle": "^1.0.0",
     "gl-matrix": "^3.0.0",
+    "graph.js": "^1.21.1",
     "load-bmfont": "^1.4.0",
     "nodemon": "^1.18.11",
     "reconnecting-websocket": "^4.1.10",
