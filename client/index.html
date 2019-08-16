@@ -61,21 +61,20 @@
 
         let canvas = document.getElementById("webgl-canvas");
 
-        let log = document.getElementById("log");
-        let msgs = [];
+        let logElement = document.getElementById("log");
+        let logMessageList = [];
 
-        function write(msg) {
-            
-            if(msgs.length > 15){
-                msgs.shift();
+        function log(...args) {
+            console.log(args);
+
+            let msg = args.join(" ")
+            if(logMessageList.length > 40){
+                logMessageList.shift();
+            } else {
+                logMessageList.push(msg);
             }
-
-            msgs.push(msg);
-            let fMsg = msgs.join("\n");
-
-            log.innerText = "";
-            log.innerText +=  "Log: \n " + fMsg;
-            console.log(msg);
+            let fMsg = logMessageList.join("\n");
+            logElement.innerText = logMessageList.join("\n");
         }
 
         let stats = new Stats();
@@ -86,8 +85,10 @@
 
     <script src="bundle.js"></script>
     <script src="modules.js"></script>
+    <script src="client2.js"></script>
+    <!--
     <script src="interactions.js"></script>
     <script src="updates.js"></script>
-    <script src="client.js"></script>
+    <script src="client.js"></script>-->
 </body>
 </html>
