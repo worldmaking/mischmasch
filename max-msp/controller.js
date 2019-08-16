@@ -82,7 +82,11 @@ connection.addEventListener('message', (data) => {
 		MaxAPI.outlet('toGen', dataGen)
 		
 		break;
-
+		// headset & controller data
+		case "user_pose":
+		userData = JSON.stringify(data)
+		MaxAPI.outlet('userData', userData)
+		break;
 
 		///////////////////////
 		default: {
