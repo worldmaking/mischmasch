@@ -1,6 +1,6 @@
 
-inlets = 2
-outlets = 6
+inlets = 3
+outlets = 8
 	// get a reference to "thegen"'s embedded gen patcher:
 var varnameCount = 0
 
@@ -76,7 +76,9 @@ var handleDelta = function(delta) {
 
 			// create an object!
 			case "newnode": 
-
+				if (delta.kind === 'controller1'){
+				post('\n\n',delta.kind)
+				}
 				// individual delta to handle:
 				paramCounter = 0;
 				
@@ -116,7 +118,7 @@ var handleDelta = function(delta) {
 			
 						gen_patcher.message("script", "connect", newModule.varname, 0, "dac_left", 0);
 						gen_patcher.message("script", "connect", newModule.varname, 1, "dac_right", 0);
-					}
+						}
 					} else {
 					
 						switch(kind){
@@ -188,7 +190,8 @@ var handleDelta = function(delta) {
 							
 							// pipe all outlets to buffer for visual feedback:
 							// first make sure that the  outlet has an index, and is not an inlet (sometimes this occurs...)
-							if (index && kind !== 'inlet'){
+							if (index && kind !== 'inlet' && kind !== 'controller1' && kind !== 'controller2' && kind !== 'headset'){
+								post(index)
 								var addPoke = gen_patcher.newdefault([575, Ycounter * 2, "poke", "bruce"])
 								addPoke.varname = 'poke_' + bufferChannelCounter
 								//post("\n", newModule.varname, index, addPoke.varname, kind)
@@ -380,6 +383,7 @@ function client(msg){
 
 
 	switch(cmd){
+
 		case "clear_scene":
 		post('\n',bufferChannelCounter)
 			bufferChannelCounter = 0;
@@ -494,6 +498,22 @@ function client(msg){
 		
 		} else if (kind === "param"){
 			// ignore gen operator-based param modules in the next section
+			} else if(kind === "controller1" || kind === "controller2" || kind === "headset"){
+				post('caught ' + kind)
+					paramX = paramCounter * 150
+					// generate the subparam which the param will bind to
+					var setparam = gen_patcher.newdefault([(pos[0] + counter) * 100 + paramX, (pos[1] + counter) * 50 - 25, "setparam", key])
+					setparam.varname = nodeName + "_setparam_" + key
+					gen_patcher.message("script", "connect", setparam.varname, 0, nodeName, 0);
+				
+					// generate the param which the js script will bind to
+					var param = gen_patcher.newdefault([(pos[0] + counter) * 100 + paramX, (pos[1] + counter) * 50 - 50, "param", kind + "__" + key])
+					param.varname = nodeName + "_param_" + key
+					gen_patcher.message("script", "connect", param.varname, 0, setparam.varname, 0);
+				
+					//gen_patcher.message("script", "send", param.varname, paramValue);
+					//outlet(1, kind + "__" + key, paramValue)
+					paramCounter++
 			} else {
 		
 		// get all the inlets and outlets (and eventually the UI params)
@@ -582,10 +602,44 @@ function client(msg){
 
         case "user_pose":
 
-			var pose = new Dict("pose");
-			pose.parse(msg);
-		
-	
+			//var pose = new Dict("pose");
+			//pose.parse(msg);
+			
+			var data = JSON.parse(msg)
+			var pose = data.pose
+			
+			// IMPORTANT: we eventually will need to filter controller data by who is using it (aka the data.pose.id). 
+			var id = data.pose.id
+			// TODO: filter remaining data based on ID, and add something to the VR space that allows for switching the gestural data source
+			// TODO: when connecting a cable from a gestural module to a given inlet/knob, need to grab the range of the inlet/knob and insert a scale object between the cable. 
+			var headPosition // do this later
+			
+			// Headset
+			var headData; 
+			
+			// Controllers
+			var controller1 = data.pose.controller1
+				// c1 pos data
+				outlet(1, "controller1__pos_x", data.pose.controller1.pos.x)
+				outlet(1, "controller1__pos_y", data.pose.controller1.pos.y)
+				outlet(1, "controller1__pos_z", data.pose.controller1.pos.z)
+				// c1 orient data
+				outlet(1, "controller1__orient_x", data.pose.controller1.orient.x)
+				outlet(1, "controller1__orient_y", data.pose.controller1.orient.y)
+				outlet(1, "controller1__orient_z", data.pose.controller1.orient.z)
+				outlet(1, "controller1__orient_w", data.pose.controller1.orient.w)
+					
+			var controller2 = data.pose.controller2
+							// c1 pos data
+				outlet(1, "controller2__pos_x", data.pose.controller2.pos.x)
+				outlet(1, "controller2__pos_y", data.pose.controller2.pos.y)
+				outlet(1, "controller2__pos_z", data.pose.controller2.pos.z)
+				// c1 orient data
+				outlet(1, "controller2__orient_x", data.pose.controller2.orient.x)
+				outlet(1, "controller2__orient_y", data.pose.controller2.orient.y)
+				outlet(1, "controller2__orient_z", data.pose.controller2.orient.z)
+				outlet(1, "controller2__orient_w", data.pose.controller2.orient.w)
+
 
         break;
 
