@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 1016.0, 79.0, 533.0, 908.0 ],
+		"rect" : [ 174.0, 79.0, 1407.0, 908.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 1,
 		"default_fontsize" : 12.0,
@@ -80,7 +80,7 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 180.0, 729.0, 32.0, 22.0 ],
+					"patching_rect" : [ 136.0, 729.0, 32.0, 22.0 ],
 					"text" : "print"
 				}
 
@@ -119,7 +119,7 @@
 					"lockeddragscroll" : 0,
 					"maxclass" : "bpatcher",
 					"name" : "_msvr_audio.maxpat",
-					"numinlets" : 1,
+					"numinlets" : 2,
 					"numoutlets" : 1,
 					"offset" : [ 0.0, 0.0 ],
 					"outlettype" : [ "" ],
@@ -2056,11 +2056,11 @@
 				"box" : 				{
 					"id" : "obj-26",
 					"maxclass" : "newobj",
-					"numinlets" : 9,
-					"numoutlets" : 9,
-					"outlettype" : [ "", "", "", "", "", "", "", "", "" ],
-					"patching_rect" : [ 235.0, 221.0, 579.0, 22.0 ],
-					"text" : "route playback playbackStatus clearPlaybackList playbackList filenameExists sceneList recordStatus toGen"
+					"numinlets" : 10,
+					"numoutlets" : 10,
+					"outlettype" : [ "", "", "", "", "", "", "", "", "", "" ],
+					"patching_rect" : [ 235.0, 221.0, 631.0, 22.0 ],
+					"text" : "route playback playbackStatus clearPlaybackList playbackList filenameExists sceneList recordStatus toGen userData"
 				}
 
 			}
@@ -2093,7 +2093,7 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-14",
-					"items" : [ "First_Test_Session.json", ",", "example.json", ",", "forTesting.json", ",", "session_1555103217536.json", ",", "session_1555358410128.json", ",", "session_1555358432443.json", ",", "session_1555358577456.json", ",", "test.json", ",", "test2.json", ",", "test3.json" ],
+					"items" : [ "example.json", ",", "First_Test_Session.json", ",", "forTesting.json", ",", "session_1555103217536.json", ",", "session_1555358410128.json", ",", "session_1555358432443.json", ",", "session_1555358577456.json", ",", "test.json", ",", "test2.json", ",", "test3.json" ],
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
@@ -2409,7 +2409,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-113", 0 ],
-					"midpoints" : [ 594.5, 253.0, 1155.464285714285779, 253.0, 1155.464285714285779, 110.0, 1170.0, 110.0 ],
+					"midpoints" : [ 584.5, 253.0, 1155.464285714285779, 253.0, 1155.464285714285779, 110.0, 1170.0, 110.0 ],
 					"source" : [ "obj-26", 5 ]
 				}
 
@@ -2417,7 +2417,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-113", 0 ],
-					"midpoints" : [ 384.5, 253.0, 1155.535714285714221, 253.0, 1155.535714285714221, 110.0, 1170.0, 110.0 ],
+					"midpoints" : [ 380.5, 253.0, 1155.535714285714221, 253.0, 1155.535714285714221, 110.0, 1170.0, 110.0 ],
 					"order" : 0,
 					"source" : [ "obj-26", 2 ]
 				}
@@ -2426,7 +2426,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-14", 0 ],
-					"midpoints" : [ 454.5, 253.0, 215.5, 253.0, 215.5, 52.0, 318.0, 52.0 ],
+					"midpoints" : [ 448.5, 253.0, 215.5, 253.0, 215.5, 52.0, 318.0, 52.0 ],
 					"source" : [ "obj-26", 3 ]
 				}
 
@@ -2434,9 +2434,16 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-14", 0 ],
-					"midpoints" : [ 384.5, 253.0, 215.75, 253.0, 215.75, 52.0, 318.0, 52.0 ],
+					"midpoints" : [ 380.5, 253.0, 215.75, 253.0, 215.75, 52.0, 318.0, 52.0 ],
 					"order" : 1,
 					"source" : [ "obj-26", 2 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-4", 1 ],
+					"source" : [ "obj-26", 8 ]
 				}
 
 			}
@@ -2450,7 +2457,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-42", 0 ],
-					"midpoints" : [ 314.5, 263.5, 319.5, 263.5 ],
+					"midpoints" : [ 312.5, 263.5, 319.5, 263.5 ],
 					"source" : [ "obj-26", 1 ]
 				}
 
@@ -2591,6 +2598,34 @@
 				"implicit" : 1
 			}
 , 			{
+				"name" : "ffmvco.gendsp",
+				"bootpath" : "~/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "vca.gendsp",
+				"bootpath" : "~/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "comparator.gendsp",
+				"bootpath" : "~/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "controller1.gendsp",
+				"bootpath" : "~/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
 				"name" : "dynamic_spill.maxpat",
 				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
@@ -2598,7 +2633,7 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "visualFeedback.js",
+				"name" : "gesture_data.js",
 				"bootpath" : "~/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
