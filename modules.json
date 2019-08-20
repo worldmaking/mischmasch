@@ -137,6 +137,27 @@
       "lookahead_cv":{"_props":{"kind":"inlet","index":3}},
       "left":{"_props":{"kind":"outlet","index":0}},
       "right":{"_props":{"kind":"outlet","index":1}}    
+    },
+    "controller1":{
+      "_props":{"kind":"controller1", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1]}, 
+      "pos_x":{"_props":{"kind":"outlet","index":0}},
+      "pos_y":{"_props":{"kind":"outlet","index":1}}, 
+      "pos_z":{"_props":{"kind":"outlet","index":2}}, 
+      "orient_x":{"_props":{"kind":"outlet","index":3}}, 
+      "orient_y":{"_props":{"kind":"outlet","index":4}}, 
+      "orient_z":{"_props":{"kind":"outlet","index":5}}, 
+      "orient_w":{"_props":{"kind":"outlet","index":6}}  
+    },
+    "controller2":{
+      "_props":{"kind":"controller1", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1]}, 
+      "pos_x":{"_props":{"kind":"outlet","index":0}},
+      "pos_y":{"_props":{"kind":"outlet","index":1}}, 
+      "pos_z":{"_props":{"kind":"outlet","index":2}}, 
+      "orient_x":{"_props":{"kind":"outlet","index":3}}, 
+      "orient_y":{"_props":{"kind":"outlet","index":4}}, 
+      "orient_z":{"_props":{"kind":"outlet","index":5}}, 
+      "orient_w":{"_props":{"kind":"outlet","index":6}}   
     }
+
   }
 }

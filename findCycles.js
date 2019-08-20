@@ -71,8 +71,8 @@ function findCycles() {
     }
   }
   for (cy of cycles) {
-    //console.log(cy.join(','))
-    //console.log(historyObjects)
+    console.log(cy.join(','))
+    console.log(historyObjects)
     
   }
 
