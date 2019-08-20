@@ -1041,31 +1041,52 @@ function clearScene() {
 function visualFeedbackSocket() {
     console.log('Creating socket');
     // TODO: Do not hardcode the IP 
-    let vsSocket = new WebSocket('ws://192.168.137.82:8083/');
+    let vsSocket = new WebSocket('ws://192.168.137.121:8084/');
     vsSocket.onopen = function() {
-        //   console.log('Socket open.');
+           console.log('Socket open.');
         //   socket.send(JSON.stringify({message: 'What is the meaning of life, the universe and everything?'}));
         //   console.log('Message sent.')
     };
     vsSocket.onmessage = function(message) {
 
-     // console.log('Socket server message: ', message.data);
+     //console.log('Socket server message: ', message.data);
      let ledJSON = JSON.parse(message.data);
-     let colorVal = ledJSON.LED1;
+     let ledInterleaved = ledJSON.visualFeedback;
+        for(let i =0; i < 2; i+=2){ //ledInterleaved.length;
+            let colorPath = ledInterleaved[i];
+            let colorVal = ledInterleaved[i+1];
+            console.log(colorPath);
+            console.log(colorVal);
 
-      xMax = 10;
-      xMin = 0;
-      
-      yMax = 1;
-      yMin = -1;
-      
-      percent = (colorVal - yMin) / (yMax - yMin);
-      // TODO: Clamped to 
-      let vsColorChager = percent * (xMax - xMin) + xMin; 
+            let vsColorChager = clampTo(colorVal, -1, 1, 0, 255);
 
+            //TODO: Take path and add value directly to outlet color
+
+            console.log(vsColorChager); 
+        }
     };
   }
 
+
+/**
+ * 
+ * @param {Value} input value being clamped
+ * @param {int} curRangeMin current range of value coming in Min
+ * @param {int} curRangeMax current range of value coming in Max
+ * @param {int} clampRangeMin clamp range Min
+ * @param {int} clampRangeMax clamp range Max
+ */
+
+function clampTo(input, curRangeMin, curRangeMax, clampRangeMin, clampRangeMax) {
+    xMax = clampRangeMax;
+    xMin = clampRangeMin;
+    yMax = curRangeMax;
+    yMin = curRangeMin;
+    percent = (input - yMin) / (yMax - yMin);
+
+    let output = percent * (xMax - xMin) + xMin;
+    return output;
+}
 
 function connect_to_server() {
     try {
