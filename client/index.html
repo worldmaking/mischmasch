@@ -34,6 +34,39 @@
             background-color: hsla(50, 0%, 10%, .75);
             z-index: 1000;
         }
+
+        /* Popup box BEGIN */
+        .hover_bkgr_fricc{
+            background:rgba(0,0,0,.4);
+            cursor:pointer;
+            display:none;
+            height:100%;
+            position:fixed;
+            text-align:center;
+            top:0;
+            width:100%;
+            z-index:10000;
+        }
+        .hover_bkgr_fricc .helper{
+            display:inline-block;
+            height:100%;
+            vertical-align:middle;
+        }
+        .hover_bkgr_fricc > div {
+            background-color: #fff;
+            box-shadow: 10px 10px 60px #555;
+            display: inline-block;
+            height: auto;
+            max-width: 551px;
+            min-height: 100px;
+            vertical-align: middle;
+            width: 60%;
+            position: relative;
+            border-radius: 8px;
+            padding: 15px 5%;
+        }
+
+
     </style>
 </head>
 <body>
@@ -41,6 +74,16 @@
     <canvas id="webgl-canvas"></canvas>
     <div id="log">Log:</div>
 
+    <div id="userPopup" class="hover_bkgr_fricc">
+        <span class="helper"></span>
+        <div>
+            <form onSubmit="JavaScript:updateUserAcc()">
+                Username: <input id="formUsername" type="text" name="Username" value="blank"><br>
+                <input type="submit" value="Submit">
+                </form>
+        </div>
+    </div>
+    
     <!--<link href="favicon.ico" rel="icon" type="image/x-icon" />-->
 
     <script src="js/gl-matrix-min.js"></script>

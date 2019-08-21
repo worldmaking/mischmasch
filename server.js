@@ -501,6 +501,9 @@ function handlemessage(msg, sock, id) {
 
 			});
 		} break;
+		case "user_acc": {
+			console.log("User just connected: ", msg.data);
+		}break;
 		default: console.log("received JSON", msg, typeof msg);
 	}
 }
