@@ -298,7 +298,7 @@ function handlemessage(msg, sock, id) {
 	switch (msg.cmd) {
 		case "deltas": {
 
-			// synchronize our local copy:
+			// synchronize our local copy:	
 			try {
 				got.applyDeltasToGraph(localGraph, msg.data);
 			} catch (e) {
