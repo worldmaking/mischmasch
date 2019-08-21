@@ -229,6 +229,9 @@ let createObjFromMenu = true;
 let menuNames = [];
 let menuScaleSize = .4;
 
+let user_acc = window.localStorage.getItem("user_acc");
+let connectAccount = 1;
+
 /**
  * Find an object in allNodes via a path
  * @param {PATH} path - path to object
@@ -510,9 +513,9 @@ async function init() {
     controller2.addEventListener("thumbpaddown", onMenuSpawn);
     controller1.addEventListener("thumbpaddown", onMenuSpawn);
     controller2.addEventListener("thumbpadup", onSpawn);
-    document.addEventListener("keydown", onKeypress, false);
-    document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-    document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+    //document.addEventListener("keydown", onKeypress, false);
+    //document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+   // document.addEventListener( 'mousedown', onDocumentMouseDown, false );
     scene.add(controller1);
     scene.add(controller2);
 
@@ -837,7 +840,10 @@ function animate() {
 
     render();
 }
-
+function updateUserAcc(){
+    window.localStorage.setItem("user_acc", document.getElementById("formUsername").value);
+    connectAccount = 1;
+}
 // TODO: temp, delete these:
 var lastTime = 0;
 var moveQ = ( new THREE.Quaternion( .5, .5, .5, 0.0 ) ).normalize();
@@ -913,6 +919,28 @@ function render() {
             sock.send(message);
             outgoingDeltas.length = 0;
             //console.log("Sending Deltas")
+        }
+
+        if(connectAccount > 0){
+            let userPopup = document.getElementById("userPopup");
+            
+            if(user_acc == null){
+
+                userPopup.style.display = "block";
+            } else {
+                userPopup.style.display = "none";
+                userPose = createUserPose(user_acc);
+                let message = {
+                    cmd: "user_acc",
+                    date: Date.now(),
+                    data: user_acc
+                };
+                sock.send(message);
+            }
+            
+         
+            connectAccount = 0;
+
         }
         
         // send VR poses to the server:
@@ -1139,6 +1167,7 @@ function handlemessage(msg, sock) {
         } break;
         case "user_pose": {
             let id = msg.pose.id;
+           // console.log(id);
 
             // ignore our self!
             if (id == userPose.id) break;
