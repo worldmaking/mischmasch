@@ -1,0 +1,88 @@
+//- Copyright 2018 Google LLC.
+//-
+//- Licensed under the Apache License, Version 2.0 (the "License");
+//- you may not use this file except in compliance with the License.
+//- You may obtain a copy of the License at
+//-
+//-     http://www.apache.org/licenses/LICENSE-2.0
+//-
+//- Unless required by applicable law or agreed to in writing, software
+//- distributed under the License is distributed on an "AS IS" BASIS,
+//- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//- See the License for the specific language governing permissions and
+//- limitations under the License.
+
+//- [START appengine_websockets_index]
+doctype html
+html(lang="en")
+  head
+    title Sessions Broker
+    meta(charset="utf-8")
+    style.
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+  //- [START appengine_websockets_form]
+  body
+    div(id="sessions")
+    form(action="")
+      input(id="m" autocomplete="off")
+      button Send
+    //- [END appengine_websockets_form]
+
+    script(src="/socket.io/socket.io.js")
+    script(src="https://code.jquery.com/jquery-1.11.1.js")
+    script.
+      // [START appengine_websockets_js]
+      $(function () {
+        var socket = io();
+        $('form').submit(function(){
+          console.log($('#m').val());
+          socket.emit('chat message', $('#m').val());
+          $('#m').val('');
+          return false;
+        });
+        socket.on('addSession', function(msg){
+          console.log(msg);
+          //let m = JSON.parse(msg)
+          let host = msg.hostname;
+          let ip = msg.ip
+          $('#sessions').append($('<a href="https://' + ip + ':8080" target="_blank">' + host + '</a>'));
+          window.scrollTo(0, document.body.scrollHeight);
+        });
+        socket.on('allSessions', function(msg){
+          console.log(msg);
+          //let m = JSON.parse(msg)
+          //- let host = msg.hostname;
+          //- let ip = msg.ip
+          Object.keys(msg).forEach(function(key){
+            console.log('key', key, 'msg.key', msg[key])
+            
+            $('#sessions').append($('<p><a href="https://' + msg[key].ip + ':8080" target="_blank" id="' + msg[key].hostname + '"">' + msg[key].hostname + '</a>'));
+          })
+
+          //- window.scrollTo(0, document.body.scrollHeight);
+        });
+        socket.on('removeSession', function(msg){
+          console.log(msg);
+          //let m = JSON.parse(msg)
+          //- let host = msg.hostname;
+          //- let ip = msg.ip
+          //- document.getElementById(msg).remove();
+
+          var elem = document.getElementById(msg);
+          elem.parentNode.removeChild(elem);
+          return false;
+
+
+          //- window.scrollTo(0, document.body.scrollHeight);
+        });
+      });
+      // [END appengine_websockets_js]
+//- [END appengine_websockets_index]
+
