@@ -389,6 +389,22 @@ async function init() {
 
     //world.add(ghostMeshes);
 
+    // Buffer Visualization
+
+    {
+        let bufferMat = new THREE.LineBasicMaterial({
+            color: 0x0000ff
+        });
+
+        let bufferGeometry = new THREE.Geometry();
+        // x: need to calculate y: value, z: Channel
+        +-
+        bufferGeometry.vertices.push();
+
+        let bufferLine = new THREE.Line( bufferGeometry, bufferMat );
+        //scene.add( line );
+    }
+
     /// instanceBox
     {
         
@@ -1069,7 +1085,7 @@ function clearScene() {
 function visualFeedbackSocket() {
     console.log('Creating socket');
     // TODO: Do not hardcode the IP 
-    let vsSocket = new WebSocket('ws://192.168.137.121:8084/');
+    let vsSocket = new WebSocket('ws://localhost:8084/');
     vsSocket.onopen = function() {
            console.log('Socket open.');
         //   socket.send(JSON.stringify({message: 'What is the meaning of life, the universe and everything?'}));
