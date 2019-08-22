@@ -18,12 +18,18 @@ var feedbackConnections = 0
 var checkOuts = new Array();
 var Ycounter;
 var newModule;
+
+// contain all the buffers
+var pb = new PolyBuffer('world_polybuffer');       // PolyBuffer instantiates a polybuffer~ object named by second argument to js  
+
 // buffer channels for visual feedback
 var bufferChannelCounter = 0;
 var bufferChannelPaths = [];
+// use this to store the names of buffers created for visual feedback
+var vizBuffers = new Array();
 
 gen_patcher = this.patcher.getnamed("world").subpatcher();
-
+bufferStorage = this.patcher.getnamed("bufferStorage").subpatcher();
 function ensureOuts(){
 	var hasOuts = 0;
 	gen_patcher.apply(function(b) { 
@@ -183,26 +189,43 @@ var handleDelta = function(delta) {
 							
 							//post(JSON.stringify(inletsTable))
 							case "outlet":
+								var buf = null;
 							//post('found ', kind)
 							object[delta.path.replace('.','__')] = delta.index
-							outletsTable.push(object)
+							outletsTable.push(object)	
 							//outlet(0, outletsTable)
-							
+
 							// pipe all outlets to buffer for visual feedback:
 							// first make sure that the  outlet has an index, and is not an inlet (sometimes this occurs...)
 							if (index && kind !== 'inlet' && kind !== 'controller1' && kind !== 'controller2' && kind !== 'headset'){
-								post(index)
-								var addPoke = gen_patcher.newdefault([575, Ycounter * 2, "poke", "bruce"])
+
+								buf = delta.path.replace('.','__') + '_buffer'
+								// create a buffer for each outlet
+								vizBuffers[buf] = new Buffer(buf)
+								//post(buf)
+								vizBuffers.push(buf)	
+												
+
+								
+								//post(index)
+								var addPoke = gen_patcher.newdefault([575, Ycounter * 2, "poke", buf])
 								addPoke.varname = 'poke_' + bufferChannelCounter
 								//post("\n", newModule.varname, index, addPoke.varname, kind)
-								bufferChannelPaths.push(delta.path)						
-								var addConstant = gen_patcher.newdefault([675, Ycounter * 2, "constant", bufferChannelCounter])	
-								addConstant.varname = 'constant_' + bufferChannelCounter
-								gen_patcher.message("script", "connect", addConstant.varname, 0, addPoke.varname, 2);
+								bufferChannelPaths.push(delta.path)	
+								
+								var addBuffer = gen_patcher.newdefault([875, Ycounter * 4, "buffer", buf])	
+								var addBufferToParent = bufferStorage.newdefault([50, Ycounter * 4, "buffer~", buf, 10, 1])	
+								addBufferToParent.varname = buf + '_varname'
+								addBuffer.varname = buf + '_varname'
+								// addConstant.varname = 'constant_' + bufferChannelCounter
+								// gen_patcher.message("script", "connect", addConstant.varname, 0, addPoke.varname, 2);
 								gen_patcher.message("script","connect", newModule.varname, parseInt(index), addPoke.varname, 0)
 					
 								//post(JSON.stringify(outletsTable))
 								// based on the running channel counter, add +1 and then add the delta.index
+
+
+
 								bufferChannelCounter++
 								
 								// TODO: if a module is deleted, find which channels in the buffer are now freed, make those available to the next newnode.
@@ -379,24 +402,37 @@ function client(msg){
 	cmd = ot.cmd
 	if (cmd != 'clear_scene'){	
 		outlet(1, ot.cmd)
+		outlet(0, 'clear_scene')
+		vizBuffers.length = 0;
 	}
 
 
 	switch(cmd){
 
 		case "clear_scene":
-		post('\n',bufferChannelCounter)
+			outlet(0, 'clear_scene')
+
+			vizBuffers = new Array()
 			bufferChannelCounter = 0;
 			bufferChannelPaths = [];
 
 			gen_patcher = this.patcher.getnamed("world").subpatcher();
+			bufferStorage = this.patcher.getnamed("bufferStorage").subpatcher();
 
 			gen_patcher.apply(function(b) { 
 			
 				// prevent erasing our audio outputs from genpatcher
-				if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
+				if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "PLO"){
 					gen_patcher.remove(b); 		
 				}
+			});
+
+
+			bufferStorage.apply(function(b) { 
+			
+				// prevent erasing our audio outputs from genpatcher
+					gen_patcher.remove(b); 		
+				
 			});
 			
 			inletsTable = [];
@@ -659,90 +695,139 @@ function client(msg){
 }
 
 
+function getBuffers(){
+	post('\n',vizBuffers)
+}
 
-var buf = new Buffer("bruce")
+// this bootstraps an issue where the .peek function wouldn't reference a buffer name created in a different function scope (despite the name being stored globally)
+var bucket = new Buffer("bucket")
 
-function visualize(){
-		channels = buf.channelcount()
-	for (i = 0; i < channels; i++){
-		channel = i+1
-		
-		post('\n',channels, i, bufferChannelPaths[i], buf.peek(channel, 1))
-
+function visualize(sampleRate, resolution){
+	opPath = null
+	opValue = null
+	vizArray = new Array();
+	vizObj = new Object();
+	// loop through all buffers in the gen world~
+	for (i = 0; i < vizBuffers.length; i++){
+		// get the buffer name
+		opPath = vizBuffers[i]
+		// fill the bucket with the named buffer's contents
+		bucket.send('duplicate', opPath)
+		// get the amplitude value at index 0
+		opValue = bucket.peek(i, 0)
+		// and it to the array
+		// vizArray.push(opPath, opValue)
+		// package it in an object
+		opPath = opPath.split('_buffer')[0]
+		vizObj[opPath] = opValue
 		}
+		outlet(0,'vizData',vizObj)
+		// outlet(',JSON.stringify(vizObj))
+}
+
+
+
+// this one is a bit different: this is for sending buffer data points to 
+// a buffer object instantiated within the VR space
+function transmitBuffer(sampleRate, resolution){
+	// fill the bucket with the named buffer
+
+	// delta.path.replace('.','__')
+	opPath = null
+	opValue = null
+	vizArray = new Array();
+	//post('\n')
+		//channels = buf.channelcount()
+		//post(vizBuffers.length)
+
+	for (i = 0; i < vizBuffers.length; i++){
+		
+
+
+	// 	//post(vizBuffers[i])
+	// 	channel = i+1
+		opPath = vizBuffers[i]
+		bucket.send('duplicate', opPath)
+	// 	post(opPath)
+		opValue = bucket.peek(i, 0)
+	// 	post('\n',i, opPath, opValue)
+		vizArray.push(opPath, opValue)
+		}
+	// 	//post(JSON.stringify(vizArray))
 		var newBuffer = JSON.stringify({
 		length: buf.length(),
 		samples: buf.framecount(),
 		channels: buf.channelcount(),
-		buffer: array,
-		sampleRate: 44100,
-		resolution: 100
+		buffer: vizArray,
+		sampleRate: sampleRate,
+		resolution: resolution
 		})
-		//post(newBuffer)
+		post('\n',newBuffer)
 	}
-function bang2()
-{
-		//outlet(4, JSON.parse(buf))
-	var newBuffer = JSON.stringify({
-		length: buf.length(),
-		samples: buf.framecount(),
-		channels: buf.channelcount(),
-		buffer: array,
-		sampleRate: 44100,
-		resolution: 100
-		})
+
+// function bang2()
+// {
+// 		//outlet(4, JSON.parse(buf))
+// 	var newBuffer = JSON.stringify({
+// 		length: buf.length(),
+// 		samples: buf.framecount(),
+// 		channels: buf.channelcount(),
+// 		buffer: array,
+// 		sampleRate: 44100,
+// 		resolution: 100
+// 		})
 		
 
-	outlet(4, newBuffer)
+// 	outlet(4, newBuffer)
 
-	outlet(3, buf.length());
-	outlet(2, buf.framecount());
-	outlet(1, buf.channelcount());
-}
-	array = new Array;
+// 	outlet(3, buf.length());
+// 	outlet(2, buf.framecount());
+// 	outlet(1, buf.channelcount());
+// }
+// 	array = new Array;
 	
 	
-function toArray(index){
-	array.push(buf.peek(1, index))
-}
-function msg_int(index)
-{
-	outlet(0, buf.peek(1, index));
-}
+// function toArray(index){
+// 	array.push(buf.peek(1, index))
+// }
+// function msg_int(index)
+// {
+// 	outlet(0, buf.peek(1, index));
+// }
 
 
-function list(index, count)
-{
-	var samples = buf.peek(1, index, count);
-	post(samples);
-	post();
-}
+// function list(index, count)
+// {
+// 	var samples = buf.peek(1, index, count);
+// 	post(samples);
+// 	post();
+// }
 
 
 // make an array of zeroes, set the buffer content to that
 // only clears the first channel
-function clear()
-{
-	var samples = new Array;
-	outlet(4, samples)
-	var frames = buf.framecount();
+// function clear()
+// {
+// 	var samples = new Array;
+// 	outlet(4, samples)
+// 	var frames = buf.framecount();
 
-	for (var i=0; i<frames; i++)
-		samples[i] = 0.0;
+// 	for (var i=0; i<frames; i++)
+// 		samples[i] = 0.0;
 
-	buf.poke(1, 0, samples);
-}
-
-
-// can also just change a single sample
-function dont_poke_the_bear(channel, index, value)
-{
-	buf.poke(channel, index, value);
-}
+// 	buf.poke(1, 0, samples);
+// }
 
 
-// send a message directly to the associated buffer~ object
-function sinc()
-{
-    buf.send("fill", "sinc", 20, 1);
-}
+// // can also just change a single sample
+// function dont_poke_the_bear(channel, index, value)
+// {
+// 	buf.poke(channel, index, value);
+// }
+
+
+// // send a message directly to the associated buffer~ object
+// function sinc()
+// {
+//     buf.send("fill", "sinc", 20, 1);
+// }
