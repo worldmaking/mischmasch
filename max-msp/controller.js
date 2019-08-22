@@ -34,7 +34,21 @@ let sceneList = []
 //function connect (){
 
 // create a ws connection which can automatically attempt reconnections if server goes down
-let connection = new ReconnectingWebSocket('ws://localhost:8080/', [], options);
+//let connection = new ReconnectingWebSocket('ws://192.168.137.1:8080/', [], options);
+let connection;
+
+if (process.argv[2] === 'localhost'){
+	
+	connection  = new ReconnectingWebSocket('ws://localhost:8080/', [], options);
+
+	} else if (process.argv[2] && process.argv[2] !== 'localhost'){
+	
+	connection = new ReconnectingWebSocket('ws://' + process.argv[2] + ':8080/', [], options);
+
+} else {
+MaxAPI.post('\n\nERROR: websocket server host IP not provided.\nUse \'localhost\' or network IP')
+process.exit()
+}
 
 // run function when ws opens...
 connection.addEventListener('open', () => {
