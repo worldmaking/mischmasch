@@ -188,7 +188,8 @@ vorpal
 	////////////
 // msvr signal server for brokering connections:
 
-const signalServer = new WebSocket('ws://msvrss.appspot.com/8083')
+// const signalServer = new WebSocket('http://msvrss.appspot.com:8083')
+const signalServer = new WebSocket('http://localhost:8083')
 
 signalServer.on('open', function open() {
   let newServer = JSON.stringify({
@@ -198,11 +199,15 @@ signalServer.on('open', function open() {
       ip: ip.address(),
     },
     date: Date.now() 
-  })
+	})
+	console.log('\n\n\n\n\n\n', newServer)
   signalServer.send(newServer);
   //process.exit()
 });
- 
+
+signalServer.on('error', cb =>{
+	console.log('\n\n\n\n\n\n\n', cb, '\n\n\n\n\n\n\n')
+})
 signalServer.on('message', function incoming(message) {
   msg = JSON.parse(message)
   cmd = msg.cmd

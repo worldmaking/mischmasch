@@ -25,9 +25,9 @@ io.on('connection', socket => {
   //send current list of running sessions
   io.emit('allSessions', clients)
 
-  // socket.on('chat message', msg => {
-  //   io.emit('chat message', msg);
-  // });
+  socket.on('chat message', msg => {
+    io.emit('chat message', msg);
+  });
 });
 
 if (module === require.main) {
