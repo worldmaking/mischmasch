@@ -46,8 +46,8 @@ if (process.argv[2] === 'localhost'){
 	connection = new ReconnectingWebSocket('ws://' + process.argv[2] + ':8080/', [], options);
 
 } else {
-MaxAPI.post('\n\nERROR: websocket server host IP not provided.\nUse \'localhost\' or network IP')
-process.exit()
+	MaxAPI.post('\n\nERROR: websocket server host IP not provided.\nUse \'localhost\' or network IP')
+	process.exit()
 }
 
 // run function when ws opens...
@@ -94,6 +94,8 @@ connection.addEventListener('message', (data) => {
 		case "patch":	
 		dataGen = JSON.stringify(data)
 		MaxAPI.outlet('toGen', dataGen)
+		MaxAPI.post('\n\n', data)
+
 		
 		break;
 		// headset & controller data
