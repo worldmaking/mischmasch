@@ -66,7 +66,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1013.0, 926.0, 55.0, 22.0 ],
+					"patching_rect" : [ 467.0, 848.0, 55.0, 22.0 ],
 					"text" : "visualize"
 				}
 
@@ -2194,17 +2194,6 @@
 					"presentation" : 1,
 					"presentation_rect" : [ 365.0, 147.0, 105.0, 22.0 ],
 					"text" : "scene_rich2.json"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-6",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 0,
-					"patching_rect" : [ 136.0, 729.0, 32.0, 22.0 ],
-					"text" : "print"
 				}
 
 			}
