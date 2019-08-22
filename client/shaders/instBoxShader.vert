@@ -26,9 +26,10 @@ void main() {
         vNormal = normal; 
 
         // cylinder case:
-        if (shape > 0.) {
+        if (shape > 0.5) {
                 shapedPosition.xy = normalize(shapedPosition.xy);
-                vNormal.xy = mix(shapedPosition.xy, vec2(0.), abs(vNormal.z));
+                vNormal.xy = normalize(mix(shapedPosition.xy, vec2(0.), abs(vNormal.z)));
+                shapedPosition.xy *= 0.5;
         }
         vec3 vPosition = applyQuaternionToVector( orientation, shapedPosition * scale );
         vNormal = applyQuaternionToVector(orientation, vNormal);

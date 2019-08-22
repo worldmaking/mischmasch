@@ -38,10 +38,26 @@ let sock;
 let camera, scene, renderer;
 let orbitControls;
 
+// Instancing components
+const MAX_BOX_INSTANCE_CAPACITY = 10000;
+let currentBoxInstanceCount = 0;
+
+let instBoxGeometry;
+let instBoxLocationAttr, instBoxOrientationAttr, instBoxScaleAttr, instBoxColorAttr, instBoxEmissionAttr, instBoxShapeAttr;
+let instBoxMesh;
+
 // VR components
 let VRcontrollers = [];
 
 // STYLES
+const NUM_CABLE_SEGMENTS = 30;
+// how tall the cable jack cylinders are
+const CABLE_JACK_HEIGHT = 0.03;
+const CABLE_JACK_RADIUS = CABLE_JACK_HEIGHT * 0.4;
+// how far the control poitns for cables are from the inlets outlets
+// effects how 'straight' the cables are as come out of inlets/outlets
+const CABLE_CONTROL_POINT_DISTANCE = 0.1;
+
 const SHAPE_BOX = 0
 const SHAPE_CYLINDER = 1
 const NLET_RADIUS = 0.025;
@@ -61,6 +77,13 @@ let boxMat = new THREE.MeshStandardMaterial({
     side: THREE.DoubleSide,
     depthWrite: false,
 });
+
+// let plug_geometry = new THREE.CylinderBufferGeometry(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT, 8);
+// // fix anchor point
+// plug_geometry.translate(0, CABLE_JACK_HEIGHT/2, 0);
+// plug_geometry.rotateX(Math.PI/2)
+// plug_geometry.computeBoundingBox();
+
 // sizes of the default node container
 // const GEN_GEOM_WIDTH = 0.6;
 // const GEN_GEOM_HEIGHT = 0.2;
@@ -80,6 +103,25 @@ function getObjectByPath(world, path) {
     return obj
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// LOADERS
+//////////////////////////////////////////////////////////////////////////////////////////
+
+async function loadShader(filename) {
+    return new Promise(resolve => new THREE.FileLoader().load(filename, resolve));
+}
+
+async function loadTexture(filename) {
+    return new Promise(resolve => new THREE.TextureLoader().load(filename, resolve));
+}
+
+async function loadFont(fontFile) {
+    return new Promise(resolve => new THREE.FontLoader().load(fontFile, resolve));
+}
+
+async function loadOBJ(path) {
+    return new Promise(resolve => new THREE.OBJLoader().load(path, resolve));
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // BOOT SEQUENCE
@@ -88,16 +130,22 @@ function getObjectByPath(world, path) {
 init();
 async function init() {
 
+
     // init 3D world
     init_threejs();
     addFloorGrid();
+
+    initInstanceBoxMesh();
+
     scene.add(ghostScene)
+    ghostScene.visible = false;
 
     // init the input devices & their handlers:
     VRcontrollers[0] = initVRController(0);
     VRcontrollers[1] = initVRController(1);
 
-    // document.addEventListener("keydown", onKeypress, false);
+
+    document.addEventListener("keydown", onKeypress, false);
     // document.addEventListener( 'mousemove', onDocumentMouseMove, false );
     // document.addEventListener( 'mousedown', onDocumentMouseDown, false );
 
@@ -109,6 +157,7 @@ async function init() {
 }
 
 
+
 function init_threejs() {
     scene = new THREE.Scene();
 
@@ -118,7 +167,7 @@ function init_threejs() {
         0.1,
         10
     );
-    camera.position.set(0, 1.5, 0);
+    camera.position.set(0, 1.5, 2);
     scene.add(camera)
 
     renderer = new THREE.WebGLRenderer({
@@ -139,6 +188,8 @@ function init_threejs() {
     orbitControls.minDistance = 0;
     orbitControls.maxDistance = 500;
     orbitControls.maxPolarAngle = Math.PI / 2;
+    orbitControls.target.set(0, 1.5, 0)
+    orbitControls.update();
 
     // basic lighting:
     scene.add(new THREE.HemisphereLight(0x808080, 0x606060));
@@ -162,6 +213,67 @@ function addFloorGrid() {
     floorGrid.material.opacity = 0.25;
     floorGrid.material.transparent = true;
     scene.add(floorGrid);
+}
+
+async function initInstanceBoxMesh() {
+
+    // box spans signed-normalized range of -1..1 in each axis
+    // with subdivisions in each axis
+    let bufferGeometry = new THREE.BoxBufferGeometry( 1,1,1,  3,3,1 );
+
+    instBoxGeometry = new THREE.InstancedBufferGeometry();
+    instBoxGeometry.index = bufferGeometry.index;
+    instBoxGeometry.attributes.normal = bufferGeometry.attributes.normal;
+    instBoxGeometry.attributes.position = bufferGeometry.attributes.position;
+    instBoxGeometry.attributes.uv = bufferGeometry.attributes.uv;
+
+    instBoxLocationAttr = new THREE.InstancedBufferAttribute( new Float32Array( MAX_BOX_INSTANCE_CAPACITY * 3 ), 3 ).setDynamic( true );
+    instBoxOrientationAttr = new THREE.InstancedBufferAttribute( new Float32Array( MAX_BOX_INSTANCE_CAPACITY * 4 ), 4 ).setDynamic( true );
+    instBoxScaleAttr = new THREE.InstancedBufferAttribute( new Float32Array( MAX_BOX_INSTANCE_CAPACITY * 3 ), 3 ).setDynamic( true );
+    instBoxColorAttr = new THREE.InstancedBufferAttribute( new Float32Array( MAX_BOX_INSTANCE_CAPACITY * 4 ), 4 ).setDynamic( true );
+    //instBoxEmissionAttr = new THREE.InstancedBufferAttribute( new Float32Array( emission ), 4 ).setDynamic( true );
+    instBoxShapeAttr = new THREE.InstancedBufferAttribute( new Float32Array( MAX_BOX_INSTANCE_CAPACITY * 1 ), 1 ).setDynamic( true );
+
+    console.log(instBoxLocationAttr)
+
+    // initialize instance buffer:
+    for ( let i = 0; i < MAX_BOX_INSTANCE_CAPACITY; i ++ ) {
+        // set some sane defaults for attrs:
+
+        // set W component of orientations:
+        instBoxOrientationAttr.array[i * instBoxOrientationAttr.itemSize + 3] = 1;
+        
+        instBoxColorAttr.array[i * instBoxColorAttr.itemSize + 3] = 1;
+
+        instBoxScaleAttr.array[i * instBoxScaleAttr.itemSize + 0] = 1;
+        instBoxScaleAttr.array[i * instBoxScaleAttr.itemSize + 1] = 1;
+        instBoxScaleAttr.array[i * instBoxScaleAttr.itemSize + 2] = 1;
+    }
+
+    // add these attrs to the instaned buffer:
+    instBoxGeometry.addAttribute( 'location', instBoxLocationAttr );
+    instBoxGeometry.addAttribute( 'orientation', instBoxOrientationAttr );
+    instBoxGeometry.addAttribute( 'scale', instBoxScaleAttr );
+    instBoxGeometry.addAttribute( 'color', instBoxColorAttr );
+    // instBoxGeometry.addAttribute( 'emission', instBoxEmissionAttr );
+    instBoxGeometry.addAttribute( 'shape', instBoxShapeAttr );
+
+    
+    let instBoxVShaderFile = 'shaders/instBoxShader.vert';
+    let instBoxFShaderFile = 'shaders/instBoxShader.frag';
+    let loadedInstBoxVShader = await loadShader(instBoxVShaderFile);
+    let loadedInstBoxFShader = await loadShader(instBoxFShaderFile);
+    let material = new THREE.RawShaderMaterial( {
+        uniforms: {
+            //map: { value: new THREE.TextureLoader().load( 'textures/crate.gif' ) }
+        },
+        vertexShader: loadedInstBoxVShader,
+        fragmentShader: loadedInstBoxFShader
+    } );
+
+    instBoxMesh = new THREE.Mesh( instBoxGeometry, material );
+    instBoxMesh.frustumCulled = false;
+    scene.add( instBoxMesh );
 }
 
 
@@ -329,25 +441,25 @@ function enactDeltaNewNode(world, delta) {
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT);
             container.userData.color = [0, 1, 0, 1];
-            container.userData.shape = SHAPE_CYLINDER;
+            container.userData.instanceShape = SHAPE_CYLINDER;
         } break;
         case "outlet":{
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT);
             container.userData.color = [1, 0, 0, 1];
-            container.userData.shape = SHAPE_CYLINDER;
+            container.userData.instanceShape = SHAPE_CYLINDER;
         } break;
         case "large_knob":{
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, NLET_HEIGHT);
-            container.userData.shape = SHAPE_CYLINDER
+            container.userData.instanceShape = SHAPE_CYLINDER
             container.userData.color = [Math.random(), Math.random(), Math.random(), 1];
             container.userData.turnable = true;
         }break;
         case "small_knob":{
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, NLET_HEIGHT);
-            container.userData.shape = SHAPE_CYLINDER
+            container.userData.instanceShape = SHAPE_CYLINDER
             container.userData.color = [Math.random(), Math.random(), Math.random(), 1];
             container.userData.turnable = true;
         }break;
@@ -356,6 +468,7 @@ function enactDeltaNewNode(world, delta) {
             container.scale.set(NSWITCH_WIDTH, NSWITCH_HEIGHT, NSWITCH_DEPTH);
             container.userData.color = [Math.random(), Math.random(), Math.random(), 1];
             container.userData.slideable = true;
+            container.userData.instanceShape = SHAPE_BOX;
         } break;
         case "group": {
             alert("TODO GROUP")
@@ -369,7 +482,7 @@ function enactDeltaNewNode(world, delta) {
             let box = new THREE.Mesh(boxGeom, boxMat);
             box.userData.isBackPanel = true;
             box.userData.color = [Math.random(), Math.random(), Math.random(), 1];
-            box.userData.shape = SHAPE_BOX
+            box.userData.instanceShape = SHAPE_BOX
             box.name = "_box_"+name
             container.add(box);
 
@@ -395,8 +508,143 @@ function enactDeltaNewNode(world, delta) {
     //log("new node", container.name, container.userData.isDirty)
 }
 
+function cableUpdate(cableMesh) {
+    let ud = cableMesh.userData;
+    let src = ud.src;
+    let dst = ud.dst;
+    let srcJackMesh = ud.srcJackMesh, dstJackMesh = ud.dstJackMesh;
+    let positions = ud.positions;
+    let curve = ud.curve;
+
+
+    // set up the positions array for the endpoitns and control points of the curve:
+    
+    if (src) {
+        // cable is connected to a source
+        // use src (outlet) orientation for our cable orientation 
+        src.getWorldQuaternion(srcJackMesh.quaternion);
+        // use src (outlet) position for our start point (position[0])
+        src.getWorldPosition(positions[0]);
+        // set positions[1] control point accordingly:
+        positions[1]
+            .set(0, 0, (NLET_HEIGHT + CABLE_CONTROL_POINT_DISTANCE) / 2)
+            .applyQuaternion(srcJackMesh.quaternion)
+            .add(positions[0]);
+        // set source jack position accordingly
+        srcJackMesh.position.copy(positions[0])
+        //Color Set
+        cableMesh.material.color.copy(src.material.color);
+    } else {
+        // dangling jack case
+        let q = new THREE.Quaternion();
+        // get the jack's orientation
+        srcJackMesh.getWorldQuaternion(q);
+        // derive the cable start point from the jack's position
+        srcJackMesh.getWorldPosition(positions[0]);
+        // derive positions[1] (cable control point)
+        positions[1]
+            .set(0, 0, (NLET_HEIGHT + CABLE_CONTROL_POINT_DISTANCE) / 2)
+            .applyQuaternion(q)
+            .add(positions[0]);
+        //Reset Color
+        cableMesh.material.color.setRGB(211,211,211);
+    }
+
+    if (dst) {
+        dst.getWorldPosition(positions[3]);
+        dst.getWorldQuaternion(dstJackMesh.quaternion);
+        positions[2]
+            .set(0, 0, (NLET_HEIGHT + CABLE_CONTROL_POINT_DISTANCE) / 2)
+            .applyQuaternion(dstJackMesh.quaternion)
+            .add(positions[3]);
+        dstJackMesh.position.copy(positions[3])
+    } else {
+        let q = new THREE.Quaternion();
+        dstJackMesh.getWorldQuaternion(q);
+        // get cable end point from the srcJackMesh
+        dstJackMesh.getWorldPosition(positions[3]);
+        // derive positions[2] (cable control point)
+        positions[2]
+            .set(0, 0, (NLET_HEIGHT + CABLE_CONTROL_POINT_DISTANCE) / 2)
+            .applyQuaternion(q)
+            .add(positions[3])
+    }
+
+    // TODO There must be a better API for this!
+    let position = cableMesh.geometry.attributes.position;
+    let point = new THREE.Vector3()
+    for (let i = 0; i < NUM_CABLE_SEGMENTS; i++) {
+        let t = i / (NUM_CABLE_SEGMENTS - 1);
+        curve.getPoint(t, point);
+        // if (i==0) console.log(point)
+        position.setXYZ(i, point.x, point.y, point.z);
+    }
+    position.needsUpdate = true;
+}
+
 function enactDeltaConnect(world, delta) {
 
+    let src = getObjectByPath(world, delta.paths[0]);
+    let dst = getObjectByPath(world, delta.paths[1]); 
+
+
+
+    // make a cable:
+    let geom = new THREE.BufferGeometry();
+    let vertices = new Float32Array(NUM_CABLE_SEGMENTS * 3);
+    geom.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
+
+    let positions = [
+        new THREE.Vector3(),
+        new THREE.Vector3(),
+        new THREE.Vector3(),
+        new THREE.Vector3() 
+    ];
+    let curve = new THREE.CatmullRomCurve3(positions);
+    //curve.curveType = 'catmullrom'; //
+    //curve.curveType = 'centripetal'; 
+    curve.curveType = 'chordal';
+
+    let cableMesh = new THREE.Line(geom, new THREE.LineBasicMaterial({
+        color: 0xD3D3D3,
+        opacity: 1,
+        linewidth: 1
+    }));
+    cableMesh.castShadow = true;
+    // TODO: this shouldn't be needed
+    cableMesh.frustumCulled = false;
+
+    
+    let srcJackMesh = new THREE.Mesh(boxGeom, boxMat);
+    let dstJackMesh = new THREE.Mesh(boxGeom, boxMat);
+    srcJackMesh.userData.kind = "jack_outlet";
+    // this.srcJackMesh.userData.moveable = true;
+    // this.srcJackMesh.userData.selectable = true;
+    // this.srcJackMesh.userData.cable = this;
+    srcJackMesh.userData.color = [1, 0, 0, 1];
+    srcJackMesh.userData.instanceShape = SHAPE_CYLINDER;
+    srcJackMesh.scale.set(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT);
+    dstJackMesh.userData.kind = "jack_inlet";
+    // this.dstJackMesh.userData.moveable = true;
+    // this.dstJackMesh.userData.selectable = true;
+    // this.dstJackMesh.userData.cable = this;
+    dstJackMesh.userData.color = [0, 1, 0, 1];
+    dstJackMesh.userData.instanceShape = SHAPE_CYLINDER;
+    dstJackMesh.scale.set(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT);
+    cableMesh.add(srcJackMesh);
+    cableMesh.add(dstJackMesh);
+
+
+    cableMesh.userData.curve = curve;
+    cableMesh.userData.positions = positions;
+    cableMesh.userData.src = src;
+    cableMesh.userData.dst = dst;
+    cableMesh.userData.srcJackMesh = srcJackMesh;
+    cableMesh.userData.dstJackMesh = dstJackMesh;
+    cableMesh.userData.isCable = true;
+
+    cableUpdate(cableMesh);
+    ghostWorld.add(cableMesh);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -416,17 +664,30 @@ function animate() {
         once = true;
     }
 
+    // re-layout:
     updateDirty(ghostScene, false);
 
-    // ? are we in VR?
+
+    // update the instancing buffers
+    currentBoxInstanceCount = 0;
+    copyGhostToInstances(ghostScene);
+
+    instBoxLocationAttr.needsUpdate = true;
+    instBoxOrientationAttr.needsUpdate = true;
+    instBoxScaleAttr.needsUpdate = true;
+    instBoxColorAttr.needsUpdate = true;
+    instBoxShapeAttr.needsUpdate = true;
+    //instBoxEmissionAttr.needsUpdate = true;
+    instBoxGeometry.maxInstancedCount = currentBoxInstanceCount;
+
+
+    // handle VR device state & inputs:
     if (!renderer.vr.isPresenting()){
         orbitControls.update();
         renderer.vr.enabled = false;
     } else {
         renderer.vr.enabled = true;
     }
-    //log("renderer.vr.enabled", renderer.vr.enabled)
-
     try {
         VRcontrollers[0].update();
         VRcontrollers[1].update();
@@ -442,6 +703,157 @@ function animate() {
     if (sock && sock.socket && sock.socket.readyState === 1) {
         // send state back to server
 
+    }
+}
+
+function copyGhostToInstances(parent) {
+    
+    let pos = new THREE.Vector3();
+    let scale = new THREE.Vector3();
+    let quat = new THREE.Quaternion();
+    let mat = new THREE.Matrix4();
+    for (let o of parent.children) {
+
+
+        // copy anything that is supposed to be instanced:
+   
+
+        if (o.userData.isCable) {
+            let curve = o.userData.curve;
+            let ts = 1 / (NUM_CABLE_SEGMENTS);
+            let p0 = new THREE.Vector3();
+            let p1 = new THREE.Vector3();
+            let tangent = new THREE.Vector3();
+
+            let points = curve.getSpacedPoints(NUM_CABLE_SEGMENTS+1);
+
+            // turn each segment into a cylinder:
+            for (let j=0; j<NUM_CABLE_SEGMENTS; j++) {
+                let i = currentBoxInstanceCount;
+                let i3 = i * 3;
+                let i4 = i * 4;
+
+                let t0 = j * ts;
+                let t1 = (j + 1) * ts;
+                let t = (j + 0.5) * ts;
+                // curve.getPoint(t0, p0);
+                // curve.getPoint(t1, p1);
+                // pos.lerpVectors(p0, p1, 0.5);
+
+                p0.copy(points[j])
+                p1.copy(points[j+1])
+                pos.copy(p0);
+
+                let length = p0.distanceTo(p1);
+
+
+                tangent.copy(p1).sub(p0).normalize();
+                let normal = new THREE.Vector3(tangent.y, tangent.z, tangent.x);
+                let cotangent = new THREE.Vector3();
+                cotangent.crossVectors(normal, tangent);
+                let mat = new THREE.Matrix4();
+                mat.makeBasis(cotangent, normal, tangent);
+
+
+                quat.setFromRotationMatrix(mat)
+                //quat.setFromAxisAngle(tangent, 0);
+                //if (j == 5) console.log(quat)
+
+
+
+                // copy to instance:
+                instBoxLocationAttr.array[i3 + 0] = pos.x;
+                instBoxLocationAttr.array[i3 + 1] = pos.y;
+                instBoxLocationAttr.array[i3 + 2] = pos.z;
+                
+                instBoxOrientationAttr.array[i4 + 0] = quat.x;
+                instBoxOrientationAttr.array[i4 + 1] = quat.y;
+                instBoxOrientationAttr.array[i4 + 2] = quat.z;
+                instBoxOrientationAttr.array[i4 + 3] = quat.w;
+                
+                instBoxScaleAttr.array[i3 + 0] = CABLE_JACK_RADIUS;
+                instBoxScaleAttr.array[i3 + 1] = CABLE_JACK_RADIUS;
+                instBoxScaleAttr.array[i3 + 2] = CABLE_JACK_RADIUS;
+
+                instBoxColorAttr.array[i4 + 0] = o.material.color.r;
+                instBoxColorAttr.array[i4 + 1] = o.material.color.g;
+                instBoxColorAttr.array[i4 + 2] = 0; //o.material.color.b;
+                instBoxColorAttr.array[i4 + 3] = o.material.color.a;
+
+                instBoxShapeAttr.array[i] = SHAPE_CYLINDER;
+
+                currentBoxInstanceCount++;
+            }
+
+        } else if (o.userData.instanceShape !== undefined) {
+            let i = currentBoxInstanceCount;
+            let i3 = i * 3;
+            let i4 = i * 4;
+            
+            // get pose of object:
+            o.matrixWorld.decompose(pos, quat, scale);
+            
+            // copy to instance:
+            instBoxLocationAttr.array[i3 + 0] = pos.x;
+            instBoxLocationAttr.array[i3 + 1] = pos.y;
+            instBoxLocationAttr.array[i3 + 2] = pos.z;
+            
+            instBoxOrientationAttr.array[i4 + 0] = quat.x;
+            instBoxOrientationAttr.array[i4 + 1] = quat.y;
+            instBoxOrientationAttr.array[i4 + 2] = quat.z;
+            instBoxOrientationAttr.array[i4 + 3] = quat.w;
+            
+            instBoxScaleAttr.array[i3 + 0] = scale.x;
+            instBoxScaleAttr.array[i3 + 1] = scale.y;
+            instBoxScaleAttr.array[i3 + 2] = scale.z;
+
+            if (o.userData.color) {
+                instBoxColorAttr.array[i4 + 0] = o.userData.color[0]
+                instBoxColorAttr.array[i4 + 1] = o.userData.color[1]
+                instBoxColorAttr.array[i4 + 2] = o.userData.color[2]
+                instBoxColorAttr.array[i4 + 3] = o.userData.color[3]
+            } else {
+                instBoxColorAttr.array[i4 + 0] = 0.5
+                instBoxColorAttr.array[i4 + 1] = 0.5
+                instBoxColorAttr.array[i4 + 2] = 0.5
+                instBoxColorAttr.array[i4 + 3] = 1
+            }
+            instBoxShapeAttr.array[i] = o.userData.instanceShape;
+
+            currentBoxInstanceCount++;
+        }
+
+        copyGhostToInstances(o);
+    }
+}
+
+
+// this function will re-layout any modules marked as dirty
+function updateDirty(parent, isDirty) {
+    
+    for (let o of parent.children) {
+
+        // on the way down
+        if (o.userData.isDirty) {
+            isDirty = true;
+            //log("isDirty", o.name, o.userData.kind)
+        }
+
+        if (o.userData.isCable) cableUpdate(o);
+
+        // recurse to children
+        updateDirty(o, isDirty);
+
+        // on the way back up
+        if (isDirty) {
+            // layout for modules:
+            if (o.userData.isModule) {
+                // layout module
+                doModuleLayout(o);
+            }
+        }
+
+        o.userData.isDirty = false;
     }
 }
 
@@ -469,7 +881,7 @@ function doModuleLayout(mod) {
 
     backpanel.scale.set(grid_spacing * numcols, grid_spacing * numrows, 0.02);
     // reset anchor to top left corner:
-    backpanel.position.set(((grid_spacing * numcols) /2) - (grid_spacing /2) ,(-(grid_spacing * numrows) /2) + (grid_spacing /2), NLET_HEIGHT);
+    backpanel.position.set(((grid_spacing * numcols) /2) - (grid_spacing /2) ,(-(grid_spacing * numrows) /2) + (grid_spacing /2), 0);
 
     for (let r = 0, i=0; r<numrows; r++) {
         for (let c=0; c<numcols && i < numchildren; c++, i++) {
@@ -482,32 +894,6 @@ function doModuleLayout(mod) {
     }
 }
 
-function updateDirty(parent, isDirty) {
-    
-    for (let o of parent.children) {
-
-        // on the way down
-        if (o.userData.isDirty) {
-            isDirty = true;
-            //log("isDirty", o.name, o.userData.kind)
-        }
-
-        // recurse to children
-        updateDirty(o, isDirty);
-
-        // on the way back up
-        if (isDirty) {
-            // layout for modules:
-            if (o.userData.isModule) {
-                // layout module
-                doModuleLayout(o);
-            }
-        }
-
-        o.userData.isDirty = false;
-    }
-}
-
 function onServerMessage(msg, sock) {
     switch (msg.cmd) {
         case "deltas": {
@@ -516,5 +902,20 @@ function onServerMessage(msg, sock) {
         } break;
         default:
            // log("received JSON", msg, typeof msg);
+    }
+}
+
+function onKeypress(e) {
+
+    switch (e.which) {
+        case 71: {
+            ghostScene.visible = !ghostScene.visible;
+        } break;
+        default:
+            log("key press", e.which)
+    }
+
+    if (!renderer.vr.isPresenting()){
+
     }
 }
