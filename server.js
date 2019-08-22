@@ -14,9 +14,7 @@ const WebSocket = require('ws');
 const { vec2, vec3, vec4, quat, mat3, mat4 } = require("gl-matrix");
 const bottleneck = require('Bottleneck')
 
-
 const got = require("./got/got")
-console.log(got)
 
 // 1st cli arg can be the scenefile 
 let scenefile = __dirname + "/scene_files/scene_edited.json"
@@ -281,7 +279,7 @@ function load_scene(filename) {
 	// turn this into deltas:
 	let deltas = got.deltasFromGraph(localGraph, []);
 	//console.log(deltas)
-	console.log(deltas)
+//console.log(deltas)
 	send_all_clients(JSON.stringify({
 		cmd: "deltas",
 		date: Date.now(),
@@ -518,4 +516,4 @@ function intervalFunc() {
   console.log(localGraph)
 }
 
-setInterval(intervalFunc, 5500);
+//setInterval(intervalFunc, 5500);
