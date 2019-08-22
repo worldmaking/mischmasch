@@ -36,7 +36,7 @@ let sceneList = []
 // create a ws connection which can automatically attempt reconnections if server goes down
 //let connection = new ReconnectingWebSocket('ws://192.168.137.1:8080/', [], options);
 let connection;
-
+MaxAPI.post('node connecting to ip ' + process.argv[2])
 if (process.argv[2] === 'localhost'){
 	
 	connection  = new ReconnectingWebSocket('ws://localhost:8080/', [], options);
