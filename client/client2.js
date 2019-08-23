@@ -706,6 +706,67 @@ function animate() {
     }
 }
 
+const vector3_unitX = new THREE.Vector3( 1, 0, 0 );
+const vector3_unitY = new THREE.Vector3( 0, 1, 0 );
+const vector3_unitZ = new THREE.Vector3( 0, 0, 1 );
+
+// src and dst would, I presume, be direction vectors??
+// vec3, vec3 -> quat
+function getRotationTo(src, dst) {
+    let q = new THREE.Quaternion();
+
+    src = src.clone().normalize();
+    dst = dst.clone().normalize();
+    let d = src.dot(dst);
+
+    if (d >= 1.0) {
+        return q;
+    }
+
+    if (d < (1e-6 - 1.0)) {
+        //                   // Generate an axis
+        //                   Vector3 axis = Vector3::UNIT_X.crossProduct(*this);
+        //                   if (axis.isZeroLength()) // pick another if colinear
+        //                       axis = Vector3::UNIT_Y.crossProduct(*this);
+        //                   axis.normalise();
+        //                   q.FromAngleAxis(Radian(Math::PI), axis);
+
+        // Generate an axis
+        let axis = vector3_unitX.cross(src);
+        if (axis.length() == 0.0) {
+            axis = vector3_unitY.cross(src);
+        }
+        axis.normalize();
+
+        q.fromAxisAngle(axis, Math.PI);
+    } else {
+        //               Real s = Math::Sqrt( (1+d)*2 );
+        //               Real invs = 1 / s;
+
+        //               Vector3 c = v0.crossProduct(v1);
+
+        //               q.x = c.x * invs;
+        //               q.y = c.y * invs;
+        //               q.z = c.z * invs;
+        //               q.w = s * 0.5;
+        //               q.normalise();
+
+        let s = Math.sqrt((1 + d) * 2);
+        let invs = 1 / s;
+        let c = src.cross(dst);
+
+        q.x = (c.x * invs);
+        q.y = (c.y * invs);
+        q.z = (c.z * invs);
+        q.w = (s * 0.5);
+        q.normalize();
+
+    }
+
+
+    return q;
+}
+
 function copyGhostToInstances(parent) {
     
     let pos = new THREE.Vector3();
@@ -736,28 +797,33 @@ function copyGhostToInstances(parent) {
                 let t0 = j * ts;
                 let t1 = (j + 1) * ts;
                 let t = (j + 0.5) * ts;
-                // curve.getPoint(t0, p0);
-                // curve.getPoint(t1, p1);
-                // pos.lerpVectors(p0, p1, 0.5);
+                 curve.getPoint(t0, p0);
+                 curve.getPoint(t1, p1);
+                pos.lerpVectors(p0, p1, 0.5);
 
-                p0.copy(points[j])
-                p1.copy(points[j+1])
-                pos.copy(p0);
+               // p0.copy(points[j])
+               // p1.copy(points[j+1])
+               // pos.copy(p0);
 
-                let length = p0.distanceTo(p1);
+                let tan0 = curve.getTangent(t0);
+                let tan1 = curve.getTangent(t1);
 
+                quat = getRotationTo(tan0, tan1);
 
-                tangent.copy(p1).sub(p0).normalize();
-                let normal = new THREE.Vector3(tangent.y, tangent.z, tangent.x);
-                let cotangent = new THREE.Vector3();
-                cotangent.crossVectors(normal, tangent);
-                let mat = new THREE.Matrix4();
-                mat.makeBasis(cotangent, normal, tangent);
+                // let length = p0.distanceTo(p1);
 
 
-                quat.setFromRotationMatrix(mat)
-                //quat.setFromAxisAngle(tangent, 0);
-                //if (j == 5) console.log(quat)
+                // tangent.copy(p1).sub(p0).normalize();
+                // let normal = new THREE.Vector3(tangent.y, tangent.z, tangent.x);
+                // let cotangent = new THREE.Vector3();
+                // cotangent.crossVectors(normal, tangent);
+                // let mat = new THREE.Matrix4();
+                // mat.makeBasis(cotangent, normal, tangent);
+
+
+                // quat.setFromRotationMatrix(mat)
+                // //quat.setFromAxisAngle(tangent, 0);
+                // //if (j == 5) console.log(quat)
 
 
 
@@ -775,9 +841,9 @@ function copyGhostToInstances(parent) {
                 instBoxScaleAttr.array[i3 + 1] = CABLE_JACK_RADIUS;
                 instBoxScaleAttr.array[i3 + 2] = CABLE_JACK_RADIUS;
 
-                instBoxColorAttr.array[i4 + 0] = o.material.color.r;
-                instBoxColorAttr.array[i4 + 1] = o.material.color.g;
-                instBoxColorAttr.array[i4 + 2] = 0; //o.material.color.b;
+                instBoxColorAttr.array[i4 + 0] = tan0.x+0.5;
+                instBoxColorAttr.array[i4 + 1] = tan0.y+0.5;
+                instBoxColorAttr.array[i4 + 2] = tan0.z+0.5; //o.material.color.b;
                 instBoxColorAttr.array[i4 + 3] = o.material.color.a;
 
                 instBoxShapeAttr.array[i] = SHAPE_CYLINDER;
