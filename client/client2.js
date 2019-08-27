@@ -644,7 +644,8 @@ function enactDeltaConnect(world, delta) {
     cableMesh.userData.isCable = true;
 
     cableUpdate(cableMesh);
-    ghostWorld.add(cableMesh);
+
+    scene.add(cableMesh); 
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -666,6 +667,9 @@ function animate() {
 
     // re-layout:
     updateDirty(ghostScene, false);
+
+    // TODO: delete once cables are instanced:
+    updateDirty(scene, false);
 
 
     // update the instancing buffers
@@ -851,7 +855,8 @@ function copyGhostToInstances(parent) {
                 currentBoxInstanceCount++;
             }
 
-        } else if (o.userData.instanceShape !== undefined) {
+        } 
+        if (o.userData.instanceShape !== undefined) {
             let i = currentBoxInstanceCount;
             let i3 = i * 3;
             let i4 = i * 4;
