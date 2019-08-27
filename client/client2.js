@@ -20,6 +20,7 @@ let ghostControllers = []
 
 let ghostWorld = new THREE.Group();
 ghostWorld.name = "ghostWorld"
+//ghostWorld.rotation.set(0, Math.PI, 0, "XYZ")
 ghostScene.add(ghostWorld);
 
 let ghostMenu = new THREE.Group();
@@ -113,6 +114,14 @@ function getFirstIntersection(controller) {
     return intersections[0];
 }
 
+let tempMatrix = new THREE.Matrix4()
+function reparentWithTransform(object, oldparent, newparent) {
+    tempMatrix.getInverse(newparent.matrixWorld);
+    tempMatrix.premultiply(oldparent.matrixWorld);
+    object.applyMatrix(tempMatrix)
+    newparent.add(object)
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // LOADERS
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -148,7 +157,7 @@ async function init() {
     await initInstanceBoxMesh();
 
     scene.add(ghostScene)
-//      ghostScene.visible = false;
+    ghostScene.visible = false;
 
     await init_steamvr();
 
@@ -218,6 +227,7 @@ function addFloorGrid() {
     floorGrid.position.y = 0;
     floorGrid.material.opacity = 0.25;
     floorGrid.material.transparent = true;
+    floorGrid.name ="floorGrid"
     scene.add(floorGrid);
 }
 
@@ -307,6 +317,8 @@ async function init_steamvr() {
     for (let i=0; i<2; i++) {
         VRcontrollers[i] = initVRController(i);
         ghostControllers[i] = initGhostController(i);
+
+        VRcontrollers[i].userData.ghostController = ghostControllers[i]
     }
 
     {
@@ -359,40 +371,23 @@ function initVRController(id=0) {
     
 
     function onVRControllerTriggerDown(event) {
-        let controller = event.target; // VRcontrollers[n]
-        let idx = controller.userData.controllerID
-        let ghostController = ghostControllers[idx];
-        log("onVRControllerTriggerDown", idx, ghostController)
-        
-        let intersection = getFirstIntersection(controller);
-        // TODO ray hit nothing; emit a "deselect" event?
-        if (!intersection) return;
-
-        let object = intersection.object;
-        // TODO ray hit nothing; emit a "deselect event?"
-        if (!object) return;
-
-        // ray hit something -- but what happens next depends on what kind of object it is
-        log("onVRControllerTriggerDown intersected", object, intersection)
-
-        // dispatch this event:
-        editEvents.push({
-            cmd: "onVRControllerTriggerDown",
-            intersection: intersection
-        })
-        
+        let controller = event.target; 
+        controller.userData.isTriggerDown = true;
     }
 
     function onVRControllerTriggerUp(event) {
-        let controller = event.target; // VRcontrollers[n]
+        let controller = event.target;
+        controller.userData.isTriggerDown = false;
     }
 
     function onVRThumbPadDown(event) {
-        let controller = event.target; // VRcontrollers[n]
+        let controller = event.target;
+        controller.userData.isThumbPadDown = true;
     }
 
     function onVRThumbPadUp(event) {
-        let controller = event.target; // VRcontrollers[n]
+        let controller = event.target;
+        controller.userData.isThumbPadDown = false;
     }
 
     let controller = new THREE.ViveController(id);
@@ -404,6 +399,105 @@ function initVRController(id=0) {
     controller.name = "VRcontroller"+id
     controller.userData.controllerID = id;
     scene.add(controller);
+
+    controller.userData.state = "default"
+    controller.userData.intersection = null;
+    controller.userData.updateStateMachine = function() {
+        let intersection = this.intersection;
+        switch(this.state) {
+            case "dragging": {
+
+               // logonly("drag", this.dragState.target.name, this.dragState.target.matrix.elements)
+
+               // TODO: twist & zoom according to the this.thumbPadDX etc.
+
+                if (!this.isTriggerDown) {
+                    // release 
+                    let object = this.dragState.target
+                    let parent = this.dragState.oldparent
+                    this.state = "default";
+                    log("back to default state")
+
+                    // reparent target
+                    reparentWithTransform(object, this.ghostController, parent)
+                    this.dragState = null
+                }
+            } break;
+            case "twiddling": {
+                if (!this.isTriggerDown) {
+                    // release 
+                    this.state = "default";
+                    log("back to default state")
+                }
+
+            } break;
+            case "cabling": {
+                if (!this.isTriggerDown) {
+                    // release 
+                    this.state = "default";
+                    log("back to default state")
+                }
+
+            } break;
+            case "menu": {
+                if (!this.isTriggerDown) {
+                    // release 
+                    this.state = "default";
+                    log("back to default state")
+                }
+            } break;
+            // case "multiselect"
+            // etc.
+            default: {
+                if (intersection) {
+                    let object = intersection.object
+                    let kind = object.userData.kind
+                    let name = object.name
+                    object.userData.isUnderCursor = true;
+
+                    if (this.isTriggerDown) {
+                        // did we select a knob, a cable, a port, or a box?
+
+                        if (object.userData.isBackPanel) {
+                            // switch context to parent:
+                            object = object.parent;
+                            kind = object.userData.kind
+                            let parent = object.parent;
+
+                            // enter "dragging mode"
+                            this.state = "dragging"
+                            this.dragState = {
+                                target: object,
+                                oldparent: object.parent,
+                            }
+                            // reparent target to controller:
+                            reparentWithTransform(object, parent, this.ghostController)
+
+
+                        } else if (object.userData.isTiddleable) {
+                            // go into twidding mode
+
+                            log("start twiddling", name)
+
+                        } else if (kind == "outlet") {
+
+                        } else if (kind == "inlet") {
+
+                        } else {
+
+                            log("kind", object.userData.kind)
+                        }
+
+                    }
+                } else if (this.isTriggerDown) {
+                    // trigger squeeze but nothing selected. 
+                    // Show menu?
+                    this.state = "menu";
+                    log("enter menu")
+                }
+            }
+        }
+    }
 
     return controller;
 }
@@ -541,14 +635,14 @@ function enactDeltaNewNode(world, delta) {
             container.scale.set(LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, NLET_HEIGHT);
             container.userData.instanceShape = SHAPE_CYLINDER
             container.userData.color = [Math.random(), Math.random(), Math.random(), 1];
-            container.userData.turnable = true;
+            container.userData.isTiddleable = true;
         }break;
         case "small_knob":{
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, NLET_HEIGHT);
             container.userData.instanceShape = SHAPE_CYLINDER
             container.userData.color = [Math.random(), Math.random(), Math.random(), 1];
-            container.userData.turnable = true;
+            container.userData.isTiddleable = true;
         }break;
         case "n_switch": {
             container = new THREE.Mesh(boxGeom, boxMat);
@@ -771,20 +865,55 @@ function animate() {
             // copy pose to ghostController:
             ghostController.matrix.copy(controller.matrix);
 
+            {
+                // get thumbpad state:
+                let gamepad = controller.getGamepad();
+                if (gamepad) {
+                    let button0 = gamepad.buttons[0];
+                    // consider the thumbpad state:
+                    if (button0.touched) {
+                        if (!controller.userData.isThumbPadTouched) {
+                            controller.userData.isThumbPadTouched = true;
+                            //console.log("touchstart", gamepad.axes[1])
+                            controller.userData.thumbPadDX = 0;
+                            controller.userData.thumbPadDY = 0;
+            
+                        } else {
+                            //console.log("drag", gamepad.axes[1])
+                            controller.userData.thumbPadDX = gamepad.axes[0] - controller.userData.thumbPadX;
+                            controller.userData.thumbPadDY = gamepad.axes[1] - controller.userData.thumbPadY;
+                        }
+            
+                        controller.userData.thumbPadX = gamepad.axes[0];
+                        controller.userData.thumbPadY = gamepad.axes[1];
+            
+                    } else if (controller.userData.isThumbPadTouched) {
+                        controller.userData.isThumbPadTouched = false;
+                        controller.userData.thumbPadDX = 0;
+                        controller.userData.thumbPadDY = 0;
+                        // touch release event
+                        //console.log("release")
+                    }
+                }
+            }
+
             // handle interaction only if visible:
             if (controller.visible) {
                 let beamIntersection = getFirstIntersection(controller);
                 let beam = controller.getObjectByName("VRControllerBeam");
                 if (beamIntersection && beamIntersection.object) {
-                    logonly("hit object", beamIntersection.object.name)
+                    //logonly("hit object", beamIntersection.object.name)
 
                     // stretch beam to fit:
                     beam.scale.z = beamIntersection.distance;
 
                     // what happens now depends on app state, button state, etc.
+                    controller.userData.intersection = beamIntersection;
+
                 } else {
                     // reset beam length:
                     beam.scale.z = 1;
+                    controller.userData.intersection = null;
                 }
 
                 // check for overlap.
@@ -794,7 +923,9 @@ function animate() {
 
                     // alternatively, could simply check if the raycaster's intersection distance is lower than a certain amount
                 }
-                
+
+                // run the controller State Machine
+                controller.userData.updateStateMachine();
             }
         }
     } catch(e) {
@@ -1009,6 +1140,14 @@ function copyGhostToInstances(parent) {
                 instBoxColorAttr.array[i4 + 1] = o.userData.color[1]
                 instBoxColorAttr.array[i4 + 2] = o.userData.color[2]
                 instBoxColorAttr.array[i4 + 3] = o.userData.color[3]
+
+                if (o.userData.isUnderCursor) {
+                    // TODO: HACK!
+                    // probaby want a separate instance attribute to handle things like this
+                    instBoxColorAttr.array[i4 + 0] *= 2
+                    instBoxColorAttr.array[i4 + 1] *= 2
+                    instBoxColorAttr.array[i4 + 2] *= 2;
+                }
             } else {
                 instBoxColorAttr.array[i4 + 0] = 0.5
                 instBoxColorAttr.array[i4 + 1] = 0.5
@@ -1029,6 +1168,8 @@ function copyGhostToInstances(parent) {
 function updateDirty(parent, isDirty) {
     
     for (let o of parent.children) {
+
+        o.userData.isUnderCursor = false;
 
         // on the way down
         if (o.userData.isDirty) {

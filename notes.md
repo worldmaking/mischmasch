@@ -9,8 +9,13 @@ VR controllers:
 - maybe also what they intersect with, via Box3.intersectSphere etc. (first transform controller pose into geometry's world boundnig box)
 
 
-
-
+Controller States:
+- Default state -- can highlight objects, etc.
+- Drag state -- moving an object (or objects)
+- Knob state -- turning knob only until released
+- Cabling state -- looking to intersect with a port
+- (Multi select state?) -- select many items to drag
+- (Menu state?)
 
 
 
