@@ -10,18 +10,13 @@ let once = 1;
 let incomingDeltas = [];
 let outgoingDeltas = [];
 
+let editEvents = [];
+
 // Virtual scene
 let ghostScene = new THREE.Group();
 ghostScene.name = "ghostScene"
 
 let ghostControllers = []
-for (let i=0; i<2; i++) {
-    let ghostController = new THREE.Object3D();
-    ghostController.name = "ghostController"+i
-    ghostController.userData.controllerID = i
-    ghostScene.add(ghostController);
-    ghostControllers[i] = ghostController
-}
 
 let ghostWorld = new THREE.Group();
 ghostWorld.name = "ghostWorld"
@@ -103,6 +98,21 @@ function getObjectByPath(world, path) {
     return obj
 }
 
+
+let raycaster = new THREE.Raycaster();
+function getFirstIntersection(controller) {
+    // derive ray origin & direction from controller:
+    raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
+    controller.getWorldDirection( raycaster.ray.direction );
+    // world direction gives us the Z axis of the controller
+    // but we are looking in the -Z axis -- so we need to negate it:
+    raycaster.ray.direction.multiplyScalar(-1.)
+
+    //let intersections = raycaster.intersectObjects(scene.children, true);
+    let intersections = raycaster.intersectObjects(ghostScene.children, true);
+    return intersections[0];
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // LOADERS
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -132,17 +142,15 @@ async function init() {
 
 
     // init 3D world
-    init_threejs();
+    await init_threejs();
     addFloorGrid();
 
-    initInstanceBoxMesh();
+    await initInstanceBoxMesh();
 
     scene.add(ghostScene)
-    ghostScene.visible = false;
+//      ghostScene.visible = false;
 
-    // init the input devices & their handlers:
-    VRcontrollers[0] = initVRController(0);
-    VRcontrollers[1] = initVRController(1);
+    await init_steamvr();
 
 
     document.addEventListener("keydown", onKeypress, false);
@@ -156,9 +164,7 @@ async function init() {
     serverConnect();
 }
 
-
-
-function init_threejs() {
+async function init_threejs() {
     scene = new THREE.Scene();
 
     camera = new THREE.PerspectiveCamera(
@@ -277,24 +283,80 @@ async function initInstanceBoxMesh() {
 }
 
 
+async function init_steamvr() {
+    let viveControllerPath = 'js/three-r102/examples/models/obj/vive-controller/';
+    let viveHeadsetModelPath = "models/viveHeadset/"
+    let loadedControllerModel = await loadOBJ(viveControllerPath + "vr_controller_vive_1_5.obj");
+    let viveTexturePNG = await loadTexture(viveControllerPath + 'onepointfive_texture.png');
+    let viveSpecularPNG = await loadTexture(viveControllerPath + 'onepointfive_spec.png');
+    let loadedHeadsetModel = await loadOBJ(viveHeadsetModelPath + "V2.obj");
+    let viveHeadsetPNGs = [
+        await loadTexture(viveHeadsetModelPath + 'base.png'),
+        await loadTexture(viveHeadsetModelPath + 'strap.png'),
+        await loadTexture(viveHeadsetModelPath + 'logo.png'),
+        await loadTexture(viveHeadsetModelPath + 'lens.png'),
+        await loadTexture(viveHeadsetModelPath + 'black.png'), //await loadTexture(viveHeadsetModelPath + 'dots.png'),
+        await loadTexture(viveHeadsetModelPath + 'black.png'),
+        await loadTexture(viveHeadsetModelPath + 'noise.png'),
+        await loadTexture(viveHeadsetModelPath + 'foam.png'),
+        await loadTexture(viveHeadsetModelPath + 'black.png'), //await loadTexture(viveHeadsetModelPath + 'screen.png')
+    ];
+
+    
+    // init the input devices & their handlers:
+    for (let i=0; i<2; i++) {
+        VRcontrollers[i] = initVRController(i);
+        ghostControllers[i] = initGhostController(i);
+    }
+
+    {
+        
+        headsetMesh = loadedHeadsetModel.children[0]
+        const inch2m = 0.0254;
+        headsetMesh.geometry.scale(-inch2m, inch2m, -inch2m); // convert cm to m
+        for (let i in headsetMesh.material) {
+            if (viveHeadsetPNGs[i]) {
+                headsetMesh.material[i].map = viveHeadsetPNGs[i];
+            }
+        }
+        headsetMesh.castShadow = true;
+        headsetMesh.receiveShadow = true;
+    }
+
+    {
+        let controllerMesh = loadedControllerModel.children[0];
+        controllerMesh.material.map = viveTexturePNG;
+        controllerMesh.material.specularMap = viveSpecularPNG;
+        controllerMesh.castShadow = true;
+        controllerMesh.receiveShadow = true;
+
+        // let pivot = new THREE.Mesh(new THREE.IcosahedronBufferGeometry(0.01, 2));
+        // pivot.name = 'pivot';
+        // //pivot.position.y = - 0.016;
+        // pivot.position.z = - 0.043;
+        // pivot.rotation.x = Math.PI / 5.5;
+        // controllerMesh.add(pivot);
+        // // pivot.material = pivot.material.clone();
+
+        // beam:
+        let geometry = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(0, 0, -1)
+        ]);
+        let line = new THREE.Line(geometry);
+        line.name = "VRControllerBeam";
+        line.scale.z = 1;
+
+        for (let i=0; i<2; i++) {
+            VRcontrollers[i].add(controllerMesh.clone());
+            VRcontrollers[i].add(line.clone());
+        }
+    }
+}
+
+
 function initVRController(id=0) {
     
-    let tempMatrix = new THREE.Matrix4();
-    let raycaster = new THREE.Raycaster();
-    
-
-    function getFirstIntersection(controller) {
-        // derive ray origin & direction from controller:
-        raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
-        controller.getWorldDirection( raycaster.ray.direction );
-        // world direction gives us the Z axis of the controller
-        // but we are looking in the -Z axis -- so we need to negate it:
-        raycaster.ray.direction.multiplyScalar(-1.)
-
-        //let intersections = raycaster.intersectObjects(scene.children, true);
-        let intersections = raycaster.intersectObjects(ghostScene.children, true);
-        return intersections[0];
-    }
 
     function onVRControllerTriggerDown(event) {
         let controller = event.target; // VRcontrollers[n]
@@ -312,6 +374,12 @@ function initVRController(id=0) {
 
         // ray hit something -- but what happens next depends on what kind of object it is
         log("onVRControllerTriggerDown intersected", object, intersection)
+
+        // dispatch this event:
+        editEvents.push({
+            cmd: "onVRControllerTriggerDown",
+            intersection: intersection
+        })
         
     }
 
@@ -336,7 +404,26 @@ function initVRController(id=0) {
     controller.name = "VRcontroller"+id
     controller.userData.controllerID = id;
     scene.add(controller);
+
     return controller;
+}
+
+function initGhostController(id=0) {
+    
+    let ghostController = new THREE.Object3D();
+    ghostController.name = "ghostController"+id
+    ghostController.userData.controllerID = id
+    // NOTE:  disable Three.js automatic matrix management
+    // because we are going to set the matrix of these manually ourselves
+    // (copying the matrix from the actual VR controllers)
+    ghostController.matrixAutoUpdate = false;
+    ghostScene.add(ghostController);
+
+    let debugGeom = new THREE.Mesh(new THREE.BoxGeometry(0.01,0.01,0.2));
+    debugGeom.name = 'ghostControllerDebugObject';
+    ghostController.add(debugGeom);
+
+    return ghostController;
 }
 
 
@@ -656,49 +743,88 @@ function animate() {
     //renderer.setAnimationLoop(render);
     requestAnimationFrame( animate );
 
-    // handle incoming deltas:
-    while (incomingDeltas.length > 0) {
-        let delta = incomingDeltas.shift();
-        // TODO: derive which world to add to:
-        enactDelta(ghostWorld, delta);
-        //log("incoming deltas")
-        once = true;
+    // handle scene changes from server:
+    {
+        // handle incoming deltas:
+        while (incomingDeltas.length > 0) {
+            let delta = incomingDeltas.shift();
+            // TODO: derive which world to add to:
+            enactDelta(ghostWorld, delta);
+            //log("incoming deltas")
+            once = true;
+        }
+
+        // re-layout:
+        updateDirty(ghostScene, false);
+
+        // TODO: delete once cables are instanced:
+        updateDirty(scene, false);
     }
 
-    // re-layout:
-    updateDirty(ghostScene, false);
-
-    // TODO: delete once cables are instanced:
-    updateDirty(scene, false);
-
-
-    // update the instancing buffers
-    currentBoxInstanceCount = 0;
-    copyGhostToInstances(ghostScene);
-
-    instBoxLocationAttr.needsUpdate = true;
-    instBoxOrientationAttr.needsUpdate = true;
-    instBoxScaleAttr.needsUpdate = true;
-    instBoxColorAttr.needsUpdate = true;
-    instBoxShapeAttr.needsUpdate = true;
-    //instBoxEmissionAttr.needsUpdate = true;
-    instBoxGeometry.maxInstancedCount = currentBoxInstanceCount;
-
-
-    // handle VR device state & inputs:
-    if (!renderer.vr.isPresenting()){
-        orbitControls.update();
-        renderer.vr.enabled = false;
-    } else {
-        renderer.vr.enabled = true;
-    }
+    // Interaction:
     try {
-        VRcontrollers[0].update();
-        VRcontrollers[1].update();
+        for (let i=0; i<2; i++) {
+            let controller = VRcontrollers[i]
+            let ghostController = ghostControllers[i];
+            // update VR controller pose:
+            controller.update();
+            // copy pose to ghostController:
+            ghostController.matrix.copy(controller.matrix);
+
+            // handle interaction only if visible:
+            if (controller.visible) {
+                let beamIntersection = getFirstIntersection(controller);
+                let beam = controller.getObjectByName("VRControllerBeam");
+                if (beamIntersection && beamIntersection.object) {
+                    logonly("hit object", beamIntersection.object.name)
+
+                    // stretch beam to fit:
+                    beam.scale.z = beamIntersection.distance;
+
+                    // what happens now depends on app state, button state, etc.
+                } else {
+                    // reset beam length:
+                    beam.scale.z = 1;
+                }
+
+                // check for overlap.
+                {
+                    // could do this while traversing the scene, checking for each geom if it overlaps with a bounding box/sphere of the controller
+                    // see THREE.Box3.intersectsBox and THREE.Box3.intersectsSphere
+
+                    // alternatively, could simply check if the raycaster's intersection distance is lower than a certain amount
+                }
+                
+            }
+        }
     } catch(e) {
         console.warn(e)
     }
 
+    // update GPU:
+    {
+        // update the instancing buffers
+        currentBoxInstanceCount = 0;
+        copyGhostToInstances(ghostScene);
+
+        instBoxLocationAttr.needsUpdate = true;
+        instBoxOrientationAttr.needsUpdate = true;
+        instBoxScaleAttr.needsUpdate = true;
+        instBoxColorAttr.needsUpdate = true;
+        instBoxShapeAttr.needsUpdate = true;
+        //instBoxEmissionAttr.needsUpdate = true;
+        instBoxGeometry.maxInstancedCount = currentBoxInstanceCount;
+    }
+
+    // handle VR device state
+    if (renderer.vr.isPresenting()){
+        renderer.vr.enabled = true;
+    } else {
+        orbitControls.update();
+        renderer.vr.enabled = false;
+    }
+
+    // draw:
     stats.begin();
     // draw everything
     renderer.render(scene, camera);

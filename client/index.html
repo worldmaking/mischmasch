@@ -64,9 +64,7 @@
         let logElement = document.getElementById("log");
         let logMessageList = [];
 
-        function log(...args) {
-            console.log(args);
-
+        function logonly(...args) {
             let msg = args.join(" ")
             if(logMessageList.length > 40){
                 logMessageList.shift();
@@ -75,6 +73,11 @@
             }
             let fMsg = logMessageList.join("\n");
             logElement.innerText = logMessageList.join("\n");
+        }
+
+        function log(...args) {
+            console.log(args);
+            logonly(args)
         }
 
         let stats = new Stats();
