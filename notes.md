@@ -18,7 +18,6 @@ is created using the same function that creates geometry etc. of objects in a pr
 
 
 
-
 we have 1 universe, which is our current workspace, that is, the singular actual experience of the app at any time
 
 in this, we can have many worlds (including worlds within worlds), which can be "saved" and "restored"
