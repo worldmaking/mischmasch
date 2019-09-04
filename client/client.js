@@ -398,7 +398,7 @@ async function init() {
 
         let bufferGeometry = new THREE.Geometry();
         // x: need to calculate y: value, z: Channel
-        +-
+       // +-
         bufferGeometry.vertices.push();
 
         let bufferLine = new THREE.Line( bufferGeometry, bufferMat );
