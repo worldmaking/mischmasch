@@ -1,6 +1,24 @@
 
 let once = 1;
 
+/**
+ * Generate a random integer between a range (min, max)
+ * @param {INT} min - minimum value for random int
+ * @param {INT} max - maximum value for random int
+ */
+function randomIntFromInterval(min,max) // min and max included
+{
+    return Math.floor(Math.random()*(max-min+1)+min);
+}
+/**
+ * Keep a value between two amounts and wrap excess
+ * @param {NUMBER} n - Value to wrap
+ * @param {NUMBER} m - Top value to wrap around
+ */
+function wrap(n,m){
+    return ((n%m)+m)%m;
+}
+
 
 ///////////////////////////////////////////
 // Globals
@@ -11,6 +29,8 @@ let incomingDeltas = [];
 let outgoingDeltas = [];
 
 let editEvents = [];
+
+let userPose = createUserPose();
 
 // Virtual scene
 let ghostScene = new THREE.Group();
@@ -97,6 +117,25 @@ function getObjectByPath(world, path) {
         obj = obj.getObjectByName(term);
     }
     return obj
+}
+
+function createUserPose(id=0) {
+    return {
+        id: id,
+        head: {
+            pos: new THREE.Vector3(),
+            orient: new THREE.Quaternion()
+        },
+        // TODO: make this moer generic
+        controller1: {
+            pos: new THREE.Vector3(),
+            orient: new THREE.Quaternion()
+        },
+        controller2: {
+            pos: new THREE.Vector3(),
+            orient: new THREE.Quaternion()
+        },
+    }
 }
 
 
@@ -424,15 +463,117 @@ function initVRController(id=0) {
                 }
             } break;
             case "twiddling": {
-                if (!this.isTriggerDown) {
+                if (this.isTriggerDown) {
+                    // do the twiddle
+                    let object = this.twiddleState.target;
+
+
+                    // modulate value based on relative poses of controller & object
+                    // as well as this.thumbPadX etc.?
+                    let controllerPos = new THREE.Vector3();
+                    let objectPos = new THREE.Vector3();
+                    controller.getWorldPosition(controllerPos);
+                    object.getWorldPosition(objectPos); 
+
+                    let value = 0;
+                    let dist = controllerPos.distanceTo(objectPos);value
+
+                    const KNOB_SWEEP = -Math.PI * 0.75;                  
+                    const KNOB_TWIST_DISTANCE = 0.3;
+                    const KNOB_SWING_DISTANCE = 0.2;
+
+                    if (dist < KNOB_TWIST_DISTANCE) {
+                        //controller.rotation.z += object.userData.rotation._z;
+                        //object.rotation.z = (controller.rotation.z - controller.userData.rotation._z);
+                        //console.log(object, controller)
+                        let angle = object.userData.rotation._z + (controller.rotation.z - controller.userData.rotation._z);
+
+                        // angle should be in range -PI to PI
+                        angle = wrap(angle + Math.PI, Math.PI * 2) - Math.PI;
+
+                        if (angle < KNOB_SWEEP) angle = KNOB_SWEEP;
+                        if (angle > -KNOB_SWEEP) angle = -KNOB_SWEEP;
+                        // turn angle back into a 0..1 value:
+                        value = (((angle / KNOB_SWEEP) + 1)/2);
+                        
+                        // if (world.getObjectByName("uiLine") !== undefined){
+                        //     uiLine.geometry.vertices[0] = 0;
+                        //     uiLine.geometry.vertices[1] = 0;
+                        //     uiLine.geometry.verticesNeedUpdate = true;
+                        
+                        //     line.scale.z = getControllerLineLength;
+                        // }         
+                    } else if (dist > KNOB_SWING_DISTANCE) {
+                        //put controller into knob space using matrix
+                        //set angle to the knob
+                        //take controller out of knob space
+                        
+                        let controllerPos = new THREE.Vector3()
+                        controller.getWorldPosition(controllerPos)
+                    
+
+                        let knobPos = new THREE.Vector3()
+                        object.getWorldPosition(knobPos);
+
+                        let relPos = new THREE.Vector3();
+                        relPos.subVectors(controllerPos, knobPos);
+
+                        let moduleQuat = new THREE.Quaternion();
+                        moduleQuat.copy(object.parent.quaternion)
+                        moduleQuat.inverse();
+
+                        // now rotate this into the knob's perspective:
+                        relPos.applyQuaternion(moduleQuat);
+                        // //get controller angle via x and y
+                        // (This ranges from -PI to +PI)
+                        let angle = Math.atan2(-relPos.x, relPos.y);
+                        // map this to a 0..1 range:
+
+                        if (angle < KNOB_SWEEP) angle = KNOB_SWEEP;
+                        if (angle > -KNOB_SWEEP) angle = -KNOB_SWEEP;
+                        // turn angle back into a 0..1 value:
+                        value = (((angle / KNOB_SWEEP) + 1)/2);
+
+                        // if (dist < KNOB_TWIST_DISTANCE) {
+                        //     let factor = (dist - KNOB_SWING_DISTANCE) / (KNOB_TWIST_DISTANCE - KNOB_SWING_DISTANCE);
+                        
+                        //     value = value + factor * (bigValue - value);
+
+                        // } else {
+                        //     value = bigValue;
+                        // }
+
+                        // if(world.getObjectByName("uiLine") !== undefined){
+                        //     uiLine.geometry.vertices[0] = controllerPos;
+                        //     uiLine.geometry.vertices[1] = objectPos;
+                        //     uiLine.geometry.verticesNeedUpdate = true;
+
+                        //     line.scale.z = 0;
+                        // }
+                        object.userData.rotation = object.rotation.clone();
+                        
+                    }
+
+                    outgoingDeltas.push(
+                        { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: value });
+
+                } else {
                     // release 
                     this.state = "default";
+                    this.twiddleState = null
                     log("back to default state")
                 }
 
             } break;
             case "cabling": {
                 if (!this.isTriggerDown) {
+
+                    let object = this.cablingState.target;
+                    let parent = this.cablingState.oldparent;
+
+                    reparentWithTransform(object, parent, this.ghostController);
+
+                    
                     // release 
                     this.state = "default";
                     log("back to default state")
@@ -478,10 +619,26 @@ function initVRController(id=0) {
                             // go into twidding mode
 
                             log("start twiddling", name)
+                            this.twiddleState = {
+                                target: object,
+                            }
+                            this.state = "twiddling"
+                            
+                            // cache current rotations so we can make it relative:
+                            this.rotation = controller.rotation.clone();
+                            object.userData.rotation = object.rotation.clone();
 
                         } else if (kind == "outlet") {
-
+                         
                         } else if (kind == "inlet") {
+
+                        } else if(kind == "jack_outlet"){
+                            this.state = "cabling";
+                            reparentWithTransform(object, parent, this.ghostController);
+
+                        } else if(kind == "jack_inlet"){
+                            this.state = "cabling";
+                            reparentWithTransform(object, parent, this.ghostController);
 
                         } else {
 
@@ -829,6 +986,100 @@ function enactDeltaConnect(world, delta) {
     scene.add(cableMesh); 
 }
 
+
+
+/*
+    { op:"propchange", path:"x", name:"pos", from:[x, y, z], to:[x, y, z] }
+*/
+function enactDeltaObjectPos(delta) {
+    // assert(delta.op == "propchange")
+    // assert(delta.name == "pos")
+    let object = getObjectByPath(ghostScene, delta.path);
+
+    // TODO: are positions relative to parent or global?
+    object.position.set(delta.to[0], delta.to[1], delta.to[2])
+
+//     // assert (object, "path not found")
+//     object.userData.fromPos = delta.to;
+//     // TODO: assert delta.from is roughly equal to current object.position
+
+//     // what the object should be part of:
+//     let parent = object.userData.originalParent;
+//     if (parent == undefined) parent = object.parent;
+//     // temporarily move object to world space to set the position:
+//     ghostMeshes.add(object);
+//    // console.log(ghostMeshes)
+//     // set the position & update matrices:
+//     object.position.fromArray(delta.to);
+//     object.matrixWorldNeedsUpdate = true;
+//     object.updateMatrixWorld();
+//     // now re-attach object to proper parent:
+//     parent.add(object);
+}
+
+/*
+    { op:"propchange", path:"x", name:"orient", from:[x, y, z, w], to:[x, y, z, w] }
+*/
+function enactDeltaObjectOrient(delta) {
+    // assert(delta.op == "propchange")
+    // assert(delta.name == "orient")
+
+    let object = getObjectByPath(delta.path);
+    
+    object.quaternion.set(delta.to[0], delta.to[1], delta.to[2], delta.to[3])
+    // // assert (object, "path not found")
+    // object.userData.fromOri = delta.to;
+    // // TODO: assert delta.from is roughly equal to current object.quaternion
+
+    // // what the object should be part of:
+    // let parent = object.userData.originalParent;
+    // if (parent == undefined) parent = object.parent;
+    // // temporarily move object to world space to set the position:
+    // ghostMeshes.add(object);
+    // // set the position & update matrices:
+    // object.quaternion.fromArray(delta.to);
+    // object.matrixWorldNeedsUpdate = true;
+    // object.updateMatrixWorld();
+    // // now re-attach object to proper parent:
+    // parent.add(object);
+}
+
+/*
+    { op:"propchange", path:"x", name:"value", from:x, to:y }
+*/
+function enactDeltaObjectValue(delta) {
+    // let object = getObjectByPath(delta.path);
+    // let kind = object.userData.kind; // small_knob, nswitch, etc.
+    // let value = delta.to;
+    // switch(kind){
+    //     case "small_knob":
+    //     case "large_knob": {
+    //         value = value.toFixed(2);
+    //         object.userData.value = value;
+    //         //console.log("Back from server Value", value)
+    //         //Update once server says:
+            
+    //         // if value == 0, angle should be -sweep
+    //         // if value == 1, angle should be sweep 
+    //         let derived_angle = KNOB_SWEEP * ((value*2) - 1);
+            
+    //         // set rotation of knob by this angle, and normal axis of knob:
+    //         object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
+    //     } break;
+    //     case "n_switch": {
+    //         object.userData.value = value;
+    //         for(let child of object.children){
+    //             if(child.userData.selectable){
+    //                 child.position.fromArray( object.userData.positions[value -1]);
+    //             }
+    //         }
+    //     } break;
+    //     default:{
+
+    //     } break;
+    // }
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // DYNAMICS
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -842,6 +1093,7 @@ function animate() {
         // handle incoming deltas:
         while (incomingDeltas.length > 0) {
             let delta = incomingDeltas.shift();
+            logonly(JSON.stringify(delta, null, ""))
             // TODO: derive which world to add to:
             enactDelta(ghostWorld, delta);
             //log("incoming deltas")
@@ -964,6 +1216,35 @@ function animate() {
     if (sock && sock.socket && sock.socket.readyState === 1) {
         // send state back to server
 
+        // send any edits to the server:
+        if (outgoingDeltas.length > 0) {
+            let message = {
+                cmd: "deltas",
+                date: Date.now(),
+                data: outgoingDeltas
+            };
+            sock.send(message);
+            outgoingDeltas.length = 0;
+            //console.log("Sending Deltas")
+        }
+
+        // TODO: user account stuff
+
+        // send VR poses to the server:
+        if (renderer.vr.enabled) {
+            camera.getWorldPosition(userPose.head.pos);
+            camera.getWorldQuaternion(userPose.head.orient);
+            VRcontrollers[0].getWorldPosition(userPose.controller1.pos);
+            VRcontrollers[0].getWorldQuaternion(userPose.controller1.orient);
+            VRcontrollers[1].getWorldPosition(userPose.controller2.pos);
+            VRcontrollers[1].getWorldQuaternion(userPose.controller2.orient);
+
+            sock.send({
+                cmd: "user_pose",
+                date: Date.now(),
+                pose: userPose
+            });
+        }
     }
 }
 
