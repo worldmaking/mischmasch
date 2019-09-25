@@ -1092,22 +1092,32 @@ function visualFeedbackSocket() {
         //   console.log('Message sent.')
     };
     vsSocket.onmessage = function(message) {
-
+        console.log(message)
      //console.log('Socket server message: ', message.data);
-     let ledJSON = JSON.parse(message.data);
-     let ledInterleaved = ledJSON.visualFeedback;
-        for(let i =0; i < 2; i+=2){ //ledInterleaved.length;
-            let colorPath = ledInterleaved[i];
-            let colorVal = ledInterleaved[i+1];
-            console.log(colorPath);
-            console.log(colorVal);
+     switch(message.cmd){
+         case 'vizData':
 
-            let vsColorChager = clampTo(colorVal, -1, 1, 0, 255);
 
-            //TODO: Take path and add value directly to outlet color
+        let ledJSON = JSON.parse(message.data);
+        let ledInterleaved = ledJSON.visualFeedback;
+            for(let i =0; i < 2; i+=2){ //ledInterleaved.length;
+                let colorPath = ledInterleaved[i];
+                let colorVal = ledInterleaved[i+1];
+                console.log(colorPath);
+                console.log(colorVal);
 
-            console.log(vsColorChager); 
-        }
+                let vsColorChager = clampTo(colorVal, -1, 1, 0, 255);
+
+                //TODO: Take path and add value directly to outlet color
+
+                console.log(vsColorChager); 
+            }
+
+        break
+        default:
+            console.log('unhandled message ', message)
+    }
+
     };
   }
 
