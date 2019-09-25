@@ -398,7 +398,7 @@ async function init() {
 
         let bufferGeometry = new THREE.Geometry();
         // x: need to calculate y: value, z: Channel
-        +-
+       // +-
         bufferGeometry.vertices.push();
 
         let bufferLine = new THREE.Line( bufferGeometry, bufferMat );
@@ -1082,20 +1082,40 @@ function clearScene() {
 // Websocket handling
 /////////////////////////////////////////////////////
 
+
+//{\"lfo_1__sine\":-0.7605468034744263\,\"lfo_1__phasor\":0.6140456795692444\,\"lfo_1__pulse\":1\,\"lfo_2__sine\":-0.7223623394966125\,\"lfo_2__phasor\":0.6223999857902527\,\"lfo_2__pulse\":1\,\"ffmvco_1__vco_1\":0.3347249925136566\,\"ffmvco_1__vco_2\":-0.3240717351436615\,\"ffmvco_1__master\":0.9353091716766357\,\"vca_1__output\":0\,\"comparator_1__max\":0\,\"comparator_1__min\":0\,\"outs_1__left\":0\,\"outs_1__right\":0}
+
+
 function visualFeedbackSocket() {
+
+    let spoofData = {
+    "lfo_1__sine":-0.7605468034744263,
+    "lfo_1__phasor":0.6140456795692444,
+    "lfo_1__pulse":1,
+    "lfo_2__sine":-0.7223623394966125,
+    };
     console.log('Creating socket');
     // TODO: Do not hardcode the IP 
-    let vsSocket = new WebSocket('ws://localhost:8084/');
+    let vsSocket = new WebSocket('ws://192.168.137.169:8084/');
     vsSocket.onopen = function() {
            console.log('Socket open.');
         //   socket.send(JSON.stringify({message: 'What is the meaning of life, the universe and everything?'}));
         //   console.log('Message sent.')
     };
     vsSocket.onmessage = function(message) {
-        console.log(message)
-     //console.log('Socket server message: ', message.data);
-     switch(message.cmd){
-         case 'vizData':
+
+    console.log('Socket server message: ', message.data);
+
+
+     let ledJSON = message.data;
+     let keys = Object.keys(ledJSON);
+     let values = Object.values(ledJSON);
+
+        for(let i =0; i < 2; i+=2){ //ledInterleaved.length;
+            let colorPath = keys[i];
+            let colorVal = values[i];
+            console.log(colorPath);
+            console.log(colorVal);
 
 
         let ledJSON = JSON.parse(message.data);
@@ -1114,12 +1134,13 @@ function visualFeedbackSocket() {
             }
 
         break
-        default:
-            console.log('unhandled message ', message)
+        // default:
+        //     console.log('unhandled message ', message)
     }
 
     };
-  }
+ }
+
 
 
 /**
