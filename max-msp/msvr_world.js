@@ -721,7 +721,14 @@ function visualize(sampleRate, resolution){
 		opPath = opPath.split('_buffer')[0]
 		vizObj[opPath] = opValue
 		}
-		outlet(0,'vizData',vizObj)
+		// let thisViz = JSON.stringify({
+		// 	cmd: 'maxClientViz',
+		// 	data: vizObj,
+		// 	date: Date.now()
+		// })
+
+		
+		outlet(0,'vizData',JSON.stringify(vizObj))
 		// outlet(',JSON.stringify(vizObj))
 }
 
