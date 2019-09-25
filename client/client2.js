@@ -566,17 +566,39 @@ function initVRController(id=0) {
 
             } break;
             case "cabling": {
-                if (!this.isTriggerDown) {
+                if (this.isTriggerDown) {
 
                     let object = this.cablingState.target;
                     let parent = this.cablingState.oldparent;
 
-                    reparentWithTransform(object, parent, this.ghostController);
+                    if(object.kind == "outlet"){
+                    //     outgoingDeltas.push(
+                    //         { op:"connect", path: object.userData.path, src:, dst: });
+                    // }
+                    
+
+                    if(object.kind == "inlet"){
+
+                    }
+                    reparentWithTransform(object, this.ghostController, parent);
+
+                    //check if jack is pointing at a valid point (aka inlet or outlet)
+                    // if so disconnect from ghost controller and connect to object the ray interacts with
+                    // else leave it dangling
+
+                    //if inlet create new jack parented to controller
+                    //else check for jack and pick up 
+
+                    //if holding jack and intersects with outlet or inlet 
+                    //connect
+                    // else drop in space
 
                     
-                    // release 
-                    this.state = "default";
-                    log("back to default state")
+                   
+                } else{
+                     // release 
+                     this.state = "default";
+                     log("back to default state")
                 }
 
             } break;
@@ -629,16 +651,24 @@ function initVRController(id=0) {
                             object.userData.rotation = object.rotation.clone();
 
                         } else if (kind == "outlet") {
-                         
+                            this.state = "cabling";
+                            this.cablingState = {
+                                target: object,
+                                oldparent: object.parent, // aka SRC
+                            }
+                            // need to create new jacks
+                            reparentWithTransform(object, parent, this.ghostController);
                         } else if (kind == "inlet") {
-
+                            this.state = "cabling";
+                            this.cablingState = {
+                                target: object,
+                                oldparent: object.parent, // aka DST
+                            }
+                            // need to create new jacks
+                            reparentWithTransform(object, parent, this.ghostController);
                         } else if(kind == "jack_outlet"){
-                            this.state = "cabling";
-                            reparentWithTransform(object, parent, this.ghostController);
-
+                            // needs to be a dragging state but also checking for interesections of inlets and outlets
                         } else if(kind == "jack_inlet"){
-                            this.state = "cabling";
-                            reparentWithTransform(object, parent, this.ghostController);
 
                         } else {
 
