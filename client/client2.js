@@ -571,11 +571,27 @@ function initVRController(id=0) {
                     let object = this.cablingState.target;
                     let parent = this.cablingState.oldparent;
 
+                    if(object.kind == "outlet"){
+                    //     outgoingDeltas.push(
+                    //         { op:"connect", path: object.userData.path, src:, dst: });
+                    // }
+                    
+
+                    if(object.kind == "inlet"){
+
+                    }
                     reparentWithTransform(object, this.ghostController, parent);
 
                     //check if jack is pointing at a valid point (aka inlet or outlet)
                     // if so disconnect from ghost controller and connect to object the ray interacts with
                     // else leave it dangling
+
+                    //if inlet create new jack parented to controller
+                    //else check for jack and pick up 
+
+                    //if holding jack and intersects with outlet or inlet 
+                    //connect
+                    // else drop in space
 
                     
                    
