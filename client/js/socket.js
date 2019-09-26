@@ -22,6 +22,9 @@ class Socket {
             self.socket.onerror = self.onerror;
             self.socket.onopen = function() {
                 console.log("websocket connected to "+addr);
+
+
+
                 if (self.onopen) self.onopen();
             }
             self.socket.onmessage = function(e) { 

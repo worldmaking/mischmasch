@@ -16,11 +16,14 @@ const bottleneck = require('Bottleneck')
 
 const got = require("./got/got")
 
+let ip;
 // 1st cli arg can be the scenefile 
 let scenefile = __dirname + "/scene_files/scene_edited.json"
 let OTHistoryFile = __dirname + '/histories/OT_' + Date.now() + '.json'
 
 
+// store ip addresses and ids per clients (to pair the max client with the browser client)
+let clients = {}
 			//demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
 			// turn this into deltas:
 			//let deltas = got.deltasFromGraph(demo_scene, []);
@@ -213,12 +216,37 @@ function send_all_clients(msg, ignore) {
 let sessionId = 0;
 wss.on('connection', function(ws, req) {
 
+	// console.log(req.id)
 	// do any
 	console.log("server received a connection");
 	console.log("server has "+wss.clients.size+" connected clients");
+	console.log('ip', req.connection.remoteAddress.split(':')[3])
 	//	ws.id = uuid.v4();
 	const id = ++sessionId;
-	const location = url.parse(req.url, true);
+	ip = req.connection.remoteAddress.split(':')[3]
+	// const location = url.parse(req.url, true);
+	// console.log(location)
+	clients[id] = ip
+	if (!clients[ip]){
+		clients[ip] = {}
+	}
+	console.log(clients)
+	//console.log(req.connection.remoteAddress)
+	setInterval(function(){ 
+		console.log(clients)
+		ws.send(JSON.stringify({
+			cmd:'contexts',
+			data: clients
+		})) 
+	}, 3000);
+	
+	// clients[ip] = {: ip, } 
+	// ws.send(JSON.stringify({
+	// 	cmd: 'assignID',
+	// 	data: id,
+	// 	date: Date.now()
+	// }))
+	
 	// You might use location.query.access_token to authenticate or share sessions
 	// or req.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
 	
@@ -294,6 +322,23 @@ function handlemessage(msg, sock, id) {
 
 
 	switch (msg.cmd) {
+		// this supports a handshake between a browser and max client running on the same machine. 
+		case "clientType":
+			switch (msg.data){
+				case 'vrContext':
+					// thisIP = clients[id]
+					  console.log(msg.data, id, ip, clients[id])
+						clients[ip]['vrContext'] = id
+				break
+
+				case 'audioContext':
+					console.log(msg.data, id, ip, clients[id])
+						
+						clients[ip]['audioContext'] = id
+				break
+			}
+			
+		break
 		case "deltas": {
 
 			// synchronize our local copy:
@@ -339,7 +384,7 @@ function handlemessage(msg, sock, id) {
 			*/
 		} break;
 
-		case "initController":{
+		case "initMax_Client":{
 
 			// the max patch "control.maxpat" will request the current available sessions & scene files from the server:
 
