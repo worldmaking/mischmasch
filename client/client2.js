@@ -1,7 +1,13 @@
+<<<<<<< HEAD
 const url = window.location.href.split('//')[1].split(':')[0];
 console.log('url', url)
 let once = 1;
 let sessionID;
+=======
+
+let once = 1;
+
+>>>>>>> 12fa24f463f9ddce33be1fbe09ce55dbc94b815c
 /**
  * Generate a random integer between a range (min, max)
  * @param {INT} min - minimum value for random int
@@ -575,7 +581,11 @@ function initVRController(id=0) {
                     if(object.kind == "outlet"){
                     //     outgoingDeltas.push(
                     //         { op:"connect", path: object.userData.path, src:, dst: });
+<<<<<<< HEAD
                     }
+=======
+                    // }
+>>>>>>> 12fa24f463f9ddce33be1fbe09ce55dbc94b815c
                     
 
                     if(object.kind == "inlet"){
@@ -718,12 +728,15 @@ function serverConnect() {
                 onopen: function () {
                     //this.send({ cmd: "getdata", date: Date.now() });
                     log("connected to server");
+<<<<<<< HEAD
 
                     // send to server that this client is a browser client
                     this.send({
                         cmd: 'clientType',
                         data: 'vrContext'
                     });
+=======
+>>>>>>> 12fa24f463f9ddce33be1fbe09ce55dbc94b815c
                     // request scene:
                     this.send({
                         cmd: "get_scene",
@@ -1279,8 +1292,12 @@ function animate() {
             sock.send({
                 cmd: "user_pose",
                 date: Date.now(),
+<<<<<<< HEAD
                 pose: userPose,
                 id: sessionID
+=======
+                pose: userPose
+>>>>>>> 12fa24f463f9ddce33be1fbe09ce55dbc94b815c
             });
         }
     }
@@ -1557,12 +1574,15 @@ function onServerMessage(msg, sock) {
             // insert into our TODO list:
             incomingDeltas.push.apply(incomingDeltas, msg.data);
         } break;
+<<<<<<< HEAD
 
         // server assigns an iid for our session. use this to route controller and HMD data to local max client. 
         case "assignID":{
             sessionID = msg.id
         }
         break
+=======
+>>>>>>> 12fa24f463f9ddce33be1fbe09ce55dbc94b815c
         default:
            // log("received JSON", msg, typeof msg);
     }
