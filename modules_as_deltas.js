@@ -543,12 +543,7 @@ let module_constructors = {
 			},
 			{
 				"op": "newnode",
-				"path": "${path}.left_(mono)",
-				"kind": "inlet"
-			},
-			{
-				"op": "newnode",
-				"path": "${path}.right_(stereo)",
+				"path": "${path}.input",
 				"kind": "inlet"
 			},
 			{

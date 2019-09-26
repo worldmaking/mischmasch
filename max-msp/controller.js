@@ -100,7 +100,9 @@ connection.addEventListener('message', (data) => {
 		break;
 		// headset & controller data
 		case "user_pose":
-		userData = JSON.stringify(data)
+		userData = JSON.stringify(data.pose)
+		newCmd = data.cmd
+		// maxInstances.post(userData.cmd)
 		MaxAPI.outlet('userData', userData)
 		break;
 

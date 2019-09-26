@@ -48,7 +48,7 @@ function ensureOuts(){
 function getVarnames(target){
 	gen_patcher.apply(function(b) { 
 		// prevent erasing our audio outputs from genpatcher
-		if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
+		if(b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
 			if (b.varname.indexOf(target) != -1){
 				gen_patcher.remove(b); 	
 
@@ -123,7 +123,7 @@ var handleDelta = function(delta) {
 					if (kind === "outs"){
 			
 						gen_patcher.message("script", "connect", newModule.varname, 0, "dac_left", 0);
-						gen_patcher.message("script", "connect", newModule.varname, 1, "dac_right", 0);
+						// gen_patcher.message("script", "connect", newModule.varname, 1, "dac_right", 0);
 						}
 					} else {
 					
@@ -286,7 +286,7 @@ var handleDelta = function(delta) {
 				
 				gen_patcher.apply(function(b) { 
 					// prevent erasing our audio outputs from genpatcher
-					if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
+					if(b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
 						//post('\n',deleteMe,2)
 						if (b.varname.indexOf(deleteMe) != -1){
 	
@@ -381,7 +381,7 @@ function clear(){
 	gen_patcher = this.patcher.getnamed("world").subpatcher();
 	gen_patcher.apply(function(b) { 
 		// prevent erasing our audio outputs from genpatcher
-		if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
+		if(b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
 		gen_patcher.remove(b); 				
 		}
 	});		
@@ -422,7 +422,7 @@ function client(msg){
 			gen_patcher.apply(function(b) { 
 			
 				// prevent erasing our audio outputs from genpatcher
-				if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "PLO"){
+				if(b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "PLO"){
 					gen_patcher.remove(b); 		
 				}
 			});
@@ -469,7 +469,7 @@ function client(msg){
 			gen_patcher.apply(function(b) { 
 			
 			// prevent erasing our audio outputs from genpatcher
-				if(b.varname !== "dac_right" && b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
+				if(b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
 					gen_patcher.remove(b); 		
 				}
 			});
@@ -530,7 +530,7 @@ function client(msg){
 		if (kind === "outs"){
 			
 			gen_patcher.message("script", "connect", nodeName, 0, "dac_left", 0);
-			gen_patcher.message("script", "connect", nodeName, 1, "dac_right", 0);
+			// gen_patcher.message("script", "connect", nodeName, 1, "dac_right", 0);
 		
 		} else if (kind === "param"){
 			// ignore gen operator-based param modules in the next section
