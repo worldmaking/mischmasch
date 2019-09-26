@@ -220,11 +220,17 @@ wss.on('connection', function(ws, req) {
 	// do any
 	console.log("server received a connection");
 	console.log("server has "+wss.clients.size+" connected clients");
-	console.log('ip', req.connection.remoteAddress.split(':')[3])
+	console.log('ip', req.headers.host.split(':')[0])
 	//	ws.id = uuid.v4();
 	const id = ++sessionId;
-	ip = req.connection.remoteAddress.split(':')[3]
-	// const location = url.parse(req.url, true);
+	// ip = req.connection.remoteAddress.split(':')[3] 
+ip = req.headers.host.split(':')[0]
+	if(!ip){
+		// console.log('vr', req.connection)
+		ip = req.ip
+	}
+	//console.log(ip)
+	// const location = urlw.parse(req.url, true);
 	// console.log(location)
 	clients[id] = ip
 	if (!clients[ip]){
@@ -236,7 +242,7 @@ wss.on('connection', function(ws, req) {
 		console.log(clients)
 		ws.send(JSON.stringify({
 			cmd:'contexts',
-			data: clients
+			data: clients[ip]
 		})) 
 	}, 3000);
 	

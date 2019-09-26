@@ -97,7 +97,7 @@ connection.addEventListener('message', (data) => {
 
 		case 'contexts':
 			
-			max.post(ip, data.data[ip])
+			max.post(ip, data.data)
 			max.outlet('contexts', data.data)
 		break
 		///////// GEN~ Client ///////////////////////
