@@ -1,0 +1,7311 @@
+[
+  {
+    "cmd": "deltas",
+    "date": 1556247668239,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "freevoib_0_48",
+        "kind": "freevoib",
+        "category": "abstraction",
+        "pos": [
+          -0.6279580101026873,
+          0.8446727449363868,
+          0.3762284177007788
+        ],
+        "orient": [
+          0.006673439463812688,
+          0.9963091206019321,
+          0.0017640779617275476,
+          -0.08555985960446442
+        ]
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_48.signal",
+        "kind": "inlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_48.damping_cv",
+        "kind": "inlet",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_48.fb1_cv",
+        "kind": "inlet",
+        "index": 2
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_48.fb2_cv",
+        "kind": "inlet",
+        "index": 3
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_48.spread_cv",
+        "kind": "inlet",
+        "index": 4
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_48.feedback_1",
+        "kind": "small_knob",
+        "range": [
+          0,
+          1
+        ],
+        "taper": "linear",
+        "value": 0.9,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_48.feedback_2",
+        "kind": "small_knob",
+        "range": [
+          0,
+          1
+        ],
+        "taper": "linear",
+        "value": 0.5,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_48.damping",
+        "kind": "small_knob",
+        "range": [
+          0,
+          1
+        ],
+        "taper": "linear",
+        "value": 0.5,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_48.spread",
+        "kind": "small_knob",
+        "range": [
+          0,
+          400
+        ],
+        "taper": "linear",
+        "value": 100,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_48.out",
+        "kind": "outlet",
+        "index": 0
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247669974,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.20267765842457,
+          0.935434797789678,
+          0.39126645105577457
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.09680146335238804,
+          0.7766483816988136,
+          -0.059831674667151925,
+          0.6195699632449613
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247671089,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.3731942107054291,
+          0.9753214691579959,
+          0.3003275841887715
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.024126620618823483,
+          0.6887888851748124,
+          0.019583468514081787,
+          0.7242957034519801
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674586,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": 0.9,
+        "to": 0.9
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674597,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.90",
+        "to": 0.8994439941696638
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674605,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.90",
+        "to": 0.8989071817886074
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674616,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.90",
+        "to": 0.8985629278777556
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674627,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.90",
+        "to": 0.898006691888782
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674640,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.90",
+        "to": 0.8979781617142326
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674652,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.90",
+        "to": 0.8978563688396385
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674661,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.90",
+        "to": 0.8973398528006472
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674672,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.90",
+        "to": 0.896511994525755
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674684,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.90",
+        "to": 0.8950289374543692
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674694,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.90",
+        "to": 0.8933799599744021
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674707,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.89",
+        "to": 0.8913293222064012
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674716,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.89",
+        "to": 0.8890196432395209
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674728,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.89",
+        "to": 0.8869276932681253
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674739,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.89",
+        "to": 0.8843428695343228
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674750,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.88",
+        "to": 0.8817041097375465
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674761,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.88",
+        "to": 0.87904300249011
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674775,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.88",
+        "to": 0.876349760987776
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674783,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.88",
+        "to": 0.8737965994948141
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674794,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.87",
+        "to": 0.8710794363758517
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674807,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.87",
+        "to": 0.8682713630774928
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674817,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.87",
+        "to": 0.8650218379756346
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674828,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.87",
+        "to": 0.8624776548450356
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674842,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.86",
+        "to": 0.8601423705133703
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674850,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.86",
+        "to": 0.857925864050174
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674862,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.86",
+        "to": 0.856180101941516
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674874,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.86",
+        "to": 0.8539266860171476
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674884,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.85",
+        "to": 0.8508278868525314
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674895,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.85",
+        "to": 0.8477790543740453
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674907,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.85",
+        "to": 0.8448866175087083
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674918,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.84",
+        "to": 0.8418671422439266
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674929,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.84",
+        "to": 0.8389776644781424
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674940,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.84",
+        "to": 0.8365578909796881
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674951,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.84",
+        "to": 0.8344625559996762
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674963,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.83",
+        "to": 0.8326038479534623
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674973,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.83",
+        "to": 0.8309115561668368
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674986,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.83",
+        "to": 0.8290477241039312
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247674996,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.83",
+        "to": 0.8270628171736092
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675008,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.83",
+        "to": 0.8250914318400371
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675019,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.83",
+        "to": 0.8231753399893548
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675031,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.82",
+        "to": 0.8212010124273089
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675042,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.82",
+        "to": 0.8189994694115158
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675053,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.82",
+        "to": 0.8166238465560417
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675065,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.82",
+        "to": 0.8142090651135708
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675075,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.81",
+        "to": 0.8112942292969287
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675087,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.81",
+        "to": 0.80807407375037
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675098,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.81",
+        "to": 0.8049051484097691
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675108,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.80",
+        "to": 0.8017321970672538
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675120,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.80",
+        "to": 0.7987206313356412
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675132,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.80",
+        "to": 0.7957724291648176
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675144,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.80",
+        "to": 0.7926765857885739
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675153,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.79",
+        "to": 0.7888723216706182
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675165,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.79",
+        "to": 0.7854279097357276
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675175,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.79",
+        "to": 0.7815019271471864
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675187,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7777529559915344
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675200,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7745489931559549
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675209,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7722002039760006
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675220,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7705212766520627
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675232,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7686758139106652
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675243,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7667479952653019
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675254,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7648449419021442
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675266,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7632129558314997
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675278,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7623165165784508
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675289,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7625324861859314
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675299,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7639416550763618
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675311,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7659869637929677
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675322,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7691560910782089
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675332,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7724826305599206
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675343,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7755865364608316
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675355,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7787300885076393
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675366,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7827142473325216
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675377,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7871296632933117
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675388,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.79",
+        "to": 0.7915447378794688
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675400,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.79",
+        "to": 0.7967332417645322
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675410,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.80",
+        "to": 0.8027928715961303
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675422,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.80",
+        "to": 0.8098361327753792
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675434,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.81",
+        "to": 0.8166164600539838
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675443,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.82",
+        "to": 0.8238852788962601
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675455,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.82",
+        "to": 0.8292592895058027
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675472,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.83",
+        "to": 0.8352305697187312
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675477,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.84",
+        "to": 0.8411530194013194
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675489,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.84",
+        "to": 0.846398144565856
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675500,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.85",
+        "to": 0.8509819448772664
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675511,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.85",
+        "to": 0.8556167613305675
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675523,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.86",
+        "to": 0.8601103984476715
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675535,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.86",
+        "to": 0.8646612375024694
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675545,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.86",
+        "to": 0.8695951565462259
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675557,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.87",
+        "to": 0.8747436305760837
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675567,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.87",
+        "to": 0.8809253230860632
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675579,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.88",
+        "to": 0.8880505716494062
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675590,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.89",
+        "to": 0.8961305957620594
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675601,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.90",
+        "to": 0.9036434398052333
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675615,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.90",
+        "to": 0.9111164302457113
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675625,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.91",
+        "to": 0.9191062931770205
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675635,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.92",
+        "to": 0.9252713975535591
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675646,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.93",
+        "to": 0.9326620886370915
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675657,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.93",
+        "to": 0.9400946064997877
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675668,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.94",
+        "to": 0.9473924885007106
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675680,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.95",
+        "to": 0.954254983588698
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675691,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.95",
+        "to": 0.9613430314714687
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675702,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.96",
+        "to": 0.9682498079266647
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675712,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.97",
+        "to": 0.9745963647315296
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675724,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.97",
+        "to": 0.9805470065747058
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675735,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.98",
+        "to": 0.9864485621325583
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675748,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.99",
+        "to": 0.9923186262836788
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675758,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.99",
+        "to": 0.9982839539817192
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675768,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.00",
+        "to": 1.003850806019969
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675783,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.00",
+        "to": 1.008711259171581
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675791,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.01",
+        "to": 1.0135627830105864
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675803,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.01",
+        "to": 1.0174856303939452
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675813,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.02",
+        "to": 1.0212969707993473
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675825,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.02",
+        "to": 1.0245605474271808
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675836,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.02",
+        "to": 1.0275094968192877
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675847,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.03",
+        "to": 1.0298209601668866
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675858,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.03",
+        "to": 1.0321651789553183
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675869,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.03",
+        "to": 1.0339791499525461
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675881,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.03",
+        "to": 1.0350030017456449
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675893,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.04",
+        "to": 1.0354691337568138
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675903,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.04",
+        "to": 1.035107215949217
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675915,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.04",
+        "to": 1.0335302987416946
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675925,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.03",
+        "to": 1.0311356630955366
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675937,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.03",
+        "to": 1.0283481999242228
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675948,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.03",
+        "to": 1.025331243334872
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675959,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.03",
+        "to": 1.0221377490451893
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675970,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.02",
+        "to": 1.0185687257164517
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675981,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.02",
+        "to": 1.0118307701126408
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247675992,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.01",
+        "to": 1.0042829738130596
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676004,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "1.00",
+        "to": 0.992929995801626
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676015,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.99",
+        "to": 0.980919502045294
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676026,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.98",
+        "to": 0.9711218936226828
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676037,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.97",
+        "to": 0.9625783386513369
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676048,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.96",
+        "to": 0.9544281785826377
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676059,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.95",
+        "to": 0.9465770024876141
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676071,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.95",
+        "to": 0.9385022801308265
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676082,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.94",
+        "to": 0.9299521545112436
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676093,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.93",
+        "to": 0.921645638843904
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676104,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.92",
+        "to": 0.9142020302181706
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676115,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.91",
+        "to": 0.9067738858416444
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676126,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.91",
+        "to": 0.8991686501708225
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676137,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.90",
+        "to": 0.8918039223613226
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676149,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.89",
+        "to": 0.8841152585097518
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676160,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.88",
+        "to": 0.8758787809853419
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676171,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.88",
+        "to": 0.8673058877360628
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676182,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.87",
+        "to": 0.8588433550847803
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676193,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.86",
+        "to": 0.8506324657188061
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676204,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.85",
+        "to": 0.842069790025216
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676215,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.84",
+        "to": 0.8335991853952159
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676225,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.83",
+        "to": 0.8261873055743639
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676237,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.83",
+        "to": 0.8176159261377882
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676248,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.82",
+        "to": 0.8076445213989953
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676265,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.81",
+        "to": 0.7977789289017372
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676270,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.80",
+        "to": 0.7886166189415009
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676282,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.79",
+        "to": 0.7794683875196631
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676294,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7702522807558526
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676305,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7615567118863474
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676315,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7526127651515478
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676328,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.75",
+        "to": 0.7441749497523547
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676338,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.74",
+        "to": 0.734766220116045
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676349,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.73",
+        "to": 0.7274447743424362
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676359,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.73",
+        "to": 0.7193281011979478
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676371,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.72",
+        "to": 0.7118076389095143
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676383,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.71",
+        "to": 0.7049287728461049
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676394,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.70",
+        "to": 0.6984318137189657
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676404,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.70",
+        "to": 0.6930976041957307
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676415,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.69",
+        "to": 0.6881701247403181
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676432,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.69",
+        "to": 0.6831253412908487
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676437,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6783138161803881
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676449,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.67422352830216
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676460,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.67",
+        "to": 0.6703648200918416
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676471,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.67",
+        "to": 0.6672389849977399
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676482,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.67",
+        "to": 0.6647437524756777
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676494,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.66",
+        "to": 0.6623152945581999
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676505,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.66",
+        "to": 0.6603343596856626
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676516,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.66",
+        "to": 0.6587019801620094
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676527,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.66",
+        "to": 0.6577202688295148
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676539,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.66",
+        "to": 0.6573032206098803
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676550,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.66",
+        "to": 0.6569425085926224
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676561,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.66",
+        "to": 0.6566398101385233
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676573,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.66",
+        "to": 0.6574670301325254
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676583,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.66",
+        "to": 0.6590978627250605
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676596,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.66",
+        "to": 0.6606436174969259
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676607,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.66",
+        "to": 0.6627396900748056
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676617,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.66",
+        "to": 0.6650265003746892
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676628,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.67",
+        "to": 0.6662782519318868
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676640,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.67",
+        "to": 0.6667475005628315
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676651,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.67",
+        "to": 0.667761225522053
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676662,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.67",
+        "to": 0.6699840146380828
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676673,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.67",
+        "to": 0.6759226938346541
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676684,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.684222307230204
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676695,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.694231509909588
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676707,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.69",
+        "to": 0.7025984352169591
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676718,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.70",
+        "to": 0.7115103743782146
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676729,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.71",
+        "to": 0.7218880588079847
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676742,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.72",
+        "to": 0.7349201248945455
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676752,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.73",
+        "to": 0.749768995452685
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676763,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.75",
+        "to": 0.764788708867148
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676773,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7792019148783832
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676785,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7952843977545744
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676796,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.80",
+        "to": 0.8114995709771289
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676808,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.81",
+        "to": 0.8269851613086914
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676819,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.83",
+        "to": 0.8417011075784296
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676829,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.84",
+        "to": 0.8556805613291099
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676841,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.86",
+        "to": 0.8685061951284839
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676853,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.87",
+        "to": 0.8815872207703169
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676864,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.88",
+        "to": 0.8933935710996534
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676874,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.89",
+        "to": 0.9030421660601038
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676886,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.90",
+        "to": 0.9127910417140196
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676897,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.91",
+        "to": 0.9197989633322183
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676916,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.92",
+        "to": 0.9248815636506523
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676920,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.92",
+        "to": 0.9283924227497692
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676931,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.93",
+        "to": 0.931350631716015
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676943,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.93",
+        "to": 0.9339909509646808
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676953,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.93",
+        "to": 0.9365909797617529
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676964,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.94",
+        "to": 0.9389073406996001
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676975,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.94",
+        "to": 0.9407566089877861
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676986,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.94",
+        "to": 0.9424861779876206
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247676998,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.94",
+        "to": 0.9436404433314252
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247677009,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.94",
+        "to": 0.9443188855590293
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247677020,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.94",
+        "to": 0.9442172786086406
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247677031,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.94",
+        "to": 0.9439317676231616
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247677042,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.feedback_1",
+        "name": "value",
+        "from": "0.94",
+        "to": 0.9437637995853745
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247677801,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.3730713195119932,
+          0.9128878040145221,
+          0.28126257569003177
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.0689531223018181,
+          0.6827681840182551,
+          0.04420665911734123,
+          0.7260295078574339
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678338,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": 100,
+        "to": 2.332406766406579e-15
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678349,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.00",
+        "to": 0.000018648708944178785
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678361,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.00",
+        "to": -0.00032235653260036663
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678372,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.00",
+        "to": -0.000637974382552934
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678384,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.00",
+        "to": -0.0007310425323758909
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678394,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.00",
+        "to": -0.0014395919066815183
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678406,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.00",
+        "to": -0.0030243238624319407
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678417,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.00",
+        "to": -0.005552954673934964
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678428,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.01",
+        "to": -0.008424975096183323
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678440,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.01",
+        "to": -0.011558987316865098
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678451,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.01",
+        "to": -0.016739882766418353
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678461,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.02",
+        "to": -0.021943486756734527
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678473,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.02",
+        "to": -0.02789606809398836
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678485,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.03",
+        "to": -0.03357096870954221
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678496,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.03",
+        "to": -0.03865024662173473
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678506,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.04",
+        "to": -0.04355536298363708
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678517,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.04",
+        "to": -0.04838884101149161
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678530,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.05",
+        "to": -0.05375847980301477
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678540,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.05",
+        "to": -0.060071981099729235
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678551,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.06",
+        "to": -0.06527956127539604
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678562,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.07",
+        "to": -0.07046853962507492
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678573,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.07",
+        "to": -0.07723956465186842
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678584,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.08",
+        "to": -0.08473320958032599
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678595,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.08",
+        "to": -0.09259043920315717
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678607,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.09",
+        "to": -0.1009117337710699
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678618,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.10",
+        "to": -0.11008773748637436
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678628,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.11",
+        "to": -0.12013763724459275
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678640,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.12",
+        "to": -0.13087129950818063
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678659,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.13",
+        "to": -0.14164758124501192
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678662,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.14",
+        "to": -0.15122103721404884
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678674,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.15",
+        "to": -0.1603199408869136
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678684,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.16",
+        "to": -0.16956303195504951
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678696,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.17",
+        "to": -0.17915360769896668
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678707,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.18",
+        "to": -0.18910981801548457
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678718,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.19",
+        "to": -0.19965533895391008
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678730,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.20",
+        "to": -0.20958816329489363
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678740,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.21",
+        "to": -0.2182770231613819
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678751,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.22",
+        "to": -0.2258732327168427
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678763,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.23",
+        "to": -0.23088815240612873
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678774,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.23",
+        "to": -0.2339644855860766
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678785,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.23",
+        "to": -0.23581288606959863
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678796,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.24",
+        "to": -0.2370696215575167
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678813,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.24",
+        "to": -0.2368462349612315
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678818,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.24",
+        "to": -0.23592371752078714
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678830,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.24",
+        "to": -0.2353319531329929
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678841,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.24",
+        "to": -0.2340984406252301
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678852,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.23",
+        "to": -0.23160030858647346
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678863,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.23",
+        "to": -0.22795451133274253
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678874,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.23",
+        "to": -0.22262969530196905
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678885,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.22",
+        "to": -0.21553832231269204
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678897,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.22",
+        "to": -0.20763185789208147
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678912,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.21",
+        "to": -0.19738837603419077
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678919,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.20",
+        "to": -0.18649252711726844
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678927,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.19",
+        "to": -0.1743823676702887
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678939,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.17",
+        "to": -0.16478922529365753
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678950,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.16",
+        "to": -0.15055701627689302
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678961,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.15",
+        "to": -0.1362265295484469
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678972,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.14",
+        "to": -0.12269428569109682
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678984,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.12",
+        "to": -0.11060746852602267
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247678995,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.11",
+        "to": -0.09884803997560623
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679006,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.10",
+        "to": -0.08648617124039958
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679017,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.09",
+        "to": -0.07391940972518353
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679028,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.07",
+        "to": -0.0625851268481744
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679041,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.06",
+        "to": -0.0528012691657192
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679052,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.05",
+        "to": -0.044337547213853176
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679062,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.04",
+        "to": -0.03685765591457743
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679072,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.04",
+        "to": -0.03130320697447988
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679084,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.03",
+        "to": -0.025539576410980674
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679095,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.03",
+        "to": -0.019763212180003563
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679106,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.02",
+        "to": -0.014994368579076992
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679117,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.01",
+        "to": -0.010345960691327887
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679129,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.01",
+        "to": -0.006151467566275196
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679140,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.01",
+        "to": -0.0027843786631147017
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679151,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "-0.00",
+        "to": 0.0001381855818616216
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679162,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.00",
+        "to": 0.0030692007157609043
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679174,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.00",
+        "to": 0.006324573411236777
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679184,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.01",
+        "to": 0.008932565454314258
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679195,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.01",
+        "to": 0.010955546112189872
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679207,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.01",
+        "to": 0.012430233183699688
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679218,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.01",
+        "to": 0.013741577102833805
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679229,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.01",
+        "to": 0.014983947478607495
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679240,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.01",
+        "to": 0.7541142668513461
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679251,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.75",
+        "to": 0.7544955677444549
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679270,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.75",
+        "to": 0.7549102678179894
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679274,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.75",
+        "to": 0.7553072220699264
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679285,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7557675085731524
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679297,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7560765416872621
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679308,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7566102164856093
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679319,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7571418432291157
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679331,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7571057352814117
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679342,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7575577919718907
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679353,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7579444901142185
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679364,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7585747788061719
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679375,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7587344238227199
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679387,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7586297853548056
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679397,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7581975132309391
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679408,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7576412573181367
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679421,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7570449804100619
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679431,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7561883798533544
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679442,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7552646888641761
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679453,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7540926767045627
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679465,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.75",
+        "to": 0.7520552231272658
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679476,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.75",
+        "to": 0.7505745505190682
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679487,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.75",
+        "to": 0.7489904235494768
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679498,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.75",
+        "to": 0.746675991214709
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679509,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.75",
+        "to": 0.7450447387175457
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679523,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.75",
+        "to": 0.7436832023827672
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679532,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.74",
+        "to": 0.7430401089512425
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679543,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.74",
+        "to": 0.7429542467563048
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679554,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.74",
+        "to": 0.7432980537423698
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679573,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.74",
+        "to": 0.7443575405914863
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679575,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.74",
+        "to": 0.7458126056611794
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679589,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.75",
+        "to": 0.7472523710687894
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679599,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.75",
+        "to": 0.7495643529465158
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679611,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.75",
+        "to": 0.752053512221773
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679622,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.75",
+        "to": 0.7541398131443416
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679633,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.75",
+        "to": 0.7564015918228222
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679644,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.759207600569221
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679655,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7613302319595071
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679666,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7637745575637046
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679677,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7661048322707542
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679688,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7680122302381718
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679699,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.768835534776086
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679719,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7697590833456837
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679722,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7706128066856122
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679734,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7713631537965684
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679745,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.772449383879188
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679755,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7734017461681201
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679766,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7744543042636682
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679778,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7751251053815107
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679789,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7754971912070218
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679801,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7753662654346591
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679811,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7749155894485562
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679823,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7745447794989992
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679834,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7741911015267757
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679844,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7736408360155286
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679856,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7731413440735979
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679867,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7727303804424278
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679878,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.772289235792307
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679890,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7717801039919435
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679901,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7714113975104482
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679913,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.770924353375883
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679924,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7704800503058377
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679935,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7701214794127417
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679946,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7699920373475954
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679958,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7698758923381076
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679969,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7699905411008409
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679980,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7699936723272041
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247679993,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7702182352121367
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680003,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7707467903786117
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680014,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7712532969444283
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680026,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7723185975554823
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680040,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7731954920037202
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680047,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7740501286535516
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680059,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7750096890441698
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680069,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7763681657929405
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680081,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7774667692758069
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680092,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7788005607650369
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680104,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.779983241608731
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680115,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7805952847186102
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680125,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7808467296994451
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680138,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7808465440836712
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680148,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7800961771996734
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680158,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7792224467656697
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680169,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7776888248574423
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680181,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7755247256781616
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680191,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.78",
+        "to": 0.7731299625896758
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680202,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.770053717513286
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680213,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7663518618891739
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680225,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.77",
+        "to": 0.7625518548662152
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680237,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.7583680618264166
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680247,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.76",
+        "to": 0.75450405665988
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680258,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.75",
+        "to": 0.7503575747287122
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680270,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.75",
+        "to": 0.7459594618438782
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680281,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.75",
+        "to": 0.7417104272573686
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680292,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.74",
+        "to": 0.7373777503843979
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680303,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.74",
+        "to": 0.7333061442657737
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680314,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.73",
+        "to": 0.7289222738881532
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680326,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.73",
+        "to": 0.7245261658130234
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680338,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.72",
+        "to": 0.7204334358220689
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680347,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.72",
+        "to": 0.7163790146427536
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680358,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.72",
+        "to": 0.7121970155482924
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680370,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.71",
+        "to": 0.7080148827941171
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680381,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.71",
+        "to": 0.7034198734223646
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680392,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.70",
+        "to": 0.6991028222072522
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680404,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.70",
+        "to": 0.6949619003534667
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680414,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.69",
+        "to": 0.6910551542652769
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680426,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.69",
+        "to": 0.6879034582594367
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680437,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.69",
+        "to": 0.6849987123147224
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680448,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6825419383205882
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680459,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6807860867694935
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680471,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6792427885233625
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680482,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6780206631768118
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680493,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6769837852703564
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680505,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6759483146966284
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680515,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6750759241133667
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680528,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6746652034582802
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680539,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.67",
+        "to": 0.6742140175554364
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680549,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.67",
+        "to": 0.6741022216033404
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680560,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.67",
+        "to": 0.6744411458845266
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680573,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.67",
+        "to": 0.6747840537972153
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680585,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.67",
+        "to": 0.675415231820776
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680594,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6766457126220204
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680609,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6773682969297782
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680616,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6781808804455262
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680626,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6790885563951637
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680638,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6795494334913829
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680648,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6803264286875716
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680660,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6814176448796241
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680672,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6829745458294564
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680682,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6846568566459432
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680693,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.68",
+        "to": 0.6862055917334563
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680705,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.69",
+        "to": 0.34951111460734285
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680715,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.35",
+        "to": 0.34881049972914663
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680726,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.35",
+        "to": 0.3487104260552934
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680738,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.35",
+        "to": 0.3483937936251176
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680748,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.35",
+        "to": 0.347531846397596
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680760,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.35",
+        "to": 0.34636851432898763
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680771,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.35",
+        "to": 0.3447918972083361
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680782,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.34",
+        "to": 0.3425304023538474
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680793,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.34",
+        "to": 0.339213651971521
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680814,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.34",
+        "to": 0.33528509360146885
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680815,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.34",
+        "to": 0.33152713496486313
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680826,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.33",
+        "to": 0.32921552859247977
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680839,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.33",
+        "to": 0.32760866583725334
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680849,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.33",
+        "to": 0.3265521614725661
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680860,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.33",
+        "to": 0.32557324255537473
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680871,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.33",
+        "to": 0.3246423093013191
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680882,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.32",
+        "to": 0.32333017526565505
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680893,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.32",
+        "to": 0.3207896760813139
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680905,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.32",
+        "to": 0.3174391219502604
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680917,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.32",
+        "to": 0.3137000190825777
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680927,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.31",
+        "to": 0.30991407815368616
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680938,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.31",
+        "to": 0.30674230283456444
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680949,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.31",
+        "to": 0.3032300259874797
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680960,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.30",
+        "to": 0.29987937322800484
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680971,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.30",
+        "to": 0.2968458374542046
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680983,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.30",
+        "to": 0.29357106909746267
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247680994,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.29",
+        "to": 0.2901960608985837
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681006,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.29",
+        "to": 0.2857466341238254
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681017,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.29",
+        "to": 0.2801987707106751
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681029,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.28",
+        "to": 0.2732311853546562
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681040,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.27",
+        "to": 0.26646430844691693
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681052,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.27",
+        "to": 0.2596428134265599
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681062,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.26",
+        "to": 0.25388942015801236
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681074,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.25",
+        "to": 0.24898420209272928
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681086,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.25",
+        "to": 0.2446067103213383
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681097,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.24",
+        "to": 0.2401828978470201
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681108,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.24",
+        "to": 0.23527573778483743
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681119,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.24",
+        "to": 0.23057880318873603
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681133,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.23",
+        "to": 0.22562840302526357
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681142,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.23",
+        "to": 0.2195847217076656
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681152,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.22",
+        "to": 0.21507605929297685
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681163,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.22",
+        "to": 0.2104666114581037
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681175,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.21",
+        "to": 0.2061654711668324
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681188,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.21",
+        "to": 0.2023407061156384
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681197,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.20",
+        "to": 0.1980791233622526
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681207,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.20",
+        "to": 0.1948867099305169
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681218,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.19",
+        "to": 0.19127050726001146
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681229,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.19",
+        "to": 0.18785573627295604
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681241,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.19",
+        "to": 0.1847902101397124
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681251,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.18",
+        "to": 0.18172962842805945
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681263,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.18",
+        "to": 0.1789958255728632
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681275,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.18",
+        "to": 0.17698841171890464
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681285,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.18",
+        "to": 0.17631341639299242
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681297,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.18",
+        "to": 0.17712008534839707
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681309,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.18",
+        "to": 0.17924993467447292
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681319,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.18",
+        "to": 0.1820718332924929
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681330,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.18",
+        "to": 0.18670158594445896
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681341,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.19",
+        "to": 0.19351834662638837
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681352,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.19",
+        "to": 0.2023384356057644
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681363,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.20",
+        "to": 0.21210509522592388
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681374,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.21",
+        "to": 0.22346177289716737
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681386,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.22",
+        "to": 0.2354350800861541
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681397,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.24",
+        "to": 0.2473039513550203
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681408,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.25",
+        "to": 0.259324152985536
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681420,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.26",
+        "to": 0.27171898143994605
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681430,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.27",
+        "to": 0.2839458979001214
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681441,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.28",
+        "to": 0.2973079743888608
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681452,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.30",
+        "to": 0.31101410152265074
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681464,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.31",
+        "to": 0.32400907076464813
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681475,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.32",
+        "to": 0.3371038322473339
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681487,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.34",
+        "to": 0.34953074120307664
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681498,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.35",
+        "to": 0.36195562860690156
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681509,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.36",
+        "to": 0.3752577443054547
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681520,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.38",
+        "to": 0.3888005681593112
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681531,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.39",
+        "to": 0.40184911986035404
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681543,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.40",
+        "to": 0.4119795374088921
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681554,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.41",
+        "to": 0.4191033680730308
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247681565,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48.spread",
+        "name": "value",
+        "from": "0.42",
+        "to": 0.4213172983631838
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247682763,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.3340010997383822,
+          0.9566279634019266,
+          0.1932731067115706
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "freevoib_0_48",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.013393698825341215,
+          0.6930103174254777,
+          0.00234812242282905,
+          0.7207994138781274
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247819467,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "resofilter_0_49",
+        "kind": "resofilter",
+        "category": "abstraction",
+        "pos": [
+          -1.2003905058528692,
+          0.9658354855482929,
+          0.12354668268822566
+        ],
+        "orient": [
+          -0.02832895894116111,
+          0.6443059878032246,
+          -0.08384175007688377,
+          0.7596300588541617
+        ]
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_49.source",
+        "kind": "inlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_49.frequency",
+        "kind": "large_knob",
+        "range": [
+          1,
+          10000
+        ],
+        "taper": "log 3.8",
+        "value": 0.25,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_49.freq_cv",
+        "kind": "inlet",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_49.resonance",
+        "kind": "small_knob",
+        "range": [
+          0,
+          1
+        ],
+        "taper": "log 3.8",
+        "value": 0.5,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_49.res_cv",
+        "kind": "inlet",
+        "index": 2
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_49.lopass",
+        "kind": "outlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "resofilter_0_49.hipass",
+        "kind": "outlet",
+        "index": 1
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247820530,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "resofilter_0_49",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -1.1823567649777327,
+          0.9759744282869875,
+          -0.3246732644688136
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "resofilter_0_49",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.0771269323149822,
+          0.24066372154769497,
+          0.008557981298632857,
+          0.967501509176975
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247826180,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "feedback_phase_mod_0_50",
+        "kind": "feedback_phase_mod",
+        "category": "abstraction",
+        "pos": [
+          -0.5982929405239734,
+          1.04464336028445,
+          -0.1545587981997815
+        ],
+        "orient": [
+          0.28462582648134566,
+          -0.32404595643756057,
+          -0.21067036157070598,
+          0.8772687005386672
+        ]
+      },
+      {
+        "op": "newnode",
+        "path": "feedback_phase_mod_0_50.carrier",
+        "kind": "inlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "feedback_phase_mod_0_50.modulator",
+        "kind": "inlet",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "path": "feedback_phase_mod_0_50.index",
+        "kind": "large_knob",
+        "range": [
+          0,
+          100
+        ],
+        "taper": "linear",
+        "value": 20,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "feedback_phase_mod_0_50.index_cv",
+        "kind": "inlet",
+        "index": 2
+      },
+      {
+        "op": "newnode",
+        "path": "feedback_phase_mod_0_50.feedback",
+        "kind": "inlet",
+        "index": 3
+      },
+      {
+        "op": "newnode",
+        "path": "feedback_phase_mod_0_50.master",
+        "kind": "outlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "feedback_phase_mod_0_50.feedback_out",
+        "kind": "outlet",
+        "index": 1
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247827211,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "feedback_phase_mod_0_50",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.7794886790884736,
+          1.0289596912008474,
+          -0.3766682064910819
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "feedback_phase_mod_0_50",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.11825607478823057,
+          -0.11129992271228328,
+          0.01983935394275577,
+          0.9865263443444031
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247836233,
+    "data": [
+      {
+        "op": "newnode",
+        "path": "freevoib_0_51",
+        "kind": "freevoib",
+        "category": "abstraction",
+        "pos": [
+          -0.5440538725851791,
+          0.876724830954303,
+          0.35460175963211793
+        ],
+        "orient": [
+          0.010807700763141297,
+          0.9724379863991647,
+          0.010129387263730902,
+          -0.23269067901481794
+        ]
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_51.signal",
+        "kind": "inlet",
+        "index": 0
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_51.damping_cv",
+        "kind": "inlet",
+        "index": 1
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_51.fb1_cv",
+        "kind": "inlet",
+        "index": 2
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_51.fb2_cv",
+        "kind": "inlet",
+        "index": 3
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_51.spread_cv",
+        "kind": "inlet",
+        "index": 4
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_51.feedback_1",
+        "kind": "small_knob",
+        "range": [
+          0,
+          1
+        ],
+        "taper": "linear",
+        "value": 0.9,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_51.feedback_2",
+        "kind": "small_knob",
+        "range": [
+          0,
+          1
+        ],
+        "taper": "linear",
+        "value": 0.5,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_51.damping",
+        "kind": "small_knob",
+        "range": [
+          0,
+          1
+        ],
+        "taper": "linear",
+        "value": 0.5,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_51.spread",
+        "kind": "small_knob",
+        "range": [
+          0,
+          400
+        ],
+        "taper": "linear",
+        "value": 100,
+        "unit": "float"
+      },
+      {
+        "op": "newnode",
+        "path": "freevoib_0_51.out",
+        "kind": "outlet",
+        "index": 0
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247837140,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_51",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.7939569492218914,
+          0.8774184759459998,
+          0.5382976861553888
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "freevoib_0_51",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.02835507288425867,
+          0.9927274161674849,
+          -0.023153951361354154,
+          0.11468287373039096
+        ]
+      }
+    ]
+  },
+  {
+    "cmd": "deltas",
+    "date": 1556247840402,
+    "data": [
+      {
+        "op": "propchange",
+        "path": "freevoib_0_51",
+        "name": "pos",
+        "from": [
+          null,
+          null,
+          null
+        ],
+        "to": [
+          -0.9279095039596709,
+          0.9196040750760992,
+          0.498452665957407
+        ]
+      },
+      {
+        "op": "propchange",
+        "path": "freevoib_0_51",
+        "name": "orient",
+        "from": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "to": [
+          0.04896801363890814,
+          0.9579729479981587,
+          -0.0551092429224819,
+          0.2772236208023485
+        ]
+      }
+    ]
+  }
+]
