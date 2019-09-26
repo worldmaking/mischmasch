@@ -1,0 +1,39 @@
+{
+  "name": "msvr",
+  "version": "0.0.1",
+  "description": "Modular Synthesis in VR",
+  "main": "server.js",
+  "scripts": {
+    "start": "node node_modules/nodemon/bin/nodemon.js server.js",
+    "test": "test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/worldmaking/msvr.git"
+  },
+  "author": "Alice Lab",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/worldmaking/msvr/issues"
+  },
+  "homepage": "https://github.com/worldmaking/msvr#readme",
+  "dependencies": {
+    "bottleneck": "^2.18.0",
+    "cycle-test": "^1.0.0",
+    "express": "^4.16.4",
+    "find-cycle": "^1.0.0",
+    "gl-matrix": "^3.0.0",
+    "load-bmfont": "^1.4.0",
+    "nodemon": "^1.18.11",
+    "reconnecting-websocket": "^4.1.10",
+    "three-bmfont-text": "^2.3.0",
+    "ws": "^6.2.0"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "test/*",
+      "docs/*"
+    ],
+    "ext": "js html"
+  }
+}

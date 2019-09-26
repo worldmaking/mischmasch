@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+<!--<meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; img-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:8080; style-src 'self' 'unsafe-inline' http://localhost:8080;"/>-->
+    <style>
+        html,
+        body {
+            margin: 0px;
+            padding: 0px;
+            overflow: none;
+            background-color: #000;
+            font-family: Monospace;
+        }
+
+        canvas {
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+
+        #status {
+            position: absolute;
+            top: 0px;
+            left: 100px;
+            width: 90%;
+            height: 50px;
+            margin: 0px;
+            padding: 10px;
+            color: #fff;
+            background-color: hsla(50, 0%, 10%, .5);
+            z-index: 1000;
+        }
+
+        #log {
+            position: absolute;
+            top: 50px;
+            left: 0px;
+            width: 50%;
+            margin: 0px;
+            padding: 0px;
+            color: #fff;
+            background-color: hsla(50, 0%, 10%, .5);
+            z-index: 1000;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    <canvas id="webgl-canvas"></canvas>
+    <div id="log">Log:</div>
+    <div id="status">
+        controller 1: <span id="ctrl1state">ctrl1state</span> 
+        controller 2: <span id="ctrl2state">ctrl2state</span> 
+    </div>
+
+    <link href="favicon.ico" rel="icon" type="image/x-icon" />
+
+    <script src="js/gl-matrix-min.js"></script>
+    <script src="js/screenfull.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/math_utils.js"></script>
+    <script src="js/socket.js"></script>
+    <script src="js/webutils.js"></script>
+    <script src="js/three-r102/build/three.js"></script>
+    <script src="js/three-r102/examples/js/loaders/OBJLoader.js"></script>
+    <script src="js/three-r102/examples/js/controls/OrbitControls.js"></script>
+    <script src="js/three-r102/examples/js/WebGL.js"></script>
+    <script src="js/three-r102/examples/js/vr/WebVR.js"></script>
+    <script src="js/three-r102/examples/js/libs/stats.min.js"></script>
+    <script src="js/three-r102/examples/js/vr/ViveController.js"></script>
+
+    <script>
+
+        let canvas = document.getElementById("webgl-canvas");
+
+        let logElement = document.getElementById("log");
+        let logMessageList = [];
+
+        function logonly(...args) {
+            let msg = args.join(" ")
+            if(logMessageList.length > 40){
+                logMessageList.shift();
+            } else {
+                logMessageList.push(msg);
+            }
+            let fMsg = logMessageList.join("\n");
+            logElement.innerText = logMessageList.join("\n");
+        }
+
+        function log(...args) {
+            console.log(args);
+            logonly(args)
+        }
+
+        let stats = new Stats();
+        stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+        document.body.appendChild( stats.dom );
+
+    </script>
+
+    <script src="bundle.js"></script>
+    <script src="modules.js"></script>
+    <script src="client2.js"></script>
+    <!--
+    <script src="interactions.js"></script>
+    <script src="updates.js"></script>
+    <script src="client.js"></script>-->
+</body>
+</html>

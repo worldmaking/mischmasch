@@ -1,0 +1,52 @@
+linear and logarithmic quantizer
+
+delay
+
+weird karplus
+
+function generator
+
+waveset 1 and 2
+
+trigger (multi clock out)
+
+euclid
+
+pulsar
+
+waveshaper (curve)
+
+sampler (drum machine, live looper, granular)
+
+BUILT but not tested -- sound on sound looper  (when record head is open apply some waveshaping and filtering so that it degrades the older loops over time)
+
+resonator (could look at the feedback delay network from one of the reverbm may e the gigaverb; could take waveguide. Noiseburst for the strum input; knobs determine the degree of influence of the cv input)
+
+envelope follower
+
+degrade bitcrusher
+
+dynamics module (combined waveshaper and env follower)
+
+DONE NOT WORKING - 'kinks': phase flip, rectifier (DC block into abs)
+    "kinks": {
+      "_props":{"kind":"kinks","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
+      "signal":{"_props":{"kind":"inlet","index":0}},
+      "flipped":{"_props":{"kind":"outlet","index":0}},
+      "rectifier":{"_props":{"kind":"outlet","index":1}},
+      "A":{"_props":{"kind":"inlet","index":1}},
+      "B":{"_props":{"kind":"inlet","index":2}},
+      "min":{"_props":{"kind":"outlet","index":2}},
+      "max":{"_props":{"kind":"outlet","index":3}},
+      "SH_signal":{"_props":{"kind":"inlet","index":3}},
+      "trigger":{"_props":{"kind":"inlet","index":4}},
+      "noise":{"_props":{"kind":"outlet","index":4}},
+      "SH_out":{"_props":{"kind":"outlet","index":5}}
+    },
+
+DONE - add bandlimited saw to lfo and vco
+
+-- to do:
+
+- set max audio scheduler crossfader
+- set list of operators for menu (organize by category?)
