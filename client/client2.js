@@ -1846,7 +1846,11 @@ function onServerMessage(msg, sock) {
             console.log(msg.data)
             vrContextID = msg.data.vrContext
             audioContextID = msg.data.audioContext
-            localHandshake()
+            // send to server that this client is a browser client
+            ws.send(JSON.stringify({
+                cmd: 'handshake',
+                data: vrContextID
+            }));
         }
         break;
         default:
@@ -1930,10 +1934,10 @@ function localHandshake() {
         log("connected to maxClient");
 
         // send to server that this client is a browser client
-        this.send({
+        ws.send(JSON.stringify({
             cmd: 'handshake',
             data: vrContextID
-        });
+        }));
         // request scene:
         // this.send({
         //     cmd: "get_scene",
@@ -1957,4 +1961,4 @@ function localHandshake() {
     };
   }
   
-  connect();
+  localHandshake();
