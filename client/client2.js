@@ -36,7 +36,7 @@ function intToRGB(i){
 }
 
 function colorFromString(str) {
-    let int = hashCode(str);
+    let int = Math.abs(hashCode(str));
     let hue = int % 360;
     let result = [];
     new THREE.Color(`hsl(${hue}, 35%, 50%)`).toArray(result);
@@ -934,7 +934,6 @@ function enactDeltaNewNode(world, delta) {
             container.userData.instanceShape = SHAPE_CYLINDER
             container.userData.color = colorFromString(name);//[Math.random(), Math.random(), Math.random(), 1];
             container.userData.isTiddleable = true;
-            console.log(delta)
             container.userData.value = delta.value;
         }break;
         case "small_knob":{
