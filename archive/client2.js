@@ -1,4 +1,5 @@
-
+const url = window.location.href.split('//')[1].split(':')[0];
+console.log('url', url)
 let once = 1;
 let vrContextID;
 let audioContextID;
@@ -53,11 +54,6 @@ function hexColorFromString(str) {
 ///////////////////////////////////////////
 // Globals
 ///////////////////////////////////////////
-
-// debug
-let ctrlstatedivs = []
-ctrlstatedivs[0] = document.getElementById("ctrl1state");
-ctrlstatedivs[1] = document.getElementById("ctrl2state");
 
 // Editing
 let incomingDeltas = [];
@@ -126,10 +122,6 @@ const SMALL_KNOB_HEIGHT = 0.02;
 const NSWITCH_WIDTH = LARGE_KNOB_RADIUS + 0.03
 const NSWITCH_HEIGHT = LARGE_KNOB_RADIUS + 0.03
 const NSWITCH_DEPTH = NLET_HEIGHT
-
-const KNOB_SWEEP = -Math.PI * 0.75;                  
-const KNOB_TWIST_DISTANCE = 0.3;
-const KNOB_SWING_DISTANCE = 0.2;
 let boxGeom = new THREE.BoxGeometry(1,1,1);
 let boxMat = new THREE.MeshStandardMaterial({
     // TODO: temp
@@ -201,19 +193,16 @@ function createUserPose(id=0) {
 
 
 let raycaster = new THREE.Raycaster();
-function getFirstIntersection(array, controller) {
+function getFirstIntersection(controller) {
     // derive ray origin & direction from controller:
     raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
     controller.getWorldDirection( raycaster.ray.direction );
     // world direction gives us the Z axis of the controller
     // but we are looking in the -Z axis -- so we need to negate it:
-    raycaster.ray.direction.multiplyScalar(-1.);
-
-    // move along ray slightly to avoid hitting anything we are carrying:
-    raycaster.ray.origin.addScaledVector(raycaster.ray.direction, CABLE_JACK_HEIGHT);
+    raycaster.ray.direction.multiplyScalar(-1.)
 
     //let intersections = raycaster.intersectObjects(scene.children, true);
-    let intersections = raycaster.intersectObjects(array, true);
+    let intersections = raycaster.intersectObjects(ghostScene.children, true);
     return intersections[0];
 }
 
@@ -543,7 +532,6 @@ async function init_steamvr() {
         let line = new THREE.Line(geometry);
         line.name = "VRControllerBeam";
         line.scale.z = 1;
-        line.position.z = -CABLE_JACK_HEIGHT;
 
         for (let i=0; i<2; i++) {
             VRcontrollers[i].add(controllerMesh.clone());
@@ -588,14 +576,8 @@ function initVRController(id=0) {
 
     controller.userData.state = "default"
     controller.userData.intersection = null;
-    controller.userData.rotation = new THREE.Vector3();
     controller.userData.updateStateMachine = function() {
         let intersection = this.intersection;
-        let object = intersection ? intersection.object : null;
-        // highlight it:
-        if (object) object.userData.isUnderCursor = true;
-        // debug:
-        ctrlstatedivs[this.controllerID].innerText = this.state;
         switch(this.state) {
             case "dragging": {
 
@@ -605,19 +587,20 @@ function initVRController(id=0) {
 
                 if (!this.isTriggerDown) {
                     // release 
-                    let dragTarget = this.dragState.target
+                    let object = this.dragState.target
                     let parent = this.dragState.oldparent
                     this.state = "default";
+                    log("back to default state")
 
                     // reparent target
-                    reparentWithTransform(dragTarget, this.ghostController, parent)
+                    reparentWithTransform(object, this.ghostController, parent)
                     this.dragState = null
                 }
             } break;
             case "twiddling": {
                 if (this.isTriggerDown) {
                     // do the twiddle
-                    let knob = this.twiddleState.target;
+                    let object = this.twiddleState.target;
 
 
                     // modulate value based on relative poses of controller & object
@@ -625,17 +608,20 @@ function initVRController(id=0) {
                     let controllerPos = new THREE.Vector3();
                     let objectPos = new THREE.Vector3();
                     controller.getWorldPosition(controllerPos);
-                    knob.getWorldPosition(objectPos); 
+                    object.getWorldPosition(objectPos); 
 
-                    let value = knob.userData.value;
-                    let dist = controllerPos.distanceTo(objectPos);
+                    let value = 0;
+                    let dist = controllerPos.distanceTo(objectPos);value
 
+                    const KNOB_SWEEP = -Math.PI * 0.75;                  
+                    const KNOB_TWIST_DISTANCE = 0.3;
+                    const KNOB_SWING_DISTANCE = 0.2;
 
-                    if (1) { //if (dist < KNOB_TWIST_DISTANCE) {
+                    if (dist < KNOB_TWIST_DISTANCE) {
                         //controller.rotation.z += object.userData.rotation._z;
                         //object.rotation.z = (controller.rotation.z - controller.userData.rotation._z);
                         //console.log(object, controller)
-                        let angle = knob.userData.rotation._z + (controller.rotation.z - this.rotation._z);
+                        let angle = object.userData.rotation._z + (controller.rotation.z - controller.userData.rotation._z);
 
                         // angle should be in range -PI to PI
                         angle = wrap(angle + Math.PI, Math.PI * 2) - Math.PI;
@@ -662,7 +648,7 @@ function initVRController(id=0) {
                     
 
                         let knobPos = new THREE.Vector3()
-                        knob.getWorldPosition(knobPos);
+                        object.getWorldPosition(knobPos);
 
                         let relPos = new THREE.Vector3();
                         relPos.subVectors(controllerPos, knobPos);
@@ -699,92 +685,55 @@ function initVRController(id=0) {
 
                         //     line.scale.z = 0;
                         // }
-
-
-                        // ????
-                        knob.userData.rotation = knob.rotation.clone();
+                        object.userData.rotation = object.rotation.clone();
                         
-
                     }
 
-                    outgoingDeltas.push({ 
-                        op:"propchange", 
-                        path: knob.userData.path, 
-                        name:"value", 
-                        from: knob.userData.value, 
-                        to: value 
-                    });
+                    outgoingDeltas.push(
+                        { op:"propchange", path: object.userData.path, name:"value", from: object.userData.value, to: value });
 
                 } else {
                     // release 
                     this.state = "default";
                     this.twiddleState = null
+                    log("back to default state")
                 }
 
             } break;
             case "cabling": {
-                let jack = this.cablingState.jack;
-                let cable = this.cablingState.cable;
+                if (this.isTriggerDown) {
 
-                // don't allow self-connection:
-                if (object == this.cablingState.origin) object = null;
+                    let object = this.cablingState.target;
+                    let parent = this.cablingState.oldparent;
 
-                // is the intersection target appropriate for cable?
-                let kind = object ? object.userData.kind : null;
-                
-                // can't cable to jacks, but *can* cable to what jack is plugged into:
-                if (kind == "jack_inlet") {
-                    let jcable = object.userData.cable;
-                    object = jcable.userData.dst;
-                    kind = object ? object.userData.kind : null;
-                } else if (kind == "jack_outlet") {
-                    let jcable = object.userData.cable;
-                    object = jcable.userData.src;
-                    kind = object ? object.userData.kind : null;
-                }
+                    if(object.kind == "outlet"){
+                    //     outgoingDeltas.push(
+                    //         { op:"connect", path: object.userData.path, src:, dst: });
+                    }
+                    
 
-                let requiredkind = (this.cablingState.needs == "dst") ? "inlet" : "outlet";
-                let matched = (kind != null && kind == requiredkind);
-                // let matched = (kind == "outlet" || kind == "inlet"); // allows 'bridging'/'bussing' 
-
-                if (matched) {
-                    // set jack to target:
-                    cable.userData[this.cablingState.needs] = object;
-                } else {
-                    // keep jack on controller:
-                    cable.userData[this.cablingState.needs] = null;
-                    controller.getWorldPosition(jack.position);
-                    controller.getWorldQuaternion(jack.quaternion);
-                }
-                cableUpdate(cable);
-
-                if (!this.isTriggerDown) {
-                    // on release, check for completion:
-                    let isCableComplete = (cable.userData.src && cable.userData.dst);
-                    let isCableFullyDisconnected = (!cable.userData.src && !cable.userData.dst);
-                    if (isCableFullyDisconnected) {
-                        // remove editor-only cable:
-                        destroy_cable(cable);
-                        
-                    } else if (isCableComplete) {
-                        // remove editor-only cable:
-                        destroy_cable(cable);
-
-                        // send delta:
-                        let delta = { op:"connect", paths: [
-                            cable.userData.src.userData.path,
-                            cable.userData.dst.userData.path
-                        ]};
-                        console.log("CONNECT", delta);
-                        outgoingDeltas.push(delta);
-                    } else {
-                        // dangling cable:
+                    if(object.kind == "inlet"){
 
                     }
+                    reparentWithTransform(object, this.ghostController, parent);
 
-                    this.cablingState = null;
-                    this.state = "default";
+                    //check if jack is pointing at a valid point (aka inlet or outlet)
+                    // if so disconnect from ghost controller and connect to object the ray interacts with
+                    // else leave it dangling
+
+                    //if inlet create new jack parented to controller
+                    //else check for jack and pick up 
+
+                    //if holding jack and intersects with outlet or inlet 
+                    //connect
+                    // else drop in space
+
                     
+                   
+                } else{
+                     // release 
+                     this.state = "default";
+                     log("back to default state")
                 }
 
             } break;
@@ -792,16 +741,15 @@ function initVRController(id=0) {
                 if (!this.isTriggerDown) {
                     // release 
                     this.state = "default";
+                    log("back to default state")
                 }
             } break;
             // case "multiselect"
             // etc.
             default: {
-                if (object) {
+                if (intersection) {
+                    let object = intersection.object
                     let kind = object.userData.kind
-                    // debug:
-                    ctrlstatedivs[this.controllerID].innerText += ": " + kind;
-
                     let name = object.name
                     object.userData.isUnderCursor = true;
 
@@ -838,54 +786,25 @@ function initVRController(id=0) {
                             object.userData.rotation = object.rotation.clone();
 
                         } else if (kind == "outlet") {
-                            // create a new cable -- but it only has a src, not a dst
-                            let cable = makeCable(object, null);
-                            this.cablingState = {
-                                origin: object,
-                                cable: cable,
-                                jack: cable.userData.dstJackMesh,
-                                needs: "dst",
-                            };
                             this.state = "cabling";
-
+                            this.cablingState = {
+                                target: object,
+                                oldparent: object.parent, // aka SRC
+                            }
+                            // need to create new jacks
+                            reparentWithTransform(object, parent, this.ghostController);
                         } else if (kind == "inlet") {
-                            // create a new cable -- but it only has a dst, not a src
-                            let cable = makeCable(null, object);
-                            this.cablingState = {
-                                origin: object,
-                                cable: cable,
-                                jack: cable.userData.srcJackMesh,
-                                needs: "src",
-                            };
                             this.state = "cabling";
-                            
-                        } else if (kind == "jack_outlet"){
+                            this.cablingState = {
+                                target: object,
+                                oldparent: object.parent, // aka DST
+                            }
+                            // need to create new jacks
+                            reparentWithTransform(object, parent, this.ghostController);
+                        } else if(kind == "jack_outlet"){
                             // needs to be a dragging state but also checking for interesections of inlets and outlets
-                            let jack = object;
-                            let cable = jack.userData.cable;
-                            let origin = cable.userData.dst;
-                            cable.userData.src = null;
-                            this.cablingState = {
-                                origin: origin,
-                                cable: cable,
-                                jack: jack,
-                                needs: "src",
-                            };
-                            this.state = "cabling";
+                        } else if(kind == "jack_inlet"){
 
-                        } else if (kind == "jack_inlet"){
-                            // needs to be a dragging state but also checking for interesections of inlets and outlets
-                            let jack = object;
-                            let cable = jack.userData.cable;
-                            let origin = cable.userData.src;
-                            cable.userData.dst = null;
-                            this.cablingState = {
-                                origin: origin,
-                                cable: cable,
-                                jack: jack,
-                                needs: "dst",
-                            };
-                            this.state = "cabling";
                         } else {
 
                             log("kind", object.userData.kind)
@@ -900,7 +819,6 @@ function initVRController(id=0) {
                 }
             }
         }
-        this.rotation._z = controller.rotation.z; 
     }
 
     return controller;
@@ -934,6 +852,12 @@ function serverConnect() {
                 onopen: function () {
                     //this.send({ cmd: "getdata", date: Date.now() });
                     log("connected to server");
+
+                    // send to server that this client is a browser client
+                    this.send({
+                        cmd: 'clientType',
+                        data: 'vrContext'
+                    });
                     // request scene:
                     this.send({
                         cmd: "get_scene",
@@ -1012,26 +936,25 @@ function enactDelta(world, delta) {
  * @param {VALUE} z - z location
  * @param {value} scale - OPTIONAL: single scale size (default: 0.009)
  */
-function createLabel(text, x=0, y=0, z=0, uniformScaling=1){
+function createLabel(text, x=0, y=1.5, z=0, uniformScaling=1){
     uniformScaling *= LABEL_SCALING_FACTOR;
     let mesh;
     // a geometry of packed bitmap glyphs, 
     // word wrapped to 240px (10 characters) and center-aligned
 
     //default pixel width is 24px
-    let wrapWidth = 24 * Math.max(10, text.length+1);
+    let wrapWidth = 240.0;
 
     //https://github.com/Jam3/three-bmfont-text
     let geometry = bm_createGeometry({
         width: wrapWidth,
         align: 'center',
-        font: fontData,
-        text: text,
+        font: fontData
     })
     // change text and other options as desired
     // the options sepcified in constructor will
     // be used as defaults
-    //geometry.update({ text: text });
+    geometry.update({ text: text });
     // the resulting layout has metrics and bounds
     // console.log(geometry.layout.height)
     // console.log(geometry.layout.descender)
@@ -1041,19 +964,15 @@ function createLabel(text, x=0, y=0, z=0, uniformScaling=1){
     mesh.name = "label_"+text
     mesh.userData.isLabel = true;
 
-    let layout = mesh.geometry.layout
-    let s = (1/(layout.width))
-    mesh.scale.set(s, -s, s)
+    mesh.scale.set(uniformScaling, uniformScaling, uniformScaling);
 
-    mesh.position.set(
-        x - 0.5, y, z + 0.51); 
-
-    //mesh.scale.set(uniformScaling, uniformScaling, uniformScaling);
-
-    mesh.add(new THREE.AxesHelper(1));
-
-    //console.log(mesh);
-            
+    //center text: scale * Wrap Width (width) /2 (ex. .009 * 240 / 2)
+    let centerX = (wrapWidth * uniformScaling)/2.0;
+    if (x=="center") {
+        mesh.position.set(-centerX, y, z);
+    } else {
+        mesh.position.set(x,y,z);
+    }
     return mesh;
 }
 
@@ -1082,12 +1001,9 @@ function enactDeltaNewNode(world, delta) {
             container.userData.color = [0, 1, 0, 1];
             container.userData.instanceShape = SHAPE_CYLINDER;
             
-            // // label:
-            // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
-            // container.add(label);
-            container.add(new THREE.AxesHelper(1));
-
-            container.add(createLabel(name));
+            // label:
+            let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
+            container.add(label);
 
             
         } break;
@@ -1096,13 +1012,10 @@ function enactDeltaNewNode(world, delta) {
             container.scale.set(NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT);
             container.userData.color = [1, 0, 0, 1];
             container.userData.instanceShape = SHAPE_CYLINDER;
-
-            container.add(new THREE.AxesHelper(1));
             
-            // // label:
-            // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
-            // container.add(label);
-            container.add(createLabel(name));
+            // label:
+            let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
+            container.add(label);
         } break;
         case "large_knob":{
             container = new THREE.Mesh(boxGeom, boxMat);
@@ -1110,13 +1023,10 @@ function enactDeltaNewNode(world, delta) {
             container.userData.instanceShape = SHAPE_CYLINDER
             container.userData.color = colorFromString(name);
             container.userData.isTiddleable = true;
-            container.userData.value = delta.value;
-            container.add(new THREE.AxesHelper(1));
 
-            // // label:
-            // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
-            // container.add(label);
-            container.add(createLabel(name));
+            // label:
+            let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
+            container.add(label);
         }break;
         case "small_knob":{
             container = new THREE.Mesh(boxGeom, boxMat);
@@ -1124,13 +1034,10 @@ function enactDeltaNewNode(world, delta) {
             container.userData.instanceShape = SHAPE_CYLINDER
             container.userData.color = colorFromString(name);
             container.userData.isTiddleable = true;
-            container.userData.value = delta.value;
-            container.add(new THREE.AxesHelper(1));
 
-            // // label:
-            // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
-            // container.add(label);
-            container.add(createLabel(name));
+            // label:
+            let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
+            container.add(label);
         }break;
         case "n_switch": {
             container = new THREE.Mesh(boxGeom, boxMat);
@@ -1138,13 +1045,10 @@ function enactDeltaNewNode(world, delta) {
             container.userData.color = colorFromString(name);
             container.userData.slideable = true;
             container.userData.instanceShape = SHAPE_BOX;
-            container.userData.value = delta.value;
-            container.add(new THREE.AxesHelper(1));
-            container.add(createLabel(name));
             
-            // // label:
-            // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
-            // container.add(label);
+            // label:
+            let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
+            container.add(label);
         } break;
         case "group": {
             alert("TODO GROUP")
@@ -1162,11 +1066,8 @@ function enactDeltaNewNode(world, delta) {
             box.name = "_box_"+name
             container.add(box);
 
-            //container.add(new THREE.AxesHelper(1));
-            box.add(new THREE.AxesHelper(1));
-
             // label:
-            let label = createLabel(name, 0, 0, 0, 1);
+            let label = createLabel(name, 0, 0, LABEL_Z_OFFSET, 1);
             container.add(label);
         }
     }
@@ -1190,11 +1091,6 @@ function enactDeltaNewNode(world, delta) {
     //log("new node", container.name, container.userData.isDirty)
 }
 
-/*
-    Note that src or dst could be null
-    but srcJackMesh, dstJackMesh DO exist
-    (while patching)
-*/
 function cableUpdate(cableMesh) {
     let ud = cableMesh.userData;
     let src = ud.src;
@@ -1269,20 +1165,11 @@ function cableUpdate(cableMesh) {
     position.needsUpdate = true;
 }
 
-// src & dst are outlet & inlet objects respectively 
-// (get objects via getObjectByPath(path))
-function makeCable(src, dst) {
+function enactDeltaConnect(world, delta) {
 
-    // verify cable doesn't already exist
-    let srcname = src ? src.userData.path.replace(".", "_") : "null";
-    let dstname = dst ? dst.userData.path.replace(".", "_") : "null";
-    let name = `cable:${srcname}->${dstname}`;
-    // does this cable already exist (TODO move to "World" once instancing is done)
-    let existingCable = getObjectByPath(scene, name);
-    if (existingCable) {
-        //console.warn("skipping creating cable, it already exists:", name);
-        //return;
-    }
+    let src = getObjectByPath(world, delta.paths[0]);
+    let dst = getObjectByPath(world, delta.paths[1]); 
+
 
 
     // make a cable:
@@ -1313,28 +1200,22 @@ function makeCable(src, dst) {
     
     let srcJackMesh = new THREE.Mesh(boxGeom, boxMat);
     let dstJackMesh = new THREE.Mesh(boxGeom, boxMat);
-    srcJackMesh.name = "jack_outlet";
     srcJackMesh.userData.kind = "jack_outlet";
-    srcJackMesh.userData.cable = cableMesh;
     // this.srcJackMesh.userData.moveable = true;
     // this.srcJackMesh.userData.selectable = true;
     // this.srcJackMesh.userData.cable = this;
     srcJackMesh.userData.color = [1, 0, 0, 1];
     srcJackMesh.userData.instanceShape = SHAPE_CYLINDER;
     srcJackMesh.scale.set(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT);
-    dstJackMesh.name = "jack_inlet";
     dstJackMesh.userData.kind = "jack_inlet";
-    dstJackMesh.userData.cable = cableMesh;
     // this.dstJackMesh.userData.moveable = true;
     // this.dstJackMesh.userData.selectable = true;
     // this.dstJackMesh.userData.cable = this;
     dstJackMesh.userData.color = [0, 1, 0, 1];
     dstJackMesh.userData.instanceShape = SHAPE_CYLINDER;
     dstJackMesh.scale.set(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT);
-    // cableMesh.add(srcJackMesh);
-    // cableMesh.add(dstJackMesh);
-    ghostScene.add(srcJackMesh);
-    ghostScene.add(dstJackMesh);
+    cableMesh.add(srcJackMesh);
+    cableMesh.add(dstJackMesh);
 
 
     cableMesh.userData.curve = curve;
@@ -1344,27 +1225,10 @@ function makeCable(src, dst) {
     cableMesh.userData.srcJackMesh = srcJackMesh;
     cableMesh.userData.dstJackMesh = dstJackMesh;
     cableMesh.userData.isCable = true;
-    cableMesh.name = name;
 
     cableUpdate(cableMesh);
 
     scene.add(cableMesh); 
-
-    return cableMesh;
-}
-
-function destroy_cable(cable) {
-    let cableParent = cable.parent;
-    cableParent.remove(cable);
-    ghostScene.remove(cable.userData.srcJackMesh);
-    ghostScene.remove(cable.userData.dstJackMesh);
-}
-
-function enactDeltaConnect(world, delta) {
-    let src = getObjectByPath(world, delta.paths[0]);
-    let dst = getObjectByPath(world, delta.paths[1]); 
-
-    makeCable(src, dst);
 }
 
 
@@ -1372,10 +1236,10 @@ function enactDeltaConnect(world, delta) {
 /*
     { op:"propchange", path:"x", name:"pos", from:[x, y, z], to:[x, y, z] }
 */
-function enactDeltaObjectPos(world, delta) {
+function enactDeltaObjectPos(delta) {
     // assert(delta.op == "propchange")
     // assert(delta.name == "pos")
-    let object = getObjectByPath(world, delta.path);
+    let object = getObjectByPath(ghostScene, delta.path);
 
     // TODO: are positions relative to parent or global?
     object.position.set(delta.to[0], delta.to[1], delta.to[2])
@@ -1401,11 +1265,11 @@ function enactDeltaObjectPos(world, delta) {
 /*
     { op:"propchange", path:"x", name:"orient", from:[x, y, z, w], to:[x, y, z, w] }
 */
-function enactDeltaObjectOrient(world, delta) {
+function enactDeltaObjectOrient(delta) {
     // assert(delta.op == "propchange")
     // assert(delta.name == "orient")
 
-    let object = getObjectByPath(world, delta.path);
+    let object = getObjectByPath(delta.path);
     
     object.quaternion.set(delta.to[0], delta.to[1], delta.to[2], delta.to[3])
     // // assert (object, "path not found")
@@ -1428,37 +1292,37 @@ function enactDeltaObjectOrient(world, delta) {
 /*
     { op:"propchange", path:"x", name:"value", from:x, to:y }
 */
-function enactDeltaObjectValue(world, delta) {
-    let object = getObjectByPath(world, delta.path);
-    let kind = object.userData.kind; // small_knob, nswitch, etc.
-    let value = delta.to;
-    switch(kind){
-        case "small_knob":
-        case "large_knob": {
-            value = value.toFixed(2);
-            object.userData.value = value;
-            //console.log("Back from server Value", value)
-            //Update once server says:
+function enactDeltaObjectValue(delta) {
+    // let object = getObjectByPath(delta.path);
+    // let kind = object.userData.kind; // small_knob, nswitch, etc.
+    // let value = delta.to;
+    // switch(kind){
+    //     case "small_knob":
+    //     case "large_knob": {
+    //         value = value.toFixed(2);
+    //         object.userData.value = value;
+    //         //console.log("Back from server Value", value)
+    //         //Update once server says:
             
-            // if value == 0, angle should be -sweep
-            // if value == 1, angle should be sweep 
-            let derived_angle = KNOB_SWEEP * ((value*2) - 1);
+    //         // if value == 0, angle should be -sweep
+    //         // if value == 1, angle should be sweep 
+    //         let derived_angle = KNOB_SWEEP * ((value*2) - 1);
             
-            // set rotation of knob by this angle, and normal axis of knob:
-            object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
-        } break;
-        case "n_switch": {
-            object.userData.value = value;
-            for(let child of object.children){
-                if(child.userData.selectable){
-                    child.position.fromArray( object.userData.positions[value -1]);
-                }
-            }
-        } break;
-        default:{
+    //         // set rotation of knob by this angle, and normal axis of knob:
+    //         object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
+    //     } break;
+    //     case "n_switch": {
+    //         object.userData.value = value;
+    //         for(let child of object.children){
+    //             if(child.userData.selectable){
+    //                 child.position.fromArray( object.userData.positions[value -1]);
+    //             }
+    //         }
+    //     } break;
+    //     default:{
 
-        } break;
-    }
+    //     } break;
+    // }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1532,7 +1396,7 @@ function animate() {
 
             // handle interaction only if visible:
             if (controller.visible) {
-                let beamIntersection = getFirstIntersection(ghostScene.children, controller);
+                let beamIntersection = getFirstIntersection(controller);
                 let beam = controller.getObjectByName("VRControllerBeam");
                 if (beamIntersection && beamIntersection.object) {
                     //logonly("hit object", beamIntersection.object.name)
@@ -1635,7 +1499,8 @@ function animate() {
             sock.send({
                 cmd: "user_pose",
                 date: Date.now(),
-                pose: userPose
+                pose: userPose,
+                id: vrContextID
             });
         }
     }
@@ -1797,15 +1662,8 @@ function copyGhostToInstances(parent) {
             // they are the x,y coordinates of the four corners of the quad
             let uvs = geom.attributes.uv.array;
             // they are the texture coordinates of the glyph into the font atlas
-            let glyphs = geom.layout.glyphs
 
-            //console.log(glyphs)
-
-            //for (let q=0; q<positions.length; q+=8) {
-            for (let j=0; j<glyphs.length; j++) {
-                let glyph = glyphs[j];
-
-                let q = j * 8;
+            for (let q=0; q<positions.length; q+=8) {
                 // a specific glyph, as 4 XY pairs
                 // TODO: convert to a position & scale for instance
                 // everything also needs to be transformed by the o.matrixWorld
@@ -1814,17 +1672,16 @@ function copyGhostToInstances(parent) {
                 let i3 = i * 3;
                 let i4 = i * 4;
 
-                let x0 = positions[q+0]; // == glyph.position[0] + glyph.data.xoffset
-                let y0 = positions[q+5]; // == glyph.position[1] + glyph.data.yoffset
+                let x0 = positions[q+0];
+                let y0 = positions[q+5];
                 let x1 = positions[q+4];
                 let y1 = positions[q+1];
                 let xdim = (x1-x0);
                 let ydim = (y0-y1);
 
-                
-                instQuadLocationAttr.array[i3 + 0] = pos.x + (x0 + xdim/2)*-scale.x;
-                instQuadLocationAttr.array[i3 + 1] = pos.y + (y0 - ydim/2)*-scale.y;
-                instQuadLocationAttr.array[i3 + 2] = pos.z;
+                instQuadLocationAttr.array[i3 + 0] = pos.x + x0*scale.x;
+                instQuadLocationAttr.array[i3 + 1] = pos.y + -y0*scale.y;
+                instQuadLocationAttr.array[i3 + 2] = pos.z + 0.001;
                 
                 instQuadOrientationAttr.array[i4 + 0] = quat.x;
                 instQuadOrientationAttr.array[i4 + 1] = quat.y;
@@ -1837,7 +1694,7 @@ function copyGhostToInstances(parent) {
                 instQuadTexcoordAttr.array[i4 + 3] = uvs[q+1]
                 
                 instQuadScaleAttr.array[i3 + 0] = xdim*scale.x;
-                instQuadScaleAttr.array[i3 + 1] = -ydim*scale.y;
+                instQuadScaleAttr.array[i3 + 1] = ydim*scale.y;
                 instQuadScaleAttr.array[i3 + 2] = 1;
 
                 currentQuadInstanceCount++;
@@ -1952,32 +1809,23 @@ function doModuleLayout(mod) {
     if (!numcols) log(grid_spacing, numchildren, numrows, numcols)
 
     backpanel.scale.set(grid_spacing * numcols, grid_spacing * numrows, BACKPANEL_DEPTH);
-    
     // reset anchor to top left corner:
     backpanel.position.set(
-        0, //(grid_spacing * numcols)/2,
-        0,
-        -BACKPANEL_DEPTH/2
-    );
+        ((grid_spacing * numcols) /2) - (grid_spacing /2) ,
+        (-(grid_spacing * numrows) /2) + (grid_spacing /2), 
+        -BACKPANEL_DEPTH/2);
 
-    let layout = label.geometry.layout
-    //console.log(layout) // 280
-    
-    let s = numcols*grid_spacing / layout.width
-    label.scale.set(s, -s, s)
-    
     label.position.set(
-        grid_spacing * -numcols/2, 
-        grid_spacing * (numrows-1.4)/2, 
-        0.001
-    );
+            0,
+            0, 
+            0);
 
     for (let r = 1, i=0; r<numrows; r++) {
         for (let c=0; c<numcols && i < numchildren; c++, i++) {
             //log("adding child " + i + " of " + numchildren + " at ", c, r)
             let widget = widgets[i];
-            widget.position.x = grid_spacing * (c-(numcols-1)/2);
-            widget.position.y = -grid_spacing * (r-(numrows-1)/2);
+            widget.position.x = ((grid_spacing * c));
+            widget.position.y = (-(grid_spacing * r));
             widget.position.z = NLET_HEIGHT/2;
         }
     }
