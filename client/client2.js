@@ -1,7 +1,8 @@
 const url = window.location.href.split('//')[1].split(':')[0];
 console.log('url', url)
 let once = 1;
-let sessionID;
+let vrContextID;
+let audioContextID;
 /**
  * Generate a random integer between a range (min, max)
  * @param {INT} min - minimum value for random int
@@ -1280,7 +1281,7 @@ function animate() {
                 cmd: "user_pose",
                 date: Date.now(),
                 pose: userPose,
-                id: sessionID
+                id: vrContextID
             });
         }
     }
@@ -1559,10 +1560,16 @@ function onServerMessage(msg, sock) {
         } break;
 
         // server assigns an iid for our session. use this to route controller and HMD data to local max client. 
-        case "assignID":{
-            sessionID = msg.id
+        // case "assignID":{
+             
+        // }
+        // break
+        case "contexts":{
+            //console.log(msg.data)
+            vrContextID = msg.data.vrContext
+            audioContextID = msg.data.audioContext
         }
-        break
+        break;
         default:
            // log("received JSON", msg, typeof msg);
     }

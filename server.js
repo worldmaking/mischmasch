@@ -236,13 +236,14 @@ ip = req.headers.host.split(':')[0]
 	if (!clients[ip]){
 		clients[ip] = {}
 	}
-	console.log(clients)
+	console.log('connected clients, sessionIDs & clientTypes: ', clients)
 	//console.log(req.connection.remoteAddress)
 	setInterval(function(){ 
-		console.log(clients)
+		console.log('clients handshake: ', clients)
 		ws.send(JSON.stringify({
 			cmd:'contexts',
-			data: clients[ip]
+			data: clients[ip],
+			ip: ip
 		})) 
 	}, 3000);
 	
