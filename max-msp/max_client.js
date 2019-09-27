@@ -53,7 +53,7 @@ const options = {
 };
 //const rws = new ReconnectingWebSocket('ws://my.site.com', [], options);
 
-let vrContextID;
+
 
 let sessionList = []
 let sceneList = []
@@ -151,15 +151,10 @@ connection.addEventListener('message', (data) => {
 		break;
 		// headset & controller data
 		case "user_pose":
-			// get only the HMD & controller data that matches the vrContextID assigned to the client browser running on this same machine
-			if (data.id === vrContextID){
-				userData = JSON.stringify(data.pose)
-				//newCmd = data.cmd
-				
-				// maxInstances.post(userData.cmd)
-				max.outlet('userData', userData)
-			}
-
+		userData = JSON.stringify(data.pose)
+		newCmd = data.cmd
+		// maxInstances.post(userData.cmd)
+		max.outlet('userData', userData)
 		break;
 
 		///////////////////////
