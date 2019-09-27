@@ -1941,7 +1941,7 @@ function localHandshake() {
         //     date: Date.now()
         // });
         let handShakeInterval = setInterval(function(){ 
-            console.log('clients handshake: ', clients)
+            console.log('this client ID: ', vrContextID)
             ws.send(JSON.stringify({
                 cmd: 'handshake',
                 data: vrContextID
