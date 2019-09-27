@@ -631,7 +631,7 @@ function initVRController(id=0) {
                     let dist = controllerPos.distanceTo(objectPos);
 
 
-                    if (1) { //if (dist < KNOB_TWIST_DISTANCE) {
+                 if (1) { //if (dist < KNOB_TWIST_DISTANCE) {   
                         //controller.rotation.z += object.userData.rotation._z;
                         //object.rotation.z = (controller.rotation.z - controller.userData.rotation._z);
                         //console.log(object, controller)
