@@ -29,7 +29,7 @@ wss.on('connection', function connection(localHandshake) {
 		switch (msg.cmd){
 
 			case 'handshake':
-				max.post('received: %s', message);
+				max.post('\n\nvrContext', message);
 				max.outlet('vrContext', message.data)
 				vrContextID = data.data.vrContext
 			break
