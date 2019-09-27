@@ -83,10 +83,9 @@
       "min":{"_props":{"kind":"outlet","index":1}}
     },
 
-    "outs":{
-      "_props":{"kind":"outs","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "input":{"_props":{"kind":"inlet","index":0}},
-      "volume":{"_props":{"kind":"small_knob","range":[0,1],"taper":"log 3.8","value":0.25,"unit":"float"}}
+    "speaker":{
+      "_props":{"kind":"speaker","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
+      "input":{"_props":{"kind":"inlet","index":0}}
     },
     "logic":{
       "_props":{"kind":"logic","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
