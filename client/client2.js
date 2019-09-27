@@ -3,6 +3,7 @@ console.log('url', url)
 let once = 1;
 let vrContextID;
 let audioContextID;
+let ws;
 /**
  * Generate a random integer between a range (min, max)
  * @param {INT} min - minimum value for random int
@@ -1846,11 +1847,7 @@ function onServerMessage(msg, sock) {
             console.log(msg.data)
             vrContextID = msg.data.vrContext
             audioContextID = msg.data.audioContext
-            // send to server that this client is a browser client
-            ws.send(JSON.stringify({
-                cmd: 'handshake',
-                data: vrContextID
-            }));
+
         }
         break;
         default:
@@ -1943,12 +1940,21 @@ function localHandshake() {
         //     cmd: "get_scene",
         //     date: Date.now()
         // });
+        let handShakeInterval = setInterval(function(){ 
+            console.log('clients handshake: ', clients)
+            ws.send(JSON.stringify({
+                cmd: 'handshake',
+                data: vrContextID
+            })) 
+        }, 3000);
+        
     },
     ws.onmessage = function(e) {
       console.log('Message:', e.data);
     };
   
     ws.onclose = function(e) {
+        clearInterval(handShakeInterval)
       console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
       setTimeout(function() {
         connect();
