@@ -1843,9 +1843,10 @@ function onServerMessage(msg, sock) {
         // }
         // break
         case "contexts":{
-            //console.log(msg.data)
+            console.log(msg.data)
             vrContextID = msg.data.vrContext
             audioContextID = msg.data.audioContext
+            localHandshake()
         }
         break;
         default:
@@ -1881,3 +1882,43 @@ function onDocumentMouseMove(e) {
 function onDocumentMouseDown(e) {
 
 }
+
+
+/// handshake with max_client running on the same machine
+function localHandshake() {
+    try {
+        if (window.location.hostname/* == "localhost"*/) {
+            sock = new Socket({
+                reload_on_disconnect: true,
+                reconnect_period: 1000,
+                hostname: "localhost",
+                port: 8082,
+                onopen: function () {
+                    //this.send({ cmd: "getdata", date: Date.now() });
+                    log("connected to maxClient");
+
+                    // send to server that this client is a browser client
+                    this.send({
+                        cmd: 'handshake',
+                        data: vrContextID
+                    });
+                    // request scene:
+                    this.send({
+                        cmd: "get_scene",
+                        date: Date.now()
+                    });
+                },
+                onmessage: function (m) {
+                    onServerMessage(m, this);
+                },
+                onbuffer(data, byteLength) {
+                    log("received binary:", byteLength);
+                },
+            });
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+localHandshake()

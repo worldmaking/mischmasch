@@ -8,13 +8,33 @@ const os = require("os");
 const assert = require("assert");
 const performance = require('perf_hooks').performance;
 const { exec, execSync, spawn, spawnSync, fork } = require('child_process');
-const IP = require('ip')
-const ip = IP.address()
+// const IP = require('ip')
+// const ip = IP.address()
 const express = require('express');
 const WebSocket = require('ws');
 //console.log(got)
 
 const max = require("max-api");
+
+
+
+
+
+////// handshake with the vrContext running on the same machine:
+const wss = new WebSocket.Server({ port: 8082 });
+ 
+wss.on('connection', function connection(localHandshake) {
+	localHandshake.on('message', function incoming(message) {
+    max.post('received: %s', message);
+  });
+ 
+  localHandshake.send('something');
+});
+
+
+
+
+
 
 const ReconnectingWebSocket = require('reconnecting-websocket');
 
@@ -30,7 +50,7 @@ let vrContextID;
 let sessionList = []
 let sceneList = []
 
-max.post(ip)
+// post(ip)
 
 
 //const scenefile = "scene_edited.json"
@@ -103,7 +123,7 @@ connection.addEventListener('message', (data) => {
 			// 	vrContextID = data.data[0]
 			// 	max.post(data.data[0])
 			// }
-			max.post(data.data.ip)
+//max.post(data.data.ip)
 			if(data.data.vrContext){
 				max.outlet('vrContext', data.data.vrContext)
 				vrContextID = data.data.vrContext
