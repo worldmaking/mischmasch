@@ -224,7 +224,7 @@ wss.on('connection', function(ws, req) {
 	//	ws.id = uuid.v4();
 	const id = ++sessionId;
 	// ip = req.connection.remoteAddress.split(':')[3] 
-ip = req.headers.host.split(':')[0]
+	ip = req.headers.host.split(':')[0]
 	if(!ip){
 		// console.log('vr', req.connection)
 		ip = req.ip
@@ -238,7 +238,7 @@ ip = req.headers.host.split(':')[0]
 	}
 	console.log('connected clients, sessionIDs & clientTypes: ', clients)
 	//console.log(req.connection.remoteAddress)
-	setInterval(function(){ 
+	let handShakeInterval = setInterval(function(){ 
 		console.log('clients handshake: ', clients)
 		ws.send(JSON.stringify({
 			cmd:'contexts',
@@ -267,6 +267,7 @@ ip = req.headers.host.split(':')[0]
 
 	// what to do if client disconnects?
 	ws.on('close', function(connection) {
+		clearInterval(handShakeInterval);
 		console.log("connection closed");
         console.log("server has "+wss.clients.size+" connected clients");
 	});

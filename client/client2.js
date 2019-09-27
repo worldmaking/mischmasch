@@ -353,12 +353,6 @@ async function initFont() {
         blending:THREE.AdditiveBlending, depthWrite: false,
         derivatives: true,
     } );
-
-    // //Add Text for now
-    //{
-    //     let mesh = createLabel(`Hello!`, Math.random()-0.5, Math.random()+1.5, Math.random());
-    //     scene.add(mesh)
-    // }
 }
 
 async function initInstanceBoxMesh() {
@@ -1005,12 +999,22 @@ function enactDeltaNewNode(world, delta) {
             container.scale.set(NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT);
             container.userData.color = [0, 1, 0, 1];
             container.userData.instanceShape = SHAPE_CYLINDER;
+            
+            // label:
+            let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
+            container.add(label);
+
+            
         } break;
         case "outlet":{
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT);
             container.userData.color = [1, 0, 0, 1];
             container.userData.instanceShape = SHAPE_CYLINDER;
+            
+            // label:
+            let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
+            container.add(label);
         } break;
         case "large_knob":{
             container = new THREE.Mesh(boxGeom, boxMat);
@@ -1018,6 +1022,10 @@ function enactDeltaNewNode(world, delta) {
             container.userData.instanceShape = SHAPE_CYLINDER
             container.userData.color = colorFromString(name);
             container.userData.isTiddleable = true;
+
+            // label:
+            let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
+            container.add(label);
         }break;
         case "small_knob":{
             container = new THREE.Mesh(boxGeom, boxMat);
@@ -1025,6 +1033,10 @@ function enactDeltaNewNode(world, delta) {
             container.userData.instanceShape = SHAPE_CYLINDER
             container.userData.color = colorFromString(name);
             container.userData.isTiddleable = true;
+
+            // label:
+            let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
+            container.add(label);
         }break;
         case "n_switch": {
             container = new THREE.Mesh(boxGeom, boxMat);
@@ -1032,6 +1044,10 @@ function enactDeltaNewNode(world, delta) {
             container.userData.color = colorFromString(name);
             container.userData.slideable = true;
             container.userData.instanceShape = SHAPE_BOX;
+            
+            // label:
+            let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
+            container.add(label);
         } break;
         case "group": {
             alert("TODO GROUP")
@@ -1050,7 +1066,7 @@ function enactDeltaNewNode(world, delta) {
             container.add(box);
 
             // label:
-            let label = createLabel(name, 0, 0, LABEL_Z_OFFSET);
+            let label = createLabel(name, 0, 0, LABEL_Z_OFFSET, 1);
             container.add(label);
         }
     }
@@ -1555,7 +1571,6 @@ function copyGhostToInstances(parent) {
     let pos = new THREE.Vector3();
     let scale = new THREE.Vector3();
     let quat = new THREE.Quaternion();
-    let mat = new THREE.Matrix4();
     for (let o of parent.children) {
 
         // copy anything that is supposed to be instanced:
