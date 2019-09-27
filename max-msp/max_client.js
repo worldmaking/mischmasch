@@ -10,7 +10,6 @@ const performance = require('perf_hooks').performance;
 const { exec, execSync, spawn, spawnSync, fork } = require('child_process');
 const IP = require('ip')
 const ip = IP.address()
-
 const express = require('express');
 const WebSocket = require('ws');
 //console.log(got)
@@ -26,10 +25,13 @@ const options = {
 };
 //const rws = new ReconnectingWebSocket('ws://my.site.com', [], options);
 
-
+let vrContextID;
 
 let sessionList = []
 let sceneList = []
+
+max.post(ip)
+
 
 //const scenefile = "scene_edited.json"
 //const playbackSessionJSON = []
@@ -97,8 +99,16 @@ connection.addEventListener('message', (data) => {
 
 		case 'contexts':
 			
-			max.post(ip, data.data)
-			max.outlet('contexts', data.data)
+			// if (data.data.ip === 'localhost' || data.data[0] === '127.0.0.1'){
+			// 	vrContextID = data.data[0]
+			// 	max.post(data.data[0])
+			// }
+			max.post(data.data.ip)
+			if(data.data.vrContext){
+				max.outlet('vrContext', data.data.vrContext)
+				vrContextID = data.data.vrContext
+			}
+			
 		break
 		///////// GEN~ Client ///////////////////////
 
@@ -113,10 +123,15 @@ connection.addEventListener('message', (data) => {
 		break;
 		// headset & controller data
 		case "user_pose":
-		userData = JSON.stringify(data.pose)
-		newCmd = data.cmd
-		// maxInstances.post(userData.cmd)
-		max.outlet('userData', userData)
+			// get only the HMD & controller data that matches the vrContextID assigned to the client browser running on this same machine
+			if (data.id === vrContextID){
+				userData = JSON.stringify(data.pose)
+				//newCmd = data.cmd
+				
+				// maxInstances.post(userData.cmd)
+				max.outlet('userData', userData)
+			}
+
 		break;
 
 		///////////////////////
