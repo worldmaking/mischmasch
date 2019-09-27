@@ -59,10 +59,15 @@ let orbitControls;
 // Instancing components
 const MAX_BOX_INSTANCE_CAPACITY = 10000;
 let currentBoxInstanceCount = 0;
-
 let instBoxGeometry;
 let instBoxLocationAttr, instBoxOrientationAttr, instBoxScaleAttr, instBoxColorAttr, instBoxEmissionAttr, instBoxShapeAttr;
 let instBoxMesh;
+
+const MAX_QUAD_INSTANCE_CAPACITY = 10000;
+let currentQuadInstanceCount = 1;
+let instQuadGeometry;
+let instQuadLocationAttr, instQuadOrientationAttr, instQuadScaleAttr, instQuadTexcoordAttr;
+let instQuadMesh;
 
 // VR components
 let VRcontrollers = [];
@@ -76,6 +81,7 @@ const CABLE_JACK_RADIUS = CABLE_JACK_HEIGHT * 0.4;
 // effects how 'straight' the cables are as come out of inlets/outlets
 const CABLE_CONTROL_POINT_DISTANCE = 0.1;
 
+const BACKPANEL_DEPTH = 0.02
 const SHAPE_BOX = 0
 const SHAPE_CYLINDER = 1
 const NLET_RADIUS = 0.025;
@@ -95,6 +101,22 @@ let boxMat = new THREE.MeshStandardMaterial({
     side: THREE.DoubleSide,
     depthWrite: false,
 });
+
+let label_material = new THREE.MeshStandardMaterial({
+    color: 0x000000,
+    transparent: true,
+    opacity: 0.4,
+    side: THREE.DoubleSide
+    //, blending: THREE.AdditiveBlending
+
+});
+// let fontFile = 'js/three-r102/examples/fonts/helvetiker_regular.typeface.json';
+// let loadedFont;
+let fontTexture;
+let fontData;
+let textMaterial;
+const LABEL_Z_OFFSET = 0.001;
+const LABEL_SCALING_FACTOR = 0.001;
 
 // let plug_geometry = new THREE.CylinderBufferGeometry(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT, 8);
 // // fix anchor point
@@ -179,6 +201,12 @@ async function loadFont(fontFile) {
     return new Promise(resolve => new THREE.FontLoader().load(fontFile, resolve));
 }
 
+async function loadDistanceFont(fontFile) {
+    return new Promise(resolve => bm_loadFont(fontFile, function(err, font) {
+        resolve(font);
+    }));
+}
+
 async function loadOBJ(path) {
     return new Promise(resolve => new THREE.OBJLoader().load(path, resolve));
 }
@@ -194,7 +222,8 @@ async function init() {
     // init 3D world
     await init_threejs();
     addFloorGrid();
-
+    
+    await initFont();
     await initInstanceBoxMesh();
 
     scene.add(ghostScene)
@@ -204,8 +233,8 @@ async function init() {
 
 
     document.addEventListener("keydown", onKeypress, false);
-    // document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-    // document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+    document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+    document.addEventListener( 'mousedown', onDocumentMouseDown, false );
 
     // now we can start rendering:
     animate();
@@ -259,6 +288,7 @@ async function init_threejs() {
     light.shadow.camera.left = -2;
     light.shadow.mapSize.set(4096, 4096);
     scene.add(light);
+
 }
 
 function addFloorGrid() {
@@ -270,9 +300,91 @@ function addFloorGrid() {
     floorGrid.material.transparent = true;
     floorGrid.name ="floorGrid"
     scene.add(floorGrid);
+
+    floorGrid.add(new THREE.AxesHelper( 0.1 ));
+}
+
+async function initFont() {
+   // loadedFont = await loadFont(fontFile);
+    let fontVShaderFile = 'shaders/font.vert';
+    let fontFShaderFile = 'shaders/font.frag';
+    let loadedFontVShader = await loadShader(fontVShaderFile);
+    let loadedFontFShader = await loadShader(fontFShaderFile);
+    fontTexture = await loadTexture('shaders/CONSOLATTF.png');
+    fontData = await loadDistanceFont('shaders/CONSOLA.TTF-msdf.json');
+    textMaterial = new THREE.ShaderMaterial( {
+        uniforms: {
+            "u_texture": { value: fontTexture },
+            //"u_time": { value: 0 },
+            //"u_color": {value: 0 }
+        },
+        vertexShader: loadedFontVShader,
+        fragmentShader: loadedFontFShader,
+        side: THREE.DoubleSide,
+        transparent: true,
+        blending:THREE.AdditiveBlending, depthWrite: false,
+        derivatives: true,
+    } );
+
+    // //Add Text for now
+    //{
+    //     let mesh = createLabel(`Hello!`, Math.random()-0.5, Math.random()+1.5, Math.random());
+    //     scene.add(mesh)
+    // }
 }
 
 async function initInstanceBoxMesh() {
+
+    let quadGeometry = new THREE.PlaneBufferGeometry(1,1, 1,1);
+    instQuadGeometry = new THREE.InstancedBufferGeometry();
+    instQuadGeometry.index = quadGeometry.index;
+    instQuadGeometry.attributes.normal = quadGeometry.attributes.normal;
+    instQuadGeometry.attributes.position = quadGeometry.attributes.position;
+    instQuadGeometry.attributes.uv = quadGeometry.attributes.uv;
+
+    instQuadLocationAttr = new THREE.InstancedBufferAttribute( new Float32Array( MAX_QUAD_INSTANCE_CAPACITY * 3 ), 3 ).setDynamic( true );
+    instQuadOrientationAttr = new THREE.InstancedBufferAttribute( new Float32Array( MAX_QUAD_INSTANCE_CAPACITY * 4 ), 4 ).setDynamic( true );
+    instQuadScaleAttr = new THREE.InstancedBufferAttribute( new Float32Array( MAX_QUAD_INSTANCE_CAPACITY * 3 ), 3 ).setDynamic( true );
+    instQuadTexcoordAttr = new THREE.InstancedBufferAttribute( new Float32Array( MAX_QUAD_INSTANCE_CAPACITY * 4 ), 4 ).setDynamic( true );
+
+    // initialize instance buffer:
+    for ( let i = 0; i < MAX_QUAD_INSTANCE_CAPACITY; i ++ ) {
+        // set some sane defaults for attrs:
+        // set W component of orientations:
+        instQuadOrientationAttr.array[i * instQuadOrientationAttr.itemSize + 3] = 1;
+        
+        instQuadTexcoordAttr.array[i * instQuadTexcoordAttr.itemSize + 0] = 0.;
+        instQuadTexcoordAttr.array[i * instQuadTexcoordAttr.itemSize + 1] = 0.;
+        instQuadTexcoordAttr.array[i * instQuadTexcoordAttr.itemSize + 2] = 1.;
+        instQuadTexcoordAttr.array[i * instQuadTexcoordAttr.itemSize + 3] = 1.;
+
+        instQuadScaleAttr.array[i * instQuadScaleAttr.itemSize + 0] = 0.1;
+        instQuadScaleAttr.array[i * instQuadScaleAttr.itemSize + 1] = 0.1;
+        instQuadScaleAttr.array[i * instQuadScaleAttr.itemSize + 2] = 0.1;
+    }
+
+    // add these attrs to the instaned buffer:
+    instQuadGeometry.addAttribute( 'location', instQuadLocationAttr );
+    instQuadGeometry.addAttribute( 'orientation', instQuadOrientationAttr );
+    instQuadGeometry.addAttribute( 'scale', instQuadScaleAttr );
+    instQuadGeometry.addAttribute( 'texcoord', instQuadTexcoordAttr );
+
+    let instQuadMaterial = new THREE.RawShaderMaterial( {
+        uniforms: {
+            u_texture: { value: fontTexture }
+        },
+        vertexShader: await loadShader('shaders/instQuadShader.vert'),
+        fragmentShader: await loadShader('shaders/instQuadShader.frag'),
+
+        side: THREE.DoubleSide,
+        transparent: true,
+        blending:THREE.AdditiveBlending, depthWrite: false,
+        derivatives: true,
+    } );
+
+    instQuadMesh = new THREE.Mesh( instQuadGeometry, instQuadMaterial );
+    instQuadMesh.frustumCulled = false;
+    scene.add( instQuadMesh );
 
     // box spans signed-normalized range of -1..1 in each axis
     // with subdivisions in each axis
@@ -290,8 +402,6 @@ async function initInstanceBoxMesh() {
     instBoxColorAttr = new THREE.InstancedBufferAttribute( new Float32Array( MAX_BOX_INSTANCE_CAPACITY * 4 ), 4 ).setDynamic( true );
     //instBoxEmissionAttr = new THREE.InstancedBufferAttribute( new Float32Array( emission ), 4 ).setDynamic( true );
     instBoxShapeAttr = new THREE.InstancedBufferAttribute( new Float32Array( MAX_BOX_INSTANCE_CAPACITY * 1 ), 1 ).setDynamic( true );
-
-    console.log(instBoxLocationAttr)
 
     // initialize instance buffer:
     for ( let i = 0; i < MAX_BOX_INSTANCE_CAPACITY; i ++ ) {
@@ -794,6 +904,55 @@ function enactDelta(world, delta) {
     }
 }
 
+
+/**
+ * create a label with 3D space
+ * @param {VALUE} text - text for the label
+ * @param {VALUE} x - x location
+ * @param {VALUE} y - y location
+ * @param {VALUE} z - z location
+ * @param {value} scale - OPTIONAL: single scale size (default: 0.009)
+ */
+function createLabel(text, x=0, y=1.5, z=0, uniformScaling=1){
+    uniformScaling *= LABEL_SCALING_FACTOR;
+    let mesh;
+    // a geometry of packed bitmap glyphs, 
+    // word wrapped to 240px (10 characters) and center-aligned
+
+    //default pixel width is 24px
+    let wrapWidth = 240.0;
+
+    //https://github.com/Jam3/three-bmfont-text
+    let geometry = bm_createGeometry({
+        width: wrapWidth,
+        align: 'center',
+        font: fontData
+    })
+    // change text and other options as desired
+    // the options sepcified in constructor will
+    // be used as defaults
+    geometry.update({ text: text });
+    // the resulting layout has metrics and bounds
+    // console.log(geometry.layout.height)
+    // console.log(geometry.layout.descender)
+        
+    // now do something with our mesh!
+    mesh = new THREE.Mesh(geometry, textMaterial);
+    mesh.name = "label_"+text
+    mesh.userData.isLabel = true;
+
+    mesh.scale.set(uniformScaling, uniformScaling, uniformScaling);
+
+    //center text: scale * Wrap Width (width) /2 (ex. .009 * 240 / 2)
+    let centerX = (wrapWidth * uniformScaling)/2.0;
+    if (x=="center") {
+        mesh.position.set(-centerX, y, z);
+    } else {
+        mesh.position.set(x,y,z);
+    }
+    return mesh;
+}
+
 function enactDeltaNewNode(world, delta) {
     // TODO: identify which world to add it to
     let parent = world;
@@ -862,6 +1021,9 @@ function enactDeltaNewNode(world, delta) {
             box.name = "_box_"+name
             container.add(box);
 
+            // label:
+            let label = createLabel(name, 0, 0, LABEL_Z_OFFSET);
+            container.add(label);
         }
     }
 
@@ -1226,6 +1388,7 @@ function animate() {
     {
         // update the instancing buffers
         currentBoxInstanceCount = 0;
+        currentQuadInstanceCount = 0;
         copyGhostToInstances(ghostScene);
 
         instBoxLocationAttr.needsUpdate = true;
@@ -1234,7 +1397,18 @@ function animate() {
         instBoxColorAttr.needsUpdate = true;
         instBoxShapeAttr.needsUpdate = true;
         //instBoxEmissionAttr.needsUpdate = true;
+
+
+        instQuadLocationAttr.needsUpdate = true;
+        instQuadOrientationAttr.needsUpdate = true;
+        instQuadScaleAttr.needsUpdate = true;
+        instQuadTexcoordAttr.needsUpdate = true;
+
         instBoxGeometry.maxInstancedCount = currentBoxInstanceCount;
+        instQuadGeometry.maxInstancedCount = currentQuadInstanceCount;
+    }
+    {
+
     }
 
     // handle VR device state
@@ -1356,10 +1530,7 @@ function copyGhostToInstances(parent) {
     let mat = new THREE.Matrix4();
     for (let o of parent.children) {
 
-
         // copy anything that is supposed to be instanced:
-   
-
         if (o.userData.isCable) {
             let curve = o.userData.curve;
             let ts = 1 / (NUM_CABLE_SEGMENTS);
@@ -1433,6 +1604,59 @@ function copyGhostToInstances(parent) {
             }
 
         } 
+        if (o.userData.isLabel) {
+            //console.log(o)
+            
+
+            // get pose of object:
+            o.matrixWorld.decompose(pos, quat, scale);
+
+            // need to dig into the label geometry to figure out what to do with the quads... 
+            let geom = o.geometry; // instance of TextGeometry
+            // these arrays have 8 items per character in the string:
+            let positions = geom.attributes.position.array;
+            // they are the x,y coordinates of the four corners of the quad
+            let uvs = geom.attributes.uv.array;
+            // they are the texture coordinates of the glyph into the font atlas
+
+            for (let q=0; q<positions.length; q+=8) {
+                // a specific glyph, as 4 XY pairs
+                // TODO: convert to a position & scale for instance
+                // everything also needs to be transformed by the o.matrixWorld
+
+                let i = currentQuadInstanceCount;
+                let i3 = i * 3;
+                let i4 = i * 4;
+
+                let x0 = positions[q+0];
+                let y0 = positions[q+5];
+                let x1 = positions[q+4];
+                let y1 = positions[q+1];
+                let xdim = (x1-x0);
+                let ydim = (y0-y1);
+
+                instQuadLocationAttr.array[i3 + 0] = pos.x + x0*scale.x;
+                instQuadLocationAttr.array[i3 + 1] = pos.y + -y0*scale.y;
+                instQuadLocationAttr.array[i3 + 2] = pos.z + 0.001;
+                
+                instQuadOrientationAttr.array[i4 + 0] = quat.x;
+                instQuadOrientationAttr.array[i4 + 1] = quat.y;
+                instQuadOrientationAttr.array[i4 + 2] = quat.z;
+                instQuadOrientationAttr.array[i4 + 3] = quat.w;
+
+                instQuadTexcoordAttr.array[i4 + 0] = uvs[q+0]
+                instQuadTexcoordAttr.array[i4 + 1] = uvs[q+5]
+                instQuadTexcoordAttr.array[i4 + 2] = uvs[q+4]
+                instQuadTexcoordAttr.array[i4 + 3] = uvs[q+1]
+                
+                instQuadScaleAttr.array[i3 + 0] = xdim*scale.x;
+                instQuadScaleAttr.array[i3 + 1] = ydim*scale.y;
+                instQuadScaleAttr.array[i3 + 2] = 1;
+
+                currentQuadInstanceCount++;
+            }
+        }
+        
         if (o.userData.instanceShape !== undefined) {
             let i = currentBoxInstanceCount;
             let i3 = i * 3;
@@ -1519,8 +1743,9 @@ function doModuleLayout(mod) {
 
     // skip the backpanel:
     // TODO: also need to skip the label...
-    let widgets = mod.children.slice(1);
+    let widgets = mod.children.slice(2);
     let backpanel = mod.children[0];
+    let label = mod.children[1];
     let numchildren = widgets.length;
 
     let numcols = Math.ceil(Math.sqrt(numchildren));
@@ -1530,6 +1755,8 @@ function doModuleLayout(mod) {
         numcols = numchildren;
         numrows = 1;
     }
+    // extra row for label:
+    numrows++;
     let LARGEST_MODULE = LARGE_KNOB_RADIUS;
     let widget_diameter = LARGEST_MODULE;
     let widget_padding = LARGEST_MODULE / 2;
@@ -1537,17 +1764,25 @@ function doModuleLayout(mod) {
 
     if (!numcols) log(grid_spacing, numchildren, numrows, numcols)
 
-    backpanel.scale.set(grid_spacing * numcols, grid_spacing * numrows, 0.02);
+    backpanel.scale.set(grid_spacing * numcols, grid_spacing * numrows, BACKPANEL_DEPTH);
     // reset anchor to top left corner:
-    backpanel.position.set(((grid_spacing * numcols) /2) - (grid_spacing /2) ,(-(grid_spacing * numrows) /2) + (grid_spacing /2), 0);
+    backpanel.position.set(
+        ((grid_spacing * numcols) /2) - (grid_spacing /2) ,
+        (-(grid_spacing * numrows) /2) + (grid_spacing /2), 
+        -BACKPANEL_DEPTH/2);
 
-    for (let r = 0, i=0; r<numrows; r++) {
+    label.position.set(
+            0,
+            0, 
+            0);
+
+    for (let r = 1, i=0; r<numrows; r++) {
         for (let c=0; c<numcols && i < numchildren; c++, i++) {
             //log("adding child " + i + " of " + numchildren + " at ", c, r)
             let widget = widgets[i];
             widget.position.x = ((grid_spacing * c));
             widget.position.y = (-(grid_spacing * r));
-            widget.position.z = NLET_HEIGHT * 1.5;
+            widget.position.z = NLET_HEIGHT/2;
         }
     }
 }
@@ -1588,4 +1823,18 @@ function onKeypress(e) {
     if (!renderer.vr.isPresenting()){
 
     }
+}
+
+function onDocumentMouseMove(e) {
+    //console.log(e);
+    // note: can disable orbitControls with:
+    // to disable zoom
+    //orbitControls.enableZoom = false;
+    // to disable rotation
+    //orbitControls.enableRotate = false;
+    // to disable pan
+    //orbitControls.enablePan = false;
+}
+function onDocumentMouseDown(e) {
+
 }
