@@ -1885,40 +1885,76 @@ function onDocumentMouseDown(e) {
 
 
 /// handshake with max_client running on the same machine
+// function localHandshake() {
+//     try {
+//         if (window.location.hostname/* == "localhost"*/) {
+//             sock = new Socket({
+//                 reload_on_disconnect: true,
+//                 reconnect_period: 1000,
+//                 hostname: "localhost",
+//                 port: 8083,
+//                 onopen: function () {
+//                     //this.send({ cmd: "getdata", date: Date.now() });
+//                     log("connected to maxClient");
+
+//                     // send to server that this client is a browser client
+//                     this.send({
+//                         cmd: 'handshake',
+//                         data: vrContextID
+//                     });
+//                     // request scene:
+//                     // this.send({
+//                     //     cmd: "get_scene",
+//                     //     date: Date.now()
+//                     // });
+//                 },
+//                 onmessage: function (m) {
+//                     onServerMessage(m, this);
+//                 },
+//                 onbuffer(data, byteLength) {
+//                     log("received binary:", byteLength);
+//                 },
+//             });
+//         }
+//     } catch (e) {
+//         console.error(e);
+//     }
+// }
+
+// localHandshake()
+
 function localHandshake() {
-    try {
-        if (window.location.hostname/* == "localhost"*/) {
-            sock = new Socket({
-                reload_on_disconnect: true,
-                reconnect_period: 1000,
-                hostname: "localhost",
-                port: 8083,
-                onopen: function () {
-                    //this.send({ cmd: "getdata", date: Date.now() });
-                    log("connected to maxClient");
+    var ws = new WebSocket('ws://localhost:8083');
+    ws.onopen = function () {
+        //this.send({ cmd: "getdata", date: Date.now() });
+        log("connected to maxClient");
 
-                    // send to server that this client is a browser client
-                    this.send({
-                        cmd: 'handshake',
-                        data: vrContextID
-                    });
-                    // request scene:
-                    // this.send({
-                    //     cmd: "get_scene",
-                    //     date: Date.now()
-                    // });
-                },
-                onmessage: function (m) {
-                    onServerMessage(m, this);
-                },
-                onbuffer(data, byteLength) {
-                    log("received binary:", byteLength);
-                },
-            });
-        }
-    } catch (e) {
-        console.error(e);
-    }
-}
-
-localHandshake()
+        // send to server that this client is a browser client
+        this.send({
+            cmd: 'handshake',
+            data: vrContextID
+        });
+        // request scene:
+        // this.send({
+        //     cmd: "get_scene",
+        //     date: Date.now()
+        // });
+    },
+    ws.onmessage = function(e) {
+      console.log('Message:', e.data);
+    };
+  
+    ws.onclose = function(e) {
+      console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+      setTimeout(function() {
+        connect();
+      }, 1000);
+    };
+  
+    ws.onerror = function(err) {
+      console.error('Socket encountered error: ', err.message, 'Closing socket');
+      ws.close();
+    };
+  }
+  
+  connect();

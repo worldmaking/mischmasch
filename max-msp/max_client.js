@@ -25,7 +25,14 @@ const wss = new WebSocket.Server({ port: 8083 });
  
 wss.on('connection', function connection(localHandshake) {
 	localHandshake.on('message', function incoming(message) {
-    max.post('received: %s', message);
+		msg = JSON.parse(message)
+		switch (msg.cmd){
+
+			case 'handshake':
+				max.post('received: %s', message);
+
+			break
+		}
   });
  
   localHandshake.send('something');
