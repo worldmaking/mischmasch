@@ -1,6 +1,6 @@
 
 inlets = 3
-outlets = 8
+outlets = 9
 	// get a reference to "thegen"'s embedded gen patcher:
 var varnameCount = 0
 
@@ -19,6 +19,7 @@ var checkspeaker = new Array();
 var Ycounter;
 var newModule;
 var speakerNumber = 1
+var speakerTable = []
 
 // contain all the buffers
 var pb = new PolyBuffer('world_polybuffer');       // PolyBuffer instantiates a polybuffer~ object named by second argument to js  
@@ -103,37 +104,70 @@ var handleDelta = function(delta) {
 					switch(delta.category){
 						
 						case "abstraction":
-						
+							if(kind === "speaker"){
+
+
+								// var newSpeaker = gen_patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, 'out', speakerNumber])
+								//newSpeaker.varname = 'speaker_' + speakerNumber
+
+		
+		
+								// need to get its position in vr and apply that to a vr.source~ position
+		
+								
+								// if kind is speaker, connect its outlets to the out1 and out2 in gen~ world
+
+
+								newSpeaker = gen_patcher.newdefault([20, Ycounter * 10, 'out', speakerNumber])
+								newSpeaker.varname = delta.path.split('.')[0]
+								post('\n\n', newSpeaker.varname)
+
+								// add a vr.Source~ abstraction to parent, script the new out to this abstraction, use delta.pos to provide the vr.source~ position
+								var vrSource = this.patcher.newdefault([940 + (speakerNumber * 100), 1650, "vr.source~", speakerNumber - 1, "@position", delta.pos[0], delta.pos[1], delta.pos[2] ])
+								vrSource.varname = "context_" + speakerNumber
+								speakerTable.push("context_" + speakerNumber)
+								post('\n\n', vrSource.varname)
+								this.patcher.message("script", "connect", 'world',  "speaker_" + speakerNumber - 1,  "context_" + speakerNumber, 0);
+
+								speakerNumber++
+							} else {
+								newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
+								newModule.varname = delta.path.split('.')[0]
+								post(newModule.varname)
+
+							}
+
 						break;
 						
 						case "operator":
-						
+								newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
+								newModule.varname = delta.path.split('.')[0]
+								post(newModule.varname)
 						break;
 						
 						default:
-						
+								newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
+								newModule.varname = delta.path.split('.')[0]
+								post(newModule.varname)
 						break;	
 					}
 					
-					newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
-					newModule.varname = delta.path.split('.')[0]
-					post(newModule.varname)
 
-					// if kind is speaker, connect its outlets to the out1 and out2 in gen~ world
+
 					
 					if (kind === "speaker"){
 						// create the speaker aka gen [out #]
-						var newSpeaker = gen_patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, 'out', speakerNumber])
-						newSpeaker.varname = 'speaker_' + speakerNumber
-						// add a vr.Source~ abstraction to parent, script the new out to this abstraction. 
-						var vrSource = this.patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, "vr.context~", speakerNumber - 1, "@varname", "context_" + speakerNumber])
+						// var newSpeaker = gen_patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, 'out', speakerNumber])
+						// newSpeaker.varname = 'speaker_' + speakerNumber
+						// // add a vr.Source~ abstraction to parent, script the new out to this abstraction. 
+						// var vrSource = this.patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, "vr.source~", speakerNumber - 1, "@varname", "context_" + speakerNumber])
 						
-						this.patcher.message("script", "connect", 'world',  "speaker_" + speakerNumber - 1,  "context_" + speakerNumber, 0);
+						// this.patcher.message("script", "connect", 'world',  "speaker_" + speakerNumber - 1,  "context_" + speakerNumber, 0);
 
 
-						// need to get its position in vr and apply that to a vr.source~ position
+						// // need to get its position in vr and apply that to a vr.source~ position
 
-						speakerNumber++
+						// speakerNumber++
 						}
 					} else {
 					
@@ -387,7 +421,9 @@ function clear(){
 	bufferChannelCounter = 0;
 	bufferChannelPaths = []	
 	counter = 1;
+	speakerNumber = 1
 	feedbackConnections = 0
+	speakerTable.length = 0
 	gen_patcher = this.patcher.getnamed("world").subpatcher();
 	gen_patcher.apply(function(b) { 
 		// prevent erasing our audio outputs from genpatcher
@@ -421,11 +457,15 @@ function client(msg){
 
 		case "clear_scene":
 			outlet(0, 'clear_scene')
+			for (i = 0; i < speakerTable.length; i++){
+				outlet(8, 'delete', speakerTable[i])
 
+			}
 			vizBuffers = new Array()
 			bufferChannelCounter = 0;
 			bufferChannelPaths = [];
-
+			speakerNumber = 1
+			speakerTable.length = 0
 			gen_patcher = this.patcher.getnamed("world").subpatcher();
 			bufferStorage = this.patcher.getnamed("bufferStorage").subpatcher();
 
@@ -542,7 +582,7 @@ function client(msg){
 						var newSpeaker = gen_patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, 'out', speakerNumber])
 						newSpeaker.varname = 'speaker_' + speakerNumber
 						// add a vr.Source~ abstraction to parent, script the new out to this abstraction. 
-						var vrSource = this.patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, "vr.context~", speakerNumber - 1, "@varname", "context_" + speakerNumber])
+						var vrSource = this.patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, "vr.source~", speakerNumber - 1, "@varname", "context_" + speakerNumber])
 						
 						this.patcher.message("script", "connect", 'world',  "speaker_" + speakerNumber - 1,  "context_" + speakerNumber, 0);
 
