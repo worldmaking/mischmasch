@@ -21,6 +21,34 @@ function wrap(n,m){
     return ((n%m)+m)%m;
 }
 
+function hashCode(str) { // java String#hashCode
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+       hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return hash;
+} 
+
+function intToRGB(i){
+    var c = (i & 0x00FFFFFF)
+        .toString(16)
+        .toUpperCase();
+
+    return "00000".substring(0, 6 - c.length) + c;
+}
+
+function colorFromString(str) {
+    let int = Math.abs(hashCode(str));
+    let hue = int % 360;
+    let result = [];
+    new THREE.Color(`hsl(${hue}, 35%, 50%)`).toArray(result);
+    return result;
+}
+
+function hexColorFromString(str) {
+    return "#" + intToRGB(hashCode(str));
+}
+
 
 ///////////////////////////////////////////
 // Globals
@@ -988,20 +1016,20 @@ function enactDeltaNewNode(world, delta) {
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, NLET_HEIGHT);
             container.userData.instanceShape = SHAPE_CYLINDER
-            container.userData.color = [Math.random(), Math.random(), Math.random(), 1];
+            container.userData.color = colorFromString(name);
             container.userData.isTiddleable = true;
         }break;
         case "small_knob":{
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, NLET_HEIGHT);
             container.userData.instanceShape = SHAPE_CYLINDER
-            container.userData.color = [Math.random(), Math.random(), Math.random(), 1];
+            container.userData.color = colorFromString(name);
             container.userData.isTiddleable = true;
         }break;
         case "n_switch": {
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(NSWITCH_WIDTH, NSWITCH_HEIGHT, NSWITCH_DEPTH);
-            container.userData.color = [Math.random(), Math.random(), Math.random(), 1];
+            container.userData.color = colorFromString(name);
             container.userData.slideable = true;
             container.userData.instanceShape = SHAPE_BOX;
         } break;
@@ -1016,7 +1044,7 @@ function enactDeltaNewNode(world, delta) {
 
             let box = new THREE.Mesh(boxGeom, boxMat);
             box.userData.isBackPanel = true;
-            box.userData.color = [Math.random(), Math.random(), Math.random(), 1];
+            box.userData.color = colorFromString(name);
             box.userData.instanceShape = SHAPE_BOX
             box.name = "_box_"+name
             container.add(box);
@@ -1293,7 +1321,7 @@ function animate() {
         // handle incoming deltas:
         while (incomingDeltas.length > 0) {
             let delta = incomingDeltas.shift();
-            logonly(JSON.stringify(delta, null, ""))
+            //logonly(JSON.stringify(delta, null, ""))
             // TODO: derive which world to add to:
             enactDelta(ghostWorld, delta);
             //log("incoming deltas")
