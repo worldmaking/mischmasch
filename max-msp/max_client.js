@@ -21,7 +21,7 @@ const max = require("max-api");
 
 
 ////// handshake with the vrContext running on the same machine:
-const wss = new WebSocket.Server({ port: 8082 });
+const wss = new WebSocket.Server({ port: 8083 });
  
 wss.on('connection', function connection(localHandshake) {
 	localHandshake.on('message', function incoming(message) {

@@ -1892,7 +1892,7 @@ function localHandshake() {
                 reload_on_disconnect: true,
                 reconnect_period: 1000,
                 hostname: "localhost",
-                port: 8082,
+                port: 8083,
                 onopen: function () {
                     //this.send({ cmd: "getdata", date: Date.now() });
                     log("connected to maxClient");
@@ -1903,10 +1903,10 @@ function localHandshake() {
                         data: vrContextID
                     });
                     // request scene:
-                    this.send({
-                        cmd: "get_scene",
-                        date: Date.now()
-                    });
+                    // this.send({
+                    //     cmd: "get_scene",
+                    //     date: Date.now()
+                    // });
                 },
                 onmessage: function (m) {
                     onServerMessage(m, this);
