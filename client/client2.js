@@ -1940,7 +1940,7 @@ function localHandshake() {
         //     cmd: "get_scene",
         //     date: Date.now()
         // });
-        let handShakeInterval = setInterval(function(){ 
+        handShakeInterval = setInterval(function(){ 
             console.log('this client ID: ', vrContextID)
             ws.send(JSON.stringify({
                 cmd: 'handshake',

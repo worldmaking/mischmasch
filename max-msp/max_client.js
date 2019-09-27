@@ -30,7 +30,8 @@ wss.on('connection', function connection(localHandshake) {
 
 			case 'handshake':
 				max.post('received: %s', message);
-
+				max.outlet('vrContext', message.data)
+				vrContextID = data.data.vrContext
 			break
 		}
   });
@@ -122,21 +123,21 @@ connection.addEventListener('message', (data) => {
 			max.outlet('sceneList','append',data.data)
 		} break;
 
-		///////// vr and audio contexts handshake ////////
-
-		case 'contexts':
+// 		///////// vr and audio contexts handshake ////////
+		//NOTE: this is now in its own ws connection, served locally
+// 		case 'contexts':
 			
-			// if (data.data.ip === 'localhost' || data.data[0] === '127.0.0.1'){
-			// 	vrContextID = data.data[0]
-			// 	max.post(data.data[0])
-			// }
-//max.post(data.data.ip)
-			if(data.data.vrContext){
-				max.outlet('vrContext', data.data.vrContext)
-				vrContextID = data.data.vrContext
-			}
+// 			// if (data.data.ip === 'localhost' || data.data[0] === '127.0.0.1'){
+// 			// 	vrContextID = data.data[0]
+// 			// 	max.post(data.data[0])
+// 			// }
+// //max.post(data.data.ip)
+// 			if(data.data.vrContext){
+// 				max.outlet('vrContext', data.data.vrContext)
+// 				vrContextID = data.data.vrContext
+// 			}
 			
-		break
+// 		break
 		///////// GEN~ Client ///////////////////////
 
 		case "clear_scene":
