@@ -471,7 +471,7 @@ async function initInstanceBoxMesh() {
         vertexShader: loadedInstBoxVShader,
         fragmentShader: loadedInstBoxFShader,
         side: THREE.DoubleSide,
-        // transparent: true,
+        transparent: true,
         blending:THREE.AdditiveBlending, depthWrite: false,
         derivatives: true,
     } );
@@ -2020,12 +2020,23 @@ function onServerMessage(msg, sock) {
 
 function onKeypress(e) {
 
-    switch (e.which) {
-        case 71: {
+    switch (e.key) {
+        case "g": {
             ghostScene.visible = !ghostScene.visible;
         } break;
+        case "t": {
+            if (instBoxMesh.material.transparent) {
+                instBoxMesh.material.depthWrite = true;
+                instBoxMesh.material.side = THREE.FrontSide;
+                instBoxMesh.material.transparent = false;
+            } else {
+                instBoxMesh.material.depthWrite = false;
+                instBoxMesh.material.side = THREE.DoubleSide;
+                instBoxMesh.material.transparent = true;
+            }
+        } break;
         default: {
-            //log("key press", e.which)
+            log("key press", e.which, e.key)
         }
     }
 
