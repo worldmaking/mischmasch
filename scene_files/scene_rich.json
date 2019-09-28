@@ -2,7 +2,7 @@
     "nodes": {
 
         "lfo_1":{
-            "_props":{"kind":"lfo","pos": [0.0, 1.5, 0.0], "orient": [0, 0, 0, 1] },
+            "_props":{"kind":"lfo","pos": [-0.3, 1.5, 0.0], "orient": [0.0, 0.258819, 0.0, 0.965926] },
             "fm_cv":{"_props":{"kind":"inlet"}},
             "phasor_sync":{"_props":{"kind":"inlet"}},
             "pulse_width_cv":{"_props":{"kind":"inlet"}},
@@ -15,7 +15,7 @@
             "pulse":{"_props":{"kind":"outlet", "index": 2}}
         },
         "lfo_2":{
-            "_props":{"kind":"lfo","pos": [0.0, 1.0, 0.0], "orient": [0, 0, 0, 1] },
+            "_props":{"kind":"lfo","pos": [0.3, 1.5, -0.2], "orient": [0, 0, 0, 1] },
             "fm_cv":{"_props":{"kind":"inlet"}},
             "phasor_sync":{"_props":{"kind":"inlet"}},
             "pulse_width_cv":{"_props":{"kind":"inlet"}},
@@ -28,7 +28,7 @@
             "pulse":{"_props":{"kind":"outlet", "index": 2}}
         },
         "ffmvco_1":{
-            "_props":{"kind":"ffmvco","pos": [0.0, 0.5, 0.0], "orient": [0, 0, 0, 1] },
+            "_props":{"kind":"ffmvco","pos": [0.0, 0.85, 0.2], "orient": [-0.382683, 0.0, 0.0, 0.92388] },
             "vco_1_cv":{"_props":{"kind":"inlet"}},
             "index_cv":{"_props":{"kind":"inlet"}},
             "vco_2_cv":{"_props":{"kind":"inlet"}},
@@ -45,7 +45,7 @@
             "master":{"_props":{"kind":"outlet", "index": 2}}
         },
         "vca_1":{
-            "_props":{"kind":"vca","pos": [0.5, 1.8, 0.0], "orient": [0, 0, 0, 1] },
+            "_props":{"kind":"vca","pos": [0.5, 1.8, 0.0], "orient": [0.25, -0.25, 0.066987, 0.933013] },
             "signal":{"_props":{"kind":"inlet"}},
             "cv":{"_props":{"kind":"inlet"}},
             "cv_amount":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
@@ -53,18 +53,18 @@
             "output":{"_props":{"kind":"outlet", "index": 0}}
         },
         "comparator_1":{
-            "_props":{"kind":"comparator","pos": [0.5, 0.8, 0.0], "orient": [0, 0, 0, 1] },
+            "_props":{"kind":"comparator","pos": [0.5, 1, 0.0], "orient": [0, 0, 0, 1] },
             "A":{"_props":{"kind":"inlet"}},
             "B":{"_props":{"kind":"inlet"}},
             "max":{"_props":{"kind":"outlet", "index": 0}},
             "min":{"_props":{"kind":"outlet", "index": 1}}
         },
         "speaker_1":{
-            "_props":{"kind":"speaker","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
+            "_props":{"kind":"speaker","category":"abstraction", "pos": [0.75,1,0], "orient": [0.0, -0.258819, 0.0, 0.965926] },
             "input":{"_props":{"kind":"inlet","index":0}}
           },
           "speaker_2":{
-            "_props":{"kind":"speaker","category":"abstraction", "pos": [0,1,0], "orient": [0, 0, 0, 1] },
+            "_props":{"kind":"speaker","category":"abstraction", "pos": [-0.5,1,0], "orient": [0.0, 0.130526, 0.0, 0.991445] },
             "input":{"_props":{"kind":"inlet","index":0}}
           }
     },

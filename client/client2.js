@@ -1826,10 +1826,16 @@ function copyGhostToInstances(parent) {
                 let xdim = (x1-x0);
                 let ydim = (y0-y1);
 
+                let xyz = new THREE.Vector3(
+                    (x0 + xdim/2)*scale.x,
+                    (y0 - ydim/2)*scale.y,
+                    0
+                );
+                xyz.applyQuaternion(quat);
                 
-                instQuadLocationAttr.array[i3 + 0] = pos.x + (x0 + xdim/2)*-scale.x;
-                instQuadLocationAttr.array[i3 + 1] = pos.y + (y0 - ydim/2)*-scale.y;
-                instQuadLocationAttr.array[i3 + 2] = pos.z;
+                instQuadLocationAttr.array[i3 + 0] = pos.x + xyz.x;
+                instQuadLocationAttr.array[i3 + 1] = pos.y + xyz.y;
+                instQuadLocationAttr.array[i3 + 2] = pos.z + xyz.z;
                 
                 instQuadOrientationAttr.array[i4 + 0] = quat.x;
                 instQuadOrientationAttr.array[i4 + 1] = quat.y;
@@ -2018,8 +2024,9 @@ function onKeypress(e) {
         case 71: {
             ghostScene.visible = !ghostScene.visible;
         } break;
-        default:
-            log("key press", e.which)
+        default: {
+            //log("key press", e.which)
+        }
     }
 
     if (!renderer.vr.isPresenting()){
