@@ -40,8 +40,8 @@ function intToRGB(i){
 function colorFromString(str) {
     let int = Math.abs(hashCode(str));
     let hue = int % 360;
-    let result = [];
-    new THREE.Color(`hsl(${hue}, 35%, 50%)`).toArray(result);
+    let result = [0, 0, 0, 1];
+    new THREE.Color(`hsla(${hue}, 35%, 50%)`).toArray(result);
     return result;
 }
 
@@ -115,7 +115,7 @@ const CABLE_JACK_RADIUS = CABLE_JACK_HEIGHT * 0.4;
 const CABLE_CONTROL_POINT_DISTANCE = 0.1;
 
 const BACKPANEL_DEPTH = 0.02
-const SHAPE_BOX = 0
+const SHAPE_BOX = 0.3
 const SHAPE_CYLINDER = 1
 const NLET_RADIUS = 0.025;
 const NLET_HEIGHT = 0.01;
@@ -123,8 +123,8 @@ const LARGE_KNOB_RADIUS = 0.055;
 const LARGE_KNOB_HEIGHT = 0.02;
 const SMALL_KNOB_RADIUS = 0.035;
 const SMALL_KNOB_HEIGHT = 0.02;
-const NSWITCH_WIDTH = LARGE_KNOB_RADIUS + 0.03
-const NSWITCH_HEIGHT = LARGE_KNOB_RADIUS + 0.03
+const NSWITCH_WIDTH = LARGE_KNOB_RADIUS
+const NSWITCH_HEIGHT = LARGE_KNOB_RADIUS
 const NSWITCH_DEPTH = NLET_HEIGHT
 
 const KNOB_SWEEP = -Math.PI * 0.75;                  
@@ -422,7 +422,7 @@ async function initInstanceBoxMesh() {
 
     // box spans signed-normalized range of -1..1 in each axis
     // with subdivisions in each axis
-    let bufferGeometry = new THREE.BoxBufferGeometry( 1,1,1,  3,3,1 );
+    let bufferGeometry = new THREE.BoxBufferGeometry( 1,1,1,  5,5,1 );
 
     instBoxGeometry = new THREE.InstancedBufferGeometry();
     instBoxGeometry.index = bufferGeometry.index;
@@ -469,7 +469,11 @@ async function initInstanceBoxMesh() {
             //map: { value: new THREE.TextureLoader().load( 'textures/crate.gif' ) }
         },
         vertexShader: loadedInstBoxVShader,
-        fragmentShader: loadedInstBoxFShader
+        fragmentShader: loadedInstBoxFShader,
+        side: THREE.DoubleSide,
+        // transparent: true,
+        blending:THREE.AdditiveBlending, depthWrite: false,
+        derivatives: true,
     } );
 
     instBoxMesh = new THREE.Mesh( instBoxGeometry, material );
@@ -1167,6 +1171,7 @@ function enactDeltaNewNode(world, delta) {
 
             // label:
             let label = createLabel(name, 0, 0, 0, 1);
+            //container.userData.color
             container.add(label);
         }
     }
