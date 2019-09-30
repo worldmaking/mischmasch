@@ -9,11 +9,12 @@ attribute vec3 scale;
 attribute float shape;
 attribute vec3 normal;
 attribute vec4 color;
-attribute vec4 emission;
+//attribute vec4 emission;
 varying vec2 vUv;
 varying vec4 vColor;
 varying vec3 vNormal;
-varying vec4 vEmission;
+//varying vec4 vEmission;
+varying vec3 vScale;
 
 // http://www.geeks3d.com/20141201/how-to-rotate-a-vertex-by-a-quaternion-in-glsl/
 vec3 applyQuaternionToVector( vec4 q, vec3 v ){
@@ -22,9 +23,8 @@ vec3 applyQuaternionToVector( vec4 q, vec3 v ){
 
 void main() {
 
+        vNormal = normalize(normal);
         vec3 shapedPosition = position;
-        vNormal = normal; 
-
         // cylinder case:
         if (shape > 0.5) {
                 shapedPosition.xy = normalize(shapedPosition.xy);
@@ -35,6 +35,7 @@ void main() {
         vNormal = applyQuaternionToVector(orientation, vNormal);
         vUv = uv;
         vColor = color;
-        vEmission = emission;
+        //vEmission = emission;
+        vScale = scale;
         gl_Position = projectionMatrix * modelViewMatrix * vec4( location + vPosition, 1.0 );
 }

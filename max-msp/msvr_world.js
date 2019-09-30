@@ -1,6 +1,6 @@
 
 inlets = 3
-outlets = 8
+outlets = 9
 	// get a reference to "thegen"'s embedded gen patcher:
 var varnameCount = 0
 
@@ -15,9 +15,11 @@ var object = {};
 var nodeName;
 var counter = 1;
 var feedbackConnections = 0
-var checkOuts = new Array();
+var checkspeaker = new Array();
 var Ycounter;
 var newModule;
+var speakerNumber = 1
+var speakerTable = []
 
 // contain all the buffers
 var pb = new PolyBuffer('world_polybuffer');       // PolyBuffer instantiates a polybuffer~ object named by second argument to js  
@@ -30,25 +32,25 @@ var vizBuffers = new Array();
 
 gen_patcher = this.patcher.getnamed("world").subpatcher();
 bufferStorage = this.patcher.getnamed("bufferStorage").subpatcher();
-function ensureOuts(){
-	var hasOuts = 0;
+function ensurespeaker(){
+	var hasspeaker = 0;
 	gen_patcher.apply(function(b) { 
-		scriptname = b.varname.indexOf('outs_')
+		scriptname = b.varname.indexOf('speaker_')
 		if(scriptname > -1){
-		hasOuts = 1
+		hasspeaker = 1
 		
 		}
 	})
-	// always keep an outs module in the scene
-	if (hasOuts === 0){
-		// spawn an outs module
-		outlet(5, 'ensureOuts')
+	// always keep an speaker module in the scene
+	if (hasspeaker === 0){
+		// spawn an speaker module
+		//outlet(5, 'ensurespeaker')
 		}	
 	}
 function getVarnames(target){
 	gen_patcher.apply(function(b) { 
 		// prevent erasing our audio outputs from genpatcher
-		if(b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
+		if(b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
 			if (b.varname.indexOf(target) != -1){
 				gen_patcher.remove(b); 	
 
@@ -102,28 +104,70 @@ var handleDelta = function(delta) {
 					switch(delta.category){
 						
 						case "abstraction":
-						
+							if(kind === "speaker"){
+
+
+								// var newSpeaker = gen_patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, 'out', speakerNumber])
+								//newSpeaker.varname = 'speaker_' + speakerNumber
+
+		
+		
+								// need to get its position in vr and apply that to a vr.source~ position
+		
+								
+								// if kind is speaker, connect its outlets to the out1 and out2 in gen~ world
+
+
+								newSpeaker = gen_patcher.newdefault([20, Ycounter * 10, 'out', speakerNumber])
+								newSpeaker.varname = delta.path.split('.')[0]
+								post('\n\n', newSpeaker.varname)
+
+								// add a vr.Source~ abstraction to parent, script the new out to this abstraction, use delta.pos to provide the vr.source~ position
+								var vrSource = this.patcher.newdefault([940 + (speakerNumber * 100), 1650, "vr.source~", speakerNumber - 1, "@position", delta.pos[0], delta.pos[1], delta.pos[2] ])
+								vrSource.varname = "context_" + speakerNumber
+								speakerTable.push("context_" + speakerNumber)
+								post('\n\n', vrSource.varname)
+								this.patcher.message("script", "connect", 'world',  "speaker_" + speakerNumber - 1,  "context_" + speakerNumber, 0);
+
+								speakerNumber++
+							} else {
+								newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
+								newModule.varname = delta.path.split('.')[0]
+								post(newModule.varname)
+
+							}
+
 						break;
 						
 						case "operator":
-						
+								newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
+								newModule.varname = delta.path.split('.')[0]
+								post(newModule.varname)
 						break;
 						
 						default:
-						
+								newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
+								newModule.varname = delta.path.split('.')[0]
+								post(newModule.varname)
 						break;	
 					}
 					
-					newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
-					newModule.varname = delta.path.split('.')[0]
-					post(newModule.varname)
 
-					// if kind is outs, connect its outlets to the out1 and out2 in gen~ world
+
 					
-					if (kind === "outs"){
-			
-						gen_patcher.message("script", "connect", newModule.varname, 0, "dac_left", 0);
-						// gen_patcher.message("script", "connect", newModule.varname, 1, "dac_right", 0);
+					if (kind === "speaker"){
+						// create the speaker aka gen [out #]
+						// var newSpeaker = gen_patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, 'out', speakerNumber])
+						// newSpeaker.varname = 'speaker_' + speakerNumber
+						// // add a vr.Source~ abstraction to parent, script the new out to this abstraction. 
+						// var vrSource = this.patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, "vr.source~", speakerNumber - 1, "@varname", "context_" + speakerNumber])
+						
+						// this.patcher.message("script", "connect", 'world',  "speaker_" + speakerNumber - 1,  "context_" + speakerNumber, 0);
+
+
+						// // need to get its position in vr and apply that to a vr.source~ position
+
+						// speakerNumber++
 						}
 					} else {
 					
@@ -286,7 +330,7 @@ var handleDelta = function(delta) {
 				
 				gen_patcher.apply(function(b) { 
 					// prevent erasing our audio outputs from genpatcher
-					if(b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
+					if(b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
 						//post('\n',deleteMe,2)
 						if (b.varname.indexOf(deleteMe) != -1){
 	
@@ -377,11 +421,13 @@ function clear(){
 	bufferChannelCounter = 0;
 	bufferChannelPaths = []	
 	counter = 1;
+	speakerNumber = 1
 	feedbackConnections = 0
+	speakerTable.length = 0
 	gen_patcher = this.patcher.getnamed("world").subpatcher();
 	gen_patcher.apply(function(b) { 
 		// prevent erasing our audio outputs from genpatcher
-		if(b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
+		if(b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
 		gen_patcher.remove(b); 				
 		}
 	});		
@@ -411,18 +457,22 @@ function client(msg){
 
 		case "clear_scene":
 			outlet(0, 'clear_scene')
+			for (i = 0; i < speakerTable.length; i++){
+				outlet(8, 'delete', speakerTable[i])
 
+			}
 			vizBuffers = new Array()
 			bufferChannelCounter = 0;
 			bufferChannelPaths = [];
-
+			speakerNumber = 1
+			speakerTable.length = 0
 			gen_patcher = this.patcher.getnamed("world").subpatcher();
 			bufferStorage = this.patcher.getnamed("bufferStorage").subpatcher();
 
 			gen_patcher.apply(function(b) { 
 			
 				// prevent erasing our audio outputs from genpatcher
-				if(b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "PLO"){
+				if(b.varname !== "PLO"){
 					gen_patcher.remove(b); 		
 				}
 			});
@@ -469,7 +519,7 @@ function client(msg){
 			gen_patcher.apply(function(b) { 
 			
 			// prevent erasing our audio outputs from genpatcher
-				if(b.varname !== "dac_left" && b.varname !== "out_comment" && b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
+				if(b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
 					gen_patcher.remove(b); 		
 				}
 			});
@@ -526,12 +576,20 @@ function client(msg){
 			break;
 		}
 
-		// attach all outs modules to the dac outputs. 
-		if (kind === "outs"){
-			
-			gen_patcher.message("script", "connect", nodeName, 0, "dac_left", 0);
-			// gen_patcher.message("script", "connect", nodeName, 1, "dac_right", 0);
-		
+		// create a new outlet in gen~ world for each added speaker
+		if (kind === "speaker"){
+						// create the speaker aka gen [out #]
+						var newSpeaker = gen_patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, 'out', speakerNumber])
+						newSpeaker.varname = 'speaker_' + speakerNumber
+						// add a vr.Source~ abstraction to parent, script the new out to this abstraction. 
+						var vrSource = this.patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, "vr.source~", speakerNumber - 1, "@varname", "context_" + speakerNumber])
+						
+						this.patcher.message("script", "connect", 'world',  "speaker_" + speakerNumber - 1,  "context_" + speakerNumber, 0);
+
+
+						// need to get its position in vr and apply that to a vr.source~ position
+
+						speakerNumber++
 		} else if (kind === "param"){
 			// ignore gen operator-based param modules in the next section
 			} else if(kind === "controller1" || kind === "controller2" || kind === "headset"){

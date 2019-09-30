@@ -523,12 +523,12 @@ let module_constructors = {
 		]`);
     },
 
-	"outs": function(path) { 
+	"speaker": function(path) { 
         return JSON.parse(`[
 			{
 				"op": "newnode",
 				"path": "${path}",
-				"kind": "outs",
+				"kind": "speaker",
 				"pos": [
 					0,
 					0.8,
@@ -545,28 +545,6 @@ let module_constructors = {
 				"op": "newnode",
 				"path": "${path}.input",
 				"kind": "inlet"
-			},
-			{
-				"op": "newnode",
-				"path": "${path}.volume",
-				"kind": "small_knob",
-				"range": [
-					0,
-					1
-				],
-				"taper": "log 3.8",
-				"value": 0.25,
-				"unit": "float"
-			},
-			{
-				"op": "newnode",
-				"path": "${path}.left",
-				"kind": "outlet"
-			},
-			{
-				"op": "newnode",
-				"path": "${path}.right",
-				"kind": "outlet"
 			}
 		]`);
     },
