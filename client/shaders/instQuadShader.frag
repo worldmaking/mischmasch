@@ -29,7 +29,7 @@ void main() {
 
     gl_FragColor = vec4(vUv, 0.5, 1.); 
 
-    gl_FragColor = vec4(alpha);
+    gl_FragColor = 0.95 * vec4(alpha);// * vec4(1, 0, 1, 1);
 
     //float alpha = aastep(0.5 + 0.1*sin(u_time * 2. + v_texCoord.x * 100.), distance);
     //float alpha = smoothstep(0.5 - smoothing, 0.5 + smoothing, distance);

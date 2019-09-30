@@ -40,8 +40,8 @@ function intToRGB(i){
 function colorFromString(str) {
     let int = Math.abs(hashCode(str));
     let hue = int % 360;
-    let result = [];
-    new THREE.Color(`hsl(${hue}, 35%, 50%)`).toArray(result);
+    let result = [0, 0, 0, 1];
+    new THREE.Color(`hsla(${hue}, 35%, 50%)`).toArray(result);
     return result;
 }
 
@@ -115,7 +115,7 @@ const CABLE_JACK_RADIUS = CABLE_JACK_HEIGHT * 0.4;
 const CABLE_CONTROL_POINT_DISTANCE = 0.1;
 
 const BACKPANEL_DEPTH = 0.02
-const SHAPE_BOX = 0
+const SHAPE_BOX = 0.3
 const SHAPE_CYLINDER = 1
 const NLET_RADIUS = 0.025;
 const NLET_HEIGHT = 0.01;
@@ -123,8 +123,8 @@ const LARGE_KNOB_RADIUS = 0.055;
 const LARGE_KNOB_HEIGHT = 0.02;
 const SMALL_KNOB_RADIUS = 0.035;
 const SMALL_KNOB_HEIGHT = 0.02;
-const NSWITCH_WIDTH = LARGE_KNOB_RADIUS + 0.03
-const NSWITCH_HEIGHT = LARGE_KNOB_RADIUS + 0.03
+const NSWITCH_WIDTH = LARGE_KNOB_RADIUS
+const NSWITCH_HEIGHT = LARGE_KNOB_RADIUS
 const NSWITCH_DEPTH = NLET_HEIGHT
 
 const KNOB_SWEEP = -Math.PI * 0.75;                  
@@ -422,7 +422,7 @@ async function initInstanceBoxMesh() {
 
     // box spans signed-normalized range of -1..1 in each axis
     // with subdivisions in each axis
-    let bufferGeometry = new THREE.BoxBufferGeometry( 1,1,1,  3,3,1 );
+    let bufferGeometry = new THREE.BoxBufferGeometry( 1,1,1,  5,5,1 );
 
     instBoxGeometry = new THREE.InstancedBufferGeometry();
     instBoxGeometry.index = bufferGeometry.index;
@@ -469,7 +469,11 @@ async function initInstanceBoxMesh() {
             //map: { value: new THREE.TextureLoader().load( 'textures/crate.gif' ) }
         },
         vertexShader: loadedInstBoxVShader,
-        fragmentShader: loadedInstBoxFShader
+        fragmentShader: loadedInstBoxFShader,
+        side: THREE.DoubleSide,
+        transparent: true,
+        blending:THREE.AdditiveBlending, depthWrite: false,
+        derivatives: true,
     } );
 
     instBoxMesh = new THREE.Mesh( instBoxGeometry, material );
@@ -1012,25 +1016,26 @@ function enactDelta(world, delta) {
  * @param {VALUE} z - z location
  * @param {value} scale - OPTIONAL: single scale size (default: 0.009)
  */
-function createLabel(text, x=0, y=1.5, z=0, uniformScaling=1){
+function createLabel(text, x=0, y=0, z=0, uniformScaling=1){
     uniformScaling *= LABEL_SCALING_FACTOR;
     let mesh;
     // a geometry of packed bitmap glyphs, 
     // word wrapped to 240px (10 characters) and center-aligned
 
     //default pixel width is 24px
-    let wrapWidth = 240.0;
+    let wrapWidth = 24 * Math.max(10, text.length+1);
 
     //https://github.com/Jam3/three-bmfont-text
     let geometry = bm_createGeometry({
         width: wrapWidth,
         align: 'center',
-        font: fontData
+        font: fontData,
+        text: text,
     })
     // change text and other options as desired
     // the options sepcified in constructor will
     // be used as defaults
-    geometry.update({ text: text });
+    //geometry.update({ text: text });
     // the resulting layout has metrics and bounds
     // console.log(geometry.layout.height)
     // console.log(geometry.layout.descender)
@@ -1040,15 +1045,19 @@ function createLabel(text, x=0, y=1.5, z=0, uniformScaling=1){
     mesh.name = "label_"+text
     mesh.userData.isLabel = true;
 
-    mesh.scale.set(uniformScaling, uniformScaling, uniformScaling);
+    let layout = mesh.geometry.layout
+    let s = (1/(layout.width))
+    mesh.scale.set(s, -s, s)
 
-    //center text: scale * Wrap Width (width) /2 (ex. .009 * 240 / 2)
-    let centerX = (wrapWidth * uniformScaling)/2.0;
-    if (x=="center") {
-        mesh.position.set(-centerX, y, z);
-    } else {
-        mesh.position.set(x,y,z);
-    }
+    mesh.position.set(
+        x - 0.5, y, z + 0.51); 
+
+    //mesh.scale.set(uniformScaling, uniformScaling, uniformScaling);
+
+    mesh.add(new THREE.AxesHelper(1));
+
+    //console.log(mesh);
+            
     return mesh;
 }
 
@@ -1077,9 +1086,12 @@ function enactDeltaNewNode(world, delta) {
             container.userData.color = [0, 1, 0, 1];
             container.userData.instanceShape = SHAPE_CYLINDER;
             
-            // label:
-            let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
-            container.add(label);
+            // // label:
+            // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
+            // container.add(label);
+            container.add(new THREE.AxesHelper(1));
+
+            container.add(createLabel(name));
 
             
         } break;
@@ -1088,10 +1100,13 @@ function enactDeltaNewNode(world, delta) {
             container.scale.set(NLET_RADIUS, NLET_RADIUS, NLET_HEIGHT);
             container.userData.color = [1, 0, 0, 1];
             container.userData.instanceShape = SHAPE_CYLINDER;
+
+            container.add(new THREE.AxesHelper(1));
             
-            // label:
-            let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
-            container.add(label);
+            // // label:
+            // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
+            // container.add(label);
+            container.add(createLabel(name));
         } break;
         case "large_knob":{
             container = new THREE.Mesh(boxGeom, boxMat);
@@ -1100,10 +1115,12 @@ function enactDeltaNewNode(world, delta) {
             container.userData.color = colorFromString(name);
             container.userData.isTiddleable = true;
             container.userData.value = delta.value;
+            container.add(new THREE.AxesHelper(1));
 
-            // label:
-            let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
-            container.add(label);
+            // // label:
+            // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
+            // container.add(label);
+            container.add(createLabel(name));
         }break;
         case "small_knob":{
             container = new THREE.Mesh(boxGeom, boxMat);
@@ -1112,10 +1129,12 @@ function enactDeltaNewNode(world, delta) {
             container.userData.color = colorFromString(name);
             container.userData.isTiddleable = true;
             container.userData.value = delta.value;
+            container.add(new THREE.AxesHelper(1));
 
-            // label:
-            let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
-            container.add(label);
+            // // label:
+            // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
+            // container.add(label);
+            container.add(createLabel(name));
         }break;
         case "n_switch": {
             container = new THREE.Mesh(boxGeom, boxMat);
@@ -1124,10 +1143,12 @@ function enactDeltaNewNode(world, delta) {
             container.userData.slideable = true;
             container.userData.instanceShape = SHAPE_BOX;
             container.userData.value = delta.value;
+            container.add(new THREE.AxesHelper(1));
+            container.add(createLabel(name));
             
-            // label:
-            let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
-            container.add(label);
+            // // label:
+            // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
+            // container.add(label);
         } break;
         case "group": {
             alert("TODO GROUP")
@@ -1145,8 +1166,12 @@ function enactDeltaNewNode(world, delta) {
             box.name = "_box_"+name
             container.add(box);
 
+            //container.add(new THREE.AxesHelper(1));
+            box.add(new THREE.AxesHelper(1));
+
             // label:
-            let label = createLabel(name, 0, 0, LABEL_Z_OFFSET, 1);
+            let label = createLabel(name, 0, 0, 0, 1);
+            //container.userData.color
             container.add(label);
         }
     }
@@ -1777,8 +1802,15 @@ function copyGhostToInstances(parent) {
             // they are the x,y coordinates of the four corners of the quad
             let uvs = geom.attributes.uv.array;
             // they are the texture coordinates of the glyph into the font atlas
+            let glyphs = geom.layout.glyphs
 
-            for (let q=0; q<positions.length; q+=8) {
+            //console.log(glyphs)
+
+            //for (let q=0; q<positions.length; q+=8) {
+            for (let j=0; j<glyphs.length; j++) {
+                let glyph = glyphs[j];
+
+                let q = j * 8;
                 // a specific glyph, as 4 XY pairs
                 // TODO: convert to a position & scale for instance
                 // everything also needs to be transformed by the o.matrixWorld
@@ -1787,16 +1819,23 @@ function copyGhostToInstances(parent) {
                 let i3 = i * 3;
                 let i4 = i * 4;
 
-                let x0 = positions[q+0];
-                let y0 = positions[q+5];
+                let x0 = positions[q+0]; // == glyph.position[0] + glyph.data.xoffset
+                let y0 = positions[q+5]; // == glyph.position[1] + glyph.data.yoffset
                 let x1 = positions[q+4];
                 let y1 = positions[q+1];
                 let xdim = (x1-x0);
                 let ydim = (y0-y1);
 
-                instQuadLocationAttr.array[i3 + 0] = pos.x + x0*scale.x;
-                instQuadLocationAttr.array[i3 + 1] = pos.y + -y0*scale.y;
-                instQuadLocationAttr.array[i3 + 2] = pos.z + 0.001;
+                let xyz = new THREE.Vector3(
+                    (x0 + xdim/2)*scale.x,
+                    (y0 - ydim/2)*scale.y,
+                    0
+                );
+                xyz.applyQuaternion(quat);
+                
+                instQuadLocationAttr.array[i3 + 0] = pos.x + xyz.x;
+                instQuadLocationAttr.array[i3 + 1] = pos.y + xyz.y;
+                instQuadLocationAttr.array[i3 + 2] = pos.z + xyz.z;
                 
                 instQuadOrientationAttr.array[i4 + 0] = quat.x;
                 instQuadOrientationAttr.array[i4 + 1] = quat.y;
@@ -1809,7 +1848,7 @@ function copyGhostToInstances(parent) {
                 instQuadTexcoordAttr.array[i4 + 3] = uvs[q+1]
                 
                 instQuadScaleAttr.array[i3 + 0] = xdim*scale.x;
-                instQuadScaleAttr.array[i3 + 1] = ydim*scale.y;
+                instQuadScaleAttr.array[i3 + 1] = -ydim*scale.y;
                 instQuadScaleAttr.array[i3 + 2] = 1;
 
                 currentQuadInstanceCount++;
@@ -1924,23 +1963,32 @@ function doModuleLayout(mod) {
     if (!numcols) log(grid_spacing, numchildren, numrows, numcols)
 
     backpanel.scale.set(grid_spacing * numcols, grid_spacing * numrows, BACKPANEL_DEPTH);
+    
     // reset anchor to top left corner:
     backpanel.position.set(
-        ((grid_spacing * numcols) /2) - (grid_spacing /2) ,
-        (-(grid_spacing * numrows) /2) + (grid_spacing /2), 
-        -BACKPANEL_DEPTH/2);
+        0, //(grid_spacing * numcols)/2,
+        0,
+        -BACKPANEL_DEPTH/2
+    );
 
+    let layout = label.geometry.layout
+    //console.log(layout) // 280
+    
+    let s = numcols*grid_spacing / layout.width
+    label.scale.set(s, -s, s)
+    
     label.position.set(
-            0,
-            0, 
-            0);
+        grid_spacing * -numcols/2, 
+        grid_spacing * (numrows-1.4)/2, 
+        0.001
+    );
 
     for (let r = 1, i=0; r<numrows; r++) {
         for (let c=0; c<numcols && i < numchildren; c++, i++) {
             //log("adding child " + i + " of " + numchildren + " at ", c, r)
             let widget = widgets[i];
-            widget.position.x = ((grid_spacing * c));
-            widget.position.y = (-(grid_spacing * r));
+            widget.position.x = grid_spacing * (c-(numcols-1)/2);
+            widget.position.y = -grid_spacing * (r-(numrows-1)/2);
             widget.position.z = NLET_HEIGHT/2;
         }
     }
@@ -1972,12 +2020,24 @@ function onServerMessage(msg, sock) {
 
 function onKeypress(e) {
 
-    switch (e.which) {
-        case 71: {
+    switch (e.key) {
+        case "g": {
             ghostScene.visible = !ghostScene.visible;
         } break;
-        default:
-            log("key press", e.which)
+        case "t": {
+            if (instBoxMesh.material.transparent) {
+                instBoxMesh.material.depthWrite = true;
+                instBoxMesh.material.side = THREE.FrontSide;
+                instBoxMesh.material.transparent = false;
+            } else {
+                instBoxMesh.material.depthWrite = false;
+                instBoxMesh.material.side = THREE.DoubleSide;
+                instBoxMesh.material.transparent = true;
+            }
+        } break;
+        default: {
+            log("key press", e.which, e.key)
+        }
     }
 
     if (!renderer.vr.isPresenting()){
