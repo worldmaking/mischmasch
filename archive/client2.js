@@ -266,7 +266,8 @@ async function init() {
     document.addEventListener( 'mousedown', onDocumentMouseDown, false );
 
     // now we can start rendering:
-    animate();
+    //animate();
+    renderer.setAnimationLoop(animate);
 
     // connect to server
     serverConnect();
@@ -1329,9 +1330,30 @@ function enactDeltaObjectValue(delta) {
 // DYNAMICS
 //////////////////////////////////////////////////////////////////////////////////////////
 
+function update() {
+    // handle scene changes from server:
+    {
+        // handle incoming deltas:
+        while (incomingDeltas.length > 0) {
+            let delta = incomingDeltas.shift();
+            //logonly(JSON.stringify(delta, null, ""))
+            // TODO: derive which world to add to:
+            enactDelta(ghostWorld, delta);
+            //log("incoming deltas")
+            once = true;
+        }
+
+        // re-layout:
+        updateDirty(ghostScene, false);
+
+        // TODO: delete once cables are instanced:
+        updateDirty(scene, false);
+    }
+}
+
 function animate() {
     //renderer.setAnimationLoop(render);
-    requestAnimationFrame( animate );
+    //requestAnimationFrame( animate );
 
     // handle scene changes from server:
     {
