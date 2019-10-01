@@ -631,11 +631,12 @@ function initVRController(id=0) {
                     controller.getWorldPosition(controllerPos);
                     knob.getWorldPosition(objectPos); 
 
+                    console.log(knob)
                     let value = knob.userData.value;
                     let dist = controllerPos.distanceTo(objectPos);
 
 
-                 if (1) { //if (dist < KNOB_TWIST_DISTANCE) {   
+                if (dist < KNOB_TWIST_DISTANCE) {   // if (1) { //
                         //controller.rotation.z += object.userData.rotation._z;
                         //object.rotation.z = (controller.rotation.z - controller.userData.rotation._z);
                         //console.log(object, controller)
@@ -794,6 +795,34 @@ function initVRController(id=0) {
             } break;
             case "menu": {
                 if (!this.isTriggerDown) {
+
+
+                    /* //Math for radial menu
+                    let nrows = 3;
+                    let names_per_row = Math.ceil(menuNames.length / nrows);
+                    let i = 0;
+                    for (let row = 0; row < nrows; row++) {
+                        for(let col = 0; col < names_per_row && i < menuNames.length; col++, i++){
+                            let name = menuNames[i];
+                            let theta = col * (2 * Math.PI) / names_per_row;
+                            let r = .5;
+                            let x = r * Math.sin(theta);
+                            let z = r * Math.cos(theta);
+                            //console.log(i, name);
+                            let y = -.2 * (row + 1);
+                    
+                            let e = new THREE.Euler(0, theta + Math.PI, 0);
+                            let q = new THREE.Quaternion();
+                            q.setFromEuler(e);
+                    
+                            let deltas = generateNewModule([x, y, z], [q._x, q._y, q._z, q._w], name);
+
+                            clientSideDeltas(deltas);
+                            touched = false;
+                        }
+                    } */
+
+                    
                     // release 
                     this.state = "default";
                 }
