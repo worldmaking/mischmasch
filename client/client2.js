@@ -822,7 +822,8 @@ function initVRController(id=0) {
                         }
                     } */
 
-                    
+                    //if trigger not down destroy menu otherwise create menu
+
                     // release 
                     this.state = "default";
                 }
