@@ -130,6 +130,29 @@ const NSWITCH_DEPTH = NLET_HEIGHT
 const KNOB_SWEEP = -Math.PI * 0.75;                  
 const KNOB_TWIST_DISTANCE = 0.3;
 const KNOB_SWING_DISTANCE = 0.2;
+
+function knobAngleToValue(angle) {
+    // // angle should be in range -PI to PI
+    angle = wrap(angle + Math.PI, Math.PI * 2) - Math.PI;
+
+    if (angle < KNOB_SWEEP) angle = KNOB_SWEEP;
+    if (angle > -KNOB_SWEEP) angle = -KNOB_SWEEP;
+    // turn angle back into a 0..1 value:
+    let value = (((angle / KNOB_SWEEP) + 1)/2);
+    return value;
+}
+function knobValueToAngle(value) {
+
+    // if value == 0, angle should be -sweep
+    // if value == 1, angle should be sweep 
+    // TODO: clamp:
+    let angle = KNOB_SWEEP * ((value*2) - 1);
+    if (angle < KNOB_SWEEP) angle = KNOB_SWEEP;
+    if (angle > -KNOB_SWEEP) angle = -KNOB_SWEEP;
+    return angle;
+}
+
+
 let boxGeom = new THREE.BoxGeometry(1,1,1);
 let boxMat = new THREE.MeshStandardMaterial({
     // TODO: temp
@@ -590,10 +613,14 @@ function initVRController(id=0) {
     controller.userData.controllerID = id;
     scene.add(controller);
 
+    controller.add(new THREE.AxesHelper(0.1))
+
     controller.userData.state = "default"
     controller.userData.intersection = null;
     controller.userData.rotation = new THREE.Vector3();
     controller.userData.updateStateMachine = function() {
+
+
         let intersection = this.intersection;
         let object = intersection ? intersection.object : null;
         // highlight it:
@@ -631,24 +658,38 @@ function initVRController(id=0) {
                     controller.getWorldPosition(controllerPos);
                     knob.getWorldPosition(objectPos); 
 
-                    console.log(knob)
                     let value = knob.userData.value;
                     let dist = controllerPos.distanceTo(objectPos);
 
+                    
+                    
+                    // get twiddle angle:
+                    //
 
-                if (dist < KNOB_TWIST_DISTANCE) {   // if (1) { //
+                    // get the rotation transform that makes the knob the origin:
+                    let moduleQuat = new THREE.Quaternion();
+                    knob.parent.getWorldQuaternion(moduleQuat); 
+                    moduleQuat.inverse();
+                    
+
+                    if (1) { //if (dist < KNOB_TWIST_DISTANCE) {   // if (1) { //
                         //controller.rotation.z += object.userData.rotation._z;
                         //object.rotation.z = (controller.rotation.z - controller.userData.rotation._z);
                         //console.log(object, controller)
-                        let angle = knob.userData.rotation._z + (controller.rotation.z - this.rotation._z);
 
-                        // angle should be in range -PI to PI
-                        angle = wrap(angle + Math.PI, Math.PI * 2) - Math.PI;
+                        // let angle = knob.userData.rotation._z + (controller.rotation.z - this.rotation._z);
 
-                        if (angle < KNOB_SWEEP) angle = KNOB_SWEEP;
-                        if (angle > -KNOB_SWEEP) angle = -KNOB_SWEEP;
-                        // turn angle back into a 0..1 value:
-                        value = (((angle / KNOB_SWEEP) + 1)/2);
+                        
+
+                        // get our up vector from point of view of knob:
+                        let up = new THREE.Vector3(0, 1, 0).applyQuaternion(controller.quaternion);
+                        up.applyQuaternion(moduleQuat)
+                        let angle = Math.atan2(-up.x, up.y)
+
+                        // make it relative to start:
+                        angle = this.twiddleState.startKnobAngle + (angle - this.twiddleState.startControllerAngle);
+
+                        value = knobAngleToValue(angle);
                         
                         // if (world.getObjectByName("uiLine") !== undefined){
                         //     uiLine.geometry.vertices[0] = 0;
@@ -657,6 +698,8 @@ function initVRController(id=0) {
                         
                         //     line.scale.z = getControllerLineLength;
                         // }         
+                        knob.userData.rotation = knob.rotation.clone();
+
                     } else if (dist > KNOB_SWING_DISTANCE) {
                         //put controller into knob space using matrix
                         //set angle to the knob
@@ -668,13 +711,13 @@ function initVRController(id=0) {
 
                         let knobPos = new THREE.Vector3()
                         knob.getWorldPosition(knobPos);
+                        
 
                         let relPos = new THREE.Vector3();
                         relPos.subVectors(controllerPos, knobPos);
 
-                        let moduleQuat = new THREE.Quaternion();
-                        moduleQuat.copy(object.parent.quaternion)
-                        moduleQuat.inverse();
+                        
+                        
 
                         // now rotate this into the knob's perspective:
                         relPos.applyQuaternion(moduleQuat);
@@ -683,10 +726,7 @@ function initVRController(id=0) {
                         let angle = Math.atan2(-relPos.x, relPos.y);
                         // map this to a 0..1 range:
 
-                        if (angle < KNOB_SWEEP) angle = KNOB_SWEEP;
-                        if (angle > -KNOB_SWEEP) angle = -KNOB_SWEEP;
-                        // turn angle back into a 0..1 value:
-                        value = (((angle / KNOB_SWEEP) + 1)/2);
+                        value = knobAngleToValue(angle);
 
                         // if (dist < KNOB_TWIST_DISTANCE) {
                         //     let factor = (dist - KNOB_SWING_DISTANCE) / (KNOB_TWIST_DISTANCE - KNOB_SWING_DISTANCE);
@@ -711,7 +751,6 @@ function initVRController(id=0) {
                         
 
                     }
-
                     outgoingDeltas.push({ 
                         op:"propchange", 
                         path: knob.userData.path, 
@@ -794,6 +833,11 @@ function initVRController(id=0) {
 
             } break;
             case "menu": {
+
+                //userdata.kind for module copy
+
+
+
                 if (!this.isTriggerDown) {
 
 
@@ -858,12 +902,28 @@ function initVRController(id=0) {
                             reparentWithTransform(object, parent, this.ghostController)
 
 
-                        } else if (object.userData.isTiddleable) {
+                        } else if (object.userData.isTwiddleable) {
                             // go into twidding mode
 
                             log("start twiddling", name)
+
+                            // get the rotation transform that makes the knob the origin:
+                            let moduleQuat = new THREE.Quaternion();
+                            object.parent.getWorldQuaternion(moduleQuat); 
+                            moduleQuat.inverse();
+
+                            // get our up vector from point of view of knob:
+                            let up = new THREE.Vector3(0, 1, 0).applyQuaternion(controller.quaternion);
+                            up.applyQuaternion(moduleQuat)
+                            let angle = Math.atan2(-up.x, up.y)
+
+
                             this.twiddleState = {
                                 target: object,
+                                // TODO: grab controller's rotation around the knob's Z axis
+                                startControllerAngle: angle,
+                                // TODO: grab target's rotation around its Z axis (or, just its value?)
+                                startKnobAngle: knobValueToAngle(object.userData.value),
                             }
                             this.state = "twiddling"
                             
@@ -922,7 +982,7 @@ function initVRController(id=0) {
                             this.state = "cabling";
                         } else {
 
-                            log("kind", object.userData.kind)
+                           // log("kind", object.userData.kind)
                         }
 
                     }
@@ -1143,13 +1203,23 @@ function enactDeltaNewNode(world, delta) {
             container.scale.set(LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, NLET_HEIGHT);
             container.userData.instanceShape = SHAPE_CYLINDER
             container.userData.color = colorFromString(name);
-            container.userData.isTiddleable = true;
+            container.userData.isTwiddleable = true;
             container.userData.value = delta.value;
             container.add(new THREE.AxesHelper(1));
 
             // // label:
             // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
             // container.add(label);
+
+            let min = delta.range[0];
+            let max = delta.range[1];
+            let scaledValue = (delta.value - min) / (max - min);
+            //scaledValue = wrap(scaledValue, 1);
+            let derived_angle = knobValueToAngle(delta.value); 
+            
+            // set rotation of knob by this angle, and normal axis of knob:
+            container.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
+
             container.add(createLabel(name));
         }break;
         case "small_knob":{
@@ -1157,13 +1227,24 @@ function enactDeltaNewNode(world, delta) {
             container.scale.set(SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, NLET_HEIGHT);
             container.userData.instanceShape = SHAPE_CYLINDER
             container.userData.color = colorFromString(name);
-            container.userData.isTiddleable = true;
+            container.userData.isTwiddleable = true;
             container.userData.value = delta.value;
             container.add(new THREE.AxesHelper(1));
 
             // // label:
             // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
             // container.add(label);
+
+            let min = delta.range[0];
+            let max = delta.range[1];
+            let scaledValue = (delta.value - min) / (max - min);
+            //scaledValue = wrap(scaledValue, 1);
+
+            let derived_angle = knobValueToAngle(delta.value); 
+            
+            // set rotation of knob by this angle, and normal axis of knob:
+            container.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
+
             container.add(createLabel(name));
         }break;
         case "n_switch": {
@@ -1475,20 +1556,18 @@ function enactDeltaObjectValue(world, delta) {
             //console.log("Back from server Value", value)
             //Update once server says:
             
-            // if value == 0, angle should be -sweep
-            // if value == 1, angle should be sweep 
-            let derived_angle = KNOB_SWEEP * ((value*2) - 1);
+            let derived_angle = knobValueToAngle(value);
             
             // set rotation of knob by this angle, and normal axis of knob:
             object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
         } break;
         case "n_switch": {
-            object.userData.value = value;
-            for(let child of object.children){
-                if(child.userData.selectable){
-                    child.position.fromArray( object.userData.positions[value -1]);
-                }
-            }
+            // object.userData.value = value;
+            // for(let child of object.children){
+            //     if(child.userData.selectable){
+            //         child.position.fromArray( object.userData.positions[value -1]);
+            //     }
+            // }
         } break;
         default:{
 
