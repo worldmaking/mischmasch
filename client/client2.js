@@ -646,10 +646,17 @@ function initVRController(id=0) {
                     let dragTarget = this.dragState.target
                     let parent = this.dragState.oldparent
                     this.state = "default";
-
                     // reparent target
-                    reparentWithTransform(dragTarget, this.ghostController, parent)
-                    this.dragState = null
+                    reparentWithTransform(dragTarget, this.ghostController, parent);
+                    // outgoingDeltas.push({ 
+                    //     op:"propchange", 
+                    //     path: object.userData.path, 
+                    //     name:"pos", 
+                    //     from:[this.dragState.fromPos.x, this.dragState.fromPos.y, this.dragState.fromPos.z], 
+                    //     to:[object.position.x, object.position.y, object.position.z] 
+                    // });
+
+                    this.dragState = null;
                 }
             } break;
             case "twiddling": {
@@ -904,6 +911,7 @@ function initVRController(id=0) {
                             this.dragState = {
                                 target: object,
                                 oldparent: object.parent,
+                                fromPos: object.position,
                             }
                             // reparent target to controller:
                             reparentWithTransform(object, parent, this.ghostController)
@@ -1281,6 +1289,7 @@ function enactDeltaNewNode(world, delta) {
             box.userData.color = colorFromString(name);
             box.userData.instanceShape = SHAPE_BOX
             box.name = "_box_"+name
+            box.userData.path = delta.path + "._box_"+
             container.add(box);
 
             //container.add(new THREE.AxesHelper(1));
