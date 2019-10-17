@@ -344,6 +344,7 @@ function handlemessage(msg, sock, id) {
 				date: Date.now(),
 				data: msg.data
 			};
+			console.log(msg.data)
 			// check if the recording status is active, if so push received delta(s) to the sessionJSON
 			if (recordStatus === 1){
 				sessionJSON.push(response)

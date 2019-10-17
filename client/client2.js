@@ -1147,7 +1147,6 @@ function createLabel(text, x=0, y=0, z=0, uniformScaling=1){
     mesh.add(new THREE.AxesHelper(1));
 
     //console.log(mesh);
-            
     return mesh;
 }
 
@@ -1179,7 +1178,7 @@ function enactDeltaNewNode(world, delta) {
             // // label:
             // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
             // container.add(label);
-            container.add(new THREE.AxesHelper(1));
+           // container.add(new THREE.AxesHelper(1));
 
             container.add(createLabel(name));
 
@@ -1191,7 +1190,7 @@ function enactDeltaNewNode(world, delta) {
             container.userData.color = [1, 0, 0, 1];
             container.userData.instanceShape = SHAPE_CYLINDER;
 
-            container.add(new THREE.AxesHelper(1));
+           // container.add(new THREE.AxesHelper(1));
             
             // // label:
             // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
@@ -1205,7 +1204,7 @@ function enactDeltaNewNode(world, delta) {
             container.userData.color = colorFromString(name);
             container.userData.isTwiddleable = true;
             container.userData.value = delta.value;
-            container.add(new THREE.AxesHelper(1));
+            //container.add(new THREE.AxesHelper(1));
 
             // // label:
             // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
@@ -1229,7 +1228,7 @@ function enactDeltaNewNode(world, delta) {
             container.userData.color = colorFromString(name);
             container.userData.isTwiddleable = true;
             container.userData.value = delta.value;
-            container.add(new THREE.AxesHelper(1));
+            //container.add(new THREE.AxesHelper(1));
 
             // // label:
             // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
@@ -1254,7 +1253,7 @@ function enactDeltaNewNode(world, delta) {
             container.userData.slideable = true;
             container.userData.instanceShape = SHAPE_BOX;
             container.userData.value = delta.value;
-            container.add(new THREE.AxesHelper(1));
+            //container.add(new THREE.AxesHelper(1));
             container.add(createLabel(name));
             
             // // label:
@@ -1278,7 +1277,7 @@ function enactDeltaNewNode(world, delta) {
             container.add(box);
 
             //container.add(new THREE.AxesHelper(1));
-            box.add(new THREE.AxesHelper(1));
+            //box.add(new THREE.AxesHelper(1));
 
             // label:
             let label = createLabel(name, 0, 0, 0, 1);
