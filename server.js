@@ -26,8 +26,8 @@ let OTHistoryFile = '../histories/OT_' + Date.now() + '.json'
 			//let deltas = got.deltasFromGraph(demo_scene, []);
 			//console.log(deltas)
 
-// declare array for temp storage of OTs for recording sessions
-let sessionJSON = []
+// declare object for temp storage of OTs for recording sessions
+let recordJSON = {}
 // declare var for recording status
 let recordStatus;
 
@@ -163,11 +163,11 @@ showShell();
 vorpal
   .command('record', 'Outputs "recording session."')
   .action(function(args, callback) {
-		sessionJSON.length = 0
+		recordJSON.length = 0
 		this.log('recording will be stored at ', sessionRecording);
 		sessionRecording = __dirname + "/session_recordings/session_" + Date.now() + ".json"
 
-		fs.writeFile(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")
+		fs.writeFile(sessionRecording, JSON.stringify(recordJSON, null, "  "), "utf-8")
 
 
 		showShell()
@@ -177,7 +177,7 @@ vorpal
 vorpal
   .command('stoprecord', 'Outputs "stopped recording & saved file."')
   .action(function(args, callback) {
-		console.log('saved session with ' + sessionJSON.length + ' deltas');
+		console.log('saved session with ' + recordJSON.length + ' deltas');
 		callback()
 		showShell()
 	});
@@ -345,9 +345,16 @@ function handlemessage(msg, sock, id) {
 				data: msg.data
 			};
 			console.log(msg.data)
-			// check if the recording status is active, if so push received delta(s) to the sessionJSON
+			
+			// check if the recording status is active, if so push received delta(s) to the recordJSON
 			if (recordStatus === 1){
-				sessionJSON.push(response)
+				
+				for(i = 0; i < msg.data.length; i++){
+					
+					msg.data[i]["timestamp"] = Date.now()
+					recordJSON.deltas.push(msg.data[i])
+				}
+				
 			}
 
 			//fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(response), "utf-8")
@@ -367,8 +374,8 @@ function handlemessage(msg, sock, id) {
 			};
 			// NOTE: this is copied from the deltas case, but i've commented out recording the playback since for now it'd just be redundant. 
 			// we might, though, at some point want to record when a playback occurred, and note when playback was stopped/looped/overdubbed/etc
-			//sessionJSON.push(response)
-			//fs.writeFileSync(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")
+			//recordJSON.push(response)
+			//fs.writeFileSync(sessionRecording, JSON.stringify(recordJSON, null, "  "), "utf-8")
 			send_all_clients(JSON.stringify(response));
 			*/
 		} break;
@@ -436,18 +443,25 @@ function handlemessage(msg, sock, id) {
 			// take OTHistory, turn it into a graph. 
 			// take that graph turn it back into an OT history (will this remove all redundant deltas? (we want this...))
 			// set these deltas as the header for the recorded session file
-			// then append the sessionJSON in the stopRecord section.
-			let header = {}
+			// then append the recordJSON in the stopRecord section.
+			//let header = {}
 
-			header['header'] = localGraph
-			console.log(header)
+			// header['header'] = localGraph
+			// console.log(header)
 			
-			sessionJSON = []
-			sessionJSON.push(JSON.stringify(header))
+			recordJSON = {
+				header:{
+					scene: localGraph,
+					timestamp: Date.now()
+				},
+				deltas:[]
+				
+			}
+			// recordJSON.push(header)
 			let recording = msg.data.replace(/\s/g, "_")
 			// save session name as filename provided in this message
 			sessionRecording = __dirname + "/session_recordings/" + recording + ".json"
-			// push all received deltas to the sessionJSON:
+			// push all received deltas to the recordJSON:
 			recordStatus = 1
 			console.log('session will be stored at', sessionRecording)
 			
@@ -457,7 +471,7 @@ function handlemessage(msg, sock, id) {
 			recordStatus = 0
 
 			
-			fs.writeFileSync(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")
+			fs.writeFileSync(sessionRecording, JSON.stringify(recordJSON, null, 2), "utf-8")
 			
 			console.log('session saved at', sessionRecording)
 
