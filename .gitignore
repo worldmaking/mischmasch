@@ -6,7 +6,9 @@
 *.mp4
 *.mpg
 *.wav
+session_recordings/
 
+*/session_recordings/
 
 # Logs
 logs

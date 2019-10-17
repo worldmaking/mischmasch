@@ -632,7 +632,14 @@ function initVRController(id=0) {
 
                // logonly("drag", this.dragState.target.name, this.dragState.target.matrix.elements)
 
-               // TODO: twist & zoom according to the this.thumbPadDX etc.
+            //    let thumbMove = this.dragState.target
+            //    // TODO: twist & zoom according to the this.thumbPadDX etc.
+            //    let s = 1. + (controller.userData.thumbpadDY);
+            //    let r = 1. + (controller.userData.thumbpadDX);
+            //    thumbMove.position.multiplyScalar(s);
+            //    let rot = new THREE.Vector3(thumbMove.rotation.x, thumbMove.rotation.y, thumbMove.rotation.z);
+            //    rot.multiplyScalar(r);
+            //    thumbMove.rotation.y = rot.y;
 
                 if (!this.isTriggerDown) {
                     // release 
@@ -901,7 +908,7 @@ function initVRController(id=0) {
                             // reparent target to controller:
                             reparentWithTransform(object, parent, this.ghostController)
 
-
+                            log("dragging")
                         } else if (object.userData.isTwiddleable) {
                             // go into twidding mode
 
