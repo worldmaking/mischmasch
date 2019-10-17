@@ -1,0 +1,1587 @@
+{
+  "header": {
+    "scene": {
+      "nodes": {
+        "lfo_1": {
+          "_props": {
+            "kind": "lfo",
+            "pos": [
+              -0.3,
+              1.5,
+              0
+            ],
+            "orient": [
+              0,
+              0.258819,
+              0,
+              0.965926
+            ]
+          },
+          "fm_cv": {
+            "_props": {
+              "kind": "inlet"
+            }
+          },
+          "phasor_sync": {
+            "_props": {
+              "kind": "inlet"
+            }
+          },
+          "pulse_width_cv": {
+            "_props": {
+              "kind": "inlet"
+            }
+          },
+          "rate": {
+            "_props": {
+              "kind": "large_knob",
+              "range": [
+                0,
+                80
+              ],
+              "taper": "log 3.8",
+              "value": 0.6302142565332578,
+              "unit": "Hz"
+            }
+          },
+          "index": {
+            "_props": {
+              "kind": "small_knob",
+              "range": [
+                0,
+                10
+              ],
+              "taper": "linear",
+              "value": 1,
+              "unit": "float"
+            }
+          },
+          "pulse_width": {
+            "_props": {
+              "kind": "small_knob",
+              "range": [
+                0,
+                1
+              ],
+              "taper": "linear",
+              "value": 0.25,
+              "unit": "float"
+            }
+          },
+          "onset": {
+            "_props": {
+              "kind": "small_knob",
+              "range": [
+                0,
+                1
+              ],
+              "taper": "linear",
+              "value": 0,
+              "unit": "float"
+            }
+          },
+          "sine": {
+            "_props": {
+              "kind": "outlet",
+              "index": 0
+            }
+          },
+          "phasor": {
+            "_props": {
+              "kind": "outlet",
+              "index": 1
+            }
+          },
+          "pulse": {
+            "_props": {
+              "kind": "outlet",
+              "index": 2
+            }
+          }
+        },
+        "lfo_2": {
+          "_props": {
+            "kind": "lfo",
+            "pos": [
+              0.3,
+              1.5,
+              -0.2
+            ],
+            "orient": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "fm_cv": {
+            "_props": {
+              "kind": "inlet"
+            }
+          },
+          "phasor_sync": {
+            "_props": {
+              "kind": "inlet"
+            }
+          },
+          "pulse_width_cv": {
+            "_props": {
+              "kind": "inlet"
+            }
+          },
+          "rate": {
+            "_props": {
+              "kind": "large_knob",
+              "range": [
+                0,
+                80
+              ],
+              "taper": "log 3.8",
+              "value": 1,
+              "unit": "Hz"
+            }
+          },
+          "index": {
+            "_props": {
+              "kind": "small_knob",
+              "range": [
+                0,
+                10
+              ],
+              "taper": "linear",
+              "value": 10,
+              "unit": "float"
+            }
+          },
+          "pulse_width": {
+            "_props": {
+              "kind": "small_knob",
+              "range": [
+                0,
+                1
+              ],
+              "taper": "linear",
+              "value": 0.25,
+              "unit": "float"
+            }
+          },
+          "onset": {
+            "_props": {
+              "kind": "small_knob",
+              "range": [
+                0,
+                1
+              ],
+              "taper": "linear",
+              "value": 0,
+              "unit": "float"
+            }
+          },
+          "sine": {
+            "_props": {
+              "kind": "outlet",
+              "index": 0
+            }
+          },
+          "phasor": {
+            "_props": {
+              "kind": "outlet",
+              "index": 1
+            }
+          },
+          "pulse": {
+            "_props": {
+              "kind": "outlet",
+              "index": 2
+            }
+          }
+        },
+        "ffmvco_1": {
+          "_props": {
+            "kind": "ffmvco",
+            "pos": [
+              0,
+              0.85,
+              0.2
+            ],
+            "orient": [
+              -0.382683,
+              0,
+              0,
+              0.92388
+            ]
+          },
+          "vco_1_cv": {
+            "_props": {
+              "kind": "inlet"
+            }
+          },
+          "index_cv": {
+            "_props": {
+              "kind": "inlet"
+            }
+          },
+          "vco_2_cv": {
+            "_props": {
+              "kind": "inlet"
+            }
+          },
+          "feedback_cv": {
+            "_props": {
+              "kind": "inlet"
+            }
+          },
+          "vco_1_rate": {
+            "_props": {
+              "kind": "large_knob",
+              "range": [
+                0,
+                6000
+              ],
+              "taper": "log 3.8",
+              "value": 120,
+              "unit": "Hz"
+            }
+          },
+          "vco_1_waveform": {
+            "_props": {
+              "kind": "n_switch",
+              "throws": [
+                "Sine",
+                "Phasor",
+                "Triangle"
+              ],
+              "value": 0
+            }
+          },
+          "vco_2_rate": {
+            "_props": {
+              "kind": "large_knob",
+              "range": [
+                0,
+                6000
+              ],
+              "taper": "log 3.8",
+              "value": 3,
+              "unit": "Hz"
+            }
+          },
+          "vco_2_waveform": {
+            "_props": {
+              "kind": "n_switch",
+              "throws": [
+                "Sine",
+                "Phasor",
+                "Triangle"
+              ],
+              "value": 0
+            }
+          },
+          "feedback": {
+            "_props": {
+              "kind": "small_knob",
+              "range": [
+                0,
+                6
+              ],
+              "taper": "linear",
+              "value": 0.25,
+              "unit": "float"
+            }
+          },
+          "vco_1": {
+            "_props": {
+              "kind": "outlet",
+              "index": 0
+            }
+          },
+          "vco_2": {
+            "_props": {
+              "kind": "outlet",
+              "index": 1
+            }
+          },
+          "master": {
+            "_props": {
+              "kind": "outlet",
+              "index": 2
+            }
+          }
+        },
+        "vca_1": {
+          "_props": {
+            "kind": "vca",
+            "pos": [
+              0.5,
+              1.8,
+              0
+            ],
+            "orient": [
+              0.25,
+              -0.25,
+              0.066987,
+              0.933013
+            ]
+          },
+          "signal": {
+            "_props": {
+              "kind": "inlet"
+            }
+          },
+          "cv": {
+            "_props": {
+              "kind": "inlet"
+            }
+          },
+          "cv_amount": {
+            "_props": {
+              "kind": "large_knob",
+              "range": [
+                0,
+                1
+              ],
+              "taper": "linear",
+              "value": 0.5,
+              "unit": "float"
+            }
+          },
+          "bias": {
+            "_props": {
+              "kind": "large_knob",
+              "range": [
+                0,
+                1
+              ],
+              "taper": "linear",
+              "value": 0.5,
+              "unit": "float"
+            }
+          },
+          "output": {
+            "_props": {
+              "kind": "outlet",
+              "index": 0
+            }
+          }
+        },
+        "comparator_1": {
+          "_props": {
+            "kind": "comparator",
+            "pos": [
+              0.5,
+              1,
+              0
+            ],
+            "orient": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "A": {
+            "_props": {
+              "kind": "inlet"
+            }
+          },
+          "B": {
+            "_props": {
+              "kind": "inlet"
+            }
+          },
+          "max": {
+            "_props": {
+              "kind": "outlet",
+              "index": 0
+            }
+          },
+          "min": {
+            "_props": {
+              "kind": "outlet",
+              "index": 1
+            }
+          }
+        },
+        "speaker_1": {
+          "_props": {
+            "kind": "speaker",
+            "category": "abstraction",
+            "pos": [
+              0.75,
+              1,
+              0
+            ],
+            "orient": [
+              0,
+              -0.258819,
+              0,
+              0.965926
+            ]
+          },
+          "input": {
+            "_props": {
+              "kind": "inlet",
+              "index": 0
+            }
+          }
+        },
+        "speaker_2": {
+          "_props": {
+            "kind": "speaker",
+            "category": "abstraction",
+            "pos": [
+              -0.5,
+              1,
+              0
+            ],
+            "orient": [
+              0,
+              0.130526,
+              0,
+              0.991445
+            ]
+          },
+          "input": {
+            "_props": {
+              "kind": "inlet",
+              "index": 0
+            }
+          }
+        }
+      },
+      "arcs": [
+        [
+          "lfo_1.sine",
+          "vca_1.signal"
+        ],
+        [
+          "lfo_1.sine",
+          "lfo_2.fm_cv"
+        ],
+        [
+          "lfo_1.phasor",
+          "ffmvco_1.feedback_cv"
+        ],
+        [
+          "lfo_1.pulse",
+          "ffmvco_1.vco_1_cv"
+        ],
+        [
+          "vca_1.output",
+          "comparator_1.A"
+        ],
+        [
+          "ffmvco_1.master",
+          "comparator_1.B"
+        ],
+        [
+          "comparator_1.max",
+          "speaker_1.input"
+        ],
+        [
+          "comparator_1.min",
+          "speaker_2.input"
+        ]
+      ]
+    },
+    "timestamp": 1571343249826
+  },
+  "deltas": [
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.7005339838596962,
+      "timestamp": 1571343253980
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.7005339838596962,
+      "timestamp": 1571343253998
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.7008309118603891,
+      "timestamp": 1571343254054
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.7008309118603891,
+      "timestamp": 1571343254057
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.699902103144775,
+      "timestamp": 1571343254059
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.7000307209277863,
+      "timestamp": 1571343254063
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6987886182508124,
+      "timestamp": 1571343254093
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6987886182508124,
+      "timestamp": 1571343254095
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.699667028377666,
+      "timestamp": 1571343254113
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.699667028377666,
+      "timestamp": 1571343254129
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6988368140378122,
+      "timestamp": 1571343254146
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6988368140378122,
+      "timestamp": 1571343254161
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6984595781012473,
+      "timestamp": 1571343254179
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6984595781012473,
+      "timestamp": 1571343254196
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6982267203986925,
+      "timestamp": 1571343254229
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6974719470641348,
+      "timestamp": 1571343254231
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6960587103301563,
+      "timestamp": 1571343254245
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6960789507662506,
+      "timestamp": 1571343254274
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6948308757522084,
+      "timestamp": 1571343254279
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.69",
+      "to": 0.6946862311478768,
+      "timestamp": 1571343254296
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.69",
+      "to": 0.6954386481886522,
+      "timestamp": 1571343254313
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6952195565600241,
+      "timestamp": 1571343254333
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.693959097438061,
+      "timestamp": 1571343254349
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.69",
+      "to": 0.6948378375993144,
+      "timestamp": 1571343254363
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.69",
+      "to": 0.6958175920852074,
+      "timestamp": 1571343254378
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6979191190345639,
+      "timestamp": 1571343254395
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.7016451851450425,
+      "timestamp": 1571343254412
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.7039348457199914,
+      "timestamp": 1571343254429
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.7059323745567638,
+      "timestamp": 1571343254446
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7066211964774367,
+      "timestamp": 1571343254462
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7120189499627123,
+      "timestamp": 1571343254480
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7148707216091185,
+      "timestamp": 1571343254496
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7149487472044807,
+      "timestamp": 1571343254514
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7149572398523125,
+      "timestamp": 1571343254532
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7172422612319956,
+      "timestamp": 1571343254546
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.72",
+      "to": 0.7177066232233514,
+      "timestamp": 1571343254564
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.72",
+      "to": 0.7147111236470218,
+      "timestamp": 1571343254578
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7129825501259813,
+      "timestamp": 1571343254603
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7116373806303685,
+      "timestamp": 1571343254612
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7105518980449972,
+      "timestamp": 1571343254629
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7100547188098127,
+      "timestamp": 1571343254645
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7093011471677896,
+      "timestamp": 1571343254663
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7052731190252066,
+      "timestamp": 1571343254679
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7028389655385763,
+      "timestamp": 1571343254696
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.7009158657510872,
+      "timestamp": 1571343254716
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6994401049063153,
+      "timestamp": 1571343254730
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6982537168281837,
+      "timestamp": 1571343254746
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6948977734504065,
+      "timestamp": 1571343254763
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.69",
+      "to": 0.6934663016976829,
+      "timestamp": 1571343254796
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.69",
+      "to": 0.6909458911878168,
+      "timestamp": 1571343254798
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.69",
+      "to": 0.6857191609993267,
+      "timestamp": 1571343254814
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.69",
+      "to": 0.6821019759935618,
+      "timestamp": 1571343254829
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.68",
+      "to": 0.6796850519978237,
+      "timestamp": 1571343254845
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.68",
+      "to": 0.6773936652709466,
+      "timestamp": 1571343254862
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.68",
+      "to": 0.6742521190964061,
+      "timestamp": 1571343254879
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6720364734907591,
+      "timestamp": 1571343254896
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6697024545942964,
+      "timestamp": 1571343254913
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6687881138451703,
+      "timestamp": 1571343254929
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6685105205127213,
+      "timestamp": 1571343254946
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6670163251651184,
+      "timestamp": 1571343254968
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6663089271354277,
+      "timestamp": 1571343254980
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6661120465374383,
+      "timestamp": 1571343254996
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6664103220917721,
+      "timestamp": 1571343255015
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6694347832337258,
+      "timestamp": 1571343255029
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6718968713344364,
+      "timestamp": 1571343255046
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.67803544977904,
+      "timestamp": 1571343255064
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.68",
+      "to": 0.67992067406799,
+      "timestamp": 1571343255079
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.68",
+      "to": 0.682212657255123,
+      "timestamp": 1571343255096
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.68",
+      "to": 0.6834800371924913,
+      "timestamp": 1571343255114
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.68",
+      "to": 0.6899347089512745,
+      "timestamp": 1571343255129
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.69",
+      "to": 0.6935846984857335,
+      "timestamp": 1571343255148
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.69",
+      "to": 0.6965077798830256,
+      "timestamp": 1571343255163
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6977969921809114,
+      "timestamp": 1571343255180
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.7045511526767816,
+      "timestamp": 1571343255197
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.7080864276356235,
+      "timestamp": 1571343255213
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7137350831624001,
+      "timestamp": 1571343255232
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7153621576456244,
+      "timestamp": 1571343255246
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.72",
+      "to": 0.7174890782144108,
+      "timestamp": 1571343255263
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.72",
+      "to": 0.7194366813256827,
+      "timestamp": 1571343255279
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.72",
+      "to": 0.7209229279138283,
+      "timestamp": 1571343255297
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.72",
+      "to": 0.7205365450953535,
+      "timestamp": 1571343255315
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.72",
+      "to": 0.7195007035752266,
+      "timestamp": 1571343255329
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.72",
+      "to": 0.7194370197999198,
+      "timestamp": 1571343255346
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.72",
+      "to": 0.7216509277685191,
+      "timestamp": 1571343255362
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.72",
+      "to": 0.7235619314354269,
+      "timestamp": 1571343255381
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.72",
+      "to": 0.7246459186798079,
+      "timestamp": 1571343255404
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.72",
+      "to": 0.7246459186798079,
+      "timestamp": 1571343255414
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.72",
+      "to": 0.7218276848946584,
+      "timestamp": 1571343255431
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.72",
+      "to": 0.7184002694264018,
+      "timestamp": 1571343255446
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.72",
+      "to": 0.715700272252641,
+      "timestamp": 1571343255464
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.72",
+      "to": 0.7151024528661102,
+      "timestamp": 1571343255479
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.72",
+      "to": 0.7142461963870684,
+      "timestamp": 1571343255495
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7132265142967142,
+      "timestamp": 1571343255515
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7094240074872546,
+      "timestamp": 1571343255529
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7080415289303773,
+      "timestamp": 1571343255545
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7060997406221146,
+      "timestamp": 1571343255562
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.705074877279858,
+      "timestamp": 1571343255580
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7037597638839123,
+      "timestamp": 1571343255597
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.703531754282575,
+      "timestamp": 1571343255612
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.7036337373504045,
+      "timestamp": 1571343255629
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.7037314048099672,
+      "timestamp": 1571343255647
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.7022643243790008,
+      "timestamp": 1571343255663
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.7008184351279161,
+      "timestamp": 1571343255687
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.7000892724677616,
+      "timestamp": 1571343255697
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.7010307417295251,
+      "timestamp": 1571343255713
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.7042431629896986,
+      "timestamp": 1571343255730
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.7060839617083977,
+      "timestamp": 1571343255747
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7087232797457848,
+      "timestamp": 1571343255763
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7097717656194498,
+      "timestamp": 1571343255779
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7111950578181592,
+      "timestamp": 1571343255800
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7115661949485378,
+      "timestamp": 1571343255813
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7092119074755088,
+      "timestamp": 1571343255830
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.707900304608611,
+      "timestamp": 1571343255846
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7053369263121616,
+      "timestamp": 1571343255871
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.71",
+      "to": 0.7039718755996613,
+      "timestamp": 1571343255880
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6994900348896593,
+      "timestamp": 1571343255898
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6964305059117363,
+      "timestamp": 1571343255917
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.70",
+      "to": 0.6911899670047391,
+      "timestamp": 1571343255930
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.69",
+      "to": 0.6884618232667854,
+      "timestamp": 1571343255946
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.69",
+      "to": 0.6830668796242929,
+      "timestamp": 1571343255963
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.68",
+      "to": 0.6810840991414199,
+      "timestamp": 1571343255979
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.68",
+      "to": 0.6763343569110501,
+      "timestamp": 1571343255996
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.68",
+      "to": 0.6741795708631925,
+      "timestamp": 1571343256015
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6704433536953173,
+      "timestamp": 1571343256030
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6690786854487981,
+      "timestamp": 1571343256045
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6678962235699974,
+      "timestamp": 1571343256064
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.666825418107186,
+      "timestamp": 1571343256079
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6661854825220388,
+      "timestamp": 1571343256097
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6666566236884356,
+      "timestamp": 1571343256113
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6680307027472072,
+      "timestamp": 1571343256130
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.669139370680466,
+      "timestamp": 1571343256146
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6714597883776778,
+      "timestamp": 1571343256165
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6724811880540809,
+      "timestamp": 1571343256181
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6742555412213902,
+      "timestamp": 1571343256197
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.67",
+      "to": 0.6754751898623519,
+      "timestamp": 1571343256214
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.68",
+      "to": 0.679822550556155,
+      "timestamp": 1571343256234
+    },
+    {
+      "op": "propchange",
+      "path": "lfo_1.rate",
+      "name": "value",
+      "from": "0.68",
+      "to": 0.6831825958965104,
+      "timestamp": 1571343256246
+    }
+  ]
+}
