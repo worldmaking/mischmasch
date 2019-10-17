@@ -14,11 +14,22 @@ const WebSocket = require('ws');
 const { vec2, vec3, vec4, quat, mat3, mat4 } = require("gl-matrix");
 const bottleneck = require('Bottleneck')
 
+const args = require("really-simple-args")();
+
 const got = require("./got/got")
 
 // 1st cli arg can be the scenefile 
 let scenefile = __dirname + "/scene_files/scene_edited.json"
 let OTHistoryFile = '../histories/OT_' + Date.now() + '.json'
+
+console.log(process.argv[2])
+
+if(args.hasParameter("r")) {
+	console.log('session will be recorded')
+	// const pValue = args.getParameter("p");
+
+	// do something with pValue, which was passed with -p
+}
 
 
 			//demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
@@ -309,6 +320,8 @@ function load_scene(filename) {
 	}));
 	
 	localGraph = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
+	// for now... just timestamp the local graph when it was instantiated (we evenutally need a more accurate way to work)
+	localGraph["date"] = Date.now()
 	// turn this into deltas:
 	let deltas = got.deltasFromGraph(localGraph, []);
 	//console.log(deltas)
@@ -442,7 +455,7 @@ function handlemessage(msg, sock, id) {
 			console.log(header)
 			
 			sessionJSON = []
-			sessionJSON.push(JSON.stringify(header))
+			sessionJSON.push(header)
 			let recording = msg.data.replace(/\s/g, "_")
 			// save session name as filename provided in this message
 			sessionRecording = __dirname + "/session_recordings/" + recording + ".json"
@@ -456,7 +469,7 @@ function handlemessage(msg, sock, id) {
 			recordStatus = 0
 
 			
-			fs.writeFileSync(sessionRecording, JSON.stringify(sessionJSON, null, "  "), "utf-8")
+			fs.writeFileSync(sessionRecording, JSON.stringify(sessionJSON, null, 2), "utf-8")
 			
 			console.log('session saved at', sessionRecording)
 
