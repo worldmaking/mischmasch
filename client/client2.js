@@ -58,6 +58,7 @@ function hexColorFromString(str) {
 let ctrlstatedivs = []
 ctrlstatedivs[0] = document.getElementById("ctrl1state");
 ctrlstatedivs[1] = document.getElementById("ctrl2state");
+let debugMode = false;
 
 // Editing
 let incomingDeltas = [];
@@ -619,6 +620,9 @@ function initVRController(id=0) {
     controller.userData.intersection = null;
     controller.userData.rotation = new THREE.Vector3();
     controller.userData.updateStateMachine = function() {
+    if(debugMode == true){
+            doDebugMode(this.ghostController);
+    }
 
 
         let intersection = this.intersection;
@@ -1603,7 +1607,8 @@ function animate() {
         // handle incoming deltas:
         while (incomingDeltas.length > 0) {
             let delta = incomingDeltas.shift();
-            //logonly(JSON.stringify(delta, null, ""))
+            //
+            (JSON.stringify(delta, null, ""))
             // TODO: derive which world to add to:
             enactDelta(ghostWorld, delta);
             //log("incoming deltas")
@@ -1717,10 +1722,7 @@ function animate() {
         instBoxGeometry.maxInstancedCount = currentBoxInstanceCount;
         instQuadGeometry.maxInstancedCount = currentQuadInstanceCount;
     }
-    {
-
-    }
-
+   
     // handle VR device state
     if (renderer.vr.isPresenting()){
         renderer.vr.enabled = true;
@@ -2159,6 +2161,9 @@ function onKeypress(e) {
                 instBoxMesh.material.transparent = true;
             }
         } break;
+        case "d": {
+            debugMode = (debugMode == false) ? true : false;
+        } break;
         default: {
             log("key press", e.which, e.key)
         }
@@ -2181,6 +2186,20 @@ function onDocumentMouseMove(e) {
 }
 function onDocumentMouseDown(e) {
 
+}
+
+function doDebugMode(controller){
+
+    controller.add(createLabel("Hello", 0, 0, 0))
+}
+
+function logVR(...args){
+    let msg = args.join(" ")
+    if(logMessageList.length > 40){
+        logMessageList.shift();
+    } else {
+        logMessageList.push(msg);
+    }
 }
 
 
