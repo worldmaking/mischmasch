@@ -557,7 +557,7 @@ server.listen(8080, function() {
 });
 
 //// TMP HACK
-load_scene("scene_rich.json")
+load_scene("delta_simple.json")
 
 
 function intervalFunc() {
