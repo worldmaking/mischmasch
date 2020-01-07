@@ -557,7 +557,11 @@ server.listen(8080, function() {
 });
 
 //// TMP HACK
+<<<<<<< HEAD
 load_scene("delta_simple.json")
+=======
+load_scene("scene_noise.json")
+>>>>>>> ba557be194e95650db52f64b7be0a11b1c38876d
 
 
 function intervalFunc() {
