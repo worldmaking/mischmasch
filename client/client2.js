@@ -49,6 +49,14 @@ function hexColorFromString(str) {
     return "#" + intToRGB(hashCode(str));
 }
 
+// generate a random name for new object:
+let gensym = (function() {
+    let nodeid = 0;
+    return function (prefix="node") {
+        return `${prefix}_${userPose.id}_${nodeid++}`
+    }
+})();
+
 
 ///////////////////////////////////////////
 // Globals
@@ -858,7 +866,7 @@ function initVRController(id=0) {
 
                 if (!this.isTriggerDown) {
 
-
+                    outgoingDeltas.push(spawnRandomModule([0,0,0], [0,0,0,1]));
                     /* //Math for radial menu
                     let nrows = 3;
                     let names_per_row = Math.ceil(menuNames.length / nrows);
