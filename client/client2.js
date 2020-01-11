@@ -660,6 +660,12 @@ function initVRController(id=0) {
                     this.state = "default";
                     // reparent target
                     reparentWithTransform(dragTarget, this.ghostController, parent);
+                    console.log(dragTarget);
+                    if(dragTarget.position.y < 0){
+                        outgoingDeltas.push({ op:"delnode", path: dragTarget.userData.path });
+                    }
+
+                    
                     // outgoingDeltas.push({ 
                     //     op:"propchange", 
                     //     path: object.userData.path, 
@@ -1600,6 +1606,24 @@ function enactDeltaObjectValue(world, delta) {
 
         } break;
     }
+}
+
+/*
+    { op:"delnode", path:"x", kind:"noise", pos:[], orient:[], ...properties }
+*/
+function enactDeltaDeleteNode(world, delta) {
+    let object = getObjectByPath(world, delta.path);
+   
+    let objParent = object.parent;
+    objParent.remove(object);
+
+    // Realistically we shouldn't need to be searching the scene because cables should be instanced
+    for(let c of scene.children){
+        if(c.name.includes(delta.path)){
+            destroy_cable(c);
+        }
+    }
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

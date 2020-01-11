@@ -22,49 +22,22 @@
 				}
 			}
 		},
-		"outs_1": {
-			"_props": {
-				"kind": "outs",
-				"pos": [
-					0.0605223497200336,
-					1,
-					0.0405112532755187
-				],
-				"orient": [
-					-0.3121451653567321,
-					0.369889483526838,
-					0.14650496286711281,
-					0.8627186456637955
-				]
+		"speaker_1":{
+            "_props":{
+				"kind":"speaker",
+				"category":"abstraction", 
+				"pos": [0.75,1,0], 
+				"orient": [0.0, -0.258819, 0.0, 0.965926] 
 			},
-			"left": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
+            "input":{
+				"_props":{
+					"kind":"inlet",
+					"index":0
+					}
 				}
-			},
-			"right": {
-				"_props": {
-					"kind": "inlet",
-					"index": 1
-				}
-			},
-			"volume": {
-				"_props": {
-					"kind": "small_knob",
-					"range": [
-						0,
-						1
-					],
-					"taper": "log 3.8",
-					"value": 1,
-					"unit": "float"
-				}
-			}
-		}
+          }
 	},
 	"arcs": [
-		["noise_0.out", "outs_1.left"],
-		["noise_0.out", "outs_1.right"]
+		["noise_0.out", "speaker_1.input"]
 	]
 }
