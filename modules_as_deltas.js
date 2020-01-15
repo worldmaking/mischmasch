@@ -576,7 +576,7 @@ let module_constructors = {
     },
 }
 
-let module_names = Object.keys(module_constructors)
+let module_names = Object.keys(module_constructors);
 
 function spawnRandomModule(pos, orient) {
   let opname = module_names[Math.floor(Math.random() * module_names.length)]

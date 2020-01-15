@@ -1,5 +1,3 @@
-
-let once = 1;
 let vrContextID;
 let audioContextID;
 let ws;
@@ -71,6 +69,7 @@ let debugMode = false;
 // Editing
 let incomingDeltas = [];
 let outgoingDeltas = [];
+let localDeltas = [];
 
 let editEvents = [];
 
@@ -89,7 +88,15 @@ ghostScene.add(ghostWorld);
 
 let ghostMenu = new THREE.Group();
 ghostScene.add(ghostMenu);
-ghostMenu.name = "ghostMenu"
+ghostMenu.name = "ghostMenu";
+//default starting state
+ghostMenu.visible = false;
+
+let currentWorld = ghostWorld;
+
+
+let cableWorld = new THREE.Group();
+cableWorld.name = "cableWorld";
 
 // Networking
 let sock;
@@ -298,11 +305,13 @@ async function init() {
     await initFont();
     await initInstanceBoxMesh();
 
-    scene.add(ghostScene)
+    scene.add(ghostScene);
+    scene.add(cableWorld);
     ghostScene.visible = false;
 
     await init_steamvr();
 
+    init_menu();
 
     document.addEventListener("keydown", onKeypress, false);
     document.addEventListener( 'mousemove', onDocumentMouseMove, false );
@@ -868,36 +877,23 @@ function initVRController(id=0) {
 
                 //userdata.kind for module copy
 
-
+                if (currentWorld == ghostWorld){
+                    ghostWorld.visible = false;
+                    cableWorld.visible = false;
+                    ghostMenu.visible = true;
+                    currentWorld = ghostMenu;
+                    let headPos = new THREE.Vector3();
+                    camera.getWorldPosition(headPos);
+                    ghostMenu.position.set(headPos.x, headPos.y + .5, headPos.z);
+                }
 
                 if (!this.isTriggerDown) {
-
-                    outgoingDeltas.push(spawnRandomModule([0,0,0], [0,0,0,1]));
-                    /* //Math for radial menu
-                    let nrows = 3;
-                    let names_per_row = Math.ceil(menuNames.length / nrows);
-                    let i = 0;
-                    for (let row = 0; row < nrows; row++) {
-                        for(let col = 0; col < names_per_row && i < menuNames.length; col++, i++){
-                            let name = menuNames[i];
-                            let theta = col * (2 * Math.PI) / names_per_row;
-                            let r = .5;
-                            let x = r * Math.sin(theta);
-                            let z = r * Math.cos(theta);
-                            //console.log(i, name);
-                            let y = -.2 * (row + 1);
-                    
-                            let e = new THREE.Euler(0, theta + Math.PI, 0);
-                            let q = new THREE.Quaternion();
-                            q.setFromEuler(e);
-                    
-                            let deltas = generateNewModule([x, y, z], [q._x, q._y, q._z, q._w], name);
-
-                            clientSideDeltas(deltas);
-                            touched = false;
-                        }
-                    } */
-
+                    if (currentWorld == ghostMenu){
+                        ghostWorld.visible = true;
+                        cableWorld.visible = true;
+                        ghostMenu.visible = false;
+                        currentWorld = ghostWorld;
+                    }
                     //if trigger not down destroy menu otherwise create menu
 
                     // release 
@@ -1051,6 +1047,50 @@ function initGhostController(id=0) {
     return ghostController;
 }
 
+
+function init_menu(){
+
+    let module_names = Object.keys(module_constructors);
+    tempNames = [].concat(module_names);
+    let menuNames = tempNames.concat(operator_names);
+
+    let nrows = 6;
+    let names_per_row = Math.ceil(menuNames.length / nrows);
+    let i = 0;
+    for (let row = 0; row < nrows; row++) {
+        for(let col = 0; col < names_per_row && i < menuNames.length; col++, i++){
+            let name = menuNames[i];
+            let theta = col * (2 * Math.PI) / names_per_row;
+            let r = 1.15;
+            let x = r * Math.sin(theta);
+            let z = r * Math.cos(theta);
+            let y = -.4 * (row + 1);
+    
+            let e = new THREE.Euler(0, theta + Math.PI, 0);
+            let q = new THREE.Quaternion();
+            q.setFromEuler(e);
+    
+            let deltas = spawnSingleModule([x, y, z], [q._x, q._y, q._z, q._w], name);
+            localDeltas.push(deltas);
+        }
+    }
+    let scalar = 0.5;
+    ghostMenu.scale.set(scalar, scalar, scalar);
+
+}
+
+function spawnSingleModule(pos, orient, name){
+    let ctor = module_constructors[name];
+    if (ctor == undefined) ctor = operator_constructors[name]
+
+    let path = gensym(name);
+	let deltas = ctor(path);
+	let op0 = deltas[0];
+    op0.pos = pos;
+    op0.orient = orient;
+
+    return deltas;
+}
 
 function serverConnect() {
     try {
@@ -1446,7 +1486,7 @@ function makeCable(src, dst) {
         new THREE.Vector3() 
     ];
     let curve = new THREE.CatmullRomCurve3(positions);
-    //curve.curveType = 'catmullrom'; //
+    //curve.curveType = 'catmullrom';
     //curve.curveType = 'centripetal'; 
     curve.curveType = 'chordal';
 
@@ -1482,8 +1522,8 @@ function makeCable(src, dst) {
     dstJackMesh.scale.set(CABLE_JACK_RADIUS, CABLE_JACK_RADIUS, CABLE_JACK_HEIGHT);
     // cableMesh.add(srcJackMesh);
     // cableMesh.add(dstJackMesh);
-    ghostScene.add(srcJackMesh);
-    ghostScene.add(dstJackMesh);
+    ghostWorld.add(srcJackMesh);
+    ghostWorld.add(dstJackMesh);
 
 
     cableMesh.userData.curve = curve;
@@ -1497,7 +1537,7 @@ function makeCable(src, dst) {
 
     cableUpdate(cableMesh);
 
-    scene.add(cableMesh); 
+    cableWorld.add(cableMesh); 
 
     return cableMesh;
 }
@@ -1505,8 +1545,8 @@ function makeCable(src, dst) {
 function destroy_cable(cable) {
     let cableParent = cable.parent;
     cableParent.remove(cable);
-    ghostScene.remove(cable.userData.srcJackMesh);
-    ghostScene.remove(cable.userData.dstJackMesh);
+    ghostWorld.remove(cable.userData.srcJackMesh);
+    ghostWorld.remove(cable.userData.dstJackMesh);
 }
 
 function enactDeltaConnect(world, delta) {
@@ -1618,7 +1658,7 @@ function enactDeltaDeleteNode(world, delta) {
     objParent.remove(object);
 
     // Realistically we shouldn't need to be searching the scene because cables should be instanced
-    for(let c of scene.children){
+    for(let c of cableWorld.children){
         if(c.name.includes(delta.path)){
             destroy_cable(c);
         }
@@ -1639,13 +1679,18 @@ function animate() {
         // handle incoming deltas:
         while (incomingDeltas.length > 0) {
             let delta = incomingDeltas.shift();
-            //
-            (JSON.stringify(delta, null, ""))
             // TODO: derive which world to add to:
             enactDelta(ghostWorld, delta);
             //log("incoming deltas")
-            once = true;
         }
+
+         // handle incoming deltas:
+         while (localDeltas.length > 0) {
+            let delta = localDeltas.shift();
+            // TODO: derive which world to add to:
+            enactDelta(ghostMenu, delta);
+        }
+
 
         // re-layout:
         updateDirty(ghostScene, false);
@@ -1871,6 +1916,10 @@ function copyGhostToInstances(parent) {
     let scale = new THREE.Vector3();
     let quat = new THREE.Quaternion();
     for (let o of parent.children) {
+
+        if(o.visible == false){
+            continue;
+        }
 
         // copy anything that is supposed to be instanced:
         if (o.userData.isCable) {
