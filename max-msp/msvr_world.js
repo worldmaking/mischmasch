@@ -124,10 +124,20 @@ var handleDelta = function(delta) {
 
 								// add a vr.Source~ abstraction to parent, script the new out to this abstraction, use delta.pos to provide the vr.source~ position
 								var vrSource = this.patcher.newdefault([940 + (speakerNumber * 100), 1650, "vr.source~", speakerNumber - 1, "@position", delta.pos[0], delta.pos[1], delta.pos[2] ])
-								vrSource.varname = "context_" + speakerNumber
-								speakerTable.push("context_" + speakerNumber)
-								post('\n\n', vrSource.varname)
-								this.patcher.message("script", "connect", 'world',  "speaker_" + speakerNumber - 1,  "context_" + speakerNumber, 0);
+								vrSource.varname = "source_" + speakerNumber
+								speakerTable.push("source_" + speakerNumber)
+
+								// gen~ and max outlets are base 0 (mth), our speaker numbers are base 1 (nth)
+								// TODO decide on base 0 or 1 (I advocate for 0, because this also works with array indices) 
+								worldOutlet = speakerNumber - 1
+								post("script", "connect", 'world',  "speaker_" + worldOutlet,  "source_" + speakerNumber, 0)								
+								post('\n\nvarname', vrSource.varname, '\n')
+								this.patcher.message("script", "connect", 'world', worldOutlet,  "source_" + speakerNumber, 0);
+
+								// vrSource2CHMain is a 2channel gain slider located just below the gen~ world. All vr.Source~ objects script connect into lef and right. 
+								this.patcher.message("script", "connect", "source_" + speakerNumber, 0, 'vrSource2CHMain', 0);
+
+								this.patcher.message("script", "connect", "source_" + speakerNumber, 1, 'vrSource2CHMain', 1);
 
 								speakerNumber++
 							} else {
@@ -160,9 +170,9 @@ var handleDelta = function(delta) {
 						// var newSpeaker = gen_patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, 'out', speakerNumber])
 						// newSpeaker.varname = 'speaker_' + speakerNumber
 						// // add a vr.Source~ abstraction to parent, script the new out to this abstraction. 
-						// var vrSource = this.patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, "vr.source~", speakerNumber - 1, "@varname", "context_" + speakerNumber])
+						// var vrSource = this.patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, "vr.source~", speakerNumber - 1, "@varname", "source_" + speakerNumber])
 						
-						// this.patcher.message("script", "connect", 'world',  "speaker_" + speakerNumber - 1,  "context_" + speakerNumber, 0);
+						// this.patcher.message("script", "connect", 'world',  "speaker_" + speakerNumber - 1,  "source_" + speakerNumber, 0);
 
 
 						// // need to get its position in vr and apply that to a vr.source~ position
@@ -582,9 +592,9 @@ function client(msg){
 						var newSpeaker = gen_patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, 'out', speakerNumber])
 						newSpeaker.varname = 'speaker_' + speakerNumber
 						// add a vr.Source~ abstraction to parent, script the new out to this abstraction. 
-						var vrSource = this.patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, "vr.source~", speakerNumber - 1, "@varname", "context_" + speakerNumber])
+						var vrSource = this.patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, "vr.source~", speakerNumber - 1, "@varname", "source_" + speakerNumber])
 						
-						this.patcher.message("script", "connect", 'world',  "speaker_" + speakerNumber - 1,  "context_" + speakerNumber, 0);
+						this.patcher.message("script", "connect", 'world',  "speaker_" + speakerNumber - 1,  "source_" + speakerNumber, 0);
 
 
 						// need to get its position in vr and apply that to a vr.source~ position
