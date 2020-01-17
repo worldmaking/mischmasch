@@ -848,7 +848,7 @@ function initVRController(id=0) {
                     controller.getWorldPosition(jack.position);
                     controller.getWorldQuaternion(jack.quaternion);
                 }
-                cableUpdate(cable);
+                cableUpdateGeometry(cable);
 
                 if (this.isTriggerPress) {
                     //console.log(isTriggerPressed);
@@ -1040,6 +1040,19 @@ function initVRController(id=0) {
                             // needs to be a dragging state but also checking for interesections of inlets and outlets
                             let jack = object;
                             let cable = jack.userData.cable;
+
+                            // if the cable was fully connected:
+                            if (cable.userData.src && cable.userData.dst) {
+                                // tell server this cable has been disconnected
+                                // send delta:
+                                let delta = { op:"disconnect", paths: [
+                                    cable.userData.src.userData.path,
+                                    cable.userData.dst.userData.path
+                                ]};
+                                console.log("DISCONNECT", delta);
+                                outgoingDeltas.push(delta);
+                            }
+
                             let origin = cable.userData.dst;
                             cable.userData.src = null;
                             this.cablingState = {
@@ -1049,11 +1062,29 @@ function initVRController(id=0) {
                                 needs: "src",
                             };
                             this.state = "cabling";
+
+                            
+                            
+                            // switch to a new local-only cable
     
                         } else if (kind == "jack_inlet"){
                             // needs to be a dragging state but also checking for interesections of inlets and outlets
                             let jack = object;
                             let cable = jack.userData.cable;
+
+                            
+                            // if the cable was fully connected:
+                            if (cable.userData.src && cable.userData.dst) {
+                                // tell server this cable has been disconnected
+                                // send delta:
+                                let delta = { op:"disconnect", paths: [
+                                    cable.userData.src.userData.path,
+                                    cable.userData.dst.userData.path
+                                ]};
+                                console.log("DISCONNECT", delta);
+                                outgoingDeltas.push(delta);
+                            }
+
                             let origin = cable.userData.src;
                             cable.userData.dst = null;
                             this.cablingState = {
@@ -1063,6 +1094,9 @@ function initVRController(id=0) {
                                 needs: "dst",
                             };
                             this.state = "cabling";
+
+
+                            // switch to a new local-only cable
                         } 
                     }
                 } else if (this.isThumbPadPress) {
@@ -1436,7 +1470,7 @@ function enactDeltaNewNode(world, delta) {
     but srcJackMesh, dstJackMesh DO exist
     (while patching)
 */
-function cableUpdate(cableMesh) {
+function cableUpdateGeometry(cableMesh) {
     let ud = cableMesh.userData;
     let src = ud.src;
     let dst = ud.dst;
@@ -1587,7 +1621,7 @@ function makeCable(src, dst) {
     cableMesh.userData.isCable = true;
     cableMesh.name = name;
 
-    cableUpdate(cableMesh);
+    cableUpdateGeometry(cableMesh);
 
     cableWorld.add(cableMesh); 
 
@@ -2194,7 +2228,7 @@ function updateDirty(parent, isDirty) {
             //log("isDirty", o.name, o.userData.kind)
         }
 
-        if (o.userData.isCable) cableUpdate(o);
+        if (o.userData.isCable) cableUpdateGeometry(o);
 
         // recurse to children
         updateDirty(o, isDirty);
