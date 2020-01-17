@@ -910,7 +910,7 @@ let module_constructors = {
 				],
 				"taper": "linear",
 				"value": 0.5,
-				"unit": "float"
+				"unit": "flosat"
 			},
 			{
 				"op": "newnode",
@@ -1168,8 +1168,8 @@ let module_constructors = {
 				"path": "${path}.rate",
 				"kind": "large_knob",
 				"range": [
-					20,
-					6000
+					200,
+					3000
 				],
 				"taper": "linear",
 				"value": 440,
@@ -1388,12 +1388,12 @@ let module_constructors = {
 		]`);
     },
 
-	"outs": function(path) { 
+	"speaker": function(path) { 
     return JSON.parse(`[
 			{
 				"op": "newnode",
 				"path": "${path}",
-				"kind": "outs",
+				"kind": "speaker",
 				"category": "abstraction",
 				"pos": [
 					0,
@@ -1409,27 +1409,9 @@ let module_constructors = {
 			},
 			{
 				"op": "newnode",
-				"path": "${path}.left",
+				"path": "${path}.input",
 				"kind": "inlet",
 				"index": 0
-			},
-			{
-				"op": "newnode",
-				"path": "${path}.right",
-				"kind": "inlet",
-				"index": 1
-			},
-			{
-				"op": "newnode",
-				"path": "${path}.volume",
-				"kind": "small_knob",
-				"range": [
-					0,
-					1
-				],
-				"taper": "log 3.8",
-				"value": 0.25,
-				"unit": "float"
 			}
 		]`);
     },
