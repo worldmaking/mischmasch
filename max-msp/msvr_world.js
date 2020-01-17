@@ -429,6 +429,10 @@ var handleDelta = function(delta) {
 // this is only for working within max
 function clear(){
 	bufferChannelCounter = 0;
+	for (i = 0; i < speakerTable.length; i++){
+		outlet(8, 'delete', speakerTable[i])
+
+	}
 	bufferChannelPaths = []	
 	counter = 1;
 	speakerNumber = 1
