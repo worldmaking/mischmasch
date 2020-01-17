@@ -39,11 +39,58 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-88",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 518.0, 1394.0, 149.0, 22.0 ],
+					"text" : "vco_0_120__rate 0."
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-69",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 541.0, 1266.0, 50.0, 22.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-154",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 558.03570556640625, 1027.678466796875, 89.0, 22.0 ],
+					"text" : "loadmess clear"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-153",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 594.642822265625, 1159.8214111328125, 35.0, 22.0 ],
+					"text" : "clear"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-125",
 					"maxclass" : "dict.view",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 852.0, 248.0, 390.0, 740.0 ],
+					"patching_rect" : [ 779.0, 358.71429443359375, 390.0, 740.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 824.0, -16.0, 303.0, 640.0 ]
 				}
@@ -58,19 +105,6 @@
 					"outlettype" : [ "dictionary" ],
 					"patching_rect" : [ 779.0, 326.0, 88.0, 22.0 ],
 					"text" : "dict.deserialize"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-105",
-					"linecount" : 24,
-					"maxclass" : "message",
-					"numinlets" : 2,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 66.75, 878.0, 50.0, 330.0 ],
-					"text" : "client {\\\"cmd\\\":\\\"deltas\\\"\\,\\\"date\\\":1579293473464\\,\\\"data\\\":[{\\\"op\\\":\\\"propchange\\\"\\,\\\"path\\\":\\\"vco_0_121.rate\\\"\\,\\\"name\\\":\\\"value\\\"\\,\\\"from\\\":\\\"0.52\\\"\\,\\\"to\\\":0.4931968182564966}]}"
 				}
 
 			}
@@ -390,8 +424,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 628.0, 1481.0, 101.0, 62.0 ],
-					"text" : "id 0 quat 0.02642 0.661367 -0.024919 0.749183"
+					"patching_rect" : [ 628.0, 1481.0, 106.0, 62.0 ],
+					"text" : "id 0 quat 0.000292 0.92513 -0.379369 0.014641"
 				}
 
 			}
@@ -525,15 +559,53 @@
 						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
-									"id" : "obj-2",
-									"linecount" : 3,
+									"id" : "obj-83",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 140.0, 100.0, 49.0 ],
-									"text" : "buffer~ noise_0__out_buffer 10 1",
-									"varname" : "noise_0__out_buffer_varname"
+									"patching_rect" : [ 50.0, 180.0, 216.0, 22.0 ],
+									"text" : "buffer~ poltocar_0_121__x_buffer 10 1",
+									"varname" : "poltocar_0_121__x_buffer_varname"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-84",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 180.0, 216.0, 22.0 ],
+									"text" : "buffer~ poltocar_0_121__y_buffer 10 1",
+									"varname" : "poltocar_0_121__y_buffer_varname"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-85",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 260.0, 216.0, 22.0 ],
+									"text" : "buffer~ poltocar_0_122__x_buffer 10 1",
+									"varname" : "poltocar_0_122__x_buffer_varname"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-86",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 260.0, 216.0, 22.0 ],
+									"text" : "buffer~ poltocar_0_122__y_buffer 10 1",
+									"varname" : "poltocar_0_122__y_buffer_varname"
 								}
 
 							}
@@ -546,6 +618,19 @@
 									"outlettype" : [ "float", "bang" ],
 									"patching_rect" : [ 50.0, 100.0, 186.0, 22.0 ],
 									"text" : "buffer~ noise_0__out_buffer 10 1",
+									"varname" : "noise_0__out_buffer_varname"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-2",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 160.0, 186.0, 22.0 ],
+									"text" : "buffer~ noise_0__out_buffer 10 1",
 									"varname" : "noise_0__out_buffer_varname[1]"
 								}
 
@@ -557,9 +642,9 @@
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 100.0, 186.0, 22.0 ],
-									"text" : "buffer~ noise_0__out_buffer 10 1",
-									"varname" : "noise_0__out_buffer_varname[2]"
+									"patching_rect" : [ 50.0, 240.0, 202.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__sine_buffer 10 1",
+									"varname" : "lfo_0_120__sine_buffer_varname"
 								}
 
 							}
@@ -570,9 +655,9 @@
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 180.0, 186.0, 22.0 ],
-									"text" : "buffer~ noise_0__out_buffer 10 1",
-									"varname" : "noise_0__out_buffer_varname[3]"
+									"patching_rect" : [ 50.0, 240.0, 216.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__phasor_buffer 10 1",
+									"varname" : "lfo_0_120__phasor_buffer_varname"
 								}
 
 							}
@@ -583,9 +668,9 @@
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 240.0, 186.0, 22.0 ],
-									"text" : "buffer~ noise_0__out_buffer 10 1",
-									"varname" : "noise_0__out_buffer_varname[4]"
+									"patching_rect" : [ 50.0, 240.0, 208.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__pulse_buffer 10 1",
+									"varname" : "lfo_0_120__pulse_buffer_varname"
 								}
 
 							}
@@ -596,7 +681,527 @@
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 300.0, 186.0, 22.0 ],
+									"patching_rect" : [ 50.0, 240.0, 238.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__sine_index_buffer 10 1",
+									"varname" : "lfo_0_120__sine_index_buffer_varname"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-7",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 240.0, 202.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__saw_buffer 10 1",
+									"varname" : "lfo_0_120__saw_buffer_varname"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-8",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 280.0, 240.0, 22.0 ],
+									"text" : "buffer~ pulsars_0_121__hipass_buffer 10 1",
+									"varname" : "pulsars_0_121__hipass_buffer_varname"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-9",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 60.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__sine_buffer 10 1",
+									"varname" : "vco_0_122__sine_buffer_varname"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-10",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 60.0, 222.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__phasor_buffer 10 1",
+									"varname" : "vco_0_122__phasor_buffer_varname"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-11",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 60.0, 226.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__triangle_buffer 10 1",
+									"varname" : "vco_0_122__triangle_buffer_varname"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-12",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 60.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__saw_buffer 10 1",
+									"varname" : "vco_0_122__saw_buffer_varname"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-13",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 180.0, 186.0, 22.0 ],
+									"text" : "buffer~ noise_0__out_buffer 10 1",
+									"varname" : "noise_0__out_buffer_varname[2]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-14",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 220.0, 202.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__sine_buffer 10 1",
+									"varname" : "lfo_0_120__sine_buffer_varname[1]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-15",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 220.0, 216.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__phasor_buffer 10 1",
+									"varname" : "lfo_0_120__phasor_buffer_varname[1]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-16",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 220.0, 208.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__pulse_buffer 10 1",
+									"varname" : "lfo_0_120__pulse_buffer_varname[1]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-17",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 220.0, 238.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__sine_index_buffer 10 1",
+									"varname" : "lfo_0_120__sine_index_buffer_varname[1]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-18",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 220.0, 202.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__saw_buffer 10 1",
+									"varname" : "lfo_0_120__saw_buffer_varname[1]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-19",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 240.0, 240.0, 22.0 ],
+									"text" : "buffer~ pulsars_0_121__hipass_buffer 10 1",
+									"varname" : "pulsars_0_121__hipass_buffer_varname[1]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-20",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 260.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__sine_buffer 10 1",
+									"varname" : "vco_0_122__sine_buffer_varname[1]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-21",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 260.0, 222.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__phasor_buffer 10 1",
+									"varname" : "vco_0_122__phasor_buffer_varname[1]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-22",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 260.0, 226.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__triangle_buffer 10 1",
+									"varname" : "vco_0_122__triangle_buffer_varname[1]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-23",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 260.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__saw_buffer 10 1",
+									"varname" : "vco_0_122__saw_buffer_varname[1]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-24",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 100.0, 186.0, 22.0 ],
+									"text" : "buffer~ noise_0__out_buffer 10 1",
+									"varname" : "noise_0__out_buffer_varname[3]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-25",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 140.0, 202.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__sine_buffer 10 1",
+									"varname" : "lfo_0_120__sine_buffer_varname[2]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-26",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 140.0, 216.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__phasor_buffer 10 1",
+									"varname" : "lfo_0_120__phasor_buffer_varname[2]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-27",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 140.0, 208.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__pulse_buffer 10 1",
+									"varname" : "lfo_0_120__pulse_buffer_varname[2]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-28",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 140.0, 238.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__sine_index_buffer 10 1",
+									"varname" : "lfo_0_120__sine_index_buffer_varname[2]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-29",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 140.0, 202.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__saw_buffer 10 1",
+									"varname" : "lfo_0_120__saw_buffer_varname[2]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-30",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 160.0, 240.0, 22.0 ],
+									"text" : "buffer~ pulsars_0_121__hipass_buffer 10 1",
+									"varname" : "pulsars_0_121__hipass_buffer_varname[2]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-31",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 180.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__sine_buffer 10 1",
+									"varname" : "vco_0_122__sine_buffer_varname[2]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-32",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 180.0, 222.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__phasor_buffer 10 1",
+									"varname" : "vco_0_122__phasor_buffer_varname[2]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-33",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 180.0, 226.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__triangle_buffer 10 1",
+									"varname" : "vco_0_122__triangle_buffer_varname[2]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-34",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 180.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__saw_buffer 10 1",
+									"varname" : "vco_0_122__saw_buffer_varname[2]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-35",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 140.0, 186.0, 22.0 ],
+									"text" : "buffer~ noise_0__out_buffer 10 1",
+									"varname" : "noise_0__out_buffer_varname[4]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-36",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 180.0, 202.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__sine_buffer 10 1",
+									"varname" : "lfo_0_120__sine_buffer_varname[3]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-37",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 180.0, 216.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__phasor_buffer 10 1",
+									"varname" : "lfo_0_120__phasor_buffer_varname[3]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-38",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 180.0, 208.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__pulse_buffer 10 1",
+									"varname" : "lfo_0_120__pulse_buffer_varname[3]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-39",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 180.0, 238.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__sine_index_buffer 10 1",
+									"varname" : "lfo_0_120__sine_index_buffer_varname[3]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-40",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 180.0, 202.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__saw_buffer 10 1",
+									"varname" : "lfo_0_120__saw_buffer_varname[3]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-41",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 200.0, 240.0, 22.0 ],
+									"text" : "buffer~ pulsars_0_121__hipass_buffer 10 1",
+									"varname" : "pulsars_0_121__hipass_buffer_varname[3]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-42",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 220.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__sine_buffer 10 1",
+									"varname" : "vco_0_122__sine_buffer_varname[3]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-43",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 220.0, 222.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__phasor_buffer 10 1",
+									"varname" : "vco_0_122__phasor_buffer_varname[3]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-44",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 220.0, 226.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__triangle_buffer 10 1",
+									"varname" : "vco_0_122__triangle_buffer_varname[3]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-45",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 220.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__saw_buffer 10 1",
+									"varname" : "vco_0_122__saw_buffer_varname[3]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-46",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 320.0, 186.0, 22.0 ],
 									"text" : "buffer~ noise_0__out_buffer 10 1",
 									"varname" : "noise_0__out_buffer_varname[5]"
 								}
@@ -604,7 +1209,137 @@
 							}
 , 							{
 								"box" : 								{
-									"id" : "obj-7",
+									"id" : "obj-47",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 360.0, 202.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__sine_buffer 10 1",
+									"varname" : "lfo_0_120__sine_buffer_varname[4]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-48",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 360.0, 216.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__phasor_buffer 10 1",
+									"varname" : "lfo_0_120__phasor_buffer_varname[4]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-49",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 360.0, 208.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__pulse_buffer 10 1",
+									"varname" : "lfo_0_120__pulse_buffer_varname[4]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-50",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 360.0, 238.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__sine_index_buffer 10 1",
+									"varname" : "lfo_0_120__sine_index_buffer_varname[4]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-51",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 360.0, 202.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__saw_buffer 10 1",
+									"varname" : "lfo_0_120__saw_buffer_varname[4]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-52",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 380.0, 240.0, 22.0 ],
+									"text" : "buffer~ pulsars_0_121__hipass_buffer 10 1",
+									"varname" : "pulsars_0_121__hipass_buffer_varname[4]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-53",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 400.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__sine_buffer 10 1",
+									"varname" : "vco_0_122__sine_buffer_varname[4]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-54",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 400.0, 222.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__phasor_buffer 10 1",
+									"varname" : "vco_0_122__phasor_buffer_varname[4]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-55",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 400.0, 226.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__triangle_buffer 10 1",
+									"varname" : "vco_0_122__triangle_buffer_varname[4]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-56",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 400.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__saw_buffer 10 1",
+									"varname" : "vco_0_122__saw_buffer_varname[4]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-57",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
@@ -617,12 +1352,181 @@
 							}
 , 							{
 								"box" : 								{
-									"id" : "obj-8",
+									"id" : "obj-58",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 200.0, 186.0, 22.0 ],
+									"patching_rect" : [ 50.0, 140.0, 202.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__sine_buffer 10 1",
+									"varname" : "lfo_0_120__sine_buffer_varname[5]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-59",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 140.0, 216.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__phasor_buffer 10 1",
+									"varname" : "lfo_0_120__phasor_buffer_varname[5]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-60",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 140.0, 208.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__pulse_buffer 10 1",
+									"varname" : "lfo_0_120__pulse_buffer_varname[5]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-61",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 140.0, 238.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__sine_index_buffer 10 1",
+									"varname" : "lfo_0_120__sine_index_buffer_varname[5]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-62",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 140.0, 202.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__saw_buffer 10 1",
+									"varname" : "lfo_0_120__saw_buffer_varname[5]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-63",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 160.0, 240.0, 22.0 ],
+									"text" : "buffer~ pulsars_0_121__hipass_buffer 10 1",
+									"varname" : "pulsars_0_121__hipass_buffer_varname[5]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-64",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 180.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__sine_buffer 10 1",
+									"varname" : "vco_0_122__sine_buffer_varname[5]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-65",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 180.0, 222.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__phasor_buffer 10 1",
+									"varname" : "vco_0_122__phasor_buffer_varname[5]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-66",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 180.0, 226.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__triangle_buffer 10 1",
+									"varname" : "vco_0_122__triangle_buffer_varname[5]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-67",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 180.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__saw_buffer 10 1",
+									"varname" : "vco_0_122__saw_buffer_varname[5]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-68",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 200.0, 226.0, 22.0 ],
+									"text" : "buffer~ div_0_123__quotient_buffer 10 1",
+									"varname" : "div_0_123__quotient_buffer_varname"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-69",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 220.0, 224.0, 22.0 ],
+									"text" : "buffer~ switch_0_124__out1_buffer 10 1",
+									"varname" : "switch_0_124__out1_buffer_varname"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-70",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 240.0, 230.0, 22.0 ],
+									"text" : "buffer~ radians_0_125__out1_buffer 10 1",
+									"varname" : "radians_0_125__out1_buffer_varname"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-71",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 380.0, 186.0, 22.0 ],
 									"text" : "buffer~ noise_0__out_buffer 10 1",
 									"varname" : "noise_0__out_buffer_varname[7]"
 								}
@@ -630,12 +1534,181 @@
 							}
 , 							{
 								"box" : 								{
-									"id" : "obj-9",
+									"id" : "obj-72",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 260.0, 186.0, 22.0 ],
+									"patching_rect" : [ 50.0, 420.0, 202.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__sine_buffer 10 1",
+									"varname" : "lfo_0_120__sine_buffer_varname[6]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-73",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 420.0, 216.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__phasor_buffer 10 1",
+									"varname" : "lfo_0_120__phasor_buffer_varname[6]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-74",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 420.0, 208.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__pulse_buffer 10 1",
+									"varname" : "lfo_0_120__pulse_buffer_varname[6]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-75",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 420.0, 238.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__sine_index_buffer 10 1",
+									"varname" : "lfo_0_120__sine_index_buffer_varname[6]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-76",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 420.0, 202.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__saw_buffer 10 1",
+									"varname" : "lfo_0_120__saw_buffer_varname[6]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-77",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 440.0, 240.0, 22.0 ],
+									"text" : "buffer~ pulsars_0_121__hipass_buffer 10 1",
+									"varname" : "pulsars_0_121__hipass_buffer_varname[6]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-78",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 60.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__sine_buffer 10 1",
+									"varname" : "vco_0_122__sine_buffer_varname[6]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-79",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 60.0, 222.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__phasor_buffer 10 1",
+									"varname" : "vco_0_122__phasor_buffer_varname[6]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-80",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 60.0, 226.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__triangle_buffer 10 1",
+									"varname" : "vco_0_122__triangle_buffer_varname[6]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-81",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 60.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__saw_buffer 10 1",
+									"varname" : "vco_0_122__saw_buffer_varname[6]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-82",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 80.0, 226.0, 22.0 ],
+									"text" : "buffer~ div_0_123__quotient_buffer 10 1",
+									"varname" : "div_0_123__quotient_buffer_varname[1]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-87",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 100.0, 224.0, 22.0 ],
+									"text" : "buffer~ switch_0_124__out1_buffer 10 1",
+									"varname" : "switch_0_124__out1_buffer_varname[1]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-88",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 120.0, 230.0, 22.0 ],
+									"text" : "buffer~ radians_0_125__out1_buffer 10 1",
+									"varname" : "radians_0_125__out1_buffer_varname[1]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-89",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 160.0, 186.0, 22.0 ],
 									"text" : "buffer~ noise_0__out_buffer 10 1",
 									"varname" : "noise_0__out_buffer_varname[8]"
 								}
@@ -643,12 +1716,181 @@
 							}
 , 							{
 								"box" : 								{
-									"id" : "obj-10",
+									"id" : "obj-90",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 320.0, 186.0, 22.0 ],
+									"patching_rect" : [ 50.0, 200.0, 202.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__sine_buffer 10 1",
+									"varname" : "lfo_0_120__sine_buffer_varname[7]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-91",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 200.0, 216.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__phasor_buffer 10 1",
+									"varname" : "lfo_0_120__phasor_buffer_varname[7]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-92",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 200.0, 208.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__pulse_buffer 10 1",
+									"varname" : "lfo_0_120__pulse_buffer_varname[7]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-93",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 200.0, 238.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__sine_index_buffer 10 1",
+									"varname" : "lfo_0_120__sine_index_buffer_varname[7]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-94",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 200.0, 202.0, 22.0 ],
+									"text" : "buffer~ lfo_0_120__saw_buffer 10 1",
+									"varname" : "lfo_0_120__saw_buffer_varname[7]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-95",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 220.0, 240.0, 22.0 ],
+									"text" : "buffer~ pulsars_0_121__hipass_buffer 10 1",
+									"varname" : "pulsars_0_121__hipass_buffer_varname[7]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-96",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 240.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__sine_buffer 10 1",
+									"varname" : "vco_0_122__sine_buffer_varname[7]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-97",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 240.0, 222.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__phasor_buffer 10 1",
+									"varname" : "vco_0_122__phasor_buffer_varname[7]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-98",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 240.0, 226.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__triangle_buffer 10 1",
+									"varname" : "vco_0_122__triangle_buffer_varname[7]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-99",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 240.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_122__saw_buffer 10 1",
+									"varname" : "vco_0_122__saw_buffer_varname[7]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-100",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 260.0, 226.0, 22.0 ],
+									"text" : "buffer~ div_0_123__quotient_buffer 10 1",
+									"varname" : "div_0_123__quotient_buffer_varname[2]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-101",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 280.0, 224.0, 22.0 ],
+									"text" : "buffer~ switch_0_124__out1_buffer 10 1",
+									"varname" : "switch_0_124__out1_buffer_varname[2]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-102",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 300.0, 230.0, 22.0 ],
+									"text" : "buffer~ radians_0_125__out1_buffer 10 1",
+									"varname" : "radians_0_125__out1_buffer_varname[2]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-103",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 340.0, 186.0, 22.0 ],
 									"text" : "buffer~ noise_0__out_buffer 10 1",
 									"varname" : "noise_0__out_buffer_varname[9]"
 								}
@@ -656,12 +1898,12 @@
 							}
 , 							{
 								"box" : 								{
-									"id" : "obj-11",
+									"id" : "obj-104",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 380.0, 186.0, 22.0 ],
+									"patching_rect" : [ 50.0, 400.0, 186.0, 22.0 ],
 									"text" : "buffer~ noise_0__out_buffer 10 1",
 									"varname" : "noise_0__out_buffer_varname[10]"
 								}
@@ -669,7 +1911,7 @@
 							}
 , 							{
 								"box" : 								{
-									"id" : "obj-12",
+									"id" : "obj-105",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
@@ -682,103 +1924,12 @@
 							}
 , 							{
 								"box" : 								{
-									"id" : "obj-13",
+									"id" : "obj-106",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 180.0, 226.0, 22.0 ],
-									"text" : "buffer~ freevoib_0_120__out_buffer 10 1",
-									"varname" : "freevoib_0_120__out_buffer_varname"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-14",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 300.0, 202.0, 22.0 ],
-									"text" : "buffer~ lfo_0_121__sine_buffer 10 1",
-									"varname" : "lfo_0_121__sine_buffer_varname"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-15",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 300.0, 216.0, 22.0 ],
-									"text" : "buffer~ lfo_0_121__phasor_buffer 10 1",
-									"varname" : "lfo_0_121__phasor_buffer_varname"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-16",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 300.0, 208.0, 22.0 ],
-									"text" : "buffer~ lfo_0_121__pulse_buffer 10 1",
-									"varname" : "lfo_0_121__pulse_buffer_varname"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-17",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 300.0, 238.0, 22.0 ],
-									"text" : "buffer~ lfo_0_121__sine_index_buffer 10 1",
-									"varname" : "lfo_0_121__sine_index_buffer_varname"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-18",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 300.0, 202.0, 22.0 ],
-									"text" : "buffer~ lfo_0_121__saw_buffer 10 1",
-									"varname" : "lfo_0_121__saw_buffer_varname"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-19",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 340.0, 220.0, 22.0 ],
-									"text" : "buffer~ vca_0_122__output_buffer 10 1",
-									"varname" : "vca_0_122__output_buffer_varname"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-20",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 440.0, 186.0, 22.0 ],
+									"patching_rect" : [ 50.0, 160.0, 186.0, 22.0 ],
 									"text" : "buffer~ noise_0__out_buffer 10 1",
 									"varname" : "noise_0__out_buffer_varname[12]"
 								}
@@ -786,38 +1937,12 @@
 							}
 , 							{
 								"box" : 								{
-									"id" : "obj-21",
+									"id" : "obj-107",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 100.0, 224.0, 22.0 ],
-									"text" : "buffer~ granola_0_120__left_buffer 10 1",
-									"varname" : "granola_0_120__left_buffer_varname"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-22",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 100.0, 230.0, 22.0 ],
-									"text" : "buffer~ granola_0_120__right_buffer 10 1",
-									"varname" : "granola_0_120__right_buffer_varname"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-23",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 120.0, 186.0, 22.0 ],
+									"patching_rect" : [ 50.0, 220.0, 186.0, 22.0 ],
 									"text" : "buffer~ noise_0__out_buffer 10 1",
 									"varname" : "noise_0__out_buffer_varname[13]"
 								}
@@ -825,103 +1950,12 @@
 							}
 , 							{
 								"box" : 								{
-									"id" : "obj-24",
+									"id" : "obj-108",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 160.0, 224.0, 22.0 ],
-									"text" : "buffer~ granola_0_120__left_buffer 10 1",
-									"varname" : "granola_0_120__left_buffer_varname[1]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-25",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 160.0, 230.0, 22.0 ],
-									"text" : "buffer~ granola_0_120__right_buffer 10 1",
-									"varname" : "granola_0_120__right_buffer_varname[1]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-26",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 300.0, 208.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__sine_buffer 10 1",
-									"varname" : "vco_0_121__sine_buffer_varname"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-27",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 300.0, 222.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__phasor_buffer 10 1",
-									"varname" : "vco_0_121__phasor_buffer_varname"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-28",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 300.0, 226.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__triangle_buffer 10 1",
-									"varname" : "vco_0_121__triangle_buffer_varname"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-29",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 300.0, 208.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__saw_buffer 10 1",
-									"varname" : "vco_0_121__saw_buffer_varname"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-30",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 340.0, 196.0, 22.0 ],
-									"text" : "buffer~ lt_0_122__out1_buffer 10 1",
-									"varname" : "lt_0_122__out1_buffer_varname"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-31",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 220.0, 186.0, 22.0 ],
+									"patching_rect" : [ 50.0, 280.0, 186.0, 22.0 ],
 									"text" : "buffer~ noise_0__out_buffer 10 1",
 									"varname" : "noise_0__out_buffer_varname[14]"
 								}
@@ -929,103 +1963,12 @@
 							}
 , 							{
 								"box" : 								{
-									"id" : "obj-32",
+									"id" : "obj-109",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 260.0, 224.0, 22.0 ],
-									"text" : "buffer~ granola_0_120__left_buffer 10 1",
-									"varname" : "granola_0_120__left_buffer_varname[2]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-33",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 260.0, 230.0, 22.0 ],
-									"text" : "buffer~ granola_0_120__right_buffer 10 1",
-									"varname" : "granola_0_120__right_buffer_varname[2]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-34",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 280.0, 208.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__sine_buffer 10 1",
-									"varname" : "vco_0_121__sine_buffer_varname[1]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-35",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 280.0, 222.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__phasor_buffer 10 1",
-									"varname" : "vco_0_121__phasor_buffer_varname[1]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-36",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 280.0, 226.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__triangle_buffer 10 1",
-									"varname" : "vco_0_121__triangle_buffer_varname[1]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-37",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 280.0, 208.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__saw_buffer 10 1",
-									"varname" : "vco_0_121__saw_buffer_varname[1]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-38",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 300.0, 196.0, 22.0 ],
-									"text" : "buffer~ lt_0_122__out1_buffer 10 1",
-									"varname" : "lt_0_122__out1_buffer_varname[1]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-39",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 80.0, 186.0, 22.0 ],
+									"patching_rect" : [ 50.0, 340.0, 186.0, 22.0 ],
 									"text" : "buffer~ noise_0__out_buffer 10 1",
 									"varname" : "noise_0__out_buffer_varname[15]"
 								}
@@ -1033,103 +1976,12 @@
 							}
 , 							{
 								"box" : 								{
-									"id" : "obj-40",
+									"id" : "obj-110",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 120.0, 224.0, 22.0 ],
-									"text" : "buffer~ granola_0_120__left_buffer 10 1",
-									"varname" : "granola_0_120__left_buffer_varname[3]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-41",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 120.0, 230.0, 22.0 ],
-									"text" : "buffer~ granola_0_120__right_buffer 10 1",
-									"varname" : "granola_0_120__right_buffer_varname[3]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-42",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 140.0, 208.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__sine_buffer 10 1",
-									"varname" : "vco_0_121__sine_buffer_varname[2]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-43",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 140.0, 222.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__phasor_buffer 10 1",
-									"varname" : "vco_0_121__phasor_buffer_varname[2]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-44",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 140.0, 226.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__triangle_buffer 10 1",
-									"varname" : "vco_0_121__triangle_buffer_varname[2]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-45",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 140.0, 208.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__saw_buffer 10 1",
-									"varname" : "vco_0_121__saw_buffer_varname[2]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-46",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 160.0, 196.0, 22.0 ],
-									"text" : "buffer~ lt_0_122__out1_buffer 10 1",
-									"varname" : "lt_0_122__out1_buffer_varname[2]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-47",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 160.0, 186.0, 22.0 ],
+									"patching_rect" : [ 50.0, 400.0, 186.0, 22.0 ],
 									"text" : "buffer~ noise_0__out_buffer 10 1",
 									"varname" : "noise_0__out_buffer_varname[16]"
 								}
@@ -1137,103 +1989,12 @@
 							}
 , 							{
 								"box" : 								{
-									"id" : "obj-48",
+									"id" : "obj-111",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 200.0, 224.0, 22.0 ],
-									"text" : "buffer~ granola_0_120__left_buffer 10 1",
-									"varname" : "granola_0_120__left_buffer_varname[4]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-49",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 200.0, 230.0, 22.0 ],
-									"text" : "buffer~ granola_0_120__right_buffer 10 1",
-									"varname" : "granola_0_120__right_buffer_varname[4]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-50",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 220.0, 208.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__sine_buffer 10 1",
-									"varname" : "vco_0_121__sine_buffer_varname[3]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-51",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 220.0, 222.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__phasor_buffer 10 1",
-									"varname" : "vco_0_121__phasor_buffer_varname[3]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-52",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 220.0, 226.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__triangle_buffer 10 1",
-									"varname" : "vco_0_121__triangle_buffer_varname[3]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-53",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 220.0, 208.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__saw_buffer 10 1",
-									"varname" : "vco_0_121__saw_buffer_varname[3]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-54",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 240.0, 196.0, 22.0 ],
-									"text" : "buffer~ lt_0_122__out1_buffer 10 1",
-									"varname" : "lt_0_122__out1_buffer_varname[3]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-55",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 260.0, 186.0, 22.0 ],
+									"patching_rect" : [ 50.0, 100.0, 186.0, 22.0 ],
 									"text" : "buffer~ noise_0__out_buffer 10 1",
 									"varname" : "noise_0__out_buffer_varname[17]"
 								}
@@ -1241,92 +2002,404 @@
 							}
 , 							{
 								"box" : 								{
-									"id" : "obj-56",
+									"id" : "obj-112",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 300.0, 224.0, 22.0 ],
-									"text" : "buffer~ granola_0_120__left_buffer 10 1",
-									"varname" : "granola_0_120__left_buffer_varname[5]"
+									"patching_rect" : [ 50.0, 160.0, 186.0, 22.0 ],
+									"text" : "buffer~ noise_0__out_buffer 10 1",
+									"varname" : "noise_0__out_buffer_varname[18]"
 								}
 
 							}
 , 							{
 								"box" : 								{
-									"id" : "obj-57",
+									"id" : "obj-113",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 300.0, 230.0, 22.0 ],
-									"text" : "buffer~ granola_0_120__right_buffer 10 1",
-									"varname" : "granola_0_120__right_buffer_varname[5]"
+									"patching_rect" : [ 50.0, 220.0, 186.0, 22.0 ],
+									"text" : "buffer~ noise_0__out_buffer 10 1",
+									"varname" : "noise_0__out_buffer_varname[19]"
 								}
 
 							}
 , 							{
 								"box" : 								{
-									"id" : "obj-58",
+									"id" : "obj-114",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 320.0, 208.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__sine_buffer 10 1",
-									"varname" : "vco_0_121__sine_buffer_varname[4]"
+									"patching_rect" : [ 50.0, 280.0, 186.0, 22.0 ],
+									"text" : "buffer~ noise_0__out_buffer 10 1",
+									"varname" : "noise_0__out_buffer_varname[20]"
 								}
 
 							}
 , 							{
 								"box" : 								{
-									"id" : "obj-59",
+									"id" : "obj-115",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 320.0, 222.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__phasor_buffer 10 1",
-									"varname" : "vco_0_121__phasor_buffer_varname[4]"
+									"patching_rect" : [ 50.0, 340.0, 186.0, 22.0 ],
+									"text" : "buffer~ noise_0__out_buffer 10 1",
+									"varname" : "noise_0__out_buffer_varname[21]"
 								}
 
 							}
 , 							{
 								"box" : 								{
-									"id" : "obj-60",
+									"id" : "obj-116",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 320.0, 226.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__triangle_buffer 10 1",
-									"varname" : "vco_0_121__triangle_buffer_varname[4]"
+									"patching_rect" : [ 50.0, 400.0, 186.0, 22.0 ],
+									"text" : "buffer~ noise_0__out_buffer 10 1",
+									"varname" : "noise_0__out_buffer_varname[22]"
 								}
 
 							}
 , 							{
 								"box" : 								{
-									"id" : "obj-61",
+									"id" : "obj-117",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 320.0, 208.0, 22.0 ],
-									"text" : "buffer~ vco_0_121__saw_buffer 10 1",
-									"varname" : "vco_0_121__saw_buffer_varname[4]"
+									"patching_rect" : [ 50.0, 100.0, 186.0, 22.0 ],
+									"text" : "buffer~ noise_0__out_buffer 10 1",
+									"varname" : "noise_0__out_buffer_varname[23]"
 								}
 
 							}
 , 							{
 								"box" : 								{
-									"id" : "obj-62",
+									"id" : "obj-118",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "float", "bang" ],
-									"patching_rect" : [ 50.0, 340.0, 196.0, 22.0 ],
-									"text" : "buffer~ lt_0_122__out1_buffer 10 1",
-									"varname" : "lt_0_122__out1_buffer_varname[4]"
+									"patching_rect" : [ 50.0, 180.0, 186.0, 22.0 ],
+									"text" : "buffer~ noise_0__out_buffer 10 1",
+									"varname" : "noise_0__out_buffer_varname[24]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-119",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 240.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__sine_buffer 10 1",
+									"varname" : "vco_0_120__sine_buffer_varname"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-120",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 240.0, 222.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__phasor_buffer 10 1",
+									"varname" : "vco_0_120__phasor_buffer_varname"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-121",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 240.0, 226.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__triangle_buffer 10 1",
+									"varname" : "vco_0_120__triangle_buffer_varname"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-122",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 240.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__saw_buffer 10 1",
+									"varname" : "vco_0_120__saw_buffer_varname"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-123",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 300.0, 186.0, 22.0 ],
+									"text" : "buffer~ noise_0__out_buffer 10 1",
+									"varname" : "noise_0__out_buffer_varname[25]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-124",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 340.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__sine_buffer 10 1",
+									"varname" : "vco_0_120__sine_buffer_varname[1]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-125",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 340.0, 222.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__phasor_buffer 10 1",
+									"varname" : "vco_0_120__phasor_buffer_varname[1]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-126",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 340.0, 226.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__triangle_buffer 10 1",
+									"varname" : "vco_0_120__triangle_buffer_varname[1]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-127",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 340.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__saw_buffer 10 1",
+									"varname" : "vco_0_120__saw_buffer_varname[1]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-128",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 200.0, 186.0, 22.0 ],
+									"text" : "buffer~ noise_0__out_buffer 10 1",
+									"varname" : "noise_0__out_buffer_varname[26]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-129",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 240.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__sine_buffer 10 1",
+									"varname" : "vco_0_120__sine_buffer_varname[2]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-130",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 240.0, 222.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__phasor_buffer 10 1",
+									"varname" : "vco_0_120__phasor_buffer_varname[2]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-131",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 240.0, 226.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__triangle_buffer 10 1",
+									"varname" : "vco_0_120__triangle_buffer_varname[2]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-132",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 240.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__saw_buffer 10 1",
+									"varname" : "vco_0_120__saw_buffer_varname[2]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-133",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 300.0, 186.0, 22.0 ],
+									"text" : "buffer~ noise_0__out_buffer 10 1",
+									"varname" : "noise_0__out_buffer_varname[27]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-134",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 340.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__sine_buffer 10 1",
+									"varname" : "vco_0_120__sine_buffer_varname[3]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-135",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 340.0, 222.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__phasor_buffer 10 1",
+									"varname" : "vco_0_120__phasor_buffer_varname[3]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-136",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 340.0, 226.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__triangle_buffer 10 1",
+									"varname" : "vco_0_120__triangle_buffer_varname[3]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-137",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 340.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__saw_buffer 10 1",
+									"varname" : "vco_0_120__saw_buffer_varname[3]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-138",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 400.0, 186.0, 22.0 ],
+									"text" : "buffer~ noise_0__out_buffer 10 1",
+									"varname" : "noise_0__out_buffer_varname[28]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-139",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 440.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__sine_buffer 10 1",
+									"varname" : "vco_0_120__sine_buffer_varname[4]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-140",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 440.0, 222.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__phasor_buffer 10 1",
+									"varname" : "vco_0_120__phasor_buffer_varname[4]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-141",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 440.0, 226.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__triangle_buffer 10 1",
+									"varname" : "vco_0_120__triangle_buffer_varname[4]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-142",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "float", "bang" ],
+									"patching_rect" : [ 50.0, 440.0, 208.0, 22.0 ],
+									"text" : "buffer~ vco_0_120__saw_buffer 10 1",
+									"varname" : "vco_0_120__saw_buffer_varname[4]"
 								}
 
 							}
@@ -15480,7 +16553,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "bang" ],
-					"patching_rect" : [ 128.5, 876.5, 126.0, 22.0 ],
+					"patching_rect" : [ 128.5, 786.5, 126.0, 22.0 ],
 					"text" : "metro 1000 @active 1"
 				}
 
@@ -15519,7 +16592,7 @@
 					"patching_rect" : [ 839.0, 1675.5, 29.5, 22.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 531.5, 10.0, 29.5, 22.0 ],
-					"text" : "-12"
+					"text" : "-36"
 				}
 
 			}
@@ -15569,8 +16642,8 @@
 					"id" : "obj-83",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
-					"numoutlets" : 7,
-					"outlettype" : [ "signal", "signal", "signal", "signal", "signal", "signal", "signal" ],
+					"numoutlets" : 6,
+					"outlettype" : [ "signal", "signal", "signal", "signal", "signal", "signal" ],
 					"patching_rect" : [ 1040.0, 1619.5, 68.0, 22.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 576.0, 10.0, 68.0, 22.0 ],
@@ -15895,6 +16968,7 @@
 						"tags" : "",
 						"style" : "",
 						"subpatcher_template" : "",
+						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
 									"id" : "obj-7",
@@ -16127,13 +17201,13 @@
 										"boxes" : [ 											{
 												"box" : 												{
 													"id" : "obj-3",
-													"linecount" : 16,
+													"linecount" : 5,
 													"maxclass" : "message",
 													"numinlets" : 2,
 													"numoutlets" : 1,
 													"outlettype" : [ "" ],
 													"patching_rect" : [ 50.0, 100.0, 273.0, 116.0 ],
-													"text" : "deltas lfo_1__rate lfo_1__index lfo_1__pulse_width lfo_1__onset lfo_2__rate lfo_2__pulse_width lfo_2__onset lfo_2__index ffmvco_1__vco_1_waveform ffmvco_1__vco_2_waveform ffmvco_1__feedback ffmvco_1__vco_2_rate vca_1__cv_amount vca_1__bias speaker_1__volume ffmvco_1__vco_1_rate controller1__pos_x controller1__pos_y controller1__pos_z controller1__orient_x controller1__orient_y controller1__orient_z controller1__orient_w controller2__pos_x controller2__pos_y controller2__pos_z controller2__orient_x controller2__orient_y controller2__orient_z controller2__orient_w user_pose"
+													"text" : "deltas outs_1__volume lfo_0_120__onset lfo_0_120__pulse_width lfo_0_120__index lfo_0_120__rate pulsars_0_121__period pulsars_0_121__formant vco_0_122__rate vco_0_120__rate"
 												}
 
 											}
@@ -16721,7 +17795,7 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-119",
-					"items" : "<empty>",
+					"items" : [ "deltas", ",", "outs_1__volume", ",", "lfo_0_120__onset", ",", "lfo_0_120__pulse_width", ",", "lfo_0_120__index", ",", "lfo_0_120__rate", ",", "pulsars_0_121__period", ",", "pulsars_0_121__formant", ",", "vco_0_122__rate", ",", "vco_0_120__rate" ],
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
@@ -16846,7 +17920,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1368.0, 170.0, 99.0, 22.0 ],
+					"patching_rect" : [ 1414.0, 241.428573608398438, 99.0, 22.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 365.0, 147.0, 105.0, 22.0 ],
 					"text" : "scene_rich.json"
@@ -18917,7 +19991,7 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-7",
+					"id" : "obj-138",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 5,
@@ -18930,7 +20004,7 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-30",
+					"id" : "obj-139",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 5,
@@ -18943,7 +20017,7 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-39",
+					"id" : "obj-141",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 5,
@@ -18956,7 +20030,7 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-61",
+					"id" : "obj-144",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 5,
@@ -18969,7 +20043,7 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-69",
+					"id" : "obj-147",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 5,
@@ -18982,72 +20056,7 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-82",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 5,
-					"outlettype" : [ "signal", "signal", "signal", "signal", "" ],
-					"patching_rect" : [ 1040.0, 1650.0, 178.0, 22.0 ],
-					"text" : "vr.source~ 0 @position 0.75 1 0",
-					"varname" : "source_1[1]"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-88",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 5,
-					"outlettype" : [ "signal", "signal", "signal", "signal", "" ],
-					"patching_rect" : [ 1140.0, 1650.0, 178.0, 22.0 ],
-					"text" : "vr.source~ 1 @position 0.75 1 0",
-					"varname" : "source_2[1]"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-91",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 5,
-					"outlettype" : [ "signal", "signal", "signal", "signal", "" ],
-					"patching_rect" : [ 1240.0, 1650.0, 178.0, 22.0 ],
-					"text" : "vr.source~ 2 @position 0.75 1 0",
-					"varname" : "source_3[1]"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-103",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 5,
-					"outlettype" : [ "signal", "signal", "signal", "signal", "" ],
-					"patching_rect" : [ 1340.0, 1650.0, 178.0, 22.0 ],
-					"text" : "vr.source~ 3 @position 0.75 1 0",
-					"varname" : "source_4[1]"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-104",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 5,
-					"outlettype" : [ "signal", "signal", "signal", "signal", "" ],
-					"patching_rect" : [ 1440.0, 1650.0, 178.0, 22.0 ],
-					"text" : "vr.source~ 4 @position 0.75 1 0",
-					"varname" : "source_5[1]"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-106",
+					"id" : "obj-148",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 5,
@@ -19055,19 +20064,6 @@
 					"patching_rect" : [ 1540.0, 1650.0, 178.0, 22.0 ],
 					"text" : "vr.source~ 5 @position 0.75 1 0",
 					"varname" : "source_6"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-114",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 5,
-					"outlettype" : [ "signal", "signal", "signal", "signal", "" ],
-					"patching_rect" : [ 1640.0, 1650.0, 178.0, 22.0 ],
-					"text" : "vr.source~ 6 @position 0.75 1 0",
-					"varname" : "source_7"
 				}
 
 			}
@@ -19090,20 +20086,6 @@
 				"patchline" : 				{
 					"destination" : [ "obj-13", 0 ],
 					"source" : [ "obj-101", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 1 ],
-					"source" : [ "obj-106", 1 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 0 ],
-					"source" : [ "obj-106", 0 ]
 				}
 
 			}
@@ -19173,20 +20155,6 @@
 					"destination" : [ "obj-8", 1 ],
 					"order" : 0,
 					"source" : [ "obj-113", 1 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 1 ],
-					"source" : [ "obj-114", 1 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 0 ],
-					"source" : [ "obj-114", 0 ]
 				}
 
 			}
@@ -19320,7 +20288,7 @@
 				"patchline" : 				{
 					"destination" : [ "obj-142", 0 ],
 					"midpoints" : [ 284.25, 1257.5, 379.5, 1257.5 ],
-					"order" : 0,
+					"order" : 1,
 					"source" : [ "obj-137", 2 ]
 				}
 
@@ -19328,7 +20296,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-74", 0 ],
-					"order" : 1,
+					"order" : 2,
 					"source" : [ "obj-137", 2 ]
 				}
 
@@ -19337,6 +20305,42 @@
 				"patchline" : 				{
 					"destination" : [ "obj-76", 0 ],
 					"source" : [ "obj-137", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-88", 1 ],
+					"order" : 0,
+					"source" : [ "obj-137", 2 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-68", 1 ],
+					"source" : [ "obj-138", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-68", 0 ],
+					"source" : [ "obj-138", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-68", 1 ],
+					"source" : [ "obj-139", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-68", 0 ],
+					"source" : [ "obj-139", 0 ]
 				}
 
 			}
@@ -19363,6 +20367,20 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-68", 1 ],
+					"source" : [ "obj-141", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-68", 0 ],
+					"source" : [ "obj-141", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-78", 0 ],
 					"source" : [ "obj-142", 0 ]
 				}
@@ -19373,6 +20391,20 @@
 					"destination" : [ "obj-2", 0 ],
 					"midpoints" : [ 1236.5, 278.0, 732.5, 278.0, 732.5, 177.0, 244.5, 177.0 ],
 					"source" : [ "obj-143", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-68", 1 ],
+					"source" : [ "obj-144", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-68", 0 ],
+					"source" : [ "obj-144", 0 ]
 				}
 
 			}
@@ -19392,8 +20424,50 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-68", 1 ],
+					"source" : [ "obj-147", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-68", 0 ],
+					"source" : [ "obj-147", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-68", 1 ],
+					"source" : [ "obj-148", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-68", 0 ],
+					"source" : [ "obj-148", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-6", 1 ],
 					"source" : [ "obj-15", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-119", 0 ],
+					"source" : [ "obj-153", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-119", 0 ],
+					"source" : [ "obj-154", 0 ]
 				}
 
 			}
@@ -19444,7 +20518,16 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-69", 1 ],
+					"order" : 0,
+					"source" : [ "obj-218", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-78", 0 ],
+					"order" : 1,
 					"source" : [ "obj-218", 0 ]
 				}
 
@@ -19558,20 +20641,6 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-68", 1 ],
-					"source" : [ "obj-30", 1 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 0 ],
-					"source" : [ "obj-30", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-6", 0 ],
 					"source" : [ "obj-33", 0 ]
 				}
@@ -19602,20 +20671,6 @@
 				"patchline" : 				{
 					"destination" : [ "obj-2", 0 ],
 					"source" : [ "obj-38", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 1 ],
-					"source" : [ "obj-39", 1 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 0 ],
-					"source" : [ "obj-39", 0 ]
 				}
 
 			}
@@ -19774,20 +20829,6 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-68", 1 ],
-					"source" : [ "obj-61", 1 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 0 ],
-					"source" : [ "obj-61", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-59", 0 ],
 					"source" : [ "obj-62", 0 ]
 				}
@@ -19796,6 +20837,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-65", 0 ],
+					"disabled" : 1,
 					"source" : [ "obj-64", 0 ]
 				}
 
@@ -19833,34 +20875,6 @@
 				"patchline" : 				{
 					"destination" : [ "obj-28", 0 ],
 					"source" : [ "obj-68", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 1 ],
-					"source" : [ "obj-69", 1 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 0 ],
-					"source" : [ "obj-69", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 1 ],
-					"source" : [ "obj-7", 1 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 0 ],
-					"source" : [ "obj-7", 0 ]
 				}
 
 			}
@@ -19950,16 +20964,7 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-105", 1 ],
-					"order" : 1,
-					"source" : [ "obj-80", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-81", 0 ],
-					"order" : 0,
 					"source" : [ "obj-80", 0 ]
 				}
 
@@ -19968,6 +20973,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-137", 4 ],
 					"source" : [ "obj-81", 2 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-137", 0 ],
+					"source" : [ "obj-81", 1 ]
 				}
 
 			}
@@ -19988,7 +21000,14 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-7", 0 ],
+					"destination" : [ "obj-84", 0 ],
+					"source" : [ "obj-81", 3 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-138", 0 ],
 					"source" : [ "obj-83", 0 ]
 				}
 
@@ -20170,46 +21189,6 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "freevoib.gendsp",
-				"bootpath" : "E:/GitHub/msvr/max-msp",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "freeverb_allpass.gendsp",
-				"bootpath" : "~/AppData/Roaming/Cycling '74/Max 8/examples/gen",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "freeverb_comb.gendsp",
-				"bootpath" : "~/AppData/Roaming/Cycling '74/Max 8/examples/gen",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "lfo.gendsp",
-				"bootpath" : "E:/GitHub/msvr/max-msp",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "vca.gendsp",
-				"bootpath" : "E:/GitHub/msvr/max-msp",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "granola.gendsp",
-				"bootpath" : "E:/GitHub/msvr/max-msp",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
 				"name" : "vco.gendsp",
 				"bootpath" : "E:/GitHub/msvr/max-msp",
 				"patcherrelativepath" : ".",
@@ -20224,7 +21203,21 @@
 				"implicit" : 1
 			}
 , 			{
+				"name" : "lfo.gendsp",
+				"bootpath" : "E:/GitHub/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
 				"name" : "ffmvco.gendsp",
+				"bootpath" : "E:/GitHub/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "vca.gendsp",
 				"bootpath" : "E:/GitHub/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
