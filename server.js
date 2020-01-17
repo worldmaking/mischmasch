@@ -327,6 +327,7 @@ function handlemessage(msg, sock, id) {
 
 
 	switch (msg.cmd) {
+		
 		case "deltas": {
 
 			// synchronize our local copy:
@@ -366,18 +367,21 @@ function handlemessage(msg, sock, id) {
 		case "playback":{
 			//console.log(msg)/
 			console.log(msg.data)
-			/*
+			
 			let response = {
 				cmd: "deltas",
 				date: Date.now(),
 				data: msg.data
 			};
+
+			/*
 			// NOTE: this is copied from the deltas case, but i've commented out recording the playback since for now it'd just be redundant. 
 			// we might, though, at some point want to record when a playback occurred, and note when playback was stopped/looped/overdubbed/etc
 			//recordJSON.push(response)
 			//fs.writeFileSync(sessionRecording, JSON.stringify(recordJSON, null, "  "), "utf-8")
-			send_all_clients(JSON.stringify(response));
 			*/
+			send_all_clients(JSON.stringify(response));
+
 		} break;
 
 		case "initController":{
