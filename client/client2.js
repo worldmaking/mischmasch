@@ -47,6 +47,10 @@ function hexColorFromString(str) {
     return "#" + intToRGB(hashCode(str));
 }
 
+function clamp(num, min, max) {
+    return num <= min ? min : num >= max ? max : num;
+}
+
 // generate a random name for new object:
 let gensym = (function() {
     let nodeid = 0;
@@ -629,6 +633,8 @@ function initVRController(id=0) {
     controller.addEventListener("thumbpaddown", onVRThumbPadDown);
     controller.name = "VRcontroller"+id
     controller.userData.controllerID = id;
+    controller.userData.thumbPadDX = 0;
+    controller.userData.thumbPadDY = 0;
     scene.add(controller);
 
     controller.add(new THREE.AxesHelper(0.1))
@@ -637,13 +643,14 @@ function initVRController(id=0) {
     controller.userData.intersection = null;
     controller.userData.rotation = new THREE.Vector3();
     controller.userData.updateStateMachine = function() {
-    if(debugMode == true){
-            doDebugMode(this.ghostController);
-    }
+        if(debugMode == true){
+                doDebugMode(this.ghostController);
+        }
 
 
         let intersection = this.intersection;
         let object = intersection ? intersection.object : null;
+        //console.log(intersection)
         // highlight it:
         if (object) object.userData.isUnderCursor = true;
         // debug:
@@ -651,16 +658,16 @@ function initVRController(id=0) {
         switch(this.state) {
             case "dragging": {
 
-               // logonly("drag", this.dragState.target.name, this.dragState.target.matrix.elements)
+                // logonly("drag", this.dragState.target.name, this.dragState.target.matrix.elements)
 
-            //    let thumbMove = this.dragState.target
-            //    // TODO: twist & zoom according to the this.thumbPadDX etc.
-            //    let s = 1. + (controller.userData.thumbpadDY);
-            //    let r = 1. + (controller.userData.thumbpadDX);
-            //    thumbMove.position.multiplyScalar(s);
-            //    let rot = new THREE.Vector3(thumbMove.rotation.x, thumbMove.rotation.y, thumbMove.rotation.z);
-            //    rot.multiplyScalar(r);
-            //    thumbMove.rotation.y = rot.y;
+                let thumbMove = this.dragState.target;
+                let s = 1. + (this.thumbPadDY);
+                let r = 1. + (this.thumbPadDX);
+                thumbMove.position.multiplyScalar(s);
+                let rot = new THREE.Vector3(thumbMove.rotation.x, thumbMove.rotation.y, thumbMove.rotation.z);
+                //TODO: fix the rotate scalar (The bigger it gets the faster it spins which is dumb)
+                rot.multiplyScalar(r);
+                thumbMove.rotation.y = rot.y;
 
                 if (!this.isTriggerDown) {
                     // release 
@@ -669,7 +676,7 @@ function initVRController(id=0) {
                     this.state = "default";
                     // reparent target
                     reparentWithTransform(dragTarget, this.ghostController, parent);
-                    console.log(dragTarget);
+                    //console.log(dragTarget);
                     if(dragTarget.position.y < 0){
                         outgoingDeltas.push({ op:"delnode", path: dragTarget.userData.path });
                     }
@@ -843,7 +850,8 @@ function initVRController(id=0) {
                 }
                 cableUpdate(cable);
 
-                if (!this.isTriggerDown) {
+                if (this.isTriggerPress) {
+                    //console.log(isTriggerPressed);
                     // on release, check for completion:
                     let isCableComplete = (cable.userData.src && cable.userData.dst);
                     let isCableFullyDisconnected = (!cable.userData.src && !cable.userData.dst);
@@ -874,31 +882,73 @@ function initVRController(id=0) {
 
             } break;
             case "menu": {
+                let willExitMenu = false;
+                if (this.isThumbPadPress) {
+                    willExitMenu = true;
+                } else {
+                    
+                    if (currentWorld == ghostWorld){
+                        ghostWorld.visible = false;
+                        cableWorld.visible = false;
+                        ghostMenu.visible = true;
+        
+                        let headPos = new THREE.Vector3();
+                        camera.getWorldPosition(headPos);
+                        ghostMenu.position.set(headPos.x, headPos.y + .5, headPos.z);
+    
+                        currentWorld = ghostMenu;
+                    
+                    }
 
-                //userdata.kind for module copy
+                    if (this.isTriggerDown) {
 
-                if (currentWorld == ghostWorld){
-                    ghostWorld.visible = false;
-                    cableWorld.visible = false;
-                    ghostMenu.visible = true;
-                    currentWorld = ghostMenu;
-                    let headPos = new THREE.Vector3();
-                    camera.getWorldPosition(headPos);
-                    ghostMenu.position.set(headPos.x, headPos.y + .5, headPos.z);
+                        // did we select someting to create?
+                        if (object) {
+        
+                            // recurse up until we find a module:
+                            while (object && !object.userData.isModule) {
+                                object = object.parent;
+                            }
+
+                            if (object && object.userData.isModule) {
+
+                                // based on object.userdata.kind, spawn OT at controller location
+                                // actually, want to not use the 
+                                let q = new THREE.Quaternion();
+                                object.getWorldQuaternion(q);
+
+                                let p = new THREE.Vector3();
+                                controller.getWorldPosition(p);
+                                
+                                let p1 = new THREE.Vector3(0, 0, -intersection.distance);
+                                // transform p by the world transform of the controller:
+                                p1.applyMatrix4(controller.matrixWorld);
+                                //p1.applyQuaternion(q);
+                                //p1.add(p);
+
+                                let delta = spawnSingleModule([p1.x, p1.y, p1.z], [q._x, q._y, q._z, q._w], object.userData.kind);
+                                outgoingDeltas.push(delta);
+
+                                // somehow set a state that waits for an incomingDelta and will select it for dragging once it comes
+
+
+                                // and, exit menu:
+                                willExitMenu = true;
+                            }
+                        }
+                    }
                 }
-
-                if (!this.isTriggerDown) {
+                if(willExitMenu){
                     if (currentWorld == ghostMenu){
                         ghostWorld.visible = true;
                         cableWorld.visible = true;
                         ghostMenu.visible = false;
                         currentWorld = ghostWorld;
+                        // log("Leaving Menu" + currentWorld.name)
                     }
-                    //if trigger not down destroy menu otherwise create menu
-
-                    // release 
                     this.state = "default";
                 }
+                
             } break;
             // case "multiselect"
             // etc.
@@ -907,13 +957,11 @@ function initVRController(id=0) {
                     let kind = object.userData.kind
                     // debug:
                     ctrlstatedivs[this.controllerID].innerText += ": " + kind;
-
                     let name = object.name
                     object.userData.isUnderCursor = true;
 
                     if (this.isTriggerDown) {
                         // did we select a knob, a cable, a port, or a box?
-
                         if (object.userData.isBackPanel) {
                             // switch context to parent:
                             object = object.parent;
@@ -930,11 +978,11 @@ function initVRController(id=0) {
                             // reparent target to controller:
                             reparentWithTransform(object, parent, this.ghostController)
 
-                            log("dragging")
+                            //log("dragging")
                         } else if (object.userData.isTwiddleable) {
                             // go into twidding mode
 
-                            log("start twiddling", name)
+                            //log("start twiddling", name)
 
                             // get the rotation transform that makes the knob the origin:
                             let moduleQuat = new THREE.Quaternion();
@@ -960,7 +1008,13 @@ function initVRController(id=0) {
                             this.rotation = controller.rotation.clone();
                             object.userData.rotation = object.rotation.clone();
 
-                        } else if (kind == "outlet") {
+                        } else {
+
+                            // log("kind", object.userData.kind)
+                        }
+                    }
+                    if(this.isTriggerPress) {
+                        if (kind == "outlet") {
                             // create a new cable -- but it only has a src, not a dst
                             let cable = makeCable(object, null);
                             this.cablingState = {
@@ -970,7 +1024,7 @@ function initVRController(id=0) {
                                 needs: "dst",
                             };
                             this.state = "cabling";
-
+    
                         } else if (kind == "inlet") {
                             // create a new cable -- but it only has a dst, not a src
                             let cable = makeCable(null, object);
@@ -995,7 +1049,7 @@ function initVRController(id=0) {
                                 needs: "src",
                             };
                             this.state = "cabling";
-
+    
                         } else if (kind == "jack_inlet"){
                             // needs to be a dragging state but also checking for interesections of inlets and outlets
                             let jack = object;
@@ -1009,20 +1063,18 @@ function initVRController(id=0) {
                                 needs: "dst",
                             };
                             this.state = "cabling";
-                        } else {
-
-                           // log("kind", object.userData.kind)
-                        }
-
+                        } 
                     }
-                } else if (this.isTriggerDown) {
+                } else if (this.isThumbPadPress) {
                     // trigger squeeze but nothing selected. 
                     // Show menu?
                     this.state = "menu";
-                    log("enter menu")
+                    //log("enter menu")
                 }
             }
         }
+        
+
         this.rotation._z = controller.rotation.z; 
     }
 
@@ -1653,7 +1705,6 @@ function enactDeltaObjectValue(world, delta) {
 */
 function enactDeltaDeleteNode(world, delta) {
     let object = getObjectByPath(world, delta.path);
-   
     let objParent = object.parent;
     objParent.remove(object);
 
@@ -1718,11 +1769,14 @@ function animate() {
                     if (button0.touched) {
                         if (!controller.userData.isThumbPadTouched) {
                             controller.userData.isThumbPadTouched = true;
+                            controller.userData.isThumbPadPress = true;
                             //console.log("touchstart", gamepad.axes[1])
                             controller.userData.thumbPadDX = 0;
                             controller.userData.thumbPadDY = 0;
             
                         } else {
+                            
+                            controller.userData.isThumbPadPress = false;
                             //console.log("drag", gamepad.axes[1])
                             controller.userData.thumbPadDX = gamepad.axes[0] - controller.userData.thumbPadX;
                             controller.userData.thumbPadDY = gamepad.axes[1] - controller.userData.thumbPadY;
@@ -1732,15 +1786,29 @@ function animate() {
                         controller.userData.thumbPadY = gamepad.axes[1];
             
                     } else if (controller.userData.isThumbPadTouched) {
+                        
                         controller.userData.isThumbPadTouched = false;
                         controller.userData.thumbPadDX = 0;
                         controller.userData.thumbPadDY = 0;
                         // touch release event
                         //console.log("release")
                     }
+                    // Check for Trigger Press only
+                    let button1 = gamepad.buttons[1]; 
+                    if (button1.touched) {
+                        if (!controller.userData.isTriggerTouched) {
+                            controller.userData.isTriggerTouched = true;
+                            controller.userData.isTriggerPress = true;
+                        } else {
+                            controller.userData.isTriggerPress = false;
+                        }
+                    } else if(controller.userData.isTriggerTouched){
+                        controller.userData.isTriggerTouched = false;
+                    }
                 }
             }
-
+            
+        
             // handle interaction only if visible:
             if (controller.visible) {
                 let beamIntersection = getFirstIntersection(ghostScene.children, controller);
