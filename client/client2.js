@@ -1717,6 +1717,8 @@ function enactDeltaObjectValue(world, delta) {
             
             let derived_angle = knobValueToAngle(value);
             
+            console.log(value);
+
             // set rotation of knob by this angle, and normal axis of knob:
             object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
         } break;
@@ -2424,7 +2426,7 @@ function logVR(...args){
 // }
 
 // localHandshake()
-
+/*
 function localHandshake() {
     var ws = new WebSocket('ws://localhost:8083');
     ws.onopen = function () {
@@ -2469,3 +2471,4 @@ function localHandshake() {
   }
   
   localHandshake();
+  */
