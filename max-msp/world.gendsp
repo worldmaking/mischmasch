@@ -4,13 +4,13 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 0,
-			"revision" : 5,
+			"revision" : 2,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "dsp.gen",
-		"rect" : [ 468.0, 226.0, 468.0, 734.0 ],
+		"rect" : [ 288.0, 126.0, 634.0, 734.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -37,23 +37,7 @@
 		"tags" : "",
 		"style" : "",
 		"subpatcher_template" : "",
-		"boxes" : [ 			{
-				"box" : 				{
-					"angle" : 270.0,
-					"bgcolor" : [ 0.976470588235294, 0.92156862745098, 0.92156862745098, 1.0 ],
-					"bordercolor" : [ 0.011764705882353, 0.243137254901961, 0.274509803921569, 1.0 ],
-					"id" : "obj-1",
-					"maxclass" : "panel",
-					"mode" : 0,
-					"numinlets" : 1,
-					"numoutlets" : 0,
-					"patching_rect" : [ 1959.0, 505.0, 278.0, 330.0 ],
-					"proportion" : 0.5,
-					"varname" : "PLO"
-				}
-
-			}
- ],
+		"boxes" : [  ],
 		"lines" : [  ],
 		"editing_bgcolor" : [ 0.9, 0.9, 0.9, 1.0 ]
 	}

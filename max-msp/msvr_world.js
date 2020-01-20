@@ -1,6 +1,6 @@
 
 inlets = 3
-outlets = 9
+outlets = 10
 	// get a reference to "thegen"'s embedded gen patcher:
 var varnameCount = 0
 
@@ -208,6 +208,8 @@ var handleDelta = function(delta) {
 							//gen_patcher.message("script", "send", param.varname, paramValue);
 							//post('\n\n', delta.value)
 							outlet(1, paramName, delta.value, delta.range)
+							post('\n\n\n\n\n\nrange:', delta.range)
+							outlet(9, paramName, delta.range)
 							paramCounter++
 							
 							break;
