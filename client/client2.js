@@ -1423,6 +1423,8 @@ function enactDeltaNewNode(world, delta) {
             alert("TODO GROUP")
         } break;
         default: {
+
+            
             //log("KIND", delta.kind)
             container = new THREE.Group();
             container.userData.moveable = true;
@@ -1440,7 +1442,7 @@ function enactDeltaNewNode(world, delta) {
             //box.add(new THREE.AxesHelper(1));
 
             // label:
-            let label = createLabel(name, 0, 0, 0, 1);
+            let label = createLabel(delta.kind, 0, 0, 0, 1);
             //container.userData.color
             container.add(label);
         }
