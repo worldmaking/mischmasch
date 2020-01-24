@@ -666,7 +666,9 @@ function initVRController(id=0) {
                 thumbMove.position.multiplyScalar(s);
                 let rot = new THREE.Vector3(thumbMove.rotation.x, thumbMove.rotation.y, thumbMove.rotation.z);
                 //TODO: fix the rotate scalar (The bigger it gets the faster it spins which is dumb)
+
                 rot.multiplyScalar(r);
+                
                 thumbMove.rotation.y = rot.y;
 
                 if (!this.isTriggerDown) {
@@ -1100,8 +1102,6 @@ function initVRController(id=0) {
                         } 
                     }
                 } else if (this.isThumbPadPress) {
-                    // trigger squeeze but nothing selected. 
-                    // Show menu?
                     this.state = "menu";
                     //log("enter menu")
                 }
@@ -2375,7 +2375,7 @@ function onDocumentMouseDown(e) {
 
 function doDebugMode(controller){
 
-    controller.add(createLabel("Hello", 0, 0, 0))
+   // controller.add(createLabel("Hello", 0, 0, 0))
 }
 
 function logVR(...args){
