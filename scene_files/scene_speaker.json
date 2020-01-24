@@ -1,0 +1,20 @@
+{
+	"nodes": {
+		"speaker_1":{
+            "_props":{
+				"kind":"speaker",
+				"category":"abstraction", 
+				"pos": [0.75,1,0], 
+				"orient": [0.0, -0.258819, 0.0, 0.965926] 
+			},
+            "input":{
+				"_props":{
+					"kind":"inlet",
+					"index":0
+					}
+				}
+          }
+	},
+	"arcs": [
+	]
+}
