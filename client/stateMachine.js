@@ -23,12 +23,26 @@ const test = Machine({
                 },
                 dragging: {
                     on:{
-                        GRABRELEASE: 'deletenode'
+                        GRABRELEASE: {
+                            target: 'deletenode',
+                            cond: 'Target.y < 0'
+                        },
+                        GRABRELEASE: {
+                            target: 'default',
+                            cond: 'Target.y >= 0'
+                        }
+                    },
+                    active: {
+                        entry: ['setDragState', 'reparent Target'],
+                        exit: ['reparent Target']
                     }
                 },
                 deletenode : {
                     on:{
                         IMMEDIATE: 'default'
+                    },
+                    active: {
+                        exit: ['delnode Delta']
                     }
                 },
                 twiddling: {
