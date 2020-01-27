@@ -16,6 +16,10 @@ const test = Machine({
                             cond: ['controller', 'targetexists', 'twiddleable'],
                         },
                         GRABPRESS: {
+                            target: 'disconnect',
+                            cond: ['controller', 'targetexists','is Jack src or dst']
+                        },
+                        GRABPRESS: {
                             target: 'cabling',
                             cond: ['controller', 'targetexists','is Jack, inlet or outlet']
                         }
@@ -33,7 +37,7 @@ const test = Machine({
                         }
                     },
                     active: {
-                        entry: ['setDragState', 'reparent Target'],
+                         entry: ['setDragState', 'reparent Target'],
                         exit: ['reparent Target']
                     }
                 },
@@ -47,32 +51,52 @@ const test = Machine({
                 },
                 twiddling: {
                     on:{
-
+                        GRABRELEASE: 'default'
+                    },
+                    active: {
+                        entry: ['setTwiddleState', 'cacheCurrentRot']
                     }
                 },
                 disconnect: {
                     on:{
-
+                        IMMEDIATE: 'cabling'
+                    },
+                    active: {
+                        entry: 'sendDisconnectDelta'
                     }
                 },
                 cabling: {
                     on:{
-
+                        GRABPRESS: {
+                            target: 'connect',
+                            cond: 'cableFullyConnected'
+                        },
+                        GRABPRESS: {
+                            target: 'destroyCable',
+                            cond: 'cableFullyDisconnected'
+                        },
+                        GRABPRESS: {
+                            target: 'default',
+                            cond: 'cablePartiallyConnected'
+                        }
+                    },
+                    active: {
+                        entry: 'setCablingState'
                     }
                 },
                 connect: {
                     on:{
-
+                        IMMEDIATE: 'destroyCable'
                     }
                 },
-                destroycable: {
+                destroyCable: {
                     on:{
-
+                        IMMEDIATE: 'default'
                     }
                 },
             }
         },
-        menumode: {
+        menuMode: {
             initial: 'default',
             states: {
 
