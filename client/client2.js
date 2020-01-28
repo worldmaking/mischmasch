@@ -652,9 +652,35 @@ function initVRController(id=0) {
         let object = intersection ? intersection.object : null;
         //console.log(intersection)
         // highlight it:
-        if (object) object.userData.isUnderCursor = true;
+        if (object){
+            object.userData.isUnderCursor = true;
+            {
+                // update controller label
+                let target = object;
+                // if label or backpanel, consider it's parent object instead
+                if (target.userData.isLabel || target.userData.isBackPanel) target = object.parent;
+                // if module, use module kind rather than name
+                let text = (target.userData.isModule) ? target.userData.kind : target.name;
+
+                // only change debug label if we need to
+                if (text != controller.userData.debugText) {
+
+                    // TODO: skip if text == the current controller's debug label text
+                    deleteLabel(controller);
+                    let label = createLabel(text, 0, 0.025, -0.025, 0.15);
+                    label.rotateX(-Math.PI/4)
+                    controller.add(label);
+                    controller.userData.debugText = text;
+                }
+            }
+        } else {
+            deleteLabel(controller);
+            controller.userData.debugText = "";
+        }
         // debug:
         ctrlstatedivs[this.controllerID].innerText = this.state;
+
+
         switch(this.state) {
             case "dragging": {
 
@@ -1266,7 +1292,7 @@ function enactDelta(world, delta) {
  * @param {value} scale - OPTIONAL: single scale size (default: 0.009)
  */
 function createLabel(text, x=0, y=0, z=0, uniformScaling=1){
-    uniformScaling *= LABEL_SCALING_FACTOR;
+    //uniformScaling *= LABEL_SCALING_FACTOR;
     let mesh;
     // a geometry of packed bitmap glyphs, 
     // word wrapped to 240px (10 characters) and center-aligned
@@ -1281,6 +1307,7 @@ function createLabel(text, x=0, y=0, z=0, uniformScaling=1){
         font: fontData,
         text: text,
     })
+
     // change text and other options as desired
     // the options sepcified in constructor will
     // be used as defaults
@@ -1295,18 +1322,26 @@ function createLabel(text, x=0, y=0, z=0, uniformScaling=1){
     mesh.userData.isLabel = true;
 
     let layout = mesh.geometry.layout
-    let s = (1/(layout.width))
-    mesh.scale.set(s, -s, s)
+    let s = (uniformScaling/(layout.width))
 
-    mesh.position.set(
-        x - 0.5, y, z + 0.51); 
+    // x is offset by half scaling in order to center the text
+    mesh.position.set(x - 0.5*uniformScaling, y, z); 
+    mesh.scale.set(s, -s, s)
 
     //mesh.scale.set(uniformScaling, uniformScaling, uniformScaling);
 
-    mesh.add(new THREE.AxesHelper(1));
+    //mesh.add(new THREE.AxesHelper(1));
 
     //console.log(mesh);
     return mesh;
+}
+
+function deleteLabel(container){
+    for(let l of container.children){
+        if(l.name.includes("label_")){
+            container.remove(l);
+        }
+    }
 }
 
 function enactDeltaNewNode(world, delta) {
@@ -1440,7 +1475,7 @@ function enactDeltaNewNode(world, delta) {
             //box.add(new THREE.AxesHelper(1));
 
             // label:
-            let label = createLabel(delta.kind, 0, 0, 0, 1);
+            let label = createLabel(delta.kind);
             //container.userData.color
             container.add(label);
         }
