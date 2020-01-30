@@ -17,11 +17,11 @@ const test = Machine({
                         },
                         GRABPRESS: {
                             target: 'disconnect',
-                            cond: ['controller', 'targetexists','is Jack src or dst']
+                            cond: ['controller', 'targetexists','isJackSrc_or_Dst']
                         },
                         GRABPRESS: {
                             target: 'cabling',
-                            cond: ['controller', 'targetexists','is Jack, inlet or outlet']
+                            cond: ['controller', 'targetexists','isJack_Inlet_or_Outlet']
                         }
                     }
                 },
@@ -29,11 +29,11 @@ const test = Machine({
                     on:{
                         GRABRELEASE: {
                             target: 'deletenode',
-                            cond: 'Target.y < 0'
+                            cond: 'Target.y < 0 (range_valueChecker)'
                         },
                         GRABRELEASE: {
                             target: 'default',
-                            cond: 'Target.y >= 0'
+                            cond: 'Target.y >= 0 (range_valueChecker)'
                         }
                     },
                     active: {
@@ -103,4 +103,20 @@ const test = Machine({
             }
         }
     }
-});
+},
+{
+    guards: {
+        controller,
+        targetexists,
+        backpanel,
+        twiddleable,
+        isJackSrc_or_Dst,
+        isJack_Inlet_or_Outlet,
+        range_valueChecker,
+        cableFullyConnected,
+        cableFullyDisconnected,
+        cablePartiallyConnected
+    }
+}
+
+);

@@ -83,7 +83,8 @@ let userPose = createUserPose();
 let ghostScene = new THREE.Group();
 ghostScene.name = "ghostScene"
 
-let ghostControllers = []
+let ghostControllers = [];
+let ghostHeadset;
 
 let ghostWorld = new THREE.Group();
 ghostWorld.name = "ghostWorld"
@@ -551,9 +552,10 @@ async function init_steamvr() {
     for (let i=0; i<2; i++) {
         VRcontrollers[i] = initVRController(i);
         ghostControllers[i] = initGhostController(i);
-
+       
         VRcontrollers[i].userData.ghostController = ghostControllers[i]
     }
+    ghostHeadset = initGhostHeadset();
 
     {
         
@@ -1006,11 +1008,11 @@ function initVRController(id=0) {
                             // reparent target to controller:
                             reparentWithTransform(object, parent, this.ghostController)
 
-                            //log("dragging")
+                            logVR("dragging")
                         } else if (object.userData.isTwiddleable) {
                             // go into twidding mode
 
-                            //log("start twiddling", name)
+                            logVR("start twiddling", name)
 
                             // get the rotation transform that makes the knob the origin:
                             let moduleQuat = new THREE.Quaternion();
@@ -1157,6 +1159,15 @@ function initGhostController(id=0) {
     ghostController.add(debugGeom);
 
     return ghostController;
+}
+
+function initGhostHeadset(){
+    let ghostHeadSet = new THREE.Object3D();
+    ghostHeadSet.name = "ghostHeadset";
+    ghostHeadSet.matrixAutoUpdate = false;
+    ghostScene.add(ghostHeadSet);
+
+    return ghostHeadSet;
 }
 
 
@@ -1338,7 +1349,7 @@ function createLabel(text, x=0, y=0, z=0, uniformScaling=1){
 
 function deleteLabel(container){
     for(let l of container.children){
-        if(l.name.includes("label_")){
+        if(l.userData.isLabel){
             container.remove(l);
         }
     }
@@ -1752,7 +1763,7 @@ function enactDeltaObjectValue(world, delta) {
             
             let derived_angle = knobValueToAngle(value);
             
-            console.log(value);
+            //console.log(value);
 
             // set rotation of knob by this angle, and normal axis of knob:
             object.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
@@ -1819,6 +1830,15 @@ function animate() {
 
         // TODO: delete once cables are instanced:
         updateDirty(scene, false);
+    }
+
+    //update Ghost Headset position
+    {
+        ghostHeadset.matrix.copy(camera.matrix);
+        ghostHeadset.matrix.decompose(ghostHeadset.position, ghostHeadset.quaternion, ghostHeadset.scale);
+        //ghostHeadset.matrix.premultiply( ghostHeadset.standingMatrix );	
+        ghostHeadset.matrixWorldNeedsUpdate = true;
+        ghostHeadset.updateMatrix();
     }
 
     // Interaction:
@@ -2414,12 +2434,20 @@ function doDebugMode(controller){
 }
 
 function logVR(...args){
+
     let msg = args.join(" ")
-    if(logMessageList.length > 40){
+    if(logMessageList.length >= 10){
         logMessageList.shift();
     } else {
         logMessageList.push(msg);
     }
+
+    deleteLabel(ghostHeadset);
+    console.log(logMessageList)
+    for(let [i, m] of logMessageList.entries()){
+        ghostHeadset.add(createLabel(m,-.5, .8 - (i/4),-4, 1));
+    }
+ 
 }
 
 
