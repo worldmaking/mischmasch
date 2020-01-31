@@ -1,0 +1,380 @@
+{
+	"nodes": {
+	  "oversampled:unipolar": {
+		"_props": {
+		  "min": "0 ",
+		  "max": "1",
+		  "pos": [
+			0.9962321957775218,
+			1.759,
+			0.8084617567308284
+		  ],
+		  "orient": [
+			0,
+			0,
+			0,
+			1
+		  ],
+		  "index": "5",
+		  "value": "0. ",
+		  "kind": "inlet",
+		  "text": "in 5 oversampled:unipolar @default 0. @min 0 @max 1",
+		  "maxrect": [
+			283,
+			241,
+			304,
+			22
+		  ]
+		}
+	  },
+	  "pulsewidth_unipolar_": {
+		"_props": {
+		  "comment": "pulsewidth:unipolar ",
+		  "min": "0.01 ",
+		  "max": "0.99",
+		  "pos": [
+			0.8062873080646306,
+			1.892,
+			0.9262206955439354
+		  ],
+		  "orient": [
+			0,
+			0,
+			0,
+			1
+		  ],
+		  "index": "4",
+		  "value": "0.5 ",
+		  "kind": "inlet",
+		  "text": "in 4 @comment pulsewidth:unipolar @default 0.5 @min 0.01 @max 0.99",
+		  "maxrect": [
+			228,
+			108,
+			397,
+			22
+		  ]
+		}
+	  },
+	  "gen__12": {
+		"_props": {
+		  "title": "squarewave",
+		  "pos": [
+			0.08700879783990942,
+			1.725,
+			1.0233076121569964
+		  ],
+		  "orient": [
+			0,
+			0,
+			0,
+			1
+		  ],
+		  "kind": "gen_",
+		  "text": "gen @title squarewave",
+		  "maxrect": [
+			27,
+			275,
+			187,
+			22
+		  ]
+		},
+		"in0": {
+		  "_props": {
+			"kind": "inlet",
+			"index": 0
+		  }
+		},
+		"in1": {
+		  "_props": {
+			"kind": "inlet",
+			"index": 1
+		  }
+		},
+		"in2": {
+		  "_props": {
+			"kind": "inlet",
+			"index": 2
+		  }
+		},
+		"in3": {
+		  "_props": {
+			"kind": "inlet",
+			"index": 3
+		  }
+		},
+		"out0": {
+		  "_props": {
+			"kind": "outlet",
+			"index": 0
+		  }
+		}
+	  },
+	  "duty_unipolar_": {
+		"_props": {
+		  "comment": "duty:unipolar ",
+		  "min": "0 ",
+		  "max": "1",
+		  "pos": [
+			0.6505920393277862,
+			1.923,
+			0.9904317232214003
+		  ],
+		  "orient": [
+			0,
+			0,
+			0,
+			1
+		  ],
+		  "index": "3",
+		  "value": "0 ",
+		  "kind": "inlet",
+		  "text": "in 3 @comment duty:unipolar @default 0 @min 0 @max 1",
+		  "maxrect": [
+			185,
+			77,
+			319,
+			22
+		  ]
+		}
+	  },
+	  "gen__10": {
+		"_props": {
+		  "title": "rampskew",
+		  "pos": [
+			0.2792054014358268,
+			1.778,
+			1.0463906267780971
+		  ],
+		  "orient": [
+			0,
+			0,
+			0,
+			1
+		  ],
+		  "kind": "gen_",
+		  "text": "gen @title rampskew",
+		  "maxrect": [
+			83,
+			222,
+			121,
+			22
+		  ]
+		},
+		"in0": {
+		  "_props": {
+			"kind": "inlet",
+			"index": 0
+		  }
+		},
+		"in1": {
+		  "_props": {
+			"kind": "inlet",
+			"index": 1
+		  }
+		},
+		"out0": {
+		  "_props": {
+			"kind": "outlet",
+			"index": 0
+		  }
+		}
+	  },
+	  "sync_trig_": {
+		"_props": {
+		  "comment": "sync:trig ",
+		  "pos": [
+			0.5478087289050452,
+			1.954,
+			1.019094988965915
+		  ],
+		  "orient": [
+			0,
+			0,
+			0,
+			1
+		  ],
+		  "index": "2",
+		  "value": "0",
+		  "kind": "inlet",
+		  "text": "in 2 @comment sync:trig @default 0",
+		  "maxrect": [
+			157,
+			46,
+			202,
+			22
+		  ]
+		}
+	  },
+	  "gen__8": {
+		"_props": {
+		  "title": "ramp",
+		  "pos": [
+			0.2792054014358268,
+			1.813,
+			1.0463906267780971
+		  ],
+		  "orient": [
+			0,
+			0,
+			0,
+			1
+		  ],
+		  "kind": "gen_",
+		  "text": "gen @title ramp",
+		  "maxrect": [
+			83,
+			187,
+			93,
+			22
+		  ]
+		},
+		"in0": {
+		  "_props": {
+			"kind": "inlet",
+			"index": 0
+		  }
+		},
+		"in1": {
+		  "_props": {
+			"kind": "inlet",
+			"index": 1
+		  }
+		},
+		"out0": {
+		  "_props": {
+			"kind": "outlet",
+			"index": 0
+		  }
+		}
+	  },
+	  "gen__7": {
+		"_props": {
+		  "title": "Hz2inc",
+		  "pos": [
+			0.08700879783990942,
+			1.851,
+			1.0233076121569964
+		  ],
+		  "orient": [
+			0,
+			0,
+			0,
+			1
+		  ],
+		  "kind": "gen_",
+		  "text": "gen @title Hz2inc",
+		  "maxrect": [
+			27,
+			149,
+			103,
+			22
+		  ]
+		},
+		"in0": {
+		  "_props": {
+			"kind": "inlet",
+			"index": 0
+		  }
+		},
+		"out0": {
+		  "_props": {
+			"kind": "outlet",
+			"index": 0
+		  }
+		}
+	  },
+	  "Hz_": {
+		"_props": {
+		  "comment": "Hz ",
+		  "pos": [
+			0.08700879783990942,
+			1.983,
+			1.0233076121569964
+		  ],
+		  "orient": [
+			0,
+			0,
+			0,
+			1
+		  ],
+		  "index": "1",
+		  "value": "440",
+		  "kind": "inlet",
+		  "text": "in 1 @comment Hz @default 440",
+		  "maxrect": [
+			27,
+			17,
+			186,
+			22
+		  ]
+		}
+	  },
+	  "squarewave_audio": {
+		"_props": {
+		  "comment": "squarewave:audio",
+		  "pos": [
+			0.08700879783990942,
+			1.683,
+			1.0233076121569964
+		  ],
+		  "orient": [
+			0,
+			0,
+			0,
+			1
+		  ],
+		  "index": "1",
+		  "kind": "outlet",
+		  "text": "out 1 @comment squarewave:audio",
+		  "maxrect": [
+			27,
+			317,
+			201,
+			22
+		  ]
+		}
+	  }
+	},
+	"arcs": [
+	  [
+		"gen__10.out0",
+		"gen__12.in1"
+	  ],
+	  [
+		"duty_unipolar_",
+		"gen__10.in1"
+	  ],
+	  [
+		"gen__12.out0",
+		"squarewave_audio"
+	  ],
+	  [
+		"pulsewidth_unipolar_",
+		"gen__12.in2"
+	  ],
+	  [
+		"oversampled:unipolar",
+		"gen__12.in3"
+	  ],
+	  [
+		"Hz_",
+		"gen__7.in0"
+	  ],
+	  [
+		"gen__7.out0",
+		"gen__12.in0"
+	  ],
+	  [
+		"gen__7.out0",
+		"gen__8.in0"
+	  ],
+	  [
+		"gen__8.out0",
+		"gen__10.in0"
+	  ],
+	  [
+		"sync_trig_",
+		"gen__8.in1"
+	  ]
+	]
+  }
