@@ -866,7 +866,10 @@ function initVRController(id=0) {
                 }
 
                 let requiredkind = (this.cablingState.needs == "dst") ? "inlet" : "outlet";
-                let matched = (kind != null && kind == requiredkind);
+                let requiredkind2 = (this.cablingState.needs == "dst") ? "large_knob" : "outlet";
+                let requiredkind3 = (this.cablingState.needs == "dst") ? "small_knob" : "outlet";
+
+                let matched = (kind != null && kind == requiredkind || kind == requiredkind2 || kind == requiredkind3);
                 // let matched = (kind == "outlet" || kind == "inlet"); // allows 'bridging'/'bussing' 
 
                 if (matched) {
@@ -1794,7 +1797,7 @@ function enactDeltaDeleteNode(world, delta) {
     // Realistically we shouldn't need to be searching the scene because cables should be instanced
     for(let i = cableWorld.children.length - 1; i >=0; i--){
         let c = cableWorld.children[i];
-        if(c.userData.isCable){
+        if(c.name.includes(delta.path)){
             destroy_cable(c);
         }
     }
