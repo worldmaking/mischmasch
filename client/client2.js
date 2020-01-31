@@ -1348,8 +1348,9 @@ function createLabel(text, x=0, y=0, z=0, uniformScaling=1){
 }
 
 function deleteLabel(container){
-    for(let l of container.children){
-        if(l.userData.isLabel){
+    for(let i = container.children.length - 1; i >= 0; i--){
+        let l = container.children[i];
+        if (l.userData.isLabel) {
             container.remove(l);
         }
     }
@@ -1791,8 +1792,9 @@ function enactDeltaDeleteNode(world, delta) {
     objParent.remove(object);
 
     // Realistically we shouldn't need to be searching the scene because cables should be instanced
-    for(let c of cableWorld.children){
-        if(c.name.includes(delta.path)){
+    for(let i = cableWorld.children.length - 1; i >=0; i--){
+        let c = cableWorld.children[i];
+        if(c.userData.isCable){
             destroy_cable(c);
         }
     }
@@ -2433,18 +2435,20 @@ function doDebugMode(controller){
    // controller.add(createLabel("Hello", 0, 0, 0))
 }
 
+let vrLogMessageList = [];
 function logVR(...args){
-
-    let msg = args.join(" ")
-    if(logMessageList.length >= 10){
-        logMessageList.shift();
+   
+    let msg = args.join(" ");
+    if(vrLogMessageList.length >= 10){
+        vrLogMessageList.shift();
+        vrLogMessageList.push(msg);
     } else {
-        logMessageList.push(msg);
+        vrLogMessageList.push(msg);
     }
 
     deleteLabel(ghostHeadset);
-    console.log(logMessageList)
-    for(let [i, m] of logMessageList.entries()){
+    console.log(vrLogMessageList)
+    for(let [i, m] of vrLogMessageList.entries()){
         ghostHeadset.add(createLabel(m,-.5, .8 - (i/4),-4, 1));
     }
  
