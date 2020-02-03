@@ -22,7 +22,7 @@ vec3 applyQuaternionToVector( vec4 q, vec3 v ){
 }
 
 void main() {
-
+        vUv = uv;
         vNormal = normalize(normal);
         vec3 shapedPosition = position;
         // cylinder case:
@@ -30,10 +30,16 @@ void main() {
                 shapedPosition.xy = normalize(shapedPosition.xy);
                 vNormal.xy = normalize(mix(shapedPosition.xy, vec2(0.), abs(vNormal.z)));
                 shapedPosition.xy *= 0.5;
+
+                if (shape > 1.5) {
+                        if (position.y > 0. && abs(position.x) < 0.1) {
+                                shapedPosition.xy *= 1.2;    
+                                vUv.x = mod(vUv.x + 0.5, 1.);
+                        }
+                }
         }
         vec3 vPosition = applyQuaternionToVector( orientation, shapedPosition * scale );
         vNormal = applyQuaternionToVector(orientation, vNormal);
-        vUv = uv;
         vColor = color;
         //vEmission = emission;
         vScale = scale;

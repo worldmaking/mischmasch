@@ -138,6 +138,7 @@ const CABLE_CONTROL_POINT_DISTANCE = 0.1;
 const BACKPANEL_DEPTH = 0.02
 const SHAPE_BOX = 0.3
 const SHAPE_CYLINDER = 1
+const SHAPE_KNOB = 2
 const NLET_RADIUS = 0.025;
 const NLET_HEIGHT = 0.01;
 const LARGE_KNOB_RADIUS = 0.055;
@@ -468,7 +469,7 @@ async function initInstanceBoxMesh() {
 
     // box spans signed-normalized range of -1..1 in each axis
     // with subdivisions in each axis
-    let bufferGeometry = new THREE.BoxBufferGeometry( 1,1,1,  5,5,1 );
+    let bufferGeometry = new THREE.BoxBufferGeometry( 1,1,1,  6,6,1 );
 
     instBoxGeometry = new THREE.InstancedBufferGeometry();
     instBoxGeometry.index = bufferGeometry.index;
@@ -660,7 +661,8 @@ function initVRController(id=0) {
                 // update controller label
                 let target = object;
                 // if label or backpanel, consider it's parent object instead
-                if (target.userData.isLabel || target.userData.isBackPanel) target = object.parent;
+                if (target.userData.isLabel || target.userData.isBackPanel || target.userData.kind == "_knob_") target = object.parent;
+                
                 // if module, use module kind rather than name
                 let text = (target.userData.isModule) ? target.userData.kind : target.name;
 
@@ -871,7 +873,6 @@ function initVRController(id=0) {
 
                 let matched = (kind != null && kind == requiredkind || kind == requiredkind2 || kind == requiredkind3);
                 // let matched = (kind == "outlet" || kind == "inlet"); // allows 'bridging'/'bussing' 
-
                 if (matched) {
                     // set jack to target:
                     cable.userData[this.cablingState.needs] = object;
@@ -1011,11 +1012,12 @@ function initVRController(id=0) {
                             // reparent target to controller:
                             reparentWithTransform(object, parent, this.ghostController)
 
-                            logVR("dragging")
+                            //logVR("dragging")
                         } else if (object.userData.isTwiddleable) {
+                        
                             // go into twidding mode
 
-                            logVR("start twiddling", name)
+                            //logVR("start twiddling", name)
 
                             // get the rotation transform that makes the knob the origin:
                             let moduleQuat = new THREE.Quaternion();
@@ -1406,15 +1408,26 @@ function enactDeltaNewNode(world, delta) {
             // container.add(label);
             container.add(createLabel(name));
         } break;
+        case "small_knob":
         case "large_knob":{
+
+           
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, NLET_HEIGHT);
-            container.userData.instanceShape = SHAPE_CYLINDER
+            container.userData.instanceShape = SHAPE_CYLINDER;
             container.userData.color = colorFromString(name);
-            container.userData.isTwiddleable = true;
-            container.userData.value = delta.value;
+            container.add(createLabel(name));
             //container.add(new THREE.AxesHelper(1));
-
+            let knob = new THREE.Mesh(boxGeom, boxMat);
+            knob.scale.set(.75, .75, 1)
+            knob.position.set(0,0,1)
+            knob.userData.isTwiddleable = true;
+            knob.userData.value = delta.value;
+            knob.userData.kind = "_knob_"
+            knob.userData.color = colorFromString(name);
+            knob.userData.instanceShape = SHAPE_KNOB;
+            knob.name = "_knob_"+name
+            knob.userData.path = delta.path + "._knob_" + name;
             // // label:
             // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
             // container.add(label);
@@ -1426,35 +1439,35 @@ function enactDeltaNewNode(world, delta) {
             let derived_angle = knobValueToAngle(delta.value); 
             
             // set rotation of knob by this angle, and normal axis of knob:
-            container.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
+            knob.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
 
-            container.add(createLabel(name));
+            container.add(knob);
         }break;
-        case "small_knob":{
-            container = new THREE.Mesh(boxGeom, boxMat);
-            container.scale.set(SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, NLET_HEIGHT);
-            container.userData.instanceShape = SHAPE_CYLINDER
-            container.userData.color = colorFromString(name);
-            container.userData.isTwiddleable = true;
-            container.userData.value = delta.value;
-            //container.add(new THREE.AxesHelper(1));
+        // case "small_knob":{
+        //     container = new THREE.Mesh(boxGeom, boxMat);
+        //     container.scale.set(SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, NLET_HEIGHT);
+        //     container.userData.instanceShape = SHAPE_KNOB;
+        //     container.userData.color = colorFromString(name);
+        //     container.userData.isTwiddleable = true;
+        //     container.userData.value = delta.value;
+        //     //container.add(new THREE.AxesHelper(1));
 
-            // // label:
-            // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
-            // container.add(label);
+        //     // // label:
+        //     // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
+        //     // container.add(label);
 
-            let min = delta.range[0];
-            let max = delta.range[1];
-            let scaledValue = (delta.value - min) / (max - min);
-            //scaledValue = wrap(scaledValue, 1);
+        //     let min = delta.range[0];
+        //     let max = delta.range[1];
+        //     let scaledValue = (delta.value - min) / (max - min);
+        //     //scaledValue = wrap(scaledValue, 1);
 
-            let derived_angle = knobValueToAngle(delta.value); 
+        //     let derived_angle = knobValueToAngle(delta.value); 
             
-            // set rotation of knob by this angle, and normal axis of knob:
-            container.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
+        //     // set rotation of knob by this angle, and normal axis of knob:
+        //     container.quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), derived_angle);
 
-            container.add(createLabel(name));
-        }break;
+        //     container.add(createLabel(name));
+        // }break;
         case "n_switch": {
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(NSWITCH_WIDTH, NSWITCH_HEIGHT, NSWITCH_DEPTH);
@@ -1536,7 +1549,12 @@ function cableUpdateGeometry(cableMesh) {
         // use src (outlet) orientation for our cable orientation 
         src.getWorldQuaternion(srcJackMesh.quaternion);
         // use src (outlet) position for our start point (position[0])
-        src.getWorldPosition(positions[0]);
+
+        let temp = new THREE.Vector3();
+        src.getWorldPosition(temp);
+        positions[0].set(0,0, (NLET_HEIGHT + CABLE_JACK_HEIGHT)/2)
+            .applyQuaternion(srcJackMesh.quaternion)
+            .add(temp);
         // set positions[1] control point accordingly:
         positions[1]
             .set(0, 0, (NLET_HEIGHT + CABLE_CONTROL_POINT_DISTANCE) / 2)
@@ -1563,8 +1581,12 @@ function cableUpdateGeometry(cableMesh) {
     }
 
     if (dst) {
-        dst.getWorldPosition(positions[3]);
         dst.getWorldQuaternion(dstJackMesh.quaternion);
+        let temp = new THREE.Vector3();
+        dst.getWorldPosition(temp);
+        positions[3].set(0,0, (NLET_HEIGHT + CABLE_JACK_HEIGHT)/2)
+        .applyQuaternion(dstJackMesh.quaternion)
+        .add(temp);
         positions[2]
             .set(0, 0, (NLET_HEIGHT + CABLE_CONTROL_POINT_DISTANCE) / 2)
             .applyQuaternion(dstJackMesh.quaternion)
@@ -1759,12 +1781,11 @@ function enactDeltaObjectValue(world, delta) {
     let value = delta.to;
     switch(kind){
         case "small_knob":
-        case "large_knob": {
+        case "_knob_": {
             value = value.toFixed(2);
             object.userData.value = value;
             //console.log("Back from server Value", value)
             //Update once server says:
-            
             let derived_angle = knobValueToAngle(value);
             
             //console.log(value);
