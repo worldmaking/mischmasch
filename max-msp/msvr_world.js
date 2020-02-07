@@ -18,7 +18,6 @@ var feedbackConnections = 0
 var checkspeaker = new Array();
 var Ycounter;
 var newModule;
-var speakerNumber = 1
 var speakerTable = []
 
 // contain all the buffers
@@ -103,12 +102,17 @@ var handleDelta = function(delta) {
 					
 					switch(delta.category){
 						
-						case "abstraction":
+						case "abstraction": 
 							if(kind === "speaker"){
 
 
-								// var newSpeaker = gen_patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, 'out', speakerNumber])
-								//newSpeaker.varname = 'speaker_' + speakerNumber
+								var speakerName = delta.path.split('.')[0];
+								var speakerNumber = speakerName.split('_')[1];
+								
+								post("Speaker Name: ", speakerName)
+								post("Speaker Number: ", speakerNumber)
+								var newSpeaker = gen_patcher.newdefault([50, posY * 150, 'out', speakerNumber])
+								newSpeaker.varname = speakerName;
 
 		
 		
@@ -116,12 +120,10 @@ var handleDelta = function(delta) {
 		
 								
 								// if kind is speaker, connect its outlets to the out1 and out2 in gen~ world
-
-
-								newSpeaker = gen_patcher.newdefault([20, Ycounter * 10, 'out', speakerNumber])
-								newSpeaker.varname = delta.path.split('.')[0]
+								//newSpeaker = gen_patcher.newdefault([20, Ycounter * 10, 'out', speakerNumber])
+								
 								post('\n\n', newSpeaker.varname)
-
+								
 								// add a vr.Source~ abstraction to parent, script the new out to this abstraction, use delta.pos to provide the vr.source~ position
 								var vrSource = this.patcher.newdefault([940 + (speakerNumber * 100), 1650, "vr.source~", speakerNumber - 1, "@position", delta.pos[0], delta.pos[1], delta.pos[2] ])
 								vrSource.varname = "source_" + speakerNumber
@@ -129,17 +131,16 @@ var handleDelta = function(delta) {
 
 								// gen~ and max outlets are base 0 (mth), our speaker numbers are base 1 (nth)
 								// TODO decide on base 0 or 1 (I advocate for 0, because this also works with array indices) 
-								worldOutlet = speakerNumber - 1
-								post("script", "connect", 'world',  "speaker_" + worldOutlet,  "source_" + speakerNumber, 0)								
+								
+								post("script", "connect", 'world', speakerNumber,  "source_" + speakerNumber, 0)								
 								post('\n\nvarname', vrSource.varname, '\n')
-								this.patcher.message("script", "connect", 'world', worldOutlet,  "source_" + speakerNumber, 0);
+								this.patcher.message("script", "connect", 'world', speakerNumber,  "source_" + speakerNumber, 0);
 
 								// vrSource2CHMain is a 2channel gain slider located just below the gen~ world. All vr.Source~ objects script connect into lef and right. 
 								this.patcher.message("script", "connect", "source_" + speakerNumber, 0, 'vrSource2CHMain', 0);
-
+ 
 								this.patcher.message("script", "connect", "source_" + speakerNumber, 1, 'vrSource2CHMain', 1);
-
-								speakerNumber++
+								
 							} else {
 								newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
 								newModule.varname = delta.path.split('.')[0]
@@ -468,7 +469,7 @@ function client(msg){
 		case "clear_scene":
 			outlet(0, 'clear_scene')
 			for (i = 0; i < speakerTable.length; i++){
-				outlet(8, 'delete', speakerTable[i])
+				outlet(8, 'script', 'delete', speakerTable[i])
 
 			}
 			vizBuffers = new Array()
@@ -490,7 +491,6 @@ function client(msg){
 
 			bufferStorage.apply(function(b) { 
 			
-				// prevent erasing our audio outputs from genpatcher
 					gen_patcher.remove(b); 		
 				
 			});

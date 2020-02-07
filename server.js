@@ -360,6 +360,7 @@ function handlemessage(msg, sock, id) {
 			//fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(response), "utf-8")
 
 			//OTHistory.push(JSON.stringify(response))
+			console.log(localGraph)
 			send_all_clients(JSON.stringify(response));
 		} break;
 
@@ -481,7 +482,7 @@ function handlemessage(msg, sock, id) {
 			// JSON not streamable format so close out the history file 
 			//fs.appendFileSync(OTHistoryFile, ']', "utf-8")
 
-			let deltas = load_scene("scene_blank.json")
+			let deltas = load_scene("scene_speaker.json")
 			// create new history file & add scene as header
 			//OTHistoryFile = '../histories/OT_' + Date.now() + '.json'
 			// let header = {}
@@ -557,7 +558,7 @@ server.listen(8080, function() {
 });
 
 //// TMP HACK
-load_scene("scene_edited.json")
+load_scene("scene_noise.json")
 
 
 function intervalFunc() {

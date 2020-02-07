@@ -73,3 +73,4 @@ typings/
 .next
 
 histories/
+select_histories/*

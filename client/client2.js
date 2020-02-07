@@ -55,7 +55,7 @@ function clamp(num, min, max) {
 let gensym = (function() {
     let nodeid = 0;
     return function (prefix="node") {
-        return `${prefix}_${userPose.id}_${nodeid++}`
+        return `${prefix}_${nodeid++}_${userPose.id}`
     }
 })();
 
@@ -962,6 +962,7 @@ function initVRController(id=0) {
 
                                 let delta = spawnSingleModule([p1.x, p1.y, p1.z], [q._x, q._y, q._z, q._w], object.userData.kind);
                                 outgoingDeltas.push(delta);
+                                console.log(delta)
 
                                 // somehow set a state that waits for an incomingDelta and will select it for dragging once it comes
 
