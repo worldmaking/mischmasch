@@ -1,3 +1,4 @@
+// import { max } from "gl-matrix/src/gl-matrix/vec2";
 
 inlets = 3
 outlets = 9
@@ -18,7 +19,7 @@ var feedbackConnections = 0
 var checkspeaker = new Array();
 var Ycounter;
 var newModule;
-var speakerNumber = 1
+// var speakerNumber = 1
 var speakerTable = []
 
 // contain all the buffers
@@ -32,21 +33,21 @@ var vizBuffers = new Array();
 
 gen_patcher = this.patcher.getnamed("world").subpatcher();
 bufferStorage = this.patcher.getnamed("bufferStorage").subpatcher();
-function ensurespeaker(){
-	var hasspeaker = 0;
-	gen_patcher.apply(function(b) { 
-		scriptname = b.varname.indexOf('speaker_')
-		if(scriptname > -1){
-		hasspeaker = 1
+// function ensurespeaker(){
+// 	var hasspeaker = 0;
+// 	gen_patcher.apply(function(b) { 
+// 		scriptname = b.varname.indexOf('speaker_')
+// 		if(scriptname > -1){
+// 		hasspeaker = 1
 		
-		}
-	})
-	// always keep an speaker module in the scene
-	if (hasspeaker === 0){
-		// spawn an speaker module
-		//outlet(5, 'ensurespeaker')
-		}	
-	}
+// 		}
+// 	})
+// 	// always keep an speaker module in the scene
+// 	if (hasspeaker === 0){
+// 		// spawn an speaker module
+// 		//outlet(5, 'ensurespeaker')
+// 		}	
+// 	}
 function getVarnames(target){
 	gen_patcher.apply(function(b) { 
 		// prevent erasing our audio outputs from genpatcher
@@ -116,10 +117,13 @@ var handleDelta = function(delta) {
 		
 								
 								// if kind is speaker, connect its outlets to the out1 and out2 in gen~ world
-
-
-								newSpeaker = gen_patcher.newdefault([20, Ycounter * 10, 'out', speakerNumber])
 								newSpeaker.varname = delta.path.split('.')[0]
+								let speakerNumber = newSpeaker.varname.split('_')[1]
+								newSpeaker = gen_patcher.newdefault([20, Ycounter * 10, 'out', speakerNumber])
+								
+								
+								post('global instance number', newSpeaker.varname.split('_')[1])
+								post('\n\npath:', delta.path.split('.'))
 								post('\n\n', newSpeaker.varname)
 
 								// add a vr.Source~ abstraction to parent, script the new out to this abstraction, use delta.pos to provide the vr.source~ position
@@ -130,16 +134,16 @@ var handleDelta = function(delta) {
 								// gen~ and max outlets are base 0 (mth), our speaker numbers are base 1 (nth)
 								// TODO decide on base 0 or 1 (I advocate for 0, because this also works with array indices) 
 								worldOutlet = speakerNumber - 1
-								post("script", "connect", 'world',  "speaker_" + worldOutlet,  "source_" + speakerNumber, 0)								
+								post("script", "connect", 'world',  "speaker_" + worldOutlet,  vrSource.varname, 0)								
 								post('\n\nvarname', vrSource.varname, '\n')
-								this.patcher.message("script", "connect", 'world', worldOutlet,  "source_" + speakerNumber, 0);
+								this.patcher.message("script", "connect", 'world', worldOutlet,  vrSource.varname, 0);
 
 								// vrSource2CHMain is a 2channel gain slider located just below the gen~ world. All vr.Source~ objects script connect into lef and right. 
-								this.patcher.message("script", "connect", "source_" + speakerNumber, 0, 'vrSource2CHMain', 0);
+								this.patcher.message("script", "connect", vrSource.varname, 0, 'vrSource2CHMain', 0);
 
-								this.patcher.message("script", "connect", "source_" + speakerNumber, 1, 'vrSource2CHMain', 1);
-
-								speakerNumber++
+								this.patcher.message("script", "connect", vrSource.varname, 1, 'vrSource2CHMain', 1);
+								post('\n\n delta.path: \n', delta.path)
+								// speakerNumber++
 							} else {
 								newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
 								newModule.varname = delta.path.split('.')[0]

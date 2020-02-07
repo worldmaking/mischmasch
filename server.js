@@ -344,7 +344,7 @@ function handlemessage(msg, sock, id) {
 				date: Date.now(),
 				data: msg.data
 			};
-			console.log(msg.data)
+			console.log('\n\n delta ',msg.data)
 			
 			// check if the recording status is active, if so push received delta(s) to the recordJSON
 			if (recordStatus === 1){
@@ -557,7 +557,7 @@ server.listen(8080, function() {
 });
 
 //// TMP HACK
-load_scene("scene_edited.json")
+load_scene("scene_noise.json")
 
 
 function intervalFunc() {

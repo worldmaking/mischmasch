@@ -1,27 +1,30 @@
-const test = Machine({
+const { Machine, actions, interpret } = XState; // global variable: window.XState
+
+
+const controllerMachines = Machine({
     id: 'world',
     initial: 'editmode',
-    machines: {
+    states: {
         editmode:{
             initial: 'default',
             states:{
                 default:{
                     on:{
                         GRABDOWN: {
-                            target: 'dragging', 
-                            cond: ['controller', 'targetexists', 'backpanel'],
+                            target: 'dragging'
+                           // cond: ['controller', 'targetexists', 'backpanel'],
                         },
                         GRABDOWN: {
-                            target:  'twiddling',
-                            cond: ['controller', 'targetexists', 'twiddleable'],
+                            target:  'twiddling'
+                            //cond: ['controller', 'targetexists', 'twiddleable'],
                         },
                         GRABPRESS: {
-                            target: 'disconnect',
-                            cond: ['controller', 'targetexists','isJackSrc_or_Dst']
+                            target: 'disconnect'
+                            //cond: ['controller', 'targetexists','isJackSrc_or_Dst']
                         },
                         GRABPRESS: {
-                            target: 'cabling',
-                            cond: ['controller', 'targetexists','isJack_Inlet_or_Outlet']
+                            target: 'cabling'
+                           // cond: ['controller', 'targetexists','isJack_Inlet_or_Outlet']
                         }
                     }
                 },
@@ -29,15 +32,15 @@ const test = Machine({
                     on:{
                         GRABRELEASE: {
                             target: 'deletenode',
-                            cond: 'Target.y < 0 (range_valueChecker)'
+                            //cond: 'Target.y < 0 (range_valueChecker)'
                         },
                         GRABRELEASE: {
                             target: 'default',
-                            cond: 'Target.y >= 0 (range_valueChecker)'
+                           // cond: 'Target.y >= 0 (range_valueChecker)'
                         }
                     },
                     active: {
-                         entry: ['setDragState', 'reparent Target'],
+                        entry: ['setDragState', 'reparent Target'],
                         exit: ['reparent Target']
                     }
                 },
@@ -81,8 +84,7 @@ const test = Machine({
                         }
                     },
                     active: {
-                        entry: 'setCablingState'
-                    }
+                        entry: 'setCabling 
                 },
                 connect: {
                     on:{

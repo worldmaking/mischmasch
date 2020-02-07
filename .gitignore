@@ -9,6 +9,7 @@
 session_recordings/
 
 */session_recordings/
+select_histories/*
 
 # Logs
 logs
