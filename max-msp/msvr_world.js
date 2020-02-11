@@ -127,7 +127,9 @@ var handleDelta = function(delta) {
 								// add a vr.Source~ abstraction to parent, script the new out to this abstraction, use delta.pos to provide the vr.source~ position
 								var vrSource = this.patcher.newdefault([940 + (speakerNumber * 100), 1650, "vr.source~", speakerNumber - 1, "@position", delta.pos[0], delta.pos[1], delta.pos[2] ])
 								vrSource.varname = "source_" + speakerNumber
-								speakerTable.push("source_" + speakerNumber)
+								// key groundTruth, value = the same node path in its delta and scenegraph; genContext: number of speakers in scenegraph, correspond to number of out objects scripted into gen~ world with base 1. 
+								// the vr.source~ objects instantiated in parent patcher should also have their first arg be the genContext value, but scripting name be the groundTruth value
+								speakerTable.push({"groundTruth": vrSource.varname, "genContext": genOutCounter})
 
 								// gen~ and max outlets are base 0 (mth), our speaker numbers are base 1 (nth)
 								// TODO decide on base 0 or 1 (I advocate for 0, because this also works with array indices) 
