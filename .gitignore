@@ -1,7 +1,7 @@
 # osx
 .DS_Store
 */.DS_Store
-
+.vscode/*
 # mediafiles
 *.mp4
 *.mpg

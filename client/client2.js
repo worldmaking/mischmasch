@@ -1363,10 +1363,10 @@ function deleteLabel(container){
 }
 
 function enactDeltaNewNode(world, delta) {
-    // TODO: identify which world to add it to
+    // TODO:  identify which world to add it to
     let parent = world;
 
-    // first, find parent.
+    //first, find parent.
     let path = delta.path;
     let name, parentpath;
     let pathlastdot = path.lastIndexOf(".")
@@ -2431,6 +2431,17 @@ function onKeypress(e) {
         case "d": {
             debugMode = (debugMode == false) ? true : false;
         } break;
+        case "s": {
+            let delta = spawnSingleModule([0, 0, 0], [0, 0, 0, 1], "speaker");
+            outgoingDeltas.push(delta);
+        }break;
+        case "l":{ 
+            // let message = ;
+            sock.send(JSON.stringify({
+                cmd: "clear_scene",
+                date: Date.now()
+            }))
+        }break;
         default: {
             log("key press", e.which, e.key)
         }

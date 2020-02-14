@@ -1,6 +1,7 @@
+// import { max } from "gl-matrix/src/gl-matrix/vec2";
 
 inlets = 3
-outlets = 9
+outlets = 10
 	// get a reference to "thegen"'s embedded gen patcher:
 var varnameCount = 0
 
@@ -23,6 +24,7 @@ var genOutCounter = 1
 // contain all the buffers
 var pb = new PolyBuffer('world_polybuffer');       // PolyBuffer instantiates a polybuffer~ object named by second argument to js  
 
+var speakerTableDict = new Dict("speakerTableDict");
 // buffer channels for visual feedback
 var bufferChannelCounter = 0;
 var bufferChannelPaths = [];
@@ -111,13 +113,14 @@ var handleDelta = function(delta) {
 								
 								post("Speaker Name: ", speakerName)
 								post("Speaker Number: ", speakerNumber)
-								var newSpeaker = gen_patcher.newdefault([50, posY * 150, 'out', speakerNumber])
+								// TODO this is one place where we need to deal with the speaker/vr_source lookup table
+								var newSpeaker = gen_patcher.newdefault([50, posY * 150, 'out', genOutCounter])
 								newSpeaker.varname = speakerName;
 
 		
 		
 								//need to get its position in vr and apply that to a vr.source~ position
-		
+								// 1420. 544. 289. 22.
 								
 								// if kind is speaker, connect its outlets to the out1 and out2 in gen~ world
 								//newSpeaker = gen_patcher.newdefault([20, Ycounter * 10, 'out', speakerNumber])
@@ -125,26 +128,28 @@ var handleDelta = function(delta) {
 								post('\n\n', newSpeaker.varname)
 								
 								// add a vr.Source~ abstraction to parent, script the new out to this abstraction, use delta.pos to provide the vr.source~ position
-								var vrSource = this.patcher.newdefault([940 + (speakerNumber * 100), 1650, "vr.source~", genOutCounter - 1, "@position", delta.pos[0], delta.pos[1], delta.pos[2] ])
-								vrSource.varname = "source_" + genOutCounter
+								var vrSource = this.patcher.newdefault([1420 + (genOutCounter * 100), 570, "vr.source~", genOutCounter - 1, "@position", delta.pos[0], delta.pos[1], delta.pos[2] ])
+								vrSource.varname = "source_" + speakerNumber
+								post('\n\nvarname:', vrSource.varname)
 
 
 								// key groundTruth, value = the same node path in its delta and scenegraph; genContext: number of speakers in scenegraph, correspond to number of out objects scripted into gen~ world with base 1. 
 								// the vr.source~ objects instantiated in parent patcher should also have their first arg be the genContext value, but scripting name be the groundTruth value
 								speakerTable.push({"groundTruth": vrSource.varname, "genContext": genOutCounter})
-
+								// post(speakerTable)
+								// speakerTableDict.setparse(speakerTable)
 								// gen~ and max outlets are base 0 (mth), our speaker numbers are base 1 (nth)
 								// TODO decide on base 0 or 1 (I advocate for 0, because this also works with array indices) 
 								
-								post("script", "connect", 'world', speakerNumber,  "source_" + speakerNumber, 0)								
-								post('\n\nvarname', vrSource.varname, '\n')
-								this.patcher.message("script", "connect", 'world', speakerNumber,  "source_" + speakerNumber, 0);
+								outlet(9, 'genConnect', genOutCounter, speakerNumber)
 
 								// vrSource2CHMain is a 2channel gain slider located just below the gen~ world. All vr.Source~ objects script connect into lef and right. 
 								this.patcher.message("script", "connect", "source_" + speakerNumber, 0, 'vrSource2CHMain', 0);
  
 								this.patcher.message("script", "connect", "source_" + speakerNumber, 1, 'vrSource2CHMain', 1);
 								
+
+								genOutCounter++
 							} else {
 								newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
 								newModule.varname = delta.path.split('.')[0]
