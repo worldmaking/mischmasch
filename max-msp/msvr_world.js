@@ -1,7 +1,9 @@
 // import { max } from "gl-matrix/src/gl-matrix/vec2";
 
+// import { max } from "gl-matrix/src/gl-matrix/vec2";
+
 inlets = 3
-outlets = 10
+outlets = 11
 	// get a reference to "thegen"'s embedded gen patcher:
 var varnameCount = 0
 
@@ -24,6 +26,11 @@ var genOutCounter = 1
 // contain all the buffers
 var pb = new PolyBuffer('world_polybuffer');       // PolyBuffer instantiates a polybuffer~ object named by second argument to js  
 
+function resetCounters(){
+	counter = 1;
+	feedbackConnections = 0
+	genOutCounter = 1
+}
 var speakerTableDict = new Dict("speakerTableDict");
 // buffer channels for visual feedback
 var bufferChannelCounter = 0;
@@ -147,7 +154,7 @@ var handleDelta = function(delta) {
 								this.patcher.message("script", "connect", "source_" + speakerNumber, 0, 'vrSource2CHMain', 0);
  
 								this.patcher.message("script", "connect", "source_" + speakerNumber, 1, 'vrSource2CHMain', 1);
-								
+								post(genOutCounter)
 
 								genOutCounter++
 							} else {
@@ -347,8 +354,23 @@ var handleDelta = function(delta) {
 			
 			// delete an object
 			case "delnode":
+				// var newDict = new Dict
 				var deleteMe = delta.path.replace('.', '__');
-				
+				// outlet(10,delta)
+				// dict.set(delta)
+				post(delta.path.split('_')[0], delta.path.split('_')[1])
+				if(delta.path.split('_')[0] === 'speaker'){
+					//var speakerName = delta.path.split('')[0];
+					//var speakerNumber = speakerName.split('_')[1];
+					var thisVarname = 'source_' + delta.path.split('_')[1]
+					post(thisVarname)
+					outlet(10, 'thispatcher', 'script', 'delete', thisVarname)
+					// this.patcher.remove(thisVarname)
+
+					// then remove from gen~ world
+					
+
+				}
 				gen_patcher.apply(function(b) { 
 					// prevent erasing our audio outputs from genpatcher
 					if(b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
@@ -359,6 +381,8 @@ var handleDelta = function(delta) {
 						}
 					}
 				});
+				
+			
 				/*
 				var deleteSetParam = 'setparam_' + deleted
 				post('\n',deleteSetParam, '\n',deleted)
@@ -436,7 +460,7 @@ var handleDelta = function(delta) {
 		} 
 	}
 }
-
+/*
 // this is only for working within max
 function clear(){
 	bufferChannelCounter = 0;
@@ -458,7 +482,7 @@ function clear(){
 			//store varnames per node
 			varnamesTable = [];	
 }
-
+*/
 
 function client(msg){
 	
