@@ -2,6 +2,22 @@
 
 // import { max } from "gl-matrix/src/gl-matrix/vec2";
 
+this.patcher.apply(function(b) { 
+	// post(b.varname)
+	
+	if(b.varname.split('_')[0] === 'source'){
+		post(b.varname)
+	}
+	// prevent erasing our audio outputs from genpatcher
+	// if(b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
+	// 	//post('\n',deleteMe,2)
+	// 	if (b.varname.indexOf(deleteMe) != -1){
+
+	// 		gen_patcher.remove(b); 				
+	// 	}
+	// }
+});
+
 inlets = 3
 outlets = 11
 	// get a reference to "thegen"'s embedded gen patcher:
@@ -93,7 +109,7 @@ var handleDelta = function(delta) {
 			// create an object!
 			case "newnode": 
 				if (delta.kind === 'controller1'){
-				post('\n\n',delta.kind)
+				// post('\n\n',delta.kind)
 				}
 				// individual delta to handle:
 				paramCounter = 0;
@@ -118,8 +134,6 @@ var handleDelta = function(delta) {
 								var speakerName = delta.path.split('.')[0];
 								var speakerNumber = speakerName.split('_')[1];
 								
-								post("Speaker Name: ", speakerName)
-								post("Speaker Number: ", speakerNumber)
 								// TODO this is one place where we need to deal with the speaker/vr_source lookup table
 								var newSpeaker = gen_patcher.newdefault([50, posY * 150, 'out', genOutCounter])
 								newSpeaker.varname = speakerName;
@@ -132,12 +146,10 @@ var handleDelta = function(delta) {
 								// if kind is speaker, connect its outlets to the out1 and out2 in gen~ world
 								//newSpeaker = gen_patcher.newdefault([20, Ycounter * 10, 'out', speakerNumber])
 								
-								post('\n\n', newSpeaker.varname)
 								
 								// add a vr.Source~ abstraction to parent, script the new out to this abstraction, use delta.pos to provide the vr.source~ position
 								var vrSource = this.patcher.newdefault([1420 + (genOutCounter * 100), 570, "vr.source~", genOutCounter - 1, "@position", delta.pos[0], delta.pos[1], delta.pos[2] ])
 								vrSource.varname = "source_" + speakerNumber
-								post('\n\nvarname:', vrSource.varname)
 
 
 								// key groundTruth, value = the same node path in its delta and scenegraph; genContext: number of speakers in scenegraph, correspond to number of out objects scripted into gen~ world with base 1. 
@@ -154,13 +166,11 @@ var handleDelta = function(delta) {
 								this.patcher.message("script", "connect", "source_" + speakerNumber, 0, 'vrSource2CHMain', 0);
  
 								this.patcher.message("script", "connect", "source_" + speakerNumber, 1, 'vrSource2CHMain', 1);
-								post(genOutCounter)
 
 								genOutCounter++
 							} else {
 								newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
 								newModule.varname = delta.path.split('.')[0]
-								post(newModule.varname)
 
 							}
 
@@ -169,13 +179,11 @@ var handleDelta = function(delta) {
 						case "operator":
 								newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
 								newModule.varname = delta.path.split('.')[0]
-								post(newModule.varname)
 						break;
 						
 						default:
 								newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
 								newModule.varname = delta.path.split('.')[0]
-								post(newModule.varname)
 						break;	
 					}
 					
@@ -358,12 +366,10 @@ var handleDelta = function(delta) {
 				var deleteMe = delta.path.replace('.', '__');
 				// outlet(10,delta)
 				// dict.set(delta)
-				post(delta.path.split('_')[0], delta.path.split('_')[1])
 				if(delta.path.split('_')[0] === 'speaker'){
 					//var speakerName = delta.path.split('')[0];
 					//var speakerNumber = speakerName.split('_')[1];
 					var thisVarname = 'source_' + delta.path.split('_')[1]
-					post(thisVarname)
 					outlet(10, 'thispatcher', 'script', 'delete', thisVarname)
 					// this.patcher.remove(thisVarname)
 
@@ -382,6 +388,7 @@ var handleDelta = function(delta) {
 					}
 				});
 				
+
 			
 				/*
 				var deleteSetParam = 'setparam_' + deleted
@@ -486,7 +493,6 @@ function clear(){
 
 function client(msg){
 	
-	//post(msg)
 	var ot = JSON.parse(msg)
 	
 	
@@ -549,7 +555,6 @@ function client(msg){
 			//var delta = new Dict("delta");
 			//delta.parse(msg);
 
-		//	post("msg data", ot.data, "\n")
 			
 			handleDelta(ot.data);
 		} break;
@@ -622,22 +627,21 @@ function client(msg){
 
 		// create a new outlet in gen~ world for each added speaker
 		if (kind === "speaker"){
-						// create the speaker aka gen [out #]
-						var newSpeaker = gen_patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, 'out', speakerNumber])
-						newSpeaker.varname = 'speaker_' + speakerNumber
-						// add a vr.Source~ abstraction to parent, script the new out to this abstraction. 
-						var vrSource = this.patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, "vr.source~", speakerNumber - 1, "@varname", "source_" + speakerNumber])
+						// // create the speaker aka gen [out #]
+						// var newSpeaker = gen_patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, 'out', speakerNumber])
+						// newSpeaker.varname = 'speaker_' + speakerNumber
+						// // add a vr.Source~ abstraction to parent, script the new out to this abstraction. 
+						// var vrSource = this.patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, "vr.source~", speakerNumber - 1, "@varname", "source_" + speakerNumber])
 						
-						this.patcher.message("script", "connect", 'world',  "speaker_" + speakerNumber - 1,  "source_" + speakerNumber, 0);
+						// this.patcher.message("script", "connect", 'world',  "speaker_" + speakerNumber - 1,  "source_" + speakerNumber, 0);
 
 
-						// need to get its position in vr and apply that to a vr.source~ position
+						// // need to get its position in vr and apply that to a vr.source~ position
 
-						speakerNumber++
+						// speakerNumber++
 		} else if (kind === "param"){
 			// ignore gen operator-based param modules in the next section
 			} else if(kind === "controller1" || kind === "controller2" || kind === "headset"){
-				post('caught ' + kind)
 					paramX = paramCounter * 150
 					// generate the subparam which the param will bind to
 					var setparam = gen_patcher.newdefault([(pos[0] + counter) * 100 + paramX, (pos[1] + counter) * 50 - 25, "setparam", key])
@@ -798,12 +802,13 @@ function client(msg){
 
 
 function getBuffers(){
-	post('\n',vizBuffers)
+	// post('\n',vizBuffers)
 }
 
 // this bootstraps an issue where the .peek function wouldn't reference a buffer name created in a different function scope (despite the name being stored globally)
 var bucket = new Buffer("bucket")
 
+/*
 function visualize(sampleRate, resolution){
 	opPath = null
 	opValue = null
@@ -833,9 +838,9 @@ function visualize(sampleRate, resolution){
 		outlet(0,'vizData',JSON.stringify(vizObj))
 		// outlet(',JSON.stringify(vizObj))
 }
+*/
 
-
-
+/*
 // this one is a bit different: this is for sending buffer data points to 
 // a buffer object instantiated within the VR space
 function transmitBuffer(sampleRate, resolution){
@@ -873,7 +878,7 @@ function transmitBuffer(sampleRate, resolution){
 		})
 		post('\n',newBuffer)
 	}
-
+*/
 // function bang2()
 // {
 // 		//outlet(4, JSON.parse(buf))

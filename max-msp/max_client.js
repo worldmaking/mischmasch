@@ -145,7 +145,7 @@ connection.addEventListener('message', (data) => {
 		case "patch":	
 		dataGen = JSON.stringify(data)
 		max.outlet('toGen', dataGen)
-		max.post('\n\n', data)
+		//max.post('\n\n', data)
 
 		
 		break;
