@@ -84,6 +84,7 @@ if (process.argv[2] === 'localhost'){
 
 // run function when ws opens...
 connection.addEventListener('open', () => {
+	max.outlet('toMsvr_world_js','initiate')
 	// clear the filename umenu in the controller.maxpat
 	max.outlet('clearPlaybackList', 'clear')
 

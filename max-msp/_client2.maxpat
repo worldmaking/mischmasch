@@ -15442,8 +15442,8 @@
 					"id" : "obj-83",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
-					"numoutlets" : 1,
-					"outlettype" : [ "signal" ],
+					"numoutlets" : 2,
+					"outlettype" : [ "signal", "signal" ],
 					"patching_rect" : [ 1422.0, 511.0, 289.0, 22.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 576.0, 10.0, 68.0, 22.0 ],
@@ -18628,11 +18628,11 @@
 				"box" : 				{
 					"id" : "obj-26",
 					"maxclass" : "newobj",
-					"numinlets" : 10,
-					"numoutlets" : 10,
-					"outlettype" : [ "", "", "", "", "", "", "", "", "", "" ],
-					"patching_rect" : [ 235.20001220703125, 473.0, 631.0, 22.0 ],
-					"text" : "route playback playbackStatus clearPlaybackList playbackList filenameExists sceneList recordStatus toGen userData"
+					"numinlets" : 11,
+					"numoutlets" : 11,
+					"outlettype" : [ "", "", "", "", "", "", "", "", "", "", "" ],
+					"patching_rect" : [ 235.20001220703125, 473.0, 722.0, 22.0 ],
+					"text" : "route playback playbackStatus clearPlaybackList playbackList filenameExists sceneList recordStatus toGen userData toMsvr_world_js"
 				}
 
 			}
@@ -18751,6 +18751,32 @@
 					"presentation" : 1,
 					"presentation_rect" : [ 245.0, 120.0, 189.0, 198.0 ],
 					"proportion" : 0.5
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-57",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 5,
+					"outlettype" : [ "signal", "signal", "signal", "signal", "" ],
+					"patching_rect" : [ 1520.0, 570.0, 178.0, 22.0 ],
+					"text" : "vr.source~ 0 @position 0.75 1 0",
+					"varname" : "source_1"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-59",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 5,
+					"outlettype" : [ "signal", "signal", "signal", "signal", "" ],
+					"patching_rect" : [ 1620.0, 570.0, 178.0, 22.0 ],
+					"text" : "vr.source~ 1 @position 0.75 1 0",
+					"varname" : "source_1[1]"
 				}
 
 			}
@@ -19018,7 +19044,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-109", 1 ],
-					"midpoints" : [ 652.70001220703125, 505.0, 1004.600006103515625, 505.0, 1004.600006103515625, 52.0, 670.5, 52.0 ],
+					"midpoints" : [ 666.500012207031205, 505.0, 1004.600006103515625, 505.0, 1004.600006103515625, 52.0, 670.5, 52.0 ],
 					"source" : [ "obj-26", 6 ]
 				}
 
@@ -19033,7 +19059,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-113", 0 ],
-					"midpoints" : [ 584.70001220703125, 533.0, 1155.464285714285779, 533.0, 1155.464285714285779, 110.0, 1155.5, 110.0 ],
+					"midpoints" : [ 596.20001220703125, 533.0, 1155.464285714285779, 533.0, 1155.464285714285779, 110.0, 1155.5, 110.0 ],
 					"source" : [ "obj-26", 5 ]
 				}
 
@@ -19041,7 +19067,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-113", 0 ],
-					"midpoints" : [ 380.70001220703125, 538.0, 1155.535714285714221, 538.0, 1155.535714285714221, 110.0, 1155.5, 110.0 ],
+					"midpoints" : [ 385.300012207031273, 538.0, 1155.535714285714221, 538.0, 1155.535714285714221, 110.0, 1155.5, 110.0 ],
 					"order" : 0,
 					"source" : [ "obj-26", 2 ]
 				}
@@ -19050,7 +19076,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-14", 0 ],
-					"midpoints" : [ 448.70001220703125, 533.0, 215.5, 533.0, 215.5, 52.0, 318.0, 52.0 ],
+					"midpoints" : [ 455.600012207031227, 533.0, 215.5, 533.0, 215.5, 52.0, 318.0, 52.0 ],
 					"source" : [ "obj-26", 3 ]
 				}
 
@@ -19058,7 +19084,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-14", 0 ],
-					"midpoints" : [ 380.70001220703125, 531.0, 215.75, 531.0, 215.75, 52.0, 318.0, 52.0 ],
+					"midpoints" : [ 385.300012207031273, 531.0, 215.75, 531.0, 215.75, 52.0, 318.0, 52.0 ],
 					"order" : 1,
 					"source" : [ "obj-26", 2 ]
 				}
@@ -19075,7 +19101,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-42", 0 ],
-					"midpoints" : [ 312.70001220703125, 549.5, 319.5, 549.5 ],
+					"midpoints" : [ 315.000012207031261, 549.5, 319.5, 549.5 ],
 					"source" : [ "obj-26", 1 ]
 				}
 
@@ -19083,8 +19109,15 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-80", 0 ],
-					"midpoints" : [ 720.70001220703125, 698.75, 244.5, 698.75 ],
+					"midpoints" : [ 736.800012207031273, 698.75, 244.5, 698.75 ],
 					"source" : [ "obj-26", 7 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-81", 0 ],
+					"source" : [ "obj-26", 9 ]
 				}
 
 			}
@@ -19154,6 +19187,20 @@
 				"patchline" : 				{
 					"destination" : [ "obj-14", 0 ],
 					"source" : [ "obj-48", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-68", 1 ],
+					"source" : [ "obj-57", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-68", 0 ],
+					"source" : [ "obj-57", 0 ]
 				}
 
 			}
@@ -19298,6 +19345,20 @@
 					"disabled" : 1,
 					"midpoints" : [ 244.5, 982.5, 221.25, 982.5, 221.25, 872.0, 284.0, 872.0 ],
 					"source" : [ "obj-81", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-57", 0 ],
+					"source" : [ "obj-83", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-57", 0 ],
+					"source" : [ "obj-83", 0 ]
 				}
 
 			}
@@ -19466,6 +19527,10 @@
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1
+			}
+, 			{
+				"name" : "vr~.mxe64",
+				"type" : "mx64"
 			}
 , 			{
 				"name" : "vr~.mxe64",

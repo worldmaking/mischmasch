@@ -1,25 +1,32 @@
 // import { max } from "gl-matrix/src/gl-matrix/vec2";
 
 // import { max } from "gl-matrix/src/gl-matrix/vec2";
-
-this.patcher.apply(function(b) { 
-	// post(b.varname)
-	
-	if(b.varname.split('_')[0] === 'source'){
-		post(b.varname)
-	}
-	// prevent erasing our audio outputs from genpatcher
-	// if(b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
-	// 	//post('\n',deleteMe,2)
-	// 	if (b.varname.indexOf(deleteMe) != -1){
-
-	// 		gen_patcher.remove(b); 				
-	// 	}
-	// }
-});
-
 inlets = 3
 outlets = 11
+
+
+
+
+function initiate(){
+
+	
+	//! clear the parent patcher of any vr.source~ objects prior to receiving deltas
+	this.patcher.apply(function(b) { 
+		
+		if(b.varname.split('_')[0] === 'source'){
+			outlet(10, 'thispatcher', 'script', 'delete', b.varname)
+		}
+	});
+	gen_patcher = this.patcher.getnamed("world").subpatcher();
+	//! clear the gen~ world patcher prior to receiving deltas
+	gen_patcher.apply(function(b) { 
+		gen_patcher.remove(b); 		
+	});
+
+	resetCounters()
+}
+
+initiate()
 	// get a reference to "thegen"'s embedded gen patcher:
 var varnameCount = 0
 
