@@ -19,7 +19,7 @@ var checkspeaker = new Array();
 var Ycounter;
 var newModule;
 var speakerTable = []
-
+var genOutCounter = 1
 // contain all the buffers
 var pb = new PolyBuffer('world_polybuffer');       // PolyBuffer instantiates a polybuffer~ object named by second argument to js  
 
@@ -116,7 +116,7 @@ var handleDelta = function(delta) {
 
 		
 		
-								// need to get its position in vr and apply that to a vr.source~ position
+								//need to get its position in vr and apply that to a vr.source~ position
 		
 								
 								// if kind is speaker, connect its outlets to the out1 and out2 in gen~ world
@@ -125,8 +125,10 @@ var handleDelta = function(delta) {
 								post('\n\n', newSpeaker.varname)
 								
 								// add a vr.Source~ abstraction to parent, script the new out to this abstraction, use delta.pos to provide the vr.source~ position
-								var vrSource = this.patcher.newdefault([940 + (speakerNumber * 100), 1650, "vr.source~", speakerNumber - 1, "@position", delta.pos[0], delta.pos[1], delta.pos[2] ])
-								vrSource.varname = "source_" + speakerNumber
+								var vrSource = this.patcher.newdefault([940 + (speakerNumber * 100), 1650, "vr.source~", genOutCounter - 1, "@position", delta.pos[0], delta.pos[1], delta.pos[2] ])
+								vrSource.varname = "source_" + genOutCounter
+
+
 								// key groundTruth, value = the same node path in its delta and scenegraph; genContext: number of speakers in scenegraph, correspond to number of out objects scripted into gen~ world with base 1. 
 								// the vr.source~ objects instantiated in parent patcher should also have their first arg be the genContext value, but scripting name be the groundTruth value
 								speakerTable.push({"groundTruth": vrSource.varname, "genContext": genOutCounter})
@@ -172,7 +174,7 @@ var handleDelta = function(delta) {
 						// create the speaker aka gen [out #]
 						// var newSpeaker = gen_patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, 'out', speakerNumber])
 						// newSpeaker.varname = 'speaker_' + speakerNumber
-						// // add a vr.Source~ abstraction to parent, script the new out to this abstraction. 
+						// add a vr.Source~ abstraction to parent, script the new out to this abstraction. 
 						// var vrSource = this.patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, "vr.source~", speakerNumber - 1, "@varname", "source_" + speakerNumber])
 						
 						// this.patcher.message("script", "connect", 'world',  "speaker_" + speakerNumber - 1,  "source_" + speakerNumber, 0);
@@ -255,8 +257,9 @@ var handleDelta = function(delta) {
 							// pipe all outlets to buffer for visual feedback:
 							// first make sure that the  outlet has an index, and is not an inlet (sometimes this occurs...)
 							if (index && kind !== 'inlet' && kind !== 'controller1' && kind !== 'controller2' && kind !== 'headset'){
+								// TODO Al, I've commented out the bufferStorage code because we're not yet using visual feedback in the world
 
-								buf = delta.path.replace('.','__') + '_buffer'
+								/* buf = delta.path.replace('.','__') + '_buffer'
 								// create a buffer for each outlet
 								vizBuffers[buf] = new Buffer(buf)
 								//post(buf)
@@ -284,7 +287,7 @@ var handleDelta = function(delta) {
 
 
 								bufferChannelCounter++
-								
+								*/
 								// TODO: if a module is deleted, find which channels in the buffer are now freed, make those available to the next newnode.
 							}
 
@@ -480,7 +483,7 @@ function client(msg){
 			speakerNumber = 1
 			speakerTable.length = 0
 			gen_patcher = this.patcher.getnamed("world").subpatcher();
-			bufferStorage = this.patcher.getnamed("bufferStorage").subpatcher();
+			//bufferStorage = this.patcher.getnamed("bufferStorage").subpatcher();
 
 			gen_patcher.apply(function(b) { 
 			
@@ -491,11 +494,11 @@ function client(msg){
 			});
 
 
-			bufferStorage.apply(function(b) { 
+			// bufferStorage.apply(function(b) { 
 			
-					gen_patcher.remove(b); 		
+			// 		gen_patcher.remove(b); 		
 				
-			});
+			// });
 			
 			inletsTable = [];
 			outletsTable = [];
