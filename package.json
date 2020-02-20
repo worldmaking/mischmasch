@@ -26,6 +26,7 @@
     "load-bmfont": "^1.4.0",
     "nodemon": "^1.18.11",
     "reconnecting-websocket": "^4.1.10",
+    "tasklist": "^4.0.1",
     "three-bmfont-text": "^2.3.0",
     "ws": "^6.2.0"
   },

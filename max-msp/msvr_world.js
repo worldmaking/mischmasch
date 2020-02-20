@@ -1,6 +1,8 @@
 // import { max } from "gl-matrix/src/gl-matrix/vec2";
 
 // import { max } from "gl-matrix/src/gl-matrix/vec2";
+
+// import { max } from "gl-matrix/src/gl-matrix/vec2";
 inlets = 3
 outlets = 11
 
@@ -63,21 +65,7 @@ var vizBuffers = new Array();
 
 gen_patcher = this.patcher.getnamed("world").subpatcher();
 bufferStorage = this.patcher.getnamed("bufferStorage").subpatcher();
-function ensurespeaker(){
-	var hasspeaker = 0;
-	gen_patcher.apply(function(b) { 
-		scriptname = b.varname.indexOf('speaker_')
-		if(scriptname > -1){
-		hasspeaker = 1
-		
-		}
-	})
-	// always keep an speaker module in the scene
-	if (hasspeaker === 0){
-		// spawn an speaker module
-		//outlet(5, 'ensurespeaker')
-		}	
-	}
+
 function getVarnames(target){
 	gen_patcher.apply(function(b) { 
 		// prevent erasing our audio outputs from genpatcher
@@ -131,7 +119,8 @@ var handleDelta = function(delta) {
 					counter++
 					posX = (delta.pos[0] + 3)
 					posY = (delta.pos[1] + 3) 
-					
+					post('\ncategory:',delta.category)
+					post('\n kind:',delta.kind)
 					switch(delta.category){
 						
 						case "abstraction": 
