@@ -6,8 +6,8 @@
 inlets = 3
 outlets = 11
 
-
-
+// this is where the parameter min/max & init-value get stored
+var namespace = new Dict("namespace")
 
 function initiate(){
 
@@ -49,7 +49,7 @@ var newModule;
 var speakerTable = []
 var genOutCounter = 1
 // contain all the buffers
-var pb = new PolyBuffer('world_polybuffer');       // PolyBuffer instantiates a polybuffer~ object named by second argument to js  
+// var pb = new PolyBuffer('world_polybuffer');       // PolyBuffer instantiates a polybuffer~ object named by second argument to js  
 
 function resetCounters(){
 	counter = 1;
@@ -58,13 +58,13 @@ function resetCounters(){
 }
 var speakerTableDict = new Dict("speakerTableDict");
 // buffer channels for visual feedback
-var bufferChannelCounter = 0;
-var bufferChannelPaths = [];
+// var bufferChannelCounter = 0;
+// var bufferChannelPaths = [];
 // use this to store the names of buffers created for visual feedback
-var vizBuffers = new Array();
+// var vizBuffers = new Array();
 
 gen_patcher = this.patcher.getnamed("world").subpatcher();
-bufferStorage = this.patcher.getnamed("bufferStorage").subpatcher();
+// bufferStorage = this.patcher.getnamed("bufferStorage").subpatcher();
 
 function getVarnames(target){
 	gen_patcher.apply(function(b) { 
@@ -80,7 +80,7 @@ function getVarnames(target){
 
 	});
 	
-	}
+}
 var handleDelta = function(delta) {
 	var index = JSON.stringify(delta.index)
 				if (counter > 20){
@@ -228,7 +228,16 @@ var handleDelta = function(delta) {
 						
 							//gen_patcher.message("script", "send", param.varname, paramValue);
 							//post('\n\n', delta.value)
-							outlet(1, paramName, delta.value, delta.range)
+							var namespace = {}
+
+							// namespace[paramName]['value'] = delta.value
+							// namespace[paramName]['min'] = delta.range[0]	
+							// namespace[paramName]['max'] = delta.range[1]	
+							// namespace.setparse(paramName, '{ "value" : delta.value }')	
+							// namespace.replace(paramName + "::min", delta.range[0])
+							// namespace.replace(paramName + "::max", delta.range[1])			
+							outlet(1, paramName, delta.range)
+							// post('\n\n\n',paramName)
 							paramCounter++
 							
 							break;
@@ -353,7 +362,7 @@ var handleDelta = function(delta) {
 						}
 					}
 					
-					outlet(0, bufferChannelPaths)
+					// outlet(0, bufferChannelPaths)
 			break;
 			
 			// delete an object
@@ -448,7 +457,10 @@ var handleDelta = function(delta) {
 					case "value": 
 						var param = delta.path
 						param = param.replace(".", "__")
-						outlet(3, delta.to, param)
+						
+						
+						var cleaveParam = param.split('.')[0]
+						outlet(3, cleaveParam, delta.to)
 						// handle knob twiddle
 						// send to appropriate param
 						// based on delta.path and delta.to (new value)
@@ -494,9 +506,9 @@ function client(msg){
 	
 	cmd = ot.cmd
 	if (cmd != 'clear_scene'){	
-		outlet(1, ot.cmd)
+		// outlet(1, ot.cmd)
 		outlet(0, 'clear_scene')
-		vizBuffers.length = 0;
+		// vizBuffers.length = 0;
 	}
 
 
@@ -508,9 +520,9 @@ function client(msg){
 				outlet(8, 'script', 'delete', speakerTable[i])
 
 			}
-			vizBuffers = new Array()
-			bufferChannelCounter = 0;
-			bufferChannelPaths = [];
+			// vizBuffers = new Array()
+			// bufferChannelCounter = 0;
+			// bufferChannelPaths = [];
 			speakerNumber = 1
 			speakerTable.length = 0
 			gen_patcher = this.patcher.getnamed("world").subpatcher();
@@ -682,7 +694,7 @@ function client(msg){
 					gen_patcher.message("script", "connect", param.varname, 0, setparam.varname, 0);
 				
 					//gen_patcher.message("script", "send", param.varname, paramValue);
-					outlet(1, nodeName + "__" + key, paramValue)
+					// outlet(1, nodeName + "__" + key, paramValue)
 					paramCounter++
 					break;	
 					}
@@ -737,7 +749,7 @@ function client(msg){
 	}
 
         break;
-
+		/*
         case "user_pose":
 
 			//var pose = new Dict("pose");
@@ -779,7 +791,8 @@ function client(msg){
 				outlet(1, "controller2__orient_w", data.pose.controller2.orient.w)
 
 
-        break;
+		break;
+		*/
 
         default:
 
@@ -797,12 +810,12 @@ function client(msg){
 }
 
 
-function getBuffers(){
-	// post('\n',vizBuffers)
-}
+// function getBuffers(){
+// 	// post('\n',vizBuffers)
+// }
 
 // this bootstraps an issue where the .peek function wouldn't reference a buffer name created in a different function scope (despite the name being stored globally)
-var bucket = new Buffer("bucket")
+// var bucket = new Buffer("bucket")
 
 /*
 function visualize(sampleRate, resolution){

@@ -1,0 +1,1 @@
+{cmd:deltas, date:1582647409336, data:[{op:propchange, path:freevoib_120_0.damping._knob_damping, name:value, from:0.21, to:0.22129139747533344}]}

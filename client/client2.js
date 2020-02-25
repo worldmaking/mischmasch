@@ -2575,3 +2575,20 @@ function localHandshake() {
   
   localHandshake();
   */
+
+
+
+//   setInterval(spoofTwiddling, 200)
+
+// function spoofTwiddling(){
+//     outgoingDeltas.push({ 
+//         op:"propchange", 
+//         path: 'lfo_1.knob', 
+//         name:"value", 
+//         // from: knob.userData.value, 
+//         from: 0.,
+//         // to: value
+//         to: 1 
+//     });
+//     console.log(outgoingDeltas)
+// }

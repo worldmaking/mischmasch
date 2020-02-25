@@ -145,19 +145,23 @@ connection.addEventListener('message', (data) => {
 		case "deltas":
 		case "patch":	
 		dataGen = JSON.stringify(data)
+		let testDelta = "{\"cmd\":\"deltas\"\,\"date\":1582647409336\,\"data\":[{\"op\":\"propchange\"\,\"path\":\"freevoib_120_0.damping._knob_damping\"\,\"name\":\"value\"\,\"from\":\"0.21\"\,\"to\":0.22129139747533344}]}"
 		max.outlet('toGen', dataGen)
+		max.post(testDelta)
 		//max.post('\n\n', data)
 
 		
 		break;
 		// headset & controller data
+		// ignore this data for the stability version of this client
+		/*
 		case "user_pose":
-		userData = JSON.stringify(data.pose)
-		newCmd = data.cmd
-		// maxInstances.post(userData.cmd)
-		max.outlet('userData', userData)
-		break;
-
+		// userData = JSON.stringify(data.pose)
+		// newCmd = data.cmd
+		// // maxInstances.post(userData.cmd)
+		// max.outlet('userData', userData)
+		// break;
+		*/
 		///////////////////////
 		default: {
 		//	max.post('unhandled message received', data) // probably don't want to print everything else since the server and other clients talk to each other a LOT
