@@ -228,7 +228,7 @@ var handleDelta = function(delta) {
 						
 							//gen_patcher.message("script", "send", param.varname, paramValue);
 							//post('\n\n', delta.value)
-							var namespace = {}
+							// var namespace = {}
 
 							// namespace[paramName]['value'] = delta.value
 							// namespace[paramName]['min'] = delta.range[0]	
