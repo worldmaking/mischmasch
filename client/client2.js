@@ -884,7 +884,7 @@ function initVRController(id=0) {
                 }
                 cableUpdateGeometry(cable);
 
-                if (this.isTriggerPress) {
+               if (!this.isTriggerDown) {
                     //console.log(isTriggerPressed);
                     // on release, check for completion:
                     let isCableComplete = (cable.userData.src && cable.userData.dst);
@@ -906,7 +906,7 @@ function initVRController(id=0) {
                         outgoingDeltas.push(delta);
                     } else {
                         // dangling cable:
-
+                        destroy_cable(cable);
                     }
 
                     this.cablingState = null;
@@ -1049,7 +1049,7 @@ function initVRController(id=0) {
                             // log("kind", object.userData.kind)
                         }
                     }
-                    if(this.isTriggerPress) {
+                    if(this.isTriggerDown) {
                         if (kind == "outlet") {
                             // create a new cable -- but it only has a src, not a dst
                             let cable = makeCable(object, null);
