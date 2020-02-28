@@ -186,8 +186,10 @@ vorpal
 
 const app = express();
 app.use(express.static(client_path))
+app.use(express.static(path.join(__dirname, '/got/')))	
 app.get('/', function(req, res) {
 	res.sendFile(path.join(client_path, 'index.html'));
+	res.sendFile(path.join(__dirname, '/got/got.js'));
 });
 //app.get('*', function(req, res) { console.log(req); });
 const server = http.createServer(app);
