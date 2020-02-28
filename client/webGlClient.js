@@ -65,6 +65,13 @@ let gensym = (function() {
 // Globals
 ///////////////////////////////////////////
 
+//localGraph
+
+let localGraph = {
+	nodes: {},
+	arcs: []
+}
+
 // debug
 let ctrlstatedivs = []
 ctrlstatedivs[0] = document.getElementById("ctrl1state");
@@ -1856,6 +1863,11 @@ function animate() {
         while (incomingDeltas.length > 0) {
             let delta = incomingDeltas.shift();
             // TODO: derive which world to add to:
+            try {
+				got.applyDeltasToGraph(localGraph, msg.data);
+			} catch (e) {
+				console.warn(e);
+			}
             enactDelta(ghostWorld, delta);
             //log("incoming deltas")
         }
@@ -2451,6 +2463,9 @@ function onKeypress(e) {
             let delta = spawnSingleModule([0, 0, 0], [0, 0, 0, 1], "speaker");
             outgoingDeltas.push(delta);
         }break;
+        case "p": {
+            console.log(localGraph)
+        } break;
         case "l":{ 
             // let message = ;
             sock.send(JSON.stringify({
