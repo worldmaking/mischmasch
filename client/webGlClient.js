@@ -1,6 +1,7 @@
 let vrContextID;
 let audioContextID;
 let ws;
+
 /**
  * Generate a random integer between a range (min, max)
  * @param {INT} min - minimum value for random int
@@ -1864,7 +1865,7 @@ function animate() {
             let delta = incomingDeltas.shift();
             // TODO: derive which world to add to:
             try {
-				got.applyDeltasToGraph(localGraph, msg.data);
+                got.applyDeltasToGraph(localGraph, delta);
 			} catch (e) {
 				console.warn(e);
 			}
