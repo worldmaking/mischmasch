@@ -7,821 +7,821 @@ let operator_constructors = {
   "add": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"add", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.sum","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"math", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"math", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.sum", "specification":"math", "category":"operator", "index":0 }
     ]`);
   },
   "mul": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"mul", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.product","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"math", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"math", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.product", "specification":"math", "category":"operator", "index":0 }
     ]`);
   },
   "mix": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"mix", "specification":"route","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.loval", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.hival", "index":1 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.interp", "index":2 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.loval", "specification":"route", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.hival", "specification":"route", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.interp", "specification":"route", "category":"operator", "index":2 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"route", "category":"operator", "index":0 }
     ]`);
   },
   "cycle": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"cycle", "specification":"buffer","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.freq", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out2","index":1 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.freq", "specification":"buffer", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"buffer", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out2", "specification":"buffer", "category":"operator", "index":1 }
     ]`);
   },
   "clamp": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"clamp", "specification":"range","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.min", "index":1 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.max", "index":2 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.clamped","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "specification":"range", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.min", "specification":"range", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.max", "specification":"range", "category":"operator", "index":2 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.clamped", "specification":"range", "category":"operator", "index":0 }
     ]`);
   },
   "fold": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"fold", "specification":"range","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.min", "index":1 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.max", "index":2 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "specification":"range", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.min", "specification":"range", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.max", "specification":"range", "category":"operator", "index":2 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"range", "category":"operator", "index":0 }
     ]`);
   },
   "noise": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"noise", "specification":"waveform","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.random-stream","index":0 }
+      { "op":"newnode", "kind":"outlet", "path":"${path}.random-stream", "specification":"waveform", "category":"operator", "index":0 }
     ]`);
   },
   "tanh": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"tanh", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"trigonometry", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"trigonometry", "category":"operator", "index":0 }
     ]`);
   },
   "latch": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"latch", "specification":"filter","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.control", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "specification":"filter", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.control", "specification":"filter", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"filter", "category":"operator", "index":0 }
     ]`);
   },
   "change": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"change", "specification":"filter","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "specification":"filter", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"filter", "category":"operator", "index":0 }
     ]`);
   },
   "pow": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"pow", "specification":"powers","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"powers", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"powers", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"powers", "category":"operator", "index":0 }
     ]`);
   },
   "ceil": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"ceil", "specification":"numeric","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"numeric", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"numeric", "category":"operator", "index":0 }
     ]`);
   },
   "fastpow": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"fastpow", "specification":"powers","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"powers", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"powers", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"powers", "category":"operator", "index":0 }
     ]`);
   },
   "rdiv": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"rdiv", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.quotient","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"math", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"math", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.quotient", "specification":"math", "category":"operator", "index":0 }
     ]`);
   },
   "min": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"min", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"comparison", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"comparison", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"comparison", "category":"operator", "index":0 }
     ]`);
   },
   "cartopol": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"cartopol", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.x", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.y", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.distance","index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.angle","index":1 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.x", "specification":"math", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.y", "specification":"math", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.distance", "specification":"math", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.angle", "specification":"math", "category":"operator", "index":1 }
     ]`);
   },
   "scale": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"scale", "specification":"range","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.ilo", "index":1 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.ihi", "index":2 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.olo", "index":3 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.ohi", "index":4 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.exp", "index":5 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "specification":"range", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.ilo", "specification":"range", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.ihi", "specification":"range", "category":"operator", "index":2 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.olo", "specification":"range", "category":"operator", "index":3 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.ohi", "specification":"range", "category":"operator", "index":4 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.exp", "specification":"range", "category":"operator", "index":5 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"range", "category":"operator", "index":0 }
     ]`);
   },
   "eqp": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"eqp", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"comparison", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"comparison", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"comparison", "category":"operator", "index":0 }
     ]`);
   },
   "sin": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"sin", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"trigonometry", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"trigonometry", "category":"operator", "index":0 }
     ]`);
   },
   "exp": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"exp", "specification":"powers","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"powers", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"powers", "category":"operator", "index":0 }
     ]`);
   },
   "eq": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"eq", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"comparison", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"comparison", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"comparison", "category":"operator", "index":0 }
     ]`);
   },
   "exp2": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"exp2", "specification":"powers","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"powers", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"powers", "category":"operator", "index":0 }
     ]`);
   },
   "ltep": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"ltep", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"comparison", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"comparison", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"comparison", "category":"operator", "index":0 }
     ]`);
   },
   "poltocar": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"poltocar", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.r", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.theta", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.x","index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.y","index":1 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.r", "specification":"math", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.theta", "specification":"math", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.x", "specification":"math", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.y", "specification":"math", "category":"operator", "index":1 }
     ]`);
   },
   "fract": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"fract", "specification":"numeric","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.fract","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"numeric", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.fract", "specification":"numeric", "category":"operator", "index":0 }
     ]`);
   },
   "sqrt": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"sqrt", "specification":"powers","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"powers", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"powers", "category":"operator", "index":0 }
     ]`);
   },
   "radians": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"radians", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.degrees", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.degrees", "specification":"trigonometry", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"trigonometry", "category":"operator", "index":0 }
     ]`);
   },
   "neqp": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"neqp", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"comparison", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"comparison", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"comparison", "category":"operator", "index":0 }
     ]`);
   },
   "atan": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"atan", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"trigonometry", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"trigonometry", "category":"operator", "index":0 }
     ]`);
   },
   "mod": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"mod", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.modulo","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"math", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"math", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.modulo", "specification":"math", "category":"operator", "index":0 }
     ]`);
   },
   "atanh": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"atanh", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"trigonometry", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"trigonometry", "category":"operator", "index":0 }
     ]`);
   },
   "fastexp": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"fastexp", "specification":"powers","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"powers", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"powers", "category":"operator", "index":0 }
     ]`);
   },
   "sinh": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"sinh", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"trigonometry", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"trigonometry", "category":"operator", "index":0 }
     ]`);
   },
   "acos": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"acos", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"trigonometry", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"trigonometry", "category":"operator", "index":0 }
     ]`);
   },
   "rmod": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"rmod", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.modulo","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"math", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"math", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.modulo", "specification":"math", "category":"operator", "index":0 }
     ]`);
   },
   "sub": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"sub", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.difference","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"math", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"math", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.difference", "specification":"math", "category":"operator", "index":0 }
     ]`);
   },
   "neq": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"neq", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"comparison", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"comparison", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"comparison", "category":"operator", "index":0 }
     ]`);
   },
   "ltp": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"ltp", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"comparison", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"comparison", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"comparison", "category":"operator", "index":0 }
     ]`);
   },
   "bool": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"bool", "specification":"logic","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.bool","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"logic", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.bool", "specification":"logic", "category":"operator", "index":0 }
     ]`);
   },
   "max": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"max", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"comparison", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"comparison", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"comparison", "category":"operator", "index":0 }
     ]`);
   },
   "hypot": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"hypot", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.x", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.y", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.x", "specification":"trigonometry", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.y", "specification":"trigonometry", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"trigonometry", "category":"operator", "index":0 }
     ]`);
   },
   "floor": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"floor", "specification":"numeric","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"numeric", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"numeric", "category":"operator", "index":0 }
     ]`);
   },
   "abs": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"abs", "specification":"numeric","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.abs","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"numeric", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.abs", "specification":"numeric", "category":"operator", "index":0 }
     ]`);
   },
   "absdiff": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"absdiff", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.abs-diff","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"math", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"math", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.abs-diff", "specification":"math", "category":"operator", "index":0 }
     ]`);
   },
   "log2": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"log2", "specification":"powers","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"powers", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"powers", "category":"operator", "index":0 }
     ]`);
   },
   "degrees": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"degrees", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.radians", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.radians", "specification":"trigonometry", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"trigonometry", "category":"operator", "index":0 }
     ]`);
   },
   "switch": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"switch", "specification":"route","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.condition", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.iftrue", "index":1 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.iffalse", "index":2 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.condition", "specification":"route", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.iftrue", "specification":"route", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.iffalse", "specification":"route", "category":"operator", "index":2 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"route", "category":"operator", "index":0 }
     ]`);
   },
   "cosh": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"cosh", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"trigonometry", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"trigonometry", "category":"operator", "index":0 }
     ]`);
   },
   "out": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"out", "specification":"input-output","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "specification":"input-output", "category":"operator", "index":0 }
     ]`);
   },
   "wrap": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"wrap", "specification":"range","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.min", "index":1 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.max", "index":2 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "specification":"range", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.min", "specification":"range", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.max", "specification":"range", "category":"operator", "index":2 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"range", "category":"operator", "index":0 }
     ]`);
   },
   "smoothstep": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"smoothstep", "specification":"route","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.loval", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.hival", "index":1 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.interp", "index":2 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.loval", "specification":"route", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.hival", "specification":"route", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.interp", "specification":"route", "category":"operator", "index":2 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"route", "category":"operator", "index":0 }
     ]`);
   },
   "acosh": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"acosh", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"trigonometry", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"trigonometry", "category":"operator", "index":0 }
     ]`);
   },
   "step": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"step", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"comparison", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"comparison", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"comparison", "category":"operator", "index":0 }
     ]`);
   },
   "gtep": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"gtep", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"comparison", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"comparison", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"comparison", "category":"operator", "index":0 }
     ]`);
   },
   "or": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"or", "specification":"logic","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"logic", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"logic", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"logic", "category":"operator", "index":0 }
     ]`);
   },
   "fastsin": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"fastsin", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"trigonometry", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"trigonometry", "category":"operator", "index":0 }
     ]`);
   },
   "fastcos": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"fastcos", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"trigonometry", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"trigonometry", "category":"operator", "index":0 }
     ]`);
   },
   "sign": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"sign", "specification":"numeric","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"numeric", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"numeric", "category":"operator", "index":0 }
     ]`);
   },
   "log10": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"log10", "specification":"powers","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"powers", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"powers", "category":"operator", "index":0 }
     ]`);
   },
   "log": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"log", "specification":"powers","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"powers", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"powers", "category":"operator", "index":0 }
     ]`);
   },
   "lte": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"lte", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"comparison", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"comparison", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"comparison", "category":"operator", "index":0 }
     ]`);
   },
   "gte": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"gte", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"comparison", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"comparison", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"comparison", "category":"operator", "index":0 }
     ]`);
   },
   "asinh": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"asinh", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"trigonometry", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"trigonometry", "category":"operator", "index":0 }
     ]`);
   },
   "fasttan": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"fasttan", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"trigonometry", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"trigonometry", "category":"operator", "index":0 }
     ]`);
   },
   "lt": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"lt", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"comparison", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"comparison", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"comparison", "category":"operator", "index":0 }
     ]`);
   },
   "and": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"and", "specification":"logic","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"logic", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"logic", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"logic", "category":"operator", "index":0 }
     ]`);
   },
   "div": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"div", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.quotient","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"math", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"math", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.quotient", "specification":"math", "category":"operator", "index":0 }
     ]`);
   },
   "xor": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"xor", "specification":"logic","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"logic", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"logic", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"logic", "category":"operator", "index":0 }
     ]`);
   },
   "atan2": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"atan2", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.opposite", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.adjacent", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.opposite", "specification":"trigonometry", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.adjacent", "specification":"trigonometry", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"trigonometry", "category":"operator", "index":0 }
     ]`);
   },
   "gt": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"gt", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"comparison", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"comparison", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"comparison", "category":"operator", "index":0 }
     ]`);
   },
   "gtp": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"gtp", "specification":"comparison","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"comparison", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"comparison", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"comparison", "category":"operator", "index":0 }
     ]`);
   },
   "not": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"not", "specification":"logic","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"logic", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"logic", "category":"operator", "index":0 }
     ]`);
   },
   "pass": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"pass", "specification":"ignore","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "specification":"ignore", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"ignore", "category":"operator", "index":0 }
     ]`);
   },
   "asin": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"asin", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"trigonometry", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"trigonometry", "category":"operator", "index":0 }
     ]`);
   },
   "rsub": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"rsub", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.difference","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value1", "specification":"math", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value2", "specification":"math", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.difference", "specification":"math", "category":"operator", "index":0 }
     ]`);
   },
   "tan": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"tan", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"trigonometry", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"trigonometry", "category":"operator", "index":0 }
     ]`);
   },
   "trunc": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"trunc", "specification":"numeric","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"numeric", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"numeric", "category":"operator", "index":0 }
     ]`);
   },
   "cos": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"cos", "specification":"trigonometry","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"trigonometry", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"trigonometry", "category":"operator", "index":0 }
     ]`);
   },
   "neg": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"neg", "specification":"math","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"math", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"math", "category":"operator", "index":0 }
     ]`);
   },
   "rate": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"rate", "specification":"waveform","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.phase", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.multiplier", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.phase", "specification":"waveform", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.multiplier", "specification":"waveform", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"waveform", "category":"operator", "index":0 }
     ]`);
   },
   "ftom": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"ftom", "specification":"convert","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.freq", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.tuning", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.freq", "specification":"convert", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.tuning", "specification":"convert", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"convert", "category":"operator", "index":0 }
     ]`);
   },
   "sah": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"sah", "specification":"filter","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.control", "index":1 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.thresh", "index":2 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "specification":"filter", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.control", "specification":"filter", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.thresh", "specification":"filter", "category":"operator", "index":2 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"filter", "category":"operator", "index":0 }
     ]`);
   },
   "counter": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"counter", "specification":"integrator","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.incr", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.reset", "index":1 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.max", "index":2 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out2","index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out3","index":2 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.incr", "specification":"integrator", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.reset", "specification":"integrator", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.max", "specification":"integrator", "category":"operator", "index":2 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"integrator", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out2", "specification":"integrator", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out3", "specification":"integrator", "category":"operator", "index":2 }
     ]`);
   },
   "sampstoms": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"sampstoms", "specification":"convert","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.period", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.period", "specification":"convert", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"convert", "category":"operator", "index":0 }
     ]`);
   },
   "train": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"train", "specification":"waveform","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.period", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.width", "index":1 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.onset", "index":2 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.period", "specification":"waveform", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.width", "specification":"waveform", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.onset", "specification":"waveform", "category":"operator", "index":2 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"waveform", "category":"operator", "index":0 }
     ]`);
   },
   "dbtoa": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"dbtoa", "specification":"convert","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.db", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.db", "specification":"convert", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"convert", "category":"operator", "index":0 }
     ]`);
   },
   "mulequals": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"mulequals", "specification":"integrator","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.incr", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.reset", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.incr", "specification":"integrator", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.reset", "specification":"integrator", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"integrator", "category":"operator", "index":0 }
     ]`);
   },
   "elapsed": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"elapsed", "specification":"global","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"global", "category":"operator", "index":0 }
     ]`);
   },
   "triangle": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"triangle", "specification":"waveform","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.phase", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.duty", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.phase", "specification":"waveform", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.duty", "specification":"waveform", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"waveform", "category":"operator", "index":0 }
     ]`);
   },
   "phasewrap": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"phasewrap", "specification":"filter","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.phase", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.phase", "specification":"filter", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"filter", "category":"operator", "index":0 }
     ]`);
   },
   "mtof": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"mtof", "specification":"convert","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.note", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.tuning", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.note", "specification":"convert", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.tuning", "specification":"convert", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"convert", "category":"operator", "index":0 }
     ]`);
   },
   "isnan": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"isnan", "specification":"dsp","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "specification":"dsp", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"dsp", "category":"operator", "index":0 }
     ]`);
   },
   "t60time": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"t60time", "specification":"dsp","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.multiplier", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.multiplier", "specification":"dsp", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"dsp", "category":"operator", "index":0 }
     ]`);
   },
   "delta": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"delta", "specification":"filter","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "specification":"filter", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"filter", "category":"operator", "index":0 }
     ]`);
   },
   "history": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"history", "specification":"feedback","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.value", "specification":"feedback", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"feedback", "category":"operator", "index":0 }
     ]`);
   },
   "t60": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"t60", "specification":"dsp","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.time", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.time", "specification":"dsp", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"dsp", "category":"operator", "index":0 }
     ]`);
   },
   "plusequals": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"plusequals", "specification":"integrator","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.incr", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.reset", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.incr", "specification":"integrator", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.reset", "specification":"integrator", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"integrator", "category":"operator", "index":0 }
     ]`);
   },
   "fixnan": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"fixnan", "specification":"dsp","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "specification":"dsp", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"dsp", "category":"operator", "index":0 }
     ]`);
   },
   "mstosamps": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"mstosamps", "specification":"convert","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.period", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.period", "specification":"convert", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"convert", "category":"operator", "index":0 }
     ]`);
   },
   "round": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"round", "specification":"numeric","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.base", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "specification":"numeric", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.base", "specification":"numeric", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"numeric", "category":"operator", "index":0 }
     ]`);
   },
   "interp": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"interp", "specification":"filter","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.t", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.a", "index":1 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.b", "index":2 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.t", "specification":"filter", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.a", "specification":"filter", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.b", "specification":"filter", "category":"operator", "index":2 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"filter", "category":"operator", "index":0 }
     ]`);
   },
   "slide": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"slide", "specification":"filter","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.up", "index":1 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.down", "index":2 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "specification":"filter", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.up", "specification":"filter", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.down", "specification":"filter", "category":"operator", "index":2 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"filter", "category":"operator", "index":0 }
     ]`);
   },
   "atodb": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"atodb", "specification":"convert","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.amplitude", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.amplitude", "specification":"convert", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"convert", "category":"operator", "index":0 }
     ]`);
   },
   "dcblock": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"dcblock", "specification":"filter","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "specification":"filter", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"filter", "category":"operator", "index":0 }
     ]`);
   },
   "phasor": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"phasor", "specification":"waveform","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.freq", "index":0 },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.reset", "index":1 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.freq", "specification":"waveform", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"inlet", "path":"${path}.reset", "specification":"waveform", "category":"operator", "index":1 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"waveform", "category":"operator", "index":0 }
     ]`);
   },
   "isdenorm": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"isdenorm", "specification":"dsp","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "specification":"dsp", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"dsp", "category":"operator", "index":0 }
     ]`);
   },
   "fixdenorm": function(path) { 
     return JSON.parse(`[
       { "op":"newnode", "path":"${path}", "kind":"fixdenorm", "specification":"dsp","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] },
-      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "index":0 },
-      { "op":"newnode", "kind":"outlet", "path":"${path}.out1","index":0 }
+      { "op":"newnode", "kind":"inlet", "path":"${path}.input", "specification":"dsp", "category":"operator", "index":0 },
+      { "op":"newnode", "kind":"outlet", "path":"${path}.out1", "specification":"dsp", "category":"operator", "index":0 }
     ]`);
   }
 }

@@ -69,13 +69,13 @@ for (let op of operators) {
       
       
       codes.push(`
-      { "op":"newnode", "kind":"inlet", "path":"\${path}.${inlet_name}", "index":${i} }`);
+      { "op":"newnode", "kind":"inlet", "path":"\${path}.${inlet_name}", "specification":"${specification}", "category":"operator", "index":${i} }`);
     }
     for (let i=0; i<out_names.length; i++) {
       let outlet_name = out_names[i]
       //console.log(outlet_name)
       codes.push(`
-      { "op":"newnode", "kind":"outlet", "path":"\${path}.${outlet_name}","index":${i} }`);
+      { "op":"newnode", "kind":"outlet", "path":"\${path}.${outlet_name}", "specification":"${specification}", "category":"operator", "index":${i} }`);
     }
 
 
