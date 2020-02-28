@@ -55,7 +55,8 @@ function clamp(num, min, max) {
 let gensym = (function() {
     let nodeid = 0;
     return function (prefix="node") {
-        return `${prefix}_${nodeid++}_${userPose.id}`
+        //return `${prefix}_${nodeid++}_${userPose.id}`
+        return `${prefix}_${nodeid++}`
     }
 })();
 
@@ -709,8 +710,21 @@ function initVRController(id=0) {
                     // reparent target
                     reparentWithTransform(dragTarget, this.ghostController, parent);
                     //console.log(dragTarget);
+
+                    /* 
+                     op: 'newnode',
+                    path: 'floor_120',
+                    kind: 'floor',
+                    specification: 'numeric',
+                    category: 'operator',
+                    pos: [Array],
+                    orient: [Array] }, */
+
+                    let blankPos = [0,0,0];
+                    let blankOrient = [0,0,0,1];
                     if(dragTarget.position.y < 0){
-                        outgoingDeltas.push({ op:"delnode", path: dragTarget.userData.path });
+                        outgoingDeltas.push({ op:"delnode", path: dragTarget.userData.path, kind: dragTarget.userData.kind, 
+                        specification: dragTarget.userData.specification, category: dragTarget.userData.category, pos: blankPos, orient: blankOrient});
                     }
 
                     
@@ -1513,6 +1527,8 @@ function enactDeltaNewNode(world, delta) {
     container.name = name;
     container.userData.path = delta.path;
     container.userData.kind = delta.kind;
+    container.userData.category = delta.category;
+    container.userData.specification = delta.specification;
     container.userData.isDirty = true;
     if (delta.pos) {
         container.position.fromArray(delta.pos);
