@@ -4,7 +4,7 @@ const max = require("max-api");
 const fs = require("fs");
 const WebSocket = require('ws');
 const ReconnectingWebSocket = require('reconnecting-websocket');
-
+const got = require('../got/got.js')
 // Configure Websocket
 //! TODO: change 'options to wsOptions'
 const options = {
@@ -17,6 +17,12 @@ const options = {
 let sessionList = []
 let sceneList = []
 
+let localGraph = {
+	nodes: {},
+	arcs: []
+}
+
+const scene = "scene"
 // create a ws connection which can automatically attempt reconnections if server goes down
 //let connection = new ReconnectingWebSocket('ws://192.168.137.1:8080/', [], options);
 let connection;
@@ -56,6 +62,9 @@ connection.addEventListener('open', () => {
 	
 });
 
+max.addHandler('localGraph', () =>{
+	max.post(localGraph)
+})
 // listen for messages from the server
 connection.addEventListener('message', (data) => {
 	// the ReconnectingWebSocket package adds an extra layer of JSON stringification... took me a while to figure this out. So, need to parse data.data :(
@@ -93,9 +102,17 @@ connection.addEventListener('message', (data) => {
 		case "clear_scene":
 		case "deltas":
 		case "patch":	
-		dataGen = JSON.stringify(data)
-		max.outlet('toGen', dataGen)
-
+			dataGen = JSON.stringify(data)
+			max.outlet('toGen', dataGen)
+			// synchronize our local copy:
+			try {
+				got.applyDeltasToGraph(localGraph, dataGen);
+				max.outlet(localGraph)
+				max.setDict('scene', localGraph) 
+			} catch (e) {
+				console.warn(e);
+			}
+		
 		//max.post('\n\n', data)
 
 		
