@@ -702,7 +702,9 @@ function initVRController(id=0) {
                 let thumbMove = this.dragState.target;
                 let s = 1. + (this.thumbPadDY);
                 let r = 1. + (this.thumbPadDX);
+               
                 thumbMove.position.multiplyScalar(s);
+
                 let rot = new THREE.Vector3(thumbMove.rotation.x, thumbMove.rotation.y, thumbMove.rotation.z);
                 //TODO: fix the rotate scalar (The bigger it gets the faster it spins which is dumb)
 
