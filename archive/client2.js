@@ -1,26 +1,22 @@
+/**
+ * |//////////////////////| 
+ * |Global Imports Section|
+ * |\\\\\\\\\\\\\\\\\\\\\\|
+ **/
+
+import * as globals from "./data/globals";
+
+
 const url = window.location.href.split('//')[1].split(':')[0];
 console.log('url', url)
 let once = 1;
 let vrContextID;
 let audioContextID;
 let ws;
-/**
- * Generate a random integer between a range (min, max)
- * @param {INT} min - minimum value for random int
- * @param {INT} max - maximum value for random int
- */
-function randomIntFromInterval(min,max) // min and max included
-{
-    return Math.floor(Math.random()*(max-min+1)+min);
-}
-/**
- * Keep a value between two amounts and wrap excess
- * @param {NUMBER} n - Value to wrap
- * @param {NUMBER} m - Top value to wrap around
- */
-function wrap(n,m){
-    return ((n%m)+m)%m;
-}
+
+
+
+
 
 function hashCode(str) { // java String#hashCode
     var hash = 0;
@@ -625,7 +621,7 @@ function initVRController(id=0) {
                         let angle = object.userData.rotation._z + (controller.rotation.z - controller.userData.rotation._z);
 
                         // angle should be in range -PI to PI
-                        angle = wrap(angle + Math.PI, Math.PI * 2) - Math.PI;
+                        angle = globals.wrap(angle + Math.PI, Math.PI * 2) - Math.PI;
 
                         if (angle < KNOB_SWEEP) angle = KNOB_SWEEP;
                         if (angle > -KNOB_SWEEP) angle = -KNOB_SWEEP;
