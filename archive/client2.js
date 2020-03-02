@@ -1,11 +1,13 @@
-/**
- * |//////////////////////| 
+/* |//////////////////////| 
  * |Global Imports Section|
- * |\\\\\\\\\\\\\\\\\\\\\\|
- **/
-
+ * |\\\\\\\\\\\\\\\\\\\\\\| */
 import * as globals from "./data/globals";
+import * as worldscrpit from "./data/worldscript"
 
+
+/* |////////////////| *
+ * |Global Variables| *
+ * |\\\\\\\\\\\\\\\\| */
 
 const url = window.location.href.split('//')[1].split(':')[0];
 console.log('url', url)
@@ -14,42 +16,7 @@ let vrContextID;
 let audioContextID;
 let ws;
 
-
-
-
-
-function hashCode(str) { // java String#hashCode
-    var hash = 0;
-    for (var i = 0; i < str.length; i++) {
-       hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return hash;
-} 
-
-function intToRGB(i){
-    var c = (i & 0x00FFFFFF)
-        .toString(16)
-        .toUpperCase();
-
-    return "00000".substring(0, 6 - c.length) + c;
-}
-
-function colorFromString(str) {
-    let int = Math.abs(hashCode(str));
-    let hue = int % 360;
-    let result = [];
-    new THREE.Color(`hsl(${hue}, 35%, 50%)`).toArray(result);
-    return result;
-}
-
-function hexColorFromString(str) {
-    return "#" + intToRGB(hashCode(str));
-}
-
-
-///////////////////////////////////////////
-// Globals
-///////////////////////////////////////////
+console.log(globals);
 
 // Editing
 let incomingDeltas = [];
@@ -154,19 +121,7 @@ const LABEL_SCALING_FACTOR = 0.001;
 // const GEN_GEOM_HEIGHT = 0.2;
 // const GEN_GEOM_DEPTH = 0.05;
 
-/**
- * Find an object in allNodes via a path
- * @param {PATH} path - path to object
- */
-function getObjectByPath(world, path) {
-    //return allNodes[path];
-    let terms = path.split(".");
-    let obj = world;
-    for (let term of terms) {
-        obj = obj.getObjectByName(term);
-    }
-    return obj
-}
+
 
 function createUserPose(id=0) {
     return {
@@ -984,7 +939,7 @@ function enactDeltaNewNode(world, delta) {
     if (pathlastdot >= 0) {
         parentpath = path.substring(0, pathlastdot);
         name = path.substring(pathlastdot+1);
-        parent = getObjectByPath(world, parentpath);
+        parent = worldscrpit.getObjectByPath(world, parentpath);
 
     } else {
         name = delta.path;
@@ -1018,7 +973,7 @@ function enactDeltaNewNode(world, delta) {
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(LARGE_KNOB_RADIUS, LARGE_KNOB_RADIUS, NLET_HEIGHT);
             container.userData.instanceShape = SHAPE_CYLINDER
-            container.userData.color = colorFromString(name);
+            container.userData.color = globals.colorFromString(name);
             container.userData.isTiddleable = true;
 
             // label:
@@ -1029,7 +984,7 @@ function enactDeltaNewNode(world, delta) {
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(SMALL_KNOB_RADIUS, SMALL_KNOB_RADIUS, NLET_HEIGHT);
             container.userData.instanceShape = SHAPE_CYLINDER
-            container.userData.color = colorFromString(name);
+            container.userData.color = globals.colorFromString(name);
             container.userData.isTiddleable = true;
 
             // label:
@@ -1039,7 +994,7 @@ function enactDeltaNewNode(world, delta) {
         case "n_switch": {
             container = new THREE.Mesh(boxGeom, boxMat);
             container.scale.set(NSWITCH_WIDTH, NSWITCH_HEIGHT, NSWITCH_DEPTH);
-            container.userData.color = colorFromString(name);
+            container.userData.color = globals.colorFromString(name);
             container.userData.slideable = true;
             container.userData.instanceShape = SHAPE_BOX;
             
@@ -1058,7 +1013,7 @@ function enactDeltaNewNode(world, delta) {
 
             let box = new THREE.Mesh(boxGeom, boxMat);
             box.userData.isBackPanel = true;
-            box.userData.color = colorFromString(name);
+            box.userData.color = globals.colorFromString(name);
             box.userData.instanceShape = SHAPE_BOX
             box.name = "_box_"+name
             container.add(box);
@@ -1164,8 +1119,8 @@ function cableUpdate(cableMesh) {
 
 function enactDeltaConnect(world, delta) {
 
-    let src = getObjectByPath(world, delta.paths[0]);
-    let dst = getObjectByPath(world, delta.paths[1]); 
+    let src = worldscrpit.getObjectByPath(world, delta.paths[0]);
+    let dst = worldscrpit.getObjectByPath(world, delta.paths[1]); 
 
 
 
@@ -1236,7 +1191,7 @@ function enactDeltaConnect(world, delta) {
 function enactDeltaObjectPos(delta) {
     // assert(delta.op == "propchange")
     // assert(delta.name == "pos")
-    let object = getObjectByPath(ghostScene, delta.path);
+    let object = worldscrpit.getObjectByPath(ghostScene, delta.path);
 
     // TODO: are positions relative to parent or global?
     object.position.set(delta.to[0], delta.to[1], delta.to[2])
@@ -1266,7 +1221,7 @@ function enactDeltaObjectOrient(delta) {
     // assert(delta.op == "propchange")
     // assert(delta.name == "orient")
 
-    let object = getObjectByPath(delta.path);
+    let object = worldscrpit.getObjectByPath(delta.path);
     
     object.quaternion.set(delta.to[0], delta.to[1], delta.to[2], delta.to[3])
     // // assert (object, "path not found")
@@ -1290,7 +1245,7 @@ function enactDeltaObjectOrient(delta) {
     { op:"propchange", path:"x", name:"value", from:x, to:y }
 */
 function enactDeltaObjectValue(delta) {
-    // let object = getObjectByPath(delta.path);
+    // let object = worldscrpit.getObjectByPath(delta.path);
     // let kind = object.userData.kind; // small_knob, nswitch, etc.
     // let value = delta.to;
     // switch(kind){
