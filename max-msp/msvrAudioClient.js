@@ -3,15 +3,15 @@
 const max = require("max-api");
 const fs = require("fs");
 const WebSocket = require('ws');
-const ReconnectingWebSocket = require('reconnecting-websocket');
+// const ReconnectingWebSocket = require('reconnecting-websocket');
 const got = require('../got/got.js')
 // Configure Websocket
 //! TODO: change 'options to wsOptions'
-const options = {
-    WebSocket: WebSocket, // custom WebSocket constructor
-    connectionTimeout: 1000,
-   // maxRetries: 10,
-};
+// const options = {
+//     WebSocket: WebSocket, // custom WebSocket constructor
+//     connectionTimeout: 1000,
+//    // maxRetries: 10,
+// };
 
 // TODO: document what these are for. 
 let sessionList = []
@@ -21,6 +21,52 @@ let localGraph = {
 	nodes: {},
 	arcs: []
 }
+const pathsDict = "paths"
+
+// update paths dict
+
+// const main = async (path, value) => {
+//     await max.setDict(pathsDict, {
+      
+//     });
+    
+//     // my_dict =>
+//     // {
+//     //   "a": "first"
+//     // }
+    
+//     // append to dict
+//     await max.updateDict(pathsDict, path, value);
+    
+//     // my_dict =>
+//     // {
+//     //   "a": "first",
+//     //   "b": "second",
+//     // }
+    
+//     // add nested path
+//     // await max.updateDict(pathsDict, "c.deeply.nested.prop", "third");
+    
+//     // my_dict =>
+//     // {
+//     //   "a": "first",
+//     //   "b": "second",
+//     //   "c": {
+//     //     "deeply": {
+//     //       "nested": {
+//     //         "prop": "third"
+//     //       }
+//     //     }
+//     //   }
+//     // }
+    
+//     // this even works with arrays
+//     // await max.updateDict(pathsDict, "d", []);
+//     // await max.updateDict(pathsDict, "d[0]", "fourth");
+    
+// }
+
+
 
 const scene = "scene"
 // create a ws connection which can automatically attempt reconnections if server goes down
@@ -29,36 +75,50 @@ let connection;
 // set the ip to the incoming 3rd argument
 max.post('node connect attempt to ip ' + process.argv[2])
 if (process.argv[2] === 'localhost'){
-	connection  = new ReconnectingWebSocket('ws://localhost:8080/', [], options);
+	// connection  = new ReconnectingWebSocket('ws://localhost:8080/', [], options);
+		tryConnect('localhost')
 	} else if (process.argv[2] && process.argv[2] !== 'localhost'){	
-	connection = new ReconnectingWebSocket('ws://' + process.argv[2] + ':8080/', [], options);
+		tryConnect(process.argv[2])
+
 } else {
 	max.post('\n\nERROR: websocket server host IP not provided.\nUse \'localhost\' or network IP in first CLI argument\n\nscript start localhost\n\n')
 	process.exit()
 }
 
+function tryConnect(serverAddress){
+	connection = new WebSocket('ws://' + serverAddress + ':8080/')
+}
 // run function when ws opens...
-connection.addEventListener('open', () => {
-	max.outlet('toMsvr_world_js','initiate')
+connection.on('open', function open() {
+	
+
+	max.outlet('toGen','initiate')
 	// clear the filename umenu in the controller.maxpat
-	max.outlet('clearPlaybackList', 'clear')
+	// max.outlet('toGen', 'init')
 
 	max.post('connected to server')
 	// request the list of sessions and scenes from the server
-	connection.send(JSON.stringify({
-		cmd: "initMax_Client",
-		date: Date.now(),
-		data: 'max_client'
-	}));
-	connection.send(JSON.stringify({
-		cmd: 'clientType',
-		data: 'audioContext'
-	}));
-	connection.send(JSON.stringify({
-		cmd: "get_scene",
-		date: Date.now(),
-		data: null
-	}));
+	
+	connection.send(
+		JSON.stringify({
+			cmd: "initMax_Client",
+			date: Date.now(),
+			data: 'max_client'
+		}
+	));
+	connection.send(
+		JSON.stringify({
+			cmd: 'clientType',
+			data: 'audioContext'
+		}
+	));
+	connection.send(
+		JSON.stringify({
+			cmd: "get_scene",
+			date: Date.now(),
+			data: null
+		}
+	));
 	
 });
 
@@ -66,9 +126,10 @@ max.addHandler('localGraph', () =>{
 	max.post(localGraph)
 })
 // listen for messages from the server
-connection.addEventListener('message', (data) => {
+connection.on('message', function incoming(data) {
+	max.post(data)
 	// the ReconnectingWebSocket package adds an extra layer of JSON stringification... took me a while to figure this out. So, need to parse data.data :(
-	data = JSON.parse(data.data)
+	data = JSON.parse(data)
 	//max.post(data)
 	switch(data.cmd){
 		// retrieve list of session recording filenames
@@ -103,7 +164,7 @@ connection.addEventListener('message', (data) => {
 		case "deltas":
 		case "patch":	
 			dataGen = JSON.stringify(data)
-			max.outlet('toGen', dataGen)
+			max.outlet('toScripting', dataGen)
 			// synchronize our local copy:
 			try {
 				got.applyDeltasToGraph(localGraph, dataGen);
@@ -282,3 +343,12 @@ let playback = function() {
 	console.log(display, times);
 }
 
+
+// setTimeout(maintainConnection, 3000)
+
+// function maintainConnection(){
+// 	if(!connection){
+// 		max.post('tryConnect')
+
+// 	}
+// }

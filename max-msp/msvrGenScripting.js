@@ -4,22 +4,6 @@ outlets = 11
 // this is where the parameter min/max & init-value get stored
 var namespace = new Dict("namespace")
 
-function initiate(){
-	//! clear the parent patcher of any vr.source~ objects prior to receiving deltas
-	this.patcher.apply(function(b) { 
-		if(b.varname.split('_')[0] === 'source'){
-			outlet(10, 'thispatcher', 'script', 'delete', b.varname)
-		}
-	});
-	genPatcher = this.patcher.getnamed("world").subpatcher();
-	//! clear the gen~ world patcher prior to receiving deltas
-	genPatcher.apply(function(b) { 
-		genPatcher.remove(b); 		
-	});
-	resetCounters()
-}
-
-initiate()
 // get a reference to "thegen"'s embedded gen patcher:
 genPatcher = this.patcher.getnamed("world").subpatcher();
 var varnameCount = 0
@@ -31,33 +15,56 @@ var Ycounter;
 var newModule;
 var genOutCounter = 1
 // dictionaries:
-    var speakerTableDict = new Dict("speakerTableDict");    
-    // store inlet&outlet indexes per node
-    var inletsTable = new Array();
-    var outletsTable = new Array();
-    //store varnames per node
-    var varnamesTable = new Array();
-    var object = {};
+var speakerTableDict = new Dict("speakerTableDict");    
+// store inlet&outlet indexes per node
+var inletsTable = new Array();
+var outletsTable = new Array();
+//store varnames per node
+var varnamesTable = new Array();
+var object = {};
 
-    var speakerTable = new Array();
-    var checkspeaker = new Array();
+var speakerTable = new Array();
+var checkspeaker = new Array();
+
+
+function initiate(){
+	post('initializing patcher')
+	//! clear the parent patcher of any vr.source~ objects prior to receiving deltas
+	this.patcher.apply(function(b) {
+		if(b.varname.split('_')[0] === 'source'){
+			this.patcher.remove(b)
+			// outlet(10, 'thispatcher', 'script', 'delete', b.varname)
+		}
+	});
+	genPatcher = this.patcher.getnamed("world").subpatcher();
+	//! clear the gen~ world patcher prior to receiving deltas
+	genPatcher.apply(function(b) { 
+		genPatcher.remove(b); 		
+	});
+	resetCounters()
+}
+
+initiate()
+
+
 
 function resetCounters(){
     counter = 1;
     feedbackConnections = 0
-    genOutCounter = 1
+	genOutCounter = 1
+	varnameCount = 0
+
+	inletsTable = new Array();
+	outletsTable = new Array();
+//store varnames per node
+	varnamesTable = new Array();
+	object = {};
+
+	speakerTable = new Array();
+	checkspeaker = new Array();
+
 }
 
-function getVarnames(target){
-	genPatcher.apply(function(b) { 
-		// prevent erasing our audio outputs from genpatcher
-		if(b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
-			if (b.varname.indexOf(target) != -1){
-				genPatcher.remove(b); 	
-			}	
-		}
-	});	
-}
 var handleDelta = function(delta) {
 	var index = JSON.stringify(delta.index)
     if (counter > 20){
@@ -294,7 +301,7 @@ var handleDelta = function(delta) {
 	}
 }
 
-function toGen(msg){
+function toScripting(msg){
 	
 	var ot = JSON.parse(msg)
 	
