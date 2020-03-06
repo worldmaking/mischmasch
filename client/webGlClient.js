@@ -712,6 +712,7 @@ function initVRController(id=0) {
                 
                 thumbMove.rotation.y = rot.y;
 
+
                 if (!this.isTriggerDown) {
                     // release 
                     let dragTarget = this.dragState.target
