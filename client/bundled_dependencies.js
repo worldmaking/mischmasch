@@ -3928,6 +3928,7 @@ module.exports = {
 	deltasFromGraph: deltasFromGraph,
 	inverseDelta: inverseDelta,
 	applyDeltasToGraph: applyDeltasToGraph,
+	nodesToDeltas: nodesToDeltas,
 
 	// utils:
 	findPathContainer: findPathContainer,

@@ -734,8 +734,16 @@ function initVRController(id=0) {
                     let blankPos = [0,0,0];
                     let blankOrient = [0,0,0,1];
                     if(dragTarget.position.y < 0){
-                        outgoingDeltas.push({ op:"delnode", path: dragTarget.userData.path, kind: dragTarget.userData.kind, 
-                        specification: dragTarget.userData.specification, category: dragTarget.userData.category, pos: blankPos, orient: blankOrient});
+                        let localNode = localGraph.nodes[dragTarget.userData.path];
+                        let blankDelta = [];
+                        let pathPrefix = "";
+                        let delta = got.nodesToDeltas(localNode, blankDelta, pathPrefix);
+                        console.log("Delta: ", delta)
+                        console.log("I Delta: ", got.inverseDelta(delta))
+                        outgoingDeltas = got.inverseDelta(delta);
+
+                        // outgoingDeltas.push({ op:"delnode", path: dragTarget.userData.path, kind: dragTarget.userData.kind, 
+                        // specification: dragTarget.userData.specification, category: dragTarget.userData.category, pos: blankPos, orient: blankOrient});
                     }
 
                     
