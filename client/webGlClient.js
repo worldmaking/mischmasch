@@ -734,13 +734,40 @@ function initVRController(id=0) {
                     let blankPos = [0,0,0];
                     let blankOrient = [0,0,0,1];
                     if(dragTarget.position.y < 0){
-                        let localNode = localGraph.nodes[dragTarget.userData.path];
-                        let blankDelta = [];
-                        let pathPrefix = "";
-                        let delta = got.nodesToDeltas(localNode, blankDelta, pathPrefix);
-                        console.log("Delta: ", delta)
-                        console.log("I Delta: ", got.inverseDelta(delta))
-                        outgoingDeltas = got.inverseDelta(delta);
+
+                        let deltas = got.deltasFromGraph(localGraph, []);
+
+                        for (i = 0; i < deltas.length; i++){
+                            // if dealing with arcs
+                            if(deltas[i].paths && deltas[i].op === 'connect'){
+                                if(deltas[i].paths[0].includes(dragTarget.userData.path) || deltas[i].paths[1].includes(dragTarget.userData.path)){
+                                    console.log(deltas[i].paths)
+                                    outgoingDeltas.push(got.inverseDelta(deltas[i]))
+                                }
+                                
+                            }
+                            // if dealing with nodes:
+                            else if (deltas[i][0] && deltas[i][0].path === dragTarget.userData.path){
+                                // console.log('node', deltas[i])
+                        
+                                outgoingDeltas.push(got.inverseDelta(deltas[i]))
+
+                            } 
+                            // else if (deltas[i].op === 'connect'&& (deltas[i].paths[0].includes(dragTarget.userData.path) || deltas[i].paths[1].includes(dragTarget.userData.path))) {
+                            //     outgoingDeltas.push(got.inverseDelta(deltas[i]))
+                            //     console.log('arc', deltas[i])
+                            // } 
+                            else {
+
+                            }
+                                
+//  && (deltas[i].paths[0].includes(dragTarget.userData.path) || deltas[i].paths[1].includes(dragTarget.userData.path))
+                        }
+                        // for (let fDelta of got.inverseDelta(deltas)){
+                        //     console.log(fDelta)
+                        //     //outgoingDeltas.push(fDelta);
+                        // }
+                      
 
                         // outgoingDeltas.push({ op:"delnode", path: dragTarget.userData.path, kind: dragTarget.userData.kind, 
                         // specification: dragTarget.userData.specification, category: dragTarget.userData.category, pos: blankPos, orient: blankOrient});
@@ -1750,6 +1777,9 @@ function enactDeltaConnect(world, delta) {
     makeCable(src, dst);
 }
 
+function enactDeltaDisconnect(world, delta) {
+    
+}
 
 
 /*

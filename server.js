@@ -334,6 +334,7 @@ function handlemessage(msg, sock, id) {
 			// synchronize our local copy:
 			try {
 				got.applyDeltasToGraph(localGraph, msg.data);
+				console.log(localGraph)
 			} catch (e) {
 				console.warn(e);
 			}
@@ -362,26 +363,26 @@ function handlemessage(msg, sock, id) {
 			//fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(response), "utf-8")
 
 			//OTHistory.push(JSON.stringify(response))
-			console.log(localGraph)
+			console.log('localgraph',localGraph, '\n')
 			send_all_clients(JSON.stringify(response));
 		} break;
 
-		case "playback":{
-			//console.log(msg)/
-			console.log(msg.data)
-			/*
-			let response = {
-				cmd: "deltas",
-				date: Date.now(),
-				data: msg.data
-			};
-			// NOTE: this is copied from the deltas case, but i've commented out recording the playback since for now it'd just be redundant. 
-			// we might, though, at some point want to record when a playback occurred, and note when playback was stopped/looped/overdubbed/etc
-			//recordJSON.push(response)
-			//fs.writeFileSync(sessionRecording, JSON.stringify(recordJSON, null, "  "), "utf-8")
-			send_all_clients(JSON.stringify(response));
-			*/
-		} break;
+		// case "playback":{
+		// 	//console.log(msg)/
+		// 	console.log(msg.data)
+		// 	/*
+		// 	let response = {
+		// 		cmd: "deltas",
+		// 		date: Date.now(),
+		// 		data: msg.data
+		// 	};
+		// 	// NOTE: this is copied from the deltas case, but i've commented out recording the playback since for now it'd just be redundant. 
+		// 	// we might, though, at some point want to record when a playback occurred, and note when playback was stopped/looped/overdubbed/etc
+		// 	//recordJSON.push(response)
+		// 	//fs.writeFileSync(sessionRecording, JSON.stringify(recordJSON, null, "  "), "utf-8")
+		// 	send_all_clients(JSON.stringify(response));
+		// 	*/
+		// } break;
 
 		case "initController":{
 
@@ -440,57 +441,57 @@ function handlemessage(msg, sock, id) {
 			});
 		} break;
 
-		case "record":{
-			// reset session
+		// case "record":{
+		// 	// reset session
 
-			// take OTHistory, turn it into a graph. 
-			// take that graph turn it back into an OT history (will this remove all redundant deltas? (we want this...))
-			// set these deltas as the header for the recorded session file
-			// then append the recordJSON in the stopRecord section.
-			//let header = {}
+		// 	// take OTHistory, turn it into a graph. 
+		// 	// take that graph turn it back into an OT history (will this remove all redundant deltas? (we want this...))
+		// 	// set these deltas as the header for the recorded session file
+		// 	// then append the recordJSON in the stopRecord section.
+		// 	//let header = {}
 
-			// header['header'] = localGraph
-			// console.log(header)
+		// 	// header['header'] = localGraph
+		// 	// console.log(header)
 			
-			recordJSON = {
-				header:{
-					scene: localGraph,
-					timestamp: Date.now()
-				},
-				deltas:[]
+		// 	recordJSON = {
+		// 		header:{
+		// 			scene: localGraph,
+		// 			timestamp: Date.now()
+		// 		},
+		// 		deltas:[]
 				
-			}
-			// recordJSON.push(header)
-			let recording = msg.data.replace(/\s/g, "_")
-			// save session name as filename provided in this message
-			sessionRecording = __dirname + "/session_recordings/" + recording + ".json"
-			// push all received deltas to the recordJSON:
-			recordStatus = 1
-			console.log('session will be stored at', sessionRecording)
+		// 	}
+		// 	// recordJSON.push(header)
+		// 	let recording = msg.data.replace(/\s/g, "_")
+		// 	// save session name as filename provided in this message
+		// 	sessionRecording = __dirname + "/session_recordings/" + recording + ".json"
+		// 	// push all received deltas to the recordJSON:
+		// 	recordStatus = 1
+		// 	console.log('session will be stored at', sessionRecording)
 			
-		} break;
+		// } break;
 
-		case "stopRecord":{
-			recordStatus = 0
+		// case "stopRecord":{
+		// 	recordStatus = 0
 
 			
-			fs.writeFileSync(sessionRecording, JSON.stringify(recordJSON, null, 2), "utf-8")
+		// 	fs.writeFileSync(sessionRecording, JSON.stringify(recordJSON, null, 2), "utf-8")
 			
-			console.log('session saved at', sessionRecording)
+		// 	console.log('session saved at', sessionRecording)
 
-		} break;
+		// } break;
 
-		case "clear_scene": {
-			// JSON not streamable format so close out the history file 
-			//fs.appendFileSync(OTHistoryFile, ']', "utf-8")
+		// case "clear_scene": {
+		// 	// JSON not streamable format so close out the history file 
+		// 	//fs.appendFileSync(OTHistoryFile, ']', "utf-8")
 
-			let deltas = load_scene("scene_speaker.json")
-			// create new history file & add scene as header
-			//OTHistoryFile = '../histories/OT_' + Date.now() + '.json'
-			// let header = {}
-			// header['header'] = deltas
-			//fs.writeFileSync(OTHistoryFile, '[' + JSON.stringify(header), "utf-8")
-		} break;
+		// 	let deltas = load_scene("scene_speaker.json")
+		// 	// create new history file & add scene as header
+		// 	//OTHistoryFile = '../histories/OT_' + Date.now() + '.json'
+		// 	// let header = {}
+		// 	// header['header'] = deltas
+		// 	//fs.writeFileSync(OTHistoryFile, '[' + JSON.stringify(header), "utf-8")
+		// } break;
 		case "get_scene": {
 			
 			//demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
@@ -563,8 +564,8 @@ server.listen(8080, function() {
 load_scene("scene_noise.json")
 
 
-function intervalFunc() {
-  console.log(localGraph)
-}
+// function intervalFunc() {
+//   console.log(localGraph)
+// }
 
 //setInterval(intervalFunc, 5500);

@@ -274,6 +274,7 @@ let applyDeltasToGraph = function (graph, delta) {
 			case "delnode": {
 				let [ctr, name] = findPathContainer(graph.nodes, delta.path);
 				let o = ctr[name];
+				console.log(o);
 				assert(o, "delnode failed: path not found");
 				// assert o._props match delta props:
 				for (let k in o._props) {
