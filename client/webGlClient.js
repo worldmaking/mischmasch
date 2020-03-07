@@ -891,9 +891,11 @@ function initVRController(id=0) {
                         
 
                     }
+                    console.log("from: " + knob.userData.value)
+                    console.log("to: " + value)
                     outgoingDeltas.push({ 
                         op:"propchange", 
-                        path: knob.userData.path, 
+                        path: knob.parent.userData.path, 
                         name:"value", 
                         from: knob.userData.value, 
                         to: value 
@@ -950,6 +952,7 @@ function initVRController(id=0) {
                     let isCableComplete = (cable.userData.src && cable.userData.dst);
                     let isCableFullyDisconnected = (!cable.userData.src && !cable.userData.dst);
                     if (isCableFullyDisconnected) {
+                       
                         // remove editor-only cable:
                         destroy_cable(cable);
                         
@@ -1487,8 +1490,8 @@ function enactDeltaNewNode(world, delta) {
             knob.userData.kind = "_knob_"
             knob.userData.color = colorFromString(name);
             knob.userData.instanceShape = SHAPE_KNOB;
-            knob.name = "_knob_"+name
-            knob.userData.path = delta.path + "._knob_" + name;
+            knob.name = "_knob_"
+            knob.userData.path = delta.path + "._knob_";
             // // label:
             // let label = createLabel(name, -0.5, 0, 1+LABEL_Z_OFFSET, 4);
             // container.add(label);
@@ -1778,7 +1781,8 @@ function enactDeltaConnect(world, delta) {
 }
 
 function enactDeltaDisconnect(world, delta) {
-    
+    //Should check based on userID otherwise no
+    // destroy_cable(cable); 
 }
 
 
@@ -1842,13 +1846,14 @@ function enactDeltaObjectOrient(world, delta) {
     { op:"propchange", path:"x", name:"value", from:x, to:y }
 */
 function enactDeltaObjectValue(world, delta) {
-    let object = getObjectByPath(world, delta.path);
+    let knobPath = delta.path + "._knob_";
+    let object = getObjectByPath(world, knobPath);
     let kind = object.userData.kind; // small_knob, nswitch, etc.
     let value = delta.to;
     switch(kind){
         case "small_knob":
         case "_knob_": {
-            value = value.toFixed(2);
+            //value = value.toFixed(2);
             object.userData.value = value;
             //console.log("Back from server Value", value)
             //Update once server says:
@@ -2462,6 +2467,7 @@ function onServerMessage(msg, sock) {
         case "deltas": {
             // insert into our TODO list:
             incomingDeltas.push.apply(incomingDeltas, msg.data);
+            console.log(msg.data)
         } break;
 
         // server assigns an iid for our session. use this to route controller and HMD data to local max client. 

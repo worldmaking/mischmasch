@@ -330,11 +330,12 @@ function handlemessage(msg, sock, id) {
 
 	switch (msg.cmd) {
 		case "deltas": {
-
+			
 			// synchronize our local copy:
 			try {
+				//console.log('\n\npreApply', localGraph.nodes.resofilter_120)
 				got.applyDeltasToGraph(localGraph, msg.data);
-				console.log(localGraph)
+				//console.log('\n\npostApply', JSON.stringify(localGraph.nodes.resofilter_120.resonance))
 			} catch (e) {
 				console.warn(e);
 			}
