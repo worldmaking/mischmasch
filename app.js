@@ -1,7 +1,17 @@
+// NOTE: The heroku app 'teaparty' will go to sleep if it goes 30 minutes before 
+// receiving a connection request from an app.js. So, when you run app.js don't be 
+// surprised if it takes 10-20 seconds to receive a response from teaparty
+
 const webSocket = require('ws');
 const ip = require('ip');
 const username = require('username')
 const rws = require('reconnecting-websocket');
+const ProgressBar = require('progress');
+
+
+
+
+
 const thisMachine = username.sync()
 
 let wsStatus = 0;
@@ -28,24 +38,55 @@ console.log('hostname', username.sync())
 console.log('hostIP', ip.address())
 
 let ws;
+let timer;
 
 function wsConnect(){
   if (process.argv[2] === 'lan'){
     teapartyServer = process.argv[3]
     ws = new rws('ws://' + process.argv[3] + ':8090', [], rwsOptions);
+    var bar = new ProgressBar(':bar', { total: 25 });
+    console.log('attempting to connect to teaparty:\n')
+    timer = setInterval(function () {
+    bar.tick();
+    if (bar.complete) {
+        clearInterval(timer)
+        console.log('connection timeout: teaparty server on ' + process.argv[3] + ' might be down')
+        process.exit()
+    }
+    }, 1000);
   } else if (process.argv[2] === 'localhost'){
     teapartyServer = '127.0.0.1'
     ws = new rws('ws://localhost:8090', [], rwsOptions);
+    var bar = new ProgressBar(':bar', { total: 25 });
+    console.log('attempting to connect to teaparty:\n')
+    timer = setInterval(function () {
+    bar.tick();
+    if (bar.complete) {
+        clearInterval(timer)
+        console.log('connection timeout: teaparty server on localhost might be down')
+        process.exit()
+    }
+    }, 1000);
   } else {
     teapartyServer = ["http://teaparty.herokuapp.com/"];
     ws = new rws('ws://teaparty.herokuapp.com/8090', [], rwsOptions);
+    var bar = new ProgressBar(':bar', { total: 25 });
+    console.log('attempting to connect to teaparty:\n')
+    timer = setInterval(function () {
+    bar.tick();
+    if (bar.complete) {
+        clearInterval(timer)
+        console.log('connection timeout: teaparty server on heroku app might be down')
+        process.exit()
+    }
+    }, 1000);
   }
 }
 wsConnect()
 
 ws.addEventListener('open', () =>{
-  console.log('websocket client opened')
-
+  console.log('\nconnected to teaparty\n\n')
+  clearInterval(timer)
 
   wsStatus = 1
   // inform the teaparty of important details
@@ -116,7 +157,4 @@ function sendToteaparty(msg){
     ws.send(msg)
   }
 }
-
-
-
 
