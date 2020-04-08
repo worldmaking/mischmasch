@@ -41,7 +41,9 @@ const rwsOptions = {
   connectionTimeout: 1000
 }
 
-process.env.PATH = [process.env.PATH, "/usr/local/bin"].join(":");
+// fix for OSX because /usr/local/bin is not inherited by the Node.js script 
+// (.bash etc. profile is not inherited automatically)
+//process.env.PATH = [process.env.PATH, "/usr/local/bin"].join(":");
 
 console.log('hostname', username.sync())
 
@@ -93,6 +95,8 @@ function wsConnect(){
   }
 }
 wsConnect()
+
+wsConnect();
 
 ws.addEventListener('open', () =>{
   console.log('\nconnected to teaparty\n\n')
@@ -167,4 +171,7 @@ function sendToteaparty(msg){
     ws.send(msg)
   }
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> code commenting
