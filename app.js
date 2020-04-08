@@ -1,8 +1,21 @@
+/*
+  Goal:
+
+  Want to establish P2P socket connections between clients over remote network, to make a teaparty
+  But we don't know in advance the IP addresses or who is online, so we use a remote broker:
+  - first we connect to the remote broker and let them know our IP, name, and other stats 
+  - (we should also let the broker know when we leave)
+  - the broker maintains a list of such connected users
+  - the broker shares with all users the connection info for all the users, including updating when users join and leave
+  - users use this information to establish direct P2P connections between each other
+*/
+
 // NOTE: The heroku app 'teaparty' will go to sleep if it goes 30 minutes before 
 // receiving a connection request from an app.js. So, when you run app.js don't be 
 // surprised if it takes 10-20 seconds to receive a response from teaparty
 
 const webSocket = require('ws');
+const webSocketServer = webSocket.Server;
 // 
 const publicIP = require('public-ip');
 // https://www.npmjs.com/package/username Get the username of the current user
@@ -30,6 +43,9 @@ const teapartyBrokerAddress =
 const teapartyBrokerWebsocketPort = '8090';
 const teapartyBrokerWebsocketAddress = `ws://${teapartyBrokerAddress}/:${teapartyBrokerWebsocketPort}`;
 
+// this is the port used for P2P connections
+const teapartyP2PWebsocketPort = 8080;
+
 const rwsOptions = {
   // make rws use the webSocket module implementation
   WebSocket: webSocket, 
@@ -52,16 +68,15 @@ function wsBrokerConnect() {
       bar.tick();
       if (bar.complete) {
           clearInterval(progressBarTimer)
-          console.log(`connection timeout: ${teapartyBrokerAddress} might be down`)
           // TODO: should it give up like this, or maybe ask user if they want to retry?
-          reject();
+          reject(`connection timeout: ${teapartyBrokerAddress} might be down`);
       }
     }, 1000);
 
     // fail the promise if the server responds with an error
     wsBroker.addEventListener('error', () => {
       clearInterval(progressBarTimer); 
-      reject();
+      reject(`connection error: ${teapartyBrokerAddress}`);
     });
     
     // on successful connection to broker:
@@ -111,7 +126,24 @@ async function init() {
     // now what? 
     // shouldn't the ReconnectingWebSocket already be trying to reconnect?
   });
-      
+
+
+  // start our own ws server for P2P communication:
+  const wsP2P = new webSocketServer({port: teapartyP2PWebsocketPort});
+
+  wsP2P.on('connection', function connection(wsPeer) {
+
+    // at this point we should be adding the wsPeer to our list of incoming peers somehow
+
+    wsPeer.on('message', function incoming(message) {
+      console.log('received: %s', message, 'from peer', wsPeer);
+      // TODO dispatch this message accordingly
+    });
+   
+    // why not say hello?
+    wsPeer.send('good afternoon from ' + thisClientConfiguration.username);
+  });
+
   // inform the teaparty broker of our important details
   let thisClient = JSON.stringify({
     cmd: 'newClient',
@@ -125,6 +157,7 @@ async function init() {
   // TODO: should have a way to send a message when we leave to notify broker we are gone
   // send a "goodbye" message
   // call wsBroker.close()
+  // also notify partygoers via wsP2P.close(() => {});
 
 
   wsBroker.addEventListener('message', (data) => {
