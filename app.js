@@ -52,6 +52,7 @@ console.log('hostIP', ipv4)
 let ws;
 let timer;
 
+// attempt to connect to a teaparty server
 function wsConnect(){
   if (process.argv[2] === 'lan'){
     teapartyServer = process.argv[3]
