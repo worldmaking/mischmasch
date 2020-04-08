@@ -55,6 +55,7 @@ console.log('hostname', thisMachine)
 let ws;
 let timer;
 
+// attempt to connect to a teaparty server
 function wsConnect(){
   if (process.argv[2] === 'lan'){
     teapartyServer = process.argv[3]
