@@ -28,6 +28,7 @@
     "load-bmfont": "^1.4.0",
     "nodemon": "^1.18.11",
     "progress": "^2.0.3",
+    "public-ip": "^4.0.1",
     "reconnecting-websocket": "^4.4.0",
     "tasklist": "^4.0.1",
     "three-bmfont-text": "^2.3.0",

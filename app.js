@@ -3,13 +3,23 @@
 // surprised if it takes 10-20 seconds to receive a response from teaparty
 
 const webSocket = require('ws');
-const ip = require('ip');
+const publicIP = require('public-ip');
 const username = require('username')
 const rws = require('reconnecting-websocket');
 const ProgressBar = require('progress');
 
 
 
+let ipv4;
+let ipv6;
+ 
+(async () => {
+    ipv4 = await publicIP.v4()
+    //=> '46.5.21.123'
+
+    ipv6 = await publicIP.v6()
+    // //=> 'fe80::200:f8ff:fe21:67cf'
+})();
 
 
 const thisMachine = username.sync()
@@ -35,7 +45,7 @@ process.env.PATH = [process.env.PATH, "/usr/local/bin"].join(":");
 
 console.log('hostname', username.sync())
 
-console.log('hostIP', ip.address())
+console.log('hostIP', ipv4)
 
 let ws;
 let timer;
@@ -95,7 +105,7 @@ ws.addEventListener('open', () =>{
     data: 
       {
         username: thisMachine,
-        ip: ip.address(),
+        ip: ipv4,
         vr: vrClientStatus,
         sound: maxClientStatus,
         spectator: spectatorStatus
