@@ -2,10 +2,14 @@
 // receiving a connection request from an app.js. So, when you run app.js don't be 
 // surprised if it takes 10-20 seconds to receive a response from teaparty
 
+// most widely-used websocket module for node.js
 const webSocket = require('ws');
 const publicIP = require('public-ip');
 const username = require('username')
+// https://www.npmjs.com/package/reconnecting-websocket WebSocket that will automatically reconnect if the connection is closed
 const rws = require('reconnecting-websocket');
+// https://www.npmjs.com/package/progress
+// cute way to show progress on the command line
 const ProgressBar = require('progress');
 
 
@@ -23,11 +27,9 @@ let ipv6;
 
 
 const thisMachine = username.sync()
-
 let wsStatus = 0;
 let peerCount = 0
 let peerNames = []
-
 let teapartyServer;
 
 // eventually, app.js will maintain status of connected client(s) and report them to the teaparty
@@ -37,15 +39,18 @@ let maxClientStatus = null
 let spectatorStatus = 0
 
 const rwsOptions = {
-  WebSocket: webSocket,
-  connectionTimeout: 1000
+  // make rws use the webSocket module implementation
+  WebSocket: webSocket, 
+  // ms to try reconnecting:
+  connectionTimeout: 1000 
 }
 
-process.env.PATH = [process.env.PATH, "/usr/local/bin"].join(":");
-
-console.log('hostname', username.sync())
+// fix for OSX because /usr/local/bin is not inherited by the Node.js script 
+// (.bash etc. profile is not inherited automatically)
+//process.env.PATH = [process.env.PATH, "/usr/local/bin"].join(":");
 
 console.log('hostIP', ipv4)
+console.log('hostname', thisMachine)
 
 let ws;
 let timer;
@@ -92,7 +97,8 @@ function wsConnect(){
     }, 1000);
   }
 }
-wsConnect()
+
+wsConnect();
 
 ws.addEventListener('open', () =>{
   console.log('\nconnected to teaparty\n\n')
@@ -167,4 +173,3 @@ function sendToteaparty(msg){
     ws.send(msg)
   }
 }
-
