@@ -3,7 +3,10 @@
 // surprised if it takes 10-20 seconds to receive a response from teaparty
 
 const webSocket = require('ws');
+// 
 const publicIP = require('public-ip');
+// https://www.npmjs.com/package/username Get the username of the current user
+// It first tries to get the username from the SUDO_USER LOGNAME USER LNAME USERNAME environment variables. Then falls back to $ id -un on macOS / Linux and $ whoami on Windows, in the rare case none of the environment variables are set. The result is cached.
 const username = require('username')
 const rws = require('reconnecting-websocket');
 const ProgressBar = require('progress');
@@ -14,11 +17,18 @@ let ipv4;
 let ipv6;
  
 (async () => {
+  try {
     ipv4 = await publicIP.v4()
     //=> '46.5.21.123'
-
+  } catch (ex) {
+    console.log("exception trying to find ipv4 address", ex)
+  }
+  try {
     ipv6 = await publicIP.v6()
     // //=> 'fe80::200:f8ff:fe21:67cf'
+  } catch (ex) {
+    console.log("exception trying to find ipv6 address", ex)
+  }
 })();
 
 
@@ -34,7 +44,7 @@ let teapartyServer;
 let vrClientStatus = null
 let maxClientStatus = null
 // for example, if someone wanted to observe a performance but not be a player:
-let spectatorStatus = 0
+let spectatorStatus = 0 
 
 const rwsOptions = {
   WebSocket: webSocket,
@@ -52,7 +62,7 @@ console.log('hostIP', ipv4)
 let ws;
 let timer;
 
-// attempt to connect to a teaparty server
+// attempt to connect to a teaparty server:
 function wsConnect(){
   if (process.argv[2] === 'lan'){
     teapartyServer = process.argv[3]
