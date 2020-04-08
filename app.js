@@ -8,6 +8,15 @@
   - the broker maintains a list of such connected users
   - the broker shares with all users the connection info for all the users, including updating when users join and leave
   - users use this information to establish direct P2P connections between each other
+
+
+  Q: since this is a 'flat ontology', with nobody in particular being the central server, does it make sense to use websockets for this?
+  isn't there a more natural framework for such networks? e.g. the BUS pattern from nanomsg?
+
+  Q: is this going to work, or will we end up with race condition nightmares between users? 
+  should we make the first person to join the 'ground truth'? 
+
+
 */
 
 // NOTE: The heroku app 'teaparty' will go to sleep if it goes 30 minutes before 
