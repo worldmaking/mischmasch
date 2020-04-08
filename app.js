@@ -6,184 +6,247 @@ const webSocket = require('ws');
 // 
 const publicIP = require('public-ip');
 // https://www.npmjs.com/package/username Get the username of the current user
-// It first tries to get the username from the SUDO_USER LOGNAME USER LNAME USERNAME environment variables. Then falls back to $ id -un on macOS / Linux and $ whoami on Windows, in the rare case none of the environment variables are set. The result is cached.
+// It first tries to get the username from the SUDO_USER LOGNAME USER LNAME USERNAME environment letiables. Then falls back to $ id -un on macOS / Linux and $ whoami on Windows, in the rare case none of the environment letiables are set. The result is cached.
 const username = require('username')
-const rws = require('reconnecting-websocket');
+// https://www.npmjs.com/package/reconnecting-websocket WebSocket that will automatically reconnect if the connection is closed
+const ReconnectingWebSocket = require('reconnecting-websocket');
+// https://www.npmjs.com/package/progress
+// cute way to show progress on the command line
 const ProgressBar = require('progress');
-
-
-
-let ipv4;
-let ipv6;
- 
-(async () => {
-  try {
-    ipv4 = await publicIP.v4()
-    //=> '46.5.21.123'
-  } catch (ex) {
-    console.log("exception trying to find ipv4 address", ex)
-  }
-  // currently throws after its timeout:
-  // try {
-  //   ipv6 = await publicIP.v6()
-  //   // //=> 'fe80::200:f8ff:fe21:67cf'
-  // } catch (ex) {
-  //   console.log("exception trying to find ipv6 address", ex)
-  // }
-})();
-
-
-const thisMachine = username.sync()
-
-let wsStatus = 0;
-let peerCount = 0
-let peerNames = []
-
-let teapartyServer;
-
-// eventually, app.js will maintain status of connected client(s) and report them to the teaparty
-let vrClientStatus = null
-let maxClientStatus = null
-// for example, if someone wanted to observe a performance but not be a player:
-let spectatorStatus = 0 
-
-const rwsOptions = {
-  WebSocket: webSocket,
-  connectionTimeout: 1000
-}
 
 // fix for OSX because /usr/local/bin is not inherited by the Node.js script 
 // (.bash etc. profile is not inherited automatically)
 //process.env.PATH = [process.env.PATH, "/usr/local/bin"].join(":");
 
-console.log('hostname', username.sync())
+// list of peers as notifed from the broker:
+let peers = {};
 
-console.log('hostIP', ipv4)
+// figure out where the broker for to the teaparty is?
+let isConnectedToBroker = 0; // becomes 1 when connected to broker
+const teapartyBrokerAddress = 
+    (process.argv[2] === 'lan' && process.argv[3]) ? process.argv[3]
+  : (process.argv[2] === 'localhost') ? '127.0.0.1'
+  : "teaparty.herokuapp.com";
+const teapartyBrokerWebsocketPort = '8090';
+const teapartyBrokerWebsocketAddress = `ws://${teapartyBrokerAddress}/:${teapartyBrokerWebsocketPort}`;
 
-let ws;
-let timer;
+const rwsOptions = {
+  // make rws use the webSocket module implementation
+  WebSocket: webSocket, 
+  // ms to try reconnecting:
+  connectionTimeout: 1000,
+  //debug:true, 
+}
 
-// attempt to connect to a teaparty server:
-function wsConnect(){
-  if (process.argv[2] === 'lan'){
-    teapartyServer = process.argv[3]
-    ws = new rws('ws://' + process.argv[3] + ':8090', [], rwsOptions);
-    var bar = new ProgressBar(':bar', { total: 25 });
-    console.log('attempting to connect to teaparty:\n')
-    timer = setInterval(function () {
-    bar.tick();
-    if (bar.complete) {
-        clearInterval(timer)
-        console.log('connection timeout: teaparty server on ' + process.argv[3] + ' might be down')
-        process.exit()
-    }
+
+// attempt to connect to teaparty broker
+// returns the websocket via a Promise
+function wsBrokerConnect() {
+  return new Promise((resolve, reject) => {
+    // create a websocket to find out who is at the teaparty:
+    console.log(`attempting to connect to teaparty at ${teapartyBrokerWebsocketAddress}`)
+    let wsBroker = new ReconnectingWebSocket(teapartyBrokerWebsocketAddress, [], rwsOptions);
+    // show a progress bar while connecting:
+    let bar = new ProgressBar(':bar', { total: 25 });
+    let progressBarTimer = setInterval(function () {
+      bar.tick();
+      if (bar.complete) {
+          clearInterval(progressBarTimer)
+          console.log(`connection timeout: ${teapartyBrokerAddress} might be down`)
+          // TODO: should it give up like this, or maybe ask user if they want to retry?
+          reject();
+      }
     }, 1000);
-  } else if (process.argv[2] === 'localhost'){
-    teapartyServer = '127.0.0.1'
-    ws = new rws('ws://localhost:8090', [], rwsOptions);
-    var bar = new ProgressBar(':bar', { total: 25 });
-    console.log('attempting to connect to teaparty:\n')
-    timer = setInterval(function () {
-    bar.tick();
-    if (bar.complete) {
-        clearInterval(timer)
-        console.log('connection timeout: teaparty server on localhost might be down')
-        process.exit()
-    }
-    }, 1000);
-  } else {
-    teapartyServer = ["http://teaparty.herokuapp.com/"];
-    ws = new rws('ws://teaparty.herokuapp.com/8090', [], rwsOptions);
-    var bar = new ProgressBar(':bar', { total: 25 });
-    console.log('attempting to connect to teaparty:\n')
-    timer = setInterval(function () {
-    bar.tick();
-    if (bar.complete) {
-        clearInterval(timer)
-        console.log('connection timeout: teaparty server on heroku app might be down')
-        process.exit()
-    }
-    }, 1000);
-  }
+
+    // fail the promise if the server responds with an error
+    wsBroker.addEventListener('error', () => {
+      clearInterval(progressBarTimer); 
+      reject();
+    });
+    
+    // on successful connection to broker:
+    wsBroker.addEventListener('open', () => {
+      clearInterval(progressBarTimer);
+      resolve(wsBroker);
+    });
+  });
 }
 wsConnect()
 
-wsConnect();
 
-ws.addEventListener('open', () =>{
-  console.log('\nconnected to teaparty\n\n')
-  clearInterval(timer)
 
-  wsStatus = 1
-  // inform the teaparty of important details
+let thisClientConfiguration = {
+  // get a username for this machine:
+  username: username.sync(),
+  // ip is figured out during init()
+  ip: null, 
+  // eventually, app.js will maintain status of connected client(s) and report them to the teaparty
+  vr: null,
+  sound: null,
+  // for example, if someone wanted to observe a performance but not be a player:
+  spectator: 0
+};
+
+// run everything inside an async() so we can await as needed:
+async function init() {
+
+  // get our public IP address:
+  thisClientConfiguration.ip = await publicIP.v4()
+  //=> '46.5.21.123'
+  //thisClientConfiguration.ip = await publicIP.v6()
+  //=> 'fe80::200:f8ff:fe21:67cf'
+
+  console.log('my hostname', thisClientConfiguration.username)
+  console.log('my public IP is', thisClientConfiguration.ip);
+
+
+  // connect:
+  let wsBroker = await wsBrokerConnect();
+  console.log('\nconnected to teaparty\n')
+  isConnectedToBroker = 1;
+
+  wsBroker.addEventListener('close', () => {
+    isConnectedToBroker = 0;
+    console.log("teaparty broker connection closed");
+    // now what? 
+    // shouldn't the ReconnectingWebSocket already be trying to reconnect?
+  });
+      
+  // inform the teaparty broker of our important details
   let thisClient = JSON.stringify({
     cmd: 'newClient',
-    data: 
-      {
-        username: thisMachine,
-        ip: ipv4,
-        vr: vrClientStatus,
-        sound: maxClientStatus,
-        spectator: spectatorStatus
-      },
+    data: thisClientConfiguration,
     date: Date.now() 
   })
 
-  ws.send(thisClient);
-});
+  wsBroker.send(thisClient);
+
+    
+  // TODO: should have a way to send a message when we leave to notify broker we are gone
+  // send a "goodbye" message
+  // call wsBroker.close()
 
 
-ws.addEventListener('message', (data) =>{
+  wsBroker.addEventListener('message', (data) => {
+    let msg = JSON.parse(data.data);
+    let cmd = msg.cmd;
+
+    switch (cmd) {
+      // lists all clients actively registered with the teaparty
+      case 'network': {
+        let netpeers = msg.data;
+        console.log("NETWORK", netpeers)
+
+        // update our list of peers here
+        // any changes should trigger attempts to make p2p connections
+        // (also, any removals should break p2p connections)
+
+        // i.e. we want a remove list and an add list
+
+        let addList = [];
+        for (let peer in netpeers) {
+          
+          // TODO: fix this in the broker. the message data shouldn't mix data and metadata like this
+          if (peer == "peers") continue;
+
+          // don't add ourselves!
+          if (peer == thisClientConfiguration.username) continue;
+
+          addList.push(msg.data[peer]);
+        }
+
+        let removeList = [];
+        for (let peer in peers) {
+          // is this in the netpeer set?
+          if (!netpeers[peer.username]) {
+            removeList.push(peer);
+          }
+        }
+
+        console.log("removing", removeList);
+        console.log("adding", addList);
+
+        // implement these actions in separate functions, as they may be triggered in other ways.
+
+        // adding should attempt to create a p2p rws-socket
+        // removing should cancel such a socket
+
+      } break;
+
+      // these cases are kind of subsumed by the "network" case (TODO consider renaming that)
+      // case "addPeer":
+      // case "removePeer"
+
+      case 'ping':
+        // ignore this, the teaparty sends this as a hack to prevent heroku from stopping the dyno
+        break;
   
-  msg = JSON.parse(data.data)
-  cmd = msg.cmd
-  //////////// these are messages broadcast to all clients from teaparty
-  switch (cmd){
-    // not in use at the moment, but might come in handy
-    case "serverMsg":
-      console.log('network update: ', msg.data)
-    break
-    case 'ping':
-      // ignore this, the teaparty sends this as a hack to prevent heroku from stopping the dyno
-    break
+      default:
+       console.log('\n\nFor developer: unhandled message from remote teaparty: ', msg);
+       break;
+    }
 
-    // teaparty tells this app.js that a remote client is available to connect via p2p, or that this own instance has been registered
-    case "addPeer":
-      if (msg.data.username != thisMachine){
-        console.log('add this peer to p2p mesh: ', msg.data)
-      } else {
-        console.log('the app.js instance on ' + thisMachine + ' is attending the tea party')
-      }
-    break
-    // teaparty tells this app.js that a remote client is has disconnected, to break the connection, or that this own instance has been disconnected
-    case "removePeer":
-      if (msg.data != thisMachine){
-        console.log('remove this peer from p2p mesh: ', msg.data)
-      } else {
-        console.log('this app.js has left the tea party')
-      }
-    break
+  });
 
-    // lists all clients actively registered with the teaparty
-    case 'network':
-      console.log(msg)
-    break
-
-    default:
-      console.log('\n\nFor developer: unhandled message from remote teaparty: ', msg)
-    break
-  }
-
-});
-
-function sendToteaparty(msg){
-  if(wsStatus === 0){
-    console.log('websocket client closed, did not send message:\n\n' + msg)
-  } else{
-    ws.send(msg)
-  }
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> code commenting
+
+init();
+
+
+
+
+// // handle messages from broker
+// wsBroker.addEventListener('message', (data) =>{
+//   let msg = JSON.parse(data.data)
+//   let cmd = msg.cmd
+//   //////////// these are messages broadcast to all clients from teaparty
+//   switch (cmd){
+//     // not in use at the moment, but might come in handy
+//     case "serverMsg":
+//       console.log('network update: ', msg.data)
+//     break
+//     case 'ping':
+//       // ignore this, the teaparty sends this as a hack to prevent heroku from stopping the dyno
+//     break
+
+//     // teaparty tells this app.js that a remote client is available to connect via p2p, or that this own instance has been registered
+//     case "addPeer":
+//       if (msg.data.username != thisMachineUserName){
+//         console.log('add this peer to p2p mesh: ', msg.data)
+//       } else {
+//         console.log('the app.js instance on ' + thisMachineUserName + ' is attending the tea party')
+//       }
+//     break
+//     // teaparty tells this app.js that a remote client is has disconnected, to break the connection, or that this own instance has been disconnected
+//     case "removePeer":
+//       if (msg.data != thisMachineUserName){
+//         console.log('remove this peer from p2p mesh: ', msg.data)
+//       } else {
+//         console.log('this app.js has left the tea party')
+//       }
+//     break
+
+//     // lists all clients actively registered with the teaparty
+//     case 'network':
+//       console.log(msg)
+
+//       // update our list of peers here
+//       // any changes should trigger attempts to make p2p connections
+//     break
+
+//     default:
+//       console.log('\n\nFor developer: unhandled message from remote teaparty: ', msg)
+//     break
+//   }
+
+// });
+
+// function sendToteapartyBroker(msg){
+//   if(isConnectedToBroker === 0){
+//     console.log('websocket client closed, did not send message:\n\n' + msg)
+//   } else{
+//     wsBroker.send(msg)
+//   }
+// }
+//>>>>>>> code restructure & comments/thoughts
