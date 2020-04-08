@@ -27,12 +27,13 @@ let ipv6;
   } catch (ex) {
     console.log("exception trying to find ipv4 address", ex)
   }
-  try {
-    ipv6 = await publicIP.v6()
-    // //=> 'fe80::200:f8ff:fe21:67cf'
-  } catch (ex) {
-    console.log("exception trying to find ipv6 address", ex)
-  }
+  // currently throws after its timeout:
+  // try {
+  //   ipv6 = await publicIP.v6()
+  //   // //=> 'fe80::200:f8ff:fe21:67cf'
+  // } catch (ex) {
+  //   console.log("exception trying to find ipv6 address", ex)
+  // }
 })();
 
 
