@@ -37,7 +37,7 @@ function read(file){
 function bang(){
 	
 	
-	}
+}
 
 /*
 function addNode(node){
