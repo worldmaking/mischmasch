@@ -182,17 +182,18 @@ async function init() {
         console.log("NETWORK", netpeers)
 
         // update our list of peers here
-        // any changes should trigger attempts to make p2p connections
-        // (also, any removals should break p2p connections)
+        // i.e. we want a remove list and an add list to update our set of peers
 
-        // i.e. we want a remove list and an add list
+        // TODO: want ot know which peer is host, and make sure we have a p2p connection to them
+        // (unless we are the host!)
+
+        // TODO possibly also p2p connections to all other members, if we want to have direct lines?
+        // (e.g. for sending head/hand position data with minimal lag)
 
         let addList = [];
         for (let peer in netpeers) {
-          
           // TODO: fix this in the broker. the message data shouldn't mix data and metadata like this
           if (peer == "peers") continue;
-
           // don't add ourselves!
           if (peer == thisClientConfiguration.username) continue;
 
@@ -210,8 +211,7 @@ async function init() {
         console.log("removing", removeList);
         console.log("adding", addList);
 
-        // implement these actions in separate functions, as they may be triggered in other ways.
-
+        // TODO implement these actions in separate functions, as they may be triggered in other ways.
         // adding should attempt to create a p2p rws-socket
         // removing should cancel such a socket
 
