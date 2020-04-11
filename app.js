@@ -20,7 +20,6 @@
   Q: does it make sense to use websockets for this?
   is there a more natural framework for such networks? e.g. the BUS pattern from nanomsg?
 
-
 */
 
 // NOTE: The heroku app 'teaparty' will go to sleep if it goes 30 minutes before 
