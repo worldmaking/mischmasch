@@ -44,8 +44,8 @@ const ProgressBar = require('progress');
 // (.bash etc. profile is not inherited automatically)
 //process.env.PATH = [process.env.PATH, "/usr/local/bin"].join(":");
 
-// list of peers as notifed from the broker:
-let peers = {};
+// list of guests as notifed from the broker:
+let guests = {};
 
 // figure out where the broker for to the teaparty is?
 let isConnectedToBroker = 0; // becomes 1 when connected to broker
@@ -54,7 +54,9 @@ const teapartyBrokerAddress =
   : (process.argv[2] === 'localhost') ? '127.0.0.1'
   : "teaparty.herokuapp.com";
 const teapartyBrokerWebsocketPort = '8090';
-const teapartyBrokerWebsocketAddress = `ws://${teapartyBrokerAddress}/:${teapartyBrokerWebsocketPort}`;
+const teapartyBrokerWebsocketAddress = 
+  (process.argv[2] === 'lan' && process.argv[3]) || (process.argv[2] === 'localhost') ? `ws://${teapartyBrokerAddress}:${teapartyBrokerWebsocketPort}`
+  : `ws://${teapartyBrokerAddress}/${teapartyBrokerWebsocketPort}`;
 
 // this is the port used for P2P connections
 const teapartyP2PWebsocketPort = 8080;
@@ -84,11 +86,12 @@ function wsBrokerConnect() {
           reject(`connection timeout: ${teapartyBrokerAddress} might be down`);
       }
     }, 1000);
-
+    
     // fail the promise if the server responds with an error
-    wsBroker.addEventListener('error', () => {
+    wsBroker.addEventListener('error', (error) => {
+      console.log(`connection error from ${teapartyBrokerAddress}:`)
       clearInterval(progressBarTimer); 
-      reject(`connection error: ${teapartyBrokerAddress}`);
+      reject(error.error);
     });
     
     // on successful connection to broker:
@@ -98,8 +101,6 @@ function wsBrokerConnect() {
     });
   });
 }
-
-
 
 let thisClientConfiguration = {
   // get a username for this machine:
@@ -116,17 +117,29 @@ let thisClientConfiguration = {
 // run everything inside an async() so we can await as needed:
 async function init() {
 
-  // get our public IP address:
-  thisClientConfiguration.ip = await publicIP.v4()
-  //=> '46.5.21.123'
-  //thisClientConfiguration.ip = await publicIP.v6()
-  //=> 'fe80::200:f8ff:fe21:67cf'
+  try {
+    // get our public IP address:
+    thisClientConfiguration.ip = await publicIP.v4()
+    //=> '46.5.21.123'
+    //thisClientConfiguration.ip = await publicIP.v6()
+    //=> 'fe80::200:f8ff:fe21:67cf'
+  } catch(e) {
+    console.log("error resolving public IP", e);
+    process.exit();
+  }
 
   console.log('my hostname', thisClientConfiguration.username)
   console.log('my public IP is', thisClientConfiguration.ip);
 
   // connect:
-  let wsBroker = await wsBrokerConnect();
+  let wsBroker;
+  try{
+    wsBroker = await wsBrokerConnect();
+  } catch(e) {
+    console.log("error connecting to teaparty maître d'", e);
+    console.trace()
+    process.exit();
+  }
   console.log('\nconnected to teaparty\n')
   // TODO Q: shouldn't we be able to ask wsBroker this, rather than duplicating in a local variable?
   isConnectedToBroker = 1;
@@ -143,17 +156,17 @@ async function init() {
   // start our own ws server for P2P communication:
   const wsP2P = new webSocketServer({port: teapartyP2PWebsocketPort});
 
-  wsP2P.on('connection', function connection(wsPeer) {
+  wsP2P.on('connection', function connection(wsguest) {
 
-    // TODO at this point we should be adding the wsPeer to our list of incoming peers somehow
+    // TODO at this point we should be adding the wsguest to our list of incoming guests somehow
 
-    wsPeer.on('message', function incoming(message) {
-      console.log('received: %s', message, 'from peer', wsPeer);
+    wsguest.on('message', function incoming(message) {
+      console.log('received: %s', message, 'from guest', wsguest);
       // TODO dispatch this message accordingly
     });
    
     // why not say hello?
-    wsPeer.send('good afternoon from ' + thisClientConfiguration.username);
+    wsguest.send('good afternoon from ' + thisClientConfiguration.username);
   });
 
   // inform the teaparty broker of our important details
@@ -170,59 +183,91 @@ async function init() {
   // call wsBroker.close()
   // also notify partygoers via wsP2P.close(() => {});
 
+  function sayGoodbye() {
+    wsBroker.close();
+  }
+
+  process.on('SIGINT', function() {
+      console.log("Caught interrupt signal");
+      sayGoodbye();
+      process.exit();
+  });
+
+
+
+
   wsBroker.addEventListener('message', (data) => {
     let msg = JSON.parse(data.data);
     let cmd = msg.cmd;
 
     switch (cmd) {
+      // TODO messages to invite being the host (accept or reject/timeout)
+
       // lists all clients actively registered with the teaparty
-      case 'network': {
-        let netpeers = msg.data;
-        console.log("NETWORK", netpeers)
+      // should be received at reasonable frequency (i.e. also serves as a ping)
+      case 'guestlist': {
+        let brokerGuests = msg.data.guests;
+        let brokerHeadCount = msg.data.headcount;
+        let brokerHost = msg.data.host;
+        //console.log("guestlist", brokerGuests)
 
-        // update our list of peers here
-        // i.e. we want a remove list and an add list to update our set of peers
+        // update our list of guests here
+        // i.e. we want a remove list and an add list to update our set of guests
 
-        // TODO: want ot know which peer is host, and make sure we have a p2p connection to them
+        // TODO: want ot know which guest is host, and make sure we have a p2p connection to them
         // (unless we are the host!)
-
+        // TODO: deal with case that we WERE host but are not any longer
         // TODO possibly also p2p connections to all other members, if we want to have direct lines?
         // (e.g. for sending head/hand position data with minimal lag)
 
         let addList = [];
-        for (let peer in netpeers) {
-          // TODO: fix this in the broker. the message data shouldn't mix data and metadata like this
-          if (peer == "peers") continue;
+        for (let username in brokerGuests) {
           // don't add ourselves!
-          if (peer == thisClientConfiguration.username) continue;
-
-          addList.push(msg.data[peer]);
+          //if (guest == thisClientConfiguration.username) continue;
+          // don't add if we already know about them
+          if (guests[username]) continue;
+          // otherwise, we need to add them
+          addList.push(brokerGuests[username]);
         }
 
         let removeList = [];
-        for (let peer in peers) {
-          // is this in the netpeer set?
-          if (!netpeers[peer.username]) {
-            removeList.push(peer);
+        for (let guest in guests) {
+          // is this in the brokerGuests set?
+          if (!brokerGuests[guest]) {
+            removeList.push(guest);
           }
         }
 
-        console.log("removing", removeList);
-        console.log("adding", addList);
+        if (removeList.length) {
+          console.log("removing", removeList);
+          for (let username of removeList) {
+            delete guests[username];
+          }
+          console.log("updated guests (removed)", guests)
+        }
+        if (addList.length) {
+          console.log("adding", addList);
+          for (let o of addList) {
+            guests[o.username] = o;
+          }
+          console.log("updated guests (added)", guests)
+        }
 
         // TODO implement these actions in separate functions, as they may be triggered in other ways.
         // adding should attempt to create a p2p rws-socket
         // removing should cancel such a socket
 
+
       } break;
 
       // these cases are kind of subsumed by the "network" case (TODO consider renaming that)
-      // case "addPeer":
-      // case "removePeer"
+      // case "addguest":
+      // case "removeguest"
 
-      case 'ping':
-        // ignore this, the teaparty sends this as a hack to prevent heroku from stopping the dyno
-        break;
+      // maybe this is redundant if we treat the "network" message as ping
+      // case 'ping':
+      //   // ignore this, the teaparty sends this as a hack to prevent heroku from stopping the dyno
+      //   break;
   
       default:
        console.log('\n\nFor developer: unhandled message from remote teaparty: ', msg);
