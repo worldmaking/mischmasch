@@ -8,10 +8,14 @@
   - the broker maintains a list of such connected users
   - the broker shares with all users the connection info for all the users, including updating when users join and leave
   - users use this information to establish direct P2P connections between each other
-  
-  Migrating host model
-  - broker chooses who is host (server truth) at any time
 
+  Migrating host model
+  - broker (signal server) chooses who is host (ground truth) at any time
+  - normally it would be the first to connect, but could be migrated to next partygoer if the host exits (e.g. internet dropout)
+  - everyone would have a socket connection to current host, and assume that the host has the 'ground truth' for merging OTs. 
+
+  Future: many worlds, like server rooms. Anyone can start a world and invite. The default world is open like a lobby. 
+  For now just do this default world.
 
   Q: does it make sense to use websockets for this?
   is there a more natural framework for such networks? e.g. the BUS pattern from nanomsg?
@@ -63,7 +67,6 @@ const rwsOptions = {
   connectionTimeout: 1000,
   //debug:true, 
 }
-
 
 // attempt to connect to teaparty broker
 // returns the websocket via a Promise
@@ -123,17 +126,18 @@ async function init() {
   console.log('my hostname', thisClientConfiguration.username)
   console.log('my public IP is', thisClientConfiguration.ip);
 
-
   // connect:
   let wsBroker = await wsBrokerConnect();
   console.log('\nconnected to teaparty\n')
+  // TODO Q: shouldn't we be able to ask wsBroker this, rather than duplicating in a local variable?
   isConnectedToBroker = 1;
 
   wsBroker.addEventListener('close', () => {
     isConnectedToBroker = 0;
     console.log("teaparty broker connection closed");
-    // now what? 
+    // TODO now what? 
     // shouldn't the ReconnectingWebSocket already be trying to reconnect?
+    // didn't seem to be for me
   });
 
 
@@ -142,7 +146,7 @@ async function init() {
 
   wsP2P.on('connection', function connection(wsPeer) {
 
-    // at this point we should be adding the wsPeer to our list of incoming peers somehow
+    // TODO at this point we should be adding the wsPeer to our list of incoming peers somehow
 
     wsPeer.on('message', function incoming(message) {
       console.log('received: %s', message, 'from peer', wsPeer);
@@ -156,18 +160,16 @@ async function init() {
   // inform the teaparty broker of our important details
   let thisClient = JSON.stringify({
     cmd: 'newClient',
+    date: Date.now(), 
     data: thisClientConfiguration,
-    date: Date.now() 
   })
 
   wsBroker.send(thisClient);
 
-    
   // TODO: should have a way to send a message when we leave to notify broker we are gone
   // send a "goodbye" message
   // call wsBroker.close()
   // also notify partygoers via wsP2P.close(() => {});
-
 
   wsBroker.addEventListener('message', (data) => {
     let msg = JSON.parse(data.data);
