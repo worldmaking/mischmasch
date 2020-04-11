@@ -16,9 +16,6 @@
   Q: does it make sense to use websockets for this?
   is there a more natural framework for such networks? e.g. the BUS pattern from nanomsg?
 
-  Q: is this going to work, or will we end up with race condition nightmares between users? 
-  should we make the first person to join the 'ground truth'? 
-
 
 */
 
