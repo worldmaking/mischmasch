@@ -57,40 +57,43 @@ let d = [
 	{ op:"propchange", path:"x", name:"pos", from:[10,10], to:[20,20] }
 ];
 */
+// may testing: 
+let d = JSON.parse(fs.readFileSync('testing/deltas.json'))
 
-let d = [
-	[
-	  { op:"newnode", path:"lfo_1", kind:"lfo", pos:[0.0, 1.5, 0.0], orient:[0,0,0,1] }, 
-		{ op:"newnode", path:"lfo_1.fm_cv", kind:"inlet", index:0 }, 
-		{ op:"newnode", path:"lfo_1.phasor_sync", kind:"inlet", index:1 }, 
-	  { op:"newnode", path:"lfo_1.pulse_width_cv", kind:"inlet", index:2 }, 
-	  { op:"newnode", path:"lfo_1.rate", kind:"large_knob", range: [0,80],taper: "log 3.8",value:0.17,unit: "Hz" },
-		{ op:"newnode", path:"lfo_1.index", kind:"small_knob", range:[0,10],taper: "linear", value: 3.0,unit: "float" }, 
-		{ op:"newnode", path:"lfo_1.pulse_width", kind:"small_knob", range:[0,1],taper: "linear", value: 5.0,unit: "float" }, 
-		{ op:"newnode", path:"lfo_1.onset", kind:"small_knob", range:[0,1],taper: "linear", value: 2.8,unit: "float" },  
-		{ op:"newnode", path:"lfo_1.sine", kind:"outlet", index:0 },
-		{ op:"newnode", path:"lfo_1.phasor", kind:"outlet", index:1 }, 
-		{ op:"newnode", path:"lfo_1.pulse", kind:"outlet", index:2 },
-		{ op:"newnode", path:"lfo_1.sine_index", kind:"outlet", index:3 }, 
-	],
-	[
-	  { op:"newnode", path:"b", kind:"dac", pos:[10,50] },
-	  { op:"newnode", path:"b.source", kind:"inlet" }, 
-	],
-	{ op:"connect", paths: ["a.signal", "b.source"] },
-	{ op:"newnode", path:"child", kind:"group", pos:[50,50] },
-	[
-	  { op:"newnode", path:"child.a", kind:"beep", pos:[10,10] },
-	  { op:"newnode", path:"child.a.signal", kind:"outlet" }
-	], 
-	{ op:"connect", paths: ["child.a.signal", "b"] },
+console.log(d)
+// let d = [
+// 	[
+// 	  { op:"newnode", path:"lfo_1", kind:"lfo", pos:[0.0, 1.5, 0.0], orient:[0,0,0,1] }, 
+// 		{ op:"newnode", path:"lfo_1.fm_cv", kind:"inlet", index:0 }, 
+// 		{ op:"newnode", path:"lfo_1.phasor_sync", kind:"inlet", index:1 }, 
+// 	  { op:"newnode", path:"lfo_1.pulse_width_cv", kind:"inlet", index:2 }, 
+// 	  { op:"newnode", path:"lfo_1.rate", kind:"large_knob", range: [0,80],taper: "log 3.8",value:0.17,unit: "Hz" },
+// 		{ op:"newnode", path:"lfo_1.index", kind:"small_knob", range:[0,10],taper: "linear", value: 3.0,unit: "float" }, 
+// 		{ op:"newnode", path:"lfo_1.pulse_width", kind:"small_knob", range:[0,1],taper: "linear", value: 5.0,unit: "float" }, 
+// 		{ op:"newnode", path:"lfo_1.onset", kind:"small_knob", range:[0,1],taper: "linear", value: 2.8,unit: "float" },  
+// 		{ op:"newnode", path:"lfo_1.sine", kind:"outlet", index:0 },
+// 		{ op:"newnode", path:"lfo_1.phasor", kind:"outlet", index:1 }, 
+// 		{ op:"newnode", path:"lfo_1.pulse", kind:"outlet", index:2 },
+// 		{ op:"newnode", path:"lfo_1.sine_index", kind:"outlet", index:3 }, 
+// 	],
+// 	[
+// 	  { op:"newnode", path:"b", kind:"dac", pos:[10,50] },
+// 	  { op:"newnode", path:"b.source", kind:"inlet" }, 
+// 	],
+// 	{ op:"connect", paths: ["a.signal", "b.source"] },
+// 	{ op:"newnode", path:"child", kind:"group", pos:[50,50] },
+// 	[
+// 	  { op:"newnode", path:"child.a", kind:"beep", pos:[10,10] },
+// 	  { op:"newnode", path:"child.a.signal", kind:"outlet" }
+// 	], 
+// 	{ op:"connect", paths: ["child.a.signal", "b"] },
 
-	{ op:"newnode", path:"x", kind:"noise", pos:[10,10] },
-	{ op:"repath", paths: ["child.a", "child.aa"] },
+// 	{ op:"newnode", path:"x", kind:"noise", pos:[10,10] },
+// 	{ op:"repath", paths: ["child.a", "child.aa"] },
 
-	// change a property
-	{ op:"propchange", path:"x", name:"pos", from:[10,10], to:[20,20] }
-];
+// 	// change a property
+// 	{ op:"propchange", path:"x", name:"pos", from:[10,10], to:[20,20] }
+// ];
 
 
 
@@ -146,6 +149,6 @@ console.log("\nALL TESTS PASSED")
 
 
 
-let graph = JSON.parse(fs.readFileSync("../scene_edited.json"), "utf-8")
-let deltas = got.deltasFromGraph(graph, [])
-fs.writeFileSync("../scene_edited_deltas.json", JSON.stringify(deltas, null, "  "), "utf-8")
+// let graph = JSON.parse(fs.readFileSync("../scene_files/scene_edited.json"), "utf-8")
+// let deltas = got.deltasFromGraph(graph, [])
+// fs.writeFileSync("../scene_files/scene_edited_deltas.json", JSON.stringify(deltas, null, "  "), "utf-8")

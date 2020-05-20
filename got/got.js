@@ -215,9 +215,10 @@ let rebase = function(B, A, result) {
 			} break;
 			case "propchange": {
 				// TODO -- are there any potential conflicts?
-				if (b.op == "propchange" && b.path==A.path && b.name==A.name) {
+				if (b.op == "propchange" && b.path==A.path && b.name==A.name && floatApproximatelyEqual(b.from, a.from) === false) {
 					// if both A and b change the same property, then they should be merged or sequenced
 					b.from = A.to;
+					console.log(b.from, A.to)
 				}
 			} break;
 		}
@@ -455,6 +456,10 @@ let deltasToString = function(deltas, indent) {
 	} else {
 		return deltaToString(deltas);
 	}
+}
+
+let floatApproximatelyEqual = function(x, y){
+	return (Math.abs(x-y)/Math.abs(x)) < 0.0001;
 }
 
 module.exports = {
