@@ -5,7 +5,7 @@
 
 const assert = require ("assert");
 
-// see https://github.com/worldmaking/cards/wiki/List-of-Operational-Transforms
+// see https://github.com/worldmaking/msvr/wiki/List-of-Operational-Transforms
 /*
 	Every op should be invertible (which means, destructive edits must include full detail of what is to be deleted)
 	Changes are rebased by graph path (rather than character position as in text documents)
