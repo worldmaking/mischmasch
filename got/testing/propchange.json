@@ -1,0 +1,20 @@
+[
+    
+    {
+        "op": "propchange",
+        "path": "lfo_1.rate",
+        "name": "value",
+        "from": 0.17,
+        "to": 0.7005339838596962,
+        "timestamp": 1571343253980
+    },
+    {
+        "op": "propchange",
+        "path": "lfo_1.rate",
+        "name": "value",
+        "from": 0.7005339838596962,
+        "to": 0.9,
+        "timestamp": 1571343253980
+    }
+    
+]
