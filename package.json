@@ -22,7 +22,9 @@
         "./node_modules/jest-html-reporter",
         {
           "pageTitle": "Mischmasch Test Report",
-          "includeFailureMsg": true
+          "includeFailureMsg": true,
+          "outputPath": "__tests__/testReport.html",
+          "sort": "status"
         }
       ]
     ]

@@ -127,9 +127,6 @@
         "kind": "outlet",
         "index": 3
       }
-    ],
-    [
-      {"op": "connect", "paths": [ "lfo_1.sine", "lfo_1.cv"]}
     ]
   ]
 ]
