@@ -1,7 +1,7 @@
 [
   [
     {
-      "op": "newnode",
+      "op": "delnode",
       "path": "lfo_1",
       "kind": "lfo",
       "pos": [
@@ -18,7 +18,7 @@
     },
     [
       {
-        "op": "newnode",
+        "op": "delnode",
         "path": "lfo_1.fm_cv",
         "kind": "inlet",
         "index": 0
@@ -26,7 +26,7 @@
     ],
     [
       {
-        "op": "newnode",
+        "op": "delnode",
         "path": "lfo_1.phasor_sync",
         "kind": "inlet",
         "index": 1
@@ -34,7 +34,7 @@
     ],
     [
       {
-        "op": "newnode",
+        "op": "delnode",
         "path": "lfo_1.pulse_width_cv",
         "kind": "inlet",
         "index": 2
@@ -42,7 +42,7 @@
     ],
     [
       {
-        "op": "newnode",
+        "op": "delnode",
         "path": "lfo_1.rate",
         "kind": "large_knob",
         "range": [
@@ -56,7 +56,7 @@
     ],
     [
       {
-        "op": "newnode",
+        "op": "delnode",
         "path": "lfo_1.index",
         "kind": "small_knob",
         "range": [
@@ -70,7 +70,7 @@
     ],
     [
       {
-        "op": "newnode",
+        "op": "delnode",
         "path": "lfo_1.pulse_width",
         "kind": "small_knob",
         "range": [
@@ -84,7 +84,7 @@
     ],
     [
       {
-        "op": "newnode",
+        "op": "delnode",
         "path": "lfo_1.onset",
         "kind": "small_knob",
         "range": [
@@ -98,7 +98,7 @@
     ],
     [
       {
-        "op": "newnode",
+        "op": "delnode",
         "path": "lfo_1.sine",
         "kind": "outlet",
         "index": 0
@@ -106,7 +106,7 @@
     ],
     [
       {
-        "op": "newnode",
+        "op": "delnode",
         "path": "lfo_1.phasor",
         "kind": "outlet",
         "index": 1
@@ -114,7 +114,7 @@
     ],
     [
       {
-        "op": "newnode",
+        "op": "delnode",
         "path": "lfo_1.pulse",
         "kind": "outlet",
         "index": 2
@@ -122,7 +122,7 @@
     ],
     [
       {
-        "op": "newnode",
+        "op": "delnode",
         "path": "lfo_1.sine_index",
         "kind": "outlet",
         "index": 3

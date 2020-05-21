@@ -1,0 +1,16 @@
+[
+    {
+        "op": "connect",
+        "paths": [
+          "lfo_1.sine",
+          "lfo_1.fm_cv"
+        ]
+      },
+      {
+        "op": "connect",
+        "paths": [
+          "lfo_2.sine",
+          "vca_1.cv"
+        ]
+      }
+]

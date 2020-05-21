@@ -1,6 +1,7 @@
 let assert = require("assert");
 let fs = require("fs")
 let got = require("./got.js");
+const argv = require('yargs').argv
 
 
 // {
@@ -31,17 +32,23 @@ let got = require("./got.js");
 // 	assert(res[0] == undefined);			
 // }
 
-// may testing: 
-let d;
+let d = JSON.parse(fs.readFileSync('testing/simple_scene.json'))
+if (argv.A){
+	let editsA = JSON.parse(fs.readFileSync('testing/' + argv.A + '.json'))
 
-if (process.argv[2]){
-	d = JSON.parse(fs.readFileSync('got/testing/' + process.argv[2] + '.json'))
-} else {
-	console.log('test init failed. must supply testing a filename as 1st CLI arg. \nexample:\n\nnpm test newnode')
-	process.exit()
-}
+	for (i = 0; i < editsA.length; i++){
+		d.push(editsA[i])
+	}
 
-console.log(d)
+	if (argv.B){
+		let editsB = JSON.parse(fs.readFileSync('testing/' + argv.B + '.json'))
+		for (i = 0; i < editsB.length; i++){
+			d.push(editsB[i])
+		}
+	}
+} 
+
+// console.log(d)
 
 console.log("\nTEST DUALITY")
 console.log("\n--- deltas ---")
@@ -49,7 +56,7 @@ console.log(got.deltasToString(d))
 
 let g = got.graphFromDeltas(d);
 console.log("\n--- graph ---")
-console.log(got.graphToString(g))
+// console.log(got.graphToString(g))
 
 let g1 = got.graphFromDeltas(d);
 assert(got.deepEqual(g, g1));
@@ -97,3 +104,4 @@ console.log("\nALL TESTS PASSED")
 // let graph = JSON.parse(fs.readFileSync("../scene_files/scene_edited.json"), "utf-8")
 // let deltas = got.deltasFromGraph(graph, [])
 // fs.writeFileSync("../scene_files/scene_edited_deltas.json", JSON.stringify(deltas, null, "  "), "utf-8")
+
