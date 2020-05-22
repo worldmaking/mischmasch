@@ -50,4 +50,4 @@ describe('apply got, then apply inverse', () => {
     expect(got.graphToString(g)).toBe('')
   })
 
-}
+})
