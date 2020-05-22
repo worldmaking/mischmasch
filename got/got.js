@@ -4,6 +4,7 @@
 */
 
 const assert = require ("assert");
+const func = require("../__tests__/throw");
 
 // see https://github.com/worldmaking/msvr/wiki/List-of-Operational-Transforms
 /*
@@ -73,10 +74,10 @@ let makePath = function(root, path) {
 	let last = steps.pop();
 	let n = root;
 	for (let k of steps) {
-		assert(n[k], "failed to find path");
+		assert(n[k], "newnode failed: failed to find path");
 		n = n[k];
 	}
-	assert(!n[last], "path already exists")
+	assert(!n[last], "newnode failed: path already exists")
 	let o = { _props: {} };
 	n[last] = o;
 	return o;
@@ -274,24 +275,48 @@ let applyDeltasToGraph = function (graph, delta) {
 			} break;
 			case "delnode": {
 				let [ctr, name] = findPathContainer(graph.nodes, delta.path);
-				let o = ctr[name];
-				// console.log(o);
-				assert(o, "delnode failed: path not found");
-				// assert o._props match delta props:
-				for (let k in o._props) {
-					assert(deepEqual(o._props[k], delta[k]), "delnode failed; properties do not match");
+				// throw new Error('delnode failed: path not found')
+				if(!ctr){
+					// assert(o, "delnode failed: path not found");
+					throw ('delnode failed: path not found')
+				} else {
+					let o = ctr[name];
+					// let [ctr, name] = findPathContainer(graph.nodes, delta.path);
+					// let o = ctr[name];
+					// console.log()
+					for (let k in o._props) {
+						// assert(deepEqual(o._props[k], delta[k]), "delnode failed; properties do not match");
+						// console.log(deepEqual(o._props[k], delta[k]))
+						if(deepEqual(o._props[k], delta[k]) === false){
+							throw ('delnode failed; properties do not match')
+						}
+						
+					}
+					// assert o has no child nodes
+					// keys should either be ['_props'] or just []:
+					let keys = Object.keys(o);
+					if(keys.length == 1 && keys[0]=="_props"){
+						delete ctr[name];
+					} else {
+						// o has child nodes, so throw error
+						throw ('delnode failed; node has children')
+					}
+					// assert((keys.length == 1 && keys[0]=="_props") || keys.length == 0, "delnode failed; node has children");
+					
+					
 				}
-				// assert o has no child nodes
-				// keys should either be ['_props'] or just []:
-				let keys = Object.keys(o);
-				assert((keys.length == 1 && keys[0]=="_props") || keys.length == 0, "delnode failed; node has children");
-				delete ctr[name];
 			} break;
 			case "connect": {
 				// assert connection does not yet exist
-				assert(undefined == graph.arcs.find(e => e[0]==delta.paths[0] && e[1]==delta.paths[1]), "connect failed: arc already exists");
-
-				graph.arcs.push([ delta.paths[0], delta.paths[1] ]);
+				// assert(undefined == graph.arcs.find(e => e[0]==delta.paths[0] && e[1]==delta.paths[1]), "connect failed: arc already exists");
+				if(!graph.arcs.find(e => e[0]==delta.paths[0] && e[1]==delta.paths[1])){
+					// arc doesn't yet exist, so make it
+					graph.arcs.push([ delta.paths[0], delta.paths[1] ]);
+				} else {
+					// arc already exists, throw error
+					throw ('connect failed: arc already exists')
+				}
+				
 			} break;
 			case "disconnect": {
 				// find matching arc; there should only be 1.
@@ -299,37 +324,60 @@ let applyDeltasToGraph = function (graph, delta) {
 				for (let i in graph.arcs) {
 					let a = graph.arcs[i];
 					if (a[0] == delta.paths[0] && a[1] == delta.paths[1]) {
-						assert(index == -1, "disconnect failed: more than one matching arc");
-						index = i;
+						// i don't yet know how the delta would look if there was more than one matching arc
+						// assert(index == -1, "disconnect failed: more than one matching arc");
+						if(index != -1){
+							throw ('disconnect failed: more than one matching arc found')
+						} else {
+							index = i;
+						}
 					}
 				}
-				assert(index != -1, "disconnect failed: no matching arc found");
-				graph.arcs.splice(index, 1);
+				if(index != -1){
+					graph.arcs.splice(index, 1);
+				} else {
+					throw ('disconnect failed: no matching arc found')
+
+				}
 			} break;
 
 			case "propchange": {
+
 				let [ctr, name] = findPathContainer(graph.nodes, delta.path);
-				let o = ctr[name];
-				// assert object & property exist:
-				assert(o, "propchange failed: path not found");
-				assert(o._props, "propchange failed: object has no _props");
-				let prop = o._props[delta.name];
-				assert(prop, "propchange failed: property not found");
-				// assert 'from' value matches object's current value
-				assert(deepEqual(prop, delta.from), "propchange failed; property value does not match");
+				if (!ctr){
+					// assert object & property exist:
+					throw ('propchange failed: path not found')
+					// assert(o, "propchange failed: path not found");
 
-				// change it:
-				o._props[delta.name] = delta.to;
+				} else {
+					let o = ctr[name];
+					let prop = o._props[delta.name];
 
-				// // assert o._props match delta props:
-				// for (let k in o._props) {
-				// 	assert(deepEqual(o._props[k], delta[k]), "delnode failed; properties do not match");
-				// }
-				// // assert o has no child nodes
-				// // keys should either be ['_props'] or just []:
-				// let keys = Object.keys(o);
-				// assert((keys.length == 1 && keys[0]=="_props") || keys.length == 0, "delnode failed; node has children");
-				// delete ctr[name];
+
+					if(!o._props){
+						// i don't know what delta will trigger this:
+						assert(o._props, "propchange failed: object has no _props");
+					} else if (!prop){
+						throw ('propchange failed: property not found')
+					}
+					// assert 'from' value matches object's current value
+					else if (deepEqual(prop, delta.from) === false){
+						throw ('propchange failed: property value does not match')
+					} else {
+						// change it:
+						o._props[delta.name] = delta.to;
+					}
+
+					// // assert o._props match delta props:
+					// for (let k in o._props) {
+					// 	assert(deepEqual(o._props[k], delta[k]), "delnode failed; properties do not match");
+					// }
+					// // assert o has no child nodes
+					// // keys should either be ['_props'] or just []:
+					// let keys = Object.keys(o);
+					// assert((keys.length == 1 && keys[0]=="_props") || keys.length == 0, "delnode failed; node has children");
+					// delete ctr[name];
+				}
 			} break;
 		}
 	}
@@ -462,6 +510,9 @@ let floatApproximatelyEqual = function(x, y){
 	return (Math.abs(x-y)/Math.abs(x)) < 0.0001;
 }
 
+// testing reporting:
+
+
 module.exports = {
 	makeGraph: makeGraph,
 
@@ -478,4 +529,7 @@ module.exports = {
 
 	deepEqual: deepEqual,
 	deepCopy: deepCopy,
+
+	// error throws:
+	// func: func
 }
