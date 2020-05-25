@@ -72,8 +72,7 @@ describe('acceptable deltas', () => {
 
 
     test('apply repath', () => {
-        let deltas = {"op": "repath", "paths": [ "lfo_1.sine", "lfo_1.sineBank"]}
-        // // ab = got.deepCopy(g);
+        let deltas = {"op": "repath", "paths": [ "lfo_1.fm_cv", "lfo_1.sine"]}
         got.applyDeltasToGraph(g, [deltas])
         expect(typeof g).toBe('object');
     }); 
@@ -98,7 +97,7 @@ describe('incorrect deltas', () => {
     // works
     test('reject propchange to nonexistent path', () => {
         let deltas = {"op": "propchange" ,"path": "lfo_1.michael", "name": "value","from": 0.17,"to": 0.7005339838596962,"timestamp": 1571343253980}
-        expect(() => got.applyDeltasToGraph(g, [deltas])).toThrowError('propchange failed: path not found')
+        expect(() => got.applyDeltasToGraph(g, [deltas])).toThrowError('delta failed on path: ')
     });
     // works
     test('reject propchange to nonexistent property', () => {
@@ -132,7 +131,7 @@ describe('incorrect deltas', () => {
     // working
     test('reject delnode with unknown path', () => {
         let deltas = [[[{"op":"delnode","path":"lfo_2.sine_index","kind":"outlet","index":3}],[{"op":"delnode","path":"lfo_2.pulse","kind":"outlet","index":2}],[{"op":"delnode","path":"lfo_2.phasor","kind":"outlet","index":1}],[{"op":"delnode","path":"lfo_2.sine","kind":"outlet","index":0}],[{"op":"delnode","path":"lfo_2.onset","kind":"small_knob","range":[0,1],"taper":"linear","value":2.8,"unit":"float"}],[{"op":"delnode","path":"lfo_2.pulse_width","kind":"small_knob","range":[0,1],"taper":"linear","value":5,"unit":"float"}],[{"op":"delnode","path":"lfo_2.index","kind":"small_knob","range":[0,10],"taper":"linear","value":3,"unit":"float"}],[{"op":"delnode","path":"lfo_2.rate","kind":"large_knob","range":[0,80],"taper":"log 3.8","value":0.17,"unit":"Hz"}],[{"op":"delnode","path":"lfo_2.pulse_width_cv","kind":"inlet","index":2}],[{"op":"delnode","path":"lfo_2.phasor_sync","kind":"inlet","index":1}],[{"op":"delnode","path":"lfo_2.fm_cv","kind":"inlet","index":0}],{"op":"delnode","path":"lfo_2","kind":"lfo","pos":[-2.326367085370336,1.5209056349935186,-0.7035861792005239],"orient":[0.12358177055502231,0.41713355199484253,0.13623412932103282,0.8900378687419946]}]]
-        expect(() => got.applyDeltasToGraph(g, [deltas])).toThrowError('delnode failed: path not found')
+        expect(() => got.applyDeltasToGraph(g, [deltas])).toThrowError('delta failed on path: ')
     });
     // working
     test('reject delnode with unmatched properties', () => {
@@ -159,4 +158,17 @@ describe('incorrect deltas', () => {
         expect(() => got.applyDeltasToGraph(g, [deltas])).toThrowError('disconnect failed: no matching arc found')
     });
 
+    test('reject repath on nonexistent source-path', () => {
+        let deltas = {"op": "repath", "paths": [ "lfo_1.bunk", "lfo_1.sineBank"]}
+        // got.applyDeltasToGraph(g, [deltas])
+        expect(() => got.applyDeltasToGraph(g, [deltas])).toThrowError("delta failed on path: ")
+    });
+
+    // works
+    test('reject repath on nonexistent destination-path', () => {
+        let deltas = {"op": "repath", "paths": [ "lfo_1.sine", "lfo_1.bunk"]}
+        expect(() => got.applyDeltasToGraph(g, [deltas])).toThrowError("delta failed on path: ")
+    });
+
 })
+

@@ -1,0 +1,713 @@
+<html><head><meta charset="utf-8"/><title>Mischmasch Test Report</title><style type="text/css">html,
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+body {
+  padding: 2rem 1rem;
+  font-size: 0.85rem;
+}
+#jesthtml-content {
+  margin: 0 auto;
+  max-width: 70rem;
+}
+header {
+  display: flex;
+  align-items: center;
+}
+#title {
+  margin: 0;
+  flex-grow: 1;
+}
+#logo {
+  height: 4rem;
+}
+#timestamp {
+  color: #777;
+  margin-top: 0.5rem;
+}
+
+/** SUMMARY */
+#summary {
+  color: #333;
+  margin: 2rem 0;
+  display: flex;
+  font-family: monospace;
+  font-size: 1rem;
+}
+#summary > div {
+  margin-right: 2rem;
+  background: #eee;
+  padding: 1rem;
+  min-width: 15rem;
+}
+#summary > div:last-child {
+  margin-right: 0;
+}
+@media only screen and (max-width: 720px) {
+  #summary {
+    flex-direction: column;
+  }
+  #summary > div {
+    margin-right: 0;
+    margin-top: 2rem;
+  }
+  #summary > div:first-child {
+    margin-top: 0;
+  }
+}
+
+.summary-total {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+.summary-passed {
+  color: #4f8a10;
+  border-left: 0.4rem solid #4f8a10;
+  padding-left: 0.5rem;
+}
+.summary-failed {
+  color: #d8000c;
+  border-left: 0.4rem solid #d8000c;
+  padding-left: 0.5rem;
+}
+.summary-pending {
+  color: #9f6000;
+  border-left: 0.4rem solid #9f6000;
+  padding-left: 0.5rem;
+}
+.summary-empty {
+  color: #999;
+  border-left: 0.4rem solid #999;
+}
+
+.test-result {
+  padding: 1rem;
+  margin-bottom: 0.25rem;
+}
+.test-result:last-child {
+  border: 0;
+}
+.test-result.passed {
+  background-color: #dff2bf;
+  color: #4f8a10;
+}
+.test-result.failed {
+  background-color: #ffbaba;
+  color: #d8000c;
+}
+.test-result.pending {
+  background-color: #ffdf61;
+  color: #9f6000;
+}
+
+.test-info {
+  display: flex;
+  justify-content: space-between;
+}
+.test-suitename {
+  width: 20%;
+  text-align: left;
+  font-weight: bold;
+  word-break: break-word;
+}
+.test-title {
+  width: 40%;
+  text-align: left;
+  font-style: italic;
+}
+.test-status {
+  width: 20%;
+  text-align: right;
+}
+.test-duration {
+  width: 10%;
+  text-align: right;
+  font-size: 0.75rem;
+}
+
+.failureMessages {
+  padding: 0 1rem;
+  margin-top: 1rem;
+  border-top: 1px dashed #d8000c;
+}
+.failureMsg {
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+
+.suite-container {
+  margin-bottom: 2rem;
+}
+.suite-info {
+  padding: 1rem;
+  background-color: #eee;
+  color: #777;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+.suite-info .suite-path {
+  word-break: break-all;
+  flex-grow: 1;
+  font-family: monospace;
+  font-size: 1rem;
+}
+.suite-info .suite-time {
+  margin-left: 0.5rem;
+  padding: 0.2rem 0.3rem;
+  font-size: 0.75rem;
+}
+.suite-info .suite-time.warn {
+  background-color: #d8000c;
+  color: #fff;
+}
+
+/* CONSOLE LOGS */
+.suite-consolelog {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #efefef;
+}
+.suite-consolelog-header {
+  font-weight: bold;
+}
+.suite-consolelog-item {
+  padding: 0.5rem;
+}
+.suite-consolelog-item pre {
+  margin: 0.5rem 0;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+.suite-consolelog-item-origin {
+  color: #777;
+  font-weight: bold;
+}
+.suite-consolelog-item-message {
+  color: #000;
+  font-size: 1rem;
+  padding: 0 0.5rem;
+}
+</style></head><body><div id="jesthtml-content"><header><h1 id="title">Mischmasch Test Report</h1></header><div id="metadata-container"><div id="timestamp">Started: 2020-05-25 10:22:32</div><div id="summary"><div id="suite-summary"><div class="summary-total">Suites (1)</div><div class="summary-passed summary-empty">0 passed</div><div class="summary-failed">1 failed</div><div class="summary-pending summary-empty">0 pending</div></div><div id="test-summary"><div class="summary-total">Tests (19)</div><div class="summary-passed summary-empty">0 passed</div><div class="summary-failed">19 failed</div><div class="summary-pending summary-empty">0 pending</div></div></div></div><div id="suite-1" class="suite-container"><div class="suite-info"><div class="suite-path">/Users/michaelpalumbo/msvr/__tests__/deltas.test.js</div><div class="suite-time">0.728s</div></div><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">acceptable deltas</div><div class="test-title">setup initial scene</div><div class="test-status">failed</div><div class="test-duration">0.019s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: ENOENT: no such file or directory, open '__tests__/deltas/simple_scene.json'
+    at Object.openSync (fs.js:457:3)
+    at Object.readFileSync (fs.js:359:35)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:18:25)
+    at Object.asyncJestLifecycle (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:53:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre><pre class="failureMsg">TypeError: Cannot convert undefined or null to object
+    at Function.keys (&lt;anonymous&gt;)
+    at deltaToString (/Users/michaelpalumbo/msvr/got/got.js:485:23)
+    at Object.deltasToString (/Users/michaelpalumbo/msvr/got/got.js:504:10)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:27:27)
+    at Object.asyncJestTest (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">acceptable deltas</div><div class="test-title">apply propchange</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: ENOENT: no such file or directory, open '__tests__/deltas/simple_scene.json'
+    at Object.openSync (fs.js:457:3)
+    at Object.readFileSync (fs.js:359:35)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:18:25)
+    at Object.asyncJestLifecycle (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:53:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre><pre class="failureMsg">TypeError: Cannot read property 'nodes' of undefined
+    at applyDeltasToGraph (/Users/michaelpalumbo/msvr/got/got.js:345:47)
+    at Object.applyDeltasToGraph (/Users/michaelpalumbo/msvr/got/got.js:244:4)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:38:13)
+    at Object.asyncJestTest (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">acceptable deltas</div><div class="test-title">apply unique newnode</div><div class="test-status">failed</div><div class="test-duration">0s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: ENOENT: no such file or directory, open '__tests__/deltas/simple_scene.json'
+    at Object.openSync (fs.js:457:3)
+    at Object.readFileSync (fs.js:359:35)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:18:25)
+    at Object.asyncJestLifecycle (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:53:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre><pre class="failureMsg">TypeError: Cannot read property 'nodes' of undefined
+    at applyDeltasToGraph (/Users/michaelpalumbo/msvr/got/got.js:279:28)
+    at applyDeltasToGraph (/Users/michaelpalumbo/msvr/got/got.js:244:4)
+    at applyDeltasToGraph (/Users/michaelpalumbo/msvr/got/got.js:244:4)
+    at Object.applyDeltasToGraph (/Users/michaelpalumbo/msvr/got/got.js:244:4)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:45:13)
+    at Object.asyncJestTest (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">acceptable deltas</div><div class="test-title">applied correct delnode</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: ENOENT: no such file or directory, open '__tests__/deltas/simple_scene.json'
+    at Object.openSync (fs.js:457:3)
+    at Object.readFileSync (fs.js:359:35)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:18:25)
+    at Object.asyncJestLifecycle (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:53:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre><pre class="failureMsg">TypeError: Cannot read property 'nodes' of undefined
+    at applyDeltasToGraph (/Users/michaelpalumbo/msvr/got/got.js:283:47)
+    at applyDeltasToGraph (/Users/michaelpalumbo/msvr/got/got.js:244:4)
+    at applyDeltasToGraph (/Users/michaelpalumbo/msvr/got/got.js:244:4)
+    at applyDeltasToGraph (/Users/michaelpalumbo/msvr/got/got.js:244:4)
+    at Object.applyDeltasToGraph (/Users/michaelpalumbo/msvr/got/got.js:244:4)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:52:13)
+    at Object.asyncJestTest (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">acceptable deltas</div><div class="test-title">apply connect</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: ENOENT: no such file or directory, open '__tests__/deltas/simple_scene.json'
+    at Object.openSync (fs.js:457:3)
+    at Object.readFileSync (fs.js:359:35)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:18:25)
+    at Object.asyncJestLifecycle (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:53:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre><pre class="failureMsg">TypeError: Cannot read property 'arcs' of undefined
+    at applyDeltasToGraph (/Users/michaelpalumbo/msvr/got/got.js:311:15)
+    at Object.applyDeltasToGraph (/Users/michaelpalumbo/msvr/got/got.js:244:4)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:61:13)
+    at Object.asyncJestTest (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">acceptable deltas</div><div class="test-title">apply unique disconnect</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: ENOENT: no such file or directory, open '__tests__/deltas/simple_scene.json'
+    at Object.openSync (fs.js:457:3)
+    at Object.readFileSync (fs.js:359:35)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:18:25)
+    at Object.asyncJestLifecycle (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:53:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre><pre class="failureMsg">TypeError: Cannot read property 'arcs' of undefined
+    at applyDeltasToGraph (/Users/michaelpalumbo/msvr/got/got.js:323:25)
+    at Object.applyDeltasToGraph (/Users/michaelpalumbo/msvr/got/got.js:244:4)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:68:13)
+    at Object.asyncJestTest (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">acceptable deltas</div><div class="test-title">apply repath</div><div class="test-status">failed</div><div class="test-duration">0s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: ENOENT: no such file or directory, open '__tests__/deltas/simple_scene.json'
+    at Object.openSync (fs.js:457:3)
+    at Object.readFileSync (fs.js:359:35)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:18:25)
+    at Object.asyncJestLifecycle (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:53:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre><pre class="failureMsg">ReferenceError: addTo is not defined
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:76:36)
+    at Object.asyncJestTest (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">incorrect deltas</div><div class="test-title">reject propchange to nonexistent path</div><div class="test-status">failed</div><div class="test-duration">0.016s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: ENOENT: no such file or directory, open '__tests__/deltas/simple_scene.json'
+    at Object.openSync (fs.js:457:3)
+    at Object.readFileSync (fs.js:359:35)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:91:25)
+    at Object.asyncJestLifecycle (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:53:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre><pre class="failureMsg">Error: expect(received).toThrowError(expected)
+
+Expected substring: "propchange failed: path not found"
+Received message:   "Cannot read property 'nodes' of undefined"
+
+      343 | 			case "propchange": {
+      344 | 
+    &gt; 345 | 				let [ctr, name] = findPathContainer(graph.nodes, delta.path);
+          | 				                                          ^
+      346 | 				if (!ctr){
+      347 | 					// assert object &amp; property exist:
+      348 | 					throw ('propchange failed: path not found')
+
+      at applyDeltasToGraph (../got/got.js:345:47)
+      at Object.applyDeltasToGraph (../got/got.js:244:4)
+      at deltas.test.js:100:26
+      at Object.&lt;anonymous&gt; (../node_modules/expect/build/toThrowMatchers.js:84:11)
+      at Object.toThrowError (../node_modules/expect/build/index.js:338:21)
+      at Object.&lt;anonymous&gt; (deltas.test.js:100:59)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:100:59)
+    at Object.asyncJestTest (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">incorrect deltas</div><div class="test-title">reject propchange to nonexistent property</div><div class="test-status">failed</div><div class="test-duration">0.01s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: ENOENT: no such file or directory, open '__tests__/deltas/simple_scene.json'
+    at Object.openSync (fs.js:457:3)
+    at Object.readFileSync (fs.js:359:35)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:91:25)
+    at Object.asyncJestLifecycle (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:53:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre><pre class="failureMsg">Error: expect(received).toThrowError(expected)
+
+Expected substring: "propchange failed: property not found"
+Received message:   "Cannot read property 'nodes' of undefined"
+
+      343 | 			case "propchange": {
+      344 | 
+    &gt; 345 | 				let [ctr, name] = findPathContainer(graph.nodes, delta.path);
+          | 				                                          ^
+      346 | 				if (!ctr){
+      347 | 					// assert object &amp; property exist:
+      348 | 					throw ('propchange failed: path not found')
+
+      at applyDeltasToGraph (../got/got.js:345:47)
+      at Object.applyDeltasToGraph (../got/got.js:244:4)
+      at deltas.test.js:105:26
+      at Object.&lt;anonymous&gt; (../node_modules/expect/build/toThrowMatchers.js:84:11)
+      at Object.toThrowError (../node_modules/expect/build/index.js:338:21)
+      at Object.&lt;anonymous&gt; (deltas.test.js:105:59)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:105:59)
+    at Object.asyncJestTest (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">incorrect deltas</div><div class="test-title">reject propchange with incorrect value</div><div class="test-status">failed</div><div class="test-duration">0.01s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: ENOENT: no such file or directory, open '__tests__/deltas/simple_scene.json'
+    at Object.openSync (fs.js:457:3)
+    at Object.readFileSync (fs.js:359:35)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:91:25)
+    at Object.asyncJestLifecycle (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:53:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre><pre class="failureMsg">Error: expect(received).toThrowError(expected)
+
+Expected substring: "propchange failed: property value does not match"
+Received message:   "Cannot read property 'nodes' of undefined"
+
+      343 | 			case "propchange": {
+      344 | 
+    &gt; 345 | 				let [ctr, name] = findPathContainer(graph.nodes, delta.path);
+          | 				                                          ^
+      346 | 				if (!ctr){
+      347 | 					// assert object &amp; property exist:
+      348 | 					throw ('propchange failed: path not found')
+
+      at applyDeltasToGraph (../got/got.js:345:47)
+      at Object.applyDeltasToGraph (../got/got.js:244:4)
+      at deltas.test.js:117:26
+      at Object.&lt;anonymous&gt; (../node_modules/expect/build/toThrowMatchers.js:84:11)
+      at Object.toThrowError (../node_modules/expect/build/index.js:338:21)
+      at Object.&lt;anonymous&gt; (deltas.test.js:117:59)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:117:59)
+    at Object.asyncJestTest (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">incorrect deltas</div><div class="test-title">reject a duplicate newnode</div><div class="test-status">failed</div><div class="test-duration">0.006s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: ENOENT: no such file or directory, open '__tests__/deltas/simple_scene.json'
+    at Object.openSync (fs.js:457:3)
+    at Object.readFileSync (fs.js:359:35)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:91:25)
+    at Object.asyncJestLifecycle (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:53:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre><pre class="failureMsg">Error: expect(received).toThrowError(expected)
+
+Expected substring: "newnode failed: path already exists"
+Received message:   "Cannot read property 'nodes' of undefined"
+
+      277 | 			
+      278 | 			case "newnode": {
+    &gt; 279 | 				let o = makePath(graph.nodes, delta.path);
+          | 				                       ^
+      280 | 				copyProps(delta, o._props);
+      281 | 			} break;
+      282 | 			case "delnode": {
+
+      at applyDeltasToGraph (../got/got.js:279:28)
+      at applyDeltasToGraph (../got/got.js:244:4)
+      at applyDeltasToGraph (../got/got.js:244:4)
+      at Object.applyDeltasToGraph (../got/got.js:244:4)
+      at deltas.test.js:122:26
+      at Object.&lt;anonymous&gt; (../node_modules/expect/build/toThrowMatchers.js:84:11)
+      at Object.toThrowError (../node_modules/expect/build/index.js:338:21)
+      at Object.&lt;anonymous&gt; (deltas.test.js:122:59)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:122:59)
+    at Object.asyncJestTest (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">incorrect deltas</div><div class="test-title">reject an invalid parent path for newnode</div><div class="test-status">failed</div><div class="test-duration">0.006s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: ENOENT: no such file or directory, open '__tests__/deltas/simple_scene.json'
+    at Object.openSync (fs.js:457:3)
+    at Object.readFileSync (fs.js:359:35)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:91:25)
+    at Object.asyncJestLifecycle (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:53:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre><pre class="failureMsg">Error: expect(received).toThrowError(expected)
+
+Expected substring: "newnode failed: failed to find path"
+Received message:   "Cannot read property 'nodes' of undefined"
+
+      277 | 			
+      278 | 			case "newnode": {
+    &gt; 279 | 				let o = makePath(graph.nodes, delta.path);
+          | 				                       ^
+      280 | 				copyProps(delta, o._props);
+      281 | 			} break;
+      282 | 			case "delnode": {
+
+      at applyDeltasToGraph (../got/got.js:279:28)
+      at applyDeltasToGraph (../got/got.js:244:4)
+      at applyDeltasToGraph (../got/got.js:244:4)
+      at Object.applyDeltasToGraph (../got/got.js:244:4)
+      at deltas.test.js:128:26
+      at Object.&lt;anonymous&gt; (../node_modules/expect/build/toThrowMatchers.js:84:11)
+      at Object.toThrowError (../node_modules/expect/build/index.js:338:21)
+      at Object.&lt;anonymous&gt; (deltas.test.js:128:59)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:128:59)
+    at Object.asyncJestTest (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">incorrect deltas</div><div class="test-title">reject delnode with unknown path</div><div class="test-status">failed</div><div class="test-duration">0.008s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: ENOENT: no such file or directory, open '__tests__/deltas/simple_scene.json'
+    at Object.openSync (fs.js:457:3)
+    at Object.readFileSync (fs.js:359:35)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:91:25)
+    at Object.asyncJestLifecycle (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:53:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre><pre class="failureMsg">Error: expect(received).toThrowError(expected)
+
+Expected substring: "delnode failed: path not found"
+Received message:   "Cannot read property 'nodes' of undefined"
+
+      281 | 			} break;
+      282 | 			case "delnode": {
+    &gt; 283 | 				let [ctr, name] = findPathContainer(graph.nodes, delta.path);
+          | 				                                          ^
+      284 | 				if(!ctr){
+      285 | 					throw ('delnode failed: path not found')
+      286 | 				} else {
+
+      at applyDeltasToGraph (../got/got.js:283:47)
+      at applyDeltasToGraph (../got/got.js:244:4)
+      at applyDeltasToGraph (../got/got.js:244:4)
+      at applyDeltasToGraph (../got/got.js:244:4)
+      at Object.applyDeltasToGraph (../got/got.js:244:4)
+      at deltas.test.js:134:26
+      at Object.&lt;anonymous&gt; (../node_modules/expect/build/toThrowMatchers.js:84:11)
+      at Object.toThrowError (../node_modules/expect/build/index.js:338:21)
+      at Object.&lt;anonymous&gt; (deltas.test.js:134:59)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:134:59)
+    at Object.asyncJestTest (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">incorrect deltas</div><div class="test-title">reject delnode with unmatched properties</div><div class="test-status">failed</div><div class="test-duration">0.006s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: ENOENT: no such file or directory, open '__tests__/deltas/simple_scene.json'
+    at Object.openSync (fs.js:457:3)
+    at Object.readFileSync (fs.js:359:35)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:91:25)
+    at Object.asyncJestLifecycle (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:53:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre><pre class="failureMsg">Error: expect(received).toThrowError(expected)
+
+Expected substring: "delnode failed; properties do not match"
+Received message:   "Cannot read property 'nodes' of undefined"
+
+      281 | 			} break;
+      282 | 			case "delnode": {
+    &gt; 283 | 				let [ctr, name] = findPathContainer(graph.nodes, delta.path);
+          | 				                                          ^
+      284 | 				if(!ctr){
+      285 | 					throw ('delnode failed: path not found')
+      286 | 				} else {
+
+      at applyDeltasToGraph (../got/got.js:283:47)
+      at applyDeltasToGraph (../got/got.js:244:4)
+      at applyDeltasToGraph (../got/got.js:244:4)
+      at applyDeltasToGraph (../got/got.js:244:4)
+      at Object.applyDeltasToGraph (../got/got.js:244:4)
+      at deltas.test.js:139:26
+      at Object.&lt;anonymous&gt; (../node_modules/expect/build/toThrowMatchers.js:84:11)
+      at Object.toThrowError (../node_modules/expect/build/index.js:338:21)
+      at Object.&lt;anonymous&gt; (deltas.test.js:139:59)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:139:59)
+    at Object.asyncJestTest (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">incorrect deltas</div><div class="test-title">reject delnode with child nodes</div><div class="test-status">failed</div><div class="test-duration">0.005s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: ENOENT: no such file or directory, open '__tests__/deltas/simple_scene.json'
+    at Object.openSync (fs.js:457:3)
+    at Object.readFileSync (fs.js:359:35)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:91:25)
+    at Object.asyncJestLifecycle (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:53:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre><pre class="failureMsg">Error: expect(received).toThrowError(expected)
+
+Expected substring: "delnode failed; node has children"
+Received message:   "Cannot read property 'nodes' of undefined"
+
+      281 | 			} break;
+      282 | 			case "delnode": {
+    &gt; 283 | 				let [ctr, name] = findPathContainer(graph.nodes, delta.path);
+          | 				                                          ^
+      284 | 				if(!ctr){
+      285 | 					throw ('delnode failed: path not found')
+      286 | 				} else {
+
+      at applyDeltasToGraph (../got/got.js:283:47)
+      at applyDeltasToGraph (../got/got.js:244:4)
+      at applyDeltasToGraph (../got/got.js:244:4)
+      at Object.applyDeltasToGraph (../got/got.js:244:4)
+      at deltas.test.js:145:26
+      at Object.&lt;anonymous&gt; (../node_modules/expect/build/toThrowMatchers.js:84:11)
+      at Object.toThrowError (../node_modules/expect/build/index.js:338:21)
+      at Object.&lt;anonymous&gt; (deltas.test.js:145:59)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:145:59)
+    at Object.asyncJestTest (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">incorrect deltas</div><div class="test-title">reject duplicate connect</div><div class="test-status">failed</div><div class="test-duration">0.005s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: ENOENT: no such file or directory, open '__tests__/deltas/simple_scene.json'
+    at Object.openSync (fs.js:457:3)
+    at Object.readFileSync (fs.js:359:35)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:91:25)
+    at Object.asyncJestLifecycle (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:53:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre><pre class="failureMsg">Error: expect(received).toThrowError(expected)
+
+Expected substring: "connect failed: arc already exists"
+Received message:   "Cannot read property 'arcs' of undefined"
+
+      309 | 			case "connect": {
+      310 | 				// ensure connection does not yet exist
+    &gt; 311 | 				if(!graph.arcs.find(e =&gt; e[0]==delta.paths[0] &amp;&amp; e[1]==delta.paths[1])){
+          | 				          ^
+      312 | 					// arc doesn't yet exist, so make it
+      313 | 					graph.arcs.push([ delta.paths[0], delta.paths[1] ]);
+      314 | 				} else {
+
+      at applyDeltasToGraph (../got/got.js:311:15)
+      at Object.applyDeltasToGraph (../got/got.js:244:4)
+      at deltas.test.js:151:26
+      at Object.&lt;anonymous&gt; (../node_modules/expect/build/toThrowMatchers.js:84:11)
+      at Object.toThrowError (../node_modules/expect/build/index.js:338:21)
+      at Object.&lt;anonymous&gt; (deltas.test.js:151:59)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:151:59)
+    at Object.asyncJestTest (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">incorrect deltas</div><div class="test-title">reject disconnect on nonexistent path</div><div class="test-status">failed</div><div class="test-duration">0.006s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: ENOENT: no such file or directory, open '__tests__/deltas/simple_scene.json'
+    at Object.openSync (fs.js:457:3)
+    at Object.readFileSync (fs.js:359:35)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:91:25)
+    at Object.asyncJestLifecycle (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:53:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre><pre class="failureMsg">Error: expect(received).toThrowError(expected)
+
+Expected substring: "disconnect failed: no matching arc found"
+Received message:   "Cannot read property 'arcs' of undefined"
+
+      321 | 				// find matching arc; there should only be 1.
+      322 | 				let index = -1;
+    &gt; 323 | 				for (let i in graph.arcs) {
+          | 				                    ^
+      324 | 					let a = graph.arcs[i];
+      325 | 					if (a[0] == delta.paths[0] &amp;&amp; a[1] == delta.paths[1]) {
+      326 | 						// i don't yet know how the delta would look if there was more than one matching arc
+
+      at applyDeltasToGraph (../got/got.js:323:25)
+      at Object.applyDeltasToGraph (../got/got.js:244:4)
+      at deltas.test.js:158:26
+      at Object.&lt;anonymous&gt; (../node_modules/expect/build/toThrowMatchers.js:84:11)
+      at Object.toThrowError (../node_modules/expect/build/index.js:338:21)
+      at Object.&lt;anonymous&gt; (deltas.test.js:158:59)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:158:59)
+    at Object.asyncJestTest (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">incorrect deltas</div><div class="test-title">reject repath on nonexistent arc source</div><div class="test-status">failed</div><div class="test-duration">0.007s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: ENOENT: no such file or directory, open '__tests__/deltas/simple_scene.json'
+    at Object.openSync (fs.js:457:3)
+    at Object.readFileSync (fs.js:359:35)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:91:25)
+    at Object.asyncJestLifecycle (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:53:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre><pre class="failureMsg">Error: expect(received).toThrowError(expected)
+
+Expected substring: "failed to find path:"
+Received message:   "Cannot read property 'nodes' of undefined"
+
+      249 | 				//console.log(graph.nodes[delta.paths[1]])
+      250 | 								// assert(ctr0, "repath failed; couldn't find source");
+    &gt; 251 | 				if(!graph.nodes){
+          | 				          ^
+      252 | 					throw("repath failed; couldn't find source")
+      253 | 				} if (!graph.nodes[delta.paths[1]]){
+      254 | 					throw("repath failed; destination already exists");
+
+      at applyDeltasToGraph (../got/got.js:251:15)
+      at Object.applyDeltasToGraph (../got/got.js:244:4)
+      at deltas.test.js:163:26
+      at Object.&lt;anonymous&gt; (../node_modules/expect/build/toThrowMatchers.js:84:11)
+      at Object.toThrowError (../node_modules/expect/build/index.js:338:21)
+      at Object.&lt;anonymous&gt; (deltas.test.js:163:59)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:163:59)
+    at Object.asyncJestTest (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">incorrect deltas</div><div class="test-title">reject repath on nonexistent arc destination</div><div class="test-status">failed</div><div class="test-duration">0.005s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: ENOENT: no such file or directory, open '__tests__/deltas/simple_scene.json'
+    at Object.openSync (fs.js:457:3)
+    at Object.readFileSync (fs.js:359:35)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:91:25)
+    at Object.asyncJestLifecycle (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:53:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre><pre class="failureMsg">Error: expect(received).toThrowError(expected)
+
+Expected substring: "repath failed; couldn't find source"
+Received message:   "Cannot read property 'nodes' of undefined"
+
+      249 | 				//console.log(graph.nodes[delta.paths[1]])
+      250 | 								// assert(ctr0, "repath failed; couldn't find source");
+    &gt; 251 | 				if(!graph.nodes){
+          | 				          ^
+      252 | 					throw("repath failed; couldn't find source")
+      253 | 				} if (!graph.nodes[delta.paths[1]]){
+      254 | 					throw("repath failed; destination already exists");
+
+      at applyDeltasToGraph (../got/got.js:251:15)
+      at Object.applyDeltasToGraph (../got/got.js:244:4)
+      at deltas.test.js:169:26
+      at Object.&lt;anonymous&gt; (../node_modules/expect/build/toThrowMatchers.js:84:11)
+      at Object.toThrowError (../node_modules/expect/build/index.js:338:21)
+      at Object.&lt;anonymous&gt; (deltas.test.js:169:59)
+    at Object.&lt;anonymous&gt; (/Users/michaelpalumbo/msvr/__tests__/deltas.test.js:169:59)
+    at Object.asyncJestTest (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:47:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:30:19)
+    at /Users/michaelpalumbo/msvr/node_modules/jest-jasmine2/build/queueRunner.js:77:41</pre></div></div></div></div></div></body></html>
