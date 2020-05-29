@@ -4,7 +4,6 @@
 */
 
 const assert = require ("assert");
-const func = require("../__tests__/throw");
 
 // see https://github.com/worldmaking/msvr/wiki/List-of-Operational-Transforms
 /*
@@ -252,7 +251,6 @@ let applyDeltasToGraph = function (graph, delta) {
 				
 				let [ctr0, src] = findPathContainer(graph.nodes, delta.paths[0]);
 				let [ctr1, dst] = findPathContainer(graph.nodes, delta.paths[1]);
-				console.log(src, dst)
 
 				// throw('test')
 				// // find destination container:
@@ -360,8 +358,27 @@ let applyDeltasToGraph = function (graph, delta) {
 					}
 					// assert 'from' value matches object's current value
 					else if (deepEqual(prop, delta.from) === false){
-						throw ('propchange failed: property value does not match')
-					} else {
+						// console.log(from)
+						throw (delta.to + ' ' +  prop + ' ' +  delta.from)
+					} 
+					// two propchanges with same path, same from, but different to:
+					else if (deepEqual(delta.to, prop) === false){
+						
+
+						// Rebase fix by first applying B1, then inverting, 
+						// then A1, then applying a modified version of B1 (B1’) that has the corrected “from” value:
+						// B1: propchange @x, a->c
+						o._props[delta.name] = delta.to;
+						// ^B1: propchange @x, c->a
+						inverseDelta(delta)
+						// A1: propchange @x, a->b
+						o._props[delta.name] = prop;
+						// B1*: propchange @x, b*->c
+						// applyDeltasToGraph = function (graph, delta)
+						// throw ('different to')
+
+
+				 	} else {
 						// change it:
 						o._props[delta.name] = delta.to;
 					}

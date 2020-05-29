@@ -44,10 +44,10 @@ describe('apply got, then apply inverse', () => {
     expect(typeof got.applyDeltasToGraph(g, id)).toBe('object')
   })
 
-  test('check graph', () =>{
-    let id = got.inverseDelta(d);
-    expect(typeof got.graphToString(g)).toBe('string');
-    expect(got.graphToString(g)).toBe('')
-  })
+  // test('check graph', () =>{
+  //   let id = got.inverseDelta(d);
+  //   expect(typeof got.graphToString(g)).toBe('string');
+  //   expect(got.graphToString(g)).toBe('')
+  // })
 
 })
