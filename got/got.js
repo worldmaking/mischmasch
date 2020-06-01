@@ -338,7 +338,7 @@ let applyDeltasToGraph = function (graph, delta) {
 			} break;
 
 			case "propchange": {
-
+				return 'testing'
 				let [ctr, name] = findPathContainer(graph.nodes, delta.path);
 				if (!ctr){
 					// assert object & property exist:
