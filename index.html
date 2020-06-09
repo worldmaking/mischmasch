@@ -1,29 +1,23 @@
-<script>
-  marked.setOptions({
-  renderer: new marked.Renderer(),
-  gfm: true,
-  tables: true,
-  breaks: false,
-  pedantic: false,
-  sanitize: false,
-  smartLists: true,
-  smartypants: false
-});
-
-var md = document.getElementById("md").textContent;
-var html = marked(md);
-document.getElementById("html").innerHTML = html;
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Minimal markdown -&gt; html example</title>
   
-</script>
 
+</head>
+<body>
+<!-- partial:index.partial.html -->
 <script id="md" type="text/markdown" style="visibility:hidden;">
-
+# Mischmasch
 
 ## Abstract
-
 This article focuses on the rich potential of hybrid domain translation of modular synthesis (MS) into virtual reality (VR). It asks: to what extent can what is valued in studio-based MS practice find a natural home or rich new interpretations in the immersive capacities of VR? The article attends particularly to the relative affordances and constraints of each as they inform the design and development of a new system *Mischmasch* supporting collaborative and performative patching of Max gen~ patches and operators within a shared room-scale VR space. 
 
 </script>
 <div id="html"></div>
+<!-- partial -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/marked/1.0.0/marked.min.js'></script><script  src="./script.js"></script>
 
-
+</body>
+</html>
