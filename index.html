@@ -1,5 +1,5 @@
-<script id="md" type="text/markdown" style="visibility:hidden;">
-marked.setOptions({
+<script>
+  marked.setOptions({
   renderer: new marked.Renderer(),
   gfm: true,
   tables: true,
@@ -13,6 +13,11 @@ marked.setOptions({
 var md = document.getElementById("md").textContent;
 var html = marked(md);
 document.getElementById("html").innerHTML = html;
+  
+</script>
+
+<script id="md" type="text/markdown" style="visibility:hidden;">
+
 
 ## Abstract
 
