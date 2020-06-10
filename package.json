@@ -5,7 +5,29 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
-    "test": "test.js"
+    "test": "jest"
+  },
+  "jest": {
+    "verbose": true,
+    "modulePathIgnorePatterns": [
+      "got/"
+    ],
+    "moduleDirectories": [
+      "__tests__/deltas/",
+      "node_modules"
+    ],
+    "reporters": [
+      "default",
+      [
+        "./node_modules/jest-html-reporter",
+        {
+          "pageTitle": "Mischmasch Test Report",
+          "includeFailureMsg": true,
+          "outputPath": "__tests__/testReport.html",
+          "sort": "status"
+        }
+      ]
+    ]
   },
   "repository": {
     "type": "git",
@@ -18,17 +40,30 @@
   },
   "homepage": "https://github.com/worldmaking/msvr#readme",
   "dependencies": {
-    "bottleneck": "^2.18.0",
+    "bottleneck": "^2.19.5",
+    "cors": "^2.8.5",
     "cycle-test": "^1.0.0",
-    "express": "^4.16.4",
+    "express": "^4.17.1",
     "find-cycle": "^1.0.0",
-    "gl-matrix": "^3.0.0",
+    "gl-matrix": "^3.3.0",
+    "http": "0.0.1-security",
+    "ip": "^1.1.5",
+    "jest-html-reporter": "^3.1.3",
     "load-bmfont": "^1.4.0",
-    "nodemon": "^1.18.11",
+    "nodemon": "^1.19.4",
+    "progress": "^2.0.3",
+    "public-ip": "^4.0.1",
     "reconnecting-websocket": "^4.4.0",
+    "simple-peer": "^9.6.2",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0",
+    "source-map-support": "^0.5.19",
     "tasklist": "^4.0.1",
     "three-bmfont-text": "^2.3.0",
-    "ws": "^6.2.1"
+    "username": "^5.1.0",
+    "wrtc": "^0.4.4",
+    "ws": "^6.2.1",
+    "yargs": "^15.3.1"
   },
   "nodemonConfig": {
     "ignore": [
@@ -36,5 +71,8 @@
       "docs/*"
     ],
     "ext": "js html"
+  },
+  "devDependencies": {
+    "jest": "^26.0.1"
   }
 }

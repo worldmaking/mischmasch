@@ -3,9 +3,11 @@
 	(not game of thrones :-))
 */
 
+let previousDelta;
+let graphContainer;
 const assert = require ("assert");
 
-// see https://github.com/worldmaking/cards/wiki/List-of-Operational-Transforms
+// see https://github.com/worldmaking/msvr/wiki/List-of-Operational-Transforms
 /*
 	Every op should be invertible (which means, destructive edits must include full detail of what is to be deleted)
 	Changes are rebased by graph path (rather than character position as in text documents)
@@ -57,7 +59,11 @@ let findPathContainer = function(tree, path) {
 	for (let i=0; i<steps.length; i++) {
 		let k = steps[i]
 		//assert(node[k], "failed to find path: "+k);
-		if (!node[k]) return [undefined, k];
+		if (!node[k]){
+			//return [undefined, k];
+			let errorMsg = 'delta failed on path: ' + path
+			throw(errorMsg)
+		} 
 		last = k;
 		container = node;
 		node = node[k];
@@ -73,10 +79,28 @@ let makePath = function(root, path) {
 	let last = steps.pop();
 	let n = root;
 	for (let k of steps) {
-		assert(n[k], "failed to find path");
+		if(!n[k]){
+			throw 'newnode failed: failed to find paths'
+		}
 		n = n[k];
 	}
-	assert(!n[last], "path already exists")
+	if(n[last]){
+		//*TODO #6 Two newnode edits with the same path
+
+		// A1: newnode @x
+		// B1: newnode @x
+
+		// This can be resolved by inserting a repath to rename x:
+
+		// B1: newnode @x
+		// +B2: repath @x->@y
+		// A1: newnode @x
+
+		// Using a repath delta ensures that the name change can propagate for longer sequences of edits too. 
+
+		throw "newnode failed: path already exists"
+
+	}
 	let o = { _props: {} };
 	n[last] = o;
 	return o;
@@ -215,9 +239,10 @@ let rebase = function(B, A, result) {
 			} break;
 			case "propchange": {
 				// TODO -- are there any potential conflicts?
-				if (b.op == "propchange" && b.path==A.path && b.name==A.name) {
+				if (b.op == "propchange" && b.path==A.path && b.name==A.name && floatApproximatelyEqual(b.from, a.from) === false) {
 					// if both A and b change the same property, then they should be merged or sequenced
 					b.from = A.to;
+					// // console.log(b.from, A.to)
 				}
 			} break;
 		}
@@ -235,20 +260,28 @@ let mergeDeltasToGraph = function(graph, deltasA, deltasB) {
 	*/
 	
 }
+let gotHistory = []
+let  prevRepath, prevNewnode, prevDelnode, prevPropchange
 
 let applyDeltasToGraph = function (graph, delta) {
 	if (Array.isArray(delta)) {
 		for (let d of delta) {
+
 			applyDeltasToGraph(graph, d);
+			previousDelta = delta
 		}
 	} else {
 		switch (delta.op) {
 			case "repath": {
+				// if (prevRepath){
+				// 	// console.log(delta, previousDelta)
+				// 	throw delta, prevRepath
+				// }
 				let [ctr0, src] = findPathContainer(graph.nodes, delta.paths[0]);
 				let [ctr1, dst] = findPathContainer(graph.nodes, delta.paths[1]);
-				assert(ctr0, "repath failed; couldn't find source");
-				assert(ctr1 == undefined, "repath failed; destination already exists");
-				// find destination container:
+
+				// throw('test')
+				// // find destination container:
 				let steps = delta.paths[1].split(".");
 				steps.pop(); // ignoring the last element
 				let container = graph.nodes;
@@ -257,7 +290,7 @@ let applyDeltasToGraph = function (graph, delta) {
 					container = container[k];
 				}
 
-				// move it
+				// move its
 				container[dst] = ctr0[src];
 				delete ctr0[src];				
 				// repath arcs:
@@ -265,6 +298,7 @@ let applyDeltasToGraph = function (graph, delta) {
 					if (arc[0] == delta.paths[0]) arc[0] = delta.paths[1];
 					if (arc[1] == delta.paths[0]) arc[1] = delta.paths[1];
 				}
+				prevRepath = delta
 			} break;
 			
 			case "newnode": {
@@ -273,24 +307,45 @@ let applyDeltasToGraph = function (graph, delta) {
 			} break;
 			case "delnode": {
 				let [ctr, name] = findPathContainer(graph.nodes, delta.path);
-				let o = ctr[name];
-				console.log(o);
-				assert(o, "delnode failed: path not found");
-				// assert o._props match delta props:
-				for (let k in o._props) {
-					assert(deepEqual(o._props[k], delta[k]), "delnode failed; properties do not match");
+				if(!ctr){
+					throw ('delnode failed: path not found')
+				} else {
+					let o = ctr[name];
+
+					if(deepEqual(delta, previousDelta) === true){
+						throw 'two delnode deltas are the same'
+					}
+					// let [ctr, name] = findPathContainer(graph.nodes, delta.path);
+					// let o = ctr[name];
+					// console.log()
+					for (let k in o._props) {
+						// assert(deepEqual(o._props[k], delta[k]), "delnode failed; properties do not match");
+						// console.log(deepEqual(o._props[k], delta[k]))
+						if(deepEqual(o._props[k], delta[k]) === false){
+							throw ('delnode failed; properties do not match')
+						}						
+					}
+					// assert o has no child nodes
+					// keys should either be ['_props'] or just []:
+					let keys = Object.keys(o);
+					if(keys.length == 1 && keys[0]=="_props"){
+						delete ctr[name];
+					} else {
+						// o has child nodes, so throw error
+						throw ('delnode failed; node has children')
+					}					
 				}
-				// assert o has no child nodes
-				// keys should either be ['_props'] or just []:
-				let keys = Object.keys(o);
-				assert((keys.length == 1 && keys[0]=="_props") || keys.length == 0, "delnode failed; node has children");
-				delete ctr[name];
 			} break;
 			case "connect": {
-				// assert connection does not yet exist
-				assert(undefined == graph.arcs.find(e => e[0]==delta.paths[0] && e[1]==delta.paths[1]), "connect failed: arc already exists");
-
-				graph.arcs.push([ delta.paths[0], delta.paths[1] ]);
+				// ensure connection does not yet exist
+				if(!graph.arcs.find(e => e[0]==delta.paths[0] && e[1]==delta.paths[1])){
+					// arc doesn't yet exist, so make it
+					graph.arcs.push([ delta.paths[0], delta.paths[1] ]);
+				} else {
+					// arc already exists, throw error
+					throw ('connect failed: arc already exists')
+				}
+				
 			} break;
 			case "disconnect": {
 				// find matching arc; there should only be 1.
@@ -298,15 +353,27 @@ let applyDeltasToGraph = function (graph, delta) {
 				for (let i in graph.arcs) {
 					let a = graph.arcs[i];
 					if (a[0] == delta.paths[0] && a[1] == delta.paths[1]) {
-						assert(index == -1, "disconnect failed: more than one matching arc");
-						index = i;
+						// i don't yet know how the delta would look if there was more than one matching arc
+						// assert(index == -1, "disconnect failed: more than one matching arc");
+						if(index != -1){
+							throw ('disconnect failed: more than one matching arc found')
+						} else {
+							index = i;
+						}
 					}
 				}
-				assert(index != -1, "disconnect failed: no matching arc found");
-				graph.arcs.splice(index, 1);
+				if(index != -1){
+					graph.arcs.splice(index, 1);
+				} else {
+					throw ('disconnect failed: no matching arc found')
+
+				}
 			} break;
 
 			case "propchange": {
+				// console.log('\n\nincoming delta\n\n', delta)
+
+				/*
 				let [ctr, name] = findPathContainer(graph.nodes, delta.path);
 				let o = ctr[name];
 				// assert object & property exist:
@@ -317,18 +384,121 @@ let applyDeltasToGraph = function (graph, delta) {
 				// assert 'from' value matches object's current value
 				assert(deepEqual(prop, delta.from), "propchange failed; property value does not match");
 
-				// change it:
+				// change it:s
 				o._props[delta.name] = delta.to;
+				*/
+				// /*
+				let [ctr, name] = findPathContainer(graph.nodes, delta.path);
+				if (!ctr){
 
-				// // assert o._props match delta props:
-				// for (let k in o._props) {
-				// 	assert(deepEqual(o._props[k], delta[k]), "delnode failed; properties do not match");
-				// }
-				// // assert o has no child nodes
-				// // keys should either be ['_props'] or just []:
-				// let keys = Object.keys(o);
-				// assert((keys.length == 1 && keys[0]=="_props") || keys.length == 0, "delnode failed; node has children");
-				// delete ctr[name];
+					// assert object & property exist:
+					throw ('propchange failed: path not found')
+					// assert(o, "propchange failed: path not found");
+
+				} else {
+
+					let o = ctr[name];
+					let prop = o._props[delta.name];
+
+
+					if(!o._props){
+
+						//* i don't know what delta will trigger this:
+						//* assert(o._props, "propchange failed: object has no _props");
+					} else if (!prop){
+						throw ('propchange failed: property not found')
+					}
+					
+					//* propchange with incorrect from value
+
+					else if(delta.from != prop){
+						// console.log(prevPropchange.to, delta.to)
+						//*TODO #1 Two propchanges with same path, same “from”, but different “to”
+						if(deepEqual(prevPropchange && prevPropchange.path, delta.path) === true && prevPropchange.from === delta.from && prevPropchange.to != delta.to){
+							throw "2 deltas w/ same path and from, different to"
+						}  else {
+							//* reject propchange with incorrect value
+							throw 'propchange failed: delta.from does not match current property value'
+
+						}
+					}
+					
+					
+					// else if (previousDelta && delta.path === previousDelta.path && delta.from === previousDelta.from && previousDelta.to != delta.to){
+					
+
+					// }
+
+					//*TODO #2 Two propchanges with same path, same “from”, same “to”
+
+					else if(previousDelta && delta.path === previousDelta.path && delta.from === previousDelta.from && previousDelta.to === delta.to){
+						console.log('snared')
+					}
+
+					//*TODO #3 A longer sequence of the basic form of #1
+
+
+					//*TODO #4 A longer sequence of the basic form of #1
+
+
+			
+					// assert 'from' value matches object's current value
+					else if (deepEqual(prop, delta.from) === false){
+
+						console.log(delta.from)
+						// throw (delta.to + ' ' +  prop + ' ' +  delta.from)
+					} 
+					
+					// // ! ensure that this does not result a false positive from a correct delta. 
+					// else if (previousDelta !== undefined && deepEqual(delta.from, previousDelta.from) === true && deepEqual(delta.to, prop) === false){
+						
+						
+					// 	console.log('current delta', delta, 'previousDelta', previousDelta)
+					// 	console.log('delta.from', delta.from, 'prop', prop, 'delta.to', delta.to)
+					// 	console.log('\n\nsame from, different to\n\n',  delta)
+
+					// 	// throw ('test')
+
+					// 	// Rebase fix by first applying B1, then inverting, 
+					// 	// then A1, then applying a modified version of B1 (B1’) that has the corrected “from” value:
+					// 	// B1: propchange @x, a->c
+					// 	// o._props[delta.name] = delta.to;
+					// 	// ^B1: propchange @x, c->a
+					// 	//inverseDelta(delta)
+					// 	// A1: propchange @x, a->b
+					// 	//o._props[delta.name] = prop;
+					// 	// B1*: propchange @x, b*->c
+					// 	// applyDeltasToGraph = function (graph, delta)
+					// 	// throw ('different to')
+
+
+					//  } 
+					 
+					 else {
+						// change it:
+						o._props[delta.name] = delta.to;
+						// console.log('correct delta', delta)
+
+					}
+					
+					// // assert o._props match delta props:
+					// for (let k in o._props) {
+					// 	assert(deepEqual(o._props[k], delta[k]), "delnode failed; properties do not match");
+					// }
+					// // assert o has no child nodes
+					// // keys should either be ['_props'] or just []:
+					// let keys = Object.keys(o);
+					// assert((keys.length == 1 && keys[0]=="_props") || keys.length == 0, "delnode failed; node has children");
+					// delete ctr[name];
+				}
+				prevPropchange =  delta
+
+
+				
+
+				
+				//console.log('prev', previousDelta)
+				// */
 			} break;
 		}
 	}
@@ -457,6 +627,10 @@ let deltasToString = function(deltas, indent) {
 	}
 }
 
+let floatApproximatelyEqual = function(x, y){
+	return (Math.abs(x-y)/Math.abs(x)) < 0.0001;
+}
+
 module.exports = {
 	makeGraph: makeGraph,
 
@@ -474,3 +648,31 @@ module.exports = {
 	deepEqual: deepEqual,
 	deepCopy: deepCopy,
 }
+
+// let conflict1 = async (deltaA, deltaB, o) => {
+// 	/*
+// 	A1: propchange @x, a->b
+// 	B1: propchange @x, a->c  // cannot be applied because from does not match graph state @x=b
+
+// 	Rebase fix by first applying B1, then inverting, then A1, then applying a modified version of B1 (B1’) that has the corrected “from” value:
+
+// 	B1: propchange @x, a->c
+// 	^B1: propchange @x, c->a
+// 	A1: propchange @x, a->b
+// 	B1*: propchange @x, b*->c
+// 	*/
+
+// 	// B1: propchange @x, a->c
+// 	applyDeltasToGraph(graphContainer, deltaB)
+// 	console.log(graphContainer.nodes.lfo_1.rate)
+// 	// o._props[delta.name] = delta.to;
+// 	// ^B1: propchange @x, c->a
+// 	inverseDelta(deltaB)
+// 	// A1: propchange @x, a->b
+// 	o[deltaA.name] = foo
+// 	//applyDeltasToGraph(graphContainer, deltaA)
+
+// 	// o._props[delta.name] = previousDelta.to;
+// 	// B1*: propchange @x, b*->c
+
+// }
