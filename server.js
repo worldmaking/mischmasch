@@ -199,6 +199,7 @@ const wss = new WebSocket.Server({
 	maxPayload: 1024 * 1024, 
 });
 
+
 // send a (string) message to all connected clients:
 function send_all_clients(msg, ignore) {
 	wss.clients.forEach(function each(client) {
@@ -560,6 +561,19 @@ server.listen(8080, function() {
 	console.log(`server listening`);
 	console.log(`vr view on http://localhost:${server.address().port}/index.html`);
 });
+
+
+
+const wss1 = new WebSocket.Server({ 
+	port: 8088,
+});
+wss1.on('connection', function(ws, req) {
+
+	// do any
+	console.log("server received a connection");
+})
+
+console.log(wss1)
 
 //// TMP HACK
 load_scene("scene_noise.json")

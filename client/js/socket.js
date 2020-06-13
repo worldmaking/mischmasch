@@ -60,4 +60,3 @@ class Socket {
         this.socket.send(JSON.stringify(obj));
     }
 };
-
