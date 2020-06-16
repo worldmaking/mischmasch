@@ -19,6 +19,11 @@ const USEVR = false;
 const USEWS = false;
 
 ////////////////////////////////////////////////////////////////
+
+const SHAPE_BOX = 0;
+const SHAPE_CYLINDER = 1;
+const SHAPE_KNOB = 2;
+
 let localGraph = {
 	nodes: {},
 	arcs: []
@@ -355,7 +360,7 @@ let cubes = glutils.createInstances(gl, [
 	{ name:"i_color", components:4 },
 	{ name:"i_scale", components:3 },
 	{ name:"i_shape", components:1 },
-], 100)
+])
 
 // the .instances provides a convenient interface to the underlying arraybuffer
 cubes.instances.forEach(obj => {
@@ -567,7 +572,34 @@ function reflowNode(scene, node, id, parent) {
 
 	// ok, if we have props.pos, we can create a box for it:
 	if (props.pos) {
+		let q = props.quat || [0, 0, 0, 1];
 
+		// add a cube at this location:
+		if (cubes.count >= cubes.allocated) {
+			cubes.allocate(Math.max(cubes.count+4, cubes.allocated*2))
+
+			let obj = cubes.instances[cubes.count];
+
+			vec3.copy(obj.i_pos, props.pos);
+			quat.copy(obj.i_quat, q);
+			obj.i_shape[0] = SHAPE_BOX;
+			
+			let s = 0.1;
+			vec3.set(obj.i_scale, 
+				0.5,
+				0.3,
+				0.03  // depth
+			);
+
+			vec4.set(obj.i_color,
+				Math.random(),
+				Math.random(),
+				Math.random(),
+				1
+			);
+
+			cubes.count++;
+		}
 	}
 }
 
@@ -629,7 +661,7 @@ function animate() {
         // updateDirty(scene, false);
 	}
 	
-	{
+	if (cubes.count) {
 		let i = Math.floor(Math.random() * cubes.count)
 		let obj = cubes.instances[i]
 		quat.slerp(obj.i_quat, obj.i_quat, quat.random(quat.create()), 0.1);
