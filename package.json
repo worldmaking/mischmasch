@@ -20,6 +20,7 @@
   "dependencies": {
     "bottleneck": "^2.18.0",
     "chroma-js": "^2.1.0",
+    "cors": "^2.8.5",
     "cycle-test": "^1.0.0",
     "express": "^4.17.1",
     "find-cycle": "^1.0.0",
@@ -31,9 +32,13 @@
     "png-js": "^1.0.0",
     "progress": "^2.0.3",
     "reconnecting-websocket": "^4.4.0",
+    "simple-peer": "^9.6.2",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0",
     "tasklist": "^4.0.1",
     "three-bmfont-text": "^2.3.0",
     "username": "^5.1.0",
+    "wrtc": "^0.4.4",
     "ws": "^6.2.1"
   },
   "nodemonConfig": {
