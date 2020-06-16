@@ -8,6 +8,8 @@
 *.wav
 session_recordings/
 
+backup/
+
 */session_recordings/
 
 # Logs
