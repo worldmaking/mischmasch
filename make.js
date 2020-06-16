@@ -11,7 +11,7 @@ const { JSDOM } = jsdom;
 
 const buildpath = "./";
 const backuppath = "backup";
-const input = path.join(buildpath, "index1.html");
+const input = path.join(buildpath, "index.html");
 
 marked.setOptions({
   renderer: new marked.Renderer(),
