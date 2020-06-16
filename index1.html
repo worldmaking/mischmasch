@@ -1,0 +1,309 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Affordances and Constraints of Modular Synthesis in Virtual Reality</title>
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&amp;display=swap" rel="stylesheet">
+  <link href="http://fonts.googleapis.com/css?family=Roboto:100,400,700&amp;subset=cyrillic-ext,greek-ext,latin-ext" rel="stylesheet">
+  
+<style>
+
+.imgbox {
+  display: grid;
+  height: 100%;
+}
+.center-fit {
+  max-width: 80%;
+  max-height: 100vh;
+  margin: auto;
+}
+
+body {
+  padding-left: 200px;
+  padding-right: 200px;
+}
+
+/* Style page content */
+.main {
+  margin-left: 160px; /* Same as the width of the sidebar */
+  padding: 0px 10px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.main, p {
+  text-align: justify;
+}
+
+ /* The sidebar menu */
+.sidenav {
+  text-align: left;
+  width: 160px; /* Set the width of the sidebar */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: #111; /* Black */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 20px;
+}
+
+/* The navigation menu links */
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 15px;
+  color: #818181;
+  display: block;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+</style>
+</head>
+<body>
+<!-- sidebar -->
+
+<!-- Side navigation -->
+<div class="sidenav">
+  <a href="#abstract">Abstract</a>
+  <a href="#introduction">Introduction</a>
+  <a href="#affordances--constraints">Affordances &amp; Constraints</a>
+  <a href="#virtual-modular-synthesis">Virtual Modular Synthesis</a>
+  <a href="#embodied-interaction">Embodied Interaction</a>
+  <a href="#palettes-of-modules">Palettes of Modules</a>
+  <a href="#knobs-are-jacks">Knobs are Jacks</a>
+  <a href="#signals-are-fuzzy-typed">Signals are "Fuzzy Typed"</a>
+  <a href="#conclusion">Conclusion</a>
+  <a href="#footnotes">Footnotes</a>
+  <a href="#references">References</a>
+  <!-- <a href="#"></a> -->
+</div>
+<script lang="markdown" id="thediv-markdown">
+
+## Affordances and Constraints of Modular Synthesis in Virtual Reality
+
+Graham Wakefield, Michael Palumbo, Alexander Zonta   
+Alice Lab, York University   
+Toronto, Canada
+
+### Abstract
+
+This article focuses on the rich potential of hybrid domain translation of modular synthesis (MS) into virtual reality (VR). It asks: to what extent can what is valued in studio-based MS practice find a natural home or rich new interpretations in the immersive capacities of VR? The article attends particularly to the relative affordances and constraints of each as they inform the design and development of a new system called *Mischmasch* supporting collaborative and performative patching of Max gen\~ patches and operators within a shared room-scale VR space.
+
+<div id="fig1" class="imgbox">
+  <img class="center-fit" src="images/Screenshot6.png" alt="Mischmasch Screenshot">
+  Figure 1: A screenshot within Mischmasch. Hand controllers select modules, knobs, jacks and cables via laser-pointers with pop-up labels.
+</div>
+
+
+### Introduction
+    
+This article focuses on the affordances and constraints of hardware modular synthesizers (MS) and room-scale, motion tracked, multi-user virtual reality (VR), and how we can most productively and creatively translate one into the terms of the other. The idea was first prompted by suggestive resonances between MS and VR; not least including the virtuality of electronic sound, the immersive workspaces of a studio practice, the embodied interaction of the instrument, and the dynamic potential of modular systems. It is undertaken with the hypothesis that at least part of what gives MS enduring fascination may illuminate ways to further inform and develop VR itself, and in those terms is directly inspired by VR pioneer Jaron Lanier's vision of collaboratively improvising reality [<a href="#ref12">12</a>]. As such the intention is not to create a prosaic simulation of MS in VR, but rather perform a *translation* that begins by considering what might be intrinsic characteristics and valued features of MS, in terms of their relative affordances and constraints, and how those may disappear or be enhanced in VR. That is, to what extent can what we value in MS find a natural home and perhaps even rich new trajectories in VR?% (or more speculatively, what would MS look like if it were first invented in VR?) 
+
+This article grounds the translation theoretically and practically through the design of a new software environment *Mischmasch*, in which multiple performers can interactively construct and manipulate synthesizers within a shared VR space (see Figures <a href="#fig1">1</a> & <a href="#fig2">2</a>, as detailed in [<a href="#ref16">16</a>]. Briefly, a server maintains and manages conflicts in a global history of edits from multiple connected clients via an extension of Operational Transforms [<a href="#ref19">19</a>] optimized for an ontology of edits to graphs of nodes and arcs. Client VR rendering and interaction is achieved using WebGL and WebVR/WebXR standards running on the recent web browsers [<a href="#ref21">21</a>]. Each user edit in VR is shared to all clients and dynamically modifies the contents of a gen\~ patcher (via *patcher-scripting* metaprogramming), whose contents are dynamically recompiled to machine code and relinked with significant state carried over for a seamless sonic experience [<a href="#ref22">22</a>].
+
+
+<img width="100%" src="images/Screenshot1.png" alt="3 views">
+Figure 2: Three simultaneous images of Mischmasch: (left) a musician's view in VR, (right) the musician in real space, (inset) the corresponding gen patcher generated by the musician's actions.
+
+### Affordances & Constraints
+
+Any design -- be it of an instrument, composition, or piece of software -- follows decisions that are conditioned by the affordances and constraints under which it is created. The primary affordances of an environment are what it furnishes an organism; a mapping of the features of an environment to the potential actions of an agent. In analyzing the designs of musical instruments (acoustic, electronic, and software based), Magnusson suggests considering affordances and constraints in *objective* terms (e.g. physical and logical), *subjective* terms (e.g. training and habituation), and *cultural* terms (e.g. intersections of ideology and technology, in which we include cultures of practice) [<a href="#ref13">13</a>]. At first glance the *physicality* of hardware MS offers module interfaces made of knobs that invite turning and jacks that invite cabling, arrayed around a performer within manual reach, building upon spatial memory and embodied cognition to be ready-at-hand like the console of an aircraft. 
+
+The central *logical* characteristic of MS is its modular composition: systems are composed of distinct *modules*, which in principle know nothing of each other, but simply carry out their operations according to the voltages measured at input jacks and produce new voltages at output jacks. These jacks act as points of potential, and cables as wormholes between modules, allowing performers to completely transform the logical operation of the whole instrument on the fly.  The system as a whole has *modularity* in terms of how modules can be flexibly inter-connected, and these interconnections are means of *modulation* between them. This is an affordance that promotes exploratory and conversational cultures of practice [<a href="#ref5">5</a>], inviting redesign and reconfiguration of the machine even as part of a music performance [<a href="#ref10">10</a>]. The reconfigurability of MS liberates it from structural constraints in a similar way as for digital design [<a href="#ref13">13</a>]. At the same time, however, it enforces logical constraints: relationships between modules must be expressed via cables as signals of stable or time-varying intensity, excluding, for example, operations of more structurally complex or abstract symbolic data.
+
+### Virtual Modular Synthesis
+
+There is no shortage of virtualized, software modular synthesis environments for desktop, laptop, and mobile devices, such as [<a href="#ref6">6</a>, <a href="#ref4">4</a>, <a href="#ref2">2</a>] (some incorporate quite skeuomorphic appearances of hardware [<a href="#ref2">2</a>] -- but for Mischmasch such detail adds nothing to modularity and is thus eschewed). Virtualization radically reduces the financial and physical implications of MS and also bring new capabilities: the ease of instantiating and deleting modules on the fly; the rapid storage and recall of entire patches and parameter settings; and potentially more granular modifications of the synthesis algorithms within modules themselves. As such, virtualization expands the musical capacities of the instrument itself [<a href="#ref17">17</a>]. This flexibility is even more apparent in the wide variety of musically-oriented and MS-inspired visual programming languages (VPLs) [<a href="#ref11">11</a>, <a href="#ref18">18</a>]. 
+
+
+Such liberations, however, come with loss of embodiment in their interfaces, bottlenecking human-machine interaction into narrower and flatter fields of view and frames of play. Indeed the persistence and resurgence of hardware MS is sometimes articulated as an intentional response directly away from the *disembodiment* of desktops and laptops [<a href="#ref8">8</a>].
+
+
+Like hardware MS, room-scale VR is rich with spatial affordances that are highly sensitive to timing, and a far greater potential for *embodied* cognition than desktop screen spaces. Indeed motion-tracked room-scale VR has demonstrated potential [<a href="#ref1">1</a>, <a href="#ref15">15</a>] to unite the dynamic flexibility of software-based MS/VPLs with the immersive and embodied situatedness of the MS studio, which we further explore through Mischmasch.  
+
+
+<div class="section">
+<iframe  width="100%" height="100%" src="https://player.vimeo.com/video/388589046" frameborder="0" allow="accelerometer; autoplay; fullscreen; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+#### Embodied Interaction 
+
+Hardware MS modules are generally arranged in a rack according to what best suits the musician, arrayed to keep surfaces within easy observation and reach. Aside from the financial cost of adding more modules, the time and effort required to re-arrange a rack is significant. In Mischmasch such material limitations evaporate: modules can be created and destroyed at whim, grabbed and positioned through immediate gestural metaphors via the VR hand controllers to wherever the musician prefers, and can be translucent to reveal objects behind (or inside) them. They are not subject to gravity and will remain in space, but can be re-arranged individually at any time with little effort. Players in Mischmasch have reported that the ease of re-arranging modules in space and comfortably within reach and view was both useful and intuitive. In contrast to the flatter planes of hardware racks, players tend to arrange modules to follow curves around their bodies. 
+
+Similarly, while hardware MS require a specific collection of cables of various lengths, cables in Mischmasch can be created at any time simply by dragging out from a jack, magnetically snap to nearby module jacks, and stretch and shrink automatically as modules are moved. Like hardware MS, jacks can support multiple "stacked" cable connections, but without the physical constraints of voltage loss: multiple cables from an output will carry precisely the same signal, while multiple cables to an input will be precisely summed. Modules' knobs can be manipulated by wrist action at close distance, or by a metaphor of a "rubber band" at arms' length for finer adjustment. We acknowledge the limited haptic response of current VR controllers and are exploring alternate devices to enrich this. 
+
+#### Palettes of Modules
+
+A survey of modules available and used in hardware MS reveals incredible diversity [<a href="#ref7">7</a>], and also pragmatism. Some modules are almost standalone synthesizers or effects units, some provide characteristic sub-functions of synthesis design (oscillators, envelopes, filters, etc.), but many are even simpler "building-blocks" (slew limiters, sample & hold, etc.) to support exploratory and experimental manipulations. 
+
+Similarly for Mischmasch we provide a library of modules spanning high-level circuits right down to the basic primitives of gen\~, available via a modal menu called up from the VR controllers (see <a href="#fig3">Figure 3</a>). Here we try to retain affordances and concepts matured through decades of accumulated MS culture and practice, such as the remarkably rich applications of controllable ramp generators,<sup><a href="#footnote1">1</a></sup> but we eschew contemporary designs using multiple modes and menus to overcome physical constraints of available space and cost, as such constraints no longer apply in VR. Similarly, some hardware modules exist only to overcome limitations of electrical circuits -- buffered multiples, precision adders, and oscillator tuners to keep voltages precise -- that have no reason to exist in VR. In contrast a quantizer's utility goes far beyond correcting analog inaccuracies. Other analog circuit behaviours *are* lauded in MS culture, particularly for the `warmth' of oscillators, filters, and other audio-rate modulations, and these are approximated digitally through methods such as BLIT, BLEP, and super-sampling. Moreover, the kinds of complex behaviours that can emerge from patching in feedback are significantly helped by the single-sample processing of gen\~. 
+
+The library of modules available in Mischmasch is determined by parsing gen\~ source files in the software's directory. Users can thus also populate the menu with modules of their own design; echoing the spirit of DIY analog and reprogrammable digital modules in hardware MS. To deepen the characteristic of "liveness" we are focused on the VR interface for users to dive inside modules as "sub-worlds" and immediately edit their internals in place. In this way, VR offers players a way to overcome physical constraints of fixed module interfaces as well as their behaviours.
+
+<!-- ! TODO: figure three is screenshot 8 -->
+
+#### Knobs are Jacks
+
+The parametric controls of hardware modules are exposed to musicians as knobs, sliders etc. for gestural modulation,  as cable inputs for signal-based modulation, and quite often both. Having both offers greater affordance -- e.g. a dynamic signal can take the place of human gesture allowing a musician's attention to move elsewhere -- however including both knobs and jacks for a parameter is not always possible due to limited space and cost. In virtual space such material constraints need no longer apply, but the habit often remains (e.g. Hetrick critiques [<a href="#ref4">4</a>] for lacking signal input counterparts for many parameters in the user interface [<a href="#ref7">7</a>]). 
+
+To emphasize modularity in Mischmasch we made all knobs available for signal modulation, without compromising space, simply by allowing cables to be plugged directly into knobs themselves. All knobs in the Mischmasch environment are also input jacks, and anything you can modulate by hand you can also modulate by plugging a signal into it (e.g. the bottom-left knob of the VCA in <a href="#fig1">Figure 1</a>.<sup><a href="#footnote2">2</a></sup> This more explicitly flattens the ontology of the modular world, making patch cables analogous to virtual tentacles for automated interface modulation. This echoes the "phenotropic" vision for VR proposed by Jaron Lanier, in which modules of a software manipulate parameters of other modules as if by virtual hands, rather than directly via a more brittle API (Application Programming Interface) [<a href="#ref12">12</a>]. We note that Lanier proposed this to enhance the learnability, playability, and longevity of software, *directly inspired by musical instruments*. Nevertheless, signals in Mischmasch do not rotate knobs themselves; instead we follow a common pragmatic convention in hardware MS that when a parameter becomes signal-driven, the knob instead becomes an attenuator (multiplier) of the incoming signal. 
+
+#### Signals are “fuzzy-typed”
+
+The modularity of MS stems from the flat ontology of patch cables, whose voltages can support sonic streams, gestural articulations, events and punctuations of time, durations, musical meters, musical pitches, and any other semantics that can be expressed as signals of varying intensity over time. Many MS enthusiasts celebrate the open inter-pluggability of signals in MS, such that for example, connecting an audible frequency signal into a control or even a clock or gate input might lead to an interesting result, and vice versa. For Mischmasch we endeavoured to retain that capacity as much as possible, but at the same time, were conscious to retain conventions if they support this capacity, and consider alternatives that may enhance it.
+
+Chosen for pragmatic physical reasons that have no counterpart in virtual space, hardware MS use voltage ranges within -5v to 10v or more. For Mischmasch we used the range <TT>-1.0</TT> to <TT>+1.0</TT> (bipolar) for audible and other AC signals, and <TT>0.0</TT> to <TT>+1.0</TT> (unipolar) for trigger, logic, and gate signals. This has the advantage that all signals are already in an appropriate range for attenuation, inversion, and amplitude modulation <sup><a href="#footnote3">3</a></sup>, without needing to normalize at each use (as is the case for [<a href="#ref2">2</a>]). Similarly, some conventions in hardware MS stem from limitations of precision that do not apply in virtual spaces. For example, analog logic circuits are never exactly 0v or +5v, so additional fuzzier threshold circuits are needed to differentiate true and false. Although unnecessary in the digital realm, where logic modules can output precise gate values of <TT>0.0</TT> to <TT>+1.0</TT>, we also consider the creative affordances of relaxing the strictness of logic values. For example, adding threshold-crossing Schmitt triggers or sigmoid shapers to logic inputs is cheap and straightforward in the digital space and opens up additional creative possibilities in mixing other kinds of signals with logic modules. Likewise, although digital triggers can be single-sample pulses rather than the edges of brief gates, digital modules will be more inter-operable with other signal types if they respond to significant rising/falling edges rather than pulses themselves, and we designed our library accordingly. 
+
+Not all hardware MS conventions make sense in virtual space. Repeated triggers in MS are widely used for clocking, representing metric time (or some multiplication or division thereof) and used to synchronize rhythmic circuits. However, the precision of 64-bit floating point numbers in the digital realm affords a far more convenient signal-based means of representing and operating upon musical meter via ramp signals (mapping musical time as an integral of the reciprocal of tempo. Unlike clock triggers, a ramp conveys timing information at all moments in time, not just when an onset occurs, and this information comprises both rate and phase: the ramp slope indicates the rate (tempo), the ramp value indicates the phase between onsets, and together the phase wrap indicates the onset trigger with potentially sub-sample accuracy. A negative slope indicates reversed time and zero slope precisely locates a pause, neither of which are possible with trigger-based clocks. Reifying time as a ramp signal allows a rich palette of signal-based transformations of meter that are far more difficult than with triggers: with trivial multiplication, integration, modulo and table-lookup operations one can achieve tempo changes, polymeters, time-shifts, and time maps as described in [<a href="#ref9">9</a>]. Adding varying modulation to the slope can achieve rubato, swing, and other timing deviations sometimes described as "humanization". Our library includes ramp-based timing modules for latching and sample/track and hold, shift registers, sequential switches, polymeter/polyrhythms, Euclidean rhythms [<a href="#ref20">20</a>], and more complex additive, stuttering, and shuffling patterns. Combined with additional operations a range of temporal complexities can be articulated approaching those of functional music languages [<a href="#ref3">3</a>, <a href="#ref14">14</a>]. Using ramps adds no significant overhead but increases the expressive range, and most importantly places it into the same realm as low frequency oscillators (LFOs), flattening the modular ontology in where and how timing signals can be routed and transformed. It thus encompasses the characteristic features of meter and enhances the modular spirit. 
+
+Through the development of Mischmasch we have examined affordances that a declarative programming environment in VR can offer for patching modular synthesis, including the flexibility of virtualized MS and the immersive extension of embodied studio activity, in which virtual module surfaces can be placed at any preferred location around musicians, having cables stretch as needed and visualize contextual information, etc. Still, many of the valued characteristics of hardware MS do stem from origins in physical and technological constraints, thus we retained conventions from hardware MS that enhance the experience of patching, even if no longer strictly necessary in a precise digital space, such as quantizers, fuzzier impulse and logic detection. But we readily abandoned conventions if we could propose alternatives that more effectively enhance modular capacity, such as treating all knobs as input jacks and preferring ramp-based signals for richer temporal modulations.
+
+### Conclusion
+
+Through the development of Mischmasch we have examined affordances that a declarative programming environment in VR can offer for patching modular synthesis, including the flexibility of virtualized MS and the immersive extension of embodied studio activity, in which virtual module surfaces can be placed at any preferred location around musicians, having cables stretch as needed and visualize contextual information, etc. Still, many of the valued characteristics of hardware MS do stem from origins in physical and technological constraints, thus we retained conventions from hardware MS that enhance the experience of patching, even if no longer strictly necessary in a precise digital space, such as quantizers, fuzzier impulse and logic detection. But we readily abandoned conventions if we could propose alternatives that more effectively enhance modular capacity, such as treating all knobs as input jacks and preferring ramp-based signals for richer temporal modulations.
+
+We have successfully trialed Mischmasch within our lab and also at a major music-technology focused expo. Generally feedback has been very positive, and participants have without prompting remained satisfied to explore inside the VR experience for quite extended periods of time. We are now focusing on the performative affordances that Mischmasch's architecture makes possible, including networked telematics, gestural ways to create, record, influence and modulate signals, and using GOT editing histories for "forking", "evolving", and "merging" worlds. Moreover, this all forms a first stepping-stone within a broader project of not only performing music, but in the spirit of VR-pioneer Jaron Lanier's vision of collectively improvising entire worlds [<a href="#ref12">12</a>]. 
+
+#### Ethical Standards
+
+Supported by and following ethical guidelines of national government grants including SSHRC Canada Research Chair #950-230715, Canada Foundation for Innovation JELF #34525, and Government of Ontario Early Researcher Award #ER16-12-219, with no conflicts of interest to acknowledge.
+
+#### Footnotes:
+
+
+1. <span id="footnote1" />E.g. Eurorack's most popular module, Make Noise's "MATHS", a Serge descendent, has dozens of distinct uses.
+2. <span id="footnote2" />The inverse is not true: some "AC-coupled" inputs make no sense as knobs, as they cannot meaningfully respond to the lower rates of human gestures.
+3. <span id="footnote3" />A common adage of MS practice is that one can never have enough Voltage-Controlled Amplifiers.
+
+
+
+
+
+
+
+#### References
+
+1. <span id="ref1" /> N. Andersson, C. Erkut, and S. Seran. Immersive audio programming in a virtual reality sandbox. In *Proceedings of the AES International Conference on Immersive and Interactive Audio*, 2019.
+1. <span id="ref2" /> A. Belt. VCV Rack. [vcvrack.com](https://vcvrack.com), 2017. Accessed: 2019-04-05.
+1. <span id="ref3" /> R. B. Dannenberg. Abstract time warping of compound events and signals. *Computer Music Journal*, 21(3):61-70, 1997.
+1. <span id="ref4" /> M. Davidson. BEAP. [github.com/stretta/BEAP](https://github.com/stretta/BEAP), Dec. 2012. Accessed: 2020-01-31.
+1. <span id="ref5" /> J. Drummond. Understanding interactive systems. *Organised Sound*, 14(2):124-133, 2009.
+1. <span id="ref6" /> J. Eriksson. Automatonism. www.automatonism.com, 2017. Accessed: 2020-04-01.
+1. <span id="ref7" /> M. L. S. Hetrick. *Modular Understanding: A Taxonomy and Toolkit for Designing Modularity in Audio Software and Hardware*. PhD thesis, University of California Santa Barbara, 2016.
+1. <span id="ref8" /> J. Holden. Using Modular Gear Live. www.musicradar.com/news/tech/622023, 2015. Accessed: 2019-04-05.
+1. <span id="ref9" /> H. Honing. From time to time: The representation of timing and tempo. *Computer Music Journal*, 25(3):50-61, 2001.
+1. <span id="ref10" /> C. C. Hutchins. Live patch/live code. In *International Conference on Live Coding*, pages 147-151, 2015.
+1. <span id="ref11" /> S. Jorda. The Reactable. *Revista Kepes*, 5(14):201-223, 2009.
+1. <span id="ref12" /> J. Lanier. *Dawn of the new everything*. Henry Holt and Company, 2017.
+1. <span id="ref13" /> T. Magnusson. Designing constraints: Composing and performing with digital musical systems. *Computer Music Journal*, 34(4):62-73, 2010.
+1. <span id="ref14" /> A. McLean and G. Wiggins. Tidal-pattern language for the live coding of music. In *Proceedings of Sound and Music Computing*, 2010.
+1. <span id="ref15" /> L. Olson. SoundStage VR. [github.com/googlearchive/soundstagevr](https://github.com/googlearchive/soundstagevr), 2018. Accessed: 2020-04-05.
+1. <span id="ref16" /> M. Palumbo, A. Zonta, and G. Wakefield. Modular reality: Analogues of patching in immersive space. *Journal of New Music Research*, pages 1-16, 2020.
+1. <span id="ref17" /> R. Parmar. Creating an autopoietic improvisation environment using modular synthesis. *eContact!*,
+17(4), February 2016.
+1. <span id="ref18" /> M. Puckette. Max at seventeen. *Computer Music Journal*, 26(4):31-43, 2002.
+1. <span id="ref19" /> C. Sun and D. Chen. Consistency maintenance in real-time collaborative graphics editing systems. *ACM Trans. Comput.-Hum. Interact.*, 9(1):1-41, 2002.
+1. <span id="ref20" /> G. T. Toussaint et al. The euclidean algorithm generates traditional musical rhythms. In *Proceedings of BRIDGES: Mathematical Connections in Art, Music and Science*, pages 47-56, 2005.
+1. <span id="ref21" /> V. Vukicevic, B. Jones, K. Gilbert, and C. V. Wiemeersch. WebVR. [immersiveweb.dev](http://immersiveweb.dev), 2017. Accessed: 2019-04-01.
+1. <span  id="ref22" /> G. Wakefield. *Real-time meta-programming for interactive computational arts.* PhD thesis, University of California at Santa Barbara, 2012.
+
+
+Licensed under a Creative Commons Attribution 4.0 International License (CC BY 4.0). Copyright
+remains with the author(s).
+NIME’20, July 21-25, 2020, Royal Birmingham Conservatoire,
+Birmingham City University, Birmingham, United Kingdom.
+
+</script>
+<!-- ------------ -------------------------------------------------------------------------- -->
+<div class="mainArticle" id="thediv"><h2 id="affordances-and-constraints-of-modular-synthesis-in-virtual-reality">Affordances and Constraints of Modular Synthesis in Virtual Reality</h2>
+<p>Graham Wakefield, Michael Palumbo, Alexander Zonta<br>Alice Lab, York University<br>Toronto, Canada</p>
+<h3 id="abstract">Abstract</h3>
+<p>This article focuses on the rich potential of hybrid domain translation of modular synthesis (MS) into virtual reality (VR). It asks: to what extent can what is valued in studio-based MS practice find a natural home or rich new interpretations in the immersive capacities of VR? The article attends particularly to the relative affordances and constraints of each as they inform the design and development of a new system called <em>Mischmasch</em> supporting collaborative and performative patching of Max gen~ patches and operators within a shared room-scale VR space.</p>
+<div id="fig1" class="imgbox">
+  <img class="center-fit" src="images/Screenshot6.png" alt="Mischmasch Screenshot">
+  Figure 1: A screenshot within Mischmasch. Hand controllers select modules, knobs, jacks and cables via laser-pointers with pop-up labels.
+</div>
+
+
+<h3 id="introduction">Introduction</h3>
+<p>This article focuses on the affordances and constraints of hardware modular synthesizers (MS) and room-scale, motion tracked, multi-user virtual reality (VR), and how we can most productively and creatively translate one into the terms of the other. The idea was first prompted by suggestive resonances between MS and VR; not least including the virtuality of electronic sound, the immersive workspaces of a studio practice, the embodied interaction of the instrument, and the dynamic potential of modular systems. It is undertaken with the hypothesis that at least part of what gives MS enduring fascination may illuminate ways to further inform and develop VR itself, and in those terms is directly inspired by VR pioneer Jaron Lanier's vision of collaboratively improvising reality [<a href="#ref12">12</a>]. As such the intention is not to create a prosaic simulation of MS in VR, but rather perform a <em>translation</em> that begins by considering what might be intrinsic characteristics and valued features of MS, in terms of their relative affordances and constraints, and how those may disappear or be enhanced in VR. That is, to what extent can what we value in MS find a natural home and perhaps even rich new trajectories in VR?% (or more speculatively, what would MS look like if it were first invented in VR?) </p>
+<p>This article grounds the translation theoretically and practically through the design of a new software environment <em>Mischmasch</em>, in which multiple performers can interactively construct and manipulate synthesizers within a shared VR space (see Figures <a href="#fig1">1</a> &amp; <a href="#fig2">2</a>, as detailed in [<a href="#ref16">16</a>]. Briefly, a server maintains and manages conflicts in a global history of edits from multiple connected clients via an extension of Operational Transforms [<a href="#ref19">19</a>] optimized for an ontology of edits to graphs of nodes and arcs. Client VR rendering and interaction is achieved using WebGL and WebVR/WebXR standards running on the recent web browsers [<a href="#ref21">21</a>]. Each user edit in VR is shared to all clients and dynamically modifies the contents of a gen~ patcher (via <em>patcher-scripting</em> metaprogramming), whose contents are dynamically recompiled to machine code and relinked with significant state carried over for a seamless sonic experience [<a href="#ref22">22</a>].</p>
+<img width="100%" src="images/Screenshot1.png" alt="3 views">
+Figure 2: Three simultaneous images of Mischmasch: (left) a musician's view in VR, (right) the musician in real space, (inset) the corresponding gen patcher generated by the musician's actions.
+
+<h3 id="affordances--constraints">Affordances &amp; Constraints</h3>
+<p>Any design -- be it of an instrument, composition, or piece of software -- follows decisions that are conditioned by the affordances and constraints under which it is created. The primary affordances of an environment are what it furnishes an organism; a mapping of the features of an environment to the potential actions of an agent. In analyzing the designs of musical instruments (acoustic, electronic, and software based), Magnusson suggests considering affordances and constraints in <em>objective</em> terms (e.g. physical and logical), <em>subjective</em> terms (e.g. training and habituation), and <em>cultural</em> terms (e.g. intersections of ideology and technology, in which we include cultures of practice) [<a href="#ref13">13</a>]. At first glance the <em>physicality</em> of hardware MS offers module interfaces made of knobs that invite turning and jacks that invite cabling, arrayed around a performer within manual reach, building upon spatial memory and embodied cognition to be ready-at-hand like the console of an aircraft. </p>
+<p>The central <em>logical</em> characteristic of MS is its modular composition: systems are composed of distinct <em>modules</em>, which in principle know nothing of each other, but simply carry out their operations according to the voltages measured at input jacks and produce new voltages at output jacks. These jacks act as points of potential, and cables as wormholes between modules, allowing performers to completely transform the logical operation of the whole instrument on the fly.  The system as a whole has <em>modularity</em> in terms of how modules can be flexibly inter-connected, and these interconnections are means of <em>modulation</em> between them. This is an affordance that promotes exploratory and conversational cultures of practice [<a href="#ref5">5</a>], inviting redesign and reconfiguration of the machine even as part of a music performance [<a href="#ref10">10</a>]. The reconfigurability of MS liberates it from structural constraints in a similar way as for digital design [<a href="#ref13">13</a>]. At the same time, however, it enforces logical constraints: relationships between modules must be expressed via cables as signals of stable or time-varying intensity, excluding, for example, operations of more structurally complex or abstract symbolic data.</p>
+<h3 id="virtual-modular-synthesis">Virtual Modular Synthesis</h3>
+<p>There is no shortage of virtualized, software modular synthesis environments for desktop, laptop, and mobile devices, such as [<a href="#ref6">6</a>, <a href="#ref4">4</a>, <a href="#ref2">2</a>] (some incorporate quite skeuomorphic appearances of hardware [<a href="#ref2">2</a>] -- but for Mischmasch such detail adds nothing to modularity and is thus eschewed). Virtualization radically reduces the financial and physical implications of MS and also bring new capabilities: the ease of instantiating and deleting modules on the fly; the rapid storage and recall of entire patches and parameter settings; and potentially more granular modifications of the synthesis algorithms within modules themselves. As such, virtualization expands the musical capacities of the instrument itself [<a href="#ref17">17</a>]. This flexibility is even more apparent in the wide variety of musically-oriented and MS-inspired visual programming languages (VPLs) [<a href="#ref11">11</a>, <a href="#ref18">18</a>]. </p>
+<p>Such liberations, however, come with loss of embodiment in their interfaces, bottlenecking human-machine interaction into narrower and flatter fields of view and frames of play. Indeed the persistence and resurgence of hardware MS is sometimes articulated as an intentional response directly away from the <em>disembodiment</em> of desktops and laptops [<a href="#ref8">8</a>].</p>
+<p>Like hardware MS, room-scale VR is rich with spatial affordances that are highly sensitive to timing, and a far greater potential for <em>embodied</em> cognition than desktop screen spaces. Indeed motion-tracked room-scale VR has demonstrated potential [<a href="#ref1">1</a>, <a href="#ref15">15</a>] to unite the dynamic flexibility of software-based MS/VPLs with the immersive and embodied situatedness of the MS studio, which we further explore through Mischmasch.  </p>
+<div class="section">
+<iframe width="100%" height="100%" src="https://player.vimeo.com/video/388589046" frameborder="0" allow="accelerometer; autoplay; fullscreen; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+</div>
+
+<h4 id="embodied-interaction">Embodied Interaction</h4>
+<p>Hardware MS modules are generally arranged in a rack according to what best suits the musician, arrayed to keep surfaces within easy observation and reach. Aside from the financial cost of adding more modules, the time and effort required to re-arrange a rack is significant. In Mischmasch such material limitations evaporate: modules can be created and destroyed at whim, grabbed and positioned through immediate gestural metaphors via the VR hand controllers to wherever the musician prefers, and can be translucent to reveal objects behind (or inside) them. They are not subject to gravity and will remain in space, but can be re-arranged individually at any time with little effort. Players in Mischmasch have reported that the ease of re-arranging modules in space and comfortably within reach and view was both useful and intuitive. In contrast to the flatter planes of hardware racks, players tend to arrange modules to follow curves around their bodies. </p>
+<p>Similarly, while hardware MS require a specific collection of cables of various lengths, cables in Mischmasch can be created at any time simply by dragging out from a jack, magnetically snap to nearby module jacks, and stretch and shrink automatically as modules are moved. Like hardware MS, jacks can support multiple "stacked" cable connections, but without the physical constraints of voltage loss: multiple cables from an output will carry precisely the same signal, while multiple cables to an input will be precisely summed. Modules' knobs can be manipulated by wrist action at close distance, or by a metaphor of a "rubber band" at arms' length for finer adjustment. We acknowledge the limited haptic response of current VR controllers and are exploring alternate devices to enrich this. </p>
+<h4 id="palettes-of-modules">Palettes of Modules</h4>
+<p>A survey of modules available and used in hardware MS reveals incredible diversity [<a href="#ref7">7</a>], and also pragmatism. Some modules are almost standalone synthesizers or effects units, some provide characteristic sub-functions of synthesis design (oscillators, envelopes, filters, etc.), but many are even simpler "building-blocks" (slew limiters, sample &amp; hold, etc.) to support exploratory and experimental manipulations. </p>
+<p>Similarly for Mischmasch we provide a library of modules spanning high-level circuits right down to the basic primitives of gen~, available via a modal menu called up from the VR controllers (see <a href="#fig3">Figure 3</a>). Here we try to retain affordances and concepts matured through decades of accumulated MS culture and practice, such as the remarkably rich applications of controllable ramp generators,<sup><a href="#footnote1">1</a></sup> but we eschew contemporary designs using multiple modes and menus to overcome physical constraints of available space and cost, as such constraints no longer apply in VR. Similarly, some hardware modules exist only to overcome limitations of electrical circuits -- buffered multiples, precision adders, and oscillator tuners to keep voltages precise -- that have no reason to exist in VR. In contrast a quantizer's utility goes far beyond correcting analog inaccuracies. Other analog circuit behaviours <em>are</em> lauded in MS culture, particularly for the `warmth' of oscillators, filters, and other audio-rate modulations, and these are approximated digitally through methods such as BLIT, BLEP, and super-sampling. Moreover, the kinds of complex behaviours that can emerge from patching in feedback are significantly helped by the single-sample processing of gen~. </p>
+<p>The library of modules available in Mischmasch is determined by parsing gen~ source files in the software's directory. Users can thus also populate the menu with modules of their own design; echoing the spirit of DIY analog and reprogrammable digital modules in hardware MS. To deepen the characteristic of "liveness" we are focused on the VR interface for users to dive inside modules as "sub-worlds" and immediately edit their internals in place. In this way, VR offers players a way to overcome physical constraints of fixed module interfaces as well as their behaviours.</p>
+<!-- ! TODO: figure three is screenshot 8 -->
+
+<h4 id="knobs-are-jacks">Knobs are Jacks</h4>
+<p>The parametric controls of hardware modules are exposed to musicians as knobs, sliders etc. for gestural modulation,  as cable inputs for signal-based modulation, and quite often both. Having both offers greater affordance -- e.g. a dynamic signal can take the place of human gesture allowing a musician's attention to move elsewhere -- however including both knobs and jacks for a parameter is not always possible due to limited space and cost. In virtual space such material constraints need no longer apply, but the habit often remains (e.g. Hetrick critiques [<a href="#ref4">4</a>] for lacking signal input counterparts for many parameters in the user interface [<a href="#ref7">7</a>]). </p>
+<p>To emphasize modularity in Mischmasch we made all knobs available for signal modulation, without compromising space, simply by allowing cables to be plugged directly into knobs themselves. All knobs in the Mischmasch environment are also input jacks, and anything you can modulate by hand you can also modulate by plugging a signal into it (e.g. the bottom-left knob of the VCA in <a href="#fig1">Figure 1</a>.<sup><a href="#footnote2">2</a></sup> This more explicitly flattens the ontology of the modular world, making patch cables analogous to virtual tentacles for automated interface modulation. This echoes the "phenotropic" vision for VR proposed by Jaron Lanier, in which modules of a software manipulate parameters of other modules as if by virtual hands, rather than directly via a more brittle API (Application Programming Interface) [<a href="#ref12">12</a>]. We note that Lanier proposed this to enhance the learnability, playability, and longevity of software, <em>directly inspired by musical instruments</em>. Nevertheless, signals in Mischmasch do not rotate knobs themselves; instead we follow a common pragmatic convention in hardware MS that when a parameter becomes signal-driven, the knob instead becomes an attenuator (multiplier) of the incoming signal. </p>
+<h4 id="signals-are-fuzzy-typed">Signals are “fuzzy-typed”</h4>
+<p>The modularity of MS stems from the flat ontology of patch cables, whose voltages can support sonic streams, gestural articulations, events and punctuations of time, durations, musical meters, musical pitches, and any other semantics that can be expressed as signals of varying intensity over time. Many MS enthusiasts celebrate the open inter-pluggability of signals in MS, such that for example, connecting an audible frequency signal into a control or even a clock or gate input might lead to an interesting result, and vice versa. For Mischmasch we endeavoured to retain that capacity as much as possible, but at the same time, were conscious to retain conventions if they support this capacity, and consider alternatives that may enhance it.</p>
+<p>Chosen for pragmatic physical reasons that have no counterpart in virtual space, hardware MS use voltage ranges within -5v to 10v or more. For Mischmasch we used the range <tt>-1.0</tt> to <tt>+1.0</tt> (bipolar) for audible and other AC signals, and <tt>0.0</tt> to <tt>+1.0</tt> (unipolar) for trigger, logic, and gate signals. This has the advantage that all signals are already in an appropriate range for attenuation, inversion, and amplitude modulation <sup><a href="#footnote3">3</a></sup>, without needing to normalize at each use (as is the case for [<a href="#ref2">2</a>]). Similarly, some conventions in hardware MS stem from limitations of precision that do not apply in virtual spaces. For example, analog logic circuits are never exactly 0v or +5v, so additional fuzzier threshold circuits are needed to differentiate true and false. Although unnecessary in the digital realm, where logic modules can output precise gate values of <tt>0.0</tt> to <tt>+1.0</tt>, we also consider the creative affordances of relaxing the strictness of logic values. For example, adding threshold-crossing Schmitt triggers or sigmoid shapers to logic inputs is cheap and straightforward in the digital space and opens up additional creative possibilities in mixing other kinds of signals with logic modules. Likewise, although digital triggers can be single-sample pulses rather than the edges of brief gates, digital modules will be more inter-operable with other signal types if they respond to significant rising/falling edges rather than pulses themselves, and we designed our library accordingly. </p>
+<p>Not all hardware MS conventions make sense in virtual space. Repeated triggers in MS are widely used for clocking, representing metric time (or some multiplication or division thereof) and used to synchronize rhythmic circuits. However, the precision of 64-bit floating point numbers in the digital realm affords a far more convenient signal-based means of representing and operating upon musical meter via ramp signals (mapping musical time as an integral of the reciprocal of tempo. Unlike clock triggers, a ramp conveys timing information at all moments in time, not just when an onset occurs, and this information comprises both rate and phase: the ramp slope indicates the rate (tempo), the ramp value indicates the phase between onsets, and together the phase wrap indicates the onset trigger with potentially sub-sample accuracy. A negative slope indicates reversed time and zero slope precisely locates a pause, neither of which are possible with trigger-based clocks. Reifying time as a ramp signal allows a rich palette of signal-based transformations of meter that are far more difficult than with triggers: with trivial multiplication, integration, modulo and table-lookup operations one can achieve tempo changes, polymeters, time-shifts, and time maps as described in [<a href="#ref9">9</a>]. Adding varying modulation to the slope can achieve rubato, swing, and other timing deviations sometimes described as "humanization". Our library includes ramp-based timing modules for latching and sample/track and hold, shift registers, sequential switches, polymeter/polyrhythms, Euclidean rhythms [<a href="#ref20">20</a>], and more complex additive, stuttering, and shuffling patterns. Combined with additional operations a range of temporal complexities can be articulated approaching those of functional music languages [<a href="#ref3">3</a>, <a href="#ref14">14</a>]. Using ramps adds no significant overhead but increases the expressive range, and most importantly places it into the same realm as low frequency oscillators (LFOs), flattening the modular ontology in where and how timing signals can be routed and transformed. It thus encompasses the characteristic features of meter and enhances the modular spirit. </p>
+<p>Through the development of Mischmasch we have examined affordances that a declarative programming environment in VR can offer for patching modular synthesis, including the flexibility of virtualized MS and the immersive extension of embodied studio activity, in which virtual module surfaces can be placed at any preferred location around musicians, having cables stretch as needed and visualize contextual information, etc. Still, many of the valued characteristics of hardware MS do stem from origins in physical and technological constraints, thus we retained conventions from hardware MS that enhance the experience of patching, even if no longer strictly necessary in a precise digital space, such as quantizers, fuzzier impulse and logic detection. But we readily abandoned conventions if we could propose alternatives that more effectively enhance modular capacity, such as treating all knobs as input jacks and preferring ramp-based signals for richer temporal modulations.</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>Through the development of Mischmasch we have examined affordances that a declarative programming environment in VR can offer for patching modular synthesis, including the flexibility of virtualized MS and the immersive extension of embodied studio activity, in which virtual module surfaces can be placed at any preferred location around musicians, having cables stretch as needed and visualize contextual information, etc. Still, many of the valued characteristics of hardware MS do stem from origins in physical and technological constraints, thus we retained conventions from hardware MS that enhance the experience of patching, even if no longer strictly necessary in a precise digital space, such as quantizers, fuzzier impulse and logic detection. But we readily abandoned conventions if we could propose alternatives that more effectively enhance modular capacity, such as treating all knobs as input jacks and preferring ramp-based signals for richer temporal modulations.</p>
+<p>We have successfully trialed Mischmasch within our lab and also at a major music-technology focused expo. Generally feedback has been very positive, and participants have without prompting remained satisfied to explore inside the VR experience for quite extended periods of time. We are now focusing on the performative affordances that Mischmasch's architecture makes possible, including networked telematics, gestural ways to create, record, influence and modulate signals, and using GOT editing histories for "forking", "evolving", and "merging" worlds. Moreover, this all forms a first stepping-stone within a broader project of not only performing music, but in the spirit of VR-pioneer Jaron Lanier's vision of collectively improvising entire worlds [<a href="#ref12">12</a>]. </p>
+<h4 id="ethical-standards">Ethical Standards</h4>
+<p>Supported by and following ethical guidelines of national government grants including SSHRC Canada Research Chair #950-230715, Canada Foundation for Innovation JELF #34525, and Government of Ontario Early Researcher Award #ER16-12-219, with no conflicts of interest to acknowledge.</p>
+<h4 id="footnotes">Footnotes:</h4>
+<ol>
+<li><span id="footnote1">E.g. Eurorack's most popular module, Make Noise's "MATHS", a Serge descendent, has dozens of distinct uses.</span></li>
+<li><span id="footnote2">The inverse is not true: some "AC-coupled" inputs make no sense as knobs, as they cannot meaningfully respond to the lower rates of human gestures.</span></li>
+<li><span id="footnote3">A common adage of MS practice is that one can never have enough Voltage-Controlled Amplifiers.</span></li>
+</ol>
+<h4 id="references">References</h4>
+<ol>
+<li><span id="ref1"> N. Andersson, C. Erkut, and S. Seran. Immersive audio programming in a virtual reality sandbox. In <em>Proceedings of the AES International Conference on Immersive and Interactive Audio</em>, 2019.</span></li>
+<li><span id="ref2"> A. Belt. VCV Rack. <a href="https://vcvrack.com">vcvrack.com</a>, 2017. Accessed: 2019-04-05.</span></li>
+<li><span id="ref3"> R. B. Dannenberg. Abstract time warping of compound events and signals. <em>Computer Music Journal</em>, 21(3):61-70, 1997.</span></li>
+<li><span id="ref4"> M. Davidson. BEAP. <a href="https://github.com/stretta/BEAP">github.com/stretta/BEAP</a>, Dec. 2012. Accessed: 2020-01-31.</span></li>
+<li><span id="ref5"> J. Drummond. Understanding interactive systems. <em>Organised Sound</em>, 14(2):124-133, 2009.</span></li>
+<li><span id="ref6"> J. Eriksson. Automatonism. <a href="http://www.automatonism.com">www.automatonism.com</a>, 2017. Accessed: 2020-04-01.</span></li>
+<li><span id="ref7"> M. L. S. Hetrick. <em>Modular Understanding: A Taxonomy and Toolkit for Designing Modularity in Audio Software and Hardware</em>. PhD thesis, University of California Santa Barbara, 2016.</span></li>
+<li><span id="ref8"> J. Holden. Using Modular Gear Live. <a href="http://www.musicradar.com/news/tech/622023">www.musicradar.com/news/tech/622023</a>, 2015. Accessed: 2019-04-05.</span></li>
+<li><span id="ref9"> H. Honing. From time to time: The representation of timing and tempo. <em>Computer Music Journal</em>, 25(3):50-61, 2001.</span></li>
+<li><span id="ref10"> C. C. Hutchins. Live patch/live code. In <em>International Conference on Live Coding</em>, pages 147-151, 2015.</span></li>
+<li><span id="ref11"> S. Jorda. The Reactable. <em>Revista Kepes</em>, 5(14):201-223, 2009.</span></li>
+<li><span id="ref12"> J. Lanier. <em>Dawn of the new everything</em>. Henry Holt and Company, 2017.</span></li>
+<li><span id="ref13"> T. Magnusson. Designing constraints: Composing and performing with digital musical systems. <em>Computer Music Journal</em>, 34(4):62-73, 2010.</span></li>
+<li><span id="ref14"> A. McLean and G. Wiggins. Tidal-pattern language for the live coding of music. In <em>Proceedings of Sound and Music Computing</em>, 2010.</span></li>
+<li><span id="ref15"> L. Olson. SoundStage VR. <a href="https://github.com/googlearchive/soundstagevr">github.com/googlearchive/soundstagevr</a>, 2018. Accessed: 2020-04-05.</span></li>
+<li><span id="ref16"> M. Palumbo, A. Zonta, and G. Wakefield. Modular reality: Analogues of patching in immersive space. <em>Journal of New Music Research</em>, pages 1-16, 2020.</span></li>
+<li><span id="ref17"> R. Parmar. Creating an autopoietic improvisation environment using modular synthesis. <em>eContact!</em>,
+17(4), February 2016.</span></li>
+<li><span id="ref18"> M. Puckette. Max at seventeen. <em>Computer Music Journal</em>, 26(4):31-43, 2002.</span></li>
+<li><span id="ref19"> C. Sun and D. Chen. Consistency maintenance in real-time collaborative graphics editing systems. <em>ACM Trans. Comput.-Hum. Interact.</em>, 9(1):1-41, 2002.</span></li>
+<li><span id="ref20"> G. T. Toussaint et al. The euclidean algorithm generates traditional musical rhythms. In <em>Proceedings of BRIDGES: Mathematical Connections in Art, Music and Science</em>, pages 47-56, 2005.</span></li>
+<li><span id="ref21"> V. Vukicevic, B. Jones, K. Gilbert, and C. V. Wiemeersch. WebVR. <a href="http://immersiveweb.dev">immersiveweb.dev</a>, 2017. Accessed: 2019-04-01.</span></li>
+<li><span id="ref22"> G. Wakefield. <em>Real-time meta-programming for interactive computational arts.</em> PhD thesis, University of California at Santa Barbara, 2012.</span></li>
+</ol>
+<p>Licensed under a Creative Commons Attribution 4.0 International License (CC BY 4.0). Copyright
+remains with the author(s).
+NIME’20, July 21-25, 2020, Royal Birmingham Conservatoire,
+Birmingham City University, Birmingham, United Kingdom.</p>
+</div></body></html>
