@@ -8,6 +8,8 @@
 *.wav
 session_recordings/
 
+package-lock.json
+
 */session_recordings/
 
 # Logs
