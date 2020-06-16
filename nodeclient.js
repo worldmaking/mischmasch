@@ -5,7 +5,7 @@ const assert = require("assert"),
 const { vec2, vec3, vec4, quat, mat2, mat2d, mat3, mat4} = require("gl-matrix")
 const PNG = require("png-js");
 const WebSocket = require('ws')
-const url = 'ws://localhost:8080'
+const chroma = require("chroma-js")
 
 const nodeglpath = "../node-gles3"
 const gl = require(path.join(nodeglpath, "gles3.js")),
@@ -17,6 +17,18 @@ const got = require("./got/got.js")
 
 const USEVR = false;
 const USEWS = false;
+const url = 'ws://localhost:8080'
+
+function hashCode(str) { // java String#hashCode
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+       hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return hash;
+} 
+function colorFromString(str) {
+	return chroma.hsl(Math.abs(hashCode(str)) % 360, 0.35, 0.5).gl()
+}
 
 ////////////////////////////////////////////////////////////////
 
@@ -24,12 +36,21 @@ const SHAPE_BOX = 0;
 const SHAPE_CYLINDER = 1;
 const SHAPE_KNOB = 2;
 
+// GOT graph, local copy.
 let localGraph = {
 	nodes: {},
 	arcs: []
 }
 
-let scene = {}
+// ontology of the rendered scene.
+let scene = {
+	boxes: [],
+	cables: [],
+	labels: [],
+
+	// a lookup table from path to the object it refers to:
+	paths: {},
+}
 
 let viewmatrix = mat4.create();
 let projmatrix = mat4.create();
@@ -50,7 +71,7 @@ glfw.windowHint(glfw.CONTEXT_VERSION_MINOR, 3);
 glfw.windowHint(glfw.OPENGL_FORWARD_COMPAT, 1);
 glfw.windowHint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE);
 
-let window = glfw.createWindow(960, USEVR ? 480 : 960, "Test");
+let window = glfw.createWindow(800, USEVR ? 400 : 800, "Test");
 if (!window) {
 	console.log("Failed to open GLFW window");
 	glfw.terminate();
@@ -236,8 +257,6 @@ function setMessage(message, modelmatrix=mat4.create(), idx=0) {
 			x += char.xadvance * font.scale;
 		}
 	}
-	// submit VBO and attach to VAO:
-	textquads.bind().submit().unbind()
 
 	// return the used instance count so we know how many to render
 	return idx;
@@ -294,9 +313,15 @@ void main() {
 		}
 		normal.xy = normalize(mix(p.xy, vec2(0.), abs(normal.z)));
 		vertex.xy = p*0.5;// + 0.5;
+		vertex *= i_scale.xxz;
+	} else {
+		// SHAPE_BOX:
+		// push box behind the plane of the coordinate frame,
+		// so that widgets etc. sit in front of it
+		vertex.z -= 1.001;
+		vertex *= i_scale.xyz;
 	}
 
-	vertex *= i_scale.xyz;
 	vertex = quat_rotate(i_quat, vertex);
 	vertex = vertex + i_pos.xyz;
 	// u_modelmatrix * 
@@ -348,7 +373,8 @@ void main() {
 }
 `);
 // create a VAO from a basic geometry and shader
-let cube = glutils.createVao(gl, glutils.makeCube({ min:0, max:1, div: 9 }), cubeprogram.id);
+let cubegeom = glutils.makeCube({ min:0, max:1, div: 9 })
+let cube = glutils.createVao(gl, cubegeom, cubeprogram.id);
 
 //console.log(cube.geom.vertices)
 
@@ -549,11 +575,11 @@ if (USEVR) {
 let fbo = glutils.makeFboWithDepth(gl, vrdim[0], vrdim[1])
 
 
-function reflowNodes(scene, parent) {
+function reflowNodes(scene, parent_node, parent) {
 	let children = []
-	for (let name in parent) {
+	for (let name in parent_node) {
 		if (name == "_props") continue;
-		let node = reflowNode(scene, parent[name], name, parent);
+		let node = reflowNode(scene, parent_node[name], name, parent);
 		if (node) children.push(node)
 	}
 	return children;
@@ -561,49 +587,168 @@ function reflowNodes(scene, parent) {
 
 function reflowNode(scene, node, id, parent) {
 	let props = node._props || {}
-	console.log("reflowNode", id, props);
-
 	// create objects to add to the scene
 	// depends on props.kind special cases
 	// depends on how many children it has (we don't necessarily know that yet)
+	let path = id;
+	if (parent) {
+		path = parent.path + "." + path;
+	}
+	let object = {
+		parent: parent,
+		node: node,
+		node_parent: parent ? parent.node : undefined,
+		kind: props.kind,
+		name: id,
+		path: path,
+		// pos: vec3.clone(props.pos),
+		// quat: vec4.clone(props.orient),
+		// scale: scale,
+		mat: mat4.create(),
+	}
 
-	// recurse to create child nodes so we know how to lay them out:
-	let children = reflowNodes(scene, node);
+	// add to scene:
+	scene.paths[object.path] = object;
 
-	// ok, if we have props.pos, we can create a box for it:
-	if (props.pos) {
-		let q = props.quat || [0, 0, 0, 1];
+	switch(props.kind) {
+		default: {
+			let pos = props.pos;
+			let quat = props.orient;
 
-		// add a cube at this location:
-		if (cubes.count >= cubes.allocated) {
-			cubes.allocate(Math.max(cubes.count+4, cubes.allocated*2))
+			// how many children does it have?
+			// -1 to skip _props
+			let numchildren = Object.keys(node).length-1;
+			let numcols = Math.ceil(Math.sqrt(numchildren));
+			let numrows = Math.ceil(numchildren / numcols);
+			// special-case small modules:
+			if (numchildren <= 4) {
+				numcols = numchildren;
+				numrows = 1;
+			}
+			// extra row for label:
+			numrows++;
 
-			let obj = cubes.instances[cubes.count];
+			console.log(numcols, numrows)
 
-			vec3.copy(obj.i_pos, props.pos);
-			quat.copy(obj.i_quat, q);
-			obj.i_shape[0] = SHAPE_BOX;
-			
-			let s = 0.1;
-			vec3.set(obj.i_scale, 
-				0.5,
-				0.3,
-				0.03  // depth
-			);
+			if (!pos) {
+				object.shape = SHAPE_CYLINDER;
+				object.scale = [0.1, 0.1, 0.03];
+			} else {
+				
+				object.shape = SHAPE_BOX;
+				object.scale = [0.5, 0.3, 0.03];
+			}
+			if (!pos) pos = parent.pos;
+			if (!quat) quat = parent.quat;
 
-			vec4.set(obj.i_color,
-				Math.random(),
-				Math.random(),
-				Math.random(),
-				1
-			);
+			if (pos && quat) {
+				// add a cube at this location:
+				object.pos = vec3.clone(pos)
+				object.quat = vec4.clone(quat)
+				mat4.fromRotationTranslationScale(object.mat, 
+					object.quat, object.pos, object.scale
+				);
+				scene.boxes.push(object);
 
-			cubes.count++;
+				// add a label:
+				let modelmatrix = mat4.create();
+				let ls = 0.1;
+				mat4.fromRotationTranslationScale(modelmatrix, 
+					object.quat, object.pos, [ls, ls, ls]
+				);
+				scene.labels.push({
+					parent: object,
+					node: node,
+					node_parent: parent,
+					message: props.kind,
+					pos: object.pos,
+					quat: object.quat,
+					scale: [ls, ls, ls],
+					mat: modelmatrix,
+				})
+			}
 		}
 	}
+
+	// recurse to create child nodes so we know how to lay them out:
+	let children = reflowNodes(scene, node, object);
 }
 
+function rebuildScene(graph) {
 
+	let scene = {
+		boxes: [],
+		cables: [],
+		labels: [],
+		// a lookup table from path to the object it refers to:
+		paths: {},
+	}
+	reflowNodes(scene, graph.nodes);
+
+	// reflow arcs:
+	for (let arc of graph.arcs) {
+		const [path_from, path_to] = arc;
+		// find the corresponding objects:
+		let a = scene.paths[ arc[0] ]
+		let b = scene.paths[ arc[1] ]
+		scene.cables.push({
+			from: a,
+			to: b,
+		})
+	}
+	//console.log("scene", scene)
+	return scene;
+}
+	
+function rebuildInstances(scene) {
+	// reset instance counts:
+	cubes.count = 0;
+	lines.count = 0;
+	textquads.count = 0;
+	// reallocate space if necessary:
+	if (scene.boxes.length >= cubes.allocated) {
+		cubes.allocate(Math.max(scene.boxes.length+4, cubes.allocated*2))
+	}
+	if (scene.cables.length >= lines.allocated) {
+		lines.allocate(Math.max(scene.cables.length+4, lines.allocated*2))
+	}
+	// text reallocate will happen per-label
+
+	for (let box of scene.boxes) {
+		if (cubes.count >= cubes.allocated) {
+			cubes.allocate(Math.max(cubes.count+4, cubes.allocated*2))
+		}
+		let obj = cubes.instances[cubes.count];
+		vec3.copy(obj.i_pos, box.pos);
+		vec3.copy(obj.i_scale, box.scale);
+		quat.copy(obj.i_quat, box.quat);
+		obj.i_shape[0] = box.shape;
+		vec4.copy(obj.i_color, colorFromString(box.name));
+		cubes.count++;
+	}
+
+	for (let cable of scene.cables) {
+		let line = lines.instances[lines.count];
+		let {from, to} = cable;
+		quat.copy(line.i_quat0, from.quat);
+		quat.copy(line.i_quat1, to.quat);
+		vec3.copy(line.i_pos0, from.pos);
+		vec3.copy(line.i_pos1, to.pos);
+		vec4.set(line.i_color, 1, 1, 1, 1)
+		lines.count++;
+	}
+
+	for (let label of scene.labels) {
+		textquads.count = setMessage(label.message, label.mat, textquads.count);
+	}
+
+	// submit to GPU:
+	cubes.bind().submit().unbind()
+	lines.bind().submit().unbind()
+	textquads.bind().submit().unbind()
+
+	return scene;
+}
 
 
 let t = glfw.getTime();
@@ -618,7 +763,13 @@ function animate() {
 		setImmediate(animate)
 	}
 
-	{
+	let t1 = glfw.getTime();
+	let dt = t1-t;
+	fps += 0.1*((1/dt)-fps);
+	t = t1;
+	glfw.setWindowTitle(window, `fps ${fps}`);
+
+	if (0) {
 		let modelmatrix = mat4.create();
 		let s = 0.1
 		mat4.fromRotationTranslationScale(modelmatrix, 
@@ -646,6 +797,9 @@ function animate() {
         }
 		console.log("updated localGraph", JSON.stringify(localGraph, null, "  "))
 
+		
+		scene = rebuildInstances(rebuildScene(localGraph));
+
 
 		// // handle incoming deltas:
 		// while (localDeltas.length > 0) {
@@ -661,29 +815,20 @@ function animate() {
         // updateDirty(scene, false);
 	}
 	
-	if (cubes.count) {
-		let i = Math.floor(Math.random() * cubes.count)
-		let obj = cubes.instances[i]
-		quat.slerp(obj.i_quat, obj.i_quat, quat.random(quat.create()), 0.1);
-		quat.normalize(obj.i_quat, obj.i_quat);
-	}
-	lines.instances.forEach((obj, i) => {
-		let a = cubes.instances[obj.from]
-		let b = cubes.instances[obj.to]
-		quat.copy(obj.i_quat0, a.i_quat);
-		quat.copy(obj.i_quat1, b.i_quat);
-		vec3.copy(obj.i_pos0, a.i_pos);
-		vec3.copy(obj.i_pos1, b.i_pos);
-	}) 
-	// submit to GPU:
-	cubes.bind().submit().unbind()
-	lines.bind().submit().unbind()
-
-	let t1 = glfw.getTime();
-	let dt = t1-t;
-	fps += 0.1*((1/dt)-fps);
-	t = t1;
-	glfw.setWindowTitle(window, `fps ${fps}`);
+	// if (cubes.count) {
+	// 	let i = Math.floor(Math.random() * cubes.count)
+	// 	let obj = cubes.instances[i]
+	// 	quat.slerp(obj.i_quat, obj.i_quat, quat.random(quat.create()), 0.1);
+	// 	quat.normalize(obj.i_quat, obj.i_quat);
+	// }
+	// lines.instances.forEach((obj, i) => {
+	// 	let a = cubes.instances[obj.from]
+	// 	let b = cubes.instances[obj.to]
+	// 	quat.copy(obj.i_quat0, a.i_quat);
+	// 	quat.copy(obj.i_quat1, b.i_quat);
+	// 	vec3.copy(obj.i_pos0, a.i_pos);
+	// 	vec3.copy(obj.i_pos1, b.i_pos);
+	// }) 
 
 
 	// // update scene:
@@ -857,7 +1002,7 @@ async function init() {
 		localGraph = JSON.parse(fs.readFileSync("basicGraph.json", "utf8"));
 		
 		// rebuild scene:
-		reflowNodes(scene, localGraph.nodes)
+		scene = rebuildInstances(rebuildScene(localGraph));
 	}
 }
 

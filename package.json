@@ -19,6 +19,7 @@
   "homepage": "https://github.com/worldmaking/msvr#readme",
   "dependencies": {
     "bottleneck": "^2.18.0",
+    "chroma-js": "^2.1.0",
     "cycle-test": "^1.0.0",
     "express": "^4.16.4",
     "find-cycle": "^1.0.0",
