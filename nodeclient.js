@@ -1,9 +1,9 @@
-const fs = require("fs");
-const path = require("path");
-const os = require("os");
-const assert = require("assert");
-const { vec2, vec3, vec4, quat, mat2, mat2d, mat3, mat4} = require("gl-matrix")
 
+const assert = require("assert"),
+	fs = require("fs"),
+	path = require("path");
+const { vec2, vec3, vec4, quat, mat2, mat2d, mat3, mat4} = require("gl-matrix")
+const PNG = require("png-js");
 const WebSocket = require('ws')
 const url = 'ws://localhost:8080'
 
@@ -15,12 +15,19 @@ glutils = require(path.join(nodeglpath, "glutils.js"))
 
 const got = require("./got/got.js")
 
+const USEVR = false;
+const USEWS = false;
+
 ////////////////////////////////////////////////////////////////
 let localGraph = {
 	nodes: {},
 	arcs: []
 }
 
+let scene = {}
+
+let viewmatrix = mat4.create();
+let projmatrix = mat4.create();
 
 ////////////////////////////////////////////////////////////////
 if (!glfw.init()) {
@@ -38,7 +45,7 @@ glfw.windowHint(glfw.CONTEXT_VERSION_MINOR, 3);
 glfw.windowHint(glfw.OPENGL_FORWARD_COMPAT, 1);
 glfw.windowHint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE);
 
-let window = glfw.createWindow(720, 480, "Test");
+let window = glfw.createWindow(960, USEVR ? 480 : 960, "Test");
 if (!window) {
 	console.log("Failed to open GLFW window");
 	glfw.terminate();
@@ -51,11 +58,454 @@ console.log(gl.glewInit());
 console.log('GL ' + glfw.getWindowAttrib(window, glfw.CONTEXT_VERSION_MAJOR) + '.' + glfw.getWindowAttrib(window, glfw.CONTEXT_VERSION_MINOR) + '.' + glfw.getWindowAttrib(window, glfw.CONTEXT_REVISION) + " Profile: " + glfw.getWindowAttrib(window, glfw.OPENGL_PROFILE));
 
 // Enable vertical sync (on cards that support it)
-glfw.swapInterval(0); // 0 for vsync off
+glfw.swapInterval(!USEVR); // 0 for vsync off
+glfw.setWindowPos(window, 32, 32)
+
+function createSDFFont(gl, pngpath, jsonpath) {
+	let png = PNG.load(pngpath);
+	let json = JSON.parse(fs.readFileSync(jsonpath, "utf8"));
+	let font = {
+		png: png,
+		json: json,
+		texture: glutils.createPixelTexture(gl, png.width, png.height),
+		// add to json a quick lookup table by character:
+		lookup: {},
+		// add a quick scalar factor:
+		scale: 1 / json.info.size,
+	}
+	json.chars.forEach(char => { 
+		font.lookup[char.char.toString()] = char; 
+		// cache UVs here:
+		char.texCoords = vec4.set(vec4.create(),
+			char.x / json.common.scaleW,
+			char.y / json.common.scaleH,
+			(char.x + char.width) / json.common.scaleW,
+			(char.y + char.height) / json.common.scaleH
+		);	
+		// cache quad bounds here:
+		char.quad = vec4.set(vec4.create(),
+			char.xoffset * font.scale,
+			(json.common.base - char.yoffset) * font.scale,
+			char.width * font.scale,
+			-char.height * font.scale
+		); 
+	})
+
+	png.decode(pixels => {
+		assert(pixels.length == font.texture.data.length);
+		font.texture.data = pixels;
+		font.texture.bind().submit()
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		font.texture.unbind();
+	})
+
+	return font;
+}
+
+let font = createSDFFont(gl, "font/CONSOLATTF.png", "font/CONSOLA.TTF-msdf.json")
 
 
+let textquadprogram = glutils.makeProgram(gl,
+`#version 330
+uniform mat4 u_viewmatrix;
+uniform mat4 u_projmatrix;
 
-let quadprogram = glutils.makeProgram(gl,
+// instanced variable:
+in mat4 i_modelmatrix;
+in vec4 i_fontbounds;
+in vec4 i_fontcoord;
+//in vec4 i_color;
+
+// geometry variables:
+in vec3 a_position;
+in vec3 a_normal;
+in vec2 a_texCoord;
+
+out vec4 v_color;
+out vec2 v_uv;
+
+// http://www.geeks3d.com/20141201/how-to-rotate-a-vertex-by-a-quaternion-in-glsl/
+vec3 quat_rotate( vec4 q, vec3 v ){
+	return v + 2.0 * cross( q.xyz, cross( q.xyz, v ) + q.w * v );
+}
+vec4 quat_rotate( vec4 q, vec4 v ){
+	return vec4(v.xyz + 2.0 * cross( q.xyz, cross( q.xyz, v.xyz ) + q.w * v.xyz), v.w );
+}
+
+void main() {
+	// 2D bounded coordinates of textquad:
+	vec2 p = a_position.xy*i_fontbounds.zw + i_fontbounds.xy; 
+	
+	// Multiply the position by the matrix.
+	vec4 vertex = i_modelmatrix * vec4(p, 0., 1.);
+	gl_Position = u_projmatrix * u_viewmatrix * vertex;
+
+	// if needed:
+	// v_normal = (i_modelmatrix * vec4(0., 0., 1., 1.)).xyz;
+
+	v_color = vec4(1.);
+	// if needed:
+//	v_color = i_color;
+
+	v_uv = mix(i_fontcoord.xy, i_fontcoord.zw, a_texCoord); 
+}
+`,
+`#version 330
+precision mediump float;
+uniform sampler2D u_texture;
+in vec4 v_color;
+in vec2 v_uv;
+out vec4 outColor;
+
+float median(float r, float g, float b) {
+		return max(min(r, g), min(max(r, g), b));
+}
+float aastep(float threshold, float value) {
+	float afwidth = length(vec2(dFdx(value), dFdy(value))) * 0.70710678118654757;
+	return smoothstep(threshold-afwidth, threshold+afwidth, value);
+}
+
+void main() {
+	vec3 sample = texture(u_texture, v_uv).rgb;
+	float sigDist = median(sample.r, sample.g, sample.b) - 0.5;
+	float alpha = clamp(sigDist/fwidth(sigDist) + 0.5, 0.0, 1.0);
+	outColor = v_color * alpha;
+}
+`);
+let textquad = glutils.createVao(gl, glutils.makeQuad({ min:0., max:1, div:8 }), textquadprogram.id);
+
+// create a VBO & friendly interface for the instances:
+// TODO: could perhaps derive the fields from the vertex shader GLSL?
+let textquads = glutils.createInstances(gl, [
+	{ name: "i_modelmatrix", components: 16 },
+	{ name: "i_fontbounds", components: 4 },
+	{ name: "i_fontcoord", components: 4 },
+//	{ name: "i_color", components: 4 },
+])
+
+// bind instance VBO to VAO:
+textquads.attachTo(textquad);
+
+
+// message is a string
+// idx is the instance index to start adding character at (allows appending strings)
+function setMessage(message, modelmatrix=mat4.create(), idx=0) {
+	// reallocate if necessary:
+	textquads.allocate(idx + message.length);
+	// the .instances provides a convenient interface to the underlying arraybuffer
+	let x = 0;
+	let y = 0;
+	for (var i = 0; i < message.length; i++) {
+		let c = message.charAt(i).toString();
+		// space characters don't render, just update cursor:
+		if (c === " ") {
+			x += font.lookup[" "].xadvance * font.scale;
+		} else if (c === "\t") {
+			x += font.lookup[" "].xadvance * font.scale * 3;
+		} else if (c === "\n") {
+			x = 0;
+			y -= font.json.common.lineHeight * font.scale;
+		} else {
+			const char = font.lookup[c];
+			if (!char) {
+				console.error("couldn't find character: ", c, typeof(c));
+				continue;
+			}
+			// get instance interface for this character:
+			let obj = textquads.instances[idx];
+			// the anchor coordinate system for the text:
+			mat4.copy(obj.i_modelmatrix, modelmatrix);
+			// color:
+//			vec4.set(obj.i_color, 1, 1, 1, 1)
+			// bounding coordinates of the quad for this character:
+			vec4.copy(obj.i_fontbounds, char.quad);
+			// offset by character location:
+			obj.i_fontbounds[0] += x;
+			obj.i_fontbounds[1] += y;
+			// UV coordinates for this character:	
+			vec4.copy(obj.i_fontcoord, char.texCoords);
+			// next instance:
+			idx++; 
+			// update cursor:
+			x += char.xadvance * font.scale;
+		}
+	}
+	// submit VBO and attach to VAO:
+	textquads.bind().submit().unbind()
+
+	// return the used instance count so we know how many to render
+	return idx;
+}
+
+
+let cubeprogram = glutils.makeProgram(gl,
+`#version 330
+uniform mat4 u_viewmatrix;
+uniform mat4 u_projmatrix;
+
+// instance attrs:
+in vec4 i_pos;
+in vec4 i_quat;
+in vec4 i_color;
+in vec3 i_scale;
+in float i_shape;
+
+in vec3 a_position;
+in vec3 a_normal;
+in vec2 a_texCoord;
+
+out vec4 v_color;
+out vec3 v_normal;
+out float v_shape;
+out vec2 v_uv;
+
+float PI = 3.141592653589793;
+
+// http://www.geeks3d.com/20141201/how-to-rotate-a-vertex-by-a-quaternion-in-glsl/
+vec3 quat_rotate( vec4 q, vec3 v ){
+	return v + 2.0 * cross( q.xyz, cross( q.xyz, v ) + q.w * v );
+}
+vec4 quat_rotate( vec4 q, vec4 v ){
+	return vec4(v.xyz + 2.0 * cross( q.xyz, cross( q.xyz, v.xyz ) + q.w * v.xyz), v.w );
+}
+
+void main() {
+	v_color = i_color;
+
+	// Multiply the position by the matrix.
+	vec3 vertex = a_position.xyz;
+	vec3 normal = normalize(a_normal);
+	vec2 uv = a_texCoord;
+
+	if (i_shape > 0.5) {
+		vec2 p = (vertex.xy - 0.5)*2.0;
+		p = p * abs(normalize(p));
+		if (i_shape > 1.5) {
+			if (p.y > 0.5 && abs(p.x) < 0.1) {
+				p.xy *= 1.2;    
+				uv.x = mod(uv.x + 0.5, 1.);
+			}
+		}
+		normal.xy = normalize(mix(p.xy, vec2(0.), abs(normal.z)));
+		vertex.xy = p*0.5;// + 0.5;
+	}
+
+	vertex *= i_scale.xyz;
+	vertex = quat_rotate(i_quat, vertex);
+	vertex = vertex + i_pos.xyz;
+	// u_modelmatrix * 
+	gl_Position = u_projmatrix * u_viewmatrix * vec4(vertex, 1);
+
+	normal = quat_rotate(i_quat, normal);
+	v_normal = normal;
+	v_uv = uv;
+	v_shape = i_shape;
+
+	
+	// v_color = vec4(v_normal*0.25+0.25, 1.);
+	// v_color += vec4(a_texCoord*0.5, 0., 1.);
+}
+`,
+`#version 330
+precision mediump float;
+
+in vec4 v_color;
+in vec3 v_normal;
+in float v_shape;
+in vec2 v_uv;
+out vec4 outColor;
+
+// see https://mercury.sexy/hg_sdf/
+// Cylinder standing upright on the xz plane
+float fCylinder(vec3 p, float r, float height) {
+	float d = length(p.xz) - r;
+	d = max(d, abs(p.y) - height);
+	return d;
+}
+
+void main() {
+	outColor = v_color;
+	vec3 normal = normalize(v_normal);
+
+	vec2 dxt = dFdx(v_uv);
+	vec2 dyt = dFdy(v_uv);
+	float line = length(abs(dxt)+abs(dyt));
+	float line1 = clamp(line * 5.,0.25,0.75);
+
+	vec2 v = v_uv * 2. - 1.;
+	vec2 v2 = smoothstep(1., 1.-line*8., abs(v));
+	float line2 = 1.-(v2.x*v2.y);
+	outColor *= max(line1, line2) ; // this over exposes the color making it look brighter * vec4(4.);
+
+	// alternate render for cylinder shape
+	//float d = fCylinder(p, 1., 1.);
+}
+`);
+// create a VAO from a basic geometry and shader
+let cube = glutils.createVao(gl, glutils.makeCube({ min:0, max:1, div: 9 }), cubeprogram.id);
+
+//console.log(cube.geom.vertices)
+
+// create a VBO & friendly interface for the instances:
+// TODO: could perhaps derive the fields from the vertex shader GLSL?
+let cubes = glutils.createInstances(gl, [
+	{ name:"i_pos", components:4 },
+	{ name:"i_quat", components:4 },
+	{ name:"i_color", components:4 },
+	{ name:"i_scale", components:3 },
+	{ name:"i_shape", components:1 },
+], 100)
+
+// the .instances provides a convenient interface to the underlying arraybuffer
+cubes.instances.forEach(obj => {
+	// each field is exposed as a corresponding typedarray view
+	// making it easy to use other libraries such as gl-matrix
+	// this is all writing into one contiguous block of binary memory for all instances (fast)
+	vec4.set(obj.i_pos, 
+		(Math.random()-0.5) * 2,
+		(Math.random()-0.5) + 1.5,
+		(Math.random()-0.5) * 2,
+		1
+	);
+	quat.random(obj.i_quat);
+
+	let shape = Math.random() * 2;
+	
+	let s = 0.1;
+	vec3.set(obj.i_scale, 
+		shape > 0.5 ? s : 0.5,
+		shape > 0.5 ? s : 0.3,
+		0.03  // depth
+	);
+
+	obj.i_shape[0] = shape;
+
+	vec4.set(obj.i_color,
+		Math.random(),
+		Math.random(),
+		Math.random(),
+		1
+	);
+})
+cubes.bind().submit().unbind();
+
+// attach these instances to an existing VAO:
+cubes.attachTo(cube);
+	
+
+let lineprogram = glutils.makeProgram(gl,
+`#version 330
+uniform mat4 u_viewmatrix;
+uniform mat4 u_projmatrix;
+uniform float u_stiffness;
+
+// instance variables:
+in vec4 i_color;
+in vec4 i_quat0;
+in vec4 i_quat1;
+in vec3 i_pos0;
+in vec3 i_pos1;
+
+in float a_position; // not actually used...
+in vec2 a_texCoord;
+
+out vec4 v_color;
+out float v_t;
+
+vec3 quat_rotate(vec4 q, vec3 v) {
+	return v + 2.0*cross(q.xyz, cross(q.xyz, v) + q.w*v);
+}
+vec4 quat_rotate(vec4 q, vec4 v) {
+	return vec4(v.xyz + 2.0*cross(q.xyz, cross(q.xyz, v.xyz) + q.w*v.xyz), v.w);
+}
+
+vec3 bezier(float t, vec3 v0, vec3 v1, vec3 v2, vec3 v3) {
+	// interp the 3 line segments:
+	vec3 v01 = mix(v0, v1, t);
+	vec3 v12 = mix(v1, v2, t);
+	vec3 v23 = mix(v2, v3, t);
+	// interp those:
+	vec3 v012 = mix(v01, v12, t);
+	vec3 v123 = mix(v12, v23, t);
+	// interp those:
+	return mix(v012, v123, t);
+}
+
+float smootherstep(float edge0, float edge1, float x) {
+	x = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+	return x*x*x*(x*(x*6 - 15) + 10);
+}
+
+void main() {
+	// control points:
+	float stiffness = u_stiffness;
+	vec3 c0 = i_pos0 + quat_rotate(i_quat0, vec3(0., 0., stiffness));
+	vec3 c1 = i_pos1 + quat_rotate(i_quat1, vec3(0., 0., stiffness));
+
+	// bias t's distribution toward end points where curvature is greatest
+	float t = smoothstep(0., 1., a_texCoord.x);
+
+	// derive point from bezier:
+	vec4 vertex = vec4(bezier(t, i_pos0, c0, c1, i_pos1), 1.);
+	
+	gl_Position = u_projmatrix * u_viewmatrix * vertex;
+
+	// line intensity stronger near end points:
+	v_color = i_color;
+	v_t = t;
+
+	// it might be nice to estimate the length of the bezier curve, for patterning purposes
+	// however there is no analytic solution to this
+	// we could estimate the local scaling factor (between t and object space) 
+	// by computing two bezier points near the current point and getting the distance
+}
+`,
+`#version 330
+precision mediump float;
+
+in vec4 v_color;
+in float v_t;
+out vec4 outColor;
+
+void main() {
+	outColor = v_color;
+
+	// stippling:
+	// float stipplerate = 1.; // 1.0
+	// float stippleclamp = 0.; 
+	// float stipple = 1. - 0.372*smoothstep(stippleclamp, 1.-stippleclamp, abs(sin(3.141592653589793 * v_t * stipplerate)));
+	float stipple = smoothstep(0., 1., 0.5+abs(v_t - 0.5));
+	outColor *= v_color * stipple;
+}
+`);
+// create a VAO from a basic geometry and shader
+let line = glutils.createVao(gl, glutils.makeLine({ min:0, max:1, div: 24 }), lineprogram.id);
+
+// create a VBO & friendly interface for the instances:
+// TODO: could perhaps derive the fields from the vertex shader GLSL?
+let lines = glutils.createInstances(gl, [
+	{ name:"i_color", components:4 },
+	{ name:"i_quat0", components:4 },
+	{ name:"i_quat1", components:4 },
+	{ name:"i_pos0", components:3 },
+	{ name:"i_pos1", components:3 },
+], cubes.count)
+
+lines.instances.forEach((obj, i) => {
+	// pick a color:
+	vec4.set(obj.i_color, 0.75, 1, 1, 0.75);
+	// pick two quads to connect:
+	obj.from = i;
+	obj.to = i > 1 ? Math.floor(Math.random()*i) : cubes.count-1;
+	// the rest of the instance vars are set in the animate() loop
+})
+lines.bind().submit().unbind();
+
+// attach these instances to an existing VAO:
+lines.attachTo(line);
+
+let fboprogram = glutils.makeProgram(gl,
 `#version 330
 in vec4 a_position;
 in vec2 a_texCoord;
@@ -78,274 +528,20 @@ void main() {
 	outColor = texture(u_tex, v_texCoord);
 }
 `);
-let quad = glutils.createVao(gl, glutils.makeQuad(), quadprogram.id);
+let fboquad = glutils.createVao(gl, glutils.makeQuad(), fboprogram.id);
 
-let cubeprogram = glutils.makeProgram(gl,
-`#version 330
-uniform mat4 u_modelmatrix;
-uniform mat4 u_viewmatrix;
-uniform mat4 u_projmatrix;
 
-// instance attrs:
-in vec4 i_pos;
-in vec4 i_quat;
-in vec4 i_color;
-in vec3 i_scale;
-in float i_shape;
 
-// geom attrs:
-in vec3 a_position;
-in vec3 a_normal;
-in vec2 a_texCoord;
-out vec4 v_color;
-out vec2 v_uv;
-out vec3 v_normal;
-out float v_shape;
 
-// http://www.geeks3d.com/20141201/how-to-rotate-a-vertex-by-a-quaternion-in-glsl/
-vec3 applyQuaternionToVector( vec4 q, vec3 v ){
-    return v + 2.0 * cross( q.xyz, cross( q.xyz, v ) + q.w * v );
+
+
+let vrdim = [4096, 4096];
+if (USEVR) {
+	assert(vr.connect(true), "vr failed to connect");
+	vr.update()
+	vrdim = [vr.getTextureWidth(), vr.getTextureHeight()]
 }
-
-void main() {
-	// Multiply the position by the matrix.
-	vec3 vertex = a_position.xyz;
-	vec3 normal = normalize(a_normal);
-	vec2 uv = a_texCoord;
-
-	if (i_shape > 0.5) {
-		vertex.xy = normalize(vertex.xy);
-		normal.xy = normalize(mix(vertex.xy, vec2(0.), abs(normal.z)));
-		vertex.xy *= 0.5;
-
-		// knob wedge
-		if (i_shape > 1.5) {
-				if (a_position.y > 0. && abs(a_position.x) < 0.1) {
-					vertex.xy *= 1.2;    
-					uv.x = mod(uv.x + 0.5, 1.);
-				}
-		}
-	}
-
-	vertex *= i_scale.xyz;
-	vertex = applyQuaternionToVector(i_quat, vertex);
-	vertex = vertex + i_pos.xyz;
-	gl_Position = u_projmatrix * u_viewmatrix * u_modelmatrix * vec4(vertex, 1);
-
-	normal = applyQuaternionToVector(i_quat, normal);
-	v_normal = normal;
-	v_uv = uv;
-	v_color = i_color;
-	v_shape = i_shape;
-}
-`, 
-`#version 330
-precision mediump float;
-
-in vec4 v_color;
-in vec2 v_uv;
-in vec3 v_normal;
-in float v_shape;
-out vec4 outColor;
-
-// see https://mercury.sexy/hg_sdf/
-// Cylinder standing upright on the xz plane
-float fCylinder(vec3 p, float r, float height) {
-	float d = length(p.xz) - r;
-	d = max(d, abs(p.y) - height);
-	return d;
-}
-
-void main() {
-	outColor = v_color;
-
-	vec3 normal = normalize(v_normal);
-    //gl_FragColor = vec4(vNormal*0.5+0.5, 1.);
-
-    vec2 dxt = dFdx(v_uv);
-    vec2 dyt = dFdy(v_uv);
-    float line = length(abs(dxt)+abs(dyt));
-    float line1 = clamp(line * 5.,0.25,0.75);
-
-    vec2 v = v_uv * 2. - 1.;
-    vec2 v2 = smoothstep(1., 1.-line*8., abs(v));
-    float line2 = 1.-(v2.x*v2.y);
-	outColor *= max(line1, line2) ; // this over exposes the color making it look brighter * vec4(4.);
-
-	// alternate render for cylinder shape
-	//float d = fCylinder(p, 1., 1.);
-	
-}
-`);
-let geomcube = glutils.makeCube();
-// either need a sub-divided cube here, or else need to use a df shader
-
-let cube = glutils.createVao(gl, geomcube, cubeprogram.id);
-
-let cubeInstanceFields = [
-	{ 
-		name: "i_pos",
-		components: 4,
-		type: gl.FLOAT,
-		byteoffset: 0*4 // *4 for float32
-	},
-	{ 
-		name: "i_quat",
-		components: 4,
-		type: gl.FLOAT,
-		byteoffset: 4*4 // *4 for float32
-	},
-	{ 
-		name: "i_scale",
-		components: 3,
-		type: gl.FLOAT,
-		byteoffset: 8*4 // *4 for float32
-	},
-	{ 
-		name: "i_shape",
-		components: 1,
-		type: gl.FLOAT,
-		byteoffset: 11*4 // *4 for float32
-	},
-	{ 
-		name: "i_color",
-		components: 4,
-		type: gl.FLOAT,
-		byteoffset: 12*4 // *4 for float32
-	},
-] 
-let cubeInstanceByteStride = cubeInstanceFields[cubeInstanceFields.length-1].byteoffset + cubeInstanceFields[cubeInstanceFields.length-1].components*4 // *4 for float32
-let cubeInstanceStride = cubeInstanceByteStride / 4; // 4 bytes per float
-// create some instances:
-let cubeInstanceTotal = 10;
-let cubeInstanceData = new Float32Array(cubeInstanceStride * cubeInstanceTotal)
-
-// a friendlier JS interface to the underlying data:
-let cubeInstances = []
-// iterate over each instance
-for (let i=0; i<cubeInstanceTotal; i++) {
-	let b = i*cubeInstanceByteStride;
-	// make a  interface for this:
-	let obj = {
-		index: i,
-		byteoffset: b,
-	}
-	for (let i in cubeInstanceFields) {
-		let field = cubeInstanceFields[i];
-		obj[field.name] = new Float32Array(cubeInstanceData.buffer, b + field.byteoffset, field.components)
-	}
-	cubeInstances = obj;
-
-	obj.i_pos[0] = (Math.random() - 0.5) * 2;
-	obj.i_pos[1] = (Math.random() - 0.5) + 1;
-	obj.i_pos[2] = (Math.random() - 0.5) * 2;
-	quat.random(obj.i_quat);
-	obj.i_shape[0] = 1; //Math.random();
-	obj.i_scale[1] = 0.2;
-	obj.i_scale[0] = obj.i_shape[0] > 0.5 ? obj.i_scale[1] : 0.5;
-	obj.i_scale[2] = 0.03;
-	obj.i_color[0] = Math.random()
-	obj.i_color[1] = Math.random()
-	obj.i_color[2] = Math.random()
-	obj.i_color[3] = 1
-}
-
-let cubeInstanceBuffer = gl.createBuffer()
-gl.bindBuffer(gl.ARRAY_BUFFER, cubeInstanceBuffer)
-gl.bufferData(gl.ARRAY_BUFFER, cubeInstanceData, gl.DYNAMIC_DRAW)
-cube.bind().setAttributes(cubeInstanceBuffer, cubeInstanceByteStride, cubeInstanceFields, true).unbind()
-
-
-let cloudprogram = glutils.makeProgram(gl, 
-`#version 330
-uniform mat4 u_modelmatrix;
-uniform mat4 u_viewmatrix;
-uniform mat4 u_projmatrix;
-uniform float u_pixelSize;
-in vec3 a_position;
-out vec4 v_color;
-
-
-void main() {
-	// Multiply the position by the matrix.
-	vec4 worldspace = u_modelmatrix * vec4(a_position.xyz, 1);
-	vec4 viewspace = u_viewmatrix * worldspace;
-	float viewdist = length(viewspace.xyz);
-	gl_Position = u_projmatrix * viewspace;
-	if (gl_Position.w > 0.0) {
-		gl_PointSize = u_pixelSize / gl_Position.w;
-	} else {
-		gl_PointSize = 0.0;
-	}
-
-	v_color = vec4(worldspace.xyz * 0.5 + 0.5, 0.5);
-	v_color = mix(v_color, vec4(1.), 0.95);
-
-	// fade for near clip:
-	float fade = min(max((viewdist-0.25)/0.25, 0.), 1.);
-	// for distance:
-	fade *= 1. - sqrt(viewdist) * 0.1 * 0.05;
-	v_color.a *= fade;
-
-}
-`,
-`#version 330
-precision mediump float;
-
-in vec4 v_color;
-out vec4 outColor;
-
-void main() {
-	// get normalized -1..1 point coordinate
-	vec2 pc = (gl_PointCoord - 0.5) * 2.0;
-	// convert to distance:
-	float dist = max(0., min(1., 0.1 + 1.5*(1.0 - length(pc))));
-	// paint
-	outColor = vec4(dist) * v_color;
-}
-`);
-
-const NUM_POINTS = 1e6;
-const points = [];
-for (let index = 0; index < NUM_POINTS; index++) {
-  points.push((Math.random() - 0.5) * 100);
-  points.push((Math.random() - 0.5) * 100);
-  points.push((Math.random() - 0.5) * 100);
-}
-let cloud = glutils.createVao(gl, { vertices: points }, cloudprogram.id);
-
-
-// Create a buffer.
-let vertices = new Float32Array(points);
-let buffer = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.DYNAMIC_DRAW);
-
-// Create set of attributes
-let vao = gl.createVertexArray();
-gl.bindVertexArray(vao);
-
-// tell the position attribute how to pull data out of the current ARRAY_BUFFER
-let positionLocation = gl.getAttribLocation(cloudprogram.id, "a_position");
-gl.enableVertexAttribArray(positionLocation);
-let elementsPerVertex = 3; // for vec2
-let normalize = false;
-let stride = 0;
-let offset = 0;
-gl.vertexAttribPointer(positionLocation, elementsPerVertex, gl.FLOAT, normalize, stride, offset);
-
-assert(vr.connect(true), "vr failed to connect");
-vr.update()
-let vrdim = [vr.getTextureWidth(), vr.getTextureHeight()]
 let fbo = glutils.makeFboWithDepth(gl, vrdim[0], vrdim[1])
-
-
-
-
-
-
-
-
 
 
 function reflowNodes(scene, parent) {
@@ -390,6 +586,14 @@ function animate() {
 		setImmediate(animate)
 	}
 
+	{
+		let modelmatrix = mat4.create();
+		let s = 0.1
+		mat4.fromRotationTranslationScale(modelmatrix, 
+			[0, 0, 0, 1], [0, 1, 0], [s, s, s]
+		);
+		textquads.count = setMessage("hello\nworld", modelmatrix);
+	}
 	// handle scene changes from server:
     if (incomingDeltas.length > 0) {
         // handle incoming deltas:
@@ -397,10 +601,13 @@ function animate() {
             let delta = incomingDeltas.shift();
             // TODO: derive which world to add to:
             try {
-                got.applyDeltasToGraph(localGraph, delta);
+				got.applyDeltasToGraph(localGraph, delta);
+				
+				fs.writeFileSync("basicGraph.json", JSON.stringify(localGraph, null, "\t"), "utf8");
 			} catch (e) {
 				console.warn(e);
 			}
+			
 
             //enactDelta(ghostWorld, delta);
             //log("incoming deltas")
@@ -415,15 +622,30 @@ function animate() {
         //     enactDelta(ghostMenu, delta);
         // }
 
-		// rebuild scene:
-		let scene = {}
-		reflowNodes(scene, localGraph.nodes)
         // // re-layout:
         // updateDirty(ghostScene, false);
 
         // // TODO: delete once cables are instanced:
         // updateDirty(scene, false);
-    }
+	}
+	
+	{
+		let i = Math.floor(Math.random() * cubes.count)
+		let obj = cubes.instances[i]
+		quat.slerp(obj.i_quat, obj.i_quat, quat.random(quat.create()), 0.1);
+		quat.normalize(obj.i_quat, obj.i_quat);
+	}
+	lines.instances.forEach((obj, i) => {
+		let a = cubes.instances[obj.from]
+		let b = cubes.instances[obj.to]
+		quat.copy(obj.i_quat0, a.i_quat);
+		quat.copy(obj.i_quat1, b.i_quat);
+		vec3.copy(obj.i_pos0, a.i_pos);
+		vec3.copy(obj.i_pos1, b.i_pos);
+	}) 
+	// submit to GPU:
+	cubes.bind().submit().unbind()
+	lines.bind().submit().unbind()
 
 	let t1 = glfw.getTime();
 	let dt = t1-t;
@@ -442,7 +664,7 @@ function animate() {
 	// gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.DYNAMIC_DRAW);
 
 	//if(wsize) console.log("FB size: "+wsize.width+', '+wsize.height);
-	vr.update();
+	if (USEVR) vr.update();
 	
 	// render to our targetTexture by binding the framebuffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo.id);
@@ -453,58 +675,25 @@ function animate() {
 		gl.clearColor(0, 0, 0, 1);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-		for (let i=0; i<2; i++) {
-			gl.viewport(i * fbo.width/2, 0, fbo.width/2, fbo.height);
+		if (USEVR) {
+			for (let i=0; i<2; i++) {
+				vr.getView(i, viewmatrix);
+				vr.getProjection(i, projmatrix);
+				gl.viewport(i * fbo.width/2, 0, fbo.width/2, fbo.height);
 
-			// Compute the matrix
-			let viewmatrix = mat4.create();
-			//mat4.lookAt(viewmatrix, [0, 0, 3], [0, 0, 0], [0, 1, 0]);
-			vr.getView(i, viewmatrix);
+				draw(i);
+			}
+		} else {
+			mat4.lookAt(viewmatrix, [3*Math.sin(t/9), 1.5, 3*Math.cos(t/9)], [0, 1.5, 0], [0, 1, 0]);
+			mat4.perspective(projmatrix, Math.PI/3, vrdim[0]/vrdim[1], 0.01, 10);
+			gl.viewport(0, 0, fbo.width, fbo.height);
 
-			let projmatrix = mat4.create();
-			//mat4.perspective(projmatrix, Math.PI/2, fbo.width/fbo.height, 0.01, 10);
-			vr.getProjection(i, projmatrix);
-
-			let modelmatrix = mat4.create();
-			let axis = vec3.fromValues(Math.sin(t), 1., 0.);
-			vec3.normalize(axis, axis);
-			//mat4.rotate(modelmatrix, modelmatrix, t, axis)
-
-
-			gl.enable(gl.BLEND);
-			gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-			gl.depthMask(false)
-
-			cubeprogram.begin();
-			cubeprogram.uniform("u_modelmatrix", modelmatrix);
-			cubeprogram.uniform("u_viewmatrix", viewmatrix);
-			cubeprogram.uniform("u_projmatrix", projmatrix);
-			cube.bind().drawInstanced(cubeInstanceTotal).unbind()
-			cubeprogram.end();
-
-			// cloudprogram.begin();
-			// cloudprogram.uniform("u_modelmatrix", modelmatrix);
-			// cloudprogram.uniform("u_viewmatrix", viewmatrix);
-			// cloudprogram.uniform("u_projmatrix", projmatrix);
-			// cloudprogram.uniform("u_pixelSize", fbo.height/50);
-			// //cloud.bind().drawPoints().unbind();
-
-			// // Bind the attribute/buffer set we want.
-			// gl.bindVertexArray(vao);
-			// // Draw the geometry.
-			// let count = NUM_POINTS;
-			// gl.drawArrays(gl.POINTS, 0, count);
-			// gl.bindVertexArray(null);
-			// cloudprogram.end();
-
-
-			gl.disable(gl.BLEND);
-			gl.depthMask(true)
+			draw();
 		}
 	}
 	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
-	vr.submit(fbo.colorTexture)
+	if (USEVR) vr.submit(fbo.colorTexture)
 
 	// Get window size (may be different than the requested size)
 	let dim = glfw.getFramebufferSize(window);
@@ -516,10 +705,10 @@ function animate() {
 
 	// render the cube with the texture we just rendered to
     gl.bindTexture(gl.TEXTURE_2D, fbo.colorTexture);
-	quadprogram.begin();
-	quadprogram.uniform("u_scale", 1, 1);
-	quad.bind().draw().unbind();
-	quadprogram.end();
+	fboprogram.begin();
+	fboprogram.uniform("u_scale", 1, 1);
+	fboquad.bind().draw().unbind();
+	fboprogram.end();
 
 	// Swap buffers
 	glfw.swapBuffers(window);
@@ -527,6 +716,37 @@ function animate() {
 
 }
 
+function draw(eye=0) {
+	gl.enable(gl.BLEND);
+	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+	gl.depthMask(false)
+
+	cubeprogram.begin();
+	cubeprogram.uniform("u_viewmatrix", viewmatrix);
+	cubeprogram.uniform("u_projmatrix", projmatrix);
+	cube.bind().drawInstanced(cubes.count).unbind()
+	cubeprogram.end();
+
+	lineprogram.begin();
+	lineprogram.uniform("u_viewmatrix", viewmatrix);
+	lineprogram.uniform("u_projmatrix", projmatrix);
+	lineprogram.uniform("u_stiffness", 0.5)
+	// consider gl.LINE_STRIP with simpler geometry
+	line.bind().drawInstanced(lines.count, gl.LINES).unbind()
+	lineprogram.end();
+
+	// text:
+	font.texture.bind(0)
+	textquadprogram.begin();
+	//textquadprogram.uniform("u_modelmatrix", modelmatrix);
+	textquadprogram.uniform("u_viewmatrix", viewmatrix);
+	textquadprogram.uniform("u_projmatrix", projmatrix);
+	textquad.bind().drawInstanced(textquads.count).unbind()
+	textquadprogram.end();
+
+	gl.disable(gl.BLEND);
+	gl.depthMask(true)
+}
 //////////////////////////////////////////////////////////////////////////////////////////
 // BOOT SEQUENCE
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -599,12 +819,19 @@ async function init() {
 	animate()
 
 	// server connect
-	serverConnect();
+	if (USEWS) {
+		serverConnect();
+	} else {
+		localGraph = JSON.parse(fs.readFileSync("basicGraph.json", "utf8"));
+		
+		// rebuild scene:
+		reflowNodes(scene, localGraph.nodes)
+	}
 }
 
 function shutdown() {
 	console.log("shutdown")
-	vr.connect(false)
+	if (USEVR) vr.connect(false)
 	glfw.destroyWindow(window);
 	glfw.terminate();
 	socket.terminate();
