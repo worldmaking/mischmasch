@@ -544,6 +544,44 @@ lines.bind().submit().unbind();
 // attach these instances to an existing VAO:
 lines.attachTo(line);
 
+
+let floorprogram = glutils.makeProgram(gl,
+`#version 330
+uniform mat4 u_viewmatrix;
+uniform mat4 u_projmatrix;
+
+// geometry variables:
+in vec2 a_position;
+in vec2 a_texCoord;
+
+out vec2 v_xz;
+out vec2 v_uv;
+
+void main() {
+	vec4 vertex = vec4(a_position.x, 0., a_position.y, 1.);
+	gl_Position = u_projmatrix * u_viewmatrix * vertex;
+	float divs = 5.; // lines per metre
+	v_xz = a_position.xy * divs; 
+	v_uv = abs(a_texCoord.xy*2.-1.);
+}
+`,
+`#version 330
+precision mediump float;
+in vec2 v_xz;
+in vec2 v_uv;
+out vec4 outColor;
+
+void main() {
+	float alpha = 1.-length(v_uv);
+	float soft = 0.02;
+	
+	vec2 grid = smoothstep(soft, -soft, abs(mod(v_xz, 1.) - 0.5));
+	outColor = vec4(length(grid) * alpha);
+}
+`);
+let floor_m = 6;
+let floor = glutils.createVao(gl, glutils.makeQuad({ min: -floor_m, max: floor_m, div:8 }), floorprogram.id);
+
 let fboprogram = glutils.makeProgram(gl,
 `#version 330
 in vec4 a_position;
@@ -634,7 +672,7 @@ function reflowNode(scene, node, id, parent) {
 		case "inlet":  {
 			shape = SHAPE_CYLINDER;
 			scale = [UI_SPACING/3, UI_SPACING/3, UI_DEPTH/2];
-			object.color = props.kind == "inlet" ? [0, 1, 0, 1] : [1, 0, 0, 1];
+			object.color = props.kind == "inlet" ? [0, 0.5, 0, 1] : [0.5, 0, 0, 1];
 		} break;
 		case "knob": 
 		case "large_knob":  {
@@ -995,6 +1033,13 @@ function animate() {
 }
 
 function draw(eye=0) {
+
+	floorprogram.begin();
+	floorprogram.uniform("u_viewmatrix", viewmatrix);
+	floorprogram.uniform("u_projmatrix", projmatrix);
+	floor.bind().draw().unbind();
+	floorprogram.end();
+
 	gl.enable(gl.BLEND);
 	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 	gl.depthMask(false)
