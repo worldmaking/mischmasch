@@ -18,6 +18,7 @@ const got = require("./got/got.js")
 const USEVR = false;
 const USEWS = false;
 const url = 'ws://localhost:8080'
+const demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
 
 function hashCode(str) { // java String#hashCode
     let hash = 0;
@@ -33,8 +34,9 @@ function colorFromString(str) {
 ////////////////////////////////////////////////////////////////
 
 const SHAPE_BOX = 0;
-const SHAPE_CYLINDER = 1;
-const SHAPE_KNOB = 2;
+const SHAPE_BUTTON = 1;
+const SHAPE_CYLINDER = 2;
+const SHAPE_KNOB = 3;
 
 // GOT graph, local copy.
 let localGraph = {
@@ -116,6 +118,8 @@ function createSDFFont(gl, pngpath, jsonpath) {
 			-char.height * font.scale
 		); 
 	})
+	font.charwidth = font.lookup[" "].xadvance * font.scale;
+	font.charheight = font.json.common.lineHeight * font.scale;
 
 	png.decode(pixels => {
 		assert(pixels.length == font.texture.data.length);
@@ -226,9 +230,9 @@ function setMessage(message, modelmatrix=mat4.create(), idx=0) {
 		let c = message.charAt(i).toString();
 		// space characters don't render, just update cursor:
 		if (c === " ") {
-			x += font.lookup[" "].xadvance * font.scale;
+			x += font.charwidth;
 		} else if (c === "\t") {
-			x += font.lookup[" "].xadvance * font.scale * 3;
+			x += font.charwidth* 3;
 		} else if (c === "\n") {
 			x = 0;
 			y -= font.json.common.lineHeight * font.scale;
@@ -302,7 +306,7 @@ void main() {
 	vec3 normal = normalize(a_normal);
 	vec2 uv = a_texCoord;
 
-	if (i_shape > 0.5) {
+	if (i_shape > 1.5) {
 		vec2 p = (vertex.xy - 0.5)*2.0;
 		p = p * abs(normalize(p));
 		if (i_shape > 1.5) {
@@ -313,6 +317,10 @@ void main() {
 		}
 		normal.xy = normalize(mix(p.xy, vec2(0.), abs(normal.z)));
 		vertex.xy = p*0.5;// + 0.5;
+		vertex *= i_scale.xxz;
+	} else if (i_shape > 0.5) {
+		// SHAPE_BUTTON:
+		vertex.xy -= 0.5;
 		vertex *= i_scale.xxz;
 	} else {
 		// SHAPE_BOX:
@@ -586,6 +594,8 @@ function reflowNodes(scene, parent_node, parent) {
 }
 
 function reflowNode(scene, node, id, parent) {
+	const UI_SPACING = 0.1;
+	const UI_DEPTH = UI_SPACING/3;
 	let props = node._props || {}
 	// create objects to add to the scene
 	// depends on props.kind special cases
@@ -607,17 +617,46 @@ function reflowNode(scene, node, id, parent) {
 		mat: mat4.create(),
 	}
 
-	// add to scene:
-	scene.paths[object.path] = object;
+	let pos = props.pos;
+	let quat = props.orient;
+	let scale = [UI_SPACING, UI_SPACING, UI_DEPTH];
+	let shape = SHAPE_BOX;
+	if (!pos) pos = parent.pos;
+	if (!quat) quat = parent.quat;
+	
+	object.pos = vec3.clone(pos)
+	object.quat = vec4.clone(quat)
+	mat4.fromRotationTranslationScale(object.mat, object.quat, object.pos, scale);
+
 
 	switch(props.kind) {
+		case "outlet":
+		case "inlet":  {
+			shape = SHAPE_CYLINDER;
+			scale = [UI_SPACING/3, UI_SPACING/3, UI_DEPTH/2];
+			object.color = props.kind == "inlet" ? [0, 1, 0, 1] : [1, 0, 0, 1];
+		} break;
+		case "knob": 
+		case "large_knob":  {
+			shape = SHAPE_KNOB;
+			scale = [UI_SPACING*2/3, UI_SPACING*2/3, UI_DEPTH];
+			object.color = colorFromString(id);
+		} break;
+		case "small_knob": {
+			shape = SHAPE_KNOB;
+			scale = [UI_SPACING/2, UI_SPACING/2, UI_DEPTH];
+			object.color = colorFromString(id);
+		} break;
+		case "n_switch": {
+			shape = SHAPE_BUTTON;
+			scale = [UI_SPACING/2, UI_SPACING/2, UI_DEPTH];
+			object.color = colorFromString(id);
+		} break;
 		default: {
-			let pos = props.pos;
-			let quat = props.orient;
-
 			// how many children does it have?
-			// -1 to skip _props
-			let numchildren = Object.keys(node).length-1;
+			// careful to skip _props
+			let child_names = Object.keys(node).filter(key => key != "_props");
+			let numchildren = child_names.length;
 			let numcols = Math.ceil(Math.sqrt(numchildren));
 			let numrows = Math.ceil(numchildren / numcols);
 			// special-case small modules:
@@ -627,51 +666,112 @@ function reflowNode(scene, node, id, parent) {
 			}
 			// extra row for label:
 			numrows++;
+			
+			shape = SHAPE_BOX;
+			scale = [UI_SPACING*numcols, UI_SPACING*numrows, UI_DEPTH];
+			object.color = colorFromString(props.kind);
 
-			console.log(numcols, numrows)
+			//mat4.fromRotationTranslationScale(object.mat, quat, pos, scale);
 
-			if (!pos) {
-				object.shape = SHAPE_CYLINDER;
-				object.scale = [0.1, 0.1, 0.03];
-			} else {
-				
-				object.shape = SHAPE_BOX;
-				object.scale = [0.5, 0.3, 0.03];
+			if (numchildren) {
+				//console.log(numcols, numrows);
+				// recurse to create child nodes so we know how to lay them out:
+				let children = reflowNodes(scene, node, object);
+				// start at row 1, since the label occupies row zero
+				for (let r = 1, i=0; r<numrows; r++) {
+					for (let c=0; c<numcols && i < numchildren; c++, i++) {
+						let child = children[i];
+						let child_pos = [
+							0.5 + c,
+							numrows - (0.5 + r),
+							0
+						];
+
+						vec3.transformMat4(child.pos, child_pos, object.mat);
+						// widget.position.x = grid_spacing * (c-(numcols-1)/2);
+						// widget.position.y = -grid_spacing * (r-(numrows-1)/2);
+						// widget.position.z = NLET_HEIGHT/2;
+
+						// let child_pos = vec3.transformMat4(vec3.create(), [
+						// 	0.5*numcols - 0.5*w*ts, 	// horizontal centred of panel
+						// 	numrows-(1 + 0.5*ts), 		// baseline of 1st row plus scale adjust 
+						// 	0], object.mat);
+
+						// basic width:
+						let text = child.name;
+						let w = font.charwidth * text.length;
+						let h = font.charheight;
+						// scale to fit:
+						let ts = Math.min(0.5/w, 0.5/h)
+						let text_scale = [ts * UI_SPACING, ts * UI_SPACING, UI_DEPTH]
+						let text_pos = [
+							-0.5*w*ts, 	// horizontal centred of panel
+							0.45 -0.25*ts,//1-(0.5 + ts/2),
+							0.
+						];
+						vec3.add(text_pos, text_pos, child_pos);
+						vec3.transformMat4(text_pos, text_pos, object.mat);
+			
+						let text_mat = mat4.fromRotationTranslationScale(mat4.create(), 
+							quat, text_pos, text_scale
+						);
+
+						scene.labels.push({
+							message: child.name,
+							mat: text_mat,
+						});
+					}
+				}
 			}
-			if (!pos) pos = parent.pos;
-			if (!quat) quat = parent.quat;
+			
+			// add a label:
+			let text = props.kind;
 
-			if (pos && quat) {
-				// add a cube at this location:
-				object.pos = vec3.clone(pos)
-				object.quat = vec4.clone(quat)
-				mat4.fromRotationTranslationScale(object.mat, 
-					object.quat, object.pos, object.scale
-				);
-				scene.boxes.push(object);
+			// basic width:
+			let w = font.charwidth * text.length;
+			let h = font.charheight;
+			let modelmatrix = mat4.create();
+			// scale to fit:
+			let ts = Math.min(
+				numcols/(w+1), // horizontal fit
+				1/(h+1)				// vertical fit
+			);
+			let text_scale = [ts * UI_SPACING, ts * UI_SPACING, ts * UI_SPACING]
+			//text_scale = [UI_SPACING, UI_SPACING, UI_SPACING]
+			// move up to row zero:
+			// let text_pos = vec3.clone(pos);
+			// text_pos[1] += (numrows-1)*UI_SPACING;
 
-				// add a label:
-				let modelmatrix = mat4.create();
-				let ls = 0.1;
-				mat4.fromRotationTranslationScale(modelmatrix, 
-					object.quat, object.pos, [ls, ls, ls]
-				);
-				scene.labels.push({
-					parent: object,
-					node: node,
-					node_parent: parent,
-					message: props.kind,
-					pos: object.pos,
-					quat: object.quat,
-					scale: [ls, ls, ls],
-					mat: modelmatrix,
-				})
-			}
+			// let text_pos = vec3.transformMat4(vec4.create()
+			// 	[0, (numrows-1)*UI_SPACING, 0, 1], 
+			// 	object.mat);
+			//let text_pos = vec3.transformMat4(vec3.create(), [0.5 * ts, (numrows-1.25), 0], object.mat);
+			let text_pos = vec3.transformMat4(vec3.create(), [
+				0.5*numcols - 0.5*w*ts, 	// horizontal centred of panel
+				numrows-(0.5 + ts*0.25), 		// baseline of 1st row plus scale adjust 
+				0], object.mat);
+
+			mat4.fromRotationTranslationScale(modelmatrix, 
+				quat, text_pos, text_scale
+			);
+			scene.labels.push({
+				message: text,
+				mat: modelmatrix,
+			})
 		}
 	}
 
-	// recurse to create child nodes so we know how to lay them out:
-	let children = reflowNodes(scene, node, object);
+	// add a cube at this location:
+	object.pos = vec3.clone(pos)
+	object.quat = vec4.clone(quat)
+	object.scale = vec3.clone(scale)
+	object.shape = shape;
+
+	// add to scene:
+	scene.boxes.push(object);
+	scene.paths[object.path] = object;
+
+	return object;
 }
 
 function rebuildScene(graph) {
@@ -723,7 +823,7 @@ function rebuildInstances(scene) {
 		vec3.copy(obj.i_scale, box.scale);
 		quat.copy(obj.i_quat, box.quat);
 		obj.i_shape[0] = box.shape;
-		vec4.copy(obj.i_color, colorFromString(box.name));
+		vec4.copy(obj.i_color, box.color);
 		cubes.count++;
 	}
 
@@ -861,7 +961,8 @@ function animate() {
 				draw(i);
 			}
 		} else {
-			mat4.lookAt(viewmatrix, [3*Math.sin(t/9), 1.5, 3*Math.cos(t/9)], [0, 1.5, 0], [0, 1, 0]);
+			let d = 2;
+			mat4.lookAt(viewmatrix, [d*Math.sin(t/9), 1.5, d*Math.cos(t/9)], [0, 1.5, 0], [0, 1, 0]);
 			mat4.perspective(projmatrix, Math.PI/3, vrdim[0]/vrdim[1], 0.01, 10);
 			gl.viewport(0, 0, fbo.width, fbo.height);
 
@@ -999,7 +1100,7 @@ async function init() {
 	if (USEWS) {
 		serverConnect();
 	} else {
-		localGraph = JSON.parse(fs.readFileSync("basicGraph.json", "utf8"));
+		localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
 		
 		// rebuild scene:
 		scene = rebuildInstances(rebuildScene(localGraph));
