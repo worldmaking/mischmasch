@@ -85,7 +85,7 @@ describe('acceptable deltas', () => {
 
 })
 
-describe('incorrect deltas', () => {
+describe('malformed deltas', () => {
     beforeAll(() => {
     })
     afterAll(() => {
@@ -98,7 +98,81 @@ describe('incorrect deltas', () => {
       g1 = got.graphFromDeltas(d)})
     afterEach(() => {
       /* Runs after each test */
-    })
+	})
+	
+	// newnode without a path
+	test('reject newnode without a path', () => {
+        let deltas = {"op":"newnode","path":"","kind":"lfo","pos":[-2.326367085370336,1.5209056349935186,-0.7035861792005239],"orient":[0.12358177055502231,0.41713355199484253,0.13623412932103282,0.8900378687419946]}
+        expect(() => got.applyDeltasToGraph(g, [deltas])).toThrowError('newnode delta contains no path')
+    });
+	// delnode without a path
+	test('reject delnode without a path', () => {
+		let deltas = {"op":"delnode","path":"","kind":"lfo","pos":[-2.326367085370336,1.5209056349935186,-0.7035861792005239],"orient":[0.12358177055502231,0.41713355199484253,0.13623412932103282,0.8900378687419946]}
+		expect(() => got.applyDeltasToGraph(g, [deltas])).toThrowError('delnode delta contains no path')
+	});
+	// propchange without a path
+	test('reject propchange without a path', () => {
+        let deltas = {"op": "propchange" ,"path": "", "name": "value","from": 0.17,"to": 0.7005339838596962,"timestamp": 1571343253980}
+		expect(() => got.applyDeltasToGraph(g, [deltas])).toThrowError('propchange delta contains no path')
+	});	
+	// propchange without a "from" value
+	test('reject propchange without a "from" value', () => {
+		let deltas = {"op": "propchange" ,"path": "lfo_1.fm_cv", "name": "value","from": null,"to": 0.7005339838596962,"timestamp": 1571343253980}
+		expect(() => got.applyDeltasToGraph(g, [deltas])).toThrowError('propchange delta contains no "from" value')
+	});	
+	// propchange without a "to" value
+	test('reject propchange without a "to" value', () => {
+		let deltas = {"op": "propchange" ,"path": "lfo_1.fm_cv", "name": "value","from": 0.17,"to": null,"timestamp": 1571343253980}
+		expect(() => got.applyDeltasToGraph(g, [deltas])).toThrowError('propchange delta contains no "to" value')
+	});	
+
+	// Connect without either or both of the paths
+	test('reject connect without either or both of the paths', () => {
+        let deltas = {"op": "connect", "paths": [ "lfo_1.sine", ""]}
+        // // // ab = got.deepCopy(g);
+        // let g1 = got.applyDeltasToGraph(g, [deltas])
+		// expect(g1).toMatchObject(connectSuccess);
+		expect(() => got.applyDeltasToGraph(g, [deltas])).toThrowError('propchange connect is missing one or more path(s)')
+
+    });
+	// Connect if both paths are equal
+	test('reject connect if both paths  are equal', () => {
+        let deltas = {"op": "connect", "paths": [ "lfo_1.sine", "lfo_1.sine"]}
+        // // // ab = got.deepCopy(g);
+        // let g1 = got.applyDeltasToGraph(g, [deltas])
+		// expect(g1).toMatchObject(connectSuccess);
+		expect(() => got.applyDeltasToGraph(g, [deltas])).toThrowError('propchange connect contains identical paths')
+
+	});
+	
+	// Disconnect without either or both of the paths
+	test('reject disconnect without either or both of the paths', () => {
+		let deltas = {"op": "disconnect", "paths": [ "lfo_1.sine", ""]}
+		// // // ab = got.deepCopy(g);
+		// let g1 = got.applyDeltasToGraph(g, [deltas])
+		// expect(g1).toMatchObject(connectSuccess);
+		expect(() => got.applyDeltasToGraph(g, [deltas])).toThrowError('propchange disconnect is missing one or more path(s)')
+
+	});
+	// Disconnect if both paths are equal
+	test('reject disconnect if both paths  are equal', () => {
+		let deltas = {"op": "disconnect", "paths": [ "lfo_1.sine", "lfo_1.sine"]}
+		// // // ab = got.deepCopy(g);
+		// let g1 = got.applyDeltasToGraph(g, [deltas])
+		// expect(g1).toMatchObject(connectSuccess);
+		expect(() => got.applyDeltasToGraph(g, [deltas])).toThrowError('propchange disconnect contains identical paths')
+
+	});
+	// Repath missing either or both of the paths
+	test('reject repath missing either or both of the paths', () => {
+        let deltas = {"op": "repath", "paths": [ "", "lfo_1.sine"]}
+		// // // ab = got.deepCopy(g);
+		// let g1 = got.applyDeltasToGraph(g, [deltas])
+		// expect(g1).toMatchObject(connectSuccess);
+		expect(() => got.applyDeltasToGraph(g, [deltas])).toThrowError('propchange repath is missing one or more path(s)')
+
+	});
+
     // works
     test('reject propchange to nonexistent path', () => {
         let deltas = {"op": "propchange" ,"path": "lfo_1.michael", "name": "value","from": 0.17,"to": 0.7005339838596962,"timestamp": 1571343253980}
@@ -106,7 +180,7 @@ describe('incorrect deltas', () => {
     });
     // works
     test('reject propchange to nonexistent property', () => {
-        let deltas = {"op": "propchange" ,"path": "lfo_1.sine_index", "kind": "outlet","index": 3}
+        let deltas = {"op": "propchange" ,"path": "lfo_1.sine_index", "name": "value","from": 0.17,"to": 0.7005339838596962,"timestamp": 1571343253980}
         expect(() => got.applyDeltasToGraph(g, [deltas])).toThrowError('propchange failed: property not found')
     });
 
