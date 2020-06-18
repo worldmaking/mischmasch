@@ -1,4 +1,62 @@
+/*
+TODO notes
 
+GOT graph needs to be translated to scene graph, which in turn specifies GL instances
+
+Instances:
+- lines (for patch coords, controller rays, etc.)
+- texturedquads (for text characters)
+- gridshapes (for module boxes, knobs, jacks, plugs, etc.)
+
+The instances could be embedded in the scene; that way switching out scenes (or even drawing multiple scenes) could be faster. Scenes would have their own vbo/vao etc, but share shaders
+
+scene = {
+	line_vao
+	textquad_vao
+	shape_vao
+
+	line_instances
+	textquad_instances
+	shape_instances
+	etc.
+
+
+
+}
+
+Some scene grpah changes are structural
+- new/delnode, connect/disconnect, etc.
+- requires re-generating the instances
+
+Most scene graph changes are parametric
+- propchange pos, orient, value etc. for module poses, knob positions, etc.
+- instances don't need regenerating, only attribute updates
+
+So, at least 2 passes:
+
+GOT -> scene graph structure -> regenerate instances, then cascade to next pass:
+GOT -> scene graph item changes -> update instance attributes
+
+For some parts, scenegraph node can be the instance object
+For others (e.g. labels), perhaps it can be the first character instance?
+
+For raytracing, convenient to have all objects in a flat list and a global space
+That flat list could be the instances, or the pathlookup
+- project ray into object coordinate space for simple bounds check
+- needs mat4 for the object coordinate space. 
+	- Q: module mat's scale uses grid size, or module width/height?
+
+For moving objects, convenient to have a graph structure so that moving a parent can iterate to update all children
+	- so a node needs a list of its children
+For child objects it would be convenient to store positions in units of the module grid,
+	- then can recompute the instance position and matrix more rapidly
+	- but a node will need pointer to its parent context
+
+Option of having a root node
+
+
+
+*/
 const assert = require("assert"),
 	fs = require("fs"),
 	path = require("path");
@@ -309,6 +367,11 @@ void main() {
 	if (i_shape > 1.5) {
 		vec2 p = (vertex.xy - 0.5)*2.0;
 		p = p * abs(normalize(p));
+
+		if (normal.z == 0.) {
+			uv.x = mod(uv.x * 2., 1.);
+		}
+
 		if (i_shape > 1.5) {
 			if (p.y > 0.5 && abs(p.x) < 0.1) {
 				p.xy *= 1.2;    
@@ -381,7 +444,7 @@ void main() {
 }
 `);
 // create a VAO from a basic geometry and shader
-let cubegeom = glutils.makeCube({ min:0, max:1, div: 9 })
+let cubegeom = glutils.makeCube({ min:0, max:1, div: 13 })
 let cube = glutils.createVao(gl, cubegeom, cubeprogram.id);
 
 //console.log(cube.geom.vertices)
