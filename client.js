@@ -226,28 +226,8 @@ function createSDFFont(gl, pngpath, jsonpath) {
 	return font;
 }
 
-const font = createSDFFont(gl, "font/CONSOLATTF.png", "font/CONSOLA.TTF-msdf.json")
 
-const textquad_program = glutils.makeProgram(gl, 
-	fs.readFileSync(path.join(shaderpath, "textquad.vert.glsl"), "utf-8"),
-	fs.readFileSync(path.join(shaderpath, "textquad.frag.glsl"), "utf-8")
-);
-const module_program = glutils.makeProgram(gl,
-	fs.readFileSync(path.join(shaderpath, "module.vert.glsl"), "utf-8"),
-	fs.readFileSync(path.join(shaderpath, "module.frag.glsl"), "utf-8")
-);
-const line_program = glutils.makeProgram(gl,
-	fs.readFileSync(path.join(shaderpath, "line.vert.glsl"), "utf-8"),
-	fs.readFileSync(path.join(shaderpath, "line.frag.glsl"), "utf-8")
-);
-const floor_program = glutils.makeProgram(gl,
-	fs.readFileSync(path.join(shaderpath, "floor.vert.glsl"), "utf-8"),
-	fs.readFileSync(path.join(shaderpath, "floor.frag.glsl"), "utf-8")
-);
-const fbo_program = glutils.makeProgram(gl,
-	fs.readFileSync(path.join(shaderpath, "fbo.vert.glsl"), "utf-8"),
-	fs.readFileSync(path.join(shaderpath, "fbo.frag.glsl"), "utf-8")
-);
+const font = createSDFFont(gl, "font/CONSOLATTF.png", "font/CONSOLA.TTF-msdf.json")
 
 const textquad_geom = glutils.makeQuad({ min:0., max:1, div:8 });
 const module_geom = glutils.makeCube({ 
@@ -256,7 +236,32 @@ const module_geom = glutils.makeCube({
 	div: [13, 13, 1] 
 });
 const line_geom = glutils.makeLine({ min:0, max:1, div: 24 });
+const floor_m = 6;
+const floor_geom = glutils.makeQuad({ min: -floor_m, max: floor_m, div:8 })
 
+const fbo_program = glutils.makeProgram(gl,
+	fs.readFileSync(path.join(shaderpath, "fbo.vert.glsl"), "utf-8"),
+	fs.readFileSync(path.join(shaderpath, "fbo.frag.glsl"), "utf-8")
+);
+const floor_program = glutils.makeProgram(gl,
+	fs.readFileSync(path.join(shaderpath, "floor.vert.glsl"), "utf-8"),
+	fs.readFileSync(path.join(shaderpath, "floor.frag.glsl"), "utf-8")
+);
+const line_program = glutils.makeProgram(gl,
+	fs.readFileSync(path.join(shaderpath, "line.vert.glsl"), "utf-8"),
+	fs.readFileSync(path.join(shaderpath, "line.frag.glsl"), "utf-8")
+);
+const textquad_program = glutils.makeProgram(gl, 
+	fs.readFileSync(path.join(shaderpath, "textquad.vert.glsl"), "utf-8"),
+	fs.readFileSync(path.join(shaderpath, "textquad.frag.glsl"), "utf-8")
+);
+
+console.log("ok")
+
+const module_program = glutils.makeProgram(gl,
+	fs.readFileSync(path.join(shaderpath, "module.vert.glsl"), "utf-8"),
+	fs.readFileSync(path.join(shaderpath, "module.frag.glsl"), "utf-8")
+);
 
 
 
@@ -264,8 +269,7 @@ const line_geom = glutils.makeLine({ min:0, max:1, div: 24 });
 
 // GLOBAL GL RESOURCES:
 
-let floor_m = 6;
-let floor_vao = glutils.createVao(gl, glutils.makeQuad({ min: -floor_m, max: floor_m, div:8 }), floor_program.id);
+let floor_vao = glutils.createVao(gl, floor_geom, floor_program.id);
 
 let fbo_vao = glutils.createVao(gl, glutils.makeQuad(), fbo_program.id);
 let vrdim = [4096, 4096];
@@ -379,6 +383,7 @@ let sceneGraph = {
 			// matrix transform object2world:
 			mat: mat4.create(), 
 			quat: [0, 0, 0, 1],
+			name: "root",
 			zoom: 1,
 			nodes: [],
 		};
@@ -395,17 +400,52 @@ let sceneGraph = {
 		this.line_instances.allocate(graph.arcs.length);
 		for (const arc of graph.arcs) {
 			let line = this.line_instances.instances[this.line_instances.count];
-			vec4.set(line.i_color, 1, 1, 1, 1);
-
 			line.from = this.paths[ arc[0] ];
 			line.to = this.paths[ arc[1] ];
 
-			if (line.from && line.to) this.line_instances.count++;
+			if (!line.from || !line.to) continue;
+
+			vec4.set(line.i_color, 1, 1, 1, 1);
+			line.name = line.from.name + ">" + line.to.name
+			this.line_instances.count++;
+
+			// add jack cylinders:
+			for (let parent of [line.from, line.to]) {
+				let obj = this.getNextModule(parent);
+				obj.name = line.name +":" + parent.name;
+				obj.zoom = UI_DEFAULT_ZOOM
+				obj.pos = [0, 0, 0]
+				obj.quat = parent.i_quat; //[0, 0, 0, 1]
+				obj.dim = [1/4, 1/4, 1/2]
+				obj.color = [0.75, 0.75, 0.75, 1]
+				obj.shape = SHAPE_CYLINDER;
+				obj.value = 0;
+			}
+
+			
 		}
 		this.line_instances.count = graph.arcs.length;
 
 
 		this.update(graph);
+	},
+
+	getNextModule(parent) {
+		// create a module instance:
+		// reallocate space if needed
+		if (this.module_instances.count >= this.module_instances.allocated) {
+			this.module_instances.allocate(Math.min(4, this.module_instances.allocated*2));
+		}
+		let obj = this.module_instances.instances[this.module_instances.count];
+		this.module_instances.count++;
+		// add graph links:
+		parent.nodes.push(obj)
+		obj.parent = parent;
+		
+		// this will define object's coordinate system relative to world:
+		obj.mat = mat4.create()
+		obj.zoom = 1;
+		return obj;
 	},
 
 	rebuildNode(name, node, parent, parent_path) {
@@ -417,11 +457,7 @@ let sceneGraph = {
 			this.module_instances.allocate(Math.min(4, this.module_instances.allocated*2));
 		}
 
-		let obj = this.module_instances.instances[this.module_instances.count];
-
-		// add grpah links:
-		parent.nodes.push(obj)
-		obj.parent = parent;
+		let obj = this.getNextModule(parent);
 
 		// add graph source:
 		obj.node = node;
@@ -441,10 +477,6 @@ let sceneGraph = {
 		obj.shape = SHAPE_BOX;
 		obj.zoom = 1;
 		obj.dim = [1, 1, UI_DEPTH]
-		// this will define object's coordinate system relative to world:
-		obj.mat = mat4.create()
-
-		this.module_instances.count++;
 
 		// default label:
 		let label_text = name;
@@ -458,6 +490,7 @@ let sceneGraph = {
 				obj.shape = SHAPE_CYLINDER;
 				obj.color = props.kind == "inlet" ? [0.5, 0.5, 0.5, 1] : [0.25, 0.25, 0.25, 1];
 				obj.dim = [1/3, 1/3, UI_DEPTH/2];
+				obj.nodes = []
 				this.addLabel(obj, label_text, text_pos, text_zoom);
 			} break;
 			case "small_knob": {
@@ -872,7 +905,7 @@ function animate() {
 			let a = t/5;
 			let d = Math.sin(t/3) + 1.5;
 			mat4.lookAt(viewmatrix, [d*Math.sin(a), 1.5, d*Math.cos(a)], [0, 1.5, 0], [0, 1, 0]);
-			mat4.perspective(projmatrix, Math.PI/3, vrdim[0]/vrdim[1], 0.01, 10);
+			mat4.perspective(projmatrix, Math.PI/2, vrdim[0]/vrdim[1], 0.01, 10);
 			gl.viewport(0, 0, fbo.width, fbo.height);
 
 			draw();

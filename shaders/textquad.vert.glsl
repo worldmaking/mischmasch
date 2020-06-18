@@ -38,6 +38,5 @@ void main() {
 	v_color = vec4(1.);
 	// if needed:
 //	v_color = i_color;
-
 	v_uv = mix(i_fontcoord.xy, i_fontcoord.zw, a_texCoord); 
 }

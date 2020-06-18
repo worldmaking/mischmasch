@@ -15,6 +15,7 @@ float fCylinder(vec3 p, float r, float height) {
 	return d;
 }
 
+
 void main() {
 	outColor = v_color;
 	vec3 normal = normalize(v_normal);

@@ -10,6 +10,7 @@ in vec3 i_scale;
 in float i_shape;
 in float i_value;
 
+
 in vec3 a_position;
 in vec3 a_normal;
 in vec2 a_texCoord;
