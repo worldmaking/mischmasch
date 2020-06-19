@@ -1,4 +1,5 @@
 const got = require('../got/got.js');
+const server = require('../server.js');
 let assert = require("assert");
 let fs = require("fs")
 const argv = require('yargs').argv
@@ -7,7 +8,7 @@ let g1;
 let d;
 let ab;
 // jest does this before running tests
-describe('server', () => {
+describe('server: got nuclear option on malformed deltas', () => {
     beforeAll(() => {
     })
     afterAll(() => {

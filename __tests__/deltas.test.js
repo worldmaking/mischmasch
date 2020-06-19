@@ -173,6 +173,22 @@ describe('malformed deltas', () => {
 
 	});
 
+});
+
+describe('incorrect deltas', () => {
+    beforeAll(() => {
+    })
+    afterAll(() => {
+      /* Runs after all tests */
+    })
+    beforeEach(() => {
+      /* Runs before each test */
+      d = JSON.parse(fs.readFileSync('__tests__/deltas/simple_scene.json'))
+      g = got.graphFromDeltas(d)
+      g1 = got.graphFromDeltas(d)})
+    afterEach(() => {
+      /* Runs after each test */
+	})
     // works
     test('reject propchange to nonexistent path', () => {
         let deltas = {"op": "propchange" ,"path": "lfo_1.michael", "name": "value","from": 0.17,"to": 0.7005339838596962,"timestamp": 1571343253980}
