@@ -90,7 +90,7 @@ glutils = require(path.join(nodeglpath, "glutils.js"))
 
 const got = require("./got/got.js")
 
-const USEVR = true;
+const USEVR = 0;
 const USEWS = false;
 const url = 'ws://localhost:8080'
 const demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
@@ -255,20 +255,13 @@ const textquad_program = glutils.makeProgram(gl,
 	fs.readFileSync(path.join(shaderpath, "textquad.vert.glsl"), "utf-8"),
 	fs.readFileSync(path.join(shaderpath, "textquad.frag.glsl"), "utf-8")
 );
-
-console.log("ok")
-
 const module_program = glutils.makeProgram(gl,
 	fs.readFileSync(path.join(shaderpath, "module.vert.glsl"), "utf-8"),
 	fs.readFileSync(path.join(shaderpath, "module.frag.glsl"), "utf-8")
 );
 
 
-
-
-
 // GLOBAL GL RESOURCES:
-
 let floor_vao = glutils.createVao(gl, floor_geom, floor_program.id);
 
 let fbo_vao = glutils.createVao(gl, glutils.makeQuad(), fbo_program.id);
@@ -690,9 +683,7 @@ let sceneGraph = {
 	},
 	
 	update(graph) {
-		// TODO: iterate `graph` to update properties of the various nodes in module_instances etc.
-
-
+		// iterate `graph` to update properties of the various nodes in module_instances etc.
 		// assumes the graph structure has not changed
 		// updates geometric & rendering attributes of all instances, including position, quat, scale, worldmat etc.
 		// NOTE: because of the way the instances were created, parents will be 
@@ -804,7 +795,6 @@ let t = glfw.getTime();
 let fps = 60;
 
 function animate() {
-
 	let t1 = glfw.getTime();
 	let dt = t1-t;
 	fps += 0.1*((1/dt)-fps);
@@ -837,12 +827,11 @@ function animate() {
             //log("incoming deltas")
         }
 		console.log("updated localGraph", JSON.stringify(localGraph, null, "  "))
-
 		
 		scene = rebuildInstances(rebuildScene(localGraph));
 
 
-		// // handle incoming deltas:
+		// // handle local deltas:
 		// while (localDeltas.length > 0) {
         //     let delta = localDeltas.shift();
         //     // TODO: derive which world to add to:
@@ -856,30 +845,6 @@ function animate() {
         // updateDirty(scene, false);
 	}
 	
-	// if (module_instances.count) {
-	// 	let i = Math.floor(Math.random() * module_instances.count)
-	// 	let obj = module_instances.instances[i]
-	// 	quat.slerp(obj.i_quat, obj.i_quat, quat.random(quat.create()), 0.1);
-	// 	quat.normalize(obj.i_quat, obj.i_quat);
-	// }
-	// line_instances.instances.forEach((obj, i) => {
-	// 	let a = module_instances.instances[obj.from]
-	// 	let b = module_instances.instances[obj.to]
-	// 	quat.copy(obj.i_quat0, a.i_quat);
-	// 	quat.copy(obj.i_quat1, b.i_quat);
-	// 	vec3.copy(obj.i_pos0, a.i_pos);
-	// 	vec3.copy(obj.i_pos1, b.i_pos);
-	// }) 
-
-
-	// // update scene:
-	// for (let i=0; i<NUM_POINTS/10; i++) {
-	// 	let idx = Math.floor(Math.random() * vertices.length);
-	// 	vertices[idx] += (Math.random()-0.5) * 0.01;
-	// }
-	// // update GPU buffers:
-	// gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-	// gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.DYNAMIC_DRAW);
 
 	//if(wsize) console.log("FB size: "+wsize.width+', '+wsize.height);
 	if (USEVR) vr.update();
