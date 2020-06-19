@@ -90,7 +90,7 @@ glutils = require(path.join(nodeglpath, "glutils.js"))
 
 const got = require("./got/got.js")
 
-const USEVR = false;
+const USEVR = true;
 const USEWS = false;
 const url = 'ws://localhost:8080'
 const demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
@@ -622,7 +622,7 @@ let sceneGraph = {
 				}
 
 				// add module label:
-				label_text = obj.kind;
+				label_text = obj.kind.toUpperCase();
 				let w = font.charwidth * label_text.length;
 				// scale to fit
 				text_zoom = Math.min(
