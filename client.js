@@ -902,9 +902,10 @@ function animate() {
 				draw(i);
 			}
 		} else {
-			let a = t/5;
-			let d = Math.sin(t/3) + 1.5;
-			mat4.lookAt(viewmatrix, [d*Math.sin(a), 1.5, d*Math.cos(a)], [0, 1.5, 0], [0, 1, 0]);
+			let a = 0;//t/5;
+			let d = 1;//Math.sin(t/3) + 1.5;
+			let h = 1.25;
+			mat4.lookAt(viewmatrix, [d*Math.sin(a), h, d*Math.cos(a)], [0, h, 0], [0, 1, 0]);
 			mat4.perspective(projmatrix, Math.PI/2, vrdim[0]/vrdim[1], 0.01, 10);
 			gl.viewport(0, 0, fbo.width, fbo.height);
 
