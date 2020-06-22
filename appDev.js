@@ -1,4 +1,9 @@
 /*
+DON'T EVER USE THIS OTHER THAN TO TEST!
+*/
+
+
+/*
   Goal:
 
   Want to establish P2P socket connections between clients over remote network, to make a teaparty
@@ -105,7 +110,7 @@ const teapartyteapartyWebsocketAddress =
   : `ws://${teapartyteapartyAddress}/${teapartyteapartyWebsocketPort}`;
 
 // this is the port used for P2P connections
-const teapartyP2PWebsocketPort = 8081;
+const teapartyP2PWebsocketPort = 8082;
 
 const rwsOptions = {
   // make rws use the webSocket module implementation
@@ -150,7 +155,7 @@ function wsteapartyConnect() {
 
 let thisClientConfiguration = {
   // get a username for this machine:
-  username: username.sync(),
+  username: 'appDev',
   // ip is figured out during init()
   ip: null, 
   // eventually, app.js will maintain status of connected client(s) and report them to the teaparty
@@ -245,13 +250,12 @@ async function init() {
   wsteaparty.addEventListener('message', (data) => {
     let msg = JSON.parse(data.data);
     let cmd = msg.cmd;
+
     switch (cmd) {
 
       // lists all clients actively registered with the teaparty
       // should be received at reasonable frequency (i.e. also serves as a ping)
       case 'guestlist': {
-        console.log(msg.data)
-
         let teapartyPals = msg.data.pals;
         let teapartyHeadCount = msg.data.headcount;
         let teapartyHost = msg.data.host;
@@ -260,7 +264,7 @@ async function init() {
         if(thisClientConfiguration.username === msg.data.host){
           // we are the host! need to start a websocket server
           console.log('host')
-          host()
+          // host()
         } else {
           // we are a pal! need to connect to host's websocket server
         }
@@ -346,99 +350,98 @@ module.exports = {
 }
 
 
-function host(){
-  const wss = new webSocket.Server({ 
-    // server: server,
-    port: 8080,
-    maxPayload: 1024 * 1024, 
-  });
-    // whenever a client connects to this websocket:
-  let sessionId = 0;
-  console.log('running server')
-  wss.on('connection', function(ws, req) {
+// function host(){
+//   const wss = new webSocket.Server({ 
+//     // server: server,
+//     port: 8080,
+//     maxPayload: 1024 * 1024, 
+//   });
+//     // whenever a client connects to this websocket:
+//   let sessionId = 0;
+//   wss.on('connection', function(ws, req) {
 
-    // do any
-    console.log("server received a connection");
-    console.log("server has "+wss.clients.size+" connected clients");
-    //	ws.id = uuid.v4();
-    const id = ++sessionId;
-    const location = url.parse(req.url, true);
-    // ip = req.connection.remoteAddress.split(':')[3] 
-    ip = req.headers.host.split(':')[0]
-    if(!ip){
-      // console.log('vr', req.connection)
-      ip = req.ip
-    }
-    //console.log(ip)
-    // const location = urlw.parse(req.url, true);
-    // console.log(location)
+//     // do any
+//     console.log("server received a connection");
+//     console.log("server has "+wss.clients.size+" connected clients");
+//     //	ws.id = uuid.v4();
+//     const id = ++sessionId;
+//     const location = url.parse(req.url, true);
+//     // ip = req.connection.remoteAddress.split(':')[3] 
+//     ip = req.headers.host.split(':')[0]
+//     if(!ip){
+//       // console.log('vr', req.connection)
+//       ip = req.ip
+//     }
+//     //console.log(ip)
+//     // const location = urlw.parse(req.url, true);
+//     // console.log(location)
 
-    // clients[id] = ip
-    // if (!clients[ip]){
-    // 	clients[ip] = {}
-    // }
-    // console.log('connected clients, sessionIDs & clientTypes: ', clients)
-    // //console.log(req.connection.remoteAddress)
-    // let handShakeInterval = setInterval(function(){ 
-    // 	console.log('clients handshake: ', clients)
-    // 	ws.send(JSON.stringify({
-    // 		cmd:'contexts',
-    // 		data: clients[ip],
-    // 		ip: ip
-    // 	})) 
-    // }, 3000);
+//     // clients[id] = ip
+//     // if (!clients[ip]){
+//     // 	clients[ip] = {}
+//     // }
+//     // console.log('connected clients, sessionIDs & clientTypes: ', clients)
+//     // //console.log(req.connection.remoteAddress)
+//     // let handShakeInterval = setInterval(function(){ 
+//     // 	console.log('clients handshake: ', clients)
+//     // 	ws.send(JSON.stringify({
+//     // 		cmd:'contexts',
+//     // 		data: clients[ip],
+//     // 		ip: ip
+//     // 	})) 
+//     // }, 3000);
     
-    // clients[ip] = {: ip, } 
-    // ws.send(JSON.stringify({
-    // 	cmd: 'assignID',
-    // 	data: id,
-    // 	date: Date.now()
-    // }))
+//     // clients[ip] = {: ip, } 
+//     // ws.send(JSON.stringify({
+//     // 	cmd: 'assignID',
+//     // 	data: id,
+//     // 	date: Date.now()
+//     // }))
     
-    // You might use location.query.access_token to authenticate or share sessions
-    // or req.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
+//     // You might use location.query.access_token to authenticate or share sessions
+//     // or req.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
     
-    ws.on('error', function (e) {
-      if (e.message === "read ECONNRESET") {
-        // ignore this, client will still emit close event
-      } else {
-        console.error("websocket error: ", e.message);
-      }
-    });
+//     ws.on('error', function (e) {
+//       if (e.message === "read ECONNRESET") {
+//         // ignore this, client will still emit close event
+//       } else {
+//         console.error("websocket error: ", e.message);
+//       }
+//     });
 
-    // what to do if client disconnects?
-    ws.on('close', function(connection) {
-      //clearInterval(handShakeInterval);
-      console.log("connection closed");
-          console.log("server has "+wss.clients.size+" connected clients");
-    });
+//     // what to do if client disconnects?
+//     ws.on('close', function(connection) {
+//       //clearInterval(handShakeInterval);
+//       console.log("connection closed");
+//           console.log("server has "+wss.clients.size+" connected clients");
+//     });
     
-    // respond to any messages from the client:
-    ws.on('message', function(e) {
-      if (e instanceof Buffer) {
-        // get an arraybuffer from the message:
-        const ab = e.buffer.slice(e.byteOffset,e.byteOffset+e.byteLength);
-        //console.log("received arraybuffer", ab);
-        // as float32s:
-        //console.log(new Float32Array(ab));
+//     // respond to any messages from the client:
+//     ws.on('message', function(e) {
+//       if (e instanceof Buffer) {
+//         // get an arraybuffer from the message:
+//         const ab = e.buffer.slice(e.byteOffset,e.byteOffset+e.byteLength);
+//         //console.log("received arraybuffer", ab);
+//         // as float32s:
+//         //console.log(new Float32Array(ab));
 
-      } else {
-        try {
-          handlemessage(JSON.parse(e), ws, id);
-        } catch (e) {
-          console.log('bad JSON: ', e);
-        }
-      }
-    });
+//       } else {
+//         try {
+//           handlemessage(JSON.parse(e), ws, id);
+//         } catch (e) {
+//           console.log('bad JSON: ', e);
+//         }
+//       }
+//     });
       
     
-    // // Example sending binary:
-    // const array = new Float32Array(5);
-    // for (var i = 0; i < array.length; ++i) {
-    // 	array[i] = i / 2;
-    // }
-      // ws.send(array);
+//     // // Example sending binary:
+//     // const array = new Float32Array(5);
+//     // for (var i = 0; i < array.length; ++i) {
+//     // 	array[i] = i / 2;
+//     // }
+//       // ws.send(array);
       
-      //send_all_clients("hi")
-  });
-}
+//       //send_all_clients("hi")
+//   });
+// }
