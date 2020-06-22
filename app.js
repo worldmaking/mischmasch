@@ -797,3 +797,5 @@ function startLocalWebsocket(){
 
   });
 }
+
+startLocalWebsocket()
