@@ -39,7 +39,7 @@ const ReconnectingWebSocket = require('reconnecting-websocket');
 // https://www.npmjs.com/package/progress
 // cute way to show progress on the command line
 const ProgressBar = require('progress');
-
+const url = require('url')
 // const http = require('http');
 // const express = require('express');
 // const url = require('url');
@@ -149,10 +149,11 @@ function teapartyWebsocketConnect() {
     }, 1000);
     
     // fail the promise if the server responds with an error
+    //! i commented this out because it was interfering with the progressBar and attempts to rws
     teapartyWebsocket.addEventListener('error', (error) => {
-      console.log(`connection error from ${teapartyAddress}:`)
-      clearInterval(progressBarTimer); 
-      reject(error.error);
+      // console.log(`connection error from ${teapartyAddress}:`)
+      // clearInterval(progressBarTimer); 
+      // reject(error.error);
     });
     
     // on successful connection to teaparty:
@@ -253,6 +254,7 @@ async function init() {
 
   function sayGoodbye() {
     teapartyWebsocket.close();
+    deltaWebsocket.close()
   }
 
   process.on('SIGINT', function() {
@@ -300,10 +302,12 @@ async function init() {
             deltaWebsocket.close()
           }
           // get host's ip
-          hostIP = teapartyPals[teapartyHost].ip
-          console.log('host ip', hostIP)
-          pal(hostIP, '8080')
-          console.log('running deltaWebsocket as pal')
+          if (process.argv[2] === 'localhost'){
+            hostIP = process.argv[2]
+          } else {
+            hostIP = teapartyPals[teapartyHost].ip          }          
+            pal(hostIP, '8080')
+            console.log('running deltaWebsocket as pal')
         }
 
         // update our list of Pals here
@@ -384,21 +388,19 @@ init();
 
 
 
-// module.exports = {
-//   teapartyWebsocketConnect: teapartyWebsocketConnect
-// }
+
 
 function host(){
-  console.log('\n\nStarting up server\n\n')
   deltaWebsocket = new webSocket.Server({ 
     // server: server,
     port: 8080,
     maxPayload: 1024 * 1024, 
   });
-    // whenever a client connects to this websocket:
   let sessionId = 0;
   console.log('running deltaWebsocket as HOST')
-  deltaWebsocket.on('connection', function(ws, req) {
+      
+  // whenever a pal connects to this websocket:
+  deltaWebsocket.on('connection', function(palWebsocket, req) {
 
     // do any
     console.log("server received a connection");
@@ -416,32 +418,7 @@ function host(){
     // const location = urlw.parse(req.url, true);
     // console.log(location)
 
-    // clients[id] = ip
-    // if (!clients[ip]){
-    // 	clients[ip] = {}
-    // }
-    // console.log('connected clients, sessionIDs & clientTypes: ', clients)
-    // //console.log(req.connection.remoteAddress)
-    // let handShakeInterval = setInterval(function(){ 
-    // 	console.log('clients handshake: ', clients)
-    // 	ws.send(JSON.stringify({
-    // 		cmd:'contexts',
-    // 		data: clients[ip],
-    // 		ip: ip
-    // 	})) 
-    // }, 3000);
-    
-    // clients[ip] = {: ip, } 
-    // ws.send(JSON.stringify({
-    // 	cmd: 'assignID',
-    // 	data: id,
-    // 	date: Date.now()
-    // }))
-    
-    // You might use location.query.access_token to authenticate or share sessions
-    // or req.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
-    
-    deltaWebsocket.on('error', function (e) {
+    palWebsocket.on('error', function (e) {
       if (e.message === "read ECONNRESET") {
         // ignore this, client will still emit close event
       } else {
@@ -450,14 +427,15 @@ function host(){
     });
 
     // what to do if client disconnects?
-    deltaWebsocket.on('close', function(connection) {
+    palWebsocket.on('close', function(connection) {
       //clearInterval(handShakeInterval);
       console.log("connection closed");
-          console.log("server has "+wss.clients.size+" connected clients");
+          console.log("server has "+deltaWebsocket.clients.size+" connected clients");
     });
     
     // respond to any messages from the client:
-    deltaWebsocket.on('message', function(e) {
+    palWebsocket.on('message', function(e) {
+      console.log(e)
       if (e instanceof Buffer) {
         // get an arraybuffer from the message:
         const ab = e.buffer.slice(e.byteOffset,e.byteOffset+e.byteLength);
@@ -467,35 +445,276 @@ function host(){
 
       } else {
         try {
-          handlemessage(JSON.parse(e), ws, id);
+          handlemessage(JSON.parse(e), palWebsocket, id);
         } catch (e) {
           console.log('bad JSON: ', e);
         }
       }
     });
-      
-    
-    // // Example sending binary:
-    // const array = new Float32Array(5);
-    // for (var i = 0; i < array.length; ++i) {
-    // 	array[i] = i / 2;
-    // }
-      // ws.send(array);
-      
-      //send_all_clients("hi")
+
   });
 }
 
+// attempt to connect to Host
 function pal(ip, port){
+  console.log(ip, port)
+  let deltaWebsocketAddress = 'ws://' + ip + ':' + port
 
-  deltaWebsocket = new webSocket('ws://' + ip + ':' + port);
- 
-  deltaWebsocket.on('open', function open() {
-    ws.send('something');
-  });
+    console.log(`attempting to connect to deltaWebsocket Host at `, deltaWebsocketAddress)
+    deltaWebsocket = new ReconnectingWebSocket(deltaWebsocketAddress, [], rwsOptions);
+    
+    deltaWebsocket.addEventListener('error', (error) => {
+      console.log(`connection error from ${deltaWebsocketAddress}:`)
+    });
+    
+    // on successful connection to deltaWebsocket Host:
+    deltaWebsocket.addEventListener('open', () => {
+      let highFive = JSON.stringify({
+        cmd: 'highFive',
+        date: Date.now(), 
+        data: 'hello',
+      })
+      deltaWebsocket.send(highFive)
+
+      deltaWebsocket.addEventListener('message', (data) =>{
+        let msg = data.data
+        console.log(msg)
+      })
+    });
   
-  deltaWebsocket.on('message', function incoming(data) {
-    console.log(data);
-  });
 
+}
+
+
+
+
+function handlemessage(msg, sock, id) {
+
+  console.log(msg)
+  switch (msg.cmd) {
+    // case "deltas": {
+      
+    //   // synchronize our local copy:
+    //   try {
+    //     //console.log('\n\npreApply', localGraph.nodes.resofilter_120)
+    //     got.applyDeltasToGraph(localGraph, msg.data);
+    //     //console.log('\n\npostApply', JSON.stringify(localGraph.nodes.resofilter_120.resonance))
+    //   } catch (e) {
+    //     console.warn(e);
+    //   }
+
+    //   //console.log(msg.data)
+    //   // TODO: merge OTs
+      
+    //   let response = {
+    //     cmd: "deltas",
+    //     date: Date.now(),
+    //     data: msg.data
+    //   };
+    //   console.log(msg.data)
+      
+    //   // check if the recording status is active, if so push received delta(s) to the recordJSON
+    //   if (recordStatus === 1){
+        
+    //     for(i = 0; i < msg.data.length; i++){
+          
+    //       msg.data[i]["timestamp"] = Date.now()
+    //       recordJSON.deltas.push(msg.data[i])
+    //     }
+        
+    //   }
+
+    //   //fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(response), "utf-8")
+
+    //   //OTHistory.push(JSON.stringify(response))
+    //   console.log('localgraph',localGraph, '\n')
+    //   // send_all_clients(JSON.stringify(response));
+    // } break;
+
+    // case "playback":{
+    // 	//console.log(msg)/
+    // 	console.log(msg.data)
+    // 	/*
+    // 	let response = {
+    // 		cmd: "deltas",
+    // 		date: Date.now(),
+    // 		data: msg.data
+    // 	};
+    // 	// NOTE: this is copied from the deltas case, but i've commented out recording the playback since for now it'd just be redundant. 
+    // 	// we might, though, at some point want to record when a playback occurred, and note when playback was stopped/looped/overdubbed/etc
+    // 	//recordJSON.push(response)
+    // 	//fs.writeFileSync(sessionRecording, JSON.stringify(recordJSON, null, "  "), "utf-8")
+    // 	send_all_clients(JSON.stringify(response));
+    // 	*/
+    // } break;
+
+    // case "initController":{
+
+    //   // the max patch "control.maxpat" will request the current available sessions & scene files from the server:
+
+    //   // get recorded sessions
+    //   function fromDir(startPath,filter,callback){		
+    //     if (!fs.existsSync(startPath)){
+    //         console.log("no dir ",startPath);
+    //         return;
+    //     }
+    //     var files=fs.readdirSync(startPath);
+    //     for (var i=0;i<files.length;i++){
+    //       var filename=path.join(startPath,files[i]);
+    //       var stat = fs.lstatSync(filename);
+    //       if (stat.isDirectory()){
+    //           fromDir(filename,filter,callback); //recurse
+    //       } else if (filter.test(filename)) callback(filename);
+    //     };
+    //   };
+    
+    //   fromDir(__dirname + '/session_recordings',/\.json$/,function(filename){
+    //     filename = filename.split('\\').pop().split('/').pop();
+    //     filesFound = {
+    //       cmd: "sessionRecordings",
+    //       date: Date.now(),
+    //       data: filename
+    //     };
+    //     send_all_clients(JSON.stringify(filesFound));
+    //   });
+
+    //   // get scene files
+    //   function fromDir(startPath,filter,callback){		
+    //     if (!fs.existsSync(startPath)){
+    //         console.log("no dir ",startPath);
+    //         return;
+    //     }
+    //     var files=fs.readdirSync(startPath);
+    //     for (var i=0;i<files.length;i++){
+    //       var filename=path.join(startPath,files[i]);
+    //       var stat = fs.lstatSync(filename);
+    //       if (stat.isDirectory()){
+    //           fromDir(filename,filter,callback); //recurse
+    //       } else if (filter.test(filename)) callback(filename);
+    //     };
+    //   };
+    
+    //   fromDir(__dirname + '/scene_files',/\.json$/,function(filename){
+    //     filename = filename.split('\\').pop().split('/').pop();
+    //     filesFound = {
+    //       cmd: "scene_files",
+    //       date: Date.now(),
+    //       data: filename
+    //     };
+    //     send_all_clients(JSON.stringify(filesFound));
+    //   });
+    // } break;
+
+    // case "record":{
+    // 	// reset session
+
+    // 	// take OTHistory, turn it into a graph. 
+    // 	// take that graph turn it back into an OT history (will this remove all redundant deltas? (we want this...))
+    // 	// set these deltas as the header for the recorded session file
+    // 	// then append the recordJSON in the stopRecord section.
+    // 	//let header = {}
+
+    // 	// header['header'] = localGraph
+    // 	// console.log(header)
+      
+    // 	recordJSON = {
+    // 		header:{
+    // 			scene: localGraph,
+    // 			timestamp: Date.now()
+    // 		},
+    // 		deltas:[]
+        
+    // 	}
+    // 	// recordJSON.push(header)
+    // 	let recording = msg.data.replace(/\s/g, "_")
+    // 	// save session name as filename provided in this message
+    // 	sessionRecording = __dirname + "/session_recordings/" + recording + ".json"
+    // 	// push all received deltas to the recordJSON:
+    // 	recordStatus = 1
+    // 	console.log('session will be stored at', sessionRecording)
+      
+    // } break;
+
+    // case "stopRecord":{
+    // 	recordStatus = 0
+
+      
+    // 	fs.writeFileSync(sessionRecording, JSON.stringify(recordJSON, null, 2), "utf-8")
+      
+    // 	console.log('session saved at', sessionRecording)
+
+    // } break;
+
+    // case "clear_scene": {
+    // 	// JSON not streamable format so close out the history file 
+    // 	//fs.appendFileSync(OTHistoryFile, ']', "utf-8")
+
+    // 	let deltas = load_scene("scene_speaker.json")
+    // 	// create new history file & add scene as header
+    // 	//OTHistoryFile = '../histories/OT_' + Date.now() + '.json'
+    // 	// let header = {}
+    // 	// header['header'] = deltas
+    // 	//fs.writeFileSync(OTHistoryFile, '[' + JSON.stringify(header), "utf-8")
+    // } break;
+    // case "get_scene": {
+      
+    //   //demo_scene = JSON.parse(fs.readFileSync(scenefile, "utf-8")); 
+    //   // turn this into deltas:
+    //   let deltas = got.deltasFromGraph(localGraph, []);
+    //   //console.log(deltas)
+
+    //   // reply only to the requester:
+    //   sock.send(JSON.stringify({
+    //     cmd: "deltas",
+    //     date: Date.now(),
+    //     data: deltas //OTHistory
+    //   }));
+
+    // } break;
+    // case "updated_scene": {
+    //   // // Example sending some greetings:
+
+    //   // ensure the blank scene isn't overwritten
+    //   ensureBlank = __dirname + '/scene_files/blank_scene.json'
+    //   if (scenefile === ensureBlank){
+    //     console.log('writing to blank scene prevented')
+    //   } else {
+    //     let scenestr = JSON.stringify(msg.scene, null, "\t");
+    //     fs.writeFileSync(scenefile, scenestr, "utf-8");
+    //     //console.log(scenestr)
+    //   }
+
+    // } break;
+
+    // case "loadScene": {
+    //   load_scene(msg.data);
+    // } break;
+
+    // case "user_pose": {
+    //   //console.log(JSON.stringify(msg.pose))
+    //   // broadcast this data... 
+
+    //   recordPose = {
+    //     cmd: "user_pose",
+    //     date: Date.now(),
+    //     pose: msg.pose
+    //   }
+    //   let poseDelta = JSON.stringify(recordPose)
+    //   send_all_clients(poseDelta);
+
+    //   const limiter = new bottleneck({
+    //     maxConcurrent: 1,
+    //     minTime: 30
+    //   });
+
+
+    //   // Limit storing of pose data to rate of 30fps
+    //   limiter.schedule(() => {
+    //     //OTHistory.push(poseDelta)
+    //     //fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(recordPose), "utf-8")
+
+    //   });
+    // } break;
+    default: console.log("received JSON", msg, typeof msg);
+  }
 }
