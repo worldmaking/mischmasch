@@ -171,7 +171,7 @@ if (process.argv[3]){
   name = username.sync()
 }
 
-let thisClientConfiguration = {
+let localConfig = {
   // get a username for this machine:
   username: name,
   // ip is figured out during init()
@@ -188,17 +188,17 @@ async function init() {
 
   try {
     // get our public IP address:
-    thisClientConfiguration.ip = await publicIP.v4()
+    localConfig.ip = await publicIP.v4()
     //=> '46.5.21.123'
-    //thisClientConfiguration.ip = await publicIP.v6()
+    //localConfig.ip = await publicIP.v6()
     //=> 'fe80::200:f8ff:fe21:67cf'
   } catch(e) {
     console.log("error resolving public IP", e);
     process.exit();
   }
 
-  console.log('my hostname', thisClientConfiguration.username)
-  console.log('my public IP is', thisClientConfiguration.ip);
+  console.log('my hostname', localConfig.username)
+  console.log('my public IP is', localConfig.ip);
 
   // connect:
   teapartyWebsocket;
@@ -235,14 +235,14 @@ async function init() {
   //   });
    
   //   // why not say hello?
-  //   wsguest.send('good afternoon from ' + thisClientConfiguration.username);
+  //   wsguest.send('good afternoon from ' + localConfig.username);
   // });
 
   // inform the teaparty teaparty of our important details
   let thisClient = JSON.stringify({
     cmd: 'newClient',
     date: Date.now(), 
-    data: thisClientConfiguration,
+    data: localConfig,
   })
 
   teapartyWebsocket.send(thisClient);
@@ -284,14 +284,14 @@ async function init() {
 
         // TODO if the host has changed, need to closse current deltaWebsocket and
         // TODO connect to new, or start host if assigned
-        if(thisClientConfiguration.username === msg.data.host){
+        if(localConfig.username === msg.data.host){
           // if previously connected to a different host, first close our pal websocket
           if (deltaWebsocket){
             deltaWebsocket.close()
           }
           // we are the host! need to start a websocket server
           console.log('host')
-          console.log('check username: ', thisClientConfiguration.username)
+          console.log('check username: ', localConfig.username)
 
           host()
         } else {
@@ -324,7 +324,7 @@ async function init() {
         let addList = [];
         for (let username in teapartyPals) {
           // don't add ourselves!
-          //if (guest == thisClientConfiguration.username) continue;
+          //if (guest == localConfig.username) continue;
           // don't add if we already know about them
           if (pals[username]) continue;
           // otherwise, we need to add them
@@ -746,7 +746,7 @@ function startLocalWebsocket(){
     ws.send(highFive)
     // do any
     console.log("server received a connection");
-    console.log("server has "+ws.clients.size+" connected clients");
+    // console.log("server has "+ws.clients.size+" connected clients");
     //	ws.id = uuid.v4();
     const id = ++sessionId;
     const location = url.parse(req.url, true);
@@ -787,8 +787,18 @@ function startLocalWebsocket(){
       } else {
         try {
           // handlemessage(JSON.parse(e), ws, id);
+          let msg = JSON.parse(e)
+          console.log(msg)
+          switch(msg.cmd){
+            case 'vrClientStatus':
+              localConfig.vr = msg.data
+              teapartyWebsocket.send
+            break;
 
-          console.log()
+            case 'get_scene':
+
+            break
+          }
         } catch (e) {
           console.log('bad JSON: ', e);
         }
