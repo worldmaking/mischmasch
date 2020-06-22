@@ -894,7 +894,7 @@ function animate() {
 	fbo_program.begin();
 	fbo_program.uniform("u_scale", 1, 1);
 	fbo_vao.bind().draw().unbind();
-	fbo_program.end();
+	fbo_program.end();	
 
 	// Swap buffers
 	glfw.swapBuffers(window);
