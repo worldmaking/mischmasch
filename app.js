@@ -401,7 +401,13 @@ function host(){
       
   // whenever a pal connects to this websocket:
   deltaWebsocket.on('connection', function(palWebsocket, req) {
-
+    
+    let highFive = JSON.stringify({
+      cmd: 'highFive',
+      date: Date.now(), 
+      data: 'hello from Host',
+    })
+    palWebsocket.send(highFive)
     // do any
     console.log("server received a connection");
     console.log("server has "+deltaWebsocket.clients.size+" connected clients");
@@ -472,7 +478,7 @@ function pal(ip, port){
       let highFive = JSON.stringify({
         cmd: 'highFive',
         date: Date.now(), 
-        data: 'hello',
+        data: 'hello from Pal',
       })
       deltaWebsocket.send(highFive)
 
