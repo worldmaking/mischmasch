@@ -49,6 +49,24 @@ const bottleneck = require('Bottleneck')
 const got = require("./got/got")
 
 
+// all websockets
+
+// teapartyWebsocket operates on port 8090, runs as a client, and connects to the 
+// teaparty (heroku cloud instance)
+let teapartyWebsocket
+
+// deltaWebsocket operates on port 8080, and is assigned as either server or client 
+// by the teaparty. it's what communicates with all other machines (for got deltas)
+let deltaWebsocket
+
+// localWebsocket operates on port 8081, and handles communication between other 
+// clients apps like VR and the max client
+let localWebsocket
+
+// still up for debate, but this is for non-delta data (like HMD and controller pos), 
+// should be broadcast to all nodes. so likely a ws is not the right choice, 
+// instead see about a mesh implementation
+let p2pWebsocket 
 
 /// paths
 const project_path = process.cwd();
@@ -90,38 +108,35 @@ console.log("client_path", client_path);
 // (.bash etc. profile is not inherited automatically)
 //process.env.PATH = [process.env.PATH, "/usr/local/bin"].join(":");
 
-// list of pals as notifed from the teaparty:
-let pals = {};
-
 // figure out where the teaparty for to the teaparty is?
 let isConnectedToteaparty = 0; // becomes 1 when connected to teaparty
-const teapartyteapartyAddress = 
+const teapartyAddress = 
     (process.argv[2] === 'lan' && process.argv[3]) ? process.argv[3]
   : (process.argv[2] === 'localhost') ? '127.0.0.1'
   : "teaparty.herokuapp.com";
-const teapartyteapartyWebsocketPort = '8090';
-const teapartyteapartyWebsocketAddress = 
-  (process.argv[2] === 'lan' && process.argv[3]) || (process.argv[2] === 'localhost') ? `ws://${teapartyteapartyAddress}:${teapartyteapartyWebsocketPort}`
-  : `ws://${teapartyteapartyAddress}/${teapartyteapartyWebsocketPort}`;
+const teapartyWebsocketPort = '8090';
+const teapartyWebsocketAddress = 
+  (process.argv[2] === 'lan' && process.argv[3]) || (process.argv[2] === 'localhost') ? `ws://${teapartyAddress}:${teapartyWebsocketPort}`
+  : `ws://${teapartyAddress}/${teapartyWebsocketPort}`;
 
-// this is the port used for P2P connections
-const teapartyP2PWebsocketPort = 8081;
+// TODO this is the port used for P2P connections
+// const teapartyP2PWebsocketPort = 8081;
 
 const rwsOptions = {
   // make rws use the webSocket module implementation
   WebSocket: webSocket, 
   // ms to try reconnecting:
-  connectionTimeout: 1000,
+  connectionTimeout: 30000,
   //debug:true, 
 }
 
 // attempt to connect to teaparty teaparty
 // returns the websocket via a Promise
-function wsteapartyConnect() {
+function teapartyWebsocketConnect() {
   return new Promise((resolve, reject) => {
     // create a websocket to find out who is at the teaparty:
-    console.log(`attempting to connect to teaparty at ${teapartyteapartyWebsocketAddress}`)
-    let wsteaparty = new ReconnectingWebSocket(teapartyteapartyWebsocketAddress, [], rwsOptions);
+    console.log(`attempting to connect to teaparty at ${teapartyWebsocketAddress}`)
+    teapartyWebsocket = new ReconnectingWebSocket(teapartyWebsocketAddress, [], rwsOptions);
     // show a progress bar while connecting:
     let bar = new ProgressBar(':bar', { total: 25 });
     let progressBarTimer = setInterval(function () {
@@ -129,28 +144,35 @@ function wsteapartyConnect() {
       if (bar.complete) {
           clearInterval(progressBarTimer)
           // TODO: should it give up like this, or maybe ask user if they want to retry?
-          reject(`connection timeout: ${teapartyteapartyAddress} might be down`);
+          reject(`connection timeout: ${teapartyAddress} might be down`);
       }
     }, 1000);
     
     // fail the promise if the server responds with an error
-    wsteaparty.addEventListener('error', (error) => {
-      console.log(`connection error from ${teapartyteapartyAddress}:`)
+    teapartyWebsocket.addEventListener('error', (error) => {
+      console.log(`connection error from ${teapartyAddress}:`)
       clearInterval(progressBarTimer); 
       reject(error.error);
     });
     
     // on successful connection to teaparty:
-    wsteaparty.addEventListener('open', () => {
+    teapartyWebsocket.addEventListener('open', () => {
       clearInterval(progressBarTimer);
-      resolve(wsteaparty);
+      resolve(teapartyWebsocket);
     });
   });
 }
 
+let name;
+if (process.argv[3]){
+  name = process.argv[3]
+} else {
+  name = username.sync()
+}
+
 let thisClientConfiguration = {
   // get a username for this machine:
-  username: username.sync(),
+  username: name,
   // ip is figured out during init()
   ip: null, 
   // eventually, app.js will maintain status of connected client(s) and report them to the teaparty
@@ -178,19 +200,19 @@ async function init() {
   console.log('my public IP is', thisClientConfiguration.ip);
 
   // connect:
-  let wsteaparty;
+  teapartyWebsocket;
   try{
-    wsteaparty = await wsteapartyConnect();
+    teapartyWebsocket = await teapartyWebsocketConnect();
   } catch(e) {
     console.log("error connecting to teaparty maître d'", e);
     console.trace()
     process.exit();
   }
   console.log('\nconnected to teaparty\n')
-  // TODO Q: shouldn't we be able to ask wsteaparty this, rather than duplicating in a local variable?
+  // TODO Q: shouldn't we be able to ask teapartyWebsocket this, rather than duplicating in a local variable?
   isConnectedToteaparty = 1;
 
-  wsteaparty.addEventListener('close', () => {
+  teapartyWebsocket.addEventListener('close', () => {
     isConnectedToteaparty = 0;
     console.log("teaparty teaparty connection closed");
     // TODO now what? 
@@ -199,21 +221,21 @@ async function init() {
   });
 
 
-  // start our own ws server for P2P communication (only for use with controller data):
-  const wsP2P = new webSocketServer({port: teapartyP2PWebsocketPort});
+  // TODO start our own ws server for P2P communication (only for use with controller data):
+  // const wsP2P = new webSocketServer({port: teapartyP2PWebsocketPort});
 
-  wsP2P.on('connection', function connection(wsguest) {
+  // wsP2P.on('connection', function connection(wsguest) {
 
-    // TODO at this point we should be adding the wsguest to our list of incoming pals somehow
+  //   // TODO at this point we should be adding the wsguest to our list of incoming pals somehow
 
-    wsguest.on('message', function incoming(message) {
-      console.log('received: %s', message, 'from guest', wsguest);
-      // TODO dispatch this message accordingly
-    });
+  //   wsguest.on('message', function incoming(message) {
+  //     console.log('received: %s', message, 'from guest', wsguest);
+  //     // TODO dispatch this message accordingly
+  //   });
    
-    // why not say hello?
-    wsguest.send('good afternoon from ' + thisClientConfiguration.username);
-  });
+  //   // why not say hello?
+  //   wsguest.send('good afternoon from ' + thisClientConfiguration.username);
+  // });
 
   // inform the teaparty teaparty of our important details
   let thisClient = JSON.stringify({
@@ -222,15 +244,15 @@ async function init() {
     data: thisClientConfiguration,
   })
 
-  wsteaparty.send(thisClient);
+  teapartyWebsocket.send(thisClient);
 
   // TODO: should have a way to send a message when we leave to notify teaparty we are gone
   // send a "goodbye" message
-  // call wsteaparty.close()
+  // call teapartyWebsocket.close()
   // also notify partygoers via wsP2P.close(() => {});
 
   function sayGoodbye() {
-    wsteaparty.close();
+    teapartyWebsocket.close();
   }
 
   process.on('SIGINT', function() {
@@ -242,7 +264,7 @@ async function init() {
 
 
 
-  wsteaparty.addEventListener('message', (data) => {
+  teapartyWebsocket.addEventListener('message', (data) => {
     let msg = JSON.parse(data.data);
     let cmd = msg.cmd;
     switch (cmd) {
@@ -257,12 +279,31 @@ async function init() {
         let teapartyHost = msg.data.host;
 
         // TODO messages to invite being the host (accept or reject/timeout)
+
+        // TODO if the host has changed, need to closse current deltaWebsocket and
+        // TODO connect to new, or start host if assigned
         if(thisClientConfiguration.username === msg.data.host){
+          // if previously connected to a different host, first close our pal websocket
+          if (deltaWebsocket){
+            deltaWebsocket.close()
+          }
           // we are the host! need to start a websocket server
           console.log('host')
+          console.log('check username: ', thisClientConfiguration.username)
+
           host()
         } else {
           // we are a pal! need to connect to host's websocket server
+
+          // if previously connected to a different host, first close our pal websocket
+          if (deltaWebsocket){
+            deltaWebsocket.close()
+          }
+          // get host's ip
+          hostIP = teapartyPals[teapartyHost].ip
+          console.log('host ip', hostIP)
+          pal(hostIP, '8080')
+          console.log('running deltaWebsocket as pal')
         }
 
         // update our list of Pals here
@@ -271,9 +312,11 @@ async function init() {
         // TODO: want ot know which guest is host, and make sure we have a p2p connection to them
         // (unless we are the host!)
         // TODO: deal with case that we WERE host but are not any longer
+        
         // TODO possibly also p2p connections to all other members, if we want to have direct lines?
         // (e.g. for sending head/hand position data with minimal lag)
-
+        //? not sure why this is necessary:
+        /* 
         let addList = [];
         for (let username in teapartyPals) {
           // don't add ourselves!
@@ -297,16 +340,16 @@ async function init() {
           for (let username of removeList) {
             delete pals[username];
           }
-          console.log("received from teaparty: updated guestlist (removed)", msg.data)
+          // console.log("received from teaparty: updated guestlist (removed)", msg.data)
         }
         if (addList.length) {
           // console.log("adding", addList);
           for (let o of addList) {
             pals[o.username] = o;
           }
-          console.log("received from teaparty: updated guestlist (added)", msg.data)
+          // console.log("received from teaparty: updated guestlist (added)", msg.data)
         }
-
+        */
         // TODO implement these actions in separate functions, as they may be triggered in other ways.
         // adding should attempt to create a p2p rws-socket
         // removing should cancel such a socket
@@ -341,25 +384,25 @@ init();
 
 
 
-module.exports = {
-  wsteapartyConnect: wsteapartyConnect
-}
-
+// module.exports = {
+//   teapartyWebsocketConnect: teapartyWebsocketConnect
+// }
 
 function host(){
-  const wss = new webSocket.Server({ 
+  console.log('\n\nStarting up server\n\n')
+  deltaWebsocket = new webSocket.Server({ 
     // server: server,
     port: 8080,
     maxPayload: 1024 * 1024, 
   });
     // whenever a client connects to this websocket:
   let sessionId = 0;
-  console.log('running server')
-  wss.on('connection', function(ws, req) {
+  console.log('running deltaWebsocket as HOST')
+  deltaWebsocket.on('connection', function(ws, req) {
 
     // do any
     console.log("server received a connection");
-    console.log("server has "+wss.clients.size+" connected clients");
+    console.log("server has "+deltaWebsocket.clients.size+" connected clients");
     //	ws.id = uuid.v4();
     const id = ++sessionId;
     const location = url.parse(req.url, true);
@@ -398,7 +441,7 @@ function host(){
     // You might use location.query.access_token to authenticate or share sessions
     // or req.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
     
-    ws.on('error', function (e) {
+    deltaWebsocket.on('error', function (e) {
       if (e.message === "read ECONNRESET") {
         // ignore this, client will still emit close event
       } else {
@@ -407,14 +450,14 @@ function host(){
     });
 
     // what to do if client disconnects?
-    ws.on('close', function(connection) {
+    deltaWebsocket.on('close', function(connection) {
       //clearInterval(handShakeInterval);
       console.log("connection closed");
           console.log("server has "+wss.clients.size+" connected clients");
     });
     
     // respond to any messages from the client:
-    ws.on('message', function(e) {
+    deltaWebsocket.on('message', function(e) {
       if (e instanceof Buffer) {
         // get an arraybuffer from the message:
         const ab = e.buffer.slice(e.byteOffset,e.byteOffset+e.byteLength);
@@ -441,4 +484,18 @@ function host(){
       
       //send_all_clients("hi")
   });
+}
+
+function pal(ip, port){
+
+  deltaWebsocket = new webSocket('ws://' + ip + ':' + port);
+ 
+  deltaWebsocket.on('open', function open() {
+    ws.send('something');
+  });
+  
+  deltaWebsocket.on('message', function incoming(data) {
+    console.log(data);
+  });
+
 }
