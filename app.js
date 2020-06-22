@@ -306,7 +306,7 @@ async function init() {
             hostIP = process.argv[2]
           } else {
             hostIP = teapartyPals[teapartyHost].ip          }          
-            pal(hostIP, '8080')
+            pal(hostIP, '8081')
             console.log('running deltaWebsocket as pal')
         }
 
@@ -393,7 +393,7 @@ init();
 function host(){
   deltaWebsocket = new webSocket.Server({ 
     // server: server,
-    port: 8080,
+    port: 8081,
     maxPayload: 1024 * 1024, 
   });
   let sessionId = 0;
@@ -723,4 +723,77 @@ function handlemessage(msg, sock, id) {
     // } break;
     default: console.log("received JSON", msg, typeof msg);
   }
+}
+
+
+function startLocalWebsocket(){
+  localWebsocket = new webSocket.Server({ 
+    // server: server,
+    port: 8080,
+    maxPayload: 1024 * 1024, 
+  });
+  let sessionId = 0;
+  console.log('running deltaWebsocket as HOST')
+      
+  // whenever a pal connects to this websocket:
+  localWebsocket.on('connection', function(ws, req) {
+    
+    let highFive = JSON.stringify({
+      cmd: 'highFive',
+      date: Date.now(), 
+      data: 'hello from Host',
+    })
+    ws.send(highFive)
+    // do any
+    console.log("server received a connection");
+    console.log("server has "+ws.clients.size+" connected clients");
+    //	ws.id = uuid.v4();
+    const id = ++sessionId;
+    const location = url.parse(req.url, true);
+    // ip = req.connection.remoteAddress.split(':')[3] 
+    ip = req.headers.host.split(':')[0]
+    if(!ip){
+      // console.log('vr', req.connection)
+      ip = req.ip
+    }
+    //console.log(ip)
+    // const location = urlw.parse(req.url, true);
+    // console.log(location)
+
+    ws.on('error', function (e) {
+      if (e.message === "read ECONNRESET") {
+        // ignore this, client will still emit close event
+      } else {
+        console.error("websocket error: ", e.message);
+      }
+    });
+
+    // what to do if client disconnects?
+    ws.on('close', function(connection) {
+      //clearInterval(handShakeInterval);
+      console.log("connection closed");
+          console.log("server has "+ws.clients.size+" connected clients");
+    });
+    
+    // respond to any messages from the client:
+    ws.on('message', function(e) {
+      if (e instanceof Buffer) {
+        // get an arraybuffer from the message:
+        const ab = e.buffer.slice(e.byteOffset,e.byteOffset+e.byteLength);
+        //console.log("received arraybuffer", ab);
+        // as float32s:
+        //console.log(new Float32Array(ab));
+
+      } else {
+        try {
+          // handlemessage(JSON.parse(e), ws, id);
+
+          console.log()
+        } catch (e) {
+          console.log('bad JSON: ', e);
+        }
+      }
+    });
+
+  });
 }
