@@ -4,7 +4,7 @@
   "description": "Modular Synthesis in VR",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node app.js",
     "test": "jest"
   },
   "jest": {
