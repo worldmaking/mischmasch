@@ -109,6 +109,11 @@ function colorFromString(str) {
 
 ////////////////////////////////////////////////////////////////
 
+let nav = {
+	pos: [],
+	quat: []
+}
+
 const SHAPE_BOX = 0;
 const SHAPE_BUTTON = 1;
 const SHAPE_CYLINDER = 2;
@@ -789,6 +794,25 @@ let sceneGraph = {
 	},
 }
 
+/*
+for key events:
+glfw.setKeyCallback(window, function(...args) {
+    console.log("key event", args);
+})
+for mouse position:
+glfw.setCursorPosCallback(window, (window, px, py) => {
+    // convert px,py to normalized 0..1 coordinates:
+    const pix_dim = vec2.div([1, 1], 
+        glfw.getWindowContentScale(window), 
+        glfw.getFramebufferSize(window)
+    );
+    // -1..1 in each axis:
+    let ndcPoint = [+2pxpix_dim[0] - 1, -2pypix_dim[1] + 1 ];
+});
+
+vec3.transformQuat(up, [0, 1, 0], nav.quat) - UP vector
+vec3.transformQuat(forward, [0, 0, -1], nav.quat) - FORWARD vector
+*/
 
 
 let t = glfw.getTime();
