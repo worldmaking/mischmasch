@@ -794,6 +794,34 @@ let sceneGraph = {
 	},
 }
 
+glfw.setKeyCallback(window, function(...args) {
+	console.log("key event", args);
+	//W
+	switch(args[1]){
+		case 87: //W
+			break;
+		case 83: //S
+			break;
+		case 65: //A
+			break;
+		case 68: //D
+			break;
+		default:
+			break;
+	}
+	//args[0] key : args[2] hold = 2 pressed = 1 released = 0
+});
+
+// glfw.setCursorPosCallback(window, (window, px, py) => {
+//     // convert px,py to normalized 0..1 coordinates:
+//     const pix_dim = vec2.div([1, 1], 
+//         glfw.getWindowContentScale(window), 
+//         glfw.getFramebufferSize(window)
+//     );
+//     // -1..1 in each axis:
+// 	let ndcPoint = [+2(px(pix_dim[0])) - 1, -2(py(pix_dim[1])) + 1 ];
+// 	console.log(ndcPoint);
+// });
 /*
 for key events:
 glfw.setKeyCallback(window, function(...args) {
