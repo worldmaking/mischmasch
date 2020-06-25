@@ -100,16 +100,6 @@ console.log("client_path", client_path);
 	});
 }
 
-
-// note we're not setting up an express instance. 
-
-
-// fix for OSX because /usr/local/bin is not inherited by the Node.js script 
-// (.bash etc. profile is not inherited automatically)
-//process.env.PATH = [process.env.PATH, "/usr/local/bin"].join(":");
-
-// figure out where the teaparty for to the teaparty is?
-let isConnectedToteaparty = 0; // becomes 1 when connected to teaparty
 const teapartyAddress = 
     (process.argv[2] === 'lan' && process.argv[3]) ? process.argv[3]
   : (process.argv[2] === 'localhost') ? '127.0.0.1'
@@ -180,8 +170,13 @@ let localConfig = {
   vr: null,
   sound: null,
   // for example, if someone wanted to observe a performance but not be a player:
-  spectator: 0
+  spectator: 0,
+  host: null
 };
+
+let guestlist = {
+
+}
 
 // run everything inside an async() so we can await as needed:
 async function init() {
@@ -207,7 +202,8 @@ async function init() {
   } catch(e) {
     console.log("error connecting to teaparty maître d'", e);
     console.trace()
-    process.exit();
+    init()
+    // process.exit();
   }
   console.log('\nconnected to teaparty\n')
   // TODO Q: shouldn't we be able to ask teapartyWebsocket this, rather than duplicating in a local variable?
@@ -275,7 +271,7 @@ async function init() {
       // should be received at reasonable frequency (i.e. also serves as a ping)
       case 'guestlist': {
         console.log(msg.data)
-
+        guestlist = msg.data
         let teapartyPals = msg.data.pals;
         let teapartyHeadCount = msg.data.headcount;
         let teapartyHost = msg.data.host;
@@ -289,11 +285,17 @@ async function init() {
           if (deltaWebsocket){
             deltaWebsocket.close()
           }
+          if (localWebsocket){
+            localWebsocket.close()
+          }
           // we are the host! need to start a websocket server
           console.log('host')
           console.log('check username: ', localConfig.username)
+          localConfig.host = msg.data.host
+          // start the localWebsocket, informing it that the p2pSignalServer runs on this machine
 
-          host()
+          startLocalWebsocket('localhost', 8082)
+          host('localhost')
         } else {
           // we are a pal! need to connect to host's websocket server
 
@@ -301,11 +303,16 @@ async function init() {
           if (deltaWebsocket){
             deltaWebsocket.close()
           }
+          if (localWebsocket){
+            localWebsocket.close()
+          }
           // get host's ip
           if (process.argv[2] === 'localhost'){
             hostIP = process.argv[2]
           } else {
-            hostIP = teapartyPals[teapartyHost].ip          }          
+            hostIP = teapartyPals[teapartyHost].ip          
+          }   
+            startLocalWebsocket(hostIP, 8082)       
             pal(hostIP, '8081')
             console.log('running deltaWebsocket as pal')
         }
@@ -391,6 +398,21 @@ init();
 
 
 function host(){
+
+
+  //! host also has to run the p2p-mesh signalling server, because heroku only allows one port on the server instance
+  const createSignalingBroker = require('coven/server');
+  const DEFAULT_PORT = 8082;
+  const PORT = +(process.env.PORT || DEFAULT_PORT);
+ 
+  createSignalingBroker({
+    port: PORT,
+    onMessage({ room, type, origin, target }) {
+      console.log(`[${room}::${type}] ${origin} -> ${target || '<BROADCAST>'}`);
+    },
+  });
+
+  // ws for deltas
   deltaWebsocket = new webSocket.Server({ 
     // server: server,
     port: 8081,
@@ -726,24 +748,29 @@ function handlemessage(msg, sock, id) {
 }
 
 
-function startLocalWebsocket(){
+function startLocalWebsocket(ip, port){
+
+
   localWebsocket = new webSocket.Server({ 
     // server: server,
     port: 8080,
     maxPayload: 1024 * 1024, 
   });
   let sessionId = 0;
-  console.log('running deltaWebsocket as HOST')
+  console.log('running localWebsocket Server')
       
   // whenever a pal connects to this websocket:
   localWebsocket.on('connection', function(ws, req) {
-    
-    let highFive = JSON.stringify({
-      cmd: 'highFive',
+    // inform client that the p2p signal server is running on localhost
+    let configp2p = JSON.stringify({
+      cmd: 'p2pSignalServer',
       date: Date.now(), 
-      data: 'hello from Host',
+      data: {
+        ip: ip, 
+        port: port
+      }
     })
-    ws.send(highFive)
+    ws.send(configp2p)
     // do any
     console.log("server received a connection");
     // console.log("server has "+ws.clients.size+" connected clients");
@@ -772,7 +799,7 @@ function startLocalWebsocket(){
     ws.on('close', function(connection) {
       //clearInterval(handShakeInterval);
       console.log("connection closed");
-          console.log("server has "+ws.clients.size+" connected clients");
+          // console.log("server has "+ws.clients.size+" connected clients");
     });
     
     // respond to any messages from the client:
@@ -808,4 +835,4 @@ function startLocalWebsocket(){
   });
 }
 
-startLocalWebsocket()
+
