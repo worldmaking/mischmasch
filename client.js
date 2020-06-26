@@ -91,7 +91,7 @@ glutils = require(path.join(nodeglpath, "glutils.js"))
 const got = require("./got/got.js")
 
 const USEVR = 0;
-const USEWS = true;
+const USEWS = 1;
 const url = 'ws://localhost:8080'
 const demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
 const shaderpath = path.join(__dirname, "shaders")
@@ -1065,9 +1065,6 @@ async function init() {
 	} else {
 		localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
 		sceneGraph.rebuild(localGraph);
-
-		// just for debugging:
-		sceneGraph.addLabel(sceneGraph.root, "DEBUG", [0,0,0], 1);
 	}
 }
 
