@@ -399,37 +399,40 @@ function makeSceneGraph(renderer, gl) {
 			// loop over the nodes in the graph,
 			// creating instances as needed
 			let names = Object.keys(graph.nodes); //.filter(s => s != "_props");
-			for (const name of names) {
-				this.rebuildNode(name, graph.nodes[name], this.root)
-			}
-
-			// now loop over arcs:
-			this.line_instances.allocate(graph.arcs.length);
-			for (const arc of graph.arcs) {
-				let line = this.line_instances.instances[this.line_instances.count];
-				line.from = this.paths[ arc[0] ];
-				line.to = this.paths[ arc[1] ];
-
-				if (!line.from || !line.to) continue;
-
-				vec4.set(line.i_color, 1, 1, 1, 1);
-				line.name = line.from.name + ">" + line.to.name
-				this.line_instances.count++;
-
-				// add jack cylinders:
-				for (let parent of [line.from, line.to]) {
-					let obj = this.getNextModule(parent);
-					obj.name = line.name +":" + parent.name;
-					obj.zoom = UI_DEFAULT_ZOOM
-					obj.pos = [0, 0, 0]
-					obj.quat = parent.i_quat; //[0, 0, 0, 1]
-					obj.dim = [1/4, 1/4, 1/2]
-					obj.color = [0.75, 0.75, 0.75, 1]
-					obj.shape = SHAPE_CYLINDER;
-					obj.value = 0;
+			if (names.length) {
+				for (const name of names) {
+					this.rebuildNode(name, graph.nodes[name], this.root)
 				}
+			}
+			if (graph.arcs.length) {
+				// now loop over arcs:
+				this.line_instances.allocate(graph.arcs.length);
+				for (const arc of graph.arcs) {
+					let line = this.line_instances.instances[this.line_instances.count];
+					line.from = this.paths[ arc[0] ];
+					line.to = this.paths[ arc[1] ];
 
-				
+					if (!line.from || !line.to) continue;
+
+					vec4.set(line.i_color, 1, 1, 1, 1);
+					line.name = line.from.name + ">" + line.to.name
+					this.line_instances.count++;
+
+					// add jack cylinders:
+					for (let parent of [line.from, line.to]) {
+						let obj = this.getNextModule(parent);
+						obj.name = line.name +":" + parent.name;
+						obj.zoom = UI_DEFAULT_ZOOM
+						obj.pos = [0, 0, 0]
+						obj.quat = parent.i_quat; //[0, 0, 0, 1]
+						obj.dim = [1/4, 1/4, 1/2]
+						obj.color = [0.75, 0.75, 0.75, 1]
+						obj.shape = SHAPE_CYLINDER;
+						obj.value = 0;
+					}
+
+					
+				}
 			}
 			this.line_instances.count = graph.arcs.length;
 
@@ -993,6 +996,12 @@ function serverConnect() {
 	socket.onopen = () => {
 		console.log("websocket connected to "+url);
 		socket.send(JSON.stringify({ cmd:"get_scene"})) 
+		// reset our local scene:
+		localGraph = {
+			nodes: {},
+			arcs: []
+		};
+		sceneGraph.rebuild(localGraph);
 	}
 	socket.onerror = (error) => {
 	  console.error(`WebSocket error: ${error}`)
@@ -1062,10 +1071,11 @@ async function init() {
 	// server connect
 	if (USEWS) {
 		serverConnect();
-	} else {
-		localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
-		sceneGraph.rebuild(localGraph);
-	}
+	} 
+	// default graph until server connects:
+	localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
+	sceneGraph.rebuild(localGraph);
+	
 }
 
 function shutdown() {
