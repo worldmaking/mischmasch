@@ -43,7 +43,7 @@ const http = require('http');
 const express = require('express');
 const fs = require("fs");
 const path = require("path");
-const bottleneck = require('Bottleneck')
+// const bottleneck = require('Bottleneck')
 const got = require("./got/got")
 
 
@@ -405,7 +405,7 @@ function host(){
   });
 
 
-  deltaWebsocket = new webSocket.Server({ 
+  deltaWebsocketServer = new webSocket.Server({ 
     // server: server,
     port: 8081,
     maxPayload: 1024 * 1024, 
@@ -415,17 +415,17 @@ function host(){
   
   
   // whenever a pal connects to this websocket:
-  deltaWebsocket.on('connection', function(palWebsocket, req) {
+  deltaWebsocketServer.on('connection', function(deltaWebsocket, req) {
     
     let highFive = JSON.stringify({
       cmd: 'highFive',
       date: Date.now(), 
       data: 'hello from Host',
     })
-    palWebsocket.send(highFive)
+    deltaWebsocket.send(highFive)
     // do any
     console.log("server received a connection");
-    console.log("server has "+deltaWebsocket.clients.size+" connected clients");
+    console.log("server has "+deltaWebsocketServer.clients.size+" connected clients");
     //	ws.id = uuid.v4();
     const id = ++sessionId;
     const location = url.parse(req.url, true);
@@ -439,7 +439,7 @@ function host(){
     // const location = urlw.parse(req.url, true);
     // console.log(location)
 
-    palWebsocket.on('error', function (e) {
+    deltaWebsocket.on('error', function (e) {
       if (e.message === "read ECONNRESET") {
         // ignore this, client will still emit close event
       } else {
@@ -448,14 +448,14 @@ function host(){
     });
 
     // what to do if client disconnects?
-    palWebsocket.on('close', function(connection) {
+    deltaWebsocket.on('close', function(connection) {
       //clearInterval(handShakeInterval);
       console.log("connection closed");
-          console.log("server has "+deltaWebsocket.clients.size+" connected clients");
+          console.log("server has "+deltaWebsocketServer.clients.size+" connected clients");
     });
     
     // respond to any messages from the client:
-    palWebsocket.on('message', function(e) {
+    deltaWebsocket.on('message', function(e) {
       console.log(e)
       if (e instanceof Buffer) {
         // get an arraybuffer from the message:
@@ -474,7 +474,7 @@ function host(){
     });
 
   });
-}
+} 
 
 // attempt to connect to Host
 function pal(ip, port){
@@ -863,6 +863,9 @@ function runGOT(src, delta){
       if (teapartyHost === localConfig.username){
         // if this app.js is host, just send using the localWebsocket
         localWebsocket.send(response)
+      } else {
+        deltaWebsocket.send(response)
+
       }
       // send_all_clients(JSON.stringify(response));
 }
