@@ -241,7 +241,11 @@ async function init() {
 
   function sayGoodbye() {
     teapartyWebsocket.close();
-    deltaWebsocket.close()
+    if (localConfig.username === teapartyHost){
+      deltaWebsocketServer.close()
+    } else {
+      deltaWebsocket.close()
+    }
   }
 
   process.on('SIGINT', function() {
