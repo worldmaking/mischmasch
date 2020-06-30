@@ -179,7 +179,11 @@ let localConfig = {
   sound: null,
   // for example, if someone wanted to observe a performance but not be a player:
   spectator: 0,
-  host: null
+  host: null,
+  p2pSignalServer: {
+    ip: null,
+    port: null
+  }
 };
 
 let guestlist = {
@@ -188,8 +192,9 @@ let guestlist = {
 
 // run everything inside an async() so we can await as needed:
 async function init() {
-
+  
   try {
+    startLocalWebsocket()
     // get our public IP address:
     localConfig.ip = await publicIP.v4()
     //=> '46.5.21.123'
@@ -276,7 +281,7 @@ async function init() {
 
         // TODO if the host has changed, need to closse current deltaWebsocket and
         // TODO connect to new, or start host if assigned
-        if(localConfig.username === msg.data.host && !deltaWebsocketServer){
+        if(localConfig.username === teapartyHost && !deltaWebsocketServer){
 
           // if previously connected to a different host, first close our pal websocket
           if (deltaWebsocket){
@@ -290,14 +295,16 @@ async function init() {
           console.log('check username: ', localConfig.username)
           localConfig.host = msg.data.host
           // start the localWebsocket, informing it that the p2pSignalServer runs on this machine
-
-          startLocalWebsocket('localhost', 8082)
+          localConfig.p2pSignalServer.port = 8082
+          localConfig.p2pSignalServer.ip = 'localhost'
+          
           host('localhost')
-        } else  if (localConfig.username != msg.data.host && !deltaWebsocket){
+        } else  if (localConfig.username != teapartyHost && !deltaWebsocket){
           // we are a pal! need to connect to host's websocket server
 
           // if previously connected to a different host, first close our pal websocket
           if (deltaWebsocket){
+            console.log('closing deltaWebsocket')
             deltaWebsocket.close()
           }
           if (localWebsocket){
@@ -309,7 +316,7 @@ async function init() {
           } else {
             hostIP = teapartyPals[teapartyHost].ip          
           }   
-            startLocalWebsocket(hostIP, 8082)       
+            //startLocalWebsocket(hostIP, 8082)       
             pal(hostIP, '8081')
             console.log('running deltaWebsocket as pal')
         }
@@ -397,7 +404,7 @@ init();
 function host(){
 
   scenefile = JSON.parse(fs.readFileSync(__dirname + "/got/simple_scene.json"))
-  console.log(scenefile)
+  //console.log(scenefile)
 
   //! host also has to run the p2p-mesh signalling server, because heroku only allows one port on the server instance
   const p2pSignalBroker = require('coven/server');
@@ -412,6 +419,8 @@ function host(){
   });
 
 
+
+
   deltaWebsocketServer = new webSocket.Server({ 
     // server: server,
     port: 8081,
@@ -420,7 +429,12 @@ function host(){
   let sessionId = 0;
   console.log('running deltaWebsocket as HOST')
   
-  
+  let configp2p = JSON.stringify({
+    cmd: 'p2pSignalServer',
+    date: Date.now(), 
+    data: localConfig.p2pSignalServer
+  })
+  sendAllLocalClients(configp2p)
   // whenever a pal connects to this websocket:
   deltaWebsocketServer.on('connection', function(deltaWebsocket, req) {
     
@@ -485,10 +499,44 @@ function host(){
 
 // attempt to connect to Host
 function pal(ip, port){
-  console.log(ip, port)
+
+  // update the p2p webrtc client(s) with the new host ip/port
+  //TODO use the send_all_clients function for this. 
+  let configp2p = JSON.stringify({
+    cmd: 'p2pSignalServer',
+    date: Date.now(), 
+    data: localConfig.p2pSignalServer
+  })
+  sendAllLocalClients(configp2p)
+
+
   let deltaWebsocketAddress = 'ws://' + ip + ':' + port
 
     console.log(`attempting to connect to deltaWebsocket Host at `, deltaWebsocketAddress)
+    deltaWebsocket = new webSocket(deltaWebsocketAddress);
+    
+    deltaWebsocket.on('error', function error(error) {
+      console.log(`connection error from ${deltaWebsocketAddress}:`)
+      deltaWebsocket.close()
+    });
+    
+    // on successful connection to deltaWebsocket Host:
+    deltaWebsocket.on('open', function open() {
+      let highFive = JSON.stringify({
+        cmd: 'highFive',
+        date: Date.now(), 
+        data: 'hello from Pal',
+      })
+      deltaWebsocket.send(highFive)      
+    });    
+
+    deltaWebsocket.on('message', function incoming(data) {
+      let msg = data.data
+      console.log(msg)
+});
+
+
+/*
     deltaWebsocket = new ReconnectingWebSocket(deltaWebsocketAddress, [], rwsOptions);
     
     deltaWebsocket.addEventListener('error', (error) => {
@@ -508,8 +556,13 @@ function pal(ip, port){
         let msg = data.data
         console.log(msg)
       })
+      deltaWebsocket.addEventListener('error', (data) =>{
+        console.log(data)
+        
+      })
+      
     });
-  
+*/
 
 }
 
@@ -714,7 +767,7 @@ function handlemessage(msg, sock, id) {
 }
 
 
-function startLocalWebsocket(signalServerIP, signalServerPort){
+function startLocalWebsocket(){
   // host webapp (only on mojave)
   const app = express();
   app.use(express.static(client_path))
@@ -748,10 +801,7 @@ function startLocalWebsocket(signalServerIP, signalServerPort){
     let configp2p = JSON.stringify({
       cmd: 'p2pSignalServer',
       date: Date.now(), 
-      data: {
-        ip: signalServerIP, 
-        port: signalServerPort
-      }
+      data: localConfig.p2pSignalServer
     })
     localWebsocket.send(configp2p)
     // do any
@@ -875,4 +925,16 @@ function runGOT(src, delta){
 
       }
       // send_all_clients(JSON.stringify(response));
+}
+
+function sendAllLocalClients(msg){
+
+  localWebsocketServer.clients.forEach(function each(client) {
+		if (client == ignore) return;
+		try {
+			client.send(msg);
+		} catch (e) {
+			console.error(e);
+		};
+	});
 }
