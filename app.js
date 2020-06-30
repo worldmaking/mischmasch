@@ -471,7 +471,7 @@ function host(){
     // what to do if client disconnects?
     deltaWebsocket.on('close', function(connection) {
       //clearInterval(handShakeInterval);
-      console.log("connection closed");
+      console.log("deltaWebsocket: connection closed");
           console.log("server has "+deltaWebsocketServer.clients.size+" connected clients");
     });
     
@@ -540,7 +540,7 @@ function pal(ip, port){
     deltaWebsocket = new ReconnectingWebSocket(deltaWebsocketAddress, [], rwsOptions);
     
     deltaWebsocket.addEventListener('error', (error) => {
-      console.log(`connection error from ${deltaWebsocketAddress}:`)
+      console.log(`connection error from ${deltaWebsocketAddress}:`, error)
     });
     
     // on successful connection to deltaWebsocket Host:
