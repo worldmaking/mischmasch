@@ -487,7 +487,7 @@ function host(){
 
       } else {
         try {
-          handlemessage(JSON.parse(e), palWebsocket, id);
+          handlemessage(JSON.parse(e), id);
         } catch (e) {
           console.log('bad JSON: ', e);
         }
@@ -569,7 +569,7 @@ function pal(ip, port){
 
 
 
-function handlemessage(msg, sock, id) {
+function handlemessage(msg, id) {
 
   console.log(msg)
   switch (msg.cmd) {
