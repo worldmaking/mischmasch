@@ -4,7 +4,7 @@ const Coven = require('coven');
 const ws = require('ws');
 const path = require('path')
 const filename = path.basename(__filename)
-let coven;
+let p2pDataChannel;
 
 function serverConnect(){
 

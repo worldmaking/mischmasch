@@ -56,6 +56,7 @@ let teapartyWebsocket
 // deltaWebsocket operates on port 8080, and is assigned as either server or client 
 // by the teaparty. it's what communicates with all other machines (for got deltas)
 let deltaWebsocket
+let deltaWebsocketServer
 
 // localWebsocket operates on port 8081, and handles communication between other 
 // clients apps like VR and the max client
@@ -266,11 +267,13 @@ async function init() {
         let teapartyHeadCount = msg.data.headcount;
         teapartyHost = msg.data.host;
 
+
         // TODO messages to invite being the host (accept or reject/timeout)
 
         // TODO if the host has changed, need to closse current deltaWebsocket and
         // TODO connect to new, or start host if assigned
-        if(localConfig.username === msg.data.host){
+        if(localConfig.username === msg.data.host && !deltaWebsocketServer){
+
           // if previously connected to a different host, first close our pal websocket
           if (deltaWebsocket){
             deltaWebsocket.close()
@@ -286,7 +289,7 @@ async function init() {
 
           startLocalWebsocket('localhost', 8082)
           host('localhost')
-        } else {
+        } else  if (localConfig.username != msg.data.host && !deltaWebsocket){
           // we are a pal! need to connect to host's websocket server
 
           // if previously connected to a different host, first close our pal websocket
@@ -707,7 +710,7 @@ function handlemessage(msg, sock, id) {
 }
 
 
-function startLocalWebsocket(ip, port){
+function startLocalWebsocket(signalServerIP, signalServerPort){
   // host webapp (only on mojave)
   const app = express();
   app.use(express.static(client_path))
@@ -742,8 +745,8 @@ function startLocalWebsocket(ip, port){
       cmd: 'p2pSignalServer',
       date: Date.now(), 
       data: {
-        ip: ip, 
-        port: port
+        ip: signalServerIP, 
+        port: signalServerPort
       }
     })
     localWebsocket.send(configp2p)
