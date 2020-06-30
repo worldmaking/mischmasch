@@ -513,30 +513,30 @@ function pal(ip, port){
   let deltaWebsocketAddress = 'ws://' + ip + ':' + port
 
     console.log(`attempting to connect to deltaWebsocket Host at `, deltaWebsocketAddress)
-    deltaWebsocket = new webSocket(deltaWebsocketAddress);
+//     deltaWebsocket = new webSocket(deltaWebsocketAddress);
     
-    deltaWebsocket.on('error', function error(error) {
-      console.log(`connection error from ${deltaWebsocketAddress}:`)
-      deltaWebsocket.close()
-    });
+//     deltaWebsocket.on('error', function error(error) {
+//       console.log(`connection error from ${deltaWebsocketAddress}:`)
+//       deltaWebsocket.close()
+//     });
     
-    // on successful connection to deltaWebsocket Host:
-    deltaWebsocket.on('open', function open() {
-      let highFive = JSON.stringify({
-        cmd: 'highFive',
-        date: Date.now(), 
-        data: 'hello from Pal',
-      })
-      deltaWebsocket.send(highFive)      
-    });    
+//     // on successful connection to deltaWebsocket Host:
+//     deltaWebsocket.on('open', function open() {
+//       let highFive = JSON.stringify({
+//         cmd: 'highFive',
+//         date: Date.now(), 
+//         data: 'hello from Pal',
+//       })
+//       deltaWebsocket.send(highFive)      
+//     });    
 
-    deltaWebsocket.on('message', function incoming(data) {
-      let msg = data.data
-      console.log(msg)
-});
+//     deltaWebsocket.on('message', function incoming(data) {
+//       let msg = data.data
+//       console.log(msg)
+// });
 
 
-/*
+// /*
     deltaWebsocket = new ReconnectingWebSocket(deltaWebsocketAddress, [], rwsOptions);
     
     deltaWebsocket.addEventListener('error', (error) => {
@@ -562,7 +562,7 @@ function pal(ip, port){
       })
       
     });
-*/
+// */
 
 }
 
