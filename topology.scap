@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ScappleDocument Version="1.1" ID="E449F0F5-6560-4DF7-9269-B7266DE4DDA8">
+    <Notes>
+        <Note ID="0" FontSize="12.0" Position="933.685669,85.756088" Width="49.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+            </Appearance>
+            <String>client.js</String>
+        </Note>
+        <Note ID="1" FontSize="12.0" Position="915.459167,124.799866" Width="132.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <Border Weight="1">0.572684 0.758969 0.558154</Border>
+                <Fill>0.715855 0.948712 0.697692</Fill>
+            </Appearance>
+            <String>localWebsocket (client)</String>
+            <ConnectedNoteIDs>3</ConnectedNoteIDs>
+            <PointsToNoteIDs>3</PointsToNoteIDs>
+        </Note>
+        <Note ID="2" FontSize="12.0" Position="531.0,49.0" Width="75.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+            </Appearance>
+            <String>app.js (host)</String>
+        </Note>
+        <Note ID="3" FontSize="12.0" Position="577.831543,126.749016" Width="137.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <Border Weight="1">0.572684 0.758969 0.558154</Border>
+                <Fill>0.715855 0.948712 0.697692</Fill>
+            </Appearance>
+            <String>localWebsocket (server)</String>
+            <ConnectedNoteIDs>1, 18</ConnectedNoteIDs>
+            <PointsToNoteIDs>1, 18</PointsToNoteIDs>
+        </Note>
+        <Note ID="6" FontSize="12.0" Position="941.731812,172.076355" Width="85.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <Border Weight="1">0.798177 0.714184 0.522055</Border>
+                <Fill>0.997722 0.89273 0.652569</Fill>
+            </Appearance>
+            <String>webRTC_data</String>
+            <ConnectedNoteIDs>16, 27</ConnectedNoteIDs>
+            <PointsToNoteIDs>16, 27</PointsToNoteIDs>
+        </Note>
+        <Note ID="7" FontSize="12.0" Position="490.658203,20.0" Width="69.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+            </Appearance>
+            <String>computer A</String>
+        </Note>
+        <Note ID="10" FontSize="12.0" Position="876.849182,472.110291" Width="49.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+            </Appearance>
+            <String>client.js</String>
+        </Note>
+        <Note ID="12" FontSize="12.0" Position="901.907898,564.440552" Width="132.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <Border Weight="1">0.572684 0.758969 0.558154</Border>
+                <Fill>0.715855 0.948712 0.697692</Fill>
+            </Appearance>
+            <String>localWebsocket (client)</String>
+            <ConnectedNoteIDs>15</ConnectedNoteIDs>
+            <PointsToNoteIDs>15</PointsToNoteIDs>
+        </Note>
+        <Note ID="13" FontSize="12.0" Position="536.494324,455.543549" Width="68.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+            </Appearance>
+            <String>app.js (pal)</String>
+        </Note>
+        <Note ID="15" FontSize="12.0" Position="562.625244,563.781128" Width="137.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <Border Weight="1">0.572684 0.758969 0.558154</Border>
+                <Fill>0.715855 0.948712 0.697692</Fill>
+            </Appearance>
+            <String>localWebsocket (server)</String>
+            <ConnectedNoteIDs>12, 19</ConnectedNoteIDs>
+            <PointsToNoteIDs>12, 19</PointsToNoteIDs>
+        </Note>
+        <Note ID="16" FontSize="12.0" Position="945.107788,519.334412" Width="85.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <Border Weight="1">0.798177 0.714184 0.522055</Border>
+                <Fill>0.997722 0.89273 0.652569</Fill>
+            </Appearance>
+            <String>webRTC_data</String>
+            <ConnectedNoteIDs>6, 27</ConnectedNoteIDs>
+            <PointsToNoteIDs>6, 27</PointsToNoteIDs>
+        </Note>
+        <Note ID="17" FontSize="12.0" Position="443.656097,425.226105" Width="70.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+            </Appearance>
+            <String>computer B</String>
+        </Note>
+        <Note ID="18" FontSize="12.0" Position="584.322754,189.0" Width="138.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <Border Weight="1">0.794796 0.560965 0.58607</Border>
+                <Fill>0.993495 0.701207 0.732587</Fill>
+            </Appearance>
+            <String>deltaWebsocket (server)</String>
+            <ConnectedNoteIDs>3, 19, 25</ConnectedNoteIDs>
+            <PointsToNoteIDs>3, 19, 25</PointsToNoteIDs>
+        </Note>
+        <Note ID="19" FontSize="12.0" Position="581.817078,500.543549" Width="133.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <Border Weight="1">0.794796 0.560965 0.58607</Border>
+                <Fill>0.993495 0.701207 0.732587</Fill>
+            </Appearance>
+            <String>deltaWebsocket (client)</String>
+            <ConnectedNoteIDs>15, 18</ConnectedNoteIDs>
+            <PointsToNoteIDs>15, 18</PointsToNoteIDs>
+        </Note>
+        <Note ID="20" FontSize="12.0" Position="421.322754,140.0" Width="111.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <Border Weight="1">0.561855 0.71062 0.779401</Border>
+                <Fill>0.702319 0.888276 0.974252</Fill>
+            </Appearance>
+            <String>teapartyWebsocket
+(client)</String>
+            <ConnectedNoteIDs>24</ConnectedNoteIDs>
+            <PointsToNoteIDs>24</PointsToNoteIDs>
+        </Note>
+        <Note ID="21" FontSize="12.0" Position="431.817078,521.543518" Width="114.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <Border Weight="1">0.561855 0.71062 0.779401</Border>
+                <Fill>0.702319 0.888276 0.974252</Fill>
+            </Appearance>
+            <String>teapartyWebsocket 
+(client)</String>
+            <ConnectedNoteIDs>24</ConnectedNoteIDs>
+            <PointsToNoteIDs>24</PointsToNoteIDs>
+        </Note>
+        <Note ID="22" FontSize="12.0" Position="167.391281,257.762512" Width="101.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+            </Appearance>
+            <String>heroku cloud app</String>
+        </Note>
+        <Note ID="24" FontSize="12.0" Position="161.622772,311.366425" Width="114.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <Border Weight="1">0.561855 0.71062 0.779401</Border>
+                <Fill>0.702319 0.888276 0.974252</Fill>
+            </Appearance>
+            <String>teapartyWebsocket 
+(server)</String>
+            <ConnectedNoteIDs>20-21</ConnectedNoteIDs>
+            <PointsToNoteIDs>20-21</PointsToNoteIDs>
+        </Note>
+        <Note ID="25" FontSize="12.0" Position="476.546844,227.975159" Width="37.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+            </Appearance>
+            <String>got.js</String>
+            <ConnectedNoteIDs>18</ConnectedNoteIDs>
+            <PointsToNoteIDs>18</PointsToNoteIDs>
+        </Note>
+        <Note ID="26" FontSize="12.0" Position="389.563263,744.121277" Width="20.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+            </Appearance>
+            <String>.
+.
+.</String>
+            <Formatting>
+                <FormatRange Bold="Yes">0,5</FormatRange>
+            </Formatting>
+        </Note>
+        <Note ID="27" FontSize="12.0" Position="704.16333,226.605606" Width="77.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <Border Weight="1">0.798177 0.714184 0.522055</Border>
+                <Fill>0.997722 0.89273 0.652569</Fill>
+            </Appearance>
+            <String>webRTC 
+signal server</String>
+            <ConnectedNoteIDs>6, 16</ConnectedNoteIDs>
+            <PointsToNoteIDs>6, 16</PointsToNoteIDs>
+        </Note>
+    </Notes>
+    <BackgroundShapes>
+        <Shape ID="8" Sticky="No" Position="400.0,28.0" Width="667.0" Height="270.0">
+            <Appearance>
+                <Border Weight="1"></Border>
+            </Appearance>
+        </Shape>
+        <Shape ID="4" Sticky="No" Position="894.606689,97.373932" Width="161.0" Height="120.0">
+            <Appearance>
+                <Border Weight="1"></Border>
+            </Appearance>
+        </Shape>
+        <Shape ID="5" Sticky="No" Position="412.0,62.0" Width="377.0" Height="220.0">
+            <Appearance>
+                <Border Weight="1"></Border>
+            </Appearance>
+        </Shape>
+        <Shape ID="9" Sticky="No" Position="405.0,438.0" Width="660.0" Height="188.543533">
+            <Appearance>
+                <Border Weight="1"></Border>
+            </Appearance>
+        </Shape>
+        <Shape ID="11" Sticky="No" Position="865.476807,481.733612" Width="183.0" Height="120.0">
+            <Appearance>
+                <Border Weight="1"></Border>
+            </Appearance>
+        </Shape>
+        <Shape ID="14" Sticky="No" Position="415.817078,465.543549" Width="325.0" Height="146.0">
+            <Appearance>
+                <Border Weight="1"></Border>
+            </Appearance>
+        </Shape>
+        <Shape ID="23" Sticky="No" Position="151.592728,268.763214" Width="135.0" Height="102.0">
+            <Appearance>
+                <Border Weight="1"></Border>
+            </Appearance>
+        </Shape>
+    </BackgroundShapes>
+    <Labels>
+        <Label IDs="1,3">deltas</Label>
+        <Label IDs="6,16">HMD/controller data</Label>
+        <Label IDs="12,15">deltas</Label>
+        <Label IDs="21,24">host/pal assignment</Label>
+        <Label IDs="18,19">deltas</Label>
+        <Label IDs="16,27">peer discovery</Label>
+        <Label IDs="6,27">peer discovery</Label>
+        <Label IDs="20,24">host/pal assignment</Label>
+    </Labels>
+    <AutoFit>0-3, 6-7, 10, 12-13, 15-22, 24-27</AutoFit>
+    <NoteStyles>
+        <Style Name="Bubble (Blue)" ID="37662FE0-6D47-4D94-97B7-B3ABE8393185" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+            <BorderThickness>1</BorderThickness>
+            <BorderColor>0.561855 0.71062 0.779401</BorderColor>
+            <FillColor>0.702319 0.888276 0.974252</FillColor>
+        </Style>
+        <Style Name="Bubble (Green)" ID="FB476370-0D99-4769-811C-B401F25A348C" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+            <BorderThickness>1</BorderThickness>
+            <BorderColor>0.572684 0.758969 0.558154</BorderColor>
+            <FillColor>0.715855 0.948712 0.697692</FillColor>
+        </Style>
+        <Style Name="Bubble (Pink)" ID="F984AD86-7F0E-49EF-9876-A5573377C6D7" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+            <BorderThickness>1</BorderThickness>
+            <BorderColor>0.794796 0.560965 0.58607</BorderColor>
+            <FillColor>0.957566 0.766747 0.999616</FillColor>
+        </Style>
+        <Style Name="Bubble (Red)" ID="9EB780C0-E2D4-448F-97D3-B6AE404819F4" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+            <BorderThickness>1</BorderThickness>
+            <BorderColor>0.794796 0.560965 0.58607</BorderColor>
+            <FillColor>0.993495 0.701207 0.732587</FillColor>
+        </Style>
+        <Style Name="Bubble (Yellow)" ID="12DD108B-3F0E-4E13-A5F8-9801B23CDD2E" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+            <BorderThickness>1</BorderThickness>
+            <BorderColor>0.798177 0.714184 0.522055</BorderColor>
+            <FillColor>0.997722 0.89273 0.652569</FillColor>
+        </Style>
+        <Style Name="Red Text" ID="4A08CA72-C948-41E1-8A94-DFF4738450B0" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="Yes" AffectNoteBody="No" AffectFade="No">
+            <TextColor>0.985948 0.0 0.026951</TextColor>
+        </Style>
+        <Style Name="Title Text" ID="A45B4C4B-E897-4329-9FBE-CFCC0DED0A69" AffectFontStyle="Yes" AffectAlignment="Yes" AffectTextColor="No" AffectNoteBody="No" AffectFade="No">
+            <FontSize>28.0</FontSize>
+            <IsBold>Yes</IsBold>
+        </Style>
+    </NoteStyles>
+    <UISettings>
+        <BackgroundColor>0.999767 0.98837 0.949907</BackgroundColor>
+        <DefaultFont>Helvetica</DefaultFont>
+    </UISettings>
+    <PrintSettings PaperSize="612.0,792.0" LeftMargin="72.0" RightMargin="72.0" TopMargin="90.0" BottomMargin="90.0" PaperType="na-letter" Orientation="Portrait" HorizontalPagination="Clip" VerticalPagination="Auto" ScaleFactor="1.0" HorizontallyCentered="Yes" VerticallyCentered="Yes" Collates="Yes" PagesAcross="1" PagesDown="1"></PrintSettings>
+</ScappleDocument>

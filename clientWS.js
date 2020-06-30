@@ -63,11 +63,11 @@ switch (msg.cmd) {
     case "p2pSignalServer":
         let ip = msg.data.ip
         let port = msg.data.port
-        coven = new Coven({ ws, wrtc, signaling: 'ws://' + ip + ':' + port });
-        coven
+        p2pDataChannel = new Coven({ ws, wrtc, signaling: 'ws://' + ip + ':' + port });
+        p2pDataChannel
             .on('message', ({ peerId, message }) => console.log(`${peerId}: ${message}`))
             .on('connection', pid => {
-                console.log(pid, coven.activePeers);
+                console.log(pid, p2pDataChannel.activePeers);
                 
                 // we use the filename var to route which client should get what message. alternately, could create a 2nd datachannel...
                 let p2pMsg = JSON.stringify({
@@ -75,7 +75,7 @@ switch (msg.cmd) {
                     source: filename,
                     message: 'meow'
                 })
-                coven.sendTo(pid, p2pMsg);
+                p2pDataChannel.sendTo(pid, p2pMsg);
             })
             .on('error', () =>{
                 JSON.parse(console.error)

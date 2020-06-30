@@ -1,3 +1,6 @@
+// import Coven from 'coven';
+
+
 let vrContextID;
 let audioContextID;
 let ws;
@@ -328,7 +331,7 @@ async function init() {
 
     init_menu();
 
-    document.addEventListener("keydown", onKeypress, false);
+    document.addEventListener("keydown", onKeypress, true);
     document.addEventListener( 'mousemove', onDocumentMouseMove, false );
     document.addEventListener( 'mousedown', onDocumentMouseDown, false );
 
@@ -2470,6 +2473,30 @@ function onServerMessage(msg, sock) {
             console.log(msg.data)
         } break;
 
+        //! p2p
+        // case "p2pSignalServer": {
+        //     let ip = msg.data.ip
+        //     let port = msg.data.port
+        //     p2pDataChannel = new Coven({ ws, wrtc, signaling: 'ws://' + ip + ':' + port });
+        //     p2pDataChannel
+        //         .on('message', ({ peerId, message }) => console.log(`${peerId}: ${message}`))
+        //         .on('connection', pid => {
+        //             console.log(pid, p2pDataChannel.activePeers);
+                    
+        //             // we use the filename var to route which client should get what message. alternately, could create a 2nd datachannel...
+        //             let p2pMsg = JSON.stringify({
+        //                 cmd: 'hello',
+        //                 source: filename,
+        //                 message: 'meow'
+        //             })
+        //             p2pDataChannel.sendTo(pid, p2pMsg);
+        //         })
+        //         .on('error', () =>{
+        //             JSON.parse(console.error)
+        //         });
+
+        // }
+
         // server assigns an iid for our session. use this to route controller and HMD data to local max client. 
         // case "assignID":{
              
@@ -2483,11 +2510,12 @@ function onServerMessage(msg, sock) {
         }
         break;
         default:
-           // log("received JSON", msg, typeof msg);
+           log("received JSON", msg, typeof msg);
     }
 }
 
 function onKeypress(e) {
+    console.log("key press", e.which, e.key)
 
     switch (e.key) {
         case "g": {

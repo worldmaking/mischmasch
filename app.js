@@ -28,7 +28,6 @@
 
 // most widely-used websocket module for node.js
 const webSocket = require('ws');
-const webSocketServer = webSocket.Server;
 // 
 const publicIP = require('public-ip');
 // https://www.npmjs.com/package/username Get the username of the current user
@@ -40,9 +39,8 @@ const ReconnectingWebSocket = require('reconnecting-websocket');
 // cute way to show progress on the command line
 const ProgressBar = require('progress');
 const url = require('url')
-// const http = require('http');
-// const express = require('express');
-// const url = require('url');
+const http = require('http');
+const express = require('express');
 const fs = require("fs");
 const path = require("path");
 const bottleneck = require('Bottleneck')
@@ -68,6 +66,8 @@ let localWebsocket
 // instead see about a mesh implementation
 let p2pWebsocket 
 
+let teapartyHost
+
 /// paths
 const project_path = process.cwd();
 const server_path = __dirname;
@@ -76,6 +76,15 @@ console.log("project_path", project_path);
 console.log("server_path", server_path);
 console.log("client_path", client_path);
 // // // // // //
+
+// scenefile placeholder (will get filled if this runs as host.)
+let scenefile;
+
+// a local copy of the current graph state, for synchronization purposes
+let localGraph = {
+	nodes: {},
+	arcs: []
+}
 
 // let ctrl-c quit:
 {
@@ -109,8 +118,6 @@ const teapartyWebsocketAddress =
   (process.argv[2] === 'lan' && process.argv[3]) || (process.argv[2] === 'localhost') ? `ws://${teapartyAddress}:${teapartyWebsocketPort}`
   : `ws://${teapartyAddress}/${teapartyWebsocketPort}`;
 
-// TODO this is the port used for P2P connections
-// const teapartyP2PWebsocketPort = 8081;
 
 const rwsOptions = {
   // make rws use the webSocket module implementation
@@ -217,23 +224,6 @@ async function init() {
     // didn't seem to be for me
   });
 
-
-  // TODO start our own ws server for P2P communication (only for use with controller data):
-  // const wsP2P = new webSocketServer({port: teapartyP2PWebsocketPort});
-
-  // wsP2P.on('connection', function connection(wsguest) {
-
-  //   // TODO at this point we should be adding the wsguest to our list of incoming pals somehow
-
-  //   wsguest.on('message', function incoming(message) {
-  //     console.log('received: %s', message, 'from guest', wsguest);
-  //     // TODO dispatch this message accordingly
-  //   });
-   
-  //   // why not say hello?
-  //   wsguest.send('good afternoon from ' + localConfig.username);
-  // });
-
   // inform the teaparty teaparty of our important details
   let thisClient = JSON.stringify({
     cmd: 'newClient',
@@ -274,7 +264,7 @@ async function init() {
         guestlist = msg.data
         let teapartyPals = msg.data.pals;
         let teapartyHeadCount = msg.data.headcount;
-        let teapartyHost = msg.data.host;
+        teapartyHost = msg.data.host;
 
         // TODO messages to invite being the host (accept or reject/timeout)
 
@@ -399,20 +389,22 @@ init();
 
 function host(){
 
+  scenefile = JSON.parse(fs.readFileSync(__dirname + "/got/simple_scene.json"))
+  console.log(scenefile)
 
   //! host also has to run the p2p-mesh signalling server, because heroku only allows one port on the server instance
-  const createSignalingBroker = require('coven/server');
+  const p2pSignalBroker = require('coven/server');
   const DEFAULT_PORT = 8082;
   const PORT = +(process.env.PORT || DEFAULT_PORT);
  
-  createSignalingBroker({
+  p2pSignalBroker({
     port: PORT,
     onMessage({ room, type, origin, target }) {
       console.log(`[${room}::${type}] ${origin} -> ${target || '<BROADCAST>'}`);
     },
   });
 
-  // ws for deltas
+
   deltaWebsocket = new webSocket.Server({ 
     // server: server,
     port: 8081,
@@ -420,7 +412,8 @@ function host(){
   });
   let sessionId = 0;
   console.log('running deltaWebsocket as HOST')
-      
+  
+  
   // whenever a pal connects to this websocket:
   deltaWebsocket.on('connection', function(palWebsocket, req) {
     
@@ -520,44 +513,10 @@ function handlemessage(msg, sock, id) {
 
   console.log(msg)
   switch (msg.cmd) {
-    // case "deltas": {
+    case "deltas": {
       
-    //   // synchronize our local copy:
-    //   try {
-    //     //console.log('\n\npreApply', localGraph.nodes.resofilter_120)
-    //     got.applyDeltasToGraph(localGraph, msg.data);
-    //     //console.log('\n\npostApply', JSON.stringify(localGraph.nodes.resofilter_120.resonance))
-    //   } catch (e) {
-    //     console.warn(e);
-    //   }
-
-    //   //console.log(msg.data)
-    //   // TODO: merge OTs
-      
-    //   let response = {
-    //     cmd: "deltas",
-    //     date: Date.now(),
-    //     data: msg.data
-    //   };
-    //   console.log(msg.data)
-      
-    //   // check if the recording status is active, if so push received delta(s) to the recordJSON
-    //   if (recordStatus === 1){
-        
-    //     for(i = 0; i < msg.data.length; i++){
-          
-    //       msg.data[i]["timestamp"] = Date.now()
-    //       recordJSON.deltas.push(msg.data[i])
-    //     }
-        
-    //   }
-
-    //   //fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(response), "utf-8")
-
-    //   //OTHistory.push(JSON.stringify(response))
-    //   console.log('localgraph',localGraph, '\n')
-    //   // send_all_clients(JSON.stringify(response));
-    // } break;
+      runGOT(id, msg.data)
+    } break;
 
     // case "playback":{
     // 	//console.log(msg)/
@@ -749,18 +708,35 @@ function handlemessage(msg, sock, id) {
 
 
 function startLocalWebsocket(ip, port){
+  // host webapp (only on mojave)
+  const app = express();
+  app.use(express.static(client_path))
+  app.use(express.static(path.join(__dirname, '/got/')))	
+  app.get('/', function(req, res) {
+    res.sendFile(path.join(client_path, 'index.html'));
+    res.sendFile(path.join(__dirname, '/got/got.js'));
+  });
+  //app.get('*', function(req, res) { console.log(req); });
+  const server = http.createServer(app);
+  // add a websocket service to the http server:
+  // const wss = new WebSocket.Server({ 
+  //   server: server,
+  //   maxPayload: 1024 * 1024, 
+  // });
+  // ws for deltas
 
 
-  localWebsocket = new webSocket.Server({ 
-    // server: server,
-    port: 8080,
+  localWebsocketServer = new webSocket.Server({ 
+    server: server,
+    // port: 8080,
     maxPayload: 1024 * 1024, 
   });
   let sessionId = 0;
   console.log('running localWebsocket Server')
       
   // whenever a pal connects to this websocket:
-  localWebsocket.on('connection', function(ws, req) {
+  localWebsocketServer.on('connection', function(ws, req) {
+    localWebsocket = ws
     // inform client that the p2p signal server is running on localhost
     let configp2p = JSON.stringify({
       cmd: 'p2pSignalServer',
@@ -770,7 +746,7 @@ function startLocalWebsocket(ip, port){
         port: port
       }
     })
-    ws.send(configp2p)
+    localWebsocket.send(configp2p)
     // do any
     console.log("server received a connection");
     // console.log("server has "+ws.clients.size+" connected clients");
@@ -778,16 +754,16 @@ function startLocalWebsocket(ip, port){
     const id = ++sessionId;
     const location = url.parse(req.url, true);
     // ip = req.connection.remoteAddress.split(':')[3] 
-    ip = req.headers.host.split(':')[0]
-    if(!ip){
-      // console.log('vr', req.connection)
-      ip = req.ip
-    }
+    // ip = req.headers.host.split(':')[0]
+    // if(!ip){
+    //   // console.log('vr', req.connection)
+    //   ip = req.ip
+    // }
     //console.log(ip)
     // const location = urlw.parse(req.url, true);
     // console.log(location)
 
-    ws.on('error', function (e) {
+    localWebsocket.on('error', function (e) {
       if (e.message === "read ECONNRESET") {
         // ignore this, client will still emit close event
       } else {
@@ -796,14 +772,14 @@ function startLocalWebsocket(ip, port){
     });
 
     // what to do if client disconnects?
-    ws.on('close', function(connection) {
+    localWebsocket.on('close', function(connection) {
       //clearInterval(handShakeInterval);
       console.log("connection closed");
           // console.log("server has "+ws.clients.size+" connected clients");
     });
     
     // respond to any messages from the client:
-    ws.on('message', function(e) {
+    localWebsocket.on('message', function(e) {
       if (e instanceof Buffer) {
         // get an arraybuffer from the message:
         const ab = e.buffer.slice(e.byteOffset,e.byteOffset+e.byteLength);
@@ -815,7 +791,7 @@ function startLocalWebsocket(ip, port){
         try {
           // handlemessage(JSON.parse(e), ws, id);
           let msg = JSON.parse(e)
-          console.log(msg)
+          console.log('test', msg)
           switch(msg.cmd){
             case 'vrClientStatus':
               localConfig.vr = msg.data
@@ -825,6 +801,10 @@ function startLocalWebsocket(ip, port){
             case 'get_scene':
 
             break
+
+            case 'deltas':
+              runGOT(id, msg.data)
+            break
           }
         } catch (e) {
           console.log('bad JSON: ', e);
@@ -833,6 +813,56 @@ function startLocalWebsocket(ip, port){
     });
 
   });
+  server.listen(8080, function() {
+    console.log(`server listening`);
+    console.log(`vr view on http://localhost:${server.address().port}/index.html`);
+  });
+
 }
 
 
+
+
+function runGOT(src, delta){
+  console.log('runGOT', src, delta)
+      // synchronize our local copy:
+      try {
+        //console.log('\n\npreApply', localGraph.nodes.resofilter_120)
+        got.applyDeltasToGraph(localGraph, delta)
+        //console.log('\n\npostApply', JSON.stringify(localGraph.nodes.resofilter_120.resonance))
+      } catch (e) {
+        console.warn(e);
+      }
+
+      //console.log(msg.data)
+      // TODO: merge OTs
+      
+      let response = JSON.stringify({
+        cmd: "deltas",
+        date: Date.now(),
+        data: delta
+      });
+      console.log(delta)
+      
+      // check if the recording status is active, if so push received delta(s) to the recordJSON
+      // if (recordStatus === 1){
+        
+      //   for(i = 0; i < delta.length; i++){
+          
+      //     delta[i]["timestamp"] = Date.now()
+      //     recordJSON.deltas.push(delta[i])
+      //   }
+        
+      // }
+
+      //fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(response), "utf-8")
+
+      //OTHistory.push(JSON.stringify(response))
+      console.log('localgraph',localGraph, '\n')
+
+      if (teapartyHost === localConfig.username){
+        // if this app.js is host, just send using the localWebsocket
+        localWebsocket.send(response)
+      }
+      // send_all_clients(JSON.stringify(response));
+}
