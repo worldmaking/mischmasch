@@ -274,32 +274,31 @@ async function init() {
         guestlist = msg.data
         let teapartyPals = msg.data.pals;
         let teapartyHeadCount = msg.data.headcount;
-        teapartyHost = msg.data.host;
+        teapartyHost = msg.data.host.name;
 
 
-        // TODO messages to invite being the host (accept or reject/timeout)
 
         // TODO if the host has changed, need to closse current deltaWebsocket and
-        // TODO connect to new, or start host if assigned
-        if(localConfig.username === teapartyHost && !deltaWebsocketServer){
+        // if(localConfig.username === teapartyHost && !deltaWebsocketServer){
 
-          // if previously connected to a different host, first close our pal websocket
-          if (deltaWebsocket){
-            deltaWebsocket.close()
-          }
-          if (localWebsocket){
-            localWebsocket.close()
-          }
-          // we are the host! need to start a websocket server
-          console.log('host')
-          console.log('check username: ', localConfig.username)
-          localConfig.host = msg.data.host
-          // start the localWebsocket, informing it that the p2pSignalServer runs on this machine
-          localConfig.p2pSignalServer.port = 8082
-          localConfig.p2pSignalServer.ip = 'localhost'
+        //   // if previously connected to a different host, first close our pal websocket
+        //   if (deltaWebsocket){
+        //     deltaWebsocket.close()
+        //   }
+        //   if (localWebsocket){
+        //     localWebsocket.close()
+        //   }
+        //   // we are the host! need to start a websocket server
+        //   console.log('host')
+        //   console.log('check username: ', localConfig.username)
+        //   localConfig.host = msg.data.host
+        //   // start the localWebsocket, informing it that the p2pSignalServer runs on this machine
+        //   localConfig.p2pSignalServer.port = 8082
+        //   localConfig.p2pSignalServer.ip = 'localhost'
           
-          host('localhost')
-        } else  if (localConfig.username != teapartyHost && !deltaWebsocket){
+        //   host('localhost')
+        // } else  
+        if (localConfig.username != teapartyHost && !deltaWebsocket){
           // we are a pal! need to connect to host's websocket server
 
           // if previously connected to a different host, first close our pal websocket
@@ -314,7 +313,7 @@ async function init() {
           if (process.argv[2] === 'localhost'){
             hostIP = process.argv[2]
           } else {
-            hostIP = teapartyPals[teapartyHost].ip          
+            hostIP = msg.data.host.ip          
           }   
             //startLocalWebsocket(hostIP, 8082)       
             pal(hostIP, '8081')
