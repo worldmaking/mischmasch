@@ -509,7 +509,7 @@ function pal(ip, port){
   sendAllLocalClients(configp2p)
 
 
-  let deltaWebsocketAddress = 'ws://' + ip + ':' + port
+  let deltaWebsocketAddress = 'ws://' + ip + '/' + port
 
     console.log(`attempting to connect to deltaWebsocket Host at `, deltaWebsocketAddress)
 //     deltaWebsocket = new webSocket(deltaWebsocketAddress);
