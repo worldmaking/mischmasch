@@ -5,20 +5,20 @@
   But we don't know in advance the IP addresses or who is online, so we use a remote teaparty:
   - first we connect to the remote teaparty and let them know our IP, name, and other stats 
   - (we should also let the teaparty know when we leave)
-  - the teaparty maintains a list of such connected users
-  - the teaparty shares with all users the connection info for all the users, including updating when users join and leave
-  - users use this information to establish direct P2P connections between each other
+  - the teaparty maintains a list of such connected users (called 'pals')
+  - the teaparty shares with all pals the connection info for all the pals, including updating when pals join and leave
+  - pals use this information to establish direct P2P connections between each other
 
-  Migrating host model
-  - teaparty (signal server) chooses who is host (ground truth) at any time
-  - normally it would be the first to connect, but could be migrated to next partygoer if the host exits (e.g. internet dropout)
-  - everyone would have a socket connection to current host, and assume that the host has the 'ground truth' for merging OTs. 
+  // Migrating host model (no longer in use)
+  // - teaparty (signal server) chooses who is host (ground truth) at any time
+  // - normally it would be the first to connect, but could be migrated to next partygoer if the host exits (e.g. internet dropout)
+  // - everyone would have a socket connection to current host, and assume that the host has the 'ground truth' for merging OTs. 
 
   Future: many worlds, like server rooms. Anyone can start a world and invite. The default world is open like a lobby. 
   For now just do this default world.
 
-  Q: does it make sense to use websockets for this?
-  is there a more natural framework for such networks? e.g. the BUS pattern from nanomsg?
+  // Q: does it make sense to use websockets for this?
+  // is there a more natural framework for such networks? e.g. the BUS pattern from nanomsg?
 
 */
 
@@ -45,47 +45,10 @@ const fs = require("fs");
 const path = require("path");
 // const bottleneck = require('Bottleneck')
 const got = require("./got/got")
+// simplified cli args for script
+const {argv} = require('yargs')
 
 
-// all websockets
-
-// teapartyWebsocket operates on port 8090, runs as a client, and connects to the 
-// teaparty (heroku cloud instance)
-let teapartyWebsocket
-
-// deltaWebsocket operates on port 8080, and is assigned as either server or client 
-// by the teaparty. it's what communicates with all other machines (for got deltas)
-let deltaWebsocket
-let deltaWebsocketServer
-
-// localWebsocket operates on port 8081, and handles communication between other 
-// clients apps like VR and the max client
-let localWebsocket
-
-// still up for debate, but this is for non-delta data (like HMD and controller pos), 
-// should be broadcast to all nodes. so likely a ws is not the right choice, 
-// instead see about a mesh implementation
-let p2pWebsocket 
-
-let teapartyHost
-
-/// paths
-const project_path = process.cwd();
-const server_path = __dirname;
-const client_path = path.join(server_path, "client");
-console.log("project_path", project_path);
-console.log("server_path", server_path);
-console.log("client_path", client_path);
-// // // // // //
-
-// scenefile placeholder (will get filled if this runs as host.)
-let scenefile;
-
-// a local copy of the current graph state, for synchronization purposes
-let localGraph = {
-	nodes: {},
-	arcs: []
-}
 
 // let ctrl-c quit:
 {
@@ -110,14 +73,91 @@ let localGraph = {
 	});
 }
 
-const teapartyAddress = 
-    (process.argv[2] === 'lan' && process.argv[3]) ? process.argv[3]
-  : (process.argv[2] === 'localhost') ? '127.0.0.1'
-  : "teaparty.herokuapp.com";
+// LOCAL STUFF //
+/// paths
+const project_path = process.cwd();
+const server_path = __dirname;
+const client_path = path.join(server_path, "client");
+console.log("project_path", project_path);
+console.log("server_path", server_path);
+console.log("client_path", client_path);
+
+let name;
+if (process.argv[3]){
+  name = process.argv[3]
+} else {
+  name = username.sync()
+}
+
+
+// NETWORKING //
+
+let localConfig = {
+  // get a username for this machine:
+  username: name,
+  // ip is figured out during init()
+  ip: null, 
+  // eventually, app.js will maintain status of connected client(s) and report them to the teaparty
+  vr: null,
+  sound: null,
+  // for example, if someone wanted to observe a performance but not be a player:
+  spectator: 0,
+  // this is set by the teaparty, or:
+  //TODO option to set as localhost using a cli arg (todo)
+  host: {},
+  // TODO determine where this should run. 
+  p2pSignalServer: {
+    ip: null,
+    port: null
+  },
+  recordStatus: 0
+};
+
+// all websockets
+
+// teapartyWebsocket operates on port 8090, runs as a client, and connects to the 
+// teaparty (heroku cloud instance)
+let teapartyWebsocket
+
+// deltaWebsocket operates on port 8080, and connects as a client to mischmasch-host.herokuapp.com
+// it's what communicates with all other machines (for got deltas)
+let deltaWebsocket
+
+// localWebsocket operates on port 8081, and handles communication between other 
+// clients apps like VR and the max client
+let localWebsocket
+
+// still up for debate, but this is for non-delta data (like HMD and controller pos), 
+// should be broadcast to all nodes. so likely a ws is not the right choice, 
+// instead see about a mesh implementation
+let p2pWebsocket 
+
+let teapartyHost
+let teapartyAddress
+let hostIP
 const teapartyWebsocketPort = '8090';
-const teapartyWebsocketAddress = 
-  (process.argv[2] === 'lan' && process.argv[3]) || (process.argv[2] === 'localhost') ? `ws://${teapartyAddress}:${teapartyWebsocketPort}`
-  : `ws://${teapartyAddress}/${teapartyWebsocketPort}`;
+let teapartyWebsocketAddress
+
+if (argv.l){
+  teapartyAddress = 'localhost'
+  hostIP = "localhost"
+  teapartyWebsocketAddress = `ws://${teapartyAddress}:${teapartyWebsocketPort}`
+  console.log(`running app.js in local mode\nteaparty address 'ws://localhost:8090'\ndeltaWebsocket host address 'ws://localhost:8081'`)
+} else {
+  teapartyAddress = "teaparty.herokuapp.com"
+  hostIP = "mischmasch-host.herokuapp.com"
+  teapartyWebsocketAddress = `ws://${teapartyAddress}/${teapartyWebsocketPort}`
+  console.log('using heroku-based host.js at mischmasch-host.herokuapp.com')
+}
+
+
+// const teapartyAddress = 
+//     (process.argv[2] === 'lan' && process.argv[3]) ? process.argv[3]
+//   : (process.argv[2] === 'localhost') ? '127.0.0.1'
+//   : "teaparty.herokuapp.com";
+//  = 
+//   (process.argv[2] === 'lan' && process.argv[3]) || (process.argv[2] === 'localhost') ? `ws://${teapartyAddress}:${teapartyWebsocketPort}`
+//   : `ws://${teapartyAddress}/${teapartyWebsocketPort}`;
 
 
 const rwsOptions = {
@@ -128,7 +168,7 @@ const rwsOptions = {
   //debug:true, 
 }
 
-// attempt to connect to teaparty teaparty
+// attempt to connect to teaparty 
 // returns the websocket via a Promise
 function teapartyWebsocketConnect() {
   return new Promise((resolve, reject) => {
@@ -162,34 +202,30 @@ function teapartyWebsocketConnect() {
   });
 }
 
-let name;
-if (process.argv[3]){
-  name = process.argv[3]
-} else {
-  name = username.sync()
+
+
+
+// GOT STUFF
+
+// a local copy of the current graph state, for synchronization purposes
+let localGraph = {
+	nodes: {},
+	arcs: []
 }
 
-let localConfig = {
-  // get a username for this machine:
-  username: name,
-  // ip is figured out during init()
-  ip: null, 
-  // eventually, app.js will maintain status of connected client(s) and report them to the teaparty
-  vr: null,
-  sound: null,
-  // for example, if someone wanted to observe a performance but not be a player:
-  spectator: 0,
-  host: null,
-  p2pSignalServer: {
-    ip: null,
-    port: null
-  }
-};
+
+
+
+
+
+
 
 let guestlist = {
 
 }
-
+/* 
+  TEAPARTY WEBSOCKET: 
+*/
 // run everything inside an async() so we can await as needed:
 async function init() {
   
@@ -246,11 +282,7 @@ async function init() {
 
   function sayGoodbye() {
     teapartyWebsocket.close();
-    if (localConfig.username === teapartyHost){
-      deltaWebsocketServer.close()
-    } else {
-      deltaWebsocket.close()
-    }
+    deltaWebsocket.close()
   }
 
   process.on('SIGINT', function() {
@@ -278,55 +310,29 @@ async function init() {
 
 
 
-        // TODO if the host has changed, need to closse current deltaWebsocket and
-        // if(localConfig.username === teapartyHost && !deltaWebsocketServer){
-
-        //   // if previously connected to a different host, first close our pal websocket
-        //   if (deltaWebsocket){
-        //     deltaWebsocket.close()
-        //   }
-        //   if (localWebsocket){
-        //     localWebsocket.close()
-        //   }
-        //   // we are the host! need to start a websocket server
-        //   console.log('host')
-        //   console.log('check username: ', localConfig.username)
-        //   localConfig.host = msg.data.host
-        //   // start the localWebsocket, informing it that the p2pSignalServer runs on this machine
-        //   localConfig.p2pSignalServer.port = 8082
-        //   localConfig.p2pSignalServer.ip = 'localhost'
-          
-        //   host('localhost')
-        // } else  
-        if (localConfig.username != teapartyHost && !deltaWebsocket){
+        // if the deltaWebsocket connection doesn't already exist
+        if (!deltaWebsocket){
           // we are a pal! need to connect to host's websocket server
 
           // if previously connected to a different host, first close our pal websocket
-          if (deltaWebsocket){
-            console.log('closing deltaWebsocket')
-            deltaWebsocket.close()
-          }
-          if (localWebsocket){
-            localWebsocket.close()
-          }
+          // if (deltaWebsocket){
+          //   console.log('closing deltaWebsocket')
+          //   deltaWebsocket.close()
+          // }
+          // if (localWebsocket){
+          //   localWebsocket.close()
+          // }
           // get host's ip
-          if (process.argv[2] === 'localhost'){
-            hostIP = process.argv[2]
-          } else {
+          if(!argv.l){
             hostIP = msg.data.host.ip          
           }   
             //startLocalWebsocket(hostIP, 8082)       
             pal(hostIP, '8081')
-            console.log('running deltaWebsocket as pal')
         }
 
         // update our list of Pals here
         // i.e. we want a remove list and an add list to update our set of Pals
 
-        // TODO: want ot know which guest is host, and make sure we have a p2p connection to them
-        // (unless we are the host!)
-        // TODO: deal with case that we WERE host but are not any longer
-        
         // TODO possibly also p2p connections to all other members, if we want to have direct lines?
         // (e.g. for sending head/hand position data with minimal lag)
         //? not sure why this is necessary:
@@ -397,105 +403,6 @@ async function init() {
 init();
 
 
-
-
-
-function host(){
-
-  scenefile = JSON.parse(fs.readFileSync(__dirname + "/got/simple_scene.json"))
-  //console.log(scenefile)
-
-  //! host also has to run the p2p-mesh signalling server, because heroku only allows one port on the server instance
-  const p2pSignalBroker = require('coven/server');
-  const DEFAULT_PORT = 8082;
-  const PORT = +(process.env.PORT || DEFAULT_PORT);
- 
-  p2pSignalBroker({
-    port: PORT,
-    onMessage({ room, type, origin, target }) {
-      console.log(`[${room}::${type}] ${origin} -> ${target || '<BROADCAST>'}`);
-    },
-  });
-
-
-
-
-  deltaWebsocketServer = new webSocket.Server({ 
-    // server: server,
-    port: 8081,
-    maxPayload: 1024 * 1024, 
-  });
-  let sessionId = 0;
-  console.log('running deltaWebsocket as HOST')
-  
-  let configp2p = JSON.stringify({
-    cmd: 'p2pSignalServer',
-    date: Date.now(), 
-    data: localConfig.p2pSignalServer
-  })
-  sendAllLocalClients(configp2p)
-  // whenever a pal connects to this websocket:
-  deltaWebsocketServer.on('connection', function(deltaWebsocket, req) {
-    
-    let highFive = JSON.stringify({
-      cmd: 'highFive',
-      date: Date.now(), 
-      data: 'hello from Host',
-    })
-    deltaWebsocket.send(highFive)
-    // do any
-    console.log("server received a connection");
-    console.log("server has "+deltaWebsocketServer.clients.size+" connected clients");
-    //	ws.id = uuid.v4();
-    const id = ++sessionId;
-    const location = url.parse(req.url, true);
-    // ip = req.connection.remoteAddress.split(':')[3] 
-    ip = req.headers.host.split(':')[0]
-    if(!ip){
-      // console.log('vr', req.connection)
-      ip = req.ip
-    }
-    //console.log(ip)
-    // const location = urlw.parse(req.url, true);
-    // console.log(location)
-
-    deltaWebsocket.on('error', function (e) {
-      if (e.message === "read ECONNRESET") {
-        // ignore this, client will still emit close event
-      } else {
-        console.error("websocket error: ", e.message);
-      }
-    });
-
-    // what to do if client disconnects?
-    deltaWebsocket.on('close', function(connection) {
-      //clearInterval(handShakeInterval);
-      console.log("deltaWebsocket: connection closed");
-          console.log("server has "+deltaWebsocketServer.clients.size+" connected clients");
-    });
-    
-    // respond to any messages from the client:
-    deltaWebsocket.on('message', function(e) {
-      console.log(e)
-      if (e instanceof Buffer) {
-        // get an arraybuffer from the message:
-        const ab = e.buffer.slice(e.byteOffset,e.byteOffset+e.byteLength);
-        //console.log("received arraybuffer", ab);
-        // as float32s:
-        //console.log(new Float32Array(ab));
-
-      } else {
-        try {
-          handlemessage(JSON.parse(e), id);
-        } catch (e) {
-          console.log('bad JSON: ', e);
-        }
-      }
-    });
-
-  });
-} 
-
 // attempt to connect to Host
 function pal(ip, port){
 
@@ -508,34 +415,17 @@ function pal(ip, port){
   })
   sendAllLocalClients(configp2p)
 
+  let deltaWebsocketAddress
+  if(!argv.l){
+    deltaWebsocketAddress = 'ws://' + ip + '/' + port
 
-  let deltaWebsocketAddress = 'ws://' + ip + '/' + port
+  } else {
+    deltaWebsocketAddress = 'ws://' + ip + ':' + port
+  }
+   
 
     console.log(`attempting to connect to deltaWebsocket Host at `, deltaWebsocketAddress)
-//     deltaWebsocket = new webSocket(deltaWebsocketAddress);
-    
-//     deltaWebsocket.on('error', function error(error) {
-//       console.log(`connection error from ${deltaWebsocketAddress}:`)
-//       deltaWebsocket.close()
-//     });
-    
-//     // on successful connection to deltaWebsocket Host:
-//     deltaWebsocket.on('open', function open() {
-//       let highFive = JSON.stringify({
-//         cmd: 'highFive',
-//         date: Date.now(), 
-//         data: 'hello from Pal',
-//       })
-//       deltaWebsocket.send(highFive)      
-//     });    
 
-//     deltaWebsocket.on('message', function incoming(data) {
-//       let msg = data.data
-//       console.log(msg)
-// });
-
-
-// /*
     deltaWebsocket = new ReconnectingWebSocket(deltaWebsocketAddress, [], rwsOptions);
     
     deltaWebsocket.addEventListener('error', (error) => {
@@ -544,16 +434,61 @@ function pal(ip, port){
     
     // on successful connection to deltaWebsocket Host:
     deltaWebsocket.addEventListener('open', () => {
+      console.log('connected to deltaWebsocket host')
       let highFive = JSON.stringify({
-        cmd: 'highFive',
+        cmd: 'rsvp',
         date: Date.now(), 
-        data: 'hello from Pal',
+        data: 'pal',
       })
       deltaWebsocket.send(highFive)
 
       deltaWebsocket.addEventListener('message', (data) =>{
-        let msg = data.data
-        console.log(msg)
+        let msg = JSON.parse(data.data)
+
+        switch(msg.cmd){
+
+          case 'deltas':
+            console.log('delta from Host: ', msg)
+            // synchronize our local copy:
+            try {
+              //console.log('\n\npreApply', localGraph.nodes.resofilter_120)
+              got.applyDeltasToGraph(localGraph, msg.data);
+              //console.log('\n\npostApply', JSON.stringify(localGraph.nodes.resofilter_120.resonance))
+            } catch (e) {
+              console.warn(e);
+            }
+
+            //console.log(msg.data)
+            // TODO: merge OTs
+            
+            let response = {
+              cmd: "deltas",
+              date: Date.now(),
+              data: msg.data
+            };
+            console.log(msg.data)
+            
+            // check if the recording status is active, if so push received delta(s) to the recordJSON
+            if (localConfig.recordStatus === 1){
+              
+              for(i = 0; i < msg.data.length; i++){
+                
+                msg.data[i]["timestamp"] = Date.now()
+                recordJSON.deltas.push(msg.data[i])
+              }
+              
+            }
+
+            //fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(response), "utf-8")
+
+            //OTHistory.push(JSON.stringify(response))
+            console.log('localgraph',localGraph, '\n')
+            // send to all LOCAL clients:
+            sendAllLocalClients(JSON.stringify(response));
+          break
+          default: console.log('unhandled deltaWS message: ', msg)
+        }
+        // console.log(msg)
       })
       deltaWebsocket.addEventListener('error', (data) =>{
         console.log(data)
@@ -561,7 +496,7 @@ function pal(ip, port){
       })
       
     });
-// */
+
 
 }
 
@@ -676,13 +611,13 @@ function handlemessage(msg, id) {
     // 	// save session name as filename provided in this message
     // 	sessionRecording = __dirname + "/session_recordings/" + recording + ".json"
     // 	// push all received deltas to the recordJSON:
-    // 	recordStatus = 1
+    // 	localConfig.recordStatus = 1
     // 	console.log('session will be stored at', sessionRecording)
       
     // } break;
 
     // case "stopRecord":{
-    // 	recordStatus = 0
+    // 	localConfig.recordStatus = 0
 
       
     // 	fs.writeFileSync(sessionRecording, JSON.stringify(recordJSON, null, 2), "utf-8")
@@ -847,11 +782,11 @@ function startLocalWebsocket(){
         try {
           // handlemessage(JSON.parse(e), ws, id);
           let msg = JSON.parse(e)
-          console.log('test', msg)
           switch(msg.cmd){
             case 'vrClientStatus':
               localConfig.vr = msg.data
               teapartyWebsocket.send
+              console.log(msg)
             break;
 
             case 'get_scene':
@@ -859,7 +794,9 @@ function startLocalWebsocket(){
             break
 
             case 'deltas':
-              runGOT(id, msg.data)
+              console.log('delta from VR client', msg.data)
+              deltaWebsocket.send(JSON.stringify(msg))
+              // runGOT(id, msg.data)
             break
           }
         } catch (e) {
@@ -901,7 +838,7 @@ function runGOT(src, delta){
       console.log(delta)
       
       // check if the recording status is active, if so push received delta(s) to the recordJSON
-      // if (recordStatus === 1){
+      // if (localConfig.recordStatus === 1){
         
       //   for(i = 0; i < delta.length; i++){
           
@@ -927,9 +864,8 @@ function runGOT(src, delta){
 }
 
 function sendAllLocalClients(msg){
-
   localWebsocketServer.clients.forEach(function each(client) {
-		if (client == ignore) return;
+		// if (client == ignore) return;
 		try {
 			client.send(msg);
 		} catch (e) {
