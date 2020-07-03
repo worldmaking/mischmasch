@@ -430,10 +430,20 @@ function pal(ip, port){
     
     deltaWebsocket.addEventListener('error', (error) => {
       console.log(`connection error from ${deltaWebsocketAddress}:`, error)
+      // nuclear option. discard localGraph because the host is about to send us the deltas to build the current form of the graph
+      localGraph = {}
     });
+
+    deltaWebsocket.addEventListener('close', (data)=>{
+      console.log('deltaWebsocket closed: ', data)
+      // nuclear option. discard localGraph because the host is about to send us the deltas to build the current form of the graph
+      localGraph = {}
+    })
     
     // on successful connection to deltaWebsocket Host:
     deltaWebsocket.addEventListener('open', () => {
+
+
       console.log('connected to deltaWebsocket host')
       let highFive = JSON.stringify({
         cmd: 'rsvp',
@@ -490,10 +500,7 @@ function pal(ip, port){
         }
         // console.log(msg)
       })
-      deltaWebsocket.addEventListener('error', (data) =>{
-        console.log(data)
-        
-      })
+
       
     });
 
@@ -790,6 +797,17 @@ function startLocalWebsocket(){
             break;
 
             case 'get_scene':
+              console.log(msg)
+
+              if (localGraph){
+                let deltas = got.deltasFromGraph(localGraph, [])
+                let msg = JSON.stringify({
+                  cmd: 'deltas',
+                  date: Date.now(),
+                  data: deltas
+                })
+                localWebsocket.send(msg)
+              }
 
             break
 
