@@ -22,14 +22,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/worldmaking/msvr.git"
+    "url": "git+https://github.com/worldmaking/mischmasch.git"
   },
   "author": "Alice Lab",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/worldmaking/msvr/issues"
+    "url": "https://github.com/worldmaking/mischmasch/issues"
   },
-  "homepage": "https://github.com/worldmaking/msvr#readme",
+  "homepage": "https://github.com/worldmaking/mischmasch#readme",
   "dependencies": {
     "bottleneck": "^2.19.5",
     "chroma-js": "^2.1.0",
