@@ -828,9 +828,6 @@ function animate() {
         }
 		console.log("updated localGraph", JSON.stringify(localGraph, null, "  "))
 		
-		scene = rebuildInstances(rebuildScene(localGraph));
-
-
 		// // handle local deltas:
 		// while (localDeltas.length > 0) {
         //     let delta = localDeltas.shift();
@@ -838,11 +835,8 @@ function animate() {
         //     enactDelta(ghostMenu, delta);
         // }
 
-        // // re-layout:
-        // updateDirty(ghostScene, false);
-
-        // // TODO: delete once cables are instanced:
-        // updateDirty(scene, false);
+		// // re-layout:
+		sceneGraph.rebuild(localGraph);
 	}
 	
 
