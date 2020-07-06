@@ -83,6 +83,7 @@ const WebSocket = require('ws')
 const chroma = require("chroma-js")
 const {argv} = require('yargs')
 const nodeglpath = "../node-gles3"
+const Coven = require('coven')
 const gl = require(path.join(nodeglpath, "gles3.js")),
 glfw = require(path.join(nodeglpath, "glfw3.js")),
 vr = require(path.join(nodeglpath, "openvr.js")),
@@ -802,6 +803,13 @@ let sceneGraph = {
 	},
 }
 
+function randomInt(){
+
+		min = Math.ceil(122);
+		max = Math.floor(5000);
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+
+}
 glfw.setKeyCallback(window, function(...args) {
 	console.log("key event", args);
 	//W
@@ -815,16 +823,20 @@ glfw.setKeyCallback(window, function(...args) {
 		case 68: //D
 			break;
 		case 49: //1 (spawn a speaker)
+			let int = randomInt()
+			let pathInt = 'speaker_' + int
+			let inputInt = 'speaker_' + int + '.input'
+			
 			let delta = [ 
 				[ 
 					{ op: 'newnode',
-						path: 'speaker_123',
+						path: pathInt,
 						kind: 'speaker',
 						category: 'abstraction',
 						pos: [Array],
 						orient: [Array] },
 					{ op: 'newnode',
-						path: 'speaker_123.input',
+						path: inputInt,
 						kind: 'inlet',
 						index: 0 } 
 					] 
@@ -836,6 +848,7 @@ glfw.setKeyCallback(window, function(...args) {
 
 				})
 				socket.send(msg)
+				console.log(delta)
 			break;
 		default:
 			break;
@@ -924,7 +937,8 @@ function animate() {
         }
 		console.log("updated localGraph", JSON.stringify(localGraph, null, "  "))
 		
-		scene = rebuildInstances(rebuildScene(localGraph));
+		console.log('NOTE: scene = rebuildInstances(rebuildScene(localGraph)); currently commented out')
+		// scene = rebuildInstances(rebuildScene(localGraph));
 
 
 		// // handle local deltas:

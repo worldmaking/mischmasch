@@ -83,8 +83,8 @@ console.log("server_path", server_path);
 console.log("client_path", client_path);
 
 let name;
-if (process.argv[3]){
-  name = process.argv[3]
+if (argv.name){
+  name = argv.name
 } else {
   name = username.sync()
 }
@@ -377,7 +377,12 @@ async function init() {
 
       } break;
       case "ping": {
-        // ignore
+        // keep the teaparty connection alive
+        teapartyWebsocket.send(JSON.stringify({
+          cmd: 'keepAlive',
+          date: Date.now(),
+          data: name
+        }))
       }
       break;
 
@@ -456,10 +461,18 @@ function pal(ip, port){
         let msg = JSON.parse(data.data)
 
         switch(msg.cmd){
-
+          case "ping": 
+            // keep the teaparty connection alive
+            deltaWebsocket.send(JSON.stringify({
+              cmd: 'keepAlive',
+              date: Date.now(),
+              data: name
+            }))
+          break;
           case 'deltas':
-            console.log('delta from Host: ', msg)
+            console.log('received delta from Host')
             // synchronize our local copy:
+            console.log(msg)
             try {
               //console.log('\n\npreApply', localGraph.nodes.resofilter_120)
               got.applyDeltasToGraph(localGraph, msg.data);
@@ -476,7 +489,7 @@ function pal(ip, port){
               date: Date.now(),
               data: msg.data
             };
-            console.log(msg.data)
+            //console.log(msg.data)
             
             // check if the recording status is active, if so push received delta(s) to the recordJSON
             if (localConfig.recordStatus === 1){
@@ -492,7 +505,7 @@ function pal(ip, port){
             //fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(response), "utf-8")
 
             //OTHistory.push(JSON.stringify(response))
-            console.log('localgraph',localGraph, '\n')
+            //console.log('localgraph',localGraph, '\n')
             // send to all LOCAL clients:
             sendAllLocalClients(JSON.stringify(response));
           break
@@ -735,7 +748,7 @@ function startLocalWebsocket(){
   let sessionId = 0;
   console.log('running localWebsocket Server')
       
-  // whenever a pal connects to this websocket:
+  // whenever a mischmasch client connects to this websocket:
   localWebsocketServer.on('connection', function(ws, req) {
     localWebsocket = ws
     // inform client that the p2p signal server is running on localhost
@@ -853,7 +866,6 @@ function runGOT(src, delta){
         date: Date.now(),
         data: delta
       });
-      console.log(delta)
       
       // check if the recording status is active, if so push received delta(s) to the recordJSON
       // if (localConfig.recordStatus === 1){
@@ -869,7 +881,7 @@ function runGOT(src, delta){
       //fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(response), "utf-8")
 
       //OTHistory.push(JSON.stringify(response))
-      console.log('localgraph',localGraph, '\n')
+     // console.log('localgraph',localGraph, '\n')
 
       if (teapartyHost === localConfig.username){
         // if this app.js is host, just send using the localWebsocket
