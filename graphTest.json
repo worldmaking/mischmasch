@@ -105,42 +105,6 @@
 					"index": 3
 				}
 			}
-		},
-		"speaker_123": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
 		}
 	},
 	"arcs": [

@@ -81,7 +81,7 @@ const { vec2, vec3, vec4, quat, mat2, mat2d, mat3, mat4} = require("gl-matrix")
 const PNG = require("png-js");
 const WebSocket = require('ws')
 const chroma = require("chroma-js")
-
+const {argv} = require('yargs')
 const nodeglpath = "../node-gles3"
 const gl = require(path.join(nodeglpath, "gles3.js")),
 glfw = require(path.join(nodeglpath, "glfw3.js")),
@@ -89,9 +89,17 @@ vr = require(path.join(nodeglpath, "openvr.js")),
 glutils = require(path.join(nodeglpath, "glutils.js"))
 
 const got = require("./got/got.js")
-
-const USEVR = 0;
-const USEWS = false;
+console.log(argv)
+let USEVR = 0;
+if(argv.vr === true){
+	USEVR = 1
+	console.log('using VR')
+}
+let USEWS = false;
+if(argv.w){
+	USEWS = true
+	console.log('using websockets')
+}
 const url = 'ws://localhost:8080'
 const demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
 const shaderpath = path.join(__dirname, "shaders")
@@ -806,11 +814,47 @@ glfw.setKeyCallback(window, function(...args) {
 			break;
 		case 68: //D
 			break;
+		case 49: //1 (spawn a speaker)
+			let delta = [ 
+				[ 
+					{ op: 'newnode',
+						path: 'speaker_123',
+						kind: 'speaker',
+						category: 'abstraction',
+						pos: [Array],
+						orient: [Array] },
+					{ op: 'newnode',
+						path: 'speaker_123.input',
+						kind: 'inlet',
+						index: 0 } 
+					] 
+				]
+				let msg = JSON.stringify({
+					cmd: 'deltas',
+					date: Date.now(),
+					data: delta
+
+				})
+				socket.send(msg)
+			break;
 		default:
 			break;
 	}
 	//args[0] key : args[2] hold = 2 pressed = 1 released = 0
 });
+
+function spawnSingleModule(pos, orient, name){
+    let ctor = module_constructors[name];
+    if (ctor == undefined) ctor = operator_constructors[name]
+
+    let path = gensym(name);
+	let deltas = ctor(path);
+	let op0 = deltas[0];
+    op0.pos = pos;
+    op0.orient = orient;
+
+    return deltas;
+}
 
 glfw.setCursorPosCallback(window, (window, px, py) => {
     // convert px,py to normalized 0..1 coordinates:
@@ -982,7 +1026,7 @@ function serverConnect() {
 	socket = new WebSocket(url)
 	socket.binaryType = 'arraybuffer';
 	socket.onopen = () => {
-		console.log("websocket connected to "+url);
+		console.log("websocket connected to localWebsocket on "+url);
 		socket.send(JSON.stringify({ cmd:"get_scene"})) 
 	}
 	socket.onerror = (error) => {
