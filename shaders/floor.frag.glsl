@@ -26,18 +26,19 @@ void main() {
 	float d = length(v_xz);
 	float b = floor(mod(d * 8., 1.) / 8.);
 	float ribs = smoothstep(soft, -soft, abs(mod(d, 1.) - 0.5));
-	outColor = vec4(clamp(0.3-0.2*floor(d)/10., 0., 1.));
+	outColor = vec4(ribs);
+	//outColor = vec4(clamp(0.3-0.2*floor(d)/10., 0., 1.));
 
-	vec2 checks = floor(mod(v_xz, 1.) + alpha);
-	float q = checks.x * checks.y;
-	outColor = vec4(q);
+	// vec2 checks = floor(mod(v_xz, 1.) + alpha);
+	// float q = checks.x * checks.y;
+	// outColor = vec4(q);
 
-	float c = floor(0.5-length(mod(v_xz, 1.)-0.5) + alpha);
-	outColor = vec4(c);
+	// float c = floor(0.5-length(mod(v_xz, 1.)-0.5) + alpha);
+	// outColor = vec4(c);
 
 	//outColor = vec4(fibonacci(v_xz / 64., 0., 100.));
 
-	outColor *= 0.3;
+	//outColor *= 0.3;
 	outColor *= alpha;
 
 }
