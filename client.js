@@ -848,87 +848,92 @@ function initUI(window) {
 		mouse.ndcPoint[0] = +2*px/dim[0] + -1;
 		mouse.ndcPoint[1] = -2*py/dim[1] + +1;
 	});
-}
-function randomInt(){
 
-		min = Math.ceil(122);
-		max = Math.floor(5000);
-		return Math.floor(Math.random() * (max - min + 1)) + min;
+	function randomInt(){
 
-}
-glfw.setKeyCallback(window, function(...args) {
-	console.log("key event", args);
-	//W
-	switch(args[1]){
-		case 87: //W
-			break;
-		case 83: //S
-			break;
-		case 65: //A
-			break;
-		case 68: //D
-			break;
-		case 49: //1 (spawn a speaker)
-			let int = randomInt()
-			let pathInt = 'speaker_' + int
-			let inputInt = 'speaker_' + int + '.input'
-			
-			let delta = [ 
-				[ 
-					{ op: 'newnode',
-						path: pathInt,
-						kind: 'speaker',
-						category: 'abstraction',
-						pos: [Array],
-						orient: [Array] },
-					{ op: 'newnode',
-						path: inputInt,
-						kind: 'inlet',
-						index: 0 } 
-					] 
-				]
-				let msg = JSON.stringify({
-					cmd: 'deltas',
-					date: Date.now(),
-					data: delta
+			min = Math.ceil(122);
+			max = Math.floor(5000);
+			return Math.floor(Math.random() * (max - min + 1)) + min;
 
-				})
+	}
+	glfw.setKeyCallback(window, function(...args) {
+		console.log("key event", args);
+		//W
+		switch(args[1]){
+			case 87: //W
+				break;
+			case 83: //S
+				break;
+			case 65: //A
+				break;
+			case 68: //D
+				break;
+			case 49: //1 (spawn a speaker)
+				let int = randomInt()
+				let pathInt = 'speaker_' + int
+				let inputInt = 'speaker_' + int + '.input'
+				
+				let delta = [ 
+					[ 
+						{ op: 'newnode',
+							path: pathInt,
+							kind: 'speaker',
+							category: 'abstraction',
+							pos: [Array],
+							orient: [Array] },
+						{ op: 'newnode',
+							path: inputInt,
+							kind: 'inlet',
+							index: 0 } 
+						] 
+					]
+					let msg = JSON.stringify({
+						cmd: 'deltas',
+						date: Date.now(),
+						data: delta
+
+					})
+
+				// let delta = spawnSingleModule([0, 0, 0], [0, 0, 0, 1], "speaker");
 				if (USEWS){
 					socket.send(msg)
 					console.log(delta)
 				}
-				
-				
+					
+					
 			break;
-		default:
-			break;
-	}
-	//args[0] key : args[2] hold = 2 pressed = 1 released = 0
-});
+			default:
+				break;
+		}
+		//args[0] key : args[2] hold = 2 pressed = 1 released = 0
+	});
 
-function spawnSingleModule(pos, orient, name){
-    let ctor = module_constructors[name];
-    if (ctor == undefined) ctor = operator_constructors[name]
 
-    let path = gensym(name);
-	let deltas = ctor(path);
-	let op0 = deltas[0];
-    op0.pos = pos;
-    op0.orient = orient;
+	// function spawnSingleModule(pos, orient, name){
+	// 	let ctor = module_constructors[name];
+	// 	if (ctor == undefined) ctor = operator_constructors[name]
 
-    return deltas;
+	// 	let path = gensym(name);
+	// 	let deltas = ctor(path);
+	// 	let op0 = deltas[0];
+	// 	op0.pos = pos;
+	// 	op0.orient = orient;
+
+	// 	return deltas;
+	// }
+
+	glfw.setCursorPosCallback(window, (window, px, py) => {
+		// convert px,py to normalized 0..1 coordinates:
+		const pix_dim = vec2.div([1, 1], 
+			glfw.getWindowContentScale(window), 
+			glfw.getFramebufferSize(window)
+		);
+		// -1..1 in each axis:
+		let ndcPoint = [+2*px*pix_dim[0] - 1, -2*py*pix_dim[1] + 1 ];
+		console.log(ndcPoint);
+	});
+
 }
-
-glfw.setCursorPosCallback(window, (window, px, py) => {
-    // convert px,py to normalized 0..1 coordinates:
-    const pix_dim = vec2.div([1, 1], 
-        glfw.getWindowContentScale(window), 
-        glfw.getFramebufferSize(window)
-    );
-    // -1..1 in each axis:
-	let ndcPoint = [+2*px*pix_dim[0] - 1, -2*py*pix_dim[1] + 1 ];
-	console.log(ndcPoint);
-});
 /*
 for key events:
 glfw.setKeyCallback(window, function(...args) {
@@ -1143,23 +1148,24 @@ function onServerMessage(msg, sock) {
 		case "p2pSignalServer":
 			let ip = msg.data.ip
 			let port = msg.data.port
-			p2pDataChannel = new Coven({ ws, wrtc, signaling: 'ws://' + ip + ':' + port });
-			p2pDataChannel
-				.on('message', ({ peerId, message }) => console.log(`${peerId}: ${message}`))
-				.on('connection', pid => {
-					console.log(pid, p2pDataChannel.activePeers);
+			console.log(msg)
+			// p2pDataChannel = new Coven({ ws, wrtc, signaling: 'ws://' + ip + ':' + port });
+			// p2pDataChannel
+			// 	.on('message', ({ peerId, message }) => console.log(`${peerId}: ${message}`))
+			// 	.on('connection', pid => {
+			// 		console.log(pid, p2pDataChannel.activePeers);
 					
-					// we use the filename var to route which client should get what message. alternately, could create a 2nd datachannel...
-					let p2pMsg = JSON.stringify({
-						cmd: 'hello',
-						source: filename,
-						message: 'meow'
-					})
-					p2pDataChannel.sendTo(pid, p2pMsg);
-				})
-				.on('error', () =>{
-					JSON.parse(console.error)
-				});
+			// 		// we use the filename var to route which client should get what message. alternately, could create a 2nd datachannel...
+			// 		let p2pMsg = JSON.stringify({
+			// 			cmd: 'hello',
+			// 			source: filename,
+			// 			message: 'meow'
+			// 		})
+			// 		p2pDataChannel.sendTo(pid, p2pMsg);
+			// 	})
+			// 	.on('error', () =>{
+			// 		JSON.parse(console.error)
+			// 	});
 
 		break;
         default:
