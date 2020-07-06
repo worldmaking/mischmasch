@@ -871,25 +871,9 @@ function animate() {
 			} catch (e) {
 				console.warn(e);
 			}
-			
-
-            //enactDelta(ghostWorld, delta);
-            //log("incoming deltas")
         }
 		console.log("updated localGraph", JSON.stringify(localGraph, null, "  "))
-<<<<<<< HEAD
 		
-=======
-		sceneGraph.rebuild(localGraph);
-
->>>>>>> dd15e932eb06b3b50c3f3a30841076e115dcfb4a
-		// // handle local deltas:
-		// while (localDeltas.length > 0) {
-        //     let delta = localDeltas.shift();
-        //     // TODO: derive which world to add to:
-        //     enactDelta(ghostMenu, delta);
-        // }
-
 		// // re-layout:
 		sceneGraph.rebuild(localGraph);
 	}
