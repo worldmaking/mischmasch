@@ -847,8 +847,12 @@ glfw.setKeyCallback(window, function(...args) {
 					data: delta
 
 				})
-				socket.send(msg)
-				console.log(delta)
+				if (USEWS){
+					socket.send(msg)
+					console.log(delta)
+				}
+				
+				
 			break;
 		default:
 			break;
@@ -1083,8 +1087,31 @@ function onServerMessage(msg, sock) {
         //     console.log(msg.data)
         //     vrContextID = msg.data.vrContext
         //     audioContextID = msg.data.audioContext
-        // }
-        break;
+		// }
+		
+		// the p2p won't run until the app.js passes along who is running as host:
+		case "p2pSignalServer":
+			let ip = msg.data.ip
+			let port = msg.data.port
+			p2pDataChannel = new Coven({ ws, wrtc, signaling: 'ws://' + ip + ':' + port });
+			p2pDataChannel
+				.on('message', ({ peerId, message }) => console.log(`${peerId}: ${message}`))
+				.on('connection', pid => {
+					console.log(pid, p2pDataChannel.activePeers);
+					
+					// we use the filename var to route which client should get what message. alternately, could create a 2nd datachannel...
+					let p2pMsg = JSON.stringify({
+						cmd: 'hello',
+						source: filename,
+						message: 'meow'
+					})
+					p2pDataChannel.sendTo(pid, p2pMsg);
+				})
+				.on('error', () =>{
+					JSON.parse(console.error)
+				});
+
+		break;
         default:
            console.log("received JSON", msg, typeof msg);
     }
