@@ -107,8 +107,8 @@ let localConfig = {
   host: {},
   // TODO determine where this should run. 
   p2pSignalServer: {
-    ip: null,
-    port: null
+    ip: 'localhost',
+    port: 8082
   },
   recordStatus: 0
 };
