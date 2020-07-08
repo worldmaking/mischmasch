@@ -4,7 +4,9 @@
   "description": "Modular Synthesis in VR",
   "main": "server.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "preinstall": "node preinstall.js",
+    "postinstall": "node postinstall.js"
   },
   "repository": {
     "type": "git",
