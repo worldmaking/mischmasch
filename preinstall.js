@@ -8,7 +8,11 @@ if (fs.existsSync(__dirname + '/gotlib')) {
 } else {
     exec('git submodule add -b master https://github.com/worldmaking/gotlib.git', (stdout,stderr,err) =>{
     console.log(stdout, stderr, err)
-})
+    })
+    exec('git submodule init', (stdout,stderr,err) =>{
+        console.log(stdout, stderr, err)
+    })
+
 }
 
 

@@ -44,7 +44,7 @@ const express = require('express');
 const fs = require("fs");
 const path = require("path");
 // const bottleneck = require('Bottleneck')
-const got = require("./gotlib/got")
+const got = require("/gotlib/got.js")
 // simplified cli args for script
 const {argv} = require('yargs')
 
