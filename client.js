@@ -1176,8 +1176,8 @@ function onServerMessage(msg, sock) {
 		
 		// the p2p won't run until the app.js passes along who is running as host:
 		case "p2pSignalServer":
-
-			signal = 'wss://coven-broker.now.sh'
+			signal = 'ws://mischmasch-host.herokuapp.com/8082'
+			// signal = 'wss://coven-broker.now.sh'
 			// coven = new Coven({ ws, wrtc, signaling: 'ws://' + ip + ':' + port });
 			coven = new Coven({ ws, wrtc, signaling: signal });
 			

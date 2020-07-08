@@ -30,8 +30,8 @@ const filename = path.basename(__filename)
 
 // let ip = msg.data.ip
 // let port = msg.data.port
-
-signal = 'wss://coven-broker.now.sh'
+signal = 'ws://mischmasch-host.herokuapp.com/8082'
+// signal = 'wss://coven-broker.now.sh'
 // coven = new Coven({ ws, wrtc, signaling: 'ws://' + ip + ':' + port });
 coven = new Coven({ ws, wrtc, signaling: signal });
 
