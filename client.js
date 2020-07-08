@@ -87,6 +87,8 @@ const filename = path.basename(__filename)
 const chroma = require("chroma-js")
 const {argv} = require('yargs')
 const nodeglpath = "../node-gles3"
+const rws = require('reconnecting-websocket');
+
 
 const gl = require(path.join(nodeglpath, "gles3.js")),
 glfw = require(path.join(nodeglpath, "glfw3.js")),
@@ -111,13 +113,26 @@ if(argv.vr === true){
 }
 let USEWS = false;
 let userDataChannel
+
+const rwsOptions = {
+	// make rws use the webSocket module implementation
+	WebSocket: ws, 
+	// ms to try reconnecting:
+	connectionTimeout: 30000,
+	//debug:true, 
+  }
+
 if(argv.w){
 	USEWS = true
 	console.log('using websockets')
 
-	userDataChannel = new ws('ws://mischmasch-userdata.herokuapp.com/8082');
+	// userDataChannel = new ws('ws://mischmasch-userdata.herokuapp.com/8082');
+	userDataChannel = new rws('ws://mischmasch-userdata.herokuapp.com/8082', [], rwsOptions);
 
-	userDataChannel.on('open', function open() {
+	// teapartyWebsocket.addEventListener('message', (data) => {
+	// 	let msg = JSON.parse(data.data);
+
+	userDataChannel.addEventListener('open', (data) => {
 		userDataChannel.send(JSON.stringify({
 			cmd: 'handshake',
 			source: peerHandle,
@@ -125,11 +140,11 @@ if(argv.w){
 		}));
 	});
 	
-	userDataChannel.on('message', function incoming(data) {
-		console.log(data);
+	userDataChannel.addEventListener('message', (data) => {
+		console.log(data.data);
 		// ensure non JSON data doesn't get parsed
-		if (typeof data === 'object' && data !== null){
-			let msg = JSON.parse(data)
+		if (typeof data.data === 'object' && data.data !== null){
+			let msg = JSON.parse(data.data)
 			switch(msg.cmd){
 
 				case 'handshake':
@@ -137,17 +152,17 @@ if(argv.w){
 				break
 
 				case 'cursorPosition':
-
+					console.log('cursor position from client ' + msg.source + ': ', msg.data)
 				break
 
 				default: console.log('unhandled msg: ', msg)
 			}
 		} else {
-			console.log('message "' + data + '" received by userDataChannel is a ' + typeof data + ', expected JSON object')
+			console.log('message "' + data.data + '" received by userDataChannel is a ' + typeof data.data + ', expected JSON object')
 		}
 	})
 
-	userDataChannel.on('error', function error(err){
+	userDataChannel.addEventListener('error', (err) => {
 		console.log(err)
 	})
 }
@@ -1152,6 +1167,8 @@ function draw(eye=0) {
 
 let socket;
 let incomingDeltas = [];
+
+
 
 function serverConnect() {
 	const url = 'ws://localhost:8080'

@@ -813,6 +813,7 @@ function startLocalWebsocket(){
               console.log(msg)
 
               if (localGraph){
+                console.log(localGraph)
                 let deltas = got.deltasFromGraph(localGraph, [])
                 let msg = JSON.stringify({
                   cmd: 'deltas',
