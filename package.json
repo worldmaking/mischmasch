@@ -5,20 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node app.js",
-    "test": "jest"
-  },
-  "jest": {
-    "verbose": true,
-    "modulePathIgnorePatterns": [
-      "got/"
-    ],
-    "moduleDirectories": [
-      "__tests__/deltas/",
-      "node_modules"
-    ],
-    "reporters": [
-      "default"
-    ]
+    "preinstall": "node preinstall.js",
+    "postinstall": "node postinstall.js"
   },
   "repository": {
     "type": "git",

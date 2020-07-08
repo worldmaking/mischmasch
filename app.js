@@ -44,7 +44,7 @@ const express = require('express');
 const fs = require("fs");
 const path = require("path");
 // const bottleneck = require('Bottleneck')
-const got = require("./got/got")
+const got = require("./gotlib/got")
 // simplified cli args for script
 const {argv} = require('yargs')
 
@@ -83,8 +83,8 @@ console.log("server_path", server_path);
 console.log("client_path", client_path);
 
 let name;
-if (argv.name){
-  name = argv.name
+if (process.argv[3]){
+  name = process.argv[3]
 } else {
   name = username.sync()
 }
@@ -107,8 +107,8 @@ let localConfig = {
   host: {},
   // TODO determine where this should run. 
   p2pSignalServer: {
-    ip: 'localhost',
-    port: 8082
+    ip: null,
+    port: null
   },
   recordStatus: 0
 };
@@ -149,16 +149,6 @@ if (argv.l){
   teapartyWebsocketAddress = `ws://${teapartyAddress}/${teapartyWebsocketPort}`
   console.log('using heroku-based host.js at mischmasch-host.herokuapp.com')
 }
-
-
-// const teapartyAddress = 
-//     (process.argv[2] === 'lan' && process.argv[3]) ? process.argv[3]
-//   : (process.argv[2] === 'localhost') ? '127.0.0.1'
-//   : "teaparty.herokuapp.com";
-//  = 
-//   (process.argv[2] === 'lan' && process.argv[3]) || (process.argv[2] === 'localhost') ? `ws://${teapartyAddress}:${teapartyWebsocketPort}`
-//   : `ws://${teapartyAddress}/${teapartyWebsocketPort}`;
-
 
 const rwsOptions = {
   // make rws use the webSocket module implementation
@@ -377,12 +367,7 @@ async function init() {
 
       } break;
       case "ping": {
-        // keep the teaparty connection alive
-        teapartyWebsocket.send(JSON.stringify({
-          cmd: 'keepAlive',
-          date: Date.now(),
-          data: name
-        }))
+        // ignore
       }
       break;
 
@@ -461,18 +446,10 @@ function pal(ip, port){
         let msg = JSON.parse(data.data)
 
         switch(msg.cmd){
-          case "ping": 
-            // keep the teaparty connection alive
-            deltaWebsocket.send(JSON.stringify({
-              cmd: 'keepAlive',
-              date: Date.now(),
-              data: name
-            }))
-          break;
+
           case 'deltas':
-            console.log('received delta from Host')
+            console.log('delta from Host: ', msg)
             // synchronize our local copy:
-            console.log(msg)
             try {
               //console.log('\n\npreApply', localGraph.nodes.resofilter_120)
               got.applyDeltasToGraph(localGraph, msg.data);
@@ -489,7 +466,7 @@ function pal(ip, port){
               date: Date.now(),
               data: msg.data
             };
-            //console.log(msg.data)
+            console.log(msg.data)
             
             // check if the recording status is active, if so push received delta(s) to the recordJSON
             if (localConfig.recordStatus === 1){
@@ -505,9 +482,19 @@ function pal(ip, port){
             //fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(response), "utf-8")
 
             //OTHistory.push(JSON.stringify(response))
-            //console.log('localgraph',localGraph, '\n')
+            console.log('localgraph',localGraph, '\n')
             // send to all LOCAL clients:
             sendAllLocalClients(JSON.stringify(response));
+          break
+          case 'ping':
+            // keepAlive for heroku instance
+            let keepAlive = JSON.stringify({
+              cmd: 'keepAlive',
+              date: Date.now(), 
+              data: name,
+            })
+            deltaWebsocket.send(keepAlive)
+            
           break
           default: console.log('unhandled deltaWS message: ', msg)
         }
@@ -748,16 +735,16 @@ function startLocalWebsocket(){
   let sessionId = 0;
   console.log('running localWebsocket Server')
       
-  // whenever a mischmasch client connects to this websocket:
+  // whenever a pal connects to this websocket:
   localWebsocketServer.on('connection', function(ws, req) {
     localWebsocket = ws
-  //   // inform client that the p2p signal server is running on localhost
-  //   let configp2p = JSON.stringify({
-  //     cmd: 'p2pSignalServer',
-  //     date: Date.now(), 
-  //     data: localConfig.p2pSignalServer
-  //   })
-  //   localWebsocket.send(configp2p)
+    // inform client that the p2p signal server is running on localhost
+    let configp2p = JSON.stringify({
+      cmd: 'p2pSignalServer',
+      date: Date.now(), 
+      data: localConfig.p2pSignalServer
+    })
+    localWebsocket.send(configp2p)
     // do any
     console.log("server received a connection");
     // console.log("server has "+ws.clients.size+" connected clients");
@@ -867,6 +854,7 @@ function runGOT(src, delta){
         date: Date.now(),
         data: delta
       });
+      console.log(delta)
       
       // check if the recording status is active, if so push received delta(s) to the recordJSON
       // if (localConfig.recordStatus === 1){
@@ -882,7 +870,7 @@ function runGOT(src, delta){
       //fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(response), "utf-8")
 
       //OTHistory.push(JSON.stringify(response))
-     // console.log('localgraph',localGraph, '\n')
+      console.log('localgraph',localGraph, '\n')
 
       if (teapartyHost === localConfig.username){
         // if this app.js is host, just send using the localWebsocket
