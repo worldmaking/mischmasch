@@ -79,7 +79,6 @@ const assert = require("assert"),
 	path = require("path");
 const { vec2, vec3, vec4, quat, mat2, mat2d, mat3, mat4} = require("gl-matrix")
 const PNG = require("png-js");
-// const ws = require('ws')
 // keep the 'ws' usage as well - coven requires this very spelling
 const ws = require('ws')
 const username = require('username')
@@ -88,8 +87,7 @@ const filename = path.basename(__filename)
 const chroma = require("chroma-js")
 const {argv} = require('yargs')
 const nodeglpath = "../node-gles3"
-const Coven = require('coven')
-const wrtc = require('wrtc')
+
 const gl = require(path.join(nodeglpath, "gles3.js")),
 glfw = require(path.join(nodeglpath, "glfw3.js")),
 vr = require(path.join(nodeglpath, "openvr.js")),
@@ -112,9 +110,46 @@ if(argv.vr === true){
 	console.log('using VR')
 }
 let USEWS = false;
+let userDataChannel
 if(argv.w){
 	USEWS = true
 	console.log('using websockets')
+
+	userDataChannel = new ws('ws://mischmasch-userdata.herokuapp.com/8082');
+
+	userDataChannel.on('open', function open() {
+		userDataChannel.send(JSON.stringify({
+			cmd: 'handshake',
+			source: peerHandle,
+			data: 'highFive'
+		}));
+	});
+	
+	userDataChannel.on('message', function incoming(data) {
+		console.log(data);
+		// ensure non JSON data doesn't get parsed
+		if (typeof data === 'object' && data !== null){
+			let msg = JSON.parse(data)
+			switch(msg.cmd){
+
+				case 'handshake':
+					console.log('peer ' + msg.source + ' CONNECTED')
+				break
+
+				case 'cursorPosition':
+
+				break
+
+				default: console.log('unhandled msg: ', msg)
+			}
+		} else {
+			console.log('message "' + data + '" received by userDataChannel is a ' + typeof data + ', expected JSON object')
+		}
+	})
+
+	userDataChannel.on('error', function error(err){
+		console.log(err)
+	})
 }
 const url = 'ws://localhost:8080'
 const demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
@@ -951,16 +986,16 @@ function initUI(window) {
 		console.log(ndcPoint);
 
 		// we use the peerHandle var to route which client should get what message. alternately, could create a 2nd datachannel...
-		let p2pMsg = JSON.stringify({
+		let msg = JSON.stringify({
 			cmd: 'cursorPosition',
 			source: peerHandle,
 			data: ndcPoint
 		})
 		// coven.sendTo(coven.activePeers[i], p2pMsg);
-
-		for(i=0; i< coven.activePeers.length; i++){
-			coven.sendTo(coven.activePeers[i], p2pMsg);
+		if (USEWS){
+			userDataChannel.send(msg)
 		}
+
 	});
 
 }
@@ -1173,64 +1208,65 @@ function onServerMessage(msg, sock) {
         //     vrContextID = msg.data.vrContext
         //     audioContextID = msg.data.audioContext
 		// }
-		
+
 		// the p2p won't run until the app.js passes along who is running as host:
 		case "p2pSignalServer":
-			signal = 'ws://mischmasch-host.herokuapp.com/8082'
-			// signal = 'wss://coven-broker.now.sh'
-			// coven = new Coven({ ws, wrtc, signaling: 'ws://' + ip + ':' + port });
-			coven = new Coven({ ws, wrtc, signaling: signal });
-			
-			coven
-				.on('message', ({ peerId, message }) => {
-					console.log(`${peerId}: ${message}`)
-					let msg = JSON.parse(message)
-					switch(msg.cmd){
-
-						case 'handshake':
-
-						break
-
-						case 'keepAlive':
-							// ignore - prevents ICE from closing connection due to inactivity.
-						break
-						default: 
-						break;
-					}
-				})
-				.on('connection', pid => {
-					console.log(pid, coven.activePeers);
 					
-					// we use the filename var to route which client should get what message. alternately, could create a 2nd datachannel...
-					let p2pMsg = JSON.stringify({
-						cmd: 'handshake',
-						source: peerHandle,
-						data: 'meow'
-					})
-					coven.sendTo(pid, p2pMsg);
-					
-					function keepAlive() {
-						setTimeout(function () {
-							let p2pMsg = JSON.stringify({
-								cmd: 'keepAlive',
-								source: peerHandle,
-								data: 'ping'
-							})
-							coven.sendTo(pid, p2pMsg);
-							// Do Something Here
-							// Then recall the parent function to
-							// create a recursive loop.
-							keepAlive();
-						}, 5000);
-					}
-					keepAlive()
-				})
-				.on('error', () =>{
-					JSON.parse(console.error)
-				});
+			// signal = 'ws://mischmasch-host.herokuapp.com/8082'
+			// // signal = 'wss://coven-broker.now.sh'
+			// // coven = new Coven({ ws, wrtc, signaling: 'ws://' + ip + ':' + port });
+			// coven = new Coven({ ws, wrtc, signaling: signal });
 			
-			p2pID = coven.id
-			console.log(p2pID)
+			// coven
+			// 	.on('message', ({ peerId, message }) => {
+			// 		console.log(`${peerId}: ${message}`)
+			// 		let msg = JSON.parse(message)
+			// 		switch(msg.cmd){
+
+			// 			case 'handshake':
+
+			// 			break
+
+			// 			case 'keepAlive':
+			// 				// ignore - prevents ICE from closing connection due to inactivity.
+			// 			break
+			// 			default: 
+			// 			break;
+			// 		}
+			// 	})
+			// 	.on('connection', pid => {
+			// 		console.log(pid, coven.activePeers);
+					
+			// 		// we use the filename var to route which client should get what message. alternately, could create a 2nd datachannel...
+			// 		let p2pMsg = JSON.stringify({
+			// 			cmd: 'handshake',
+			// 			source: peerHandle,
+			// 			data: 'meow'
+			// 		})
+			// 		coven.sendTo(pid, p2pMsg);
+					
+			// 		function keepAlive() {
+			// 			setTimeout(function () {
+			// 				let p2pMsg = JSON.stringify({
+			// 					cmd: 'keepAlive',
+			// 					source: peerHandle,
+			// 					data: 'ping'
+			// 				})
+			// 				coven.sendTo(pid, p2pMsg);
+			// 				// Do Something Here
+			// 				// Then recall the parent function to
+			// 				// create a recursive loop.
+			// 				keepAlive();
+			// 			}, 5000);
+			// 		}
+			// 		keepAlive()
+			// 	})
+			// 	.on('error', () =>{
+			// 		JSON.parse(console.error)
+			// 	});
+			
+			// p2pID = coven.id
+			// console.log(p2pID)
 			// let ip = msg.data.ip
 			// let port = msg.data.port
 			// console.log(msg)

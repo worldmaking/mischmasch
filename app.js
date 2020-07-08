@@ -751,13 +751,13 @@ function startLocalWebsocket(){
   // whenever a mischmasch client connects to this websocket:
   localWebsocketServer.on('connection', function(ws, req) {
     localWebsocket = ws
-    // inform client that the p2p signal server is running on localhost
-    let configp2p = JSON.stringify({
-      cmd: 'p2pSignalServer',
-      date: Date.now(), 
-      data: localConfig.p2pSignalServer
-    })
-    localWebsocket.send(configp2p)
+  //   // inform client that the p2p signal server is running on localhost
+  //   let configp2p = JSON.stringify({
+  //     cmd: 'p2pSignalServer',
+  //     date: Date.now(), 
+  //     data: localConfig.p2pSignalServer
+  //   })
+  //   localWebsocket.send(configp2p)
     // do any
     console.log("server received a connection");
     // console.log("server has "+ws.clients.size+" connected clients");

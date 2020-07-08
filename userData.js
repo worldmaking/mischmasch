@@ -1,6 +1,6 @@
 const WebSocket = require('ws');
  
-const ws = new WebSocket('ws://eastern-camp-281915.nn.r.appspot.com:8082');
+const ws = new WebSocket('ws://mischmasch-userdata.herokuapp.com/8082');
  
 ws.on('open', function open() {
   ws.send('something');
