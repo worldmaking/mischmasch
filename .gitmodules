@@ -1,0 +1,4 @@
+[submodule "gotlib"]
+	path = gotlib
+	url = https://github.com/worldmaking/gotlib.git
+	branch = master

@@ -4,7 +4,7 @@ const max = require("max-api");
 const fs = require("fs");
 const WebSocket = require('ws');
 // const ReconnectingWebSocket = require('reconnecting-websocket');
-const got = require('../got/got.js')
+const got = require('../gotlib/got.js')
 // Configure Websocket
 //! TODO: change 'options to wsOptions'
 // const options = {

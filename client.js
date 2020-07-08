@@ -102,7 +102,7 @@ if (argv.name){
 }
 
 let peerHandle = name + '_' + filename
-const got = require("./got/got.js")
+const got = require("./gotlib/got.js")
 console.log(argv)
 let USEVR = 0;
 if(argv.vr === true){
