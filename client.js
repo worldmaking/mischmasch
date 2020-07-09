@@ -105,9 +105,9 @@ if (argv.name){
 
 let peerHandle = name + '_' + filename
 const got = require("./gotlib/got.js")
-console.log(argv)
-let USEVR = 1;
-if(argv.vr === true){
+console.log(argv.vr)
+let USEVR = 0;
+if(argv.vr === 'true'){
 	USEVR = 1
 	console.log('using VR')
 }
