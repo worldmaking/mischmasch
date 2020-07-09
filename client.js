@@ -999,17 +999,21 @@ function initUI(window) {
 		);
 		// -1..1 in each axis:
 		let ndcPoint = [+2*px*pix_dim[0] - 1, -2*py*pix_dim[1] + 1 ];
-		console.log(ndcPoint);
 
-		// we use the peerHandle var to route which client should get what message. alternately, could create a 2nd datachannel...
-		let msg = JSON.stringify({
-			cmd: 'cursorPosition',
-			source: peerHandle,
-			data: ndcPoint
-		})
+
 		// coven.sendTo(coven.activePeers[i], p2pMsg);
-		if (USEWS){
+		if (USEWS && USEVR === 0){
+			console.log(ndcPoint);
+
+			// we use the peerHandle var to route which client should get what message. alternately, could create a 2nd datachannel...
+			let msg = JSON.stringify({
+				cmd: 'cursorPosition',
+				source: peerHandle,
+				data: ndcPoint
+			})
 			userDataChannel.send(msg)
+		} else {
+			// mousecursor position will not print in console or be sent to other clients. 
 		}
 
 	});
