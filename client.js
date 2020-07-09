@@ -106,7 +106,7 @@ if (argv.name){
 let peerHandle = name + '_' + filename
 const got = require("./gotlib/got.js")
 console.log(argv)
-let USEVR = 0;
+let USEVR = 1;
 if(argv.vr === true){
 	USEVR = 1
 	console.log('using VR')
@@ -141,10 +141,11 @@ if(argv.w){
 	});
 	
 	userDataChannel.addEventListener('message', (data) => {
-		console.log(data.data);
+		// console.log(typeof data.data);
+		let msg = JSON.parse(data.data)
 		// ensure non JSON data doesn't get parsed
-		if (typeof data.data === 'object' && data.data !== null){
-			let msg = JSON.parse(data.data)
+		// if (typeof data.data === 'object' && data.data !== null){
+			
 			switch(msg.cmd){
 
 				case 'handshake':
@@ -157,9 +158,9 @@ if(argv.w){
 
 				default: console.log('unhandled msg: ', msg)
 			}
-		} else {
-			console.log('message "' + data.data + '" received by userDataChannel is a ' + typeof data.data + ', expected JSON object')
-		}
+		// } else {
+			// console.log('message "' + data.data + '" received by userDataChannel is a ' + typeof data.data + ', expected JSON object')
+		// }
 	})
 
 	userDataChannel.addEventListener('error', (err) => {

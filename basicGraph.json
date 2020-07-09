@@ -1,14 +1,419 @@
 {
 	"nodes": {
-		"speaker_808": {
+		"lfo_1": {
+			"_props": {
+				"kind": "lfo",
+				"pos": [
+					-0.3,
+					1.5,
+					0
+				],
+				"orient": [
+					0,
+					0.258819,
+					0,
+					0.965926
+				]
+			},
+			"fm_cv": {
+				"_props": {
+					"kind": "inlet"
+				}
+			},
+			"phasor_sync": {
+				"_props": {
+					"kind": "inlet"
+				}
+			},
+			"pulse_width_cv": {
+				"_props": {
+					"kind": "inlet"
+				}
+			},
+			"rate": {
+				"_props": {
+					"kind": "large_knob",
+					"range": [
+						0,
+						80
+					],
+					"taper": "log 3.8",
+					"value": 0.63,
+					"unit": "Hz"
+				}
+			},
+			"index": {
+				"_props": {
+					"kind": "small_knob",
+					"range": [
+						0,
+						10
+					],
+					"taper": "linear",
+					"value": 1,
+					"unit": "float"
+				}
+			},
+			"pulse_width": {
+				"_props": {
+					"kind": "small_knob",
+					"range": [
+						0,
+						1
+					],
+					"taper": "linear",
+					"value": 0.25,
+					"unit": "float"
+				}
+			},
+			"onset": {
+				"_props": {
+					"kind": "small_knob",
+					"range": [
+						0,
+						1
+					],
+					"taper": "linear",
+					"value": 0,
+					"unit": "float"
+				}
+			},
+			"sine": {
+				"_props": {
+					"kind": "outlet",
+					"index": 0
+				}
+			},
+			"phasor": {
+				"_props": {
+					"kind": "outlet",
+					"index": 1
+				}
+			},
+			"pulse": {
+				"_props": {
+					"kind": "outlet",
+					"index": 2
+				}
+			}
+		},
+		"lfo_2": {
+			"_props": {
+				"kind": "lfo",
+				"pos": [
+					0.3,
+					1.5,
+					-0.2
+				],
+				"orient": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			"fm_cv": {
+				"_props": {
+					"kind": "inlet"
+				}
+			},
+			"phasor_sync": {
+				"_props": {
+					"kind": "inlet"
+				}
+			},
+			"pulse_width_cv": {
+				"_props": {
+					"kind": "inlet"
+				}
+			},
+			"rate": {
+				"_props": {
+					"kind": "large_knob",
+					"range": [
+						0,
+						80
+					],
+					"taper": "log 3.8",
+					"value": 1,
+					"unit": "Hz"
+				}
+			},
+			"index": {
+				"_props": {
+					"kind": "small_knob",
+					"range": [
+						0,
+						10
+					],
+					"taper": "linear",
+					"value": 10,
+					"unit": "float"
+				}
+			},
+			"pulse_width": {
+				"_props": {
+					"kind": "small_knob",
+					"range": [
+						0,
+						1
+					],
+					"taper": "linear",
+					"value": 0.25,
+					"unit": "float"
+				}
+			},
+			"onset": {
+				"_props": {
+					"kind": "small_knob",
+					"range": [
+						0,
+						1
+					],
+					"taper": "linear",
+					"value": 0,
+					"unit": "float"
+				}
+			},
+			"sine": {
+				"_props": {
+					"kind": "outlet",
+					"index": 0
+				}
+			},
+			"phasor": {
+				"_props": {
+					"kind": "outlet",
+					"index": 1
+				}
+			},
+			"pulse": {
+				"_props": {
+					"kind": "outlet",
+					"index": 2
+				}
+			}
+		},
+		"ffmvco_1": {
+			"_props": {
+				"kind": "ffmvco",
+				"pos": [
+					0,
+					0.85,
+					0.2
+				],
+				"orient": [
+					-0.382683,
+					0,
+					0,
+					0.92388
+				]
+			},
+			"vco_1_cv": {
+				"_props": {
+					"kind": "inlet"
+				}
+			},
+			"index_cv": {
+				"_props": {
+					"kind": "inlet"
+				}
+			},
+			"vco_2_cv": {
+				"_props": {
+					"kind": "inlet"
+				}
+			},
+			"feedback_cv": {
+				"_props": {
+					"kind": "inlet"
+				}
+			},
+			"vco_1_rate": {
+				"_props": {
+					"kind": "large_knob",
+					"range": [
+						0,
+						6000
+					],
+					"taper": "log 3.8",
+					"value": 120,
+					"unit": "Hz"
+				}
+			},
+			"vco_1_waveform": {
+				"_props": {
+					"kind": "n_switch",
+					"throws": [
+						"Sine",
+						"Phasor",
+						"Triangle"
+					],
+					"value": 0
+				}
+			},
+			"vco_2_rate": {
+				"_props": {
+					"kind": "large_knob",
+					"range": [
+						0,
+						6000
+					],
+					"taper": "log 3.8",
+					"value": 3,
+					"unit": "Hz"
+				}
+			},
+			"vco_2_waveform": {
+				"_props": {
+					"kind": "n_switch",
+					"throws": [
+						"Sine",
+						"Phasor",
+						"Triangle"
+					],
+					"value": 0
+				}
+			},
+			"feedback": {
+				"_props": {
+					"kind": "small_knob",
+					"range": [
+						0,
+						6
+					],
+					"taper": "linear",
+					"value": 0.25,
+					"unit": "float"
+				}
+			},
+			"vco_1": {
+				"_props": {
+					"kind": "outlet",
+					"index": 0
+				}
+			},
+			"vco_2": {
+				"_props": {
+					"kind": "outlet",
+					"index": 1
+				}
+			},
+			"master": {
+				"_props": {
+					"kind": "outlet",
+					"index": 2
+				}
+			}
+		},
+		"vca_1": {
+			"_props": {
+				"kind": "vca",
+				"pos": [
+					0.5,
+					1.8,
+					0
+				],
+				"orient": [
+					0.25,
+					-0.25,
+					0.066987,
+					0.933013
+				]
+			},
+			"signal": {
+				"_props": {
+					"kind": "inlet"
+				}
+			},
+			"cv": {
+				"_props": {
+					"kind": "inlet"
+				}
+			},
+			"cv_amount": {
+				"_props": {
+					"kind": "large_knob",
+					"range": [
+						0,
+						1
+					],
+					"taper": "linear",
+					"value": 0.5,
+					"unit": "float"
+				}
+			},
+			"bias": {
+				"_props": {
+					"kind": "large_knob",
+					"range": [
+						0,
+						1
+					],
+					"taper": "linear",
+					"value": 0.5,
+					"unit": "float"
+				}
+			},
+			"output": {
+				"_props": {
+					"kind": "outlet",
+					"index": 0
+				}
+			}
+		},
+		"comparator_1": {
+			"_props": {
+				"kind": "comparator",
+				"pos": [
+					0.5,
+					1,
+					0
+				],
+				"orient": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			"A": {
+				"_props": {
+					"kind": "inlet"
+				}
+			},
+			"B": {
+				"_props": {
+					"kind": "inlet"
+				}
+			},
+			"max": {
+				"_props": {
+					"kind": "outlet",
+					"index": 0
+				}
+			},
+			"min": {
+				"_props": {
+					"kind": "outlet",
+					"index": 1
+				}
+			}
+		},
+		"speaker_1": {
 			"_props": {
 				"kind": "speaker",
 				"category": "abstraction",
 				"pos": [
-					null
+					0.75,
+					1,
+					0
 				],
 				"orient": [
-					null
+					0,
+					-0.258819,
+					0,
+					0.965926
 				]
 			},
 			"input": {
@@ -18,555 +423,20 @@
 				}
 			}
 		},
-		"speaker_3277": {
+		"speaker_2": {
 			"_props": {
 				"kind": "speaker",
 				"category": "abstraction",
 				"pos": [
-					null
+					-0.5,
+					1,
+					0
 				],
 				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_1640": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_1692": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_2314": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_4415": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_2129": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_243": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_4605": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_2112": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_3667": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_2625": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_1420": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_1728": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_3079": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_797": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_1425": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_584": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_1434": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_4276": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_2292": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_4054": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_680": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_1316": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_3745": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_1192": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_3915": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_1292": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_4292": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_1957": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_3848": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
-				]
-			},
-			"input": {
-				"_props": {
-					"kind": "inlet",
-					"index": 0
-				}
-			}
-		},
-		"speaker_368": {
-			"_props": {
-				"kind": "speaker",
-				"category": "abstraction",
-				"pos": [
-					null
-				],
-				"orient": [
-					null
+					0,
+					0.130526,
+					0,
+					0.991445
 				]
 			},
 			"input": {
@@ -577,5 +447,38 @@
 			}
 		}
 	},
-	"arcs": []
+	"arcs": [
+		[
+			"lfo_1.sine",
+			"vca_1.signal"
+		],
+		[
+			"lfo_1.sine",
+			"lfo_2.fm_cv"
+		],
+		[
+			"lfo_1.phasor",
+			"ffmvco_1.feedback_cv"
+		],
+		[
+			"lfo_1.pulse",
+			"ffmvco_1.vco_1_cv"
+		],
+		[
+			"vca_1.output",
+			"comparator_1.A"
+		],
+		[
+			"ffmvco_1.master",
+			"comparator_1.B"
+		],
+		[
+			"comparator_1.max",
+			"speaker_1.input"
+		],
+		[
+			"comparator_1.min",
+			"speaker_2.input"
+		]
+	]
 }
