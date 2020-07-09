@@ -16,6 +16,8 @@ const WebSocket = require('ws');
 
 const max = require("max-api");
 
+const username = require('username')
+const filename = path.basename(__filename)
 
 
 
