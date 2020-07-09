@@ -19,13 +19,13 @@ if (fs.existsSync(__dirname + '/gotlib')) {
 
 }
 
-if (fs.existsSync(__dirname + '/Max_Worldmaking_Package')) {
+if (fs.existsSync(__dirname + '/max-msp/Max_Worldmaking_Package')) {
     // Do something
     console.log(__dirname + '/Max_Worldmaking_Package already installed')
 } else {
     console.log('installing max package: Max Worldmaking Package')
 
-    exec('git submodule add -b devel https://github.com/worldmaking/Max_Worldmaking_Package.git', (stdout,stderr,err) =>{
+    exec('git submodule add -b devel https://github.com/worldmaking/Max_Worldmaking_Package.git', {cwd: __dirname + '/max-msp'}, (stdout,stderr,err) =>{
     console.log(stdout, stderr, err)
     })
 
@@ -34,12 +34,12 @@ if (fs.existsSync(__dirname + '/Max_Worldmaking_Package')) {
     })
 }
 
-if (fs.existsSync(__dirname + '/vr')) {
+if (fs.existsSync(__dirname + '/max-msp/vr')) {
     // Do something
     console.log(__dirname + '/vr  already installed')
 } else {
     console.log('installing max package: vr')
-    exec('git submodule add -b master https://github.com/worldmaking/vr.git', (stdout,stderr,err) =>{
+    exec('git submodule add --force -b master https://github.com/worldmaking/vr.git', {cwd: __dirname + '/max-msp'}, (stdout,stderr,err) =>{
     console.log(stdout, stderr, err)
     })
 

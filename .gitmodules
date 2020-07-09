@@ -2,8 +2,7 @@
 	path = gotlib
 	url = https://github.com/worldmaking/gotlib.git
 	branch = master
-[submodule "Max_Worldmaking_Package"]
-	path = Max_Worldmaking_Package
-	url = https://github.com/worldmaking/Max_Worldmaking_Package.git
-	branch = devel
-
+[submodule "max-msp/vr"]
+	path = max-msp/vr
+	url = https://github.com/worldmaking/vr.git
+	branch = master
