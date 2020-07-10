@@ -4,7 +4,9 @@ const fs = require('fs')
 // please don't remove this file!
 if (fs.existsSync(__dirname + '/gotlib')) {
     // Do something
-    console.log(__dirname + '/gotlib already installed')
+    console.log(__dirname + '/gotlib already installed, updating')
+    exec('git submodule update --init --recursive', (stdout,stderr,err) =>{
+    })
 } else {
     console.log('installing dependency: gotlib')
 
