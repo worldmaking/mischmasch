@@ -2,7 +2,3 @@
 	path = gotlib
 	url = https://github.com/worldmaking/gotlib.git
 	branch = master
-[submodule "max-msp/vr"]
-	path = max-msp/vr
-	url = https://github.com/worldmaking/vr.git
-	branch = master
