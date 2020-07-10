@@ -8,9 +8,3 @@ const {exec, spawn} = require('child_process')
 // })
 
 var ls = spawn('git', ['submodule', 'update', '--remote']);
-
-console.log('stdout here: \n' + JSON.stringify(ls.stdout));
-
-console.log('stdout here: \n' + ls.stderr);
-
-console.log('stdout here: \n' + ls.err);

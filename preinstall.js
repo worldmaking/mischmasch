@@ -9,12 +9,10 @@ if (fs.existsSync(__dirname + '/gotlib')) {
     console.log('installing dependency: gotlib')
 
     exec('git submodule add -b master https://github.com/worldmaking/gotlib.git', (stdout,stderr,err) =>{
-    console.log(stdout, stderr, err)
     })
 
     // https://github.com/worldmaking/Max_Worldmaking_Package.git
     exec('git submodule init', (stdout,stderr,err) =>{
-        console.log(stdout, stderr, err)
     })
 
 }
