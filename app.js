@@ -47,8 +47,8 @@ const path = require("path");
 const got = require(__dirname + "/gotlib/got.js")
 // simplified cli args for script
 const {argv} = require('yargs')
-
-
+// interactive cli:
+const vorpal = require('vorpal')();
 
 // let ctrl-c quit:
 {
@@ -138,11 +138,19 @@ let hostIP
 const teapartyWebsocketPort = '8090';
 let teapartyWebsocketAddress
 
+
+// we receive this as an array from the host. 
+let sceneList =[]
+
 if (argv.l){
   teapartyAddress = 'localhost'
   hostIP = "localhost"
   teapartyWebsocketAddress = `ws://${teapartyAddress}:${teapartyWebsocketPort}`
   console.log(`running app.js in local mode\nteaparty address 'ws://localhost:8090'\ndeltaWebsocket host address 'ws://localhost:8081'`)
+  fs.readdirSync('./scenes').forEach(file=>{
+    sceneList.push(file)
+  })
+  console.log(sceneList)
 } else {
   teapartyAddress = "teaparty.herokuapp.com"
   hostIP = "mischmasch-host.herokuapp.com"
@@ -315,7 +323,11 @@ async function init() {
           // get host's ip
           if(!argv.l){
             hostIP = msg.data.host.ip          
-          }   
+          } else if (argv.host){
+            // if the host ip is specified
+            hostIP = argv.host
+            console.log(hostIP)
+          } 
             //startLocalWebsocket(hostIP, 8082)       
             pal(hostIP, '8081')
         }
@@ -434,13 +446,13 @@ function pal(ip, port){
     deltaWebsocket.addEventListener('open', () => {
 
 
-      console.log('connected to deltaWebsocket host')
-      let highFive = JSON.stringify({
-        cmd: 'rsvp',
-        date: Date.now(), 
-        data: 'pal',
-      })
-      deltaWebsocket.send(highFive)
+      // console.log('connected to deltaWebsocket host')
+      // let highFive = JSON.stringify({
+      //   cmd: 'rsvp',
+      //   date: Date.now(), 
+      //   data: 'pal',
+      // })
+      // deltaWebsocket.send(highFive)
 
       deltaWebsocket.addEventListener('message', (data) =>{
         let msg = JSON.parse(data.data)
@@ -486,6 +498,10 @@ function pal(ip, port){
             // send to all LOCAL clients:
             sendAllLocalClients(JSON.stringify(response));
           break
+
+          case "sceneList":
+            sceneList = msg.data
+          break 
           case 'ping':
             // keepAlive for heroku instance
             let keepAlive = JSON.stringify({
@@ -892,3 +908,49 @@ function sendAllLocalClients(msg){
 		};
 	});
 }
+
+
+// CLI stuff
+var inquirer = require('inquirer');
+
+vorpal
+  .command('scenes', 'Outputs "list of scenes from the host".')
+  .action(function(args, callback) {
+    
+    inquirer
+      .prompt([
+        {
+          type: 'list',
+          name: 'loadScene',
+          message: 'What do you want to do?',
+          choices: sceneList,
+        },
+        // {
+        //   type: 'list',
+        //   name: 'size',
+        //   message: 'What size do you need?',
+        //   choices: ['Jumbo', 'Large', 'Standard', 'Medium', 'Small', 'Micro'],
+        //   filter: function (val) {
+        //     return val.toLowerCase();
+        //   },
+        // },
+      ])
+      .then((answers) => {
+        let msg = JSON.stringify({
+          cmd: 'loadScene',
+          date: Date.now(),
+          data: answers.loadScene
+        })
+        deltaWebsocket.send(msg)
+        
+
+      });
+      
+    callback();
+    
+  });
+ 
+vorpal
+  .delimiter('appjs$')
+  .show();
+
