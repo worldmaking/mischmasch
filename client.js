@@ -95,7 +95,7 @@ glfw = require(path.join(nodeglpath, "glfw3.js")),
 vr = require(path.join(nodeglpath, "openvr.js")),
 glutils = require(path.join(nodeglpath, "glutils.js"))
 
-let p2pID; // set by coven signalling server
+// let p2pID; // set by coven signalling server
 let name;
 if (argv.name){
   name = argv.name
@@ -105,7 +105,7 @@ if (argv.name){
 
 let peerHandle = name + '_' + filename
 const got = require("./gotlib/got.js")
-console.log(argv.vr)
+
 let USEVR = 0;
 if(argv.vr === 'true'){
 	USEVR = 1
@@ -241,6 +241,7 @@ if (USEVR) {
 	assert(vr.connect(true), "vr failed to connect");
 	vr.update()
 	vrdim = [vr.getTextureWidth(), vr.getTextureHeight()]
+	
 }
 
 function createSDFFont(gl, pngpath, jsonpath) {
@@ -941,15 +942,16 @@ function initUI(window) {
 				let int = randomInt()
 				let pathInt = 'speaker_' + int
 				let inputInt = 'speaker_' + int + '.input'
-				
+				let z = (randomInt() * 0.001 + 0.3) * -1.0
+				console.log('\n\n\n\n\n\n\n\n', z)
 				let delta = [ 
 					[ 
 						{ op: 'newnode',
 							path: pathInt,
 							kind: 'speaker',
 							category: 'abstraction',
-							pos: [Array],
-							orient: [Array] },
+							pos: [0., 0.5, z],
+							orient: [-0.3, 0., 0., 0.9] },
 						{ op: 'newnode',
 							path: inputInt,
 							kind: 'inlet',
@@ -1001,11 +1003,10 @@ function initUI(window) {
 		let ndcPoint = [+2*px*pix_dim[0] - 1, -2*py*pix_dim[1] + 1 ];
 
 
-		// coven.sendTo(coven.activePeers[i], p2pMsg);
 		if (USEWS && USEVR === 0){
 			console.log(ndcPoint);
 
-			// we use the peerHandle var to route which client should get what message. alternately, could create a 2nd datachannel...
+			// we use the peerHandle var to route a peer's cursor position . alternately, could create a 2nd datachannel...
 			let msg = JSON.stringify({
 				cmd: 'cursorPosition',
 				source: peerHandle,
