@@ -502,6 +502,14 @@ function pal(ip, port){
           case "sceneList":
             sceneList = msg.data
           break 
+
+          case "nuclearOption":
+
+            // deltaWebsocket.close()
+            // teapartyWebsocket.close()
+            console.log(msg.data)
+            // init()
+          break
           case 'ping':
             // keepAlive for heroku instance
             let keepAlive = JSON.stringify({
@@ -989,3 +997,22 @@ vorpal
 vorpal
 .delimiter('appjs$')
 .show();
+
+
+vorpal
+  .command('nuclear', 'Outputs "the got nuclear option. clears the scene & delta history everywhere, including host, and returns a blank scene".')
+  .action(function(args, callback) {
+    let msg = JSON.stringify({
+      cmd: 'nuclearOption',
+      date: Date.now(),
+      data: name
+    })
+    deltaWebsocket.send(msg)
+  callback();
+})
+
+vorpal
+.delimiter('appjs$')
+.show();
+
+
