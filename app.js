@@ -813,7 +813,7 @@ function startLocalWebsocket(){
             break;
 
             case 'get_scene':
-              console.log(msg)
+              //console.log(msg)
 
               if (localGraph){
                 console.log(localGraph)
@@ -823,6 +823,7 @@ function startLocalWebsocket(){
                   date: Date.now(),
                   data: deltas
                 })
+                
                 localWebsocket.send(msg)
               }
 
@@ -898,11 +899,13 @@ function runGOT(src, delta){
       // send_all_clients(JSON.stringify(response));
 }
 
+tempCounter = 0
 function sendAllLocalClients(msg){
   localWebsocketServer.clients.forEach(function each(client) {
 		// if (client == ignore) return;
 		try {
-			client.send(msg);
+      client.send(msg);
+      console.log(tempCounter++)
 		} catch (e) {
 			console.error(e);
 		};
