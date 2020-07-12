@@ -915,7 +915,7 @@ function sendAllLocalClients(msg){
 
 // CLI stuff
 var inquirer = require('inquirer');
-
+let sceneChoice = null
 vorpal
   .command('scenes', 'Outputs "list of scenes from the host".')
   .action(function(args, callback) {
@@ -939,10 +939,11 @@ vorpal
         // },
       ])
       .then((answers) => {
+        sceneChoice = answers.loadScene
         let msg = JSON.stringify({
           cmd: 'loadScene',
           date: Date.now(),
-          data: answers.loadScene
+          data: sceneChoice
         })
         deltaWebsocket.send(msg)
         callback();
@@ -965,6 +966,23 @@ vorpal
       data: 'clearScene'
     })
     deltaWebsocket.send(msg)
+  callback();
+})
+
+vorpal
+.delimiter('appjs$')
+.show();
+
+vorpal
+  .command('reload', 'Outputs "reloads the current scene file (loses changes)".')
+  .action(function(args, callback) {
+    let msg = JSON.stringify({
+      cmd: 'loadScene',
+      date: Date.now(),
+      data: sceneChoice
+    })
+    deltaWebsocket.send(msg)
+    console.log('reloading ' + sceneChoice)
   callback();
 })
 
