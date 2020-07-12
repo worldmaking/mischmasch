@@ -382,95 +382,118 @@ var handleDelta = function(delta) {
 					// remove node from the nodes object
 					delete nodes[delta.path]
 
+					// var newDict = new Dict
+					var deleteMe = delta.path.replace('.', '__');
+					// outlet(10,delta)
+					// dict.set(delta)
+					if(delta.path.split('_')[0] === 'speaker'){
+						//var speakerName = delta.path.split('')[0];
+						//var speakerNumber = speakerName.split('_')[1];
+						var thisVarname = 'source_' + delta.path.split('_')[1]
+						genOutCounter--
+						outlet(10, 'thispatcher', 'script', 'delete', thisVarname)
+						// this.patcher.remove(thisVarname)
+
+						// then remove from gen~ world
+						if(genOutCounter <1){
+							genOutCounter = 1
+						}
+
+					}
+					gen_patcher.apply(function(b) { 
+						// prevent erasing our audio outputs from genpatcher
+						if(b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
+							//post('\n',deleteMe,2)
+							if (b.varname.indexOf(deleteMe) != -1){
+		
+								gen_patcher.remove(b); 				
+							}
+						}
+					});
+					
+
+				
+					/*
+					var deleteSetParam = 'setparam_' + deleted
+					post('\n',deleteSetParam, '\n',deleted)
+					gen_patcher.message("script", "delete", deleted)
+					gen_patcher.message("script", "delete", deleteSetParam)*/
+
 				} else {
 					// error. received a delnode for a nonexistent node
 					post('\n\nWARNING: received a delnode for a node that does not exist in the graph\n\n')
 
 				}
-				// var newDict = new Dict
-				var deleteMe = delta.path.replace('.', '__');
-				// outlet(10,delta)
-				// dict.set(delta)
-				if(delta.path.split('_')[0] === 'speaker'){
-					//var speakerName = delta.path.split('')[0];
-					//var speakerNumber = speakerName.split('_')[1];
-					var thisVarname = 'source_' + delta.path.split('_')[1]
-					genOutCounter--
-					outlet(10, 'thispatcher', 'script', 'delete', thisVarname)
-					// this.patcher.remove(thisVarname)
-
-					// then remove from gen~ world
-					if(genOutCounter <1){
-						genOutCounter = 1
-					}
-
-				}
-				gen_patcher.apply(function(b) { 
-					// prevent erasing our audio outputs from genpatcher
-					if(b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
-						//post('\n',deleteMe,2)
-						if (b.varname.indexOf(deleteMe) != -1){
-	
-							gen_patcher.remove(b); 				
-						}
-					}
-				});
 				
-
-			
-				/*
-				var deleteSetParam = 'setparam_' + deleted
-				post('\n',deleteSetParam, '\n',deleted)
-				gen_patcher.message("script", "delete", deleted)
-				gen_patcher.message("script", "delete", deleteSetParam)*/
 			break;
 
 			// create a patchcord!
-			case "connect": 
-
-				var setOutlet = delta.paths[0].replace('.','__')
-				var setInlet = delta.paths[1].replace('.','__')
-				var input;
-				var output;
-					for (var i = 0; i < inletsTable.length; i++) {
-					var inletsIndexes = inletsTable[i]
-							input = JSON.stringify(inletsIndexes[setInlet]);
-					}
-					for (var i = 0; i < outletsTable.length; i++) {
-					var outletsIndexes = outletsTable[i]
-							output = JSON.stringify(outletsIndexes[setOutlet]);
-					}
-				var selfPatch1 = delta.paths[0].split('.')[0]
-				
-				// detect a self-patch connection and insert a history object in between!
-				if (delta.paths[0].split('.')[0] === delta.paths[1].split('.')[0]){					
-					feedbackConnections++
-					var history = gen_patcher.newdefault([150,10, "history"])
-					history.varname = "feedback_" + feedbackConnections
-					//post('connect')
-					gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
-					gen_patcher.message("script", "connect", history.varname, 0, delta.paths[1].split('.')[0], parseInt(input));
-
+			case "connect":
+				var pathString = '"' + delta.paths + '"' 
+				if(nodes[pathString]){
+					// don't add a duplicate
+					// if this happens, it means something is wrong with the graph, maybe a delnode wasn't triggered or received, or duplicate deltas received
+					post('\n\nWARNING: duplicate connection deltas are being received. They were filtered out, but need to check the delta round-trip\n\n')
 				} else {
-					// if not self-patch connection exists, just connect them. 
-					gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
+					// add the node to the obj to prevent it being added as a duplicate
+					nodes[pathString] = {}
+					var setOutlet = delta.paths[0].replace('.','__')
+					var setInlet = delta.paths[1].replace('.','__')
+					var input;
+					var output;
+						for (var i = 0; i < inletsTable.length; i++) {
+						var inletsIndexes = inletsTable[i]
+								input = JSON.stringify(inletsIndexes[setInlet]);
+						}
+						for (var i = 0; i < outletsTable.length; i++) {
+						var outletsIndexes = outletsTable[i]
+								output = JSON.stringify(outletsIndexes[setOutlet]);
+						}
+					var selfPatch1 = delta.paths[0].split('.')[0]
+					
+					// detect a self-patch connection and insert a history object in between!
+					if (delta.paths[0].split('.')[0] === delta.paths[1].split('.')[0]){					
+						feedbackConnections++
+						var history = gen_patcher.newdefault([150,10, "history"])
+						history.varname = "feedback_" + feedbackConnections
+						//post('connect')
+						gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
+						gen_patcher.message("script", "connect", history.varname, 0, delta.paths[1].split('.')[0], parseInt(input));
+
+					} else {
+						// if not self-patch connection exists, just connect them. 
+						gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
+					}
 				}
 			break;
 
 			case "disconnect":
-				var setOutlet = delta.paths[0].replace('.','__')
-				var setInlet = delta.paths[1].replace('.','__')
-				var input;
-				var output;
-				for (var i = 0; i < inletsTable.length; i++) {
-					var inletsIndexes = inletsTable[i]
-					input = JSON.stringify(inletsIndexes[setInlet]);
+				var pathString = '"' + delta.paths + '"' 
+				if(nodes[pathString]){
+					// remove node from the nodes object
+					delete nodes[pathString]
+
+					var setOutlet = delta.paths[0].replace('.','__')
+				
+					var setInlet = delta.paths[1].replace('.','__')
+					var input;
+					var output;
+					for (var i = 0; i < inletsTable.length; i++) {
+						var inletsIndexes = inletsTable[i]
+						input = JSON.stringify(inletsIndexes[setInlet]);
+					}
+					for (var i = 0; i < outletsTable.length; i++) {
+						var outletsIndexes = outletsTable[i]
+						output = JSON.stringify(outletsIndexes[setOutlet]);
+					}
+					gen_patcher.message("script", "disconnect", delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
+
+				} else {
+					// error. received a delnode for a nonexistent node
+					post('\n\nWARNING: received a delnode for a node that does not exist in the graph\n\n')
+
 				}
-				for (var i = 0; i < outletsTable.length; i++) {
-					var outletsIndexes = outletsTable[i]
-					output = JSON.stringify(outletsIndexes[setOutlet]);
-				}
-				gen_patcher.message("script", "disconnect", delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
+				
 			break;
 			
 			// modify a parameter
