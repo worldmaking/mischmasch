@@ -58,6 +58,7 @@ function resetCounters(){
 	counter = 1;
 	feedbackConnections = 0
 	genOutCounter = 1
+	nodes = {}
 }
 var speakerTableDict = new Dict("speakerTableDict");
 // buffer channels for visual feedback
@@ -109,7 +110,7 @@ var handleDelta = function(delta) {
 				if(nodes[delta.path]){
 					// don't add a duplicate
 					// if this happens, it means something is wrong with the graph, maybe a delnode wasn't triggered or received, or duplicate deltas received
-					post('\n\nWARNING: duplicate deltas are being received. They were filtered out, but need to check the delta round-trip\n\n')
+					post('\n\nWARNING: duplicate newnode delta received. Was filtered out, but need to check the delta round-trip\n\n')
 				} else {
 					// add the node to the obj to prevent it being added as a duplicate
 					nodes[delta.path] = {}
@@ -117,7 +118,6 @@ var handleDelta = function(delta) {
 					
 					// if (nodes[])
 					if (delta.kind === 'controller1'){
-					// post('\n\n',delta.kind)
 					}
 					// individual delta to handle:
 					paramCounter = 0;
@@ -162,7 +162,6 @@ var handleDelta = function(delta) {
 									// key groundTruth, value = the same node path in its delta and scenegraph; genContext: number of speakers in scenegraph, correspond to number of out objects scripted into gen~ world with base 1. 
 									// the vr.source~ objects instantiated in parent patcher should also have their first arg be the genContext value, but scripting name be the groundTruth value
 									speakerTable.push({"groundTruth": vrSource.varname, "genContext": genOutCounter})
-									// post(speakerTable)
 									// speakerTableDict.setparse(speakerTable)
 									// gen~ and max outlets are base 0 (mth), our speaker numbers are base 1 (nth)
 									// TODO decide on base 0 or 1 (I advocate for 0, because this also works with array indices) 
@@ -219,7 +218,6 @@ var handleDelta = function(delta) {
 								case 'slider':
 								case 'momentary':
 								case 'led':
-									post(kind)
 
 									nodeName = delta.path.split('.')[0]
 									paramName = delta.path.replace('.','__')
@@ -238,7 +236,6 @@ var handleDelta = function(delta) {
 									gen_patcher.message("script", "connect", param.varname, 0, setparam.varname, 0);
 								
 									//gen_patcher.message("script", "send", param.varname, paramValue);
-									//post('\n\n', delta.value)
 									// var namespace = {}
 
 									// namespace[paramName]['value'] = delta.value
@@ -248,7 +245,6 @@ var handleDelta = function(delta) {
 									// namespace.replace(paramName + "::min", delta.range[0])
 									// namespace.replace(paramName + "::max", delta.range[1])			
 									outlet(1, paramName, delta.range)
-									// post('\n\n\n',paramName)
 									paramCounter++
 								
 								break;
@@ -257,8 +253,6 @@ var handleDelta = function(delta) {
 									nodeName = delta.path.split('.')[0]
 									paramName = delta.path.replace('.','__')
 									setparamName = delta.path.split('.')[1]
-
-									//post(nodeName)
 									
 									paramX = paramCounter * 150
 									// generate the subparam which the param will bind to
@@ -272,7 +266,6 @@ var handleDelta = function(delta) {
 									gen_patcher.message("script", "connect", param.varname, 0, setparam.varname, 0);
 								
 									//gen_patcher.message("script", "send", param.varname, paramValue);
-									//post('\n\n', delta.value)
 									outlet(1, paramName, delta.value, 'n_switch')
 									paramCounter++
 								break;
@@ -282,10 +275,8 @@ var handleDelta = function(delta) {
 								inletsTable.push(object)
 								
 								
-								//post(JSON.stringify(inletsTable))
 								case "outlet":
 									var buf = null;
-								//post('found ', kind)
 								object[delta.path.replace('.','__')] = delta.index
 								outletsTable.push(object)	
 								//outlet(0, outletsTable)
@@ -298,15 +289,12 @@ var handleDelta = function(delta) {
 									/* buf = delta.path.replace('.','__') + '_buffer'
 									// create a buffer for each outlet
 									vizBuffers[buf] = new Buffer(buf)
-									//post(buf)
 									vizBuffers.push(buf)	
 													
 
 									
-									//post(index)
 									var addPoke = gen_patcher.newdefault([575, Ycounter * 2, "poke", buf])
 									addPoke.varname = 'poke_' + bufferChannelCounter
-									//post("\n", newModule.varname, index, addPoke.varname, kind)
 									bufferChannelPaths.push(delta.path)	
 									
 									var addBuffer = gen_patcher.newdefault([875, Ycounter * 4, "buffer", buf])	
@@ -317,7 +305,6 @@ var handleDelta = function(delta) {
 									// gen_patcher.message("script", "connect", addConstant.varname, 0, addPoke.varname, 2);
 									gen_patcher.message("script","connect", newModule.varname, parseInt(index), addPoke.varname, 0)
 						
-									//post(JSON.stringify(outletsTable))
 									// based on the running channel counter, add +1 and then add the delta.index
 
 
@@ -337,13 +324,10 @@ var handleDelta = function(delta) {
 								// so we can know how to connect to them or change their values
 
 							}		
-									//	post(kind, delta.path,"\n")
 
-									//	post(Object.keys(delta),"\n")
 
 							for (var k in delta){
 								if (delta.hasOwnProperty(k)) {
-									//post("\n\n",k, delta[k])
 									switch (k){
 										case 'path':
 										
@@ -403,7 +387,6 @@ var handleDelta = function(delta) {
 					gen_patcher.apply(function(b) { 
 						// prevent erasing our audio outputs from genpatcher
 						if(b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
-							//post('\n',deleteMe,2)
 							if (b.varname.indexOf(deleteMe) != -1){
 		
 								gen_patcher.remove(b); 				
@@ -415,7 +398,6 @@ var handleDelta = function(delta) {
 				
 					/*
 					var deleteSetParam = 'setparam_' + deleted
-					post('\n',deleteSetParam, '\n',deleted)
 					gen_patcher.message("script", "delete", deleted)
 					gen_patcher.message("script", "delete", deleteSetParam)*/
 
@@ -433,7 +415,7 @@ var handleDelta = function(delta) {
 				if(nodes[pathString]){
 					// don't add a duplicate
 					// if this happens, it means something is wrong with the graph, maybe a delnode wasn't triggered or received, or duplicate deltas received
-					post('\n\nWARNING: duplicate connection deltas are being received. They were filtered out, but need to check the delta round-trip\n\n')
+					post('\n\nWARNING: received a connection delta that already exists in the graph. was filtered out, but need to check the delta round-trip\n\n')
 				} else {
 					// add the node to the obj to prevent it being added as a duplicate
 					nodes[pathString] = {}
@@ -456,7 +438,6 @@ var handleDelta = function(delta) {
 						feedbackConnections++
 						var history = gen_patcher.newdefault([150,10, "history"])
 						history.varname = "feedback_" + feedbackConnections
-						//post('connect')
 						gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
 						gen_patcher.message("script", "connect", history.varname, 0, delta.paths[1].split('.')[0], parseInt(input));
 
@@ -562,6 +543,10 @@ function fromLocalWebsocket(msg){
 				handleDelta(ot.data);
 			} break;
 
+		case "nuke":
+			initiate()
+		break
+
 			//? this case isn't likely necessary, but the code in it might be useful elsewhere
 		// case "clear_scene":
 		// 	outlet(0, 'clear_scene')
@@ -627,11 +612,8 @@ function fromLocalWebsocket(msg){
 		// var scene = ot.value
 		// outlet(2, 'clear')
 		// var arcs = JSON.stringify(scene.arcs)
-		// //post("\n\narcs", arcs)
 		// var nodes = JSON.stringify(scene.nodes)
-		// //post("\n\nnodes", nodes)
 		// var varnames = new Array()
-		// //post(arcs.length,"\n\n")
 		// //var a = ["a", "b", "c"];
 	
 	
@@ -751,7 +733,6 @@ function fromLocalWebsocket(msg){
 	// 		//counter++
 	// 	}
 	// })
-	// //post(JSON.stringify(object))
 	// for (i = 0; i < scene.arcs.length; ++i) {
 		
 	// 	var sourceOp1 = scene.arcs[i][0].split(".")
@@ -761,20 +742,15 @@ function fromLocalWebsocket(msg){
 	// 	opName2 = sourceOp2[0]
 	// 	opUI2 = sourceOp2[1]
 	
-	// 	//post("\n",sourceOp1, sourceOp2)
 
 	// 	var lookup1 = scene.nodes[opName1]
 	// 	var lookup2 = scene.nodes[opName2]
-	// 	//post(lookup2)
 		
 
-	// 	//	post(opName, opUI, JSON.stringify(lookup[opUI]._props.index))
 	// 	if(lookup1 !== undefined && lookup2 !== undefined){
-	// 		//post("\n",JSON.stringify(lookup1), JSON.stringify(lookup2))
 	// 		var index1 = parseInt(JSON.stringify(lookup1[opUI1]._props.index, 10))
 	// 		var index2 = parseInt(JSON.stringify(lookup2[opUI2]._props.index, 10))
 		
-	// 		//post(opName1, index1, opName2, index2)
 		
 	// 		// if a feedback connection is made, add a history object!
 	// 		if(opName1 === opName2){

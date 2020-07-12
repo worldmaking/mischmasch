@@ -25,6 +25,7 @@
     "cors": "^2.8.5",
     "coven": "github:michaelpalumbo/coven",
     "cycle-test": "^1.0.0",
+    "deep-equal": "^2.0.3",
     "express": "^4.17.1",
     "find-cycle": "^1.0.0",
     "gl-matrix": "^3.3.0",

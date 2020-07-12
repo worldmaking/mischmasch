@@ -113,17 +113,20 @@ tempcount = 0
 connection.addEventListener('message', (data) => {
 	// the ReconnectingWebSocket package adds an extra layer of JSON stringification... took me a while to figure this out. So, need to parse data.data :(
 	data = JSON.parse(data.data)
-	max.post(tempcount++)
 	//max.post(data)
 	switch(data.cmd){
 
-		// case "clear_scene":
+		// case deltas
 		case "deltas":
+		// in case the nuclear option was called
+		case "nuke":
 			// case "patch":	
 			deltas = JSON.stringify(data)
 			max.outlet('fromLocalWebsocket', deltas)
 			// max.post('arcs', deltas)
 		break;
+
+
 		// retrieve list of session recording filenames
 		// case "sessionRecordings":{
 		// 	sessionList.push(data.data)
@@ -170,6 +173,11 @@ connection.addEventListener('message', (data) => {
 	} 
 })
 
+
+connection.addEventListener('close', () => {
+	max.post('connection closed!')
+	
+})
 //////////////////////////////////// LOAD SCENE ////////////////////////////////
 // // request a scene from the server (and subsequently send it to all clients)
 // max.addHandler("loadScene", (sceneName) => {

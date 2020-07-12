@@ -49,6 +49,7 @@ const got = require(__dirname + "/gotlib/got.js")
 const {argv} = require('yargs')
 // interactive cli:
 const vorpal = require('vorpal')();
+var equal = require('deep-equal');
 
 // let ctrl-c quit:
 {
@@ -166,6 +167,7 @@ const rwsOptions = {
   //debug:true, 
 }
 
+startLocalWebsocket()
 // attempt to connect to teaparty 
 // returns the websocket via a Promise
 function teapartyWebsocketConnect() {
@@ -221,6 +223,57 @@ let localGraph = {
 let guestlist = {
 
 }
+
+let blankifyScene = async () => { 
+
+    let deltas = got.deltasFromGraph(localGraph, []);
+    let inverse = got.inverseDelta(deltas)
+    localGraph = got.applyDeltasToGraph(localGraph, inverse)
+    return inverse
+
+};
+
+
+function sayGoodbye() {
+
+  blankifyScene().then((inverse) => {
+    let blankify = JSON.stringify({
+      cmd: 'deltas',
+      date: Date.now(), 
+      data: inverse
+    })
+    sendAllLocalClients(blankify)
+
+    let nuke = JSON.stringify({
+      cmd: 'nuke',
+      date: Date.now(), 
+      data: 'nuke'
+    })
+    sendAllLocalClients(nuke)
+
+    
+    teapartyWebsocket.close()
+  })
+
+  
+
+  teapartyWebsocket.addEventListener('close', () => {
+    isConnectedToteaparty = 0;
+    deltaWebsocket.close()
+    
+  });
+  
+  deltaWebsocket.addEventListener('close', () => {
+    // localWebsocketServer.close()
+    deltaWebsocket = null
+    localGraph = {
+      nodes: {},
+      arcs: []
+    }
+    init()
+  });
+}
+
 /* 
   TEAPARTY WEBSOCKET: 
 */
@@ -228,7 +281,7 @@ let guestlist = {
 async function init() {
   
   try {
-    startLocalWebsocket()
+    
     // get our public IP address:
     localConfig.ip = await publicIP.v4()
     //=> '46.5.21.123'
@@ -258,10 +311,11 @@ async function init() {
 
   teapartyWebsocket.addEventListener('close', () => {
     isConnectedToteaparty = 0;
-    console.log("teaparty teaparty connection closed");
+    console.log("teaparty connection closed");
     // TODO now what? 
     // shouldn't the ReconnectingWebSocket already be trying to reconnect?
     // didn't seem to be for me
+
   });
 
   // inform the teaparty teaparty of our important details
@@ -278,10 +332,7 @@ async function init() {
   // call teapartyWebsocket.close()
   // also notify partygoers via wsP2P.close(() => {});
 
-  function sayGoodbye() {
-    teapartyWebsocket.close();
-    deltaWebsocket.close()
-  }
+
 
   process.on('SIGINT', function() {
       console.log("Caught interrupt signal");
@@ -437,7 +488,7 @@ function pal(ip, port){
     });
 
     deltaWebsocket.addEventListener('close', (data)=>{
-      console.log('deltaWebsocket closed: ', data)
+      console.log('deltaWebsocket closed')
       // nuclear option. discard localGraph because the host is about to send us the deltas to build the current form of the graph
       localGraph = {}
     })
@@ -445,6 +496,16 @@ function pal(ip, port){
     // on successful connection to deltaWebsocket Host:
     deltaWebsocket.addEventListener('open', () => {
 
+      // no point sending a blank graph!
+      if(equal(localGraph, {nodes: {}, arcs: []}) === false){
+        let updateScene = got.deltasFromGraph(localGraph, [])
+        let msg = JSON.stringify({
+          cmd: 'deltas',
+          date: Date.now(), 
+          data: updateScene
+        })
+        sendAllLocalClients(msg)
+      }
 
       // console.log('connected to deltaWebsocket host')
       // let highFive = JSON.stringify({
@@ -460,7 +521,7 @@ function pal(ip, port){
         switch(msg.cmd){
 
           case 'deltas':
-            console.log('delta from Host: ', msg)
+            // console.log('delta from Host: ', msg)
             // synchronize our local copy:
             try {
               //console.log('\n\npreApply', localGraph.nodes.resofilter_120)
@@ -478,7 +539,7 @@ function pal(ip, port){
               date: Date.now(),
               data: msg.data
             };
-            console.log(msg.data)
+            // console.log(msg.data)
             
             // check if the recording status is active, if so push received delta(s) to the recordJSON
             if (localConfig.recordStatus === 1){
@@ -494,7 +555,7 @@ function pal(ip, port){
             //fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(response), "utf-8")
 
             //OTHistory.push(JSON.stringify(response))
-            console.log('localgraph',localGraph, '\n')
+            // console.log('localgraph',localGraph, '\n')
             // send to all LOCAL clients:
             sendAllLocalClients(JSON.stringify(response));
           break
@@ -504,11 +565,10 @@ function pal(ip, port){
           break 
 
           case "nuclearOption":
-
-            // deltaWebsocket.close()
-            // teapartyWebsocket.close()
+            // line from a certain movie...
             console.log(msg.data)
-            // init()
+            sayGoodbye()
+ 
           break
           case 'ping':
             // keepAlive for heroku instance
@@ -536,7 +596,6 @@ function pal(ip, port){
 
 function handlemessage(msg, id) {
 
-  console.log(msg)
   switch (msg.cmd) {
     case "deltas": {
       
@@ -757,7 +816,7 @@ function startLocalWebsocket(){
     maxPayload: 1024 * 1024, 
   });
   let sessionId = 0;
-  console.log('running localWebsocket Server')
+  console.log('running localWebsocket Server, seeking client apps')
       
   // whenever a pal connects to this websocket:
   localWebsocketServer.on('connection', function(ws, req) {
@@ -816,15 +875,14 @@ function startLocalWebsocket(){
           switch(msg.cmd){
             case 'vrClientStatus':
               localConfig.vr = msg.data
-              teapartyWebsocket.send
+              // teapartyWebsocket.send
               console.log(msg)
             break;
 
             case 'get_scene':
-              //console.log(msg)
-
-              if (localGraph){
-                console.log(localGraph)
+              
+              // no point sending a blank graph!
+              if(equal(localGraph, {nodes: {}, arcs: []}) === false){
                 let deltas = got.deltasFromGraph(localGraph, [])
                 let msg = JSON.stringify({
                   cmd: 'deltas',
@@ -1014,5 +1072,4 @@ vorpal
 vorpal
 .delimiter('appjs$')
 .show();
-
 
