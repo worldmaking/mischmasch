@@ -922,7 +922,7 @@ vorpal
         {
           type: 'list',
           name: 'loadScene',
-          message: 'What do you want to do?',
+          message: 'Choose the scene you want to load:',
           choices: sceneList,
         },
         // {
@@ -942,11 +942,10 @@ vorpal
           data: answers.loadScene
         })
         deltaWebsocket.send(msg)
-        
-
+        callback();
       });
       
-    callback();
+    
     
   });
  
@@ -954,3 +953,18 @@ vorpal
   .delimiter('appjs$')
   .show();
 
+vorpal
+  .command('clear', 'Outputs "clearing scene".')
+  .action(function(args, callback) {
+    let msg = JSON.stringify({
+      cmd: 'clearScene',
+      date: Date.now(),
+      data: 'clearScene'
+    })
+    deltaWebsocket.send(msg)
+  callback();
+})
+
+vorpal
+.delimiter('appjs$')
+.show();

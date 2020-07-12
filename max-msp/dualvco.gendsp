@@ -3,14 +3,14 @@
 		"fileversion" : 1,
 		"appversion" : 		{
 			"major" : 8,
-			"minor" : 0,
+			"minor" : 1,
 			"revision" : 5,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "dsp.gen",
-		"rect" : [ 220.0, 94.0, 1390.0, 810.0 ],
+		"rect" : [ 641.0, 125.0, 1390.0, 810.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -37,6 +37,7 @@
 		"tags" : "",
 		"style" : "",
 		"subpatcher_template" : "",
+		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
 					"fontname" : "Lato",
@@ -118,7 +119,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 952.0, 90.0, 150.0, 47.0 ],
+					"patching_rect" : [ 952.0, 90.0, 150.0, 48.0 ],
 					"text" : "inspired in-part by Mark Verbos' Complex Oscillator"
 				}
 
@@ -326,7 +327,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 286.0, 600.5, 168.0, 36.0 ],
+					"patching_rect" : [ 286.0, 600.5, 168.0, 35.0 ],
 					"text" : "to do: get other functions to outputs 4 5 6..."
 				}
 
@@ -366,7 +367,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 540.0, 392.0, 150.0, 36.0 ],
+					"patching_rect" : [ 540.0, 392.0, 150.0, 35.0 ],
 					"text" : "using history node to accumulate phase"
 				}
 
@@ -421,8 +422,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 888.0, 274.0, 76.0, 23.0 ],
-					"text" : "param fb 0"
+					"patching_rect" : [ 888.0, 274.0, 102.0, 23.0 ],
+					"text" : "param feedback 0"
 				}
 
 			}
