@@ -165,7 +165,7 @@ var handleDelta = function(delta) {
 
 								genOutCounter++
 							} else {
-								newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
+								newModule = gen_patcher.newdefault([125, Ycounter * 10, kind])
 								newModule.varname = delta.path.split('.')[0]
 
 							}
@@ -173,12 +173,12 @@ var handleDelta = function(delta) {
 						break;
 						
 						case "operator":
-								newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
+								newModule = gen_patcher.newdefault([125, Ycounter * 10, kind])
 								newModule.varname = delta.path.split('.')[0]
 						break;
 						
 						default:
-								newModule = gen_patcher.newdefault([125, Ycounter * 2, kind])
+								newModule = gen_patcher.newdefault([125, Ycounter * 10, kind])
 								newModule.varname = delta.path.split('.')[0]
 						break;	
 					}
@@ -375,11 +375,14 @@ var handleDelta = function(delta) {
 					//var speakerName = delta.path.split('')[0];
 					//var speakerNumber = speakerName.split('_')[1];
 					var thisVarname = 'source_' + delta.path.split('_')[1]
+					genOutCounter--
 					outlet(10, 'thispatcher', 'script', 'delete', thisVarname)
 					// this.patcher.remove(thisVarname)
 
 					// then remove from gen~ world
-					
+					if(genOutCounter <1){
+						genOutCounter = 1
+					}
 
 				}
 				gen_patcher.apply(function(b) { 
