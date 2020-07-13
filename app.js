@@ -983,7 +983,7 @@ function sendAllLocalClients(msg){
 var inquirer = require('inquirer');
 let sceneChoice = null
 vorpal
-  .command('scenes', 'Outputs "list of scenes from the host".')
+  .command('scenes', 'lists the scenes available from the host.')
   .action(function(args, callback) {
     
     inquirer
@@ -1024,7 +1024,7 @@ vorpal
   .show();
 
 vorpal
-  .command('clear', 'Outputs "clearing scene".')
+  .command('clear', 'clears the scene, returns a blank scene.')
   .action(function(args, callback) {
     let msg = JSON.stringify({
       cmd: 'clearScene',
@@ -1040,7 +1040,7 @@ vorpal
 .show();
 
 vorpal
-  .command('reload', 'Outputs "reloads the current scene file (loses changes)".')
+  .command('reload', 'reloads the current scene file (loses changes).')
   .action(function(args, callback) {
     let msg = JSON.stringify({
       cmd: 'loadScene',
@@ -1058,7 +1058,7 @@ vorpal
 
 
 vorpal
-  .command('nuclear', 'Outputs "the got nuclear option. clears the scene & delta history everywhere, including host, and returns a blank scene".')
+  .command('nuclear', 'the got nuclear option. clears the scene & delta history everywhere, including host, and returns a blank scene.')
   .action(function(args, callback) {
     let msg = JSON.stringify({
       cmd: 'nuclearOption',
@@ -1073,3 +1073,66 @@ vorpal
 .delimiter('appjs$')
 .show();
 
+vorpal
+  .command('save', 'save current scene. requests filename, confirms overwrites.')
+  .action(function(args, callback) {
+    saveScene()
+    function saveScene(){
+      inquirer
+        .prompt([
+          {
+            type: 'input',
+            name: 'save',
+            message: 'type a name of file'
+          },
+        ])
+        .then((answers) => {
+          console.log(answers.save)
+          let savename = answers.save + '.json'
+          for (i=0; i<sceneList.length; i++){
+            if(sceneList[i] === savename){
+              inquirer
+                .prompt([
+                  {
+                    type: 'list',
+                    name: 'nextStep',
+                    message: 'filename in use. overwrite or try another name?',
+                    choices: ['try a different filename','overwrite existing filename']
+                  },
+                  // {
+                  //   type: 'list',
+                  //   name: 'size',
+                  //   message: 'What size do you need?',
+                  //   choices: ['Jumbo', 'Large', 'Standard', 'Medium', 'Small', 'Micro'],
+                  //   filter: function (val) {
+                  //     return val.toLowerCase();
+                  //   },
+                  // },
+                ])
+                .then((answers) => {
+                  choice = answers.nextStep
+                  if (choice === 'try a different filename'){
+                    saveScene()
+                  } else {
+                    let msg = JSON.stringify({
+                      cmd: 'saveScene',
+                      date: Date.now(),
+                      data: savename
+                    })
+                    deltaWebsocket.send(msg)
+                    console.log('saving file on host')
+                  }
+                  
+                })
+            }
+          }
+
+          callback();
+        })
+  
+      }
+    })
+
+vorpal
+.delimiter('appjs$')
+.show();
