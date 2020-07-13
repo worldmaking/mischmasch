@@ -569,11 +569,6 @@ function pal(ip, port){
 
           case "sceneList":
             sceneList = msg.data
-            console.log('available scene files: \n')
-            for(i=0;i<sceneList.length;i++){
-              console.log(sceneList[i])
-            }
-            
           break 
 
           case "nuclearOption":
