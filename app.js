@@ -495,7 +495,7 @@ function pal(ip, port){
     
     // on successful connection to deltaWebsocket Host:
     deltaWebsocket.addEventListener('open', () => {
-
+      console.log('connected to deltaWebsocket host')
       // no point sending a blank graph!
       if(equal(localGraph, {nodes: {}, arcs: []}) === false){
         let updateScene = got.deltasFromGraph(localGraph, [])

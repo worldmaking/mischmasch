@@ -1355,3 +1355,17 @@ function shutdown() {
 }
 
 init();
+
+// device tracking:
+
+let state = {
+	hmd: { pos: vec3.create(), quat: quat.create() },
+	trackers: [
+	  { pos: vec3.create(), quat: quat.create() },
+	  { pos: vec3.create(), quat: quat.create() },
+	]
+  }
+  
+  const tmpmat = mat4.create();
+  
+ 
