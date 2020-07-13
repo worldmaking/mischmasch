@@ -292,8 +292,8 @@ async function init() {
     process.exit();
   }
 
-  console.log('my hostname', localConfig.username)
-  console.log('my public IP is', localConfig.ip);
+  // console.log('my hostname', localConfig.username)
+  // console.log('my public IP is', localConfig.ip);
 
   // connect:
   teapartyWebsocket;
@@ -305,7 +305,7 @@ async function init() {
     init()
     // process.exit();
   }
-  console.log('\nconnected to teaparty\n')
+  console.log('connected to teaparty')
   // TODO Q: shouldn't we be able to ask teapartyWebsocket this, rather than duplicating in a local variable?
   isConnectedToteaparty = 1;
 
@@ -351,7 +351,7 @@ async function init() {
       // lists all clients actively registered with the teaparty
       // should be received at reasonable frequency (i.e. also serves as a ping)
       case 'guestlist': {
-        console.log(msg.data)
+        // console.log(msg.data)
         guestlist = msg.data
         let teapartyPals = msg.data.pals;
         let teapartyHeadCount = msg.data.headcount;
@@ -377,7 +377,7 @@ async function init() {
           } else if (argv.host){
             // if the host ip is specified
             hostIP = argv.host
-            console.log(hostIP)
+            // console.log(hostIP)
           } 
             //startLocalWebsocket(hostIP, 8082)       
             pal(hostIP, '8081')
