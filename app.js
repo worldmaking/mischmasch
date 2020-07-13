@@ -79,9 +79,6 @@ var equal = require('deep-equal');
 const project_path = process.cwd();
 const server_path = __dirname;
 const client_path = path.join(server_path, "client");
-console.log("project_path", project_path);
-console.log("server_path", server_path);
-console.log("client_path", client_path);
 
 let name;
 if (process.argv[3]){
@@ -189,7 +186,6 @@ function teapartyWebsocketConnect() {
     // fail the promise if the server responds with an error
     //! i commented this out because it was interfering with the progressBar and attempts to rws
     teapartyWebsocket.addEventListener('error', (error) => {
-      // console.log(`connection error from ${teapartyAddress}:`)
       // clearInterval(progressBarTimer); 
       // reject(error.error);
     });
@@ -292,8 +288,6 @@ async function init() {
     process.exit();
   }
 
-  // console.log('my hostname', localConfig.username)
-  // console.log('my public IP is', localConfig.ip);
 
   // connect:
   teapartyWebsocket;
@@ -351,7 +345,6 @@ async function init() {
       // lists all clients actively registered with the teaparty
       // should be received at reasonable frequency (i.e. also serves as a ping)
       case 'guestlist': {
-        // console.log(msg.data)
         guestlist = msg.data
         let teapartyPals = msg.data.pals;
         let teapartyHeadCount = msg.data.headcount;
@@ -362,22 +355,12 @@ async function init() {
         // if the deltaWebsocket connection doesn't already exist
         if (!deltaWebsocket){
           // we are a pal! need to connect to host's websocket server
-
-          // if previously connected to a different host, first close our pal websocket
-          // if (deltaWebsocket){
-          //   console.log('closing deltaWebsocket')
-          //   deltaWebsocket.close()
-          // }
-          // if (localWebsocket){
-          //   localWebsocket.close()
-          // }
           // get host's ip
           if(!argv.l){
             hostIP = msg.data.host.ip          
           } else if (argv.host){
             // if the host ip is specified
             hostIP = argv.host
-            // console.log(hostIP)
           } 
             //startLocalWebsocket(hostIP, 8082)       
             pal(hostIP, '8081')
@@ -409,18 +392,14 @@ async function init() {
         }
 
         if (removeList.length) {
-          console.log("removing", removeList);
           for (let username of removeList) {
             delete pals[username];
           }
-          // console.log("received from teaparty: updated guestlist (removed)", msg.data)
         }
         if (addList.length) {
-          // console.log("adding", addList);
           for (let o of addList) {
             pals[o.username] = o;
           }
-          // console.log("received from teaparty: updated guestlist (added)", msg.data)
         }
         */
         // TODO implement these actions in separate functions, as they may be triggered in other ways.
@@ -445,7 +424,7 @@ async function init() {
       //   break;
   
       default:
-       console.log('\n\nFor developer: unhandled message from remote teaparty: ', msg);
+       console.log('\n\nunhandled message from remote teaparty: ', msg);
        break;
     }
 
@@ -504,7 +483,7 @@ function pal(ip, port){
       console.log('connected to deltaWebsocket host')
       // no point sending a blank graph!
       if(equal(localGraph, {nodes: {}, arcs: []}) === false){
-        console.log(localGraph, 'line 501')
+        
         let updateScene = got.deltasFromGraph(localGraph, [])
         let msg = JSON.stringify({
           cmd: 'deltas',
@@ -514,31 +493,19 @@ function pal(ip, port){
         sendAllLocalClients(msg)
       }
 
-      // console.log('connected to deltaWebsocket host')
-      // let highFive = JSON.stringify({
-      //   cmd: 'rsvp',
-      //   date: Date.now(), 
-      //   data: 'pal',
-      // })
-      // deltaWebsocket.send(highFive)
-
       deltaWebsocket.addEventListener('message', (data) =>{
         let msg = JSON.parse(data.data)
 
         switch(msg.cmd){
 
           case 'deltas':
-            // console.log('delta from Host: ', msg)
             // synchronize our local copy:
             try {
-              //console.log('\n\npreApply', localGraph.nodes.resofilter_120)
               got.applyDeltasToGraph(localGraph, msg.data);
-              //console.log('\n\npostApply', JSON.stringify(localGraph.nodes.resofilter_120.resonance))
             } catch (e) {
               console.warn(e);
             }
 
-            //console.log(msg.data)
             // TODO: merge OTs
             
             let response = {
@@ -546,7 +513,6 @@ function pal(ip, port){
               date: Date.now(),
               data: msg.data
             };
-            // console.log(msg.data)
             
             // check if the recording status is active, if so push received delta(s) to the recordJSON
             if (localConfig.recordStatus === 1){
@@ -562,7 +528,6 @@ function pal(ip, port){
             //fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(response), "utf-8")
 
             //OTHistory.push(JSON.stringify(response))
-            // console.log('localgraph',localGraph, '\n')
             // send to all LOCAL clients:
             sendAllLocalClients(JSON.stringify(response));
           break
@@ -589,7 +554,6 @@ function pal(ip, port){
           break
           default: console.log('unhandled deltaWS message: ', msg)
         }
-        // console.log(msg)
       })
 
       
@@ -610,8 +574,7 @@ function handlemessage(msg, id) {
     } break;
 
     // case "playback":{
-    // 	//console.log(msg)/
-    // 	console.log(msg.data)
+
     // 	/*
     // 	let response = {
     // 		cmd: "deltas",
@@ -807,7 +770,6 @@ function startLocalWebsocket(){
     res.sendFile(path.join(client_path, 'index.html'));
     res.sendFile(path.join(__dirname, '/got/got.js'));
   });
-  //app.get('*', function(req, res) { console.log(req); });
   const server = http.createServer(app);
   // add a websocket service to the http server:
   // const wss = new WebSocket.Server({ 
@@ -847,9 +809,8 @@ function startLocalWebsocket(){
     //   // console.log('vr', req.connection)
     //   ip = req.ip
     // }
-    //console.log(ip)
     // const location = urlw.parse(req.url, true);
-    // console.log(location)
+
 
     localWebsocket.on('error', function (e) {
       if (e.message === "read ECONNRESET") {
@@ -863,7 +824,6 @@ function startLocalWebsocket(){
     localWebsocket.on('close', function(connection) {
       //clearInterval(handShakeInterval);
       console.log("connection closed");
-          // console.log("server has "+ws.clients.size+" connected clients");
     });
     
     // respond to any messages from the client:
@@ -871,10 +831,6 @@ function startLocalWebsocket(){
       if (e instanceof Buffer) {
         // get an arraybuffer from the message:
         const ab = e.buffer.slice(e.byteOffset,e.byteOffset+e.byteLength);
-        //console.log("received arraybuffer", ab);
-        // as float32s:
-        //console.log(new Float32Array(ab));
-
       } else {
         try {
           // handlemessage(JSON.parse(e), ws, id);
@@ -883,7 +839,6 @@ function startLocalWebsocket(){
             case 'vrClientStatus':
               localConfig.vr = msg.data
               // teapartyWebsocket.send
-              console.log(msg)
             break;
 
             case 'get_scene':
@@ -916,8 +871,7 @@ function startLocalWebsocket(){
 
   });
   server.listen(8080, function() {
-    console.log(`server listening`);
-    console.log(`vr view on http://localhost:${server.address().port}/index.html`);
+    console.log(`localWebsocketServer listening on localhost:${server.address().port}`);
   });
 
 }
@@ -929,14 +883,11 @@ function runGOT(src, delta){
   console.log('runGOT', src, delta)
       // synchronize our local copy:
       try {
-        //console.log('\n\npreApply', localGraph.nodes.resofilter_120)
         got.applyDeltasToGraph(localGraph, delta)
-        //console.log('\n\npostApply', JSON.stringify(localGraph.nodes.resofilter_120.resonance))
       } catch (e) {
         console.warn(e);
       }
 
-      //console.log(msg.data)
       // TODO: merge OTs
       
       let response = JSON.stringify({
@@ -944,7 +895,7 @@ function runGOT(src, delta){
         date: Date.now(),
         data: delta
       });
-      console.log(delta)
+
       
       // check if the recording status is active, if so push received delta(s) to the recordJSON
       // if (localConfig.recordStatus === 1){
@@ -960,7 +911,6 @@ function runGOT(src, delta){
       //fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(response), "utf-8")
 
       //OTHistory.push(JSON.stringify(response))
-      console.log('localgraph',localGraph, '\n')
 
       if (teapartyHost === localConfig.username){
         // if this app.js is host, just send using the localWebsocket
@@ -972,13 +922,11 @@ function runGOT(src, delta){
       // send_all_clients(JSON.stringify(response));
 }
 
-tempCounter = 0
 function sendAllLocalClients(msg){
   localWebsocketServer.clients.forEach(function each(client) {
 		// if (client == ignore) return;
 		try {
       client.send(msg);
-      console.log(tempCounter++)
 		} catch (e) {
 			console.error(e);
 		};
@@ -1065,7 +1013,7 @@ vorpal
 
 
 vorpal
-  .command('nuclear', 'the got nuclear option. clears the scene & delta history everywhere, including host, and returns a blank scene.')
+  .command('nuclear', 'the gotlib nuclear option. clears the scene & delta history everywhere, including host, and returns a blank scene.')
   .action(function(args, callback) {
     let msg = JSON.stringify({
       cmd: 'nuclearOption',
@@ -1095,7 +1043,6 @@ vorpal
         ])
         .then((answers) => {
           let savename = answers.save + '.json'
-          console.log(sceneList.includes(savename))
           if(sceneList.includes(savename) === true){
               inquirer
                 .prompt([
@@ -1180,7 +1127,6 @@ vorpal
           console.log('a scenefile lives another day')
           callback();
         } else {
-          console.log(deleteChoice)
           let msg = JSON.stringify({
             cmd: 'deleteScene',
             date: Date.now(),
