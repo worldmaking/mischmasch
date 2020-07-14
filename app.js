@@ -760,7 +760,11 @@ function handlemessage(msg, id) {
   }
 }
 
-
+localClients = {
+  vr: null,
+  audio: {}
+}
+localClientID = 0
 function startLocalWebsocket(){
   // host webapp (only on mojave)
   const app = express();
@@ -785,11 +789,12 @@ function startLocalWebsocket(){
     maxPayload: 1024 * 1024, 
   });
   let sessionId = 0;
-  console.log('running localWebsocket Server, seeking client apps')
       
   // whenever a pal connects to this websocket:
   localWebsocketServer.on('connection', function(ws, req) {
     localWebsocket = ws
+   
+
     // inform client that the p2p signal server is running on localhost
     // let configp2p = JSON.stringify({
     //   cmd: 'p2pSignalServer',
@@ -817,6 +822,9 @@ function startLocalWebsocket(){
         // ignore this, client will still emit close event
       } else {
         console.error("websocket error: ", e.message);
+        if (localClients.vr = localWebsocket){
+          localClients.vr = null
+        }
       }
     });
 
@@ -824,6 +832,9 @@ function startLocalWebsocket(){
     localWebsocket.on('close', function(connection) {
       //clearInterval(handShakeInterval);
       console.log("connection closed");
+      if (localClients.vr = localWebsocket){
+        localClients.vr = null
+      }
     });
     
     // respond to any messages from the client:
@@ -837,8 +848,10 @@ function startLocalWebsocket(){
           let msg = JSON.parse(e)
           switch(msg.cmd){
             case 'vrClientStatus':
-              localConfig.vr = msg.data
+              localConfig.vr = 1
               // teapartyWebsocket.send
+              // localWebsocket.id = 'vr'
+              localClients.vr = localWebsocket
             break;
 
             case 'get_scene':
@@ -862,6 +875,16 @@ function startLocalWebsocket(){
               deltaWebsocket.send(JSON.stringify(msg))
               // runGOT(id, msg.data)
             break
+
+            case "audiovizLookup":
+              // console.log(msg.data)
+              if(localClients.vr){
+                localClients.vr.send(JSON.stringify(msg))
+              }
+              // 
+              // need to send this just to the vr client!
+              // console.log(localClients.vr)
+            break
           }
         } catch (e) {
           console.log('bad JSON: ', e);
@@ -876,6 +899,17 @@ function startLocalWebsocket(){
 
 }
 
+
+function sendToVRClient(msg, ignore) {
+	deltaWebsocketServer.clients.forEach(function each(client) {
+		if (client == ignore) return;
+		try {
+			client.send(msg);
+		} catch (e) {
+			console.error(e);
+		};
+	});
+}
 
 
 

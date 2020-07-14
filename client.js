@@ -168,7 +168,8 @@ if(argv.w){
 	})
 }
 const url = 'ws://localhost:8080'
-const demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
+// const demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
+// let demoScene = {nodes: {}, arcs: []}
 const shaderpath = path.join(__dirname, "shaders")
 
 function hashCode(str) { // java String#hashCode
@@ -1183,6 +1184,9 @@ function serverConnect() {
 	socket.onopen = () => {
 		console.log("websocket connected to localWebsocket on "+url);
 		socket.send(JSON.stringify({ cmd:"get_scene"})) 
+
+		// let the localWebsocket server assign our connection with an id
+		socket.send(JSON.stringify({ cmd:"vrClientStatus"})) 
 		// reset our local scene:
 		localGraph = {
 			nodes: {},
@@ -1219,99 +1223,13 @@ function onServerMessage(msg, sock) {
         case "deltas": {
             // insert into our TODO list:
             incomingDeltas.push.apply(incomingDeltas, msg.data);
-        } break;
+		} break;
+		
+		case "audiovizLookup":
+			//console.log(msg.data)
+			// this is where we get the state of a node's output, sent from the gen patcher!
+		break
 
-        // server assigns an iid for our session. use this to route controller and HMD data to local max client. 
-        // case "assignID":{
-             
-        // }
-        // break
-        // case "contexts":{
-        //     console.log(msg.data)
-        //     vrContextID = msg.data.vrContext
-        //     audioContextID = msg.data.audioContext
-		// }
-
-		// the p2p won't run until the app.js passes along who is running as host:
-		case "p2pSignalServer":
-					
-			// signal = 'ws://mischmasch-host.herokuapp.com/8082'
-			// // signal = 'wss://coven-broker.now.sh'
-			// // coven = new Coven({ ws, wrtc, signaling: 'ws://' + ip + ':' + port });
-			// coven = new Coven({ ws, wrtc, signaling: signal });
-			
-			// coven
-			// 	.on('message', ({ peerId, message }) => {
-			// 		console.log(`${peerId}: ${message}`)
-			// 		let msg = JSON.parse(message)
-			// 		switch(msg.cmd){
-
-			// 			case 'handshake':
-
-			// 			break
-
-			// 			case 'keepAlive':
-			// 				// ignore - prevents ICE from closing connection due to inactivity.
-			// 			break
-			// 			default: 
-			// 			break;
-			// 		}
-			// 	})
-			// 	.on('connection', pid => {
-			// 		console.log(pid, coven.activePeers);
-					
-			// 		// we use the filename var to route which client should get what message. alternately, could create a 2nd datachannel...
-			// 		let p2pMsg = JSON.stringify({
-			// 			cmd: 'handshake',
-			// 			source: peerHandle,
-			// 			data: 'meow'
-			// 		})
-			// 		coven.sendTo(pid, p2pMsg);
-					
-			// 		function keepAlive() {
-			// 			setTimeout(function () {
-			// 				let p2pMsg = JSON.stringify({
-			// 					cmd: 'keepAlive',
-			// 					source: peerHandle,
-			// 					data: 'ping'
-			// 				})
-			// 				coven.sendTo(pid, p2pMsg);
-			// 				// Do Something Here
-			// 				// Then recall the parent function to
-			// 				// create a recursive loop.
-			// 				keepAlive();
-			// 			}, 5000);
-			// 		}
-			// 		keepAlive()
-			// 	})
-			// 	.on('error', () =>{
-			// 		JSON.parse(console.error)
-			// 	});
-			
-			// p2pID = coven.id
-			// console.log(p2pID)
-			// let ip = msg.data.ip
-			// let port = msg.data.port
-			// console.log(msg)
-			// p2pDataChannel = new Coven({ ws, wrtc, signaling: 'ws://' + ip + ':' + port });
-			// p2pDataChannel
-			// 	.on('message', ({ peerId, message }) => console.log(`${peerId}: ${message}`))
-			// 	.on('connection', pid => {
-			// 		console.log(pid, p2pDataChannel.activePeers);
-					
-			// 		// we use the filename var to route which client should get what message. alternately, could create a 2nd datachannel...
-			// 		let p2pMsg = JSON.stringify({
-			// 			cmd: 'hello',
-			// 			source: filename,
-			// 			message: 'meow'
-			// 		})
-			// 		p2pDataChannel.sendTo(pid, p2pMsg);
-			// 	})
-			// 	.on('error', () =>{
-			// 		JSON.parse(console.error)
-			// 	});
-
-		break;
         default:
            console.log("received JSON", msg, typeof msg);
     }
@@ -1340,7 +1258,7 @@ async function init() {
 		serverConnect();
 	} 
 	// default graph until server connects:
-	localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
+	// localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
 	sceneGraph.rebuild(localGraph);
 	
 }

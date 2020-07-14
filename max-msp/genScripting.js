@@ -4,7 +4,7 @@
 
 // import { max } from "gl-matrix/src/gl-matrix/vec2";
 inlets = 3
-outlets = 11
+outlets = 7
 
 // this is where the parameter min/max & init-value get stored
 var namespace = new Dict("namespace")
@@ -16,15 +16,20 @@ function initiate(){
 	this.patcher.apply(function(b) { 
 		
 		if(b.varname.split('_')[0] === 'source'){
-			outlet(10, 'thispatcher', 'script', 'delete', b.varname)
+			outlet(4, 'thispatcher', 'script', 'delete', b.varname)
 		}
 	});
 	gen_patcher = this.patcher.getnamed("world").subpatcher();
 	//! clear the gen~ world patcher prior to receiving deltas
 	gen_patcher.apply(function(b) { 
-		gen_patcher.remove(b); 		
+		if(b.varname !== "reserved_audioviz" && b.varname !== "reserved_audioviz_1" && b.varname !== "PLO"){
+
+		gen_patcher.remove(b); 	
+		}	
 	});
 
+
+	
 	resetCounters()
 }
 
@@ -40,7 +45,7 @@ var outletsTable = new Array();
 var varnamesTable = new Array();
 
 var object = {};
-var nodeName;
+var pathName;
 var counter = 1;
 var feedbackConnections = 0
 var checkspeaker = new Array();
@@ -49,6 +54,10 @@ var newModule;
 var speakerTable = []
 var genOutCounter = 1
 
+// we use these vars for the visualization of gen audio in the local vr client
+var audiovizLookup = {}
+var audiovizIndex = 0
+//
 var nodes = {}
 
 // contain all the buffers
@@ -59,6 +68,8 @@ function resetCounters(){
 	feedbackConnections = 0
 	genOutCounter = 1
 	nodes = {}
+	audiovizLookup = {}
+	audiovizIndex = 0
 }
 var speakerTableDict = new Dict("speakerTableDict");
 // buffer channels for visual feedback
@@ -73,7 +84,7 @@ gen_patcher = this.patcher.getnamed("world").subpatcher();
 function getVarnames(target){
 	gen_patcher.apply(function(b) { 
 		// prevent erasing our audio outputs from genpatcher
-		if(b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
+		if(b.varname !== "reserved_audioviz" && b.varname !== "PLO"){
 			if (b.varname.indexOf(target) != -1){
 				gen_patcher.remove(b); 	
 
@@ -110,7 +121,7 @@ var handleDelta = function(delta) {
 				if(nodes[delta.path]){
 					// don't add a duplicate
 					// if this happens, it means something is wrong with the graph, maybe a delnode wasn't triggered or received, or duplicate deltas received
-					post('\n\nWARNING: duplicate newnode delta received. Was filtered out, but need to check the delta round-trip\n\n')
+					post('WARNING: duplicate newnode delta received. Was filtered out, but need to check the delta round-trip\n\n')
 				} else {
 					// add the node to the obj to prevent it being added as a duplicate
 					nodes[delta.path] = {}
@@ -132,20 +143,22 @@ var handleDelta = function(delta) {
 						counter++
 						posX = (delta.pos[0] + 3)
 						posY = (delta.pos[1] + 3) 
+						pathName = delta.path.split('.')[0] 
 						switch(delta.category){
 							
 							case "abstraction": 
+
+								
+
+
+
 								if(kind === "speaker"){
-
-
-									var speakerName = delta.path.split('.')[0];
-									var speakerNumber = speakerName.split('_')[1];
+									var speakerNumber = pathName.split('_')[1];
 									
 									// TODO this is one place where we need to deal with the speaker/vr_source lookup table
 									var newSpeaker = gen_patcher.newdefault([50, posY * 150, 'out', genOutCounter])
-									newSpeaker.varname = speakerName;
+									newSpeaker.varname = pathName;
 
-			
 			
 									//need to get its position in vr and apply that to a vr.source~ position
 									// 1420. 544. 289. 22.
@@ -155,7 +168,7 @@ var handleDelta = function(delta) {
 									
 									
 									// add a vr.Source~ abstraction to parent, script the new out to this abstraction, use delta.pos to provide the vr.source~ position
-									var vrSource = this.patcher.newdefault([1420 + (genOutCounter * 100), 570, "vr.source~", genOutCounter - 1, "@position", delta.pos[0], delta.pos[1], delta.pos[2] ])
+									var vrSource = this.patcher.newdefault([-50 + (genOutCounter * 100), 200, "vr.source~", genOutCounter - 1, "@position", delta.pos[0], delta.pos[1], delta.pos[2] ])
 									vrSource.varname = "source_" + speakerNumber
 
 
@@ -166,49 +179,34 @@ var handleDelta = function(delta) {
 									// gen~ and max outlets are base 0 (mth), our speaker numbers are base 1 (nth)
 									// TODO decide on base 0 or 1 (I advocate for 0, because this also works with array indices) 
 									
-									outlet(9, 'genConnect', genOutCounter, speakerNumber)
+									outlet(3, 'genConnect', genOutCounter, speakerNumber)
 
-									// vrSource2CHMain is a 2channel gain slider located just below the gen~ world. All vr.Source~ objects script connect into lef and right. 
-									this.patcher.message("script", "connect", "source_" + speakerNumber, 0, 'vrSource2CHMain', 0);
+									// we use outlets below the gen~ world. All vr.Source~ objects script connect into outlets 1 and 2. 
+									this.patcher.message("script", "connect", "source_" + speakerNumber, 0, 'genScriptingOutlet_0', 0);
 	
-									this.patcher.message("script", "connect", "source_" + speakerNumber, 1, 'vrSource2CHMain', 1);
+									this.patcher.message("script", "connect", "source_" + speakerNumber, 1, 'genScriptingOutlet_1', 0);
 
-									genOutCounter++
+									genOutCounter++ 
 								} else {
 									newModule = gen_patcher.newdefault([125, Ycounter * 10, kind])
-									newModule.varname = delta.path.split('.')[0]
+									newModule.varname = pathName
+
+									
 								}
 
 							break;
 							
 							case "operator":
 									newModule = gen_patcher.newdefault([125, Ycounter * 10, kind])
-									newModule.varname = delta.path.split('.')[0]
+									newModule.varname = pathName
 							break;
 							
 							default:
 									newModule = gen_patcher.newdefault([125, Ycounter * 10, kind])
-									newModule.varname = delta.path.split('.')[0]
+									newModule.varname = pathName
 							break;	
-						}
-						
-
-
-						
-						if (kind === "speaker"){
-							// create the speaker aka gen [out #]
-							// var newSpeaker = gen_patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, 'out', speakerNumber])
-							// newSpeaker.varname = 'speaker_' + speakerNumber
-							// add a vr.Source~ abstraction to parent, script the new out to this abstraction. 
-							// var vrSource = this.patcher.newdefault([(pos[0] + counter), (pos[1] + counter) * 150, "vr.source~", speakerNumber - 1, "@varname", "source_" + speakerNumber])
-							
-							// this.patcher.message("script", "connect", 'world',  "speaker_" + speakerNumber - 1,  "source_" + speakerNumber, 0);
-
-
-							// // need to get its position in vr and apply that to a vr.source~ position
-
-							// speakerNumber++
 							}
+						
 						} else {
 							switch(kind){
 								
@@ -219,7 +217,7 @@ var handleDelta = function(delta) {
 								case 'momentary':
 								case 'led':
 
-									nodeName = delta.path.split('.')[0]
+									pathName = delta.path.split('.')[0]
 									paramName = delta.path.replace('.','__')
 									setparamName = delta.path.split('.')[1]
 									
@@ -228,7 +226,7 @@ var handleDelta = function(delta) {
 									// generate the subparam which the param will bind to
 									var setparam = gen_patcher.newdefault([275, Ycounter * 2, "setparam", setparamName])
 									setparam.varname = 'setparam_' + paramName
-									gen_patcher.message("script", "connect", setparam.varname, 0, nodeName, 0);
+									gen_patcher.message("script", "connect", setparam.varname, 0, pathName, 0);
 								
 									// generate the param which the js script will bind to
 									var param = gen_patcher.newdefault([450, Ycounter * 1.5, "param", paramName, delta.value])
@@ -250,7 +248,7 @@ var handleDelta = function(delta) {
 								break;
 								
 								case 'n_switch':
-									nodeName = delta.path.split('.')[0]
+									pathName = delta.path.split('.')[0]
 									paramName = delta.path.replace('.','__')
 									setparamName = delta.path.split('.')[1]
 									
@@ -258,7 +256,7 @@ var handleDelta = function(delta) {
 									// generate the subparam which the param will bind to
 									var setparam = gen_patcher.newdefault([275, Ycounter * 2, "setparam", setparamName])
 									setparam.varname = 'setparam_' + paramName
-									gen_patcher.message("script", "connect", setparam.varname, 0, nodeName, 0);
+									gen_patcher.message("script", "connect", setparam.varname, 0, pathName, 0);
 								
 									// generate the param which the js script will bind to
 									var param = gen_patcher.newdefault([450, Ycounter * 1.5, "param", paramName, delta.value])
@@ -276,41 +274,40 @@ var handleDelta = function(delta) {
 								
 								
 								case "outlet":
-									var buf = null;
-								object[delta.path.replace('.','__')] = delta.index
-								outletsTable.push(object)	
-								//outlet(0, outletsTable)
-
-								// pipe all outlets to buffer for visual feedback:
-								// first make sure that the  outlet has an index, and is not an inlet (sometimes this occurs...)
+								// poke all outlets to buffer for visual feedback:
+								// first make sure that the outlet has an index, and is not an inlet (sometimes this occurs...)
 								if (index && kind !== 'inlet' && kind !== 'controller1' && kind !== 'controller2' && kind !== 'headset'){
-									// TODO Al, I've commented out the bufferStorage code because we're not yet using visual feedback in the world
-
-									/* buf = delta.path.replace('.','__') + '_buffer'
-									// create a buffer for each outlet
-									vizBuffers[buf] = new Buffer(buf)
-									vizBuffers.push(buf)	
-													
-
 									
-									var addPoke = gen_patcher.newdefault([575, Ycounter * 2, "poke", buf])
-									addPoke.varname = 'poke_' + bufferChannelCounter
-									bufferChannelPaths.push(delta.path)	
+									post(pathName, delta.path)
+
+									if(audiovizLookup[pathName]){
+										audiovizLookup[pathName].paths[delta.path] = {audiovizIndex: audiovizIndex, deltaIndex: delta.index, value: null}
+									} else {
+										audiovizLookup[pathName] = {
+											paths: {
+
+											}
+										}
+										audiovizLookup[pathName].paths[delta.path] = {audiovizIndex: audiovizIndex, deltaIndex: delta.index, value: null}
+									}
+									// setup for visualizing each gen object's audio state
+									// audiovizLookup[pathName][delta.path] = {audiovizIndex: audiovizIndex, deltaIndex: delta.index}
+									post('\n', JSON.stringify(audiovizLookup))
+									var newAudiovizPoke = gen_patcher.newdefault([50, posY * 150, 'poke', 'audioviz'])
+									newAudiovizPoke.varname = delta.path + '_poke';
+									var newAudiovizConstant = gen_patcher.newdefault([50, posY * 150, 'constant', audiovizIndex])
+									newAudiovizConstant.varname = delta.path + '_poke';
+									// connect the constant to the poke
+									gen_patcher.message("script", "connect", newAudiovizConstant.varname, 0, newAudiovizPoke.varname, 1);
+									// need to get the index of the node! (if its an abstraction, then the outlet of the gendsp is represented as an index in the scene's graph)
+									gen_patcher.message("script", "connect", newModule.varname, delta.index, newAudiovizPoke.varname, 0);
+
+									audiovizIndex++
+									outlet(5, 'sizeinsamps', audiovizIndex + 1)
+									object[delta.path.replace('.','__')] = delta.index
+									outletsTable.push(object)	
+									//outlet(0, outletsTable)
 									
-									var addBuffer = gen_patcher.newdefault([875, Ycounter * 4, "buffer", buf])	
-									var addBufferToParent = bufferStorage.newdefault([50, Ycounter * 4, "buffer~", buf, 10, 1])	
-									addBufferToParent.varname = buf + '_varname'
-									addBuffer.varname = buf + '_varname'
-									// addConstant.varname = 'constant_' + bufferChannelCounter
-									// gen_patcher.message("script", "connect", addConstant.varname, 0, addPoke.varname, 2);
-									gen_patcher.message("script","connect", newModule.varname, parseInt(index), addPoke.varname, 0)
-						
-									// based on the running channel counter, add +1 and then add the delta.index
-
-
-
-									bufferChannelCounter++
-									*/
 									// TODO: if a module is deleted, find which channels in the buffer are now freed, make those available to the next newnode.
 								}
 
@@ -368,14 +365,12 @@ var handleDelta = function(delta) {
 
 					// var newDict = new Dict
 					var deleteMe = delta.path.replace('.', '__');
-					// outlet(10,delta)
 					// dict.set(delta)
 					if(delta.path.split('_')[0] === 'speaker'){
-						//var speakerName = delta.path.split('')[0];
-						//var speakerNumber = speakerName.split('_')[1];
+						
 						var thisVarname = 'source_' + delta.path.split('_')[1]
 						genOutCounter--
-						outlet(10, 'thispatcher', 'script', 'delete', thisVarname)
+						outlet(4, 'thispatcher', 'script', 'delete', thisVarname)
 						// this.patcher.remove(thisVarname)
 
 						// then remove from gen~ world
@@ -386,7 +381,7 @@ var handleDelta = function(delta) {
 					}
 					gen_patcher.apply(function(b) { 
 						// prevent erasing our audio outputs from genpatcher
-						if(b.varname !== "visualFeedbackBuffer" && b.varname !== "bufferChannels" && b.varname !== "PLO"){
+						if(b.varname !== "reserved_audioviz" && b.varname !== "PLO"){
 							if (b.varname.indexOf(deleteMe) != -1){
 		
 								gen_patcher.remove(b); 				
@@ -403,7 +398,7 @@ var handleDelta = function(delta) {
 
 				} else {
 					// error. received a delnode for a nonexistent node
-					post('\n\nWARNING: received a delnode for a node that does not exist in the graph\n\n')
+					post('WARNING: received a delnode for a node that does not exist in the graph\n')
 
 				}
 				
@@ -415,7 +410,7 @@ var handleDelta = function(delta) {
 				if(nodes[pathString]){
 					// don't add a duplicate
 					// if this happens, it means something is wrong with the graph, maybe a delnode wasn't triggered or received, or duplicate deltas received
-					post('\n\nWARNING: received a connection delta that already exists in the graph. was filtered out, but need to check the delta round-trip\n\n')
+					post('WARNING: received a connection delta that already exists in the graph. was filtered out, but need to check the delta round-trip\n\n')
 				} else {
 					// add the node to the obj to prevent it being added as a duplicate
 					nodes[pathString] = {}
@@ -471,7 +466,7 @@ var handleDelta = function(delta) {
 
 				} else {
 					// error. received a delnode for a nonexistent node
-					post('\n\nWARNING: received a delnode for a node that does not exist in the graph\n\n')
+					post('WARNING: received a delnode for a node that does not exist in the graph\n')
 
 				}
 				
@@ -487,7 +482,7 @@ var handleDelta = function(delta) {
 						
 						
 						var cleaveParam = param.split('.')[0]
-						outlet(3, cleaveParam, delta.to)
+						outlet(2, cleaveParam, delta.to)
 						// handle knob twiddle
 						// send to appropriate param
 						// based on delta.path and delta.to (new value)
@@ -551,7 +546,7 @@ function fromLocalWebsocket(msg){
 		// case "clear_scene":
 		// 	outlet(0, 'clear_scene')
 		// 	for (i = 0; i < speakerTable.length; i++){
-		// 		outlet(8, 'script', 'delete', speakerTable[i])
+		// 		outlet(3, 'script', 'delete', speakerTable[i])
 
 		// 	}
 		// 	// vizBuffers = new Array()
@@ -585,10 +580,9 @@ function fromLocalWebsocket(msg){
 			
 
 		// 	object = {};
-		// 	nodeName;
+		// 	pathName;
 		// 	counter = 1;
 		// 	feedbackConnections = 0	
-		// 	outlet(2, 'clear')
 
 		// break;
 
@@ -610,7 +604,6 @@ function fromLocalWebsocket(msg){
 		// patch.parse(msg);
 		
 		// var scene = ot.value
-		// outlet(2, 'clear')
 		// var arcs = JSON.stringify(scene.arcs)
 		// var nodes = JSON.stringify(scene.nodes)
 		// var varnames = new Array()
@@ -622,7 +615,7 @@ function fromLocalWebsocket(msg){
 	
 	// 	varnameCount++
 	// 	paramCounter = 0;
-	// 	nodeName = key;
+	// 	pathName = key;
 	// 	var _props = scene.nodes[key]._props 
 	// 	var kind = _props.kind
 	// 	var pos = _props.pos								
@@ -637,7 +630,7 @@ function fromLocalWebsocket(msg){
 	// 		case "op":
 	// 		op = kind.split("_")[1]
 	// 		var newModule = gen_patcher.newdefault([(pos[0] + counter) * 100, (pos[1] + counter) * 50, op])
-	// 		newModule.varname = nodeName
+	// 		newModule.varname = pathName
 	// 		break;
 			
 	// 		case "param":
@@ -647,12 +640,12 @@ function fromLocalWebsocket(msg){
 	// 		var paramSettings = args
 	// 		var newParam = objSettings.concat(paramSettings);
 	// 		var newModule = gen_patcher.newdefault(newParam)
-	// 		newModule.varname = nodeName
+	// 		newModule.varname = pathName
 	// 		break;
 	
 	// 		default:			
 	// 		var newModule = gen_patcher.newdefault([(pos[0] + counter) * 100, (pos[1] + counter) * 50, "gen", "@gen", kind])
-	// 		newModule.varname = nodeName
+	// 		newModule.varname = pathName
 	// 		break;
 	// 	}
 
@@ -676,12 +669,12 @@ function fromLocalWebsocket(msg){
 	// 				paramX = paramCounter * 150
 	// 				// generate the subparam which the param will bind to
 	// 				var setparam = gen_patcher.newdefault([(pos[0] + counter) * 100 + paramX, (pos[1] + counter) * 50 - 25, "setparam", key])
-	// 				setparam.varname = nodeName + "_setparam_" + key
-	// 				gen_patcher.message("script", "connect", setparam.varname, 0, nodeName, 0);
+	// 				setparam.varname = pathName + "_setparam_" + key
+	// 				gen_patcher.message("script", "connect", setparam.varname, 0, pathName, 0);
 				
 	// 				// generate the param which the js script will bind to
 	// 				var param = gen_patcher.newdefault([(pos[0] + counter) * 100 + paramX, (pos[1] + counter) * 50 - 50, "param", kind + "__" + key])
-	// 				param.varname = nodeName + "_param_" + key
+	// 				param.varname = pathName + "_param_" + key
 	// 				gen_patcher.message("script", "connect", param.varname, 0, setparam.varname, 0);
 				
 	// 				//gen_patcher.message("script", "send", param.varname, paramValue);
@@ -708,16 +701,16 @@ function fromLocalWebsocket(msg){
 	// 				paramX = paramCounter * 150
 	// 				// generate the subparam which the param will bind to
 	// 				var setparam = gen_patcher.newdefault([(pos[0] + counter) * 100 + paramX, (pos[1] + counter) * 50 - 25, "setparam", key])
-	// 				setparam.varname = nodeName + "_setparam_" + key
-	// 				gen_patcher.message("script", "connect", setparam.varname, 0, nodeName, 0);
+	// 				setparam.varname = pathName + "_setparam_" + key
+	// 				gen_patcher.message("script", "connect", setparam.varname, 0, pathName, 0);
 				
 	// 				// generate the param which the js script will bind to
-	// 				var param = gen_patcher.newdefault([(pos[0] + counter) * 100 + paramX, (pos[1] + counter) * 50 - 50, "param", nodeName + "__" + key])
-	// 				param.varname = nodeName + "_param_" + key
+	// 				var param = gen_patcher.newdefault([(pos[0] + counter) * 100 + paramX, (pos[1] + counter) * 50 - 50, "param", pathName + "__" + key])
+	// 				param.varname = pathName + "_param_" + key
 	// 				gen_patcher.message("script", "connect", param.varname, 0, setparam.varname, 0);
 				
 	// 				//gen_patcher.message("script", "send", param.varname, paramValue);
-	// 				// outlet(1, nodeName + "__" + key, paramValue)
+	// 				// outlet(1, pathName + "__" + key, paramValue)
 	// 				paramCounter++
 	// 				break;	
 	// 				}
@@ -725,7 +718,7 @@ function fromLocalWebsocket(msg){
 	
 	// 			UI_obj[key] = [UI,index]
 	
-	// 			object[nodeName] = UI_obj;
+	// 			object[pathName] = UI_obj;
 
 	// 			}
 	// 		})
@@ -826,148 +819,17 @@ function fromLocalWebsocket(msg){
 
 }
 
+var audiovizBuffer = new Buffer("audioviz")
 
-// function getBuffers(){
-// 	// post('\n',vizBuffers)
-// }
-
-// this bootstraps an issue where the .peek function wouldn't reference a buffer name created in a different function scope (despite the name being stored globally)
-// var bucket = new Buffer("bucket")
-
-/*
-function visualize(sampleRate, resolution){
-	opPath = null
-	opValue = null
-	vizArray = new Array();
-	vizObj = new Object();
-	// loop through all buffers in the gen world~
-	for (i = 0; i < vizBuffers.length; i++){
-		// get the buffer name
-		opPath = vizBuffers[i]
-		// fill the bucket with the named buffer's contents
-		bucket.send('duplicate', opPath)
-		// get the amplitude value at index 0
-		opValue = bucket.peek(i, 0)
-		// and it to the array
-		// vizArray.push(opPath, opValue)
-		// package it in an object
-		opPath = opPath.split('_buffer')[0]
-		vizObj[opPath] = opValue
-		}
-		// let thisViz = JSON.stringify({
-		// 	cmd: 'maxClientViz',
-		// 	data: vizObj,
-		// 	date: Date.now()
-		// })
-
-		
-		outlet(0,'vizData',JSON.stringify(vizObj))
-		// outlet(',JSON.stringify(vizObj))
-}
-*/
-
-/*
-// this one is a bit different: this is for sending buffer data points to 
-// a buffer object instantiated within the VR space
-function transmitBuffer(sampleRate, resolution){
-	// fill the bucket with the named buffer
-
-	// delta.path.replace('.','__')
-	opPath = null
-	opValue = null
-	vizArray = new Array();
-	//post('\n')
-		//channels = buf.channelcount()
-		//post(vizBuffers.length)
-
-	for (i = 0; i < vizBuffers.length; i++){
-		
-
-
-	// 	//post(vizBuffers[i])
-	// 	channel = i+1
-		opPath = vizBuffers[i]
-		bucket.send('duplicate', opPath)
-	// 	post(opPath)
-		opValue = bucket.peek(i, 0)
-	// 	post('\n',i, opPath, opValue)
-		vizArray.push(opPath, opValue)
-		}
-	// 	//post(JSON.stringify(vizArray))
-		var newBuffer = JSON.stringify({
-		length: buf.length(),
-		samples: buf.framecount(),
-		channels: buf.channelcount(),
-		buffer: vizArray,
-		sampleRate: sampleRate,
-		resolution: resolution
+function getAudioviz(){
+	Object.keys(audiovizLookup).forEach(function (item) {
+		var targetModule = audiovizLookup[item].paths
+		Object.keys(targetModule).forEach(function (itemz) {
+			audiovizLookup[item].paths[itemz].value = audiovizBuffer.peek(1, targetModule[itemz].audiovizIndex)
+			
 		})
-		post('\n',newBuffer)
-	}
-*/
-// function bang2()
-// {
-// 		//outlet(4, JSON.parse(buf))
-// 	var newBuffer = JSON.stringify({
-// 		length: buf.length(),
-// 		samples: buf.framecount(),
-// 		channels: buf.channelcount(),
-// 		buffer: array,
-// 		sampleRate: 44100,
-// 		resolution: 100
-// 		})
-		
-
-// 	outlet(4, newBuffer)
-
-// 	outlet(3, buf.length());
-// 	outlet(2, buf.framecount());
-// 	outlet(1, buf.channelcount());
-// }
-// 	array = new Array;
-	
-	
-// function toArray(index){
-// 	array.push(buf.peek(1, index))
-// }
-// function msg_int(index)
-// {
-// 	outlet(0, buf.peek(1, index));
-// }
-
-
-// function list(index, count)
-// {
-// 	var samples = buf.peek(1, index, count);
-// 	post(samples);
-// 	post();
-// }
-
-
-// make an array of zeroes, set the buffer content to that
-// only clears the first channel
-// function clear()
-// {
-// 	var samples = new Array;
-// 	outlet(4, samples)
-// 	var frames = buf.framecount();
-
-// 	for (var i=0; i<frames; i++)
-// 		samples[i] = 0.0;
-
-// 	buf.poke(1, 0, samples);
-// }
-
-
-// // can also just change a single sample
-// function dont_poke_the_bear(channel, index, value)
-// {
-// 	buf.poke(channel, index, value);
-// }
-
-
-// // send a message directly to the associated buffer~ object
-// function sinc()
-// {
-//     buf.send("fill", "sinc", 20, 1);
-// }
+	});
+	//post(audiovizBuffer.peek(1, 1))
+	// post(JSON.stringify(audiovizLookup))
+	outlet(6, 'audiovizLookup', JSON.stringify(audiovizLookup))
+}

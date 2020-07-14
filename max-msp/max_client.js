@@ -70,6 +70,7 @@ let sceneList = []
 // create a ws connection which can automatically attempt reconnections if server goes down
 //let connection = new ReconnectingWebSocket('ws://192.168.137.1:8080/', [], options);
 let connection;
+let connectionStatus = 0
 max.post('node connecting to ip ' + process.argv[2])
 if (process.argv[2] === 'localhost'){
 	
@@ -86,6 +87,7 @@ if (process.argv[2] === 'localhost'){
 
 // run function when ws opens...
 connection.addEventListener('open', () => {
+	connectionStatus = 1
 	max.outlet('toMsvr_world_js','initiate')
 	// clear the filename umenu in the controller.maxpat
 	max.outlet('clearPlaybackList', 'clear')
@@ -176,7 +178,17 @@ connection.addEventListener('message', (data) => {
 
 connection.addEventListener('close', () => {
 	max.post('connection closed!')
-	
+	connectionStatus = 0
+})
+
+max.addHandler('audiovizLookup', (audiovizLookup)=>{
+	if(connectionStatus === 1){
+		connection.send(JSON.stringify({
+			cmd: "audiovizLookup",
+			date: Date.now(),
+			data: audiovizLookup
+		}));
+	}
 })
 //////////////////////////////////// LOAD SCENE ////////////////////////////////
 // // request a scene from the server (and subsequently send it to all clients)
