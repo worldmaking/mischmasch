@@ -1226,7 +1226,7 @@ function onServerMessage(msg, sock) {
 		} break;
 		
 		case "audiovizLookup":
-			//console.log(msg.data)
+			console.log(msg.data)
 			// this is where we get the state of a node's output, sent from the gen patcher!
 		break
 

@@ -6,35 +6,9 @@
 inlets = 3
 outlets = 7
 
-// this is where the parameter min/max & init-value get stored
-var namespace = new Dict("namespace")
+// the reference to the gen~ world object we'll be scripting to. 
+var gen_patcher; 
 
-function initiate(){
-
-	
-	//! clear the parent patcher of any vr.source~ objects prior to receiving deltas
-	this.patcher.apply(function(b) { 
-		
-		if(b.varname.split('_')[0] === 'source'){
-			outlet(4, 'thispatcher', 'script', 'delete', b.varname)
-		}
-	});
-	gen_patcher = this.patcher.getnamed("world").subpatcher();
-	//! clear the gen~ world patcher prior to receiving deltas
-	gen_patcher.apply(function(b) { 
-		if(b.varname !== "reserved_audioviz" && b.varname !== "reserved_audioviz_1" && b.varname !== "PLO"){
-
-		gen_patcher.remove(b); 	
-		}	
-	});
-
-
-	
-	resetCounters()
-}
-
-initiate()
-	// get a reference to "thegen"'s embedded gen patcher:
 var varnameCount = 0
 
 // store inlet&outlet indexes per node
@@ -55,10 +29,51 @@ var speakerTable = []
 var genOutCounter = 1
 
 // we use these vars for the visualization of gen audio in the local vr client
-var audiovizLookup = {}
+var audiovizLookup = new Object()
 var audiovizIndex = 0
 //
 var nodes = {}
+
+// this is where the parameter min/max & init-value get stored
+var namespace = new Dict("namespace")
+
+var speakerTableDict = new Dict("speakerTableDict");
+
+outlet(6, 'genScriptingReloaded')
+
+function loadbang(){
+	
+	// things that need to be initiated only after patcher has finished loading
+	gen_patcher = this.patcher.getnamed("world").subpatcher();
+
+	initiate()
+
+}
+function initiate(){
+
+	
+	//! clear the parent patcher of any vr.source~ objects prior to receiving deltas
+	this.patcher.apply(function(b) { 
+		
+		if(b.varname.split('_')[0] === 'source'){
+			outlet(4, 'thispatcher', 'script', 'delete', b.varname)
+		}
+	});
+	//! clear the gen~ world patcher prior to receiving deltas
+	gen_patcher.apply(function(b) { 
+		if(b.varname !== "reserved_audioviz" && b.varname !== "reserved_audioviz_1" && b.varname !== "PLO"){
+
+		gen_patcher.remove(b); 	
+		}	
+	});
+
+
+	
+	resetCounters()
+}
+
+	// get a reference to "thegen"'s embedded gen patcher:
+
 
 // contain all the buffers
 // var pb = new PolyBuffer('world_polybuffer');       // PolyBuffer instantiates a polybuffer~ object named by second argument to js  
@@ -71,14 +86,13 @@ function resetCounters(){
 	audiovizLookup = {}
 	audiovizIndex = 0
 }
-var speakerTableDict = new Dict("speakerTableDict");
 // buffer channels for visual feedback
 // var bufferChannelCounter = 0;
 // var bufferChannelPaths = [];
 // use this to store the names of buffers created for visual feedback
 // var vizBuffers = new Array();
 
-gen_patcher = this.patcher.getnamed("world").subpatcher();
+// gen_patcher = this.patcher.getnamed("world").subpatcher();
 // bufferStorage = this.patcher.getnamed("bufferStorage").subpatcher();
 
 function getVarnames(target){
@@ -182,9 +196,9 @@ var handleDelta = function(delta) {
 									outlet(3, 'genConnect', genOutCounter, speakerNumber)
 
 									// we use outlets below the gen~ world. All vr.Source~ objects script connect into outlets 1 and 2. 
-									this.patcher.message("script", "connect", "source_" + speakerNumber, 0, 'genScriptingOutlet_0', 0);
+									this.patcher.message("script", "connect", "source_" + speakerNumber, 0, 'vrSource2CHMain', 0);
 	
-									this.patcher.message("script", "connect", "source_" + speakerNumber, 1, 'genScriptingOutlet_1', 0);
+									this.patcher.message("script", "connect", "source_" + speakerNumber, 1, 'vrSource2CHMain', 1);
 
 									genOutCounter++ 
 								} else {
@@ -278,8 +292,6 @@ var handleDelta = function(delta) {
 								// first make sure that the outlet has an index, and is not an inlet (sometimes this occurs...)
 								if (index && kind !== 'inlet' && kind !== 'controller1' && kind !== 'controller2' && kind !== 'headset'){
 									
-									post(pathName, delta.path)
-
 									if(audiovizLookup[pathName]){
 										audiovizLookup[pathName].paths[delta.path] = {audiovizIndex: audiovizIndex, deltaIndex: delta.index, value: null}
 									} else {
@@ -292,10 +304,9 @@ var handleDelta = function(delta) {
 									}
 									// setup for visualizing each gen object's audio state
 									// audiovizLookup[pathName][delta.path] = {audiovizIndex: audiovizIndex, deltaIndex: delta.index}
-									post('\n', JSON.stringify(audiovizLookup))
-									var newAudiovizPoke = gen_patcher.newdefault([50, posY * 150, 'poke', 'audioviz'])
+									var newAudiovizPoke = gen_patcher.newdefault([50, 100, 'poke', 'audioviz'])
 									newAudiovizPoke.varname = delta.path + '_poke';
-									var newAudiovizConstant = gen_patcher.newdefault([50, posY * 150, 'constant', audiovizIndex])
+									var newAudiovizConstant = gen_patcher.newdefault([50, 50, 'constant', audiovizIndex])
 									newAudiovizConstant.varname = delta.path + '_poke';
 									// connect the constant to the poke
 									gen_patcher.message("script", "connect", newAudiovizConstant.varname, 0, newAudiovizPoke.varname, 1);
@@ -533,7 +544,6 @@ function fromLocalWebsocket(msg){
 	
 				//var delta = new Dict("delta");
 				//delta.parse(msg);
-	
 				
 				handleDelta(ot.data);
 			} break;
@@ -821,15 +831,29 @@ function fromLocalWebsocket(msg){
 
 var audiovizBuffer = new Buffer("audioviz")
 
+let getAudioVizErrorDirty = 0
 function getAudioviz(){
-	Object.keys(audiovizLookup).forEach(function (item) {
-		var targetModule = audiovizLookup[item].paths
-		Object.keys(targetModule).forEach(function (itemz) {
-			audiovizLookup[item].paths[itemz].value = audiovizBuffer.peek(1, targetModule[itemz].audiovizIndex)
+	// seems the audiovizLookup isn't properly instantiated at start
+	if (typeof audiovizLookup === "object"){
+		if (Object.keys(audiovizLookup).length > 0){
+			Object.keys(audiovizLookup).forEach(function (item) {
+				var targetModule = audiovizLookup[item].paths
+				Object.keys(targetModule).forEach(function (itemz) {
+					audiovizLookup[item].paths[itemz].value = audiovizBuffer.peek(1, targetModule[itemz].audiovizIndex)				
+				})
+			});
+
+			outlet(6, 'audiovizLookup', JSON.stringify(audiovizLookup))
 			
-		})
-	});
-	//post(audiovizBuffer.peek(1, 1))
-	// post(JSON.stringify(audiovizLookup))
-	outlet(6, 'audiovizLookup', JSON.stringify(audiovizLookup))
+			if(getAudioVizErrorDirty === 1){
+				getAudioVizErrorDirty = 0
+			}
+		} else {
+			if(getAudioVizErrorDirty === 0){
+				post('function getAudioviz called when no graph present\n')
+				getAudioVizErrorDirty = 1
+			}
+		}
+
+	}
 }

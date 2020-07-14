@@ -71,23 +71,13 @@ let sceneList = []
 //let connection = new ReconnectingWebSocket('ws://192.168.137.1:8080/', [], options);
 let connection;
 let connectionStatus = 0
-max.post('node connecting to ip ' + process.argv[2])
-if (process.argv[2] === 'localhost'){
-	
-	connection  = new ReconnectingWebSocket('ws://localhost:8080/', [], options);
+connection  = new ReconnectingWebSocket('ws://localhost:8080/', [], options);
 
-	} else if (process.argv[2] && process.argv[2] !== 'localhost'){
-	
-	connection = new ReconnectingWebSocket('ws://' + process.argv[2] + ':8080/', [], options);
-
-} else {
-	max.post('\n\nERROR: websocket server host IP not provided.\nUse \'localhost\' or network IP')
-	process.exit()
-}
 
 // run function when ws opens...
 connection.addEventListener('open', () => {
 	connectionStatus = 1
+	max.outlet('toAudioviz', 1)
 	max.outlet('toMsvr_world_js','initiate')
 	// clear the filename umenu in the controller.maxpat
 	max.outlet('clearPlaybackList', 'clear')
@@ -179,6 +169,7 @@ connection.addEventListener('message', (data) => {
 connection.addEventListener('close', () => {
 	max.post('connection closed!')
 	connectionStatus = 0
+	max.outlet('toAudioviz', 0)
 })
 
 max.addHandler('audiovizLookup', (audiovizLookup)=>{
