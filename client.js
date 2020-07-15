@@ -114,6 +114,11 @@ if(argv.vr === 'true'){
 let USEWS = false;
 let userDataChannel
 
+// GOT graph, local copy.
+let localGraph = {
+	nodes: {},
+	arcs: []
+}
 const rwsOptions = {
 	// make rws use the webSocket module implementation
 	WebSocket: ws, 
@@ -166,10 +171,14 @@ if(argv.w){
 	userDataChannel.addEventListener('error', (err) => {
 		console.log(err)
 	})
+} else {
+	// no ws used
+	demoScene = path.join(__dirname, "temp", "simple.json")
+	localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
+
 }
 const url = 'ws://localhost:8080'
-// const demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
-// let demoScene = {nodes: {}, arcs: []}
+
 const shaderpath = path.join(__dirname, "shaders")
 
 function hashCode(str) { // java String#hashCode
@@ -201,11 +210,6 @@ const UI_DEPTH = 1/3;
 const NEAR_CLIP = 0.01;
 const FAR_CLIP = 20;
 
-// GOT graph, local copy.
-let localGraph = {
-	nodes: {},
-	arcs: []
-}
 
 let viewmatrix = mat4.create();
 let projmatrix = mat4.create();
@@ -1257,8 +1261,6 @@ async function init() {
 	if (USEWS) {
 		serverConnect();
 	} 
-	// default graph until server connects:
-	// localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
 	sceneGraph.rebuild(localGraph);
 	
 }
