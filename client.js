@@ -248,6 +248,12 @@ function initRenderer(renderer) {
 		max:[ 0.5, 0.5, 1], 
 		div: [13, 13, 1] 
 	});
+	renderer.wand_geom = glutils.makeCube({ 
+		min:[-0.03,-0.03, 0], 
+		max:[ 0.03, 0.03, 0.1], 
+		div: [13, 13, 1] 
+	});
+
 	renderer.line_geom = glutils.makeLine({ min:0, max:1, div: 24 });
 	const floor_m = 6;
 	renderer.floor_geom = glutils.makeQuad({ min: -floor_m, max: floor_m, div:8 })
@@ -683,7 +689,7 @@ void main() {
 	renderer.floor_vao = glutils.createVao(gl, renderer.floor_geom, renderer.floor_program.id);
 	renderer.debug_vao = glutils.createVao(gl, renderer.debug_geom, renderer.debug_program.id);
 	renderer.fbo_vao = glutils.createVao(gl, glutils.makeQuad(), renderer.fbo_program.id);
-	renderer.wand_vao = glutils.createVao(gl, glutils.makeQuad(), renderer.wand_program.id);
+	renderer.wand_vao = glutils.createVao(gl, renderer.wand_geom, renderer.wand_program.id);
 	renderer.fbo = glutils.makeFboWithDepth(gl, vrdim[0], vrdim[1])
 }
 
