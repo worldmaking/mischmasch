@@ -521,19 +521,21 @@ function fromLocalWebsocket(msg){
     }
 	
 }
-
+// only visualizing the outlets for now:
+var outletViz = {}
 function getAudioviz(){
 	// seems the audiovizLookup isn't properly instantiated at start
 	if (typeof audiovizLookup === "object"){
 		if (Object.keys(audiovizLookup).length > 0){
 			Object.keys(audiovizLookup).forEach(function (item) {
 				var targetModule = audiovizLookup[item].paths
-				Object.keys(targetModule).forEach(function (itemz) {
-					audiovizLookup[item].paths[itemz].value = audiovizBuffer.peek(1, targetModule[itemz].audiovizIndex)				
-				})
+				var pathList = Object.keys(targetModule)
+				for(i=0;i<pathList.length;i++){
+					foo = pathList[i]
+					outletViz[foo] = {value: audiovizBuffer.peek(1, targetModule[foo].audiovizIndex)}
+				}
 			});
-
-			outlet(6, 'audiovizLookup', JSON.stringify(audiovizLookup))
+			outlet(6, 'audiovizLookup', JSON.stringify(outletViz))
 			
 			if(getAudioVizErrorDirty === 1){
 				getAudioVizErrorDirty = 0
