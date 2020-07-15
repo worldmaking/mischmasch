@@ -90,7 +90,7 @@ glutils = require(path.join(nodeglpath, "glutils.js"))
 
 const got = require("./got/got.js")
 
-const USEVR = 0;
+const USEVR = 1;
 const USEWS = 0;
 const url = 'ws://localhost:8080'
 const demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
@@ -1332,6 +1332,19 @@ function animate() {
 				hands[1] = input;
 			}
 		}
+
+		for (let hand of hands) {
+			if (!hand) continue; // i.e. if not connected
+
+			let {buttons, axes} = hand.gamepad;
+			let trigger = buttons[0].value, pressed = buttons[0].pressed
+			let grip = buttons[1].pressed
+			let pad = buttons[2].pressed
+			let menu = buttons[3].pressed
+			let [x, y] = axes; // touchpad axes
+
+			//console.log(trigger, pressed, grip, pad, menu, x, y)
+		}
 	}
 
 	// handle UI events:
@@ -1406,70 +1419,18 @@ function draw(eye=0) {
 	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 	gl.depthMask(false)
 
-	{
-		let modelmatrix = mat4.create();
-		mat4.translate(modelmatrix, modelmatrix, [0, 1, 0]);
-		// let axis = vec3.fromValues(Math.sin(t), 1., 0.);
-		// vec3.normalize(axis, axis);
-		// mat4.rotate(modelmatrix, modelmatrix, t, axis)
-		// let s = 1
-		// mat4.scale(modelmatrix, modelmatrix, vec3.fromValues(s,s,s));
+	for (let hand of hands) {
+	 	if (!hand) continue; // i.e. if not connected
+		
 		renderer.wand_program.begin();
 		renderer.wand_program.uniform("u_viewmatrix", viewmatrix);
 		renderer.wand_program.uniform("u_projmatrix", projmatrix);
-		renderer.wand_program.uniform("u_modelmatrix", modelmatrix);
-		//renderer.wand_program.uniform("u_modelmatrix", hand.targetRaySpace);
+		renderer.wand_program.uniform("u_modelmatrix", hand.targetRaySpace);
 		renderer.wand_vao.bind().draw().unbind();
 		renderer.wand_program.end();
 	}
 
-	// for (let hand of hands) {
-	//  	if (!hand) continue; // i.e. if not connected
-	// 	if (once) console.log(hand.targetRaySpace)
-	// 	once = 0;
-	// 	renderer.wand_program.begin();
-	// 	renderer.wand_program.uniform("u_viewmatrix", viewmatrix);
-	// 	renderer.wand_program.uniform("u_projmatrix", projmatrix);
-	// 	renderer.wand_program.uniform("u_modelmatrix", hand.targetRaySpace);
-	// 	renderer.wand_vao.bind().draw().unbind();
-	// 	renderer.wand_program.end();
-	// }
-
-	// draw controllers:
-	// if (left_hand && left_hand.targetRaySpace) {
-	// 	let {buttons, axes} = left_hand.gamepad;
-	// 	let trigger = buttons[0].value, pressed = buttons[0].pressed
-	// 	let grip = buttons[1].pressed
-	// 	let pad = buttons[2].pressed
-	// 	let menu = buttons[3].pressed
-	// 	let [x, y] = axes; // touchpad axes
-
-	// 	cubeprogram.begin();
-	// 	cubeprogram.uniform("u_modelmatrix", left_hand.targetRaySpace);
-	// 	cubeprogram.uniform("u_scale", 0.1);
-	// 	cubeprogram.uniform("u_viewmatrix", viewmatrix);
-	// 	cubeprogram.uniform("u_projmatrix", projmatrix);
-	// 	cube.bind().draw().unbind();
-	// 	cubeprogram.end();
-	// }
-
-	// if (right_hand && right_hand.targetRaySpace) {
-	// 	let {buttons, axes} = right_hand.gamepad;
-	// 	let trigger = buttons[0].value, pressed = buttons[0].pressed
-	// 	let grip = buttons[1].pressed
-	// 	let pad = buttons[2].pressed
-	// 	let menu = buttons[3].pressed
-	// 	let [x, y] = axes; // touchpad axes
-
-	// 	cubeprogram.begin();
-	// 	cubeprogram.uniform("u_modelmatrix", right_hand.targetRaySpace);
-	// 	cubeprogram.uniform("u_scale", 0.1);
-	// 	cubeprogram.uniform("u_viewmatrix", viewmatrix);
-	// 	cubeprogram.uniform("u_projmatrix", projmatrix);
-	// 	cube.bind().draw().unbind();
-	// 	cubeprogram.end();
-	// }
-
+	
 
 	renderer.debug_program.begin();
 	renderer.debug_program.uniform("u_viewmatrix", viewmatrix);
