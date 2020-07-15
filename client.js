@@ -179,6 +179,21 @@ const renderer = {
 
 const UI = {
 	menuMode: false,
+
+	hmd: {
+		pos: [0, 1.4, 1],
+		orient: [0, 0, 0, 1],
+	},
+	hands: [
+		{
+			pos: [-0.5, 1, 0.5],
+			orient: [0, 0, 0, 1],
+		},
+		{
+			pos: [+0.5, 1, 0.5],
+			orient: [0, 0, 0, 1],
+		}
+	]
 }
 
 let mouse = {
@@ -1510,10 +1525,26 @@ function animate() {
 		for (let input of inputs) {
 			if (input.targetRayMode == "gaze") {
 				hmd = input;
+
+				let mat = input.targetRaySpace; // mat4
+				if (mat) {
+					mat4.getTranslation(UI.hmd.pos, mat);
+					mat4.getRotation(UI.hmd.orient, mat);
+				}
 			} else if (input.handedness == "left") {
 				hands[0] = input;
+				let mat = input.targetRaySpace; // mat4
+				if (mat) {
+					mat4.getTranslation(UI.hands[0].pos, mat);
+					mat4.getRotation(UI.hands[0].orient, mat);
+				}
 			} else if (input.handedness == "right") {
 				hands[1] = input;
+				let mat = input.targetRaySpace; // mat4
+				if (mat) {
+					mat4.getTranslation(UI.hands[1].pos, mat);
+					mat4.getRotation(UI.hands[1].orient, mat);
+				}
 			}
 		}
 
