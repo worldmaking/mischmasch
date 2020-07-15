@@ -90,7 +90,8 @@ glutils = require(path.join(nodeglpath, "glutils.js"))
 
 const got = require("./got/got.js")
 
-const USEVR = 1;
+// skip VR if on OSX:
+const USEVR = 1;// && (process.platform === "win32");
 const USEWS = 0;
 const url = 'ws://localhost:8080'
 const demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
@@ -103,8 +104,40 @@ function hashCode(str) { // java String#hashCode
     }
     return hash;
 } 
+
 function colorFromString(str) {
 	return chroma.hsl(Math.abs(hashCode(str)) % 360, 0.35, 0.5).gl()
+}
+
+
+// p0, p1 are the min/max bounding points of the cube
+// rayDir is assumed to be normalized to length 1
+// boxPos, boxQuat, rayOrigin, rayDir are all assumed to be in world space
+function intersectCube(boxPos, boxQuat, p0, p1, rayOrigin, rayDir) {
+	// convert ray origin/direction to object-space:
+	let origin = vec3.sub(vec3.create(), rayOrigin, boxPos);
+	glutils.quat_unrotate(origin, boxQuat, origin);
+	let dir = glutils.quat_unrotate(vec3.create(), boxQuat, rayDir);
+	// using p = origin + dir*t
+	// get ray `t` for each bounding plane of the cube:
+	let t0 = [
+		(p0[0]-origin[0])/dir[0],
+		(p0[1]-origin[1])/dir[1],
+		(p0[2]-origin[2])/dir[2],
+	];
+	let t1 = [
+		(p1[0]-origin[0])/dir[0],
+		(p1[1]-origin[1])/dir[1],
+		(p1[2]-origin[2])/dir[2],
+	];
+	// sort into first (entry) and second (exit) hits:
+	let tmin = vec3.min(vec3.create(), t0, t1); 
+	let tmax = vec3.max(vec3.create(), t0, t1);
+	// ray is a hit if the furthest entry plane is before the nearest exit plane
+	let tentry = Math.max(tmin[0], tmin[1], tmin[2])
+	let texit = Math.min(tmax[0], tmax[1], tmax[2])
+	// hit if entry is before exit:
+	return [tentry <= texit && texit > 0, tentry];
 }
 
 ////////////////////////////////////////////////////////////////
@@ -120,11 +153,20 @@ const UI_DEPTH = 1/3;
 const NEAR_CLIP = 0.01;
 const FAR_CLIP = 20;
 
+let sceneGraph = null
+let menuSceneGraph = null
+
 // GOT graph, local copy.
 let localGraph = {
 	nodes: {},
 	arcs: []
 }
+
+let menuGraph = {
+	nodes: {},
+	arcs: []
+}
+
 
 let viewmatrix = mat4.create();
 let projmatrix = mat4.create();
@@ -135,9 +177,13 @@ const renderer = {
 	
 }
 
+const UI = {
+	menuMode: false,
+}
+
 let mouse = {
 	// location of mouse in normalized device coordinates (-1..1)
-	ndcPoint: [0, 0, 0, 1],
+	ndc: [0, 0, 0, 1],
 }
 
 // tracking info for VR:
@@ -150,6 +196,115 @@ let vrdim = [4096, 4096];
 
 let controllerOBJ = fs.readFileSync(path.join(__dirname, "objs", "vr_controller_vive_1_5.obj"), "utf-8");
 const controllerGeom = glutils.geomFromOBJ(controllerOBJ)
+
+let menuModules = {
+    "speaker":{
+      "_props":{"kind":"speaker","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
+      "input":{"_props":{"kind":"inlet","index":0}}
+    },
+    "pulsars": {
+      "_props":{"kind":"pulsars","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
+      "signal":{"_props":{"kind":"inlet","index":0}},
+      "period":{"_props":{"kind":"large_knob","range":[0,1],"taper":"log 3.8","value":0.25,"unit":"float"}},
+      "period_cv":{"_props":{"kind":"inlet","index":1}},
+      "formant":{"_props":{"kind":"large_knob","range":[0,1000],"taper":"log 3.8","value":0.25,"unit":"float"}},
+      "formant_cv":{"_props":{"kind":"inlet","index":2}},
+      "hipass":{"_props":{"kind":"outlet","index":0}}
+    
+    },
+    "granola": {
+      "_props":{"kind":"granola","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
+      "signal":{"_props":{"kind":"inlet","index":0}},
+      "density":{"_props":{"kind":"large_knob","range":[0.1,100],"taper":"log 3.8","value":10,"unit":"float"}},
+      "density_cv":{"_props":{"kind":"inlet","index":1}},
+      "rate":{"_props":{"kind":"large_knob","range":[1,2000],"taper":"log 3.8","value":100,"unit":"float"}},
+      "rate_cv":{"_props":{"kind":"inlet","index":2}},
+      "speed":{"_props":{"kind":"large_knob","range":[1,2000],"taper":"log 3.8","value":1,"unit":"float"}},
+      "speed_cv":{"_props":{"kind":"inlet","index":3}},
+      "lookahead":{"_props":{"kind":"large_knob","range":[0,1],"taper":"log 3.8","value":0,"unit":"float"}},
+      "lookahead_cv":{"_props":{"kind":"inlet","index":3}},
+      "left":{"_props":{"kind":"outlet","index":0}},
+      "right":{"_props":{"kind":"outlet","index":1}}    
+    },
+    "vca":{
+      "_props":{"kind":"vca","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
+      "signal":{"_props":{"kind":"inlet","index":0}},
+      "cv":{"_props":{"kind":"inlet","index":1}},
+      "cv_amount":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
+      "bias":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
+      "output":{"_props":{"kind":"outlet","index":0}}
+    },    
+	"dualvco":{
+      "_props":{"kind":"dualvco", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
+      "vco_1_rate":{"_props":{"kind":"large_knob","range":[20,6000],"taper":"linear","value":200,"unit":"float"}},
+      "vco_1_waveform":{"_props":{"kind":"n_switch","range":[1,3],"taper":"linear","value":1,"unit":"int"}},
+      "vco_2_rate":{"_props":{"kind":"large_knob","range":[20,6000],"taper":"linear","value":3,"unit":"float"}},
+      "vco_2_waveform":{"_props":{"kind":"n_switch","range":[1,3],"taper":"linear","value":1,"unit":"int"}},
+      "index":{"_props":{"kind":"large_knob","range":[20,6000],"taper":"linear","value":0.01,"unit":"float"}},
+      "feedback":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.3,"unit":"float"}},
+      "rate_1_cv":{"_props":{"kind":"inlet","index":0}},
+      "index_cv":{"_props":{"kind":"inlet","index":1}},
+      "rate_2_cv":{"_props":{"kind":"inlet","index":2}},
+      "feedback_cv":{"_props":{"kind":"inlet","index":3}},
+      "vco_1":{"_props":{"kind":"outlet","index":0}},
+      "vco_2":{"_props":{"kind":"outlet","index":1}},
+      "master":{"_props":{"kind":"outlet","index":2}}
+	},
+	
+
+	"speaker1":{
+		"_props":{"kind":"speaker","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
+		"input":{"_props":{"kind":"inlet","index":0}}
+	  },
+	  "pulsars1": {
+		"_props":{"kind":"pulsars","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
+		"signal":{"_props":{"kind":"inlet","index":0}},
+		"period":{"_props":{"kind":"large_knob","range":[0,1],"taper":"log 3.8","value":0.25,"unit":"float"}},
+		"period_cv":{"_props":{"kind":"inlet","index":1}},
+		"formant":{"_props":{"kind":"large_knob","range":[0,1000],"taper":"log 3.8","value":0.25,"unit":"float"}},
+		"formant_cv":{"_props":{"kind":"inlet","index":2}},
+		"hipass":{"_props":{"kind":"outlet","index":0}}
+	  
+	  },
+	  "granola1": {
+		"_props":{"kind":"granola","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
+		"signal":{"_props":{"kind":"inlet","index":0}},
+		"density":{"_props":{"kind":"large_knob","range":[0.1,100],"taper":"log 3.8","value":10,"unit":"float"}},
+		"density_cv":{"_props":{"kind":"inlet","index":1}},
+		"rate":{"_props":{"kind":"large_knob","range":[1,2000],"taper":"log 3.8","value":100,"unit":"float"}},
+		"rate_cv":{"_props":{"kind":"inlet","index":2}},
+		"speed":{"_props":{"kind":"large_knob","range":[1,2000],"taper":"log 3.8","value":1,"unit":"float"}},
+		"speed_cv":{"_props":{"kind":"inlet","index":3}},
+		"lookahead":{"_props":{"kind":"large_knob","range":[0,1],"taper":"log 3.8","value":0,"unit":"float"}},
+		"lookahead_cv":{"_props":{"kind":"inlet","index":3}},
+		"left":{"_props":{"kind":"outlet","index":0}},
+		"right":{"_props":{"kind":"outlet","index":1}}    
+	  },
+	  "vca1":{
+		"_props":{"kind":"vca","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
+		"signal":{"_props":{"kind":"inlet","index":0}},
+		"cv":{"_props":{"kind":"inlet","index":1}},
+		"cv_amount":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
+		"bias":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
+		"output":{"_props":{"kind":"outlet","index":0}}
+	  },    
+	  "dualvco1":{
+		"_props":{"kind":"dualvco", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
+		"vco_1_rate":{"_props":{"kind":"large_knob","range":[20,6000],"taper":"linear","value":200,"unit":"float"}},
+		"vco_1_waveform":{"_props":{"kind":"n_switch","range":[1,3],"taper":"linear","value":1,"unit":"int"}},
+		"vco_2_rate":{"_props":{"kind":"large_knob","range":[20,6000],"taper":"linear","value":3,"unit":"float"}},
+		"vco_2_waveform":{"_props":{"kind":"n_switch","range":[1,3],"taper":"linear","value":1,"unit":"int"}},
+		"index":{"_props":{"kind":"large_knob","range":[20,6000],"taper":"linear","value":0.01,"unit":"float"}},
+		"feedback":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.3,"unit":"float"}},
+		"rate_1_cv":{"_props":{"kind":"inlet","index":0}},
+		"index_cv":{"_props":{"kind":"inlet","index":1}},
+		"rate_2_cv":{"_props":{"kind":"inlet","index":2}},
+		"feedback_cv":{"_props":{"kind":"inlet","index":3}},
+		"vco_1":{"_props":{"kind":"outlet","index":0}},
+		"vco_2":{"_props":{"kind":"outlet","index":1}},
+		"master":{"_props":{"kind":"outlet","index":2}}
+	  },
+}
 
 ////////////////////////////////////////////////////////////////
 // INIT DEPENDENT LIBRARIES:
@@ -773,7 +928,6 @@ function makeSceneGraph(renderer, gl) {
 		},
 
 		// message is a string
-		// idx is the instance index to start adding character at (allows appending strings)
 		addText(message, modelmatrix=mat4.create()) {
 			let idx = this.textquad_instances.count;
 			// reallocate if necessary:
@@ -820,8 +974,8 @@ function makeSceneGraph(renderer, gl) {
 			this.textquad_instances.count = idx;
 		},
 
+		// re-generate the entire scene from the GOT graph received
 		rebuild(graph) {
-			// re-generate the entire scene from the GOT graph received
 			// reset instance counts:
 			this.module_instances.count = 0;
 			this.line_instances.count = 0;
@@ -1161,6 +1315,12 @@ function makeSceneGraph(renderer, gl) {
 					obj.dim[1]*zoom, 
 					obj.dim[2]*zoom
 				]);
+				// cache the bounding box in each object:
+				// TODO: maybe it would be more efficient altogether to replace i_scale with i_obb?
+				obj.obb = {
+					p0: vec3.negate(vec3.create(), obj.i_scale),
+					p1: obj.i_scale
+				};
 				// update our 'toworld' mat:
 				mat4.fromRotationTranslationScale(obj.mat, 
 					obj.quat, obj.pos, 
@@ -1205,13 +1365,13 @@ function makeSceneGraph(renderer, gl) {
 			return this;
 		},
 
-		visitModules(callback) {
-			for (let i=0; i<this.module_instances.count; i++) {
-				let obj = this.module_instances.instances[i];
-				callback(obj, i);
-			}
-			return this;
-		},
+		// visitModules(callback) {
+		// 	for (let i=0; i<this.module_instances.count; i++) {
+		// 		let obj = this.module_instances.instances[i];
+		// 		callback(obj, i);
+		// 	}
+		// 	return this;
+		// },
 
 		draw(gl) {
 			gl.enable(gl.BLEND);
@@ -1252,6 +1412,29 @@ function makeSceneGraph(renderer, gl) {
 // UI
 //////////////////////////////////////////////////////////////////////////////////////////
 
+// assumes `instances` is an array of objects
+// each object has `i_pos`, `i_quat`, and `obb` fields
+// `obb` is the oriented bounding box of the object 
+// as { p0:vec3, p1:vec3 } for least & greatest bound points
+// `ray_origin` and `ray_dir` are vec3 in world space
+// returns an array of hits, sorted by distance (nearest first)
+// each hit is [obj, distance]
+function rayTestModules(instances, ray_origin, ray_dir) {
+	// hit test on each cube:
+	let hits = []
+	// naive hit-test by looping over all and testing in turn
+	for (let obj of instances) {
+		if (!obj.obb) continue;  // no bounding box, no test
+		// check for hits:
+		let [hit, distance] = intersectCube(obj.i_pos, obj.i_quat, obj.obb.p0, obj.obb.p1, ray_origin, ray_dir);
+		if (hit) hits.push([obj, distance]);
+	}
+	// if there are hits, sort them by distance
+	// then highlight the nearest
+	if (hits.length) hits.sort((a,b)=>a[1]-b[1]);
+	return hits;
+}
+
 function initUI(window) {
 
 	glfw.setWindowPosCallback(window, function(w, x, y) {
@@ -1271,8 +1454,8 @@ function initUI(window) {
 	glfw.setCursorPosCallback(window, (window, px, py) => {
 		// convert px,py to normalized 0..1 coordinates:
 		const dim = glfw.getWindowSize(window)
-		mouse.ndcPoint[0] = +2*px/dim[0] + -1;
-		mouse.ndcPoint[1] = -2*py/dim[1] + +1;
+		mouse.ndc[0] = +2*px/dim[0] + -1;
+		mouse.ndc[1] = -2*py/dim[1] + +1;
 	});
 
 	glfw.setKeyCallback(window, function(...args) {
@@ -1320,6 +1503,7 @@ function animate() {
 	
 
 	//if(wsize) console.log("FB size: "+wsize.width+', '+wsize.height);
+	let hits
 	if (USEVR) {
 		vr.update();
 		let inputs = vr.inputSources()
@@ -1335,7 +1519,7 @@ function animate() {
 
 		for (let hand of hands) {
 			if (!hand) continue; // i.e. if not connected
-
+			let mat = hand.targetRaySpace; // mat4
 			let {buttons, axes} = hand.gamepad;
 			let trigger = buttons[0].value, pressed = buttons[0].pressed
 			let grip = buttons[1].pressed
@@ -1343,12 +1527,37 @@ function animate() {
 			let menu = buttons[3].pressed
 			let [x, y] = axes; // touchpad axes
 
-			//console.log(trigger, pressed, grip, pad, menu, x, y)
+			if (!mat) continue;
+
+			// //console.log(trigger, pressed, grip, pad, menu, x, y)
+			let ray_origin = mat.slice(12, 15)  // translation component
+			let ray_dir = mat.slice(8, 11)  // local Z axis
+			vec3.negate(ray_dir, ray_dir)
+
+			hits = rayTestModules(sceneGraph.module_instances.instances, ray_origin, ray_dir)
+			if(hits.length) {
+				console.log("hits:", hits.length)
+			}
+		}
+	} else {
+		// use mouse:
+
+		// near plane point
+		let cam_near = vec3.transformMat4(vec3.create(), [mouse.ndc[0], mouse.ndc[1], -1], projmatrix_inverse);
+		let ray_origin = vec3.transformMat4(vec3.create(), cam_near, viewmatrix_inverse);
+		// far plane point
+		let cam_far = vec3.transformMat4(vec3.create(), [mouse.ndc[0], mouse.ndc[1], +1], projmatrix_inverse);	
+		let ray_far = vec3.transformMat4(vec3.create(), cam_far, viewmatrix_inverse);
+		// mouse ray:
+		let ray_dir = vec3.sub(vec3.create(), ray_far, ray_origin);
+		vec3.normalize(ray_dir, ray_dir);
+
+		hits = rayTestModules(sceneGraph.module_instances.instances, ray_origin, ray_dir)
+		if(hits.length) {
+			console.log("hits:", hits.length)
 		}
 	}
 
-	// handle UI events:
-	
 	// render to our targetTexture by binding the framebuffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, renderer.fbo.id);
 	{
@@ -1420,8 +1629,7 @@ function draw(eye=0) {
 	gl.depthMask(false)
 
 	for (let hand of hands) {
-	 	if (!hand) continue; // i.e. if not connected
-		
+	 	if (!hand || !hand.targetRaySpace) continue; // i.e. if not connected
 		renderer.wand_program.begin();
 		renderer.wand_program.uniform("u_viewmatrix", viewmatrix);
 		renderer.wand_program.uniform("u_projmatrix", projmatrix);
@@ -1430,16 +1638,11 @@ function draw(eye=0) {
 		renderer.wand_program.end();
 	}
 
-	
-
-	renderer.debug_program.begin();
-	renderer.debug_program.uniform("u_viewmatrix", viewmatrix);
-	renderer.debug_program.uniform("u_projmatrix", projmatrix);
-	renderer.debug_program.uniform("u_position", point[0], point[1], point[2]);
-	renderer.debug_vao.bind().draw().unbind();
-	renderer.debug_program.end();
-
-	sceneGraph.draw(gl);
+	if (UI.menuMode){
+		menuSceneGraph.draw(gl)
+	} else {
+		sceneGraph.draw(gl);
+	}
 
 	gl.disable(gl.BLEND);
 	gl.depthMask(true)
@@ -1452,6 +1655,30 @@ function draw(eye=0) {
 
 let socket;
 let incomingDeltas = [];
+
+function initMenu(menuModules) {
+	let module_names = Object.keys(menuModules)
+		//.concat(operatorNames)
+	let ncols = Math.min(24, Math.max(12, Math.ceil(Math.sqrt(module_names.length))))
+	let nrows = Math.min(6, Math.ceil(module_names.length / ncols));
+	console.log("menu", module_names.length, nrows, ncols)
+	let i = 0;
+    for (let row = 0; row < nrows; row++) {
+        for(let col = 0; col < ncols && i < module_names.length; col++, i++){
+			let name = module_names[i]
+			let theta = col * (2 * Math.PI) / ncols;
+            let r = 0.75;
+            let x = r * Math.sin(theta);
+            let z = r * Math.cos(theta);
+			let y = 1.1 + -.4 * (row - (nrows/2));
+			
+			let module = menuModules[name]
+			quat.fromEuler(module._props.orient, 0, 180 + theta*180/Math.PI, 0)
+			vec3.set(module._props.pos, x, y, z);
+		}
+	}
+	return menuModules
+}
 
 function serverConnect() {
 	const url = 'ws://localhost:8080'
@@ -1517,11 +1744,13 @@ function onServerMessage(msg, sock) {
 async function init() {
 	// init opengl 
 	window = initWindow();
-
-
 	initRenderer(renderer);
 
-	console.log("got renderer")
+	menuGraph.nodes = initMenu(menuModules);
+	menuSceneGraph = makeSceneGraph(renderer, gl)
+	menuSceneGraph.init(gl)
+	menuSceneGraph.rebuild(menuGraph);
+
 	// default graph until server connects:
 	localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
 	// server connect
@@ -1530,8 +1759,8 @@ async function init() {
 	} 
 	sceneGraph = makeSceneGraph(renderer, gl);
 	sceneGraph.init(gl);
-
 	sceneGraph.rebuild(localGraph);
+	
 	
 	initUI(window);
 
