@@ -90,7 +90,8 @@ glutils = require(path.join(nodeglpath, "glutils.js"))
 
 const got = require("./got/got.js")
 
-const USEVR = 0;
+// skip VR if on OSX:
+const USEVR = true && (process.platform === "win32");
 const USEWS = 0;
 const url = 'ws://localhost:8080'
 const demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
@@ -103,8 +104,39 @@ function hashCode(str) { // java String#hashCode
     }
     return hash;
 } 
+
 function colorFromString(str) {
 	return chroma.hsl(Math.abs(hashCode(str)) % 360, 0.35, 0.5).gl()
+}
+
+// p0, p1 are the min/max bounding points of the cube
+// rayDir is assumed to be normalized to length 1
+// boxPos, boxQuat, rayOrigin, rayDir are all assumed to be in world space
+function intersectCube(boxPos, boxQuat, p0, p1, rayOrigin, rayDir) {
+	// convert ray origin/direction to object-space:
+	let origin = vec3.sub(vec3.create(), rayOrigin, boxPos);
+	glutils.quat_unrotate(origin, boxQuat, origin);
+	let dir = glutils.quat_unrotate(vec3.create(), boxQuat, rayDir);
+	// using p = origin + dir*t
+	// get ray `t` for each bounding plane of the cube:
+	let t0 = [
+		(p0[0]-origin[0])/dir[0],
+		(p0[1]-origin[1])/dir[1],
+		(p0[2]-origin[2])/dir[2],
+	];
+	let t1 = [
+		(p1[0]-origin[0])/dir[0],
+		(p1[1]-origin[1])/dir[1],
+		(p1[2]-origin[2])/dir[2],
+	];
+	// sort into first (entry) and second (exit) hits:
+	let tmin = vec3.min(vec3.create(), t0, t1); 
+	let tmax = vec3.max(vec3.create(), t0, t1);
+	// ray is a hit if the furthest entry plane is before the nearest exit plane
+	let tentry = Math.max(tmin[0], tmin[1], tmin[2])
+	let texit = Math.min(tmax[0], tmax[1], tmax[2])
+	// hit if entry is before exit:
+	return [tentry <= texit && texit > 0, tentry];
 }
 
 ////////////////////////////////////////////////////////////////
@@ -137,7 +169,7 @@ const renderer = {
 
 let mouse = {
 	// location of mouse in normalized device coordinates (-1..1)
-	ndcPoint: [0, 0, 0, 1],
+	ndc: [0, 0, 0, 1],
 }
 
 // tracking info for VR:
@@ -1161,6 +1193,12 @@ function makeSceneGraph(renderer, gl) {
 					obj.dim[1]*zoom, 
 					obj.dim[2]*zoom
 				]);
+				// cache the bounding box in each object:
+				// TODO: maybe it would be more efficient altogether to replace i_scale with i_obb?
+				obj.obb = {
+					p0: vec3.negate(vec3.create(), obj.i_scale),
+					p1: obj.i_scale
+				};
 				// update our 'toworld' mat:
 				mat4.fromRotationTranslationScale(obj.mat, 
 					obj.quat, obj.pos, 
@@ -1252,6 +1290,29 @@ function makeSceneGraph(renderer, gl) {
 // UI
 //////////////////////////////////////////////////////////////////////////////////////////
 
+// assumes `instances` is an array of objects
+// each object has `i_pos`, `i_quat`, and `obb` fields
+// `obb` is the oriented bounding box of the object 
+// as { p0:vec3, p1:vec3 } for least & greatest bound points
+// `ray_origin` and `ray_dir` are vec3 in world space
+// returns an array of hits, sorted by distance (nearest first)
+// each hit is [obj, distance]
+function rayTestModules(instances, ray_origin, ray_dir) {
+	// hit test on each cube:
+	let hits = []
+	// naive hit-test by looping over all and testing in turn
+	for (let obj of instances) {
+		if (!obj.obb) continue;  // no bounding box, no test
+		// check for hits:
+		let [hit, distance] = intersectCube(obj.i_pos, obj.i_quat, obj.obb.p0, obj.obb.p1, ray_origin, ray_dir);
+		if (hit) hits.push([obj, distance]);
+	}
+	// if there are hits, sort them by distance
+	// then highlight the nearest
+	if (hits.length) hits.sort((a,b)=>a[1]-b[1]);
+	return hits;
+}
+
 function initUI(window) {
 
 	glfw.setWindowPosCallback(window, function(w, x, y) {
@@ -1271,8 +1332,8 @@ function initUI(window) {
 	glfw.setCursorPosCallback(window, (window, px, py) => {
 		// convert px,py to normalized 0..1 coordinates:
 		const dim = glfw.getWindowSize(window)
-		mouse.ndcPoint[0] = +2*px/dim[0] + -1;
-		mouse.ndcPoint[1] = -2*py/dim[1] + +1;
+		mouse.ndc[0] = +2*px/dim[0] + -1;
+		mouse.ndc[1] = -2*py/dim[1] + +1;
 	});
 
 	glfw.setKeyCallback(window, function(...args) {
@@ -1332,10 +1393,24 @@ function animate() {
 				hands[1] = input;
 			}
 		}
-	}
+	} else {
+		// use mouse:
 
-	// handle UI events:
-	
+		// near plane point
+		let cam_near = vec3.transformMat4(vec3.create(), [mouse.ndc[0], mouse.ndc[1], -1], projmatrix_inverse);
+		let ray_origin = vec3.transformMat4(vec3.create(), cam_near, viewmatrix_inverse);
+		// far plane point
+		let cam_far = vec3.transformMat4(vec3.create(), [mouse.ndc[0], mouse.ndc[1], +1], projmatrix_inverse);	
+		let ray_far = vec3.transformMat4(vec3.create(), cam_far, viewmatrix_inverse);
+		// mouse ray:
+		let ray_dir = vec3.sub(vec3.create(), ray_far, ray_origin);
+		vec3.normalize(ray_dir, ray_dir);
+
+		let hits = rayTestModules(sceneGraph.module_instances.instances, ray_origin, ray_dir)
+		if(hits.length) {
+			console.log("hits:", hits.length)
+		}
+	}
 	// render to our targetTexture by binding the framebuffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, renderer.fbo.id);
 	{
@@ -1569,8 +1644,8 @@ async function init() {
 	} 
 	sceneGraph = makeSceneGraph(renderer, gl);
 	sceneGraph.init(gl);
-
 	sceneGraph.rebuild(localGraph);
+	
 	
 	initUI(window);
 
