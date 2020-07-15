@@ -14,7 +14,7 @@ const WebSocket = require('ws');
 const { vec2, vec3, vec4, quat, mat3, mat4 } = require("gl-matrix");
 const bottleneck = require('Bottleneck')
 
-const got = require("./got/got")
+const got = require("./gotlib/got")
 
 let ip;
 // 1st cli arg can be the scenefile 

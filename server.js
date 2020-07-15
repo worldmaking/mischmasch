@@ -14,7 +14,7 @@ const WebSocket = require('ws');
 const { vec2, vec3, vec4, quat, mat3, mat4 } = require("gl-matrix");
 const bottleneck = require('Bottleneck')
 
-const got = require("./got/got")
+const got = require("./gotlib/got")
 
 // 1st cli arg can be the scenefile 
 let scenefile = __dirname + "/scene_files/scene_edited.json"
@@ -186,10 +186,10 @@ vorpal
 
 const app = express();
 app.use(express.static(client_path))
-app.use(express.static(path.join(__dirname, '/got/')))	
+app.use(express.static(path.join(__dirname, '/gotlib/')))	
 app.get('/', function(req, res) {
 	res.sendFile(path.join(client_path, 'index.html'));
-	res.sendFile(path.join(__dirname, '/got/got.js'));
+	res.sendFile(path.join(__dirname, '/gotlib/got.js'));
 });
 //app.get('*', function(req, res) { console.log(req); });
 const server = http.createServer(app);
