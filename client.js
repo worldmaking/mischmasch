@@ -148,6 +148,9 @@ let point = [0, 0, 0, 1]
 
 let vrdim = [4096, 4096];
 
+let controllerOBJ = fs.readFileSync(path.join(__dirname, "objs", "vr_controller_vive_1_5.obj"), "utf-8");
+const controllerGeom = glutils.geomFromOBJ(controllerOBJ)
+
 ////////////////////////////////////////////////////////////////
 // INIT DEPENDENT LIBRARIES:
 ////////////////////////////////////////////////////////////////
@@ -355,7 +358,13 @@ uniform mat4 u_projmatrix;
 in vec3 a_position;
 in vec3 a_normal;
 in vec2 a_texCoord;
+
+// in vec3 i_pos;
+// in vec4 i_quat;
+
 out vec4 v_color;
+out vec3 v_normal;
+out vec2 v_uv;
 
 void main() {
 	// Multiply the position by the matrix.
@@ -364,15 +373,37 @@ void main() {
 
 	v_color = vec4(a_normal*0.25+0.25, 1.);
 	v_color += vec4(a_texCoord*0.5, 0., 1.);
-}`,
+
+	vec3 normal = a_normal;
+	vec2 uv = a_texCoord;
+	//normal = quat_rotate(i_quat, normal);
+	v_normal = normal;
+	v_uv = uv;
+	v_color = vec4(1.);
+}
+`,
 `#version 330
 precision mediump float;
 
 in vec4 v_color;
+in vec3 v_normal;
+in vec2 v_uv;
+
 out vec4 outColor;
 
 void main() {
 	outColor = v_color;
+	vec3 normal = normalize(v_normal);
+
+	vec2 dxt = dFdx(v_uv);
+	vec2 dyt = dFdy(v_uv);
+	float line = length(abs(dxt)+abs(dyt));
+	float line1 = clamp(line * 5.,0.25,0.75);
+
+	vec2 v = v_uv * 2. - 1.;
+	vec2 v2 = smoothstep(1., 1.-line*8., abs(v));
+	float line2 = 1.-(v2.x*v2.y);
+	outColor *= max(line1, line2) ; // this over exposes the color making it look brighter * vec4(4.);
 }`
 	);
 	renderer.line_program = glutils.makeProgram(gl,
@@ -689,7 +720,7 @@ void main() {
 	renderer.floor_vao = glutils.createVao(gl, renderer.floor_geom, renderer.floor_program.id);
 	renderer.debug_vao = glutils.createVao(gl, renderer.debug_geom, renderer.debug_program.id);
 	renderer.fbo_vao = glutils.createVao(gl, glutils.makeQuad(), renderer.fbo_program.id);
-	renderer.wand_vao = glutils.createVao(gl, renderer.wand_geom, renderer.wand_program.id);
+	renderer.wand_vao = glutils.createVao(gl, controllerGeom, renderer.wand_program.id);
 	renderer.fbo = glutils.makeFboWithDepth(gl, vrdim[0], vrdim[1])
 }
 
@@ -1371,17 +1402,38 @@ function draw(eye=0) {
 	renderer.floor_vao.bind().draw().unbind();
 	renderer.floor_program.end();
 
-	for (let hand of hands) {
-	 	if (!hand) continue; // i.e. if not connected
-		if (once) console.log(hand.targetRaySpace)
-		once = 0;
+	gl.enable(gl.BLEND);
+	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+	gl.depthMask(false)
+
+	{
+		let modelmatrix = mat4.create();
+		mat4.translate(modelmatrix, modelmatrix, [0, 1, 0]);
+		// let axis = vec3.fromValues(Math.sin(t), 1., 0.);
+		// vec3.normalize(axis, axis);
+		// mat4.rotate(modelmatrix, modelmatrix, t, axis)
+		// let s = 1
+		// mat4.scale(modelmatrix, modelmatrix, vec3.fromValues(s,s,s));
 		renderer.wand_program.begin();
 		renderer.wand_program.uniform("u_viewmatrix", viewmatrix);
 		renderer.wand_program.uniform("u_projmatrix", projmatrix);
-		renderer.wand_program.uniform("u_modelmatrix", hand.targetRaySpace);
+		renderer.wand_program.uniform("u_modelmatrix", modelmatrix);
+		//renderer.wand_program.uniform("u_modelmatrix", hand.targetRaySpace);
 		renderer.wand_vao.bind().draw().unbind();
 		renderer.wand_program.end();
 	}
+
+	// for (let hand of hands) {
+	//  	if (!hand) continue; // i.e. if not connected
+	// 	if (once) console.log(hand.targetRaySpace)
+	// 	once = 0;
+	// 	renderer.wand_program.begin();
+	// 	renderer.wand_program.uniform("u_viewmatrix", viewmatrix);
+	// 	renderer.wand_program.uniform("u_projmatrix", projmatrix);
+	// 	renderer.wand_program.uniform("u_modelmatrix", hand.targetRaySpace);
+	// 	renderer.wand_vao.bind().draw().unbind();
+	// 	renderer.wand_program.end();
+	// }
 
 	// draw controllers:
 	// if (left_hand && left_hand.targetRaySpace) {
@@ -1418,9 +1470,6 @@ function draw(eye=0) {
 	// 	cubeprogram.end();
 	// }
 
-	gl.enable(gl.BLEND);
-	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-	gl.depthMask(false)
 
 	renderer.debug_program.begin();
 	renderer.debug_program.uniform("u_viewmatrix", viewmatrix);
