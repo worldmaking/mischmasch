@@ -1,7 +1,7 @@
 let modules = require('./client/modules.js')
 let assert = require("assert");
 let fs = require("fs")
-let got = require("./got/got.js");
+let got = require("./gotlib/got.js");
 //console.log(modules.operator_constructors)
 
 let operators = JSON.parse(fs.readFileSync("operators.json", "utf-8"))
