@@ -1,0 +1,28 @@
+DONE - modules.json. 
+
+DONE - give graham a list of the modules 
+- apply the settings of the gendsp help patchers to 
+
+DONE - if there's any modules in the example scenes that we definitely need? 
+
+DONE    modules as deltas script? where is it, how does it work? send it to Graham. 
+
+
+DONE    - only send the output path and buffer value. 
+
+    - there should always be a multiplier object connected between a param and the setparam.
+
+
+- test findcycles.js
+    - history is an exception. if you encounter a history object then you should accept the path as already being a history-adapted feedback path. if you encounter a history object then trace from that object and add it to the array
+
+    - if theres a multi-object cycle, you only need to put one history somewhere, doesn't need to be between all of the objects! 
+        - collect you list of input sources (ins, params, history. trace the paths, each time you encounter an object you add it to an array. as you go through the path if you encounter an object that's in the array, you decide that's a feedback loop and put a history there, and keep going. )
+
+    - subpatchers are exempt from this becuase gen assumes they're not ok, so we don't need to traverse the subpatcher, but do need to put a history object around it. 
+
+    - knobs as inlets: cable can plug into a knob. at that point the knob becomes an attenuator. 
+
+        
+
+-    if the scene gets completely messed, then there should be an emergency global-nuclear. 

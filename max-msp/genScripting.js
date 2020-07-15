@@ -237,18 +237,24 @@ var handleDelta = function(delta) {
 									pathName = delta.path.split('.')[0]
 									paramName = delta.path.replace('.','__')
 									setparamName = delta.path.split('.')[1]
+									attenuvertorName = paramName + '_attenuvertor'
 									
 									
 									paramX = paramCounter * 150
-									// generate the subparam which the param will bind to
+									// generate the setparam which the param will bind to
 									var setparam = gen_patcher.newdefault([275, Ycounter * 2, "setparam", setparamName])
 									setparam.varname = 'setparam_' + paramName
 									gen_patcher.message("script", "connect", setparam.varname, 0, pathName, 0);
-								
+
+									// generate the multiplier to insert between the param and setparam (for knobs-as-inlets)
+									var attenuvertor = gen_patcher.newdefault([450, Ycounter * 2, "*"])
+									attenuvertor.varname = attenuvertorName
+									gen_patcher.message("script", "connect", attenuvertor.varname, 0, setparam.varname, 0);
+
 									// generate the param which the js script will bind to
-									var param = gen_patcher.newdefault([450, Ycounter * 1.5, "param", paramName, delta.value])
+									var param = gen_patcher.newdefault([600, Ycounter * 1.5, "param", paramName, delta.value])
 									param.varname = paramName
-									gen_patcher.message("script", "connect", param.varname, 0, setparam.varname, 0);
+									gen_patcher.message("script", "connect", param.varname, 0, attenuvertor.varname, 1);
 								
 									outlet(1, paramName, delta.range)
 									paramCounter++
@@ -259,17 +265,24 @@ var handleDelta = function(delta) {
 									pathName = delta.path.split('.')[0]
 									paramName = delta.path.replace('.','__')
 									setparamName = delta.path.split('.')[1]
+									attenuvertorName = paramName + '_attenuvertor'
+
 									
 									paramX = paramCounter * 150
-									// generate the subparam which the param will bind to
+									// generate the setparam which the param will bind to
 									var setparam = gen_patcher.newdefault([275, Ycounter * 2, "setparam", setparamName])
 									setparam.varname = 'setparam_' + paramName
 									gen_patcher.message("script", "connect", setparam.varname, 0, pathName, 0);
-								
+
+									// generate the multiplier to insert between the param and setparam (for knobs-as-inlets)
+									var attenuvertor = gen_patcher.newdefault([450, Ycounter * 2, "*"])
+									attenuvertor.varname = attenuvertorName
+									gen_patcher.message("script", "connect", attenuvertor.varname, 0, setparam.varname, 0);
+									
 									// generate the param which the js script will bind to
-									var param = gen_patcher.newdefault([450, Ycounter * 1.5, "param", paramName, delta.value])
+									var param = gen_patcher.newdefault([600, Ycounter * 1.5, "param", paramName, delta.value])
 									param.varname = paramName
-									gen_patcher.message("script", "connect", param.varname, 0, setparam.varname, 0);
+									gen_patcher.message("script", "connect", param.varname, 0, attenuvertor.varname, 1);
 								
 									//gen_patcher.message("script", "send", param.varname, paramValue);
 									outlet(1, paramName, delta.value, 'n_switch')
