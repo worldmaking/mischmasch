@@ -178,7 +178,7 @@ const renderer = {
 }
 
 const UI = {
-	menuMode: false,
+	menuMode: 1,
 
 	hmd: {
 		pos: [0, 1.4, 1],
@@ -212,114 +212,19 @@ let vrdim = [4096, 4096];
 let controllerOBJ = fs.readFileSync(path.join(__dirname, "objs", "vr_controller_vive_1_5.obj"), "utf-8");
 const controllerGeom = glutils.geomFromOBJ(controllerOBJ)
 
-let menuModules = {
+const menuModules = Object.assign({
     "speaker":{
       "_props":{"kind":"speaker","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
       "input":{"_props":{"kind":"inlet","index":0}}
-    },
-    "pulsars": {
-      "_props":{"kind":"pulsars","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "signal":{"_props":{"kind":"inlet","index":0}},
-      "period":{"_props":{"kind":"large_knob","range":[0,1],"taper":"log 3.8","value":0.25,"unit":"float"}},
-      "period_cv":{"_props":{"kind":"inlet","index":1}},
-      "formant":{"_props":{"kind":"large_knob","range":[0,1000],"taper":"log 3.8","value":0.25,"unit":"float"}},
-      "formant_cv":{"_props":{"kind":"inlet","index":2}},
-      "hipass":{"_props":{"kind":"outlet","index":0}}
-    
-    },
-    "granola": {
-      "_props":{"kind":"granola","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "signal":{"_props":{"kind":"inlet","index":0}},
-      "density":{"_props":{"kind":"large_knob","range":[0.1,100],"taper":"log 3.8","value":10,"unit":"float"}},
-      "density_cv":{"_props":{"kind":"inlet","index":1}},
-      "rate":{"_props":{"kind":"large_knob","range":[1,2000],"taper":"log 3.8","value":100,"unit":"float"}},
-      "rate_cv":{"_props":{"kind":"inlet","index":2}},
-      "speed":{"_props":{"kind":"large_knob","range":[1,2000],"taper":"log 3.8","value":1,"unit":"float"}},
-      "speed_cv":{"_props":{"kind":"inlet","index":3}},
-      "lookahead":{"_props":{"kind":"large_knob","range":[0,1],"taper":"log 3.8","value":0,"unit":"float"}},
-      "lookahead_cv":{"_props":{"kind":"inlet","index":3}},
-      "left":{"_props":{"kind":"outlet","index":0}},
-      "right":{"_props":{"kind":"outlet","index":1}}    
-    },
-    "vca":{
-      "_props":{"kind":"vca","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "signal":{"_props":{"kind":"inlet","index":0}},
-      "cv":{"_props":{"kind":"inlet","index":1}},
-      "cv_amount":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
-      "bias":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
-      "output":{"_props":{"kind":"outlet","index":0}}
-    },    
-	"dualvco":{
-      "_props":{"kind":"dualvco", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "vco_1_rate":{"_props":{"kind":"large_knob","range":[20,6000],"taper":"linear","value":200,"unit":"float"}},
-      "vco_1_waveform":{"_props":{"kind":"n_switch","range":[1,3],"taper":"linear","value":1,"unit":"int"}},
-      "vco_2_rate":{"_props":{"kind":"large_knob","range":[20,6000],"taper":"linear","value":3,"unit":"float"}},
-      "vco_2_waveform":{"_props":{"kind":"n_switch","range":[1,3],"taper":"linear","value":1,"unit":"int"}},
-      "index":{"_props":{"kind":"large_knob","range":[20,6000],"taper":"linear","value":0.01,"unit":"float"}},
-      "feedback":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.3,"unit":"float"}},
-      "rate_1_cv":{"_props":{"kind":"inlet","index":0}},
-      "index_cv":{"_props":{"kind":"inlet","index":1}},
-      "rate_2_cv":{"_props":{"kind":"inlet","index":2}},
-      "feedback_cv":{"_props":{"kind":"inlet","index":3}},
-      "vco_1":{"_props":{"kind":"outlet","index":0}},
-      "vco_2":{"_props":{"kind":"outlet","index":1}},
-      "master":{"_props":{"kind":"outlet","index":2}}
 	},
-	
-
-	"speaker1":{
-		"_props":{"kind":"speaker","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-		"input":{"_props":{"kind":"inlet","index":0}}
-	  },
-	  "pulsars1": {
-		"_props":{"kind":"pulsars","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-		"signal":{"_props":{"kind":"inlet","index":0}},
-		"period":{"_props":{"kind":"large_knob","range":[0,1],"taper":"log 3.8","value":0.25,"unit":"float"}},
-		"period_cv":{"_props":{"kind":"inlet","index":1}},
-		"formant":{"_props":{"kind":"large_knob","range":[0,1000],"taper":"log 3.8","value":0.25,"unit":"float"}},
-		"formant_cv":{"_props":{"kind":"inlet","index":2}},
-		"hipass":{"_props":{"kind":"outlet","index":0}}
-	  
-	  },
-	  "granola1": {
-		"_props":{"kind":"granola","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-		"signal":{"_props":{"kind":"inlet","index":0}},
-		"density":{"_props":{"kind":"large_knob","range":[0.1,100],"taper":"log 3.8","value":10,"unit":"float"}},
-		"density_cv":{"_props":{"kind":"inlet","index":1}},
-		"rate":{"_props":{"kind":"large_knob","range":[1,2000],"taper":"log 3.8","value":100,"unit":"float"}},
-		"rate_cv":{"_props":{"kind":"inlet","index":2}},
-		"speed":{"_props":{"kind":"large_knob","range":[1,2000],"taper":"log 3.8","value":1,"unit":"float"}},
-		"speed_cv":{"_props":{"kind":"inlet","index":3}},
-		"lookahead":{"_props":{"kind":"large_knob","range":[0,1],"taper":"log 3.8","value":0,"unit":"float"}},
-		"lookahead_cv":{"_props":{"kind":"inlet","index":3}},
-		"left":{"_props":{"kind":"outlet","index":0}},
-		"right":{"_props":{"kind":"outlet","index":1}}    
-	  },
-	  "vca1":{
-		"_props":{"kind":"vca","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-		"signal":{"_props":{"kind":"inlet","index":0}},
-		"cv":{"_props":{"kind":"inlet","index":1}},
-		"cv_amount":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
-		"bias":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
+	"knob":{
+		"_props":{ "kind":"param", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
+		"value":{"_props":{"kind":"large_knob", "range":[0,1], "value":0}},
 		"output":{"_props":{"kind":"outlet","index":0}}
-	  },    
-	  "dualvco1":{
-		"_props":{"kind":"dualvco", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-		"vco_1_rate":{"_props":{"kind":"large_knob","range":[20,6000],"taper":"linear","value":200,"unit":"float"}},
-		"vco_1_waveform":{"_props":{"kind":"n_switch","range":[1,3],"taper":"linear","value":1,"unit":"int"}},
-		"vco_2_rate":{"_props":{"kind":"large_knob","range":[20,6000],"taper":"linear","value":3,"unit":"float"}},
-		"vco_2_waveform":{"_props":{"kind":"n_switch","range":[1,3],"taper":"linear","value":1,"unit":"int"}},
-		"index":{"_props":{"kind":"large_knob","range":[20,6000],"taper":"linear","value":0.01,"unit":"float"}},
-		"feedback":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.3,"unit":"float"}},
-		"rate_1_cv":{"_props":{"kind":"inlet","index":0}},
-		"index_cv":{"_props":{"kind":"inlet","index":1}},
-		"rate_2_cv":{"_props":{"kind":"inlet","index":2}},
-		"feedback_cv":{"_props":{"kind":"inlet","index":3}},
-		"vco_1":{"_props":{"kind":"outlet","index":0}},
-		"vco_2":{"_props":{"kind":"outlet","index":1}},
-		"master":{"_props":{"kind":"outlet","index":2}}
-	  },
-}
+	},
+}, JSON.parse(fs.readFileSync("menu.json", "utf-8")))
+
+
 
 ////////////////////////////////////////////////////////////////
 // INIT DEPENDENT LIBRARIES:

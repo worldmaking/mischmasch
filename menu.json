@@ -1,0 +1,749 @@
+{
+	"drumkit": {
+		"_props": {
+			"kind": "drumkit",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"hatdur": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": ""
+			}
+		},
+		"kick": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"snare": {
+			"_props": {
+				"kind": "inlet",
+				"index": "2"
+			}
+		},
+		"hat": {
+			"_props": {
+				"kind": "inlet",
+				"index": "3"
+			}
+		},
+		"kicks": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		},
+		"snares": {
+			"_props": {
+				"kind": "outlet",
+				"index": "2"
+			}
+		},
+		"hats": {
+			"_props": {
+				"kind": "outlet",
+				"index": "3"
+			}
+		},
+		"mix": {
+			"_props": {
+				"kind": "outlet",
+				"index": "4"
+			}
+		}
+	},
+	"dverb": {
+		"_props": {
+			"kind": "dverb",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"drywet": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": "0.3"
+			}
+		},
+		"predelay": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": "0.15"
+			}
+		},
+		"indamping": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": "0.75"
+			}
+		},
+		"damping": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": "0.4"
+			}
+		},
+		"decay": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": "0.75"
+			}
+		},
+		"in1": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"L": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		},
+		"R": {
+			"_props": {
+				"kind": "outlet",
+				"index": "2"
+			}
+		}
+	},
+	"euclid": {
+		"_props": {
+			"kind": "euclid",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"steps": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"-32 ",
+					"32"
+				],
+				"value": "3"
+			}
+		},
+		"length": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"1 ",
+					"32"
+				],
+				"value": "8"
+			}
+		},
+		"offset": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"-32 ",
+					"32"
+				],
+				"value": "0"
+			}
+		},
+		"ramp": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"reset": {
+			"_props": {
+				"kind": "inlet",
+				"index": "2"
+			}
+		},
+		"trig": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		},
+		"retrig": {
+			"_props": {
+				"kind": "outlet",
+				"index": "2"
+			}
+		}
+	},
+	"mooglo": {
+		"_props": {
+			"kind": "mooglo",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"pitch": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"-4 ",
+					"8"
+				],
+				"value": "2"
+			}
+		},
+		"resonance": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": ""
+			}
+		},
+		"input": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"filtered": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		}
+	},
+	"pitchchroma": {
+		"_props": {
+			"kind": "pitchchroma",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"tuning": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					0,
+					1
+				],
+				"value": "2"
+			}
+		},
+		"pitch": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"chroma": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		},
+		"register": {
+			"_props": {
+				"kind": "outlet",
+				"index": "2"
+			}
+		}
+	},
+	"pulse": {
+		"_props": {
+			"kind": "pulse",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"pitch": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"-3 ",
+					"7"
+				],
+				"value": "0"
+			}
+		},
+		"pulsewidth": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": "0.5"
+			}
+		},
+		"hardsync": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"pulse": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		},
+		"impulse": {
+			"_props": {
+				"kind": "outlet",
+				"index": "2"
+			}
+		},
+		"clock": {
+			"_props": {
+				"kind": "outlet",
+				"index": "3"
+			}
+		}
+	},
+	"rampdiv": {
+		"_props": {
+			"kind": "rampdiv",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"ramp": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"division": {
+			"_props": {
+				"kind": "inlet",
+				"index": "2"
+			}
+		},
+		"divided": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		}
+	},
+	"rampshift": {
+		"_props": {
+			"kind": "rampshift",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"ramp": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"phase": {
+			"_props": {
+				"kind": "inlet",
+				"index": "2"
+			}
+		},
+		"shifted": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		}
+	},
+	"rampsteps": {
+		"_props": {
+			"kind": "rampsteps",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"steps": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"1 ",
+					"32"
+				],
+				"value": ""
+			}
+		},
+		"ramp": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"step": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		},
+		"stepped": {
+			"_props": {
+				"kind": "outlet",
+				"index": "2"
+			}
+		}
+	},
+	"s+h": {
+		"_props": {
+			"kind": "s+h",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"input": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"clock": {
+			"_props": {
+				"kind": "inlet",
+				"index": "2"
+			}
+		},
+		"s&h": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		}
+	},
+	"saw": {
+		"_props": {
+			"kind": "saw",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"pitch": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"-3 ",
+					"7"
+				],
+				"value": "0"
+			}
+		},
+		"saw": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		}
+	},
+	"squine": {
+		"_props": {
+			"kind": "squine",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"pitch": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"-3 ",
+					"7"
+				],
+				"value": "0"
+			}
+		},
+		"skew": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"-1 ",
+					"1"
+				],
+				"value": "0"
+			}
+		},
+		"squareness": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": "0"
+			}
+		},
+		"squinewave:audio": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		},
+		"ramp:unipolar": {
+			"_props": {
+				"kind": "outlet",
+				"index": "2"
+			}
+		}
+	},
+	"svf": {
+		"_props": {
+			"kind": "svf",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"pitch": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"-4 ",
+					"8"
+				],
+				"value": "4"
+			}
+		},
+		"bandwidth": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"10"
+				],
+				"value": "1"
+			}
+		},
+		"input": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"low": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		},
+		"mid": {
+			"_props": {
+				"kind": "outlet",
+				"index": "2"
+			}
+		},
+		"high": {
+			"_props": {
+				"kind": "outlet",
+				"index": "3"
+			}
+		}
+	},
+	"trig": {
+		"_props": {
+			"kind": "trig",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"in1": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"impulses": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		}
+	},
+	"trigwhen": {
+		"_props": {
+			"kind": "trigwhen",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"trig": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"when": {
+			"_props": {
+				"kind": "inlet",
+				"index": "2"
+			}
+		},
+		"trigwhen": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		}
+	}
+}
