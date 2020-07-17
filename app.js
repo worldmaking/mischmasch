@@ -501,7 +501,16 @@ function pal(ip, port){
           case 'deltas':
             // synchronize our local copy:
             try {
+
               got.applyDeltasToGraph(localGraph, msg.data);
+
+              // feedback path stuff
+              //! urgent: need to apply a propchange to one outlet per feedback path outlet._props.history = true
+              console.log(feedbackPaths(localGraph))
+
+
+
+
             } catch (e) {
               console.warn(e);
             }
@@ -562,7 +571,10 @@ function pal(ip, port){
 
 }
 
+function feedbackPaths(graph){
+  return '\n\n\nTODO: add feedback detection to app.js\n\n\n'
 
+}
 
 
 function handlemessage(msg, id) {
