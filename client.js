@@ -1,49 +1,4 @@
 /*
-TODO notes
-
-GOT graph needs to be translated to scene graph, which in turn specifies GL instances
-
-Instances:
-- lines (for patch coords, controller rays, etc.)
-- texturedquads (for text characters)
-- gridshapes (for module boxes, knobs, jacks, plugs, etc.)
-
-The instances could be embedded in the scene; that way switching out scenes (or even drawing multiple scenes) could be faster. Scenes would have their own vbo/vao etc, but share shaders
-
-scene = {
-	line_vao
-	textquad_vao
-	shape_vao
-
-	line_instances
-	textquad_instances
-	shape_instances
-	etc.
-
-
-}
-
-Some scene grpah changes are structural
-- new/delnode, connect/disconnect, etc.
-- requires re-generating the instances
-
-Most scene graph changes are parametric
-- propchange pos, orient, value etc. for module poses, knob positions, etc.
-- instances don't need regenerating, only attribute updates
-
-So, at least 2 passes:
-
-GOT -> scene graph structure -> regenerate instances, then cascade to next pass:
-GOT -> scene graph item changes -> update instance attributes
-
-For some parts, scenegraph node can be the instance object
-For others (e.g. labels), perhaps it can be the first character instance?
-
-For raytracing, convenient to have all objects in a flat list and a global space
-That flat list could be the instances, or the pathlookup
-- project ray into object coordinate space for simple bounds check
-- needs mat4 for the object coordinate space. 
-	- Q: module mat's scale uses grid size, or module width/height?
 
 For moving objects, convenient to have a graph structure so that moving a parent can iterate to update all children
 	- so a node needs a list of its children
@@ -57,13 +12,9 @@ Option of having a root node
 
 Two scale factors to consider:
 - "scale": A scalar value for the scale factor from parent system, which will be in the parent mat. E.g. modules by defualt will have scale=UI_DEFAULT_scale.
-- "dim": A bounding-scale used to stretch modules to fit no. rows & cols in their grid layout. Will also be needed for raycasting. Essentially sets the bounding box of the object relative to its coordinate frame. Hit test: transform ray into the coordinate space of object (via mat) then test it against "dim".
+- "dim": A bounding-scale used to stretch modules to fit no. rows & cols in their grid layout. Sets the bounding box of the object relative to its coordinate frame. 
 
 Child objects' world-space depends on parent's mat4, which factors in "scale", not "dim". 
-
-Could store both in a vec3 (bound.xy + scale.z), 
-or in a vec4 (bound.xyz and scale.w). 
-
 
 Consider whether to have anchors in centre or bottom-left
 (and if centre, is it +-1 or +-0.5?)
@@ -72,7 +23,6 @@ Knob rotation etc.: centre definitely better in thoery -- but perhaps this is so
 Widget layout: probably easier with centering. +- 0.5 preferred.
 Module grid layout: corner simpler. +- 0.5 preferred.
 Seems like centre +-0.5 might be the one?
-
 */
 const assert = require("assert"),
 	fs = require("fs"),
