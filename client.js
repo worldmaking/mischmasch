@@ -85,13 +85,13 @@ const chroma = require("chroma-js")
 const nodeglpath = "../node-gles3"
 const gl = require(path.join(nodeglpath, "gles3.js")),
 glfw = require(path.join(nodeglpath, "glfw3.js")),
-vr = require(path.join(nodeglpath, "openvr.js")),
 glutils = require(path.join(nodeglpath, "glutils.js"))
 
 const got = require("./got/got.js")
 
 // skip VR if on OSX:
-const USEVR = 1;// && (process.platform === "win32");
+const USEVR = 1 && (process.platform === "win32");
+let vr = (USEVR) ? require(path.join(nodeglpath, "glutils.js")) : null
 const USEWS = 0;
 const url = 'ws://localhost:8080'
 const demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
@@ -178,7 +178,7 @@ const renderer = {
 }
 
 const UI = {
-	menuMode: 1,
+	menuMode: 0,
 
 	hmd: {
 		pos: [0, 1.4, 1],
@@ -651,6 +651,7 @@ in vec3 i_bb0;
 in vec3 i_bb1;
 in float i_shape;
 in float i_value;
+in float i_highlight;
 
 
 in vec3 a_position;
@@ -721,7 +722,7 @@ void main() {
 
 	} 
 
-	vertex = mix(i_bb0, i_bb1, vertex*0.5+0.5);
+	vertex = mix(i_bb0, i_bb1, vertex+0.5);
 
 
 	vertex = quat_rotate(i_quat, vertex);
@@ -733,7 +734,7 @@ void main() {
 	v_normal = normal;
 	v_uv = uv;
 	v_shape = i_shape;
-	v_color = i_color;
+	v_color = i_color * (1.+i_highlight);
 }`,
 `#version 330
 precision mediump float;
@@ -830,6 +831,7 @@ function makeSceneGraph(renderer, gl) {
 			{ name:"i_bb1", components:3 },
 			{ name:"i_value", components:1 },
 			{ name:"i_shape", components:1 },
+			{ name:"i_highlight", components:1 },
 		]),
 		line_instances: glutils.createInstances(gl, [
 			{ name:"i_color", components:4 },
@@ -961,7 +963,7 @@ function makeSceneGraph(renderer, gl) {
 				}
 			}
 			this.line_instances.count = graph.arcs.length;
-			this.update(graph);
+			return this;
 		},
 
 		getNextModule(parent) {
@@ -1008,10 +1010,12 @@ function makeSceneGraph(renderer, gl) {
 			// get basic pose:
 			obj.pos = props.pos || [0, 0, 0];
 			obj.quat = props.orient || [0, 0, 0, 1];
-			obj.i_shape[0] = SHAPE_BOX;
-			vec4.set(obj.i_color, 0.5, 0.5, 0.5, 1);
 			obj.scale = 1;
 			obj.dim = [1, 1, UI_DEPTH]
+
+			obj.i_shape[0] = SHAPE_BOX;
+			vec4.set(obj.i_color, 0.5, 0.5, 0.5, 1);
+			obj.i_highlight[0] = 0;
 
 			// default label:
 			let label_text = name;
@@ -1221,12 +1225,10 @@ function makeSceneGraph(renderer, gl) {
 			}
 
 			this.textquad_instances.count = idx;
-			return this;
+			return this.updateInstances();
 		},
 		
-		update(graph) {
-			// iterate `graph` to update properties of the various nodes in module_instances etc.
-			// assumes the graph structure has not changed
+		updateInstances() {
 			// updates geometric & rendering attributes of all instances, including position, quat, scale, worldmat etc.
 			// NOTE: because of the way the instances were created, parents will be 
 			// visited earlier in the iteration than their children
@@ -1240,17 +1242,22 @@ function makeSceneGraph(renderer, gl) {
 				vec3.transformMat4(obj.i_pos, obj.pos, obj.parent.mat);
 				// TODO verify this is the right ordering:
 				quat.multiply(obj.i_quat, obj.quat, obj.parent.quat);
+				vec3.copy(obj.i_bb0, [
+					obj.dim[0]*-0.5*scale, 
+					obj.dim[1]*-0.5*scale, 
+					obj.dim[2]*-0.5*scale
+				])
 				vec3.copy(obj.i_bb1, [
-					obj.dim[0]*scale, 
-					obj.dim[1]*scale, 
-					obj.dim[2]*scale
+					obj.dim[0]*0.5*scale, 
+					obj.dim[1]*0.5*scale, 
+					obj.dim[2]*0.5*scale
 				])
 				// TODO: use a 0..1 cube instead of this silly -1..1 thing
 				vec3.negate(obj.i_bb0, obj.i_bb1)
 				// update our 'toworld' mat:
 				mat4.fromRotationTranslationScale(obj.mat, 
 					obj.i_quat, obj.i_pos, 
-					[obj.scale, obj.scale, obj.scale]
+					[scale, scale, scale]
 				);
 			}
 
@@ -1268,9 +1275,7 @@ function makeSceneGraph(renderer, gl) {
 				vec3.copy(obj.i_pos0, from.i_pos);
 				vec3.copy(obj.i_pos1, to.i_pos);
 			}
-
-			this.submit();
-			return this;
+			return this.submit();
 		},
 
 		submit() {
@@ -1406,7 +1411,7 @@ function animate() {
 		console.log("updated localGraph", JSON.stringify(localGraph, null, "  "))
 		
 		// // re-layout:
-		sceneGraph.rebuild(localGraph);
+		sceneGraph.rebuild(localGraph)
 	}
 	
 	//if(wsize) console.log("FB size: "+wsize.width+', '+wsize.height);
@@ -1458,9 +1463,6 @@ function animate() {
 			vec3.negate(ray_dir, ray_dir)
 
 			hits = rayTestModules(sceneGraph.module_instances.instances, ray_origin, ray_dir)
-			if(hits.length) {
-				console.log("hits:", hits.length)
-			}
 		}
 	} else {
 		// use mouse:
@@ -1476,12 +1478,24 @@ function animate() {
 		vec3.normalize(ray_dir, ray_dir);
 
 		hits = rayTestModules(sceneGraph.module_instances.instances, ray_origin, ray_dir)
-		if(hits.length) {
-			console.log("hits:", hits.length)
-		}
+		
 	}
 
-	sceneGraph.submit()
+	sceneGraph.module_instances.instances.forEach(obj=>{
+		obj.i_highlight[0] = 0;
+	})
+	
+	if(hits.length) {
+		console.log("hits:", hits.map(v=>v[0].path))
+		hits.forEach(v=>{
+			v[0].i_highlight[0] = 1;
+		})
+	}
+	// instance vars can change on a frame by frame basis;
+	// propagate their changes (scene graph) and update the GPU accordingly:
+	//sceneGraph.updateInstances()
+	sceneGraph.submit();
+
 
 	// render to our targetTexture by binding the framebuffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, renderer.fbo.id);
@@ -1618,7 +1632,7 @@ function serverConnect() {
 			nodes: {},
 			arcs: []
 		};
-		sceneGraph.rebuild(localGraph);
+		sceneGraph.rebuild(localGraph)
 	}
 	socket.onerror = (error) => {
 	  console.error(`WebSocket error: ${error}`)
@@ -1672,10 +1686,10 @@ async function init() {
 	window = initWindow();
 	initRenderer(renderer);
 
-	menuGraph.nodes = initMenu(menuModules);
-	menuSceneGraph = makeSceneGraph(renderer, gl)
-	menuSceneGraph.init(gl)
-	menuSceneGraph.rebuild(menuGraph);
+	// menuGraph.nodes = initMenu(menuModules);
+	// menuSceneGraph = makeSceneGraph(renderer, gl)
+	// menuSceneGraph.init(gl)
+	// menuSceneGraph.rebuild(menuGraph)
 
 	// default graph until server connects:
 	localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
@@ -1685,7 +1699,7 @@ async function init() {
 	} 
 	sceneGraph = makeSceneGraph(renderer, gl);
 	sceneGraph.init(gl);
-	sceneGraph.rebuild(localGraph);
+	sceneGraph.rebuild(localGraph)
 	
 	
 	initUI(window);
