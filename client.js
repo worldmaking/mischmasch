@@ -322,8 +322,8 @@ function initRenderer(renderer) {
 
 	renderer.textquad_geom = glutils.makeQuad({ min:0., max:1, div:8 });
 	renderer.module_geom = glutils.makeCube({ 
-		min:[-0.5,-0.5, 0], 
-		max:[ 0.5, 0.5, 1], 
+		min:[-1,-1, 0], 
+		max:[ 1, 1, 1], 
 		div: [13, 13, 1] 
 	});
 	renderer.wand_geom = glutils.makeCube({ 
@@ -722,7 +722,7 @@ void main() {
 
 	} 
 
-	vertex = mix(i_bb0, i_bb1, vertex+0.5);
+	vertex = mix(i_bb0, i_bb1, vertex*0.5+0.5);
 
 
 	vertex = quat_rotate(i_quat, vertex);
