@@ -56,13 +56,13 @@ Option of having a root node
 
 
 Two scale factors to consider:
-- "zoom": A scalar value for the scale factor from parent system, which will be in the parent mat. E.g. modules by defualt will have zoom=UI_DEFAULT_ZOOM.
+- "scale": A scalar value for the scale factor from parent system, which will be in the parent mat. E.g. modules by defualt will have scale=UI_DEFAULT_scale.
 - "dim": A bounding-scale used to stretch modules to fit no. rows & cols in their grid layout. Will also be needed for raycasting. Essentially sets the bounding box of the object relative to its coordinate frame. Hit test: transform ray into the coordinate space of object (via mat) then test it against "dim".
 
-Child objects' world-space depends on parent's mat4, which factors in "zoom", not "dim". 
+Child objects' world-space depends on parent's mat4, which factors in "scale", not "dim". 
 
-Could store both in a vec3 (bound.xy + zoom.z), 
-or in a vec4 (bound.xyz and zoom.w). 
+Could store both in a vec3 (bound.xy + scale.z), 
+or in a vec4 (bound.xyz and scale.w). 
 
 
 Consider whether to have anchors in centre or bottom-left
@@ -147,7 +147,7 @@ const SHAPE_BUTTON = 1;
 const SHAPE_CYLINDER = 2;
 const SHAPE_KNOB = 3;
 
-const UI_DEFAULT_ZOOM = 0.1;
+const UI_DEFAULT_scale = 0.1;
 const UI_DEPTH = 1/3;
 
 const NEAR_CLIP = 0.01;
@@ -297,7 +297,7 @@ function initWindow() {
 	glfw.windowHint(glfw.OPENGL_FORWARD_COMPAT, 1);
 	glfw.windowHint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE);
 
-	window = glfw.createWindow(800, USEVR ? 400 : 800, "Test");
+	window = glfw.createWindow(800, 800, "Test");
 	if (!window) {
 		console.log("Failed to open GLFW window");
 		glfw.terminate();
@@ -342,12 +342,20 @@ function initRenderer(renderer) {
 `#version 330
 in vec4 a_position;
 in vec2 a_texCoord;
-uniform vec2 u_scale;
+uniform vec2 u_windim;
+uniform vec2 u_texdim;
 out vec2 v_texCoord;
 void main() {
-    gl_Position = a_position;
+	gl_Position = a_position;
+	
+	// fit fbo dim into window dim
+	float win_aspect = u_windim.x/u_windim.y;
+	float tex_aspect = u_texdim.x/u_texdim.y;
+	float aspect = tex_aspect / win_aspect;
+	vec2 scale = vec2(aspect, 1.);
+
     vec2 adj = vec2(1, -1);
-    gl_Position.xy = (gl_Position.xy + adj)*u_scale.xy - adj;
+    gl_Position.xy = (gl_Position.xy + adj)*scale.xy - adj;
     v_texCoord = a_texCoord;
 }`,
 `#version 330
@@ -636,10 +644,11 @@ uniform mat4 u_viewmatrix;
 uniform mat4 u_projmatrix;
 
 // instance attrs:
-in vec3 i_pos;
 in vec4 i_quat;
 in vec4 i_color;
-in vec3 i_scale;
+in vec3 i_pos;
+in vec3 i_bb0;
+in vec3 i_bb1;
 in float i_shape;
 in float i_value;
 
@@ -713,7 +722,9 @@ void main() {
 
 	} 
 
-	vertex *= i_scale.xyz;
+	vertex = mix(i_bb0, i_bb1, vertex*0.5+0.5);
+
+
 	vertex = quat_rotate(i_quat, vertex);
 	vertex = vertex + i_pos.xyz;
 	// u_modelmatrix * 
@@ -816,7 +827,8 @@ function makeSceneGraph(renderer, gl) {
 			{ name:"i_color", components:4 },
 			{ name:"i_pos", components:3 },
 			{ name:"i_shape", components:1 },
-			{ name:"i_scale", components:3 },
+			{ name:"i_bb0", components:3 },
+			{ name:"i_bb1", components:3 },
 			{ name:"i_value", components:1 },
 		]),
 		line_instances: glutils.createInstances(gl, [
@@ -905,7 +917,7 @@ function makeSceneGraph(renderer, gl) {
 				mat: mat4.create(), 
 				quat: [0, 0, 0, 1],
 				name: "root",
-				zoom: 1,
+				scale: 1,
 				nodes: [],
 			};
 			this.paths = {}
@@ -936,7 +948,7 @@ function makeSceneGraph(renderer, gl) {
 					for (let parent of [line.from, line.to]) {
 						let obj = this.getNextModule(parent);
 						obj.name = line.name +":" + parent.name;
-						obj.zoom = UI_DEFAULT_ZOOM
+						obj.scale = UI_DEFAULT_scale
 						obj.pos = [0, 0, 0]
 						obj.quat = parent.i_quat; //[0, 0, 0, 1]
 						obj.dim = [1/4, 1/4, 1/2]
@@ -966,7 +978,7 @@ function makeSceneGraph(renderer, gl) {
 			
 			// this will define object's coordinate system relative to world:
 			obj.mat = mat4.create()
-			obj.zoom = 1;
+			obj.scale = 1;
 			return obj;
 		},
 
@@ -997,14 +1009,14 @@ function makeSceneGraph(renderer, gl) {
 			obj.pos = props.pos || [0, 0, 0];
 			obj.quat = props.orient || [0, 0, 0, 1];
 			obj.shape = SHAPE_BOX;
-			obj.zoom = 1;
+			obj.scale = 1;
 			obj.dim = [1, 1, UI_DEPTH]
 
 			// default label:
 			let label_text = name;
-			let zoom = UI_DEFAULT_ZOOM;
-			let text_zoom = Math.min(zoom/(label_text.length+1), zoom/font.charheight);
-			let text_pos = [ 0, zoom*0.4 ];
+			let scale = UI_DEFAULT_scale;
+			let text_scale = Math.min(scale/(label_text.length+1), scale/font.charheight);
+			let text_pos = [ 0, scale*0.4 ];
 
 			switch(obj.kind) {
 				case "outlet":
@@ -1013,7 +1025,7 @@ function makeSceneGraph(renderer, gl) {
 					obj.color = props.kind == "inlet" ? [0.5, 0.5, 0.5, 1] : [0.25, 0.25, 0.25, 1];
 					obj.dim = [1/3, 1/3, UI_DEPTH/2];
 					obj.nodes = []
-					this.addLabel(obj, label_text, text_pos, text_zoom);
+					this.addLabel(obj, label_text, text_pos, text_scale);
 				} break;
 				case "small_knob": {
 					obj.shape = SHAPE_KNOB;
@@ -1022,7 +1034,7 @@ function makeSceneGraph(renderer, gl) {
 					let range = props.range || [0,1];
 					let value = props.value || 0.;
 					obj.value = (value - range[0])/(range[1]-range[0]);
-					this.addLabel(obj, label_text, text_pos, text_zoom);
+					this.addLabel(obj, label_text, text_pos, text_scale);
 				} break;
 				case "knob": 
 				case "large_knob":  {
@@ -1032,7 +1044,7 @@ function makeSceneGraph(renderer, gl) {
 					let range = props.range || [0,1];
 					let value = props.value || 0.;
 					obj.value = (value - range[0])/(range[1]-range[0]);
-					this.addLabel(obj, label_text, text_pos, text_zoom);
+					this.addLabel(obj, label_text, text_pos, text_scale);
 				} break;
 				case "n_switch": {
 					obj.shape = SHAPE_BUTTON;
@@ -1040,7 +1052,7 @@ function makeSceneGraph(renderer, gl) {
 					let throws = props.throws || [0,1];
 					let value = props.value || 0.;
 					obj.value = value/(throws.length-1);
-					this.addLabel(obj, label_text, text_pos, text_zoom);
+					this.addLabel(obj, label_text, text_pos, text_scale);
 				} break;
 				default: {
 					obj.color = colorFromString(props.kind);
@@ -1132,10 +1144,9 @@ function makeSceneGraph(renderer, gl) {
 
 					// now we know rows & cols, 
 					// update properly:
-					obj.zoom = UI_DEFAULT_ZOOM;
+					obj.scale = UI_DEFAULT_scale;
 					obj.dim = [ncols, nrows, UI_DEPTH];
 					for (const child of obj.nodes) {
-					// for (let i=0; i<nchildren; i++) {const child = obj.nodes[i];
 						child.pos = [ 
 							0.5 + child.col - ncols/2, 
 							nrows/2 - (0.5 + child.row), 
@@ -1147,21 +1158,21 @@ function makeSceneGraph(renderer, gl) {
 					label_text = obj.kind.toUpperCase();
 					let w = font.charwidth * label_text.length;
 					// scale to fit
-					text_zoom = Math.min(
-						obj.dim[0] * 1/(w+1), // zoom factor to fill width of panel with pad,
-						1/font.charheight, // zoom factor to fill 1 row height
+					text_scale = Math.min(
+						obj.dim[0] * 1/(w+1), // scale factor to fill width of panel with pad,
+						1/font.charheight, // scale factor to fill 1 row height
 					);
 					// to centre the text at the top of the module: 
-					let text_pos = [ 0, obj.dim[1]/2 - 1/2 - 0.25*text_zoom ];
-					this.addLabel(obj, label_text, text_pos, text_zoom);
+					let text_pos = [ 0, obj.dim[1]/2 - 1/2 - 0.25*text_scale ];
+					this.addLabel(obj, label_text, text_pos, text_scale);
 				}
 			}
 			return obj;
 		},
 
 		// text_pos is expressed in the parent's coordinate system
-		// text_zoom will fit the text to the available space
-		addLabel(parent, text, text_pos, text_zoom) {
+		// text_scale will fit the text to the available space
+		addLabel(parent, text, text_pos, text_scale) {
 			let idx = this.textquad_instances.count;
 			const len = text.length;
 			const width = font.charwidth * len;
@@ -1169,7 +1180,7 @@ function makeSceneGraph(renderer, gl) {
 			// reallocate if necessary:
 			this.textquad_instances.allocate(idx + len);
 			// centre it:
-			let x = text_zoom * (text_pos[0] - width/2);
+			let x = text_scale * (text_pos[0] - width/2);
 			let y = text_pos[1];
 			for (var i = 0; i < text.length; i++) {
 				let c = text.charAt(i).toString();
@@ -1192,7 +1203,7 @@ function makeSceneGraph(renderer, gl) {
 					// color:
 		//			vec4.set(obj.i_color, 1, 1, 1, 1)
 					// bounding coordinates of the quad for this character:
-					vec4.scale(textobj.i_fontbounds, char.quad, text_zoom);
+					vec4.scale(textobj.i_fontbounds, char.quad, text_scale);
 					// offset by character location:
 					textobj.i_fontbounds[0] += x;
 					textobj.i_fontbounds[1] += y;
@@ -1204,7 +1215,7 @@ function makeSceneGraph(renderer, gl) {
 					// next instance:
 					idx++; 
 					// update cursor:
-					x += char.xadvance * font.scale * text_zoom;
+					x += char.xadvance * font.scale * text_scale;
 				}
 			}
 
@@ -1223,26 +1234,22 @@ function makeSceneGraph(renderer, gl) {
 			for (let i=0; i<this.module_instances.count; i++) {
 				let obj = this.module_instances.instances[i];
 				let parent = obj.parent;
-				let zoom = obj.zoom * parent.zoom;
+				let scale = obj.scale * parent.scale;
 				// get world pos by transforming through parent's mat
 				vec3.transformMat4(obj.i_pos, obj.pos, obj.parent.mat);
 				// TODO verify this is the right ordering:
 				quat.multiply(obj.i_quat, obj.quat, obj.parent.quat);
-				vec3.copy(obj.i_scale, [
-					obj.dim[0]*zoom, 
-					obj.dim[1]*zoom, 
-					obj.dim[2]*zoom
-				]);
-				// cache the bounding box in each object:
-				// TODO: maybe it would be more efficient altogether to replace i_scale with i_obb?
-				obj.obb = {
-					p0: vec3.negate(vec3.create(), obj.i_scale),
-					p1: obj.i_scale
-				};
+				vec3.copy(obj.i_bb1, [
+					obj.dim[0]*scale, 
+					obj.dim[1]*scale, 
+					obj.dim[2]*scale
+				])
+				// TODO: use a 0..1 cube instead of this silly -1..1 thing
+				vec3.negate(obj.i_bb0, obj.i_bb1)
 				// update our 'toworld' mat:
 				mat4.fromRotationTranslationScale(obj.mat, 
 					obj.i_quat, obj.i_pos, 
-					[obj.zoom, obj.zoom, obj.zoom]
+					[obj.scale, obj.scale, obj.scale]
 				);
 
 				// TODO maybe use obj.i_color / obj.i_shape directly, instead of obj.color?
@@ -1326,9 +1333,9 @@ function makeSceneGraph(renderer, gl) {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 // assumes `instances` is an array of objects
-// each object has `i_pos`, `i_quat`, and `obb` fields
-// `obb` is the oriented bounding box of the object 
-// as { p0:vec3, p1:vec3 } for least & greatest bound points
+// each object has `i_pos`, `i_quat`, and `i_bb0`/`i_bb1` fields
+// `bbN` is the oriented bounding box of the object 
+// as vec3's for least & greatest bound points
 // `ray_origin` and `ray_dir` are vec3 in world space
 // returns an array of hits, sorted by distance (nearest first)
 // each hit is [obj, distance]
@@ -1337,9 +1344,9 @@ function rayTestModules(instances, ray_origin, ray_dir) {
 	let hits = []
 	// naive hit-test by looping over all and testing in turn
 	for (let obj of instances) {
-		if (!obj.obb) continue;  // no bounding box, no test
+		if (!obj.i_bb0 || !obj.i_bb1) continue;  // no bounding box, no test
 		// check for hits:
-		let [hit, distance] = intersectCube(obj.i_pos, obj.i_quat, obj.obb.p0, obj.obb.p1, ray_origin, ray_dir);
+		let [hit, distance] = intersectCube(obj.i_pos, obj.i_quat, obj.i_bb0, obj.i_bb1, ray_origin, ray_dir);
 		if (hit) hits.push([obj, distance]);
 	}
 	// if there are hits, sort them by distance
@@ -1529,13 +1536,14 @@ function animate() {
 	gl.viewport(0, 0, dim[0], dim[1]);
 	gl.enable(gl.DEPTH_TEST)
 	gl.depthMask(true)
-	gl.clearColor(0.2, 0.2, 0.2, 1);
+	gl.clearColor(0., 0., 0., 1);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 	// render the cube with the texture we just rendered to
     gl.bindTexture(gl.TEXTURE_2D, renderer.fbo.colorTexture);
 	renderer.fbo_program.begin();
-	renderer.fbo_program.uniform("u_scale", 1, 1);
+	renderer.fbo_program.uniform("u_windim", dim);
+	renderer.fbo_program.uniform("u_texdim", [renderer.fbo.width, renderer.fbo.height]);
 	renderer.fbo_vao.bind().draw().unbind();
 	renderer.fbo_program.end();	
 
