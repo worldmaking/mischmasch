@@ -11,7 +11,7 @@ Option of having a root node
 
 
 Two scale factors to consider:
-- "scale": A scalar value for the scale factor from parent system, which will be in the parent mat. E.g. modules by defualt will have scale=UI_DEFAULT_scale.
+- "scale": A scalar value for the scale factor from parent system, which will be in the parent mat. E.g. modules by defualt will have scale=UI_DEFAULT_SCALE.
 - "dim": A bounding-scale used to stretch modules to fit no. rows & cols in their grid layout. Sets the bounding box of the object relative to its coordinate frame. 
 
 Child objects' world-space depends on parent's mat4, which factors in "scale", not "dim". 
@@ -41,7 +41,7 @@ const got = require("./got/got.js")
 
 // skip VR if on OSX:
 const USEVR = 1 && (process.platform === "win32");
-let vr = (USEVR) ? require(path.join(nodeglpath, "glutils.js")) : null
+const vr = (USEVR) ? require(path.join(nodeglpath, "openvr.js")) : null
 const USEWS = 0;
 const url = 'ws://localhost:8080'
 const demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
@@ -97,7 +97,7 @@ const SHAPE_BUTTON = 1;
 const SHAPE_CYLINDER = 2;
 const SHAPE_KNOB = 3;
 
-const UI_DEFAULT_scale = 0.1;
+const UI_DEFAULT_SCALE = 0.1;
 const UI_DEPTH = 1/3;
 
 const NEAR_CLIP = 0.01;
@@ -900,7 +900,7 @@ function makeSceneGraph(renderer, gl) {
 					for (let parent of [line.from, line.to]) {
 						let obj = this.getNextModule(parent);
 						obj.name = line.name +":" + parent.name;
-						obj.scale = UI_DEFAULT_scale
+						obj.scale = UI_DEFAULT_SCALE
 						obj.pos = [0, 0, 0]
 						obj.quat = parent.i_quat; //[0, 0, 0, 1]
 						obj.dim = [1/4, 1/4, 1/2]
@@ -969,9 +969,9 @@ function makeSceneGraph(renderer, gl) {
 
 			// default label:
 			let label_text = name;
-			let scale = UI_DEFAULT_scale;
-			let text_scale = Math.min(scale/(label_text.length+1), scale/font.charheight);
-			let text_pos = [ 0, scale*0.4 ];
+			let scale = UI_DEFAULT_SCALE;
+			let text_scale = Math.min(1/(label_text.length+1), 1/font.charheight);
+			let text_pos = [ 0, 0.4 ];
 
 			switch(obj.kind) {
 				case "outlet":
@@ -1099,13 +1099,13 @@ function makeSceneGraph(renderer, gl) {
 
 					// now we know rows & cols, 
 					// update properly:
-					obj.scale = UI_DEFAULT_scale;
-					obj.dim = [ncols, nrows, UI_DEPTH];
+					obj.scale = UI_DEFAULT_SCALE;
+					obj.dim = [ncols, nrows, -UI_DEPTH];
 					for (const child of obj.nodes) {
 						child.pos = [ 
 							0.5 + child.col - ncols/2, 
 							nrows/2 - (0.5 + child.row), 
-							UI_DEPTH 
+							0 
 						];
 					}
 
@@ -1435,7 +1435,7 @@ function animate() {
 		obj.i_highlight[0] = 0;
 	})
 	
-	if(hits.length) {
+	if(hits && hits.length) {
 		console.log("hits:", hits.map(v=>v[0].path))
 		hits.forEach(v=>{
 			v[0].i_highlight[0] = 1;
