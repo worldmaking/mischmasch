@@ -689,7 +689,6 @@ vec2 rotZ(float z, vec2 p) {
 }
 
 void main() {
-	v_color = i_color;
 
 	// Multiply the position by the matrix.
 	vec3 vertex = a_position.xyz;
@@ -734,6 +733,7 @@ void main() {
 	v_normal = normal;
 	v_uv = uv;
 	v_shape = i_shape;
+	v_color = i_color;
 }`,
 `#version 330
 precision mediump float;
@@ -826,10 +826,10 @@ function makeSceneGraph(renderer, gl) {
 			{ name:"i_quat", components:4 },
 			{ name:"i_color", components:4 },
 			{ name:"i_pos", components:3 },
-			{ name:"i_shape", components:1 },
 			{ name:"i_bb0", components:3 },
 			{ name:"i_bb1", components:3 },
 			{ name:"i_value", components:1 },
+			{ name:"i_shape", components:1 },
 		]),
 		line_instances: glutils.createInstances(gl, [
 			{ name:"i_color", components:4 },
@@ -952,9 +952,9 @@ function makeSceneGraph(renderer, gl) {
 						obj.pos = [0, 0, 0]
 						obj.quat = parent.i_quat; //[0, 0, 0, 1]
 						obj.dim = [1/4, 1/4, 1/2]
-						obj.color = [0.75, 0.75, 0.75, 1]
-						obj.shape = SHAPE_CYLINDER;
-						obj.value = 0;
+						vec4.set(obj.i_color, 0.75, 0.75, 0.75, 1)
+						obj.i_shape[0] = SHAPE_CYLINDER;
+						obj.i_value[0] = 0;
 					}
 
 					
@@ -1008,7 +1008,8 @@ function makeSceneGraph(renderer, gl) {
 			// get basic pose:
 			obj.pos = props.pos || [0, 0, 0];
 			obj.quat = props.orient || [0, 0, 0, 1];
-			obj.shape = SHAPE_BOX;
+			obj.i_shape[0] = SHAPE_BOX;
+			vec4.set(obj.i_color, 0.5, 0.5, 0.5, 1);
 			obj.scale = 1;
 			obj.dim = [1, 1, UI_DEPTH]
 
@@ -1021,41 +1022,41 @@ function makeSceneGraph(renderer, gl) {
 			switch(obj.kind) {
 				case "outlet":
 				case "inlet":  {
-					obj.shape = SHAPE_CYLINDER;
-					obj.color = props.kind == "inlet" ? [0.5, 0.5, 0.5, 1] : [0.25, 0.25, 0.25, 1];
+					obj.i_shape[0] = SHAPE_CYLINDER;
+					vec4.copy(obj.i_color, props.kind == "inlet" ? [0.5, 0.5, 0.5, 1] : [0.25, 0.25, 0.25, 1]);
 					obj.dim = [1/3, 1/3, UI_DEPTH/2];
 					obj.nodes = []
 					this.addLabel(obj, label_text, text_pos, text_scale);
 				} break;
 				case "small_knob": {
-					obj.shape = SHAPE_KNOB;
-					obj.color = colorFromString(name);
+					obj.i_shape[0] = SHAPE_KNOB;
+					vec4.copy(obj.i_color, colorFromString(name));
 					obj.dim = [1/2, 1/2, UI_DEPTH];
 					let range = props.range || [0,1];
 					let value = props.value || 0.;
-					obj.value = (value - range[0])/(range[1]-range[0]);
+					obj.i_value[0] = (value - range[0])/(range[1]-range[0]);
 					this.addLabel(obj, label_text, text_pos, text_scale);
 				} break;
 				case "knob": 
 				case "large_knob":  {
-					obj.shape = SHAPE_KNOB;
-					obj.color = colorFromString(name);
+					obj.i_shape[0] = SHAPE_KNOB;
+					vec4.copy(obj.i_color, colorFromString(name));
 					obj.dim = [2/3, 2/3, UI_DEPTH];
 					let range = props.range || [0,1];
 					let value = props.value || 0.;
-					obj.value = (value - range[0])/(range[1]-range[0]);
+					obj.i_value[0] = (value - range[0])/(range[1]-range[0]);
 					this.addLabel(obj, label_text, text_pos, text_scale);
 				} break;
 				case "n_switch": {
-					obj.shape = SHAPE_BUTTON;
-					obj.color = colorFromString(name);
+					obj.i_shape[0] = SHAPE_BUTTON;
+					vec4.copy(obj.i_color, colorFromString(name));
 					let throws = props.throws || [0,1];
 					let value = props.value || 0.;
-					obj.value = value/(throws.length-1);
+					obj.i_value[0] = value/(throws.length-1);
 					this.addLabel(obj, label_text, text_pos, text_scale);
 				} break;
 				default: {
-					obj.color = colorFromString(props.kind);
+					vec4.copy(obj.i_color, colorFromString(props.kind));
 					obj.nodes = [];
 
 					// will recurse to sub-nodes:
@@ -1251,11 +1252,6 @@ function makeSceneGraph(renderer, gl) {
 					obj.i_quat, obj.i_pos, 
 					[obj.scale, obj.scale, obj.scale]
 				);
-
-				// TODO maybe use obj.i_color / obj.i_shape directly, instead of obj.color?
-				vec4.copy(obj.i_color, obj.color);
-				obj.i_shape[0] = obj.shape;			
-				obj.i_value[0] = obj.value; 
 			}
 
 			for (let i=0; i<this.textquad_instances.count; i++) {
@@ -1284,14 +1280,6 @@ function makeSceneGraph(renderer, gl) {
 			this.textquad_instances.bind().submit().unbind()
 			return this;
 		},
-
-		// visitModules(callback) {
-		// 	for (let i=0; i<this.module_instances.count; i++) {
-		// 		let obj = this.module_instances.instances[i];
-		// 		callback(obj, i);
-		// 	}
-		// 	return this;
-		// },
 
 		draw(gl) {
 			gl.enable(gl.BLEND);
@@ -1421,7 +1409,6 @@ function animate() {
 		sceneGraph.rebuild(localGraph);
 	}
 	
-
 	//if(wsize) console.log("FB size: "+wsize.width+', '+wsize.height);
 	let hits
 	if (USEVR) {
@@ -1493,6 +1480,8 @@ function animate() {
 			console.log("hits:", hits.length)
 		}
 	}
+
+	sceneGraph.submit()
 
 	// render to our targetTexture by binding the framebuffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, renderer.fbo.id);
