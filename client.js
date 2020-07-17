@@ -83,9 +83,10 @@ function intersectCube(boxPos, boxQuat, p0, p1, rayOrigin, rayDir) {
 	// sort into first (entry) and second (exit) hits:
 	let tmin = vec3.min(vec3.create(), t0, t1); 
 	let tmax = vec3.max(vec3.create(), t0, t1);
-	// ray is a hit if the furthest entry plane is before the nearest exit plane
+	// ray is a hit if the last(furthest) entry plane is before the first(nearest) exit plane
 	let tentry = Math.max(tmin[0], tmin[1], tmin[2])
 	let texit = Math.min(tmax[0], tmax[1], tmax[2])
+
 	// hit if entry is before exit:
 	return [tentry <= texit && texit > 0, tentry];
 }
@@ -99,6 +100,7 @@ const SHAPE_KNOB = 3;
 
 const UI_DEFAULT_SCALE = 0.1;
 const UI_DEPTH = 1/3;
+const UI_NUDGE = 0.01;
 
 const NEAR_CLIP = 0.01;
 const FAR_CLIP = 20;
@@ -133,29 +135,83 @@ const UI = {
 	hmd: {
 		pos: [0, 1.4, 1],
 		orient: [0, 0, 0, 1],
+		mat: mat4.create(),
 	},
 	hands: [
 		{
-			pos: [-0.5, 1, 0.5],
+			pos: [-0.5, -1, 0.5],
 			orient: [0, 0, 0, 1],
+			mat: mat4.create(),
+			dir: vec3.fromValues(0, 0, -1),
 		},
 		{
-			pos: [+0.5, 1, 0.5],
+			pos: [+0.5, -1, 0.5],
 			orient: [0, 0, 0, 1],
+			mat: mat4.create(),
+			dir: vec3.fromValues(0, 0, -1),
 		}
-	]
+	],
+
+	init(renderer, gl) {
+		this.line_vao = glutils.createVao(gl, renderer.line_geom, renderer.ray_program.id)
+		this.line_instances = glutils.createInstances(gl, [
+			//{ name:"i_color", components:4 },
+			{ name:"i_pos", components:3 },
+			{ name:"i_len", components:1 },
+			{ name:"i_dir", components:3 },
+		]);
+		this.line_instances.attachTo(this.line_vao).allocate(16);
+
+		for (let hand of this.hands) {
+			let line = this.line_instances.instances[this.line_instances.count];
+			this.line_instances.count++;
+			hand.line = line;
+			//vec4.set(line.i_color, 1, 1, 1, 1);
+		}
+
+		return this.updateInstances();
+	},
+
+	updateInstances() {
+		for (let hand of this.hands) {
+			vec3.copy(hand.line.i_pos, hand.pos)
+			vec3.copy(hand.line.i_dir, hand.dir)
+			hand.line.i_len[0] = hand.target ? hand.target[1] : 1
+		}
+		return this.submit()
+	},
+
+	submit() {
+		this.line_instances.bind().submit().unbind()
+		return this;
+	},
+
+	draw(gl) {
+
+		for (let hand of this.hands) {
+			if (!hand.mat) continue; // i.e. if not connected
+			renderer.wand_program.begin();
+			renderer.wand_program.uniform("u_viewmatrix", viewmatrix);
+			renderer.wand_program.uniform("u_projmatrix", projmatrix);
+			renderer.wand_program.uniform("u_modelmatrix", hand.mat);
+			renderer.wand_vao.bind().draw().unbind();
+			renderer.wand_program.end();
+		}
+
+		renderer.ray_program.begin();
+		renderer.ray_program.uniform("u_viewmatrix", viewmatrix);
+		renderer.ray_program.uniform("u_projmatrix", projmatrix);
+		// consider gl.LINE_STRIP with simpler geometry
+		this.line_vao.bind().drawInstanced(this.line_instances.count, gl.LINES).unbind()
+		renderer.ray_program.end();
+		return this;
+	},
 }
 
 let mouse = {
 	// location of mouse in normalized device coordinates (-1..1)
 	ndc: [0, 0, 0, 1],
 }
-
-// tracking info for VR:
-let hmd = null, hands = [null, null]; // L, R
-
-// debug TODO remove later
-let point = [0, 0, 0, 1]
 
 let vrdim = [4096, 4096];
 
@@ -523,6 +579,70 @@ void main() {
 	outColor *= v_color * stipple;
 }`
 	);
+	renderer.ray_program = glutils.makeProgram(gl,
+		`#version 330
+		uniform mat4 u_viewmatrix;
+		uniform mat4 u_projmatrix;
+		uniform float u_stiffness;
+		
+		// instance variables:
+		in vec3 i_pos;
+		in float i_len;
+		in vec3 i_dir;
+		
+		in float a_position; // not actually used...
+		in vec2 a_texCoord;
+		
+		out float v_t;
+		
+		vec3 quat_rotate(vec4 q, vec3 v) {
+			return v + 2.0*cross(q.xyz, cross(q.xyz, v) + q.w*v);
+		}
+		vec4 quat_rotate(vec4 q, vec4 v) {
+			return vec4(v.xyz + 2.0*cross(q.xyz, cross(q.xyz, v.xyz) + q.w*v.xyz), v.w);
+		}
+		
+		vec3 bezier(float t, vec3 v0, vec3 v1, vec3 v2, vec3 v3) {
+			// interp the 3 line segments:
+			vec3 v01 = mix(v0, v1, t);
+			vec3 v12 = mix(v1, v2, t);
+			vec3 v23 = mix(v2, v3, t);
+			// interp those:
+			vec3 v012 = mix(v01, v12, t);
+			vec3 v123 = mix(v12, v23, t);
+			// interp those:
+			return mix(v012, v123, t);
+		}
+		
+		float smootherstep(float edge0, float edge1, float x) {
+			x = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+			return x*x*x*(x*(x*6 - 15) + 10);
+		}
+		
+		void main() {
+			float t = a_texCoord.x;
+		
+			// derive point from bezier:
+			vec3 vertex = i_pos + i_dir*(t*i_len);
+			
+			gl_Position = u_projmatrix * u_viewmatrix * vec4(vertex, 1.);
+			v_t = t;
+		}`,
+		`#version 330
+		precision mediump float;
+		
+		in float v_t;
+		out vec4 outColor;
+		
+		void main() {
+			// stippling:
+			// float stipplerate = 1.; // 1.0
+			// float stippleclamp = 0.; 
+			// float stipple = 1. - 0.372*smoothstep(stippleclamp, 1.-stippleclamp, abs(sin(3.141592653589793 * v_t * stipplerate)));
+			float stipple = smoothstep(0., 1., 0.5+abs(v_t - 0.5));
+			outColor = vec4(stipple);
+		}`
+	);
 	renderer.textquad_program = glutils.makeProgram(gl, 
 `#version 330
 uniform mat4 u_viewmatrix;
@@ -684,7 +804,7 @@ void main() {
 	v_normal = normal;
 	v_uv = uv;
 	v_shape = i_shape;
-	v_color = i_color * (1.+i_highlight);
+	v_color = i_color + (i_highlight*0.5);
 }`,
 `#version 330
 precision mediump float;
@@ -867,7 +987,7 @@ function makeSceneGraph(renderer, gl) {
 			this.root = {
 				// matrix transform object2world:
 				mat: mat4.create(), 
-				quat: [0, 0, 0, 1],
+				i_quat: [0, 0, 0, 1],
 				name: "root",
 				scale: 1,
 				nodes: [],
@@ -893,34 +1013,33 @@ function makeSceneGraph(renderer, gl) {
 					if (!line.from || !line.to) continue;
 
 					vec4.set(line.i_color, 1, 1, 1, 1);
-					line.name = line.from.name + ">" + line.to.name
+					line.name = line.from.path + ">" + line.to.path
 					this.line_instances.count++;
 
 					// add jack cylinders:
 					for (let parent of [line.from, line.to]) {
 						let obj = this.getNextModule(parent);
 						obj.name = line.name +":" + parent.name;
+						obj.kind = "jack"
 						obj.scale = UI_DEFAULT_SCALE
-						obj.pos = [0, 0, 0]
-						obj.quat = parent.i_quat; //[0, 0, 0, 1]
 						obj.dim = [1/4, 1/4, 1/2]
-						vec4.set(obj.i_color, 0.75, 0.75, 0.75, 1)
+						obj.pos = [0, 0, 0]
+						obj.quat = [0, 0, 0, 1]
+						vec4.set(obj.i_color, 0.5, 0.5, 0.5, 1)
 						obj.i_shape[0] = SHAPE_CYLINDER;
 						obj.i_value[0] = 0;
 					}
-
-					
 				}
 			}
 			this.line_instances.count = graph.arcs.length;
-			return this;
+			return this.updateInstances();
 		},
 
 		getNextModule(parent) {
 			// create a module instance:
 			// reallocate space if needed
-			if (this.module_instances.count >= this.module_instances.allocated) {
-				this.module_instances.allocate(Math.min(4, this.module_instances.allocated*2));
+			if (this.module_instances.count >= this.module_instances.allocated) {			
+				this.module_instances.allocate(Math.max(4, this.module_instances.allocated*2));
 			}
 			let obj = this.module_instances.instances[this.module_instances.count];
 			this.module_instances.count++;
@@ -936,12 +1055,6 @@ function makeSceneGraph(renderer, gl) {
 
 		rebuildNode(name, node, parent, parent_path) {
 			const props = node._props || {}
-
-			// create a module instance:
-			// reallocate space if needed
-			if (this.module_instances.count >= this.module_instances.allocated) {
-				this.module_instances.allocate(Math.min(4, this.module_instances.allocated*2));
-			}
 
 			let obj = this.getNextModule(parent);
 
@@ -978,7 +1091,7 @@ function makeSceneGraph(renderer, gl) {
 				case "inlet":  {
 					obj.i_shape[0] = SHAPE_CYLINDER;
 					vec4.copy(obj.i_color, props.kind == "inlet" ? [0.5, 0.5, 0.5, 1] : [0.25, 0.25, 0.25, 1]);
-					obj.dim = [1/3, 1/3, UI_DEPTH/2];
+					obj.dim = [1/2, 1/2, -UI_DEPTH];
 					obj.nodes = []
 					this.addLabel(obj, label_text, text_pos, text_scale);
 				} break;
@@ -1004,6 +1117,7 @@ function makeSceneGraph(renderer, gl) {
 				case "n_switch": {
 					obj.i_shape[0] = SHAPE_BUTTON;
 					vec4.copy(obj.i_color, colorFromString(name));
+					obj.dim = [2/3, 2/3, UI_DEPTH];
 					let throws = props.throws || [0,1];
 					let value = props.value || 0.;
 					obj.i_value[0] = value/(throws.length-1);
@@ -1102,11 +1216,11 @@ function makeSceneGraph(renderer, gl) {
 					obj.scale = UI_DEFAULT_SCALE;
 					obj.dim = [ncols, nrows, -UI_DEPTH];
 					for (const child of obj.nodes) {
-						child.pos = [ 
+						vec3.set(child.pos,
 							0.5 + child.col - ncols/2, 
-							nrows/2 - (0.5 + child.row), 
-							0 
-						];
+							nrows/2 - (0.5 + child.row),
+							UI_NUDGE
+						);
 					}
 
 					// add module label:
@@ -1134,6 +1248,7 @@ function makeSceneGraph(renderer, gl) {
 
 			// reallocate if necessary:
 			this.textquad_instances.allocate(idx + len);
+			
 			// centre it:
 			let x = text_scale * (text_pos[0] - width/2);
 			let y = text_pos[1];
@@ -1191,7 +1306,7 @@ function makeSceneGraph(renderer, gl) {
 				// get world pos by transforming through parent's mat
 				vec3.transformMat4(obj.i_pos, obj.pos, obj.parent.mat);
 				// TODO verify this is the right ordering:
-				quat.multiply(obj.i_quat, obj.quat, obj.parent.quat);
+				quat.multiply(obj.i_quat, obj.quat, obj.parent.i_quat);
 				vec3.copy(obj.i_bb0, [
 					obj.dim[0]*-0.5*scale, 
 					obj.dim[1]*-0.5*scale, 
@@ -1237,9 +1352,6 @@ function makeSceneGraph(renderer, gl) {
 		},
 
 		draw(gl) {
-			gl.enable(gl.BLEND);
-			gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-			gl.depthMask(false)
 
 			renderer.module_program.begin();
 			renderer.module_program.uniform("u_viewmatrix", viewmatrix);
@@ -1263,9 +1375,7 @@ function makeSceneGraph(renderer, gl) {
 			renderer.textquad_program.uniform("u_projmatrix", projmatrix);
 			this.textquad_vao.bind().drawInstanced(this.textquad_instances.count).unbind()
 			renderer.textquad_program.end();
-		
-			gl.disable(gl.BLEND);
-			gl.depthMask(true);
+	
 			return this;
 		},
 	}
@@ -1371,48 +1481,37 @@ function animate() {
 		let inputs = vr.inputSources()
 		for (let input of inputs) {
 			if (input.targetRayMode == "gaze") {
-				hmd = input;
-
 				let mat = input.targetRaySpace; // mat4
 				if (mat) {
+					mat4.copy(UI.hmd.mat, mat)
 					mat4.getTranslation(UI.hmd.pos, mat);
 					mat4.getRotation(UI.hmd.orient, mat);
 				}
-			} else if (input.handedness == "left") {
-				hands[0] = input;
-				let mat = input.targetRaySpace; // mat4
+			} else if (input.targetRayMode == "tracked-pointer") {
+				// hand
+				let idx = (input.handedness == "right") ? 1 : 0;
+				let hand = UI.hands[idx]
+
+				let {buttons, axes} = input.gamepad;
+				hand.trigger = buttons[0].value
+				hand.trigger_pressed = buttons[0].pressed
+				hand.pad_pressed = buttons[2].pressed
+				hand.pad_x = axes[0]
+				hand.pad_y = axes[1]
+				hand.grip_pressed = buttons[1].pressed
+				hand.menu_pressed = buttons[3].pressed
+
+				let mat = input.targetRaySpace;
 				if (mat) {
-					mat4.getTranslation(UI.hands[0].pos, mat);
-					mat4.getRotation(UI.hands[0].orient, mat);
-				}
-			} else if (input.handedness == "right") {
-				hands[1] = input;
-				let mat = input.targetRaySpace; // mat4
-				if (mat) {
-					mat4.getTranslation(UI.hands[1].pos, mat);
-					mat4.getRotation(UI.hands[1].orient, mat);
+					mat4.copy(hand.mat, mat)
+					mat4.getTranslation(hand.pos, mat);
+					mat4.getRotation(hand.orient, mat);
+					vec3.negate(hand.dir, mat.slice(8, 11))
+
+					hits = rayTestModules(sceneGraph.module_instances.instances, hand.pos, hand.dir)
+					hand.target = hits[0]
 				}
 			}
-		}
-
-		for (let hand of hands) {
-			if (!hand) continue; // i.e. if not connected
-			let mat = hand.targetRaySpace; // mat4
-			let {buttons, axes} = hand.gamepad;
-			let trigger = buttons[0].value, pressed = buttons[0].pressed
-			let grip = buttons[1].pressed
-			let pad = buttons[2].pressed
-			let menu = buttons[3].pressed
-			let [x, y] = axes; // touchpad axes
-
-			if (!mat) continue;
-
-			// //console.log(trigger, pressed, grip, pad, menu, x, y)
-			let ray_origin = mat.slice(12, 15)  // translation component
-			let ray_dir = mat.slice(8, 11)  // local Z axis
-			vec3.negate(ray_dir, ray_dir)
-
-			hits = rayTestModules(sceneGraph.module_instances.instances, ray_origin, ray_dir)
 		}
 	} else {
 		// use mouse:
@@ -1436,11 +1535,11 @@ function animate() {
 	})
 	
 	if(hits && hits.length) {
-		console.log("hits:", hits.map(v=>v[0].path))
-		hits.forEach(v=>{
-			v[0].i_highlight[0] = 1;
-		})
+		//console.log("hits:", hits.map(v=>v[0].path))
+		hits[0][0].i_highlight[0] = 1;
 	}
+
+	UI.updateInstances()
 	// instance vars can change on a frame by frame basis;
 	// propagate their changes (scene graph) and update the GPU accordingly:
 	//sceneGraph.updateInstances()
@@ -1518,15 +1617,9 @@ function draw(eye=0) {
 	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 	gl.depthMask(false)
 
-	for (let hand of hands) {
-	 	if (!hand || !hand.targetRaySpace) continue; // i.e. if not connected
-		renderer.wand_program.begin();
-		renderer.wand_program.uniform("u_viewmatrix", viewmatrix);
-		renderer.wand_program.uniform("u_projmatrix", projmatrix);
-		renderer.wand_program.uniform("u_modelmatrix", hand.targetRaySpace);
-		renderer.wand_vao.bind().draw().unbind();
-		renderer.wand_program.end();
-	}
+
+
+	UI.draw(gl);
 
 	if (UI.menuMode){
 		menuSceneGraph.draw(gl)
@@ -1549,7 +1642,7 @@ let incomingDeltas = [];
 function initMenu(menuModules) {
 	let module_names = Object.keys(menuModules)
 		//.concat(operatorNames)
-	let ncols = Math.min(24, Math.max(12, Math.ceil(Math.sqrt(module_names.length))))
+	let ncols = 16
 	let nrows = Math.min(6, Math.ceil(module_names.length / ncols));
 	console.log("menu", module_names.length, nrows, ncols)
 	let i = 0;
@@ -1557,7 +1650,7 @@ function initMenu(menuModules) {
         for(let col = 0; col < ncols && i < module_names.length; col++, i++){
 			let name = module_names[i]
 			let theta = col * (2 * Math.PI) / ncols;
-            let r = 0.75;
+            let r = 1;
             let x = r * Math.sin(theta);
             let z = r * Math.cos(theta);
 			let y = 1.1 + -.4 * (row - (nrows/2));
@@ -1636,10 +1729,12 @@ async function init() {
 	window = initWindow();
 	initRenderer(renderer);
 
-	// menuGraph.nodes = initMenu(menuModules);
-	// menuSceneGraph = makeSceneGraph(renderer, gl)
-	// menuSceneGraph.init(gl)
-	// menuSceneGraph.rebuild(menuGraph)
+	UI.init(renderer, gl)
+
+	menuGraph.nodes = initMenu(menuModules);
+	menuSceneGraph = makeSceneGraph(renderer, gl)
+	menuSceneGraph.init(gl)
+	menuSceneGraph.rebuild(menuGraph)
 
 	// default graph until server connects:
 	localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
