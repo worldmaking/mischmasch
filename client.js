@@ -949,8 +949,6 @@ function makeSceneGraph(renderer, gl) {
 				}
 			}
 			this.line_instances.count = graph.arcs.length;
-
-
 			this.update(graph);
 		},
 
@@ -1179,7 +1177,7 @@ function makeSceneGraph(renderer, gl) {
 				if (c === " ") {
 					x += font.charwidth;
 				} else if (c === "\t") {
-					x += font.charwidth* 3;
+					x += font.charwidth*3;
 				} else if (c === "\n") {
 					x = 0;
 					y -= font.json.common.lineHeight * font.scale;
@@ -1243,18 +1241,13 @@ function makeSceneGraph(renderer, gl) {
 				};
 				// update our 'toworld' mat:
 				mat4.fromRotationTranslationScale(obj.mat, 
-					obj.quat, obj.pos, 
-					[obj.zoom, obj.zoom, obj.zoom]
-				);
-				mat4.fromRotationTranslationScale(obj.mat, 
 					obj.i_quat, obj.i_pos, 
 					[obj.zoom, obj.zoom, obj.zoom]
 				);
 
 				// TODO maybe use obj.i_color / obj.i_shape directly, instead of obj.color?
 				vec4.copy(obj.i_color, obj.color);
-				obj.i_shape[0] = obj.shape;
-				
+				obj.i_shape[0] = obj.shape;			
 				obj.i_value[0] = obj.value; 
 			}
 
