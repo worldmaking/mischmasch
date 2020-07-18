@@ -196,8 +196,11 @@ const UI = {
 						hand.state = "default";
 					}
 				} else if (hand.pad_tap) {
-					// exit menu:
-					hand.state = "default";
+					// exit menu for all controllers:
+					this.hands.forEach(hand=>{
+						if (hand.state == "menu") hand.state = "default";
+					})
+					
 				} 
 			} break;
 		// 	case "dragging": {
@@ -1704,12 +1707,12 @@ function animate() {
 
 				let {buttons, axes} = input.gamepad;
 				hand.trigger = buttons[0].value
-				hand.trigger_pressed = (buttons[0].pressed) ? hand.trigger_pressed++ : 0;
-				hand.pad_pressed = (buttons[2].pressed) ? hand.pad_pressed++ : 0;
+				hand.trigger_pressed = (buttons[0].pressed) ? hand.trigger_pressed+1 : 0;
+				hand.pad_pressed = (buttons[2].pressed) ? hand.pad_pressed+1 : 0;
 				hand.pad_x = axes[0]
 				hand.pad_y = axes[1]
-				hand.grip_pressed = (buttons[1].pressed) ? hand.grip_pressed++ : 0;
-				hand.menu_pressed = (buttons[3].pressed) ? hand.menu_pressed++ : 0;
+				hand.grip_pressed = (buttons[1].pressed) ? hand.grip_pressed+1 : 0;
+				hand.menu_pressed = (buttons[3].pressed) ? hand.menu_pressed+1 : 0;
 
 				let mat = input.targetRaySpace;
 				if (mat) {
