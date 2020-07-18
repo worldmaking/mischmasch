@@ -145,7 +145,7 @@ const UI = {
 			dir: vec3.fromValues(0, 0, -1),
 			// UI:
 			trigger: 0, trigger_pressed: 0,
-			pax_x: 0, pad_y: 0, pad_pressed: 0, pad_tap: false,
+			pax_x: 0, pad_y: 0, pad_pressed: 0, 
 			grip_pressed:0, menu_pressed: 0,
 			// state machine:
 			state: "default",
@@ -158,7 +158,7 @@ const UI = {
 			dir: vec3.fromValues(0, 0, -1),
 			// UI:
 			trigger: 0, trigger_pressed: 0,
-			pax_x: 0, pad_y: 0, pad_pressed: 0, pad_tap: false,
+			pax_x: 0, pad_y: 0, pad_pressed: 0, 
 			grip_pressed:0, menu_pressed: 0,
 			// state machine:
 			state: "default",
@@ -178,7 +178,7 @@ const UI = {
 			[object, distance] = hand.target
 		}
 
-		hand.pad_tap = (hand.pad_pressed == 1); // rising edge only
+		let pad_tap = (hand.pad_pressed == 1); // rising edge only
 		
 		switch(hand.state) {
 			case "menu": {
@@ -195,12 +195,11 @@ const UI = {
 						// exit menu:
 						hand.state = "default";
 					}
-				} else if (hand.pad_tap) {
+				} else if (pad_tap) {
 					// exit menu for all controllers:
 					this.hands.forEach(hand=>{
 						if (hand.state == "menu") hand.state = "default";
 					})
-					
 				} 
 			} break;
 		// 	case "dragging": {
@@ -321,7 +320,7 @@ const UI = {
 							}
 						} break;
 					}
-				} else if (hand.pad_tap) {
+				} else if (pad_tap) {
 					// call up the menu:
 					hand.state = "menu";
 				}
