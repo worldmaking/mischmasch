@@ -44,7 +44,7 @@ const USEVR = 1 && (process.platform === "win32");
 const vr = (USEVR) ? require(path.join(nodeglpath, "openvr.js")) : null
 const USEWS = 0;
 const url = 'ws://localhost:8080'
-const demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
+const demoScene = path.join(__dirname, "scene_files", "scene_graham.json")
 const shaderpath = path.join(__dirname, "shaders")
 
 // generate a random name for new object:
@@ -330,9 +330,22 @@ const UI = {
 			} break;
 			case "dragging": {
 				// stick to what we picked:
+				if (object) object.i_highlight[0] = 0
 				object = hand.stateData.object
 				object.i_highlight[0] = 1
 				// update object pose
+
+				/*
+				hand.stateData.handPos = vec3.clone(hand.pos)
+				hand.stateData.handOrient = quat.clone(hand.orient)
+				hand.stateData.objectPos = vec3.clone(object.pos)
+				hand.stateData.objectOrient = quat.clone(object.quat)
+				*/
+
+				let dpos = vec3.sub(vec3.create(), hand.pos, hand.stateData.handPos)
+
+				vec3.add(object.pos, hand.stateData.objectPos, dpos)
+				console.log(object.pos)
 
 				// use pad-scrollY to throw module closer/further
 
@@ -348,6 +361,7 @@ const UI = {
 			} break;
 			case "buttoning": {
 				// stick to what we picked:
+				if (object) object.i_highlight[0] = 0
 				object = hand.stateData.object
 				object.i_highlight[0] = 1
 				if (hand.trigger_pressed) {
@@ -360,6 +374,7 @@ const UI = {
 			case "twiddling": 
 			case "swinging": {
 				// stick to what we picked:
+				if (object) object.i_highlight[0] = 0
 				object = hand.stateData.object
 				object.i_highlight[0] = 1
 				if (hand.trigger_pressed) {
@@ -482,6 +497,10 @@ const UI = {
 								hand.state = "dragging";
 								// cache initial hand & object transforms here
 								hand.stateData.object = object
+								hand.stateData.handPos = vec3.clone(hand.pos)
+								hand.stateData.handOrient = quat.clone(hand.orient)
+								hand.stateData.objectPos = vec3.clone(object.pos)
+								hand.stateData.objectOrient = quat.clone(object.quat)
 							}
 						} break;
 					}
@@ -1442,6 +1461,10 @@ function makeSceneGraph(renderer, gl) {
 					obj.dim = [1/2, 1/2, -UI_DEPTH];
 					obj.nodes = []
 					obj.cablingKind = (props.kind == "inlet") ? "input" : "output";
+					if (props.history) {
+						// render history outs differently:
+						obj.i_shape[0] = SHAPE_BOX;
+					}
 					this.addLabel(obj, label_text, text_pos, text_scale);
 				} break;
 				case "small_knob": {
@@ -1888,7 +1911,7 @@ function animate() {
 	// instance vars can change on a frame by frame basis;
 	// propagate their changes (scene graph) and update the GPU accordingly:
 	//mainScene.updateInstances()
-	currentScene.submit();
+	currentScene.updateInstances();
 
 	// render to our targetTexture by binding the framebuffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, renderer.fbo.id);
