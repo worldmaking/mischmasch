@@ -196,7 +196,6 @@ const UI = {
 		},
 
 		move(dt=1/60) {
-			console.log(this.mouse)
 			// near plane point
 			let cam_near = vec3.transformMat4(vec3.create(), [this.mouse[0], this.mouse[1], -1], projmatrix_inverse);
 			let world_near = vec3.transformMat4(vec3.create(), cam_near, viewmatrix_inverse);
@@ -750,7 +749,7 @@ in vec2 a_texCoord;
 // in vec4 i_quat;
 
 out vec4 v_color;
-out vec3 v_normal;
+out vec3 v_normal, v_cnormal;
 out vec2 v_uv;
 
 void main() {
@@ -765,6 +764,7 @@ void main() {
 	vec2 uv = a_texCoord;
 	//normal = quat_rotate(i_quat, normal);
 	v_normal = normal;
+	v_cnormal = mat3(u_viewmatrix) * normal;
 	v_uv = uv;
 	v_color = vec4(1.);
 }
@@ -773,7 +773,7 @@ void main() {
 precision mediump float;
 
 in vec4 v_color;
-in vec3 v_normal;
+in vec3 v_normal, v_cnormal;
 in vec2 v_uv;
 
 out vec4 outColor;
@@ -781,6 +781,9 @@ out vec4 outColor;
 void main() {
 	outColor = v_color;
 	vec3 normal = normalize(v_normal);
+
+	vec3 cnormal = normalize(v_normal);
+	float cd = pow(1.-abs(dot(cnormal, vec3(0, 0, -1))), 2.);
 
 	vec2 dxt = dFdx(v_uv);
 	vec2 dyt = dFdy(v_uv);
@@ -791,6 +794,8 @@ void main() {
 	vec2 v2 = smoothstep(1., 1.-line*8., abs(v));
 	float line2 = 1.-(v2.x*v2.y);
 	outColor *= max(line1, line2) ; // this over exposes the color making it look brighter * vec4(4.);
+
+	outColor = vec4(cd*0.3);
 }`
 	);
 	renderer.line_program = glutils.makeProgram(gl,
@@ -1747,36 +1752,7 @@ function initUI(window) {
 			// mouse in NDC coordinates:
 			UI.keynav.mouse[0] = +2*px/dim[0] + -1;
 			UI.keynav.mouse[1] = -2*py/dim[1] + +1;
-
-			// // near plane point
-			// let cam_near = vec3.transformMat4(vec3.create(), [mouse[0], mouse[1], -1], projmatrix_inverse);
-			// let world_near = vec3.transformMat4(vec3.create(), cam_near, viewmatrix_inverse);
-			// // far plane point
-			// let cam_far = vec3.transformMat4(vec3.create(), [mouse[0], mouse[1], +1], projmatrix_inverse);	
-			// let world_far = vec3.transformMat4(vec3.create(), cam_far, viewmatrix_inverse);
-			// let ray_dir = vec3.sub(vec3.create(), world_far, world_near);
-			// vec3.normalize(ray_dir, ray_dir);
-
-			// // assign az/el for keynav:
-			// let [az, el] = mouse;
-			// // deadzone percentage, so that part of screen centre is at rest
-			// let deadzone = 0.5;
-			// let power = 2;
-			// az = Math.sign(az) * Math.pow(Math.max(0, (Math.abs(az)-deadzone)/(1.-deadzone)), power);
-			// el = Math.sign(el) * Math.pow(Math.max(0, Math.abs(el)), power);
-			// el = Math.max(Math.min(el, 1.), -1.);
-			
-			// UI.keynav.azimuth += 1/60 * az * -360;
-			// UI.keynav.elevation = el * 90;
-		
-			// // compute a UI.hands[0] pos/orient/mat from the mouse & projview mat
-			// vec3.scale(UI.hands[0].pos, ray_dir, 0.25);
-			// vec3.add(UI.hands[0].pos, world_near, UI.hands[0].pos);
-			// mat4.getRotation(UI.hands[0].orient, viewmatrix_inverse);
-			// mat4.fromRotationTranslation(UI.hands[0].mat, UI.hands[0].orient, UI.hands[0].pos)
-			// vec3.copy(UI.hands[0].dir, ray_dir)
 		}
-		
 	});
 
 	glfw.setKeyCallback(window, (win, key, scan, down, mod)=>{
