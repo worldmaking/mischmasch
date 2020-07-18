@@ -44,7 +44,7 @@ const USEVR = 1 && (process.platform === "win32");
 const vr = (USEVR) ? require(path.join(nodeglpath, "openvr.js")) : null
 const USEWS = 0;
 const url = 'ws://localhost:8080'
-const demoScene = path.join(__dirname, "scene_files", "scene_graham.json")
+const demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
 const shaderpath = path.join(__dirname, "shaders")
 
 // generate a random name for new object:
@@ -334,20 +334,14 @@ const UI = {
 				object = hand.stateData.object
 				object.i_highlight[0] = 1
 				// update object pose
+				//the transform from when dragging started to the current pose:
+				let transform = mat4.multiply(mat4.create(), hand.mat, hand.stateData.inverseHandMat)
 
-				/*
-				hand.stateData.handPos = vec3.clone(hand.pos)
-				hand.stateData.handOrient = quat.clone(hand.orient)
-				hand.stateData.objectPos = vec3.clone(object.pos)
-				hand.stateData.objectOrient = quat.clone(object.quat)
-				*/
-
-				let dpos = vec3.sub(vec3.create(), hand.pos, hand.stateData.handPos)
-
-				vec3.add(object.pos, hand.stateData.objectPos, dpos)
-				console.log(object.pos)
-
-				// use pad-scrollY to throw module closer/further
+				// apply this to the dragged object:
+				vec3.transformMat4(object.pos, hand.stateData.objectPos, transform)
+				quat.multiply(object.quat, mat4.getRotation(quat.create(), transform), hand.stateData.objectOrient)
+				
+				// use pad-scrollY to throw module closer/further?
 
 				// check for exit:
 				if (!hand.trigger_pressed) {
@@ -497,10 +491,26 @@ const UI = {
 								hand.state = "dragging";
 								// cache initial hand & object transforms here
 								hand.stateData.object = object
-								hand.stateData.handPos = vec3.clone(hand.pos)
-								hand.stateData.handOrient = quat.clone(hand.orient)
+								// hand.stateData.handPos = vec3.clone(hand.pos)
+								// hand.stateData.handOrient = quat.clone(hand.orient)
+								// hand.stateData.objectPos = vec3.clone(object.pos)
+								// 
+
+								// // actually what we want is the pose of the object relative to the hand:
+								// hand.stateData.objectRelPos = vec3.sub(vec3.create(), object.pos, hand.pos)
+								// glutils.quat_unrotate(hand.stateData.objectRelPos, hand.orient, hand.stateData.objectRelPos)
+
+								// hand.stateData.handMat = mat4.clone(hand.mat)
+								// hand.stateData.objectMat = mat4.clone(object.mat)
+
+
+								// get pose of object at start of drag:
 								hand.stateData.objectPos = vec3.clone(object.pos)
 								hand.stateData.objectOrient = quat.clone(object.quat)
+
+								hand.stateData.inverseHandMat = mat4.clone(hand.mat)
+								mat4.invert(hand.stateData.inverseHandMat, hand.stateData.inverseHandMat)
+								
 							}
 						} break;
 					}
