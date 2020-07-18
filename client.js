@@ -153,8 +153,22 @@ const UI = {
 	},
 
 	keynav: {
+
+		pos: vec3.fromValues(0, 0, 1),
+		orient: quat.create(),
+		// unit vectors of orientation:
+		fwd: vec3.create(0, 0, -1),
+		strafe: vec3.create(1, 0, 0),
+		up: vec3.create(0, 1, 0),
+		azimuth: 0,
+		elevation: 0,
+
+		mouse: [0,0], // ndc
+
+		eyeHeight: 1.25,
 		fwdState: 0,
 		strafeState: 0,
+		turnState: 0,
 		speed: 1, // metres per second
 		keySpeed: 1,
 		
@@ -167,16 +181,70 @@ const UI = {
 				case 264: // down
 				this.fwdState = down ? -1 : 0; break;
 				case 68: // D
-				case 262: // right
 				this.strafeState = down ? 1 : 0; break;
+				case 262: // right
+				this.turnState = down ? 1 : 0; break;
 				case 65: // A
-				case 263: // left
 				this.strafeState = down ? -1 : 0; break;
+				case 263: // left
+				this.turnState = down ? -1 : 0; break;
 			}
 			// handle mod, e.g. shift for 'run' and ctrl for 'creep'
 			let shift = !!(mod % 2);
 			let ctrl = !!(mod % 4);
 			this.keySpeed = shift ? 4 : ctrl ? 1/4 : 1;
+		},
+
+		move(dt=1/60) {
+			console.log(this.mouse)
+			// near plane point
+			let cam_near = vec3.transformMat4(vec3.create(), [this.mouse[0], this.mouse[1], -1], projmatrix_inverse);
+			let world_near = vec3.transformMat4(vec3.create(), cam_near, viewmatrix_inverse);
+			// far plane point
+			let cam_far = vec3.transformMat4(vec3.create(), [this.mouse[0], this.mouse[1], +1], projmatrix_inverse);	
+			let world_far = vec3.transformMat4(vec3.create(), cam_far, viewmatrix_inverse);
+			let ray_dir = vec3.sub(vec3.create(), world_far, world_near);
+			vec3.normalize(ray_dir, ray_dir);
+			// compute a UI.hands[0] pos/orient/mat from the mouse & projview mat
+			vec3.scale(UI.hands[0].pos, ray_dir, 0.25);
+			vec3.add(UI.hands[0].pos, world_near, UI.hands[0].pos);
+			mat4.getRotation(UI.hands[0].orient, viewmatrix_inverse);
+			mat4.fromRotationTranslation(UI.hands[0].mat, UI.hands[0].orient, UI.hands[0].pos)
+			vec3.copy(UI.hands[0].dir, ray_dir)
+
+			// assign az/el for keynav:
+			let [az, el] = this.mouse;
+			// deadzone percentage, so that part of screen centre is at rest
+			let deadzone = 0.5;
+			let power = 2;
+			az = Math.abs(az) < 1 ? Math.sign(az) * Math.pow(Math.max(0, (Math.abs(az)-deadzone)/(1.-deadzone)), power) : 0;
+			el = Math.abs(el) < 1 ? Math.sign(el) * Math.pow(Math.max(0, Math.abs(el)), power) : 0;
+			el = Math.max(Math.min(el, 1.), -1.);
+
+			az += this.keySpeed * this.turnState;
+			
+			this.azimuth += dt * az * -180;
+			this.elevation = el * 90;
+			quat.fromEuler(this.orient, this.elevation, this.azimuth, 0);
+		
+			// get unit nav vectors:
+			vec3.transformQuat(this.fwd, [0, 0, -1], this.orient);
+			vec3.transformQuat(this.strafe, [1, 0, 0], this.orient);
+			vec3.transformQuat(this.up, [0, 1, 0], this.orient);
+			// compute velocity:
+			let fwd = vec3.scale(vec3.create(), this.fwd, this.speed * this.keySpeed * dt * this.fwdState);
+			let strafe = vec3.scale(vec3.create(), this.strafe, this.speed * this.keySpeed * dt * this.strafeState);
+			// integrate:
+			vec3.add(this.pos, this.pos, fwd);
+			vec3.add(this.pos, this.pos, strafe);
+			// fix eye height
+			this.pos[1] = this.eyeHeight;
+			return this;
+		},
+
+		updateViewMatrix(viewmatrix) {
+			let at = vec3.add(vec3.create(), this.pos, this.fwd);
+			return mat4.lookAt(viewmatrix, this.pos, at, this.up);
 		},
 	},
 
@@ -1652,7 +1720,7 @@ function rayTestModules(instances, ray_origin, ray_dir) {
 function initUI(window) {
 
 	glfw.setMouseButtonCallback(window, function(win, button, down, mods) {
-		console.log("mouse button", button, down, mods);
+		//console.log("mouse button", button, down, mods);
 		if (!vr) {
 			// fake hand:
 			let hand = UI.hands[0];
@@ -1673,33 +1741,45 @@ function initUI(window) {
 
 	// px, py are in screen pixels
 	glfw.setCursorPosCallback(window, (window, px, py) => {
-		// convert px,py to normalized 0..1 coordinates:
-		const dim = glfw.getWindowSize(window)
-		// mouse in NDC coordinates:
-		let mouse = [ +2*px/dim[0] + -1, -2*py/dim[1] + +1 ];
-		// near plane point
-		let cam_near = vec3.transformMat4(vec3.create(), [mouse[0], mouse[1], -1], projmatrix_inverse);
-		let world_near = vec3.transformMat4(vec3.create(), cam_near, viewmatrix_inverse);
-		// far plane point
-		let cam_far = vec3.transformMat4(vec3.create(), [mouse[0], mouse[1], +1], projmatrix_inverse);	
-		let world_far = vec3.transformMat4(vec3.create(), cam_far, viewmatrix_inverse);
-		let ray_dir = vec3.sub(vec3.create(), world_far, world_near);
-		vec3.normalize(ray_dir, ray_dir);
-
-
 		if (!vr) {
+			// convert px,py to normalized 0..1 coordinates:
+			const dim = glfw.getWindowSize(window)
+			// mouse in NDC coordinates:
+			UI.keynav.mouse[0] = +2*px/dim[0] + -1;
+			UI.keynav.mouse[1] = -2*py/dim[1] + +1;
+
+			// // near plane point
+			// let cam_near = vec3.transformMat4(vec3.create(), [mouse[0], mouse[1], -1], projmatrix_inverse);
+			// let world_near = vec3.transformMat4(vec3.create(), cam_near, viewmatrix_inverse);
+			// // far plane point
+			// let cam_far = vec3.transformMat4(vec3.create(), [mouse[0], mouse[1], +1], projmatrix_inverse);	
+			// let world_far = vec3.transformMat4(vec3.create(), cam_far, viewmatrix_inverse);
+			// let ray_dir = vec3.sub(vec3.create(), world_far, world_near);
+			// vec3.normalize(ray_dir, ray_dir);
+
+			// // assign az/el for keynav:
+			// let [az, el] = mouse;
+			// // deadzone percentage, so that part of screen centre is at rest
+			// let deadzone = 0.5;
+			// let power = 2;
+			// az = Math.sign(az) * Math.pow(Math.max(0, (Math.abs(az)-deadzone)/(1.-deadzone)), power);
+			// el = Math.sign(el) * Math.pow(Math.max(0, Math.abs(el)), power);
+			// el = Math.max(Math.min(el, 1.), -1.);
 			
-			// compute a UI.hands[0] pos/orient/mat from the mouse & projview mat
-			vec3.add(UI.hands[0].pos, world_near, ray_dir);
-			mat4.getRotation(UI.hands[0].orient, viewmatrix_inverse);
-			mat4.fromRotationTranslation(UI.hands[0].mat, UI.hands[0].orient, UI.hands[0].pos)
-			vec3.copy(UI.hands[0].dir, ray_dir)
+			// UI.keynav.azimuth += 1/60 * az * -360;
+			// UI.keynav.elevation = el * 90;
+		
+			// // compute a UI.hands[0] pos/orient/mat from the mouse & projview mat
+			// vec3.scale(UI.hands[0].pos, ray_dir, 0.25);
+			// vec3.add(UI.hands[0].pos, world_near, UI.hands[0].pos);
+			// mat4.getRotation(UI.hands[0].orient, viewmatrix_inverse);
+			// mat4.fromRotationTranslation(UI.hands[0].mat, UI.hands[0].orient, UI.hands[0].pos)
+			// vec3.copy(UI.hands[0].dir, ray_dir)
 		}
 		
 	});
 
-	glfw.setKeyCallback(window, function(...args) {
-		console.log("key event", args);
+	glfw.setKeyCallback(window, (win, key, scan, down, mod)=>{
 		UI.keynav.handleKeys(key, down, mod);
 	})
 }
@@ -1742,8 +1822,14 @@ function animate() {
 		// // re-layout:
 		mainScene.rebuild(localGraph)
 	}
+
+
+	currentScene = (UI.hands[0].state == "menu" || UI.hands[1].state == "menu") ? menuScene : mainScene;
+	currentScene.module_instances.instances.forEach(obj=>{
+		obj.i_highlight[0] = 0;
+	})
 	
-	if (USEVR) {
+	if (vr) {
 		vr.update();
 		let inputs = vr.inputSources()
 		for (let input of inputs) {
@@ -1779,26 +1865,12 @@ function animate() {
 		}
 	} 
 
-	currentScene = (UI.hands[0].state == "menu" || UI.hands[1].state == "menu") ? menuScene : mainScene;
-
-	currentScene.module_instances.instances.forEach(obj=>{
-		obj.i_highlight[0] = 0;
-	})
-
 	UI.updateStateMachines(currentScene);
-	if (!vr) {
-		// fake hand:
-		let hand = UI.hands[0]
-		if (hand.pad_pressed) hand.pad_pressed++;
-	}
-
-
 	UI.updateInstances()
 	// instance vars can change on a frame by frame basis;
 	// propagate their changes (scene graph) and update the GPU accordingly:
 	//mainScene.updateInstances()
 	currentScene.submit();
-
 
 	// render to our targetTexture by binding the framebuffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, renderer.fbo.id);
@@ -1809,7 +1881,7 @@ function animate() {
 		gl.clearColor(0, 0, 0, 1);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-		if (USEVR) {
+		if (vr) {
 			for (let i=0; i<2; i++) {
 				vr.getView(i, viewmatrix);
 				vr.getProjection(i, projmatrix);
@@ -1821,10 +1893,11 @@ function animate() {
 				draw(i);
 			}
 		} else {
-			let a = t/5;
-			let d = Math.sin(t/3) + 1.5;
-			let h = 1.25;
-			mat4.lookAt(viewmatrix, [d*Math.sin(a), h, d*Math.cos(a)], [0, h, 0], [0, 1, 0]);
+			UI.keynav.move().updateViewMatrix(viewmatrix);
+			// let a = t/5;
+			// let d = Math.sin(t/3) + 1.5;
+			// let h = 1.25;
+			// mat4.lookAt(viewmatrix, [d*Math.sin(a), h, d*Math.cos(a)], [0, h, 0], [0, 1, 0]);
 			mat4.perspective(projmatrix, Math.PI/2, vrdim[0]/vrdim[1], NEAR_CLIP, FAR_CLIP);
 			mat4.invert(viewmatrix_inverse, viewmatrix);
 			mat4.invert(projmatrix_inverse, projmatrix);
@@ -1835,7 +1908,7 @@ function animate() {
 	}
 	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
-	if (USEVR) vr.submit(renderer.fbo.colorTexture)
+	if (vr) vr.submit(renderer.fbo.colorTexture)
 
 	// Get window size (may be different than the requested size)
 	let dim = glfw.getFramebufferSize(window);
