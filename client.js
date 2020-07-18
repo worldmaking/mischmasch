@@ -101,6 +101,7 @@ const SHAPE_KNOB = 3;
 const UI_DEFAULT_SCALE = 0.1;
 const UI_DEPTH = 1/3;
 const UI_NUDGE = 0.01;
+const UI_TOUCH_DISTANCE = 0.1; // near enough to consider touch-based interaction
 
 const NEAR_CLIP = 0.01;
 const FAR_CLIP = 20;
@@ -130,7 +131,6 @@ const renderer = {
 }
 
 const UI = {
-	mode: "default",
 
 	hmd: {
 		pos: [0, 1.4, 1],
@@ -143,14 +143,189 @@ const UI = {
 			orient: [0, 0, 0, 1],
 			mat: mat4.create(),
 			dir: vec3.fromValues(0, 0, -1),
+			// UI:
+			trigger: 0, trigger_pressed: 0,
+			pax_x: 0, pad_y: 0, pad_pressed: 0, pad_tap: false,
+			grip_pressed:0, menu_pressed: 0,
+			// state machine:
+			state: "default",
+			stateData: {},
 		},
 		{
 			pos: [+0.5, -1, 0.5],
 			orient: [0, 0, 0, 1],
 			mat: mat4.create(),
 			dir: vec3.fromValues(0, 0, -1),
+			// UI:
+			trigger: 0, trigger_pressed: 0,
+			pax_x: 0, pad_y: 0, pad_pressed: 0, pad_tap: false,
+			grip_pressed:0, menu_pressed: 0,
+			// state machine:
+			state: "default",
+			stateData: {},
 		}
 	],
+	
+	updateStateMachines() {
+		for (let hand of this.hands) this.updateHandStateMachine(hand)
+	},
+
+
+	updateHandStateMachine(hand) {
+		if (!hand.mat) return; // i.e. not tracking
+		let object, distance=Infinity;
+		if (hand.target) {
+			[object, distance] = hand.target
+		}
+
+		hand.pad_tap = (hand.pad_pressed == 1); // rising edge only
+		
+		switch(hand.state) {
+			case "menu": {
+				if (object && hand.trigger_pressed) {
+					// recurse up object parentage until we have a module:
+					let module = object;
+					while (module && !module.isModule) module = module.parent;
+					if (module && module.isModule) {
+						// request to spawn new object 
+						// derive desired location
+						// basically, if it spawns in the users' ray,
+						// it will immediately enter dragging
+						// send outgoing delta
+						// exit menu:
+						hand.state = "default";
+					}
+				} else if (hand.pad_tap) {
+					// exit menu:
+					hand.state = "default";
+				} 
+			} break;
+		// 	case "dragging": {
+		// 		// stick to what we picked:
+		// 		object = hand.stateData.object
+		// 		// update object pose
+
+		// 		// use pad-scrollY to throw module closer/further
+
+		// 		// check for exit:
+		// 		if (!hand.trigger_pressed) {
+		// 			// delete?
+		// 			if (object.i_pos[1] < 0) {
+		// 				// send delete delta
+		// 			}
+		// 			// release dragging:
+		// 			hand.state = "default";
+		// 		} 
+		// 	} break;
+		// 	case "buttoning": {
+		// 		// stick to what we picked:
+		// 		object = hand.stateData.object
+		// 		if (hand.trigger_pressed) {
+		// 			// option to use pad/pad scroll/tap to update button?
+		// 		} else {
+		// 			this.state = "default";
+		// 		}
+		// 	} break;
+		// 	case "swinging": {
+		// 		// stick to what we picked:
+		// 		object = hand.stateData.object
+		// 		if (hand.trigger_pressed) {
+		// 			// update value according to knob rotation
+				
+		// 		} else {
+		// 			hand.state = "default";
+		// 		}
+		// 	} break;
+		// 	case "twiddling": {
+		// 		// stick to what we picked:
+		// 		object = hand.stateData.object
+		// 		if (hand.trigger_pressed) {
+		// 			// update value according to knob rotation
+				
+		// 		} else {
+		// 			hand.state = "default";
+		// 		}
+		// 	} break;
+		// 	case "cabling": {
+		// 		let jack = hand.stateData.object
+		// 		// if object, and object is a valid target for cable
+		// 		// TODO: consider allowing snap to floor to delete a cable?
+		// 		if (object.cablingKind == hand.stateData.seeks) {
+		// 			// a valid target for this cable
+		// 			// snap jack to target
+		// 			vec3.copy(jack.i_pos, object.i_pos)
+		// 			quat.copy(jack.i_quat, object.i_quat)
+		// 			// e.g. seeking input, can cable to inlet, knob, and also a jack-inlet!
+		// 		} else {
+		// 			// snap jack to hand
+		// 			vec3.copy(jack.i_pos, hand.pos)
+		// 			quat.copy(jack.i_quat, hand.orient)
+		// 		}
+
+		// 		if (!hand.trigger_pressed) {
+		// 			// releasing jack now:
+		// 			// if cable is "complete" send "connect" delta.
+		// 			// now temporary local cable
+		// 			this.state = "default";
+		// 		}
+		// 	} break;
+			default: {
+				// we are not currently performing an action;
+				// check for starting a new one:
+				if (object && hand.trigger_pressed) {
+					// what did we select?
+					switch(object.kind) {
+						case "knob": {
+							// mode depends on distance:
+							if (distance > UI_TOUCH_DISTANCE) {
+								hand.state = "swinging"
+								// cache initial hand & object values here
+								hand.stateData.object = object
+							} else {
+								hand.state = "twiddling";
+								// cache initial hand & object values here
+								hand.stateData.object = object
+							}
+						} break;
+						case "button": {
+							// can update button value immediately
+							// but need to go into a state that waits for release
+							hand.state = "buttoning"
+							hand.stateData.object = object
+						} break;
+						case "inlet": 
+						case "outlet": {
+							// spawn a new cable
+							// cache cabling state
+							hand.state = "cabling"
+							hand.stateData.object = object
+							hand.stateData.seeks = (object.kind == "inlet") ? "output" : "input";
+						} break;
+						case "jack": {
+							// object.parent.kind tells you what this is connected to; likely "inlet"/"knob"/etc., "outlet", or null(root) for a non-connected jack
+							// if the jack's cable was fully connected, send a 'disconnect' delta
+							// use this to configure the cabling state
+							hand.state = "cabling";
+							hand.stateData.object = object
+							//hand.stateData.seeks = (object.kind == "inlet") ? "output" : "input";
+						} break;
+						default: {
+							if (object.isModule) {
+								// a module
+								hand.state = "dragging";
+								// cache initial hand & object transforms here
+								hand.stateData.object = object
+							}
+						} break;
+					}
+				} else if (hand.pad_tap) {
+					// call up the menu:
+					hand.state = "menu";
+				}
+			}
+		}
+	},
+
 
 	init(renderer, gl) {
 		this.line_vao = glutils.createVao(gl, renderer.line_geom, renderer.ray_program.id)
@@ -187,7 +362,6 @@ const UI = {
 	},
 
 	draw(gl) {
-
 		for (let hand of this.hands) {
 			if (!hand.mat) continue; // i.e. if not connected
 			renderer.wand_program.begin();
@@ -989,6 +1163,7 @@ function makeSceneGraph(renderer, gl) {
 				mat: mat4.create(), 
 				i_quat: [0, 0, 0, 1],
 				name: "root",
+				kind: null,
 				scale: 1,
 				nodes: [],
 			};
@@ -1021,6 +1196,8 @@ function makeSceneGraph(renderer, gl) {
 						let obj = this.getNextModule(parent);
 						obj.name = line.name +":" + parent.name;
 						obj.kind = "jack"
+						// TODO to allow stacked cables:
+						//obj.cablingKind = (parent.kind == "inlet") ? "input" : "output"
 						obj.scale = UI_DEFAULT_SCALE
 						obj.dim = [1/4, 1/4, 1/2]
 						obj.pos = [0, 0, 0]
@@ -1093,38 +1270,46 @@ function makeSceneGraph(renderer, gl) {
 					vec4.copy(obj.i_color, props.kind == "inlet" ? [0.5, 0.5, 0.5, 1] : [0.25, 0.25, 0.25, 1]);
 					obj.dim = [1/2, 1/2, -UI_DEPTH];
 					obj.nodes = []
+					obj.cablingKind = (props.kind == "inlet") ? "input" : "output";
 					this.addLabel(obj, label_text, text_pos, text_scale);
 				} break;
 				case "small_knob": {
+					obj.kind = "knob";
 					obj.i_shape[0] = SHAPE_KNOB;
 					vec4.copy(obj.i_color, colorFromString(name));
 					obj.dim = [1/2, 1/2, UI_DEPTH];
 					let range = props.range || [0,1];
 					let value = props.value || 0.;
 					obj.i_value[0] = (value - range[0])/(range[1]-range[0]);
+					obj.cablingKind = "input"
 					this.addLabel(obj, label_text, text_pos, text_scale);
 				} break;
 				case "knob": 
 				case "large_knob":  {
+					obj.kind = "knob";
 					obj.i_shape[0] = SHAPE_KNOB;
 					vec4.copy(obj.i_color, colorFromString(name));
 					obj.dim = [2/3, 2/3, UI_DEPTH];
 					let range = props.range || [0,1];
 					let value = props.value || 0.;
 					obj.i_value[0] = (value - range[0])/(range[1]-range[0]);
+					obj.cablingKind = "input"
 					this.addLabel(obj, label_text, text_pos, text_scale);
 				} break;
 				case "n_switch": {
+					obj.kind = "button";
 					obj.i_shape[0] = SHAPE_BUTTON;
 					vec4.copy(obj.i_color, colorFromString(name));
 					obj.dim = [2/3, 2/3, UI_DEPTH];
 					let throws = props.throws || [0,1];
 					let value = props.value || 0.;
 					obj.i_value[0] = value/(throws.length-1);
+					obj.cablingKind = "input"
 					this.addLabel(obj, label_text, text_pos, text_scale);
 				} break;
 				default: {
 					vec4.copy(obj.i_color, colorFromString(props.kind));
+					obj.isModule = true;
 					obj.nodes = [];
 
 					// will recurse to sub-nodes:
@@ -1410,13 +1595,20 @@ function rayTestModules(instances, ray_origin, ray_dir) {
 
 function initUI(window) {
 
-	glfw.setWindowPosCallback(window, function(w, x, y) {
-		console.log("window moved", w, x, y)
-		return 1;
-	})
-
-	glfw.setMouseButtonCallback(window, function(...args) {
-		console.log("mouse button", args);
+	glfw.setMouseButtonCallback(window, function(win, button, down, mods) {
+		console.log("mouse button", button, down, mods);
+		if (!vr) {
+			// fake hand:
+			let hand = UI.hands[0];
+			if (button > 0 || mods > 0) {
+				// RMB or mod-click maps to touchpad
+				hand.pad_pressed = down ? 1 : 0;//(down) ? hand.pad_pressed++ : 0;
+			} else {
+				// LMB maps to trigger
+				hand.trigger_pressed = down ? 1 : 0;// (down) ? hand.trigger_pressed++ : 0;
+				hand.trigger = +down;
+			}
+		}
 	})
 
 	glfw.setWindowContentScaleCallback(window, function(...args) {
@@ -1427,8 +1619,26 @@ function initUI(window) {
 	glfw.setCursorPosCallback(window, (window, px, py) => {
 		// convert px,py to normalized 0..1 coordinates:
 		const dim = glfw.getWindowSize(window)
-		mouse.ndc[0] = +2*px/dim[0] + -1;
-		mouse.ndc[1] = -2*py/dim[1] + +1;
+		// mouse in NDC coordinates:
+		let mouse = [ +2*px/dim[0] + -1, -2*py/dim[1] + +1 ];
+		// near plane point
+		let cam_near = vec3.transformMat4(vec3.create(), [mouse[0], mouse[1], -1], projmatrix_inverse);
+		let world_near = vec3.transformMat4(vec3.create(), cam_near, viewmatrix_inverse);
+		// far plane point
+		let cam_far = vec3.transformMat4(vec3.create(), [mouse[0], mouse[1], +1], projmatrix_inverse);	
+		let world_far = vec3.transformMat4(vec3.create(), cam_far, viewmatrix_inverse);
+		let ray_dir = vec3.sub(vec3.create(), world_far, world_near);
+		vec3.normalize(ray_dir, ray_dir);
+
+
+		if (!vr) {
+			
+			// compute a UI.hands[0] pos/orient/mat from the mouse & projview mat
+			vec3.add(UI.hands[0].pos, world_near, ray_dir);
+			mat4.getRotation(UI.hands[0].orient, viewmatrix);
+			mat4.fromRotationTranslation(UI.hands[0].mat, UI.hands[0].orient, UI.hands[0].pos)
+		}
+		
 	});
 
 	glfw.setKeyCallback(window, function(...args) {
@@ -1494,12 +1704,12 @@ function animate() {
 
 				let {buttons, axes} = input.gamepad;
 				hand.trigger = buttons[0].value
-				hand.trigger_pressed = buttons[0].pressed
-				hand.pad_pressed = buttons[2].pressed
+				hand.trigger_pressed = (buttons[0].pressed) ? hand.trigger_pressed++ : 0;
+				hand.pad_pressed = (buttons[2].pressed) ? hand.pad_pressed++ : 0;
 				hand.pad_x = axes[0]
 				hand.pad_y = axes[1]
-				hand.grip_pressed = buttons[1].pressed
-				hand.menu_pressed = buttons[3].pressed
+				hand.grip_pressed = (buttons[1].pressed) ? hand.grip_pressed++ : 0;
+				hand.menu_pressed = (buttons[3].pressed) ? hand.menu_pressed++ : 0;
 
 				let mat = input.targetRaySpace;
 				if (mat) {
@@ -1510,7 +1720,7 @@ function animate() {
 
 					hits = rayTestModules(sceneGraph.module_instances.instances, hand.pos, hand.dir)
 					hand.target = hits[0]
-				}
+				} 
 			}
 		}
 	} else {
@@ -1533,11 +1743,18 @@ function animate() {
 	sceneGraph.module_instances.instances.forEach(obj=>{
 		obj.i_highlight[0] = 0;
 	})
-	
 	if(hits && hits.length) {
 		//console.log("hits:", hits.map(v=>v[0].path))
 		hits[0][0].i_highlight[0] = 1;
 	}
+
+	UI.updateStateMachines();
+	if (!vr) {
+		// fake hand:
+		let hand = UI.hands[0]
+		if (hand.pad_pressed) hand.pad_pressed++;
+	}
+
 
 	UI.updateInstances()
 	// instance vars can change on a frame by frame basis;
@@ -1621,7 +1838,8 @@ function draw(eye=0) {
 
 	UI.draw(gl);
 
-	if (UI.mode == "menu"){
+	// if either hand is in menu mode, draw the menu:
+	if (UI.hands[0].state == "menu" || UI.hands[1].state == "menu"){
 		menuSceneGraph.draw(gl)
 	} else {
 		sceneGraph.draw(gl);
@@ -1644,7 +1862,6 @@ function initMenu(menuModules) {
 		//.concat(operatorNames)
 	let ncols = 16
 	let nrows = Math.min(6, Math.ceil(module_names.length / ncols));
-	console.log("menu", module_names.length, nrows, ncols)
 	let i = 0;
     for (let row = 0; row < nrows; row++) {
         for(let col = 0; col < ncols && i < module_names.length; col++, i++){
