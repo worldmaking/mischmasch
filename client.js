@@ -151,6 +151,35 @@ const UI = {
 		orient: [0, 0, 0, 1],
 		mat: mat4.create(),
 	},
+
+	keynav: {
+		fwdState: 0,
+		strafeState: 0,
+		speed: 1, // metres per second
+		keySpeed: 1,
+		
+		handleKeys(key, down, mod) {
+			switch (key) {
+				case 87: // W
+				case 265: // up
+				this.fwdState = down ? 1 : 0; break;
+				case 83: // S
+				case 264: // down
+				this.fwdState = down ? -1 : 0; break;
+				case 68: // D
+				case 262: // right
+				this.strafeState = down ? 1 : 0; break;
+				case 65: // A
+				case 263: // left
+				this.strafeState = down ? -1 : 0; break;
+			}
+			// handle mod, e.g. shift for 'run' and ctrl for 'creep'
+			let shift = !!(mod % 2);
+			let ctrl = !!(mod % 4);
+			this.keySpeed = shift ? 4 : ctrl ? 1/4 : 1;
+		},
+	},
+
 	hands: [
 		{
 			pos: [-0.5, -1, 0.5],
@@ -1671,6 +1700,7 @@ function initUI(window) {
 
 	glfw.setKeyCallback(window, function(...args) {
 		console.log("key event", args);
+		UI.keynav.handleKeys(key, down, mod);
 	})
 }
 
