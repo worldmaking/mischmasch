@@ -47,6 +47,15 @@ const url = 'ws://localhost:8080'
 const demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
 const shaderpath = path.join(__dirname, "shaders")
 
+// generate a random name for new object:
+let gensym = (function() {
+    let nodeid = 0;
+    return function (prefix="node") {
+        //return `${prefix}_${nodeid++}_${userPose.id}`
+        return `${prefix}_${nodeid++}`
+    }
+})();
+
 function hashCode(str) { // java String#hashCode
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -58,6 +67,7 @@ function hashCode(str) { // java String#hashCode
 function colorFromString(str) {
 	return chroma.hsl(Math.abs(hashCode(str)) % 360, 0.35, 0.5).gl()
 }
+
 
 
 // p0, p1 are the min/max bounding points of the cube
@@ -106,8 +116,9 @@ const UI_TOUCH_DISTANCE = 0.1; // near enough to consider touch-based interactio
 const NEAR_CLIP = 0.01;
 const FAR_CLIP = 20;
 
-let sceneGraph = null
-let menuSceneGraph = null
+let mainScene = null
+let menuScene = null
+let currentScene = null
 
 // GOT graph, local copy.
 let localGraph = {
@@ -120,7 +131,6 @@ let menuGraph = {
 	arcs: []
 }
 
-
 let viewmatrix = mat4.create();
 let projmatrix = mat4.create();
 let viewmatrix_inverse = mat4.create();
@@ -129,6 +139,10 @@ let projmatrix_inverse = mat4.create();
 const renderer = {
 	
 }
+
+let socket;
+let incomingDeltas = [];
+let outgoingDeltas = [];
 
 const UI = {
 
@@ -166,16 +180,21 @@ const UI = {
 		}
 	],
 	
-	updateStateMachines() {
-		for (let hand of this.hands) this.updateHandStateMachine(hand)
+	updateStateMachines(scene) {
+		for (let hand of this.hands) this.updateHandStateMachine(hand, scene)
 	},
 
 
-	updateHandStateMachine(hand) {
+	updateHandStateMachine(hand, mainScene) {
 		if (!hand.mat) return; // i.e. not tracking
+
+		let hits = rayTestModules(mainScene.module_instances.instances, hand.pos, hand.dir)
+		hand.target = hits[0]
+		
 		let object, distance=Infinity;
 		if (hand.target) {
 			[object, distance] = hand.target
+			object.i_highlight[0] = 1
 		}
 
 		let pad_tap = (hand.pad_pressed == 1); // rising edge only
@@ -191,7 +210,18 @@ const UI = {
 						// derive desired location
 						// basically, if it spawns in the users' ray,
 						// it will immediately enter dragging
+						// actually, current module pose should work already for this, no?
+						// let pos = vec3.clone(hand.dir)
+						// vec3.scale(pos, distance);
+						// vec3.add(pos, hand.pos);
+						// // derive desired quat:
+						// //let orient = vec3.clone(hand.orient)
+						// let orient = vec3.clone(module.orient)
 						// send outgoing delta
+						// derive delta from module.node:
+						let path = gensym(module.kind);
+						let deltas = got.nodesToDeltas([module.node], [], path)
+						outgoingDeltas.push(deltas)
 						// exit menu:
 						hand.state = "default";
 					}
@@ -202,75 +232,75 @@ const UI = {
 					})
 				} 
 			} break;
-		// 	case "dragging": {
-		// 		// stick to what we picked:
-		// 		object = hand.stateData.object
-		// 		// update object pose
+			case "dragging": {
+				// stick to what we picked:
+				object = hand.stateData.object
+				// update object pose
 
-		// 		// use pad-scrollY to throw module closer/further
+				// use pad-scrollY to throw module closer/further
 
-		// 		// check for exit:
-		// 		if (!hand.trigger_pressed) {
-		// 			// delete?
-		// 			if (object.i_pos[1] < 0) {
-		// 				// send delete delta
-		// 			}
-		// 			// release dragging:
-		// 			hand.state = "default";
-		// 		} 
-		// 	} break;
-		// 	case "buttoning": {
-		// 		// stick to what we picked:
-		// 		object = hand.stateData.object
-		// 		if (hand.trigger_pressed) {
-		// 			// option to use pad/pad scroll/tap to update button?
-		// 		} else {
-		// 			this.state = "default";
-		// 		}
-		// 	} break;
-		// 	case "swinging": {
-		// 		// stick to what we picked:
-		// 		object = hand.stateData.object
-		// 		if (hand.trigger_pressed) {
-		// 			// update value according to knob rotation
+				// check for exit:
+				if (!hand.trigger_pressed) {
+					// delete?
+					if (object.i_pos[1] < 0) {
+						// send delete delta
+					}
+					// release dragging:
+					hand.state = "default";
+				} 
+			} break;
+			case "buttoning": {
+				// stick to what we picked:
+				object = hand.stateData.object
+				if (hand.trigger_pressed) {
+					// option to use pad/pad scroll/tap to update button?
+				} else {
+					this.state = "default";
+				}
+			} break;
+			case "swinging": {
+				// stick to what we picked:
+				object = hand.stateData.object
+				if (hand.trigger_pressed) {
+					// update value according to knob rotation
 				
-		// 		} else {
-		// 			hand.state = "default";
-		// 		}
-		// 	} break;
-		// 	case "twiddling": {
-		// 		// stick to what we picked:
-		// 		object = hand.stateData.object
-		// 		if (hand.trigger_pressed) {
-		// 			// update value according to knob rotation
+				} else {
+					hand.state = "default";
+				}
+			} break;
+			case "twiddling": {
+				// stick to what we picked:
+				object = hand.stateData.object
+				if (hand.trigger_pressed) {
+					// update value according to knob rotation
 				
-		// 		} else {
-		// 			hand.state = "default";
-		// 		}
-		// 	} break;
-		// 	case "cabling": {
-		// 		let jack = hand.stateData.object
-		// 		// if object, and object is a valid target for cable
-		// 		// TODO: consider allowing snap to floor to delete a cable?
-		// 		if (object.cablingKind == hand.stateData.seeks) {
-		// 			// a valid target for this cable
-		// 			// snap jack to target
-		// 			vec3.copy(jack.i_pos, object.i_pos)
-		// 			quat.copy(jack.i_quat, object.i_quat)
-		// 			// e.g. seeking input, can cable to inlet, knob, and also a jack-inlet!
-		// 		} else {
-		// 			// snap jack to hand
-		// 			vec3.copy(jack.i_pos, hand.pos)
-		// 			quat.copy(jack.i_quat, hand.orient)
-		// 		}
+				} else {
+					hand.state = "default";
+				}
+			} break;
+			case "cabling": {
+				let jack = hand.stateData.object
+				// if object, and object is a valid target for cable
+				// TODO: consider allowing snap to floor to delete a cable?
+				if (object.cablingKind == hand.stateData.seeks) {
+					// a valid target for this cable
+					// snap jack to target
+					vec3.copy(jack.i_pos, object.i_pos)
+					quat.copy(jack.i_quat, object.i_quat)
+					// e.g. seeking input, can cable to inlet, knob, and also a jack-inlet!
+				} else {
+					// snap jack to hand
+					vec3.copy(jack.i_pos, hand.pos)
+					quat.copy(jack.i_quat, hand.orient)
+				}
 
-		// 		if (!hand.trigger_pressed) {
-		// 			// releasing jack now:
-		// 			// if cable is "complete" send "connect" delta.
-		// 			// now temporary local cable
-		// 			this.state = "default";
-		// 		}
-		// 	} break;
+				if (!hand.trigger_pressed) {
+					// releasing jack now:
+					// if cable is "complete" send "connect" delta.
+					// now temporary local cable
+					this.state = "default";
+				}
+			} break;
 			default: {
 				// we are not currently performing an action;
 				// check for starting a new one:
@@ -382,11 +412,6 @@ const UI = {
 		renderer.ray_program.end();
 		return this;
 	},
-}
-
-let mouse = {
-	// location of mouse in normalized device coordinates (-1..1)
-	ndc: [0, 0, 0, 1],
 }
 
 let vrdim = [4096, 4096];
@@ -1637,8 +1662,9 @@ function initUI(window) {
 			
 			// compute a UI.hands[0] pos/orient/mat from the mouse & projview mat
 			vec3.add(UI.hands[0].pos, world_near, ray_dir);
-			mat4.getRotation(UI.hands[0].orient, viewmatrix);
+			mat4.getRotation(UI.hands[0].orient, viewmatrix_inverse);
 			mat4.fromRotationTranslation(UI.hands[0].mat, UI.hands[0].orient, UI.hands[0].pos)
+			vec3.copy(UI.hands[0].dir, ray_dir)
 		}
 		
 	});
@@ -1668,26 +1694,25 @@ function animate() {
 
 	// handle scene changes from server:
     if (incomingDeltas.length > 0) {
-        // handle incoming deltas:
+		// handle incoming deltas:
         while (incomingDeltas.length > 0) {
-            let delta = incomingDeltas.shift();
+			let delta = incomingDeltas.shift();
+			//console.log("gotdelta", delta)
             // TODO: derive which world to add to:
             try {
 				got.applyDeltasToGraph(localGraph, delta);
 				
-				fs.writeFileSync("basicGraph.json", JSON.stringify(localGraph, null, "\t"), "utf8");
+				//fs.writeFileSync("basicGraph.json", JSON.stringify(localGraph, null, "\t"), "utf8");
 			} catch (e) {
 				console.warn(e);
 			}
         }
-		console.log("updated localGraph", JSON.stringify(localGraph, null, "  "))
+		//console.log("updated localGraph", JSON.stringify(localGraph, null, "  "))
 		
 		// // re-layout:
-		sceneGraph.rebuild(localGraph)
+		mainScene.rebuild(localGraph)
 	}
 	
-	//if(wsize) console.log("FB size: "+wsize.width+', '+wsize.height);
-	let hits
 	if (USEVR) {
 		vr.update();
 		let inputs = vr.inputSources()
@@ -1719,38 +1744,18 @@ function animate() {
 					mat4.getTranslation(hand.pos, mat);
 					mat4.getRotation(hand.orient, mat);
 					vec3.negate(hand.dir, mat.slice(8, 11))
-
-					hits = rayTestModules(sceneGraph.module_instances.instances, hand.pos, hand.dir)
-					hand.target = hits[0]
 				} 
 			}
 		}
-	} else {
-		// use mouse:
+	} 
 
-		// near plane point
-		let cam_near = vec3.transformMat4(vec3.create(), [mouse.ndc[0], mouse.ndc[1], -1], projmatrix_inverse);
-		let ray_origin = vec3.transformMat4(vec3.create(), cam_near, viewmatrix_inverse);
-		// far plane point
-		let cam_far = vec3.transformMat4(vec3.create(), [mouse.ndc[0], mouse.ndc[1], +1], projmatrix_inverse);	
-		let ray_far = vec3.transformMat4(vec3.create(), cam_far, viewmatrix_inverse);
-		// mouse ray:
-		let ray_dir = vec3.sub(vec3.create(), ray_far, ray_origin);
-		vec3.normalize(ray_dir, ray_dir);
+	currentScene = (UI.hands[0].state == "menu" || UI.hands[1].state == "menu") ? menuScene : mainScene;
 
-		hits = rayTestModules(sceneGraph.module_instances.instances, ray_origin, ray_dir)
-		
-	}
-
-	sceneGraph.module_instances.instances.forEach(obj=>{
+	currentScene.module_instances.instances.forEach(obj=>{
 		obj.i_highlight[0] = 0;
 	})
-	if(hits && hits.length) {
-		//console.log("hits:", hits.map(v=>v[0].path))
-		hits[0][0].i_highlight[0] = 1;
-	}
 
-	UI.updateStateMachines();
+	UI.updateStateMachines(currentScene);
 	if (!vr) {
 		// fake hand:
 		let hand = UI.hands[0]
@@ -1761,8 +1766,8 @@ function animate() {
 	UI.updateInstances()
 	// instance vars can change on a frame by frame basis;
 	// propagate their changes (scene graph) and update the GPU accordingly:
-	//sceneGraph.updateInstances()
-	sceneGraph.submit();
+	//mainScene.updateInstances()
+	currentScene.submit();
 
 
 	// render to our targetTexture by binding the framebuffer
@@ -1821,6 +1826,28 @@ function animate() {
 	// Swap buffers
 	glfw.swapBuffers(window);
 
+	// send outgoing deltas:
+
+	if (socket && socket.socket && socket.socket.readyState === 1) {
+		// send any edits to the server:
+		if (outgoingDeltas.length > 0) {
+			let message = {
+				cmd: "deltas",
+				date: Date.now(),
+				data: outgoingDeltas
+			};
+			socket.send(message);
+			outgoingDeltas.length = 0;
+			//console.log("Sending Deltas")
+		}
+	} else {
+		// otherwise, just move them to our incoming list, 
+		// so we can work without a server:
+		for (let delta of outgoingDeltas) {
+			incomingDeltas.push(delta);
+		}
+		outgoingDeltas.length = 0;
+	}
 }
 
 let once = 1
@@ -1841,11 +1868,7 @@ function draw(eye=0) {
 	UI.draw(gl);
 
 	// if either hand is in menu mode, draw the menu:
-	if (UI.hands[0].state == "menu" || UI.hands[1].state == "menu"){
-		menuSceneGraph.draw(gl)
-	} else {
-		sceneGraph.draw(gl);
-	}
+	currentScene.draw(gl);
 
 	gl.disable(gl.BLEND);
 	gl.depthMask(true)
@@ -1856,8 +1879,6 @@ function draw(eye=0) {
 // BOOT SEQUENCE
 //////////////////////////////////////////////////////////////////////////////////////////
 
-let socket;
-let incomingDeltas = [];
 
 function initMenu(menuModules) {
 	let module_names = Object.keys(menuModules)
@@ -1894,7 +1915,7 @@ function serverConnect() {
 			nodes: {},
 			arcs: []
 		};
-		sceneGraph.rebuild(localGraph)
+		mainScene.rebuild(localGraph)
 	}
 	socket.onerror = (error) => {
 	  console.error(`WebSocket error: ${error}`)
@@ -1951,9 +1972,9 @@ async function init() {
 	UI.init(renderer, gl)
 
 	menuGraph.nodes = initMenu(menuModules);
-	menuSceneGraph = makeSceneGraph(renderer, gl)
-	menuSceneGraph.init(gl)
-	menuSceneGraph.rebuild(menuGraph)
+	menuScene = makeSceneGraph(renderer, gl)
+	menuScene.init(gl)
+	menuScene.rebuild(menuGraph)
 
 	// default graph until server connects:
 	localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
@@ -1961,9 +1982,9 @@ async function init() {
 	if (USEWS) {
 		serverConnect();
 	} 
-	sceneGraph = makeSceneGraph(renderer, gl);
-	sceneGraph.init(gl);
-	sceneGraph.rebuild(localGraph)
+	mainScene = makeSceneGraph(renderer, gl);
+	mainScene.init(gl);
+	mainScene.rebuild(localGraph)
 	
 	
 	initUI(window);
