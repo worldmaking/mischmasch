@@ -763,8 +763,7 @@ void main() {
 	vec3 normal = a_normal;
 	vec2 uv = a_texCoord;
 	//normal = quat_rotate(i_quat, normal);
-	v_normal = normal;
-	v_cnormal = mat3(u_viewmatrix) * normal;
+	v_cnormal = mat3(u_viewmatrix * u_modelmatrix) * normal;
 	v_uv = uv;
 	v_color = vec4(1.);
 }
@@ -773,29 +772,16 @@ void main() {
 precision mediump float;
 
 in vec4 v_color;
-in vec3 v_normal, v_cnormal;
+in vec3 v_cnormal;
 in vec2 v_uv;
 
 out vec4 outColor;
 
 void main() {
 	outColor = v_color;
-	vec3 normal = normalize(v_normal);
-
-	vec3 cnormal = normalize(v_normal);
-	float cd = pow(1.-abs(dot(cnormal, vec3(0, 0, -1))), 2.);
-
-	vec2 dxt = dFdx(v_uv);
-	vec2 dyt = dFdy(v_uv);
-	float line = length(abs(dxt)+abs(dyt));
-	float line1 = clamp(line * 5.,0.25,0.75);
-
-	vec2 v = v_uv * 2. - 1.;
-	vec2 v2 = smoothstep(1., 1.-line*8., abs(v));
-	float line2 = 1.-(v2.x*v2.y);
-	outColor *= max(line1, line2) ; // this over exposes the color making it look brighter * vec4(4.);
-
-	outColor = vec4(cd*0.3);
+	vec3 cnormal = normalize(v_cnormal);
+	float cd = pow(1.-abs(dot(cnormal, vec3(0, 0, -1))), 4.);
+	outColor = vec4(cd*0.4);
 }`
 	);
 	renderer.line_program = glutils.makeProgram(gl,
