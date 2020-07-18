@@ -130,7 +130,7 @@ const renderer = {
 }
 
 const UI = {
-	menuMode: 0,
+	mode: "default",
 
 	hmd: {
 		pos: [0, 1.4, 1],
@@ -1621,7 +1621,7 @@ function draw(eye=0) {
 
 	UI.draw(gl);
 
-	if (UI.menuMode){
+	if (UI.mode == "menu"){
 		menuSceneGraph.draw(gl)
 	} else {
 		sceneGraph.draw(gl);
