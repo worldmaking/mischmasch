@@ -296,6 +296,7 @@ const UI = {
 
 		let hits = rayTestModules(mainScene.module_instances.instances, hand.pos, hand.dir)
 		hand.target = hits[0]
+		hand.line.i_len[0] = hand.target ? hand.target[1] : 1
 		
 		let object, distance=Infinity;
 		if (hand.target) {
@@ -330,6 +331,7 @@ const UI = {
 			case "dragging": {
 				// stick to what we picked:
 				object = hand.stateData.object
+				object.i_highlight[0] = 1
 				// update object pose
 
 				// use pad-scrollY to throw module closer/further
@@ -347,6 +349,7 @@ const UI = {
 			case "buttoning": {
 				// stick to what we picked:
 				object = hand.stateData.object
+				object.i_highlight[0] = 1
 				if (hand.trigger_pressed) {
 					// option to use pad/pad scroll/tap to update button?
 
@@ -354,29 +357,18 @@ const UI = {
 					hand.state = "default";
 				}
 			} break;
+			case "twiddling": 
 			case "swinging": {
 				// stick to what we picked:
 				object = hand.stateData.object
+				object.i_highlight[0] = 1
 				if (hand.trigger_pressed) {
-					// update value according to knob rotation
 					/*
-						want angle from knob to hand
-						in the knob's coordinate system
-					*/
-					// let rel = vec3.create()
-					// vec3.sub(rel, hand.pos, object.i_pos)
-					// let iq = quat.create()
-					// quat.invert(iq, object.i_quat)
-					// vec3.transformQuat(rel, rel, iq);
-					/*
-						Alternate mode:
-						project ray from hand to plane of knob
-						use that point rather than hand pos for relative angle
-
-						it's the point where the ray Z=0
-
-						0 = o.z + t * d.z
-						t = -o.z/d.z
+						project ray from hand to plane of knob to find a point 'p'
+						point the knob toward 'p'
+						that is, get relative angle in knob space from knob centre to p
+						(i.e. on the plane of the knob itself)
+						and set the value according to that angle
 					*/
 					let dir = glutils.quat_unrotate(vec3.create(), object.i_quat, hand.dir);
 					if (dir[2]) {
@@ -384,6 +376,7 @@ const UI = {
 						glutils.quat_unrotate(origin, object.i_quat, origin);
 
 						let t = -origin[2]/dir[2]
+						hand.line.i_len[0] = t
 						let p = vec3.create()
 						vec3.scale(p, dir, t)
 						vec3.add(p, p, origin);
@@ -415,16 +408,6 @@ const UI = {
 						outgoingDeltas.push(delta);
 					}
 
-				} else {
-					hand.state = "default";
-				}
-			} break;
-			case "twiddling": {
-				// stick to what we picked:
-				object = hand.stateData.object
-				if (hand.trigger_pressed) {
-					// update value according to knob rotation
-				
 				} else {
 					hand.state = "default";
 				}
@@ -545,7 +528,6 @@ const UI = {
 		for (let hand of this.hands) {
 			vec3.copy(hand.line.i_pos, hand.pos)
 			vec3.copy(hand.line.i_dir, hand.dir)
-			hand.line.i_len[0] = hand.target ? hand.target[1] : 1
 
 			let wand = this.wand_instances.instances[this.wand_instances.count];
 			vec3.copy(wand.i_pos, hand.pos)
@@ -562,16 +544,13 @@ const UI = {
 	},
 
 	draw(gl) {
-		// for (let hand of this.hands) {
-		// 	if (!hand.mat) continue; // i.e. if not connected
-			renderer.wand_program.begin();
-			renderer.wand_program.uniform("u_viewmatrix", viewmatrix);
-			renderer.wand_program.uniform("u_projmatrix", projmatrix);
-			//renderer.wand_program.uniform("u_modelmatrix", hand.mat);
-			//renderer.wand_vao.bind().draw().unbind();
-			UI.wand_vao.bind().drawInstanced(UI.wand_instances.count).unbind()
-			renderer.wand_program.end();
-		//}
+		renderer.wand_program.begin();
+		renderer.wand_program.uniform("u_viewmatrix", viewmatrix);
+		renderer.wand_program.uniform("u_projmatrix", projmatrix);
+		//renderer.wand_program.uniform("u_modelmatrix", hand.mat);
+		//renderer.wand_vao.bind().draw().unbind();
+		UI.wand_vao.bind().drawInstanced(UI.wand_instances.count).unbind()
+		renderer.wand_program.end();
 
 		renderer.ray_program.begin();
 		renderer.ray_program.uniform("u_viewmatrix", viewmatrix);
