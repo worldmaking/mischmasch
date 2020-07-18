@@ -465,40 +465,57 @@ const UI = {
 		]);
 		this.line_instances.attachTo(this.line_vao).allocate(16);
 
+		this.wand_vao = glutils.createVao(gl, renderer.wand_geom, renderer.wand_program.id)
+		this.wand_instances = glutils.createInstances(gl, [
+			{ name:"i_quat", components:4 },
+			{ name:"i_pos", components:3 },
+		]);
+		this.wand_instances.attachTo(this.wand_vao).allocate(16);
+
 		for (let hand of this.hands) {
 			let line = this.line_instances.instances[this.line_instances.count];
 			this.line_instances.count++;
 			hand.line = line;
 			//vec4.set(line.i_color, 1, 1, 1, 1);
+
+			
 		}
 
 		return this.updateInstances();
 	},
 
 	updateInstances() {
+		this.wand_instances.count = 0;
 		for (let hand of this.hands) {
 			vec3.copy(hand.line.i_pos, hand.pos)
 			vec3.copy(hand.line.i_dir, hand.dir)
 			hand.line.i_len[0] = hand.target ? hand.target[1] : 1
+
+			let wand = this.wand_instances.instances[this.wand_instances.count];
+			vec3.copy(wand.i_pos, hand.pos)
+			quat.copy(wand.i_quat, hand.orient)
+			this.wand_instances.count++;
 		}
 		return this.submit()
 	},
 
 	submit() {
 		this.line_instances.bind().submit().unbind()
+		this.wand_instances.bind().submit().unbind()
 		return this;
 	},
 
 	draw(gl) {
-		for (let hand of this.hands) {
-			if (!hand.mat) continue; // i.e. if not connected
+		// for (let hand of this.hands) {
+		// 	if (!hand.mat) continue; // i.e. if not connected
 			renderer.wand_program.begin();
 			renderer.wand_program.uniform("u_viewmatrix", viewmatrix);
 			renderer.wand_program.uniform("u_projmatrix", projmatrix);
-			renderer.wand_program.uniform("u_modelmatrix", hand.mat);
-			renderer.wand_vao.bind().draw().unbind();
+			//renderer.wand_program.uniform("u_modelmatrix", hand.mat);
+			//renderer.wand_vao.bind().draw().unbind();
+			UI.wand_vao.bind().drawInstanced(UI.wand_instances.count).unbind()
 			renderer.wand_program.end();
-		}
+		//}
 
 		renderer.ray_program.begin();
 		renderer.ray_program.uniform("u_viewmatrix", viewmatrix);
@@ -512,8 +529,7 @@ const UI = {
 
 let vrdim = [4096, 4096];
 
-let controllerOBJ = fs.readFileSync(path.join(__dirname, "objs", "vr_controller_vive_1_5.obj"), "utf-8");
-const controllerGeom = glutils.geomFromOBJ(controllerOBJ)
+
 
 const menuModules = Object.assign({
     "speaker":{
@@ -629,11 +645,12 @@ function initRenderer(renderer) {
 		max:[ 1, 1, 1], 
 		div: [13, 13, 1] 
 	});
-	renderer.wand_geom = glutils.makeCube({ 
-		min:[-0.03,-0.03, 0], 
-		max:[ 0.03, 0.03, 0.1], 
-		div: [13, 13, 1] 
-	});
+	// renderer.wand_geom = glutils.makeCube({ 
+	// 	min:[-0.03,-0.03, 0], 
+	// 	max:[ 0.03, 0.03, 0.1], 
+	// 	div: [13, 13, 1] 
+	// });
+	renderer.wand_geom = glutils.geomFromOBJ(fs.readFileSync(path.join(__dirname, "objs", "vr_controller_vive_1_5.obj"), "utf-8"))
 
 	renderer.line_geom = glutils.makeLine({ min:0, max:1, div: 24 });
 	const floor_m = 6;
@@ -738,32 +755,39 @@ void main() {
 	);
 	renderer.wand_program = glutils.makeProgram(gl,
 `#version 330
-uniform mat4 u_modelmatrix;
+//uniform mat4 u_modelmatrix;
 uniform mat4 u_viewmatrix;
 uniform mat4 u_projmatrix;
 in vec3 a_position;
 in vec3 a_normal;
 in vec2 a_texCoord;
 
-// in vec3 i_pos;
-// in vec4 i_quat;
+in vec3 i_pos;
+in vec4 i_quat;
 
 out vec4 v_color;
 out vec3 v_normal, v_cnormal;
 out vec2 v_uv;
 
+vec3 quat_rotate(vec4 q, vec3 v) {
+	return v + 2.0*cross(q.xyz, cross(q.xyz, v) + q.w*v);
+}
+vec4 quat_rotate(vec4 q, vec4 v) {
+	return vec4(v.xyz + 2.0*cross(q.xyz, cross(q.xyz, v.xyz) + q.w*v.xyz), v.w);
+}
+
 void main() {
 	// Multiply the position by the matrix.
-	vec3 vertex = a_position.xyz;
-	gl_Position = u_projmatrix * u_viewmatrix * u_modelmatrix * vec4(vertex, 1);
+	vec3 vertex = quat_rotate(i_quat, a_position.xyz) + i_pos;
+	gl_Position = u_projmatrix * u_viewmatrix * vec4(vertex, 1);
 
 	v_color = vec4(a_normal*0.25+0.25, 1.);
 	v_color += vec4(a_texCoord*0.5, 0., 1.);
 
 	vec3 normal = a_normal;
 	vec2 uv = a_texCoord;
-	//normal = quat_rotate(i_quat, normal);
-	v_cnormal = mat3(u_viewmatrix * u_modelmatrix) * normal;
+	normal = quat_rotate(i_quat, normal);
+	v_cnormal = mat3(u_viewmatrix) * normal;
 	v_uv = uv;
 	v_color = vec4(1.);
 }
@@ -1166,7 +1190,6 @@ void main() {
 	renderer.floor_vao = glutils.createVao(gl, renderer.floor_geom, renderer.floor_program.id);
 	renderer.debug_vao = glutils.createVao(gl, renderer.debug_geom, renderer.debug_program.id);
 	renderer.fbo_vao = glutils.createVao(gl, glutils.makeQuad(), renderer.fbo_program.id);
-	renderer.wand_vao = glutils.createVao(gl, controllerGeom, renderer.wand_program.id);
 	renderer.fbo = glutils.makeFboWithDepth(gl, vrdim[0], vrdim[1])
 }
 
