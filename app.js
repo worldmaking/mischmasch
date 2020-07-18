@@ -49,7 +49,9 @@ const got = require(__dirname + "/gotlib/got.js")
 const {argv} = require('yargs')
 // interactive cli:
 const vorpal = require('vorpal')();
-var equal = require('deep-equal');
+const equal = require('deep-equal');
+const equals = require('array-equal')
+
 
 // let ctrl-c quit:
 {
@@ -506,7 +508,7 @@ function pal(ip, port){
 
               // feedback path stuff
               //! urgent: need to apply a propchange to one outlet per feedback path outlet._props.history = true
-              console.log(feedbackPaths(localGraph))
+              
 
 
 
@@ -514,7 +516,7 @@ function pal(ip, port){
             } catch (e) {
               console.warn(e);
             }
-
+            
             // TODO: merge OTs
             
             let response = {
@@ -571,7 +573,7 @@ function pal(ip, port){
 
 }
 
-function feedbackPaths(graph){
+function getFeedbackPaths(graph){
   return '\n\n\nTODO: add feedback detection to app.js\n\n\n'
 
 }
