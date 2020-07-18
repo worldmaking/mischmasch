@@ -68,7 +68,9 @@ function colorFromString(str) {
 	return chroma.hsl(Math.abs(hashCode(str)) % 360, 0.35, 0.5).gl()
 }
 
-
+function scale(t, ilo, ihi, olo, ohi) {
+	return (t-ilo)*(ohi-olo)/(ihi-ilo) + olo;
+}
 
 // p0, p1 are the min/max bounding points of the cube
 // rayDir is assumed to be normalized to length 1
@@ -112,6 +114,14 @@ const UI_DEFAULT_SCALE = 0.1;
 const UI_DEPTH = 1/3;
 const UI_NUDGE = 0.01;
 const UI_TOUCH_DISTANCE = 0.1; // near enough to consider touch-based interaction
+const UI_KNOB_ANGLE_LIMIT = Math.PI * 5./6.; // 7 o'clock through 5 o'clock
+
+function value2angle(val) {
+	return scale(val, 0., 1., -UI_KNOB_ANGLE_LIMIT, UI_KNOB_ANGLE_LIMIT);
+}
+function angle2value(a) {
+	return scale(a, -UI_KNOB_ANGLE_LIMIT, UI_KNOB_ANGLE_LIMIT, 0., 1.);
+}
 
 const NEAR_CLIP = 0.01;
 const FAR_CLIP = 20;
@@ -220,7 +230,7 @@ const UI = {
 			el = Math.abs(el) < 1 ? Math.sign(el) * Math.pow(Math.max(0, Math.abs(el)), power) : 0;
 			el = Math.max(Math.min(el, 1.), -1.);
 
-			az += this.keySpeed * this.turnState;
+			az = this.keySpeed * this.turnState;
 			
 			this.azimuth += dt * az * -180;
 			this.elevation = el * 90;
@@ -284,6 +294,8 @@ const UI = {
 	updateHandStateMachine(hand, mainScene) {
 		if (!hand.mat) return; // i.e. not tracking
 
+		console.log(hand.state)
+
 		let hits = rayTestModules(mainScene.module_instances.instances, hand.pos, hand.dir)
 		hand.target = hits[0]
 		
@@ -302,20 +314,9 @@ const UI = {
 					let module = object;
 					while (module && !module.isModule) module = module.parent;
 					if (module && module.isModule) {
-						// request to spawn new object 
-						// derive desired location
-						// basically, if it spawns in the users' ray,
-						// it will immediately enter dragging
-						// actually, current module pose should work already for this, no?
-						// let pos = vec3.clone(hand.dir)
-						// vec3.scale(pos, distance);
-						// vec3.add(pos, hand.pos);
-						// // derive desired quat:
-						// //let orient = vec3.clone(hand.orient)
-						// let orient = vec3.clone(module.orient)
-						// send outgoing delta
 						// derive delta from module.node:
 						let path = gensym(module.kind);
+						// send delta to spawn it:
 						let deltas = got.nodesToDeltas([module.node], [], path)
 						outgoingDeltas.push(deltas)
 						// exit menu:
@@ -350,8 +351,9 @@ const UI = {
 				object = hand.stateData.object
 				if (hand.trigger_pressed) {
 					// option to use pad/pad scroll/tap to update button?
+
 				} else {
-					this.state = "default";
+					hand.state = "default";
 				}
 			} break;
 			case "swinging": {
@@ -359,7 +361,41 @@ const UI = {
 				object = hand.stateData.object
 				if (hand.trigger_pressed) {
 					// update value according to knob rotation
-				
+					/*
+						want angle from knob to hand
+						in the knob's coordinate system
+					*/
+					let rel = vec3.create()
+					vec3.sub(rel, hand.pos, object.i_pos)
+					let iq = quat.create()
+					quat.invert(iq, object.i_quat)
+					vec3.transformQuat(rel, rel, iq);
+					vec2.normalize(rel, rel);
+					// angle of line to hand relative to knob face:
+					let angle = Math.atan2(rel[0], rel[1]);
+					let value = angle2value(angle);
+					// clamp:
+					value = Math.min(1, Math.max(0, value));
+					// immediate update for rendering:
+					object.i_value[0] = value;
+					// update prop:
+					let props = object.node._props
+					let range = props.range || [0,1];
+					let oldval = object.node._props.value;
+					let newval = range[0] + value*(range[1]-range[0]);
+					// somehow this is getting missed?
+					//props.value = newval;
+					// send propchange oldval->newval
+					let delta = { 
+                        op:"propchange", 
+                        path: object.path, 
+                        name:"value", 
+                        from: oldval, 
+                        to: newval 
+					}
+					console.log(delta)
+					outgoingDeltas.push(delta);
+
 				} else {
 					hand.state = "default";
 				}
@@ -398,6 +434,7 @@ const UI = {
 				}
 			} break;
 			default: {
+				this.state = "default"
 				// we are not currently performing an action;
 				// check for starting a new one:
 				if (object && hand.trigger_pressed) {
@@ -1047,13 +1084,11 @@ out float v_shape;
 out vec2 v_uv;
 
 const float PI = 3.141592653589793;
-// 7 o'clock through 5 o'clock:
-const float KNOB_ANGLE_LIMIT = PI * 5./6.;
+const float KNOB_ANGLE_LIMIT = ${UI_KNOB_ANGLE_LIMIT};
 
 float scale(float t, float ilo, float ihi, float olo, float ohi) {
 	return (t-ilo)*(ohi-olo)/(ihi-ilo) + olo;
 }
-
 
 // http://www.geeks3d.com/20141201/how-to-rotate-a-vertex-by-a-quaternion-in-glsl/
 vec3 quat_rotate( vec4 q, vec3 v ){

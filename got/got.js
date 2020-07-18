@@ -314,7 +314,7 @@ let applyDeltasToGraph = function (graph, delta) {
 				assert(o, "propchange failed: path not found");
 				assert(o._props, "propchange failed: object has no _props");
 				let prop = o._props[delta.name];
-				assert(prop, "propchange failed: property not found");
+				assert(prop !== undefined, "propchange failed: property not found");
 				// assert 'from' value matches object's current value
 				assert(deepEqual(prop, delta.from), "propchange failed; property value does not match");
 
