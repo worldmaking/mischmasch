@@ -49,7 +49,7 @@ const got = require(__dirname + "/gotlib/got.js")
 const {argv} = require('yargs')
 // interactive cli:
 const vorpal = require('vorpal')();
-const equal = require('deep-equal');
+var equal = require('deep-equal');
 const equals = require('array-equal')
 
 
@@ -516,7 +516,7 @@ function pal(ip, port){
             } catch (e) {
               console.warn(e);
             }
-            
+
             // TODO: merge OTs
             
             let response = {
@@ -573,10 +573,6 @@ function pal(ip, port){
 
 }
 
-function getFeedbackPaths(graph){
-  return '\n\n\nTODO: add feedback detection to app.js\n\n\n'
-
-}
 
 
 function handlemessage(msg, id) {

@@ -944,37 +944,43 @@ function initUI(window) {
 			case 68: //D
 				break;
 			case 49: //1 (spawn a speaker)
-				let int = randomInt()
-				let pathInt = 'speaker_' + int
-				let inputInt = 'speaker_' + int + '.input'
-				let z = (randomInt() * 0.001 + 0.3) * -1.0
-				console.log('\n\n\n\n\n\n\n\n', z)
-				let delta = [ 
-					[ 
-						{ op: 'newnode',
-							path: pathInt,
-							kind: 'speaker',
-							category: 'abstraction',
-							pos: [0., 0.5, z],
-							orient: [-0.3, 0., 0., 0.9] },
-						{ op: 'newnode',
-							path: inputInt,
-							kind: 'inlet',
-							index: 0 } 
-						] 
-					]
-					let msg = JSON.stringify({
-						cmd: 'deltas',
-						date: Date.now(),
-						data: delta
+				// only use downpress 
+				if(args[3] === 1){
+					let int = randomInt()
+					let pathInt = 'speaker_' + int
+					let inputInt = 'speaker_' + int + '.input'
+					let z = (randomInt() * 0.001 + 0.3) * -1.0
+					console.log('\n\n\n\n\n\n\n\n', z)
+					let delta = [ 
+						[ 
+							{ op: 'newnode',
+								path: pathInt,
+								kind: 'speaker',
+								category: 'abstraction',
+								pos: [0., 0.5, z],
+								orient: [-0.3, 0., 0., 0.9] },
+							{ op: 'newnode',
+								path: inputInt,
+								kind: 'inlet',
+								index: 0 } 
+							] 
+						]
+						let msg = JSON.stringify({
+							cmd: 'deltas',
+							date: Date.now(),
+							data: delta
 
-					})
+						})
 
-				// let delta = spawnSingleModule([0, 0, 0], [0, 0, 0, 1], "speaker");
-				if (USEWS){
-					socket.send(msg)
-					console.log(delta)
+						// let delta = spawnSingleModule([0, 0, 0], [0, 0, 0, 1], "speaker");
+						if (USEWS){
+							socket.send(msg)
+							console.log(delta)
+						}
 				}
+				
+
+
 					
 					
 			break;
