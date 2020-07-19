@@ -156,12 +156,6 @@ let outgoingDeltas = [];
 
 const UI = {
 
-	hmd: {
-		pos: [0, 1.4, 1],
-		orient: [0, 0, 0, 1],
-		mat: mat4.create(),
-	},
-
 	keynav: {
 
 		pos: vec3.fromValues(0, 0, 1),
@@ -257,6 +251,12 @@ const UI = {
 		},
 	},
 
+	hmd: {
+		pos: [0, 1.4, 1],
+		orient: [0, 0, 0, 1],
+		mat: mat4.create(),
+	},
+
 	hands: [
 		{
 			pos: [-0.5, -1, 0.5],
@@ -285,14 +285,121 @@ const UI = {
 			stateData: {},
 		}
 	],
+
+	cables: {
+
+		arcs: [],
+
+		init(renderer, gl) {
+			// for temporary cables:
+			this.module_vao = glutils.createVao(gl, renderer.module_geom, renderer.module_program.id)
+			this.line_vao = glutils.createVao(gl, renderer.line_geom, renderer.line_program.id)
+			this.module_instances = glutils.createInstances(gl, [
+				{ name:"i_quat", components:4 },
+				{ name:"i_color", components:4 },
+				{ name:"i_pos", components:3 },
+				{ name:"i_bb0", components:3 },
+				{ name:"i_bb1", components:3 },
+				{ name:"i_value", components:1 },
+				{ name:"i_shape", components:1 },
+				{ name:"i_highlight", components:1 },
+			]),
+			this.line_instances = glutils.createInstances(gl, [
+				{ name:"i_color", components:4 },
+				{ name:"i_quat0", components:4 },
+				{ name:"i_quat1", components:4 },
+				{ name:"i_pos0", components:3 },
+				{ name:"i_pos1", components:3 },
+			]),
+			this.module_instances.attachTo(this.module_vao).allocate(4);
+			this.line_instances.attachTo(this.line_vao).allocate(2);
+
+		},
+
+		// from / to should be scene widget or a wand
+		// basically, all they need is an i_pos and i_quat	
+		makeArc(from, to) {
+			let arc = {
+				from: from,
+				to: to,
+				// any other state?
+			}
+			this.arcs.push(arc);
+			return arc;
+		},
+
+		destroyArc(arc) {
+			const index = this.arcs.indexOf(arc);
+			assert(index >= 0, "attempt to destroy arc that wasn't in the list");
+			this.arcs.splice(index, 1)
+			
+			return this;
+		},
+
+		updateInstances() {
+			this.module_instances.count = 0;
+			this.line_instances.count = 0;
+
+			for (let arc of this.arcs) {
+				let line = this.line_instances.instances[this.line_instances.count];
+				line_instances.count++;
+
+				let [from, to] = arc;
+				vec4.set(line.i_color, 1, 1, 1, 1);
+				quat.copy(line.i_quat0, from.i_quat)
+				quat.copy(line.i_quat1, to.i_quat)
+				vec3.copy(line.i_pos0, from.i_pos)
+				vec3.copy(line.i_pos1, to.i_pos)
+
+				for (let parent of [from, to]) {
+					let jack = this.module_instances.instances[this.module_instances.count];
+					module_instances.count++;
+
+					quat.copy(jack.i_quat, parent.i_quat)
+					vec3.copy(jack.i_pos, parent.i_pos)
+					vec4.set(jack.i_color, 0.5, 0.5, 0.5, 1)
+
+					let scale = UI_DEFAULT_SCALE
+					let dim = [1/4, 1/4, 1/2]
+					vec3.copy(obj.i_bb1, [
+						dim[0]*0.5*scale, 
+						dim[1]*0.5*scale, 
+						dim[2]*0.5*scale
+					])
+					vec3.negate(obj.i_bb0, obj.i_bb1)
+
+					jack.i_shape[0] = SHAPE_CYLINDER;
+					jack.i_value[0] = 0;
+					jack.i_highlight[0] = 1;
+				}
+			}
+		},
+
+		submit() {
+			this.module_instances.bind().submit().unbind()
+			this.line_instances.bind().submit().unbind()
+		},
+
+		draw(gl) {
+			renderer.module_program.begin();
+			renderer.module_program.uniform("u_viewmatrix", viewmatrix);
+			renderer.module_program.uniform("u_projmatrix", projmatrix);
+			this.module_vao.bind().drawInstanced(this.module_instances.count).unbind()
+			renderer.module_program.end();
+	
+			renderer.line_program.begin();
+			renderer.line_program.uniform("u_viewmatrix", viewmatrix);
+			renderer.line_program.uniform("u_projmatrix", projmatrix);
+			renderer.line_program.uniform("u_stiffness", 0.5)
+			// consider gl.LINE_STRIP with simpler geometry
+			this.line_vao.bind().drawInstanced(this.line_instances.count, gl.LINES).unbind()
+			renderer.line_program.end();
+		},
+	},
 	
 	updateStateMachines(scene) {
-		this.module_instances.count = 0;
-		this.line_instances.count = 0;
-
 		for (let hand of this.hands) this.updateHandStateMachine(hand, scene)
 	},
-
 
 	updateHandStateMachine(hand, mainScene) {
 		if (!hand.mat) return; // i.e. not tracking
@@ -414,25 +521,31 @@ const UI = {
 				}
 			} break;
 			case "cabling": {
-				let jack = hand.stateData.object
+				let [arc, cablingKind] = hand.stateData
 				// if object, and object is a valid target for cable
 				// TODO: consider allowing snap to floor to delete a cable?
-				if (object.cablingKind == hand.stateData.seeks) {
+				let ok = object.cablingKind == cablingKind
+				if (ok) {
 					// a valid target for this cable
 					// snap jack to target
-					vec3.copy(jack.i_pos, object.i_pos)
-					quat.copy(jack.i_quat, object.i_quat)
+					arc[cablingKind] = object;
+					// vec3.copy(jack.i_pos, object.i_pos)
+					// quat.copy(jack.i_quat, object.i_quat)
 					// e.g. seeking input, can cable to inlet, knob, and also a jack-inlet!
 				} else {
 					// snap jack to hand
-					vec3.copy(jack.i_pos, hand.pos)
-					quat.copy(jack.i_quat, hand.orient)
+					arc[cablingKind] = hand.wand;
+					// vec3.copy(jack.i_pos, hand.pos)
+					// quat.copy(jack.i_quat, hand.orient)
 				}
 
 				if (!hand.trigger_pressed) {
 					// releasing jack now:
-					// if cable is "complete" send "connect" delta.
-					// now temporary local cable
+					if (ok) {
+						//send "connect" delta.
+					}
+					// now delete temporary local cable
+					this.cables.destroyArc(arc)
 					this.state = "default";
 				}
 			} break;
@@ -464,10 +577,15 @@ const UI = {
 						case "inlet": 
 						case "outlet": {
 							// spawn a new cable
+							let type = (object.kind == "inlet") ? "input" : "output";
+							let from = (type == "output") ? object : hand.wand;
+							let to = (type == "input") ? object : hand.wand;
+							let arc = this.cables.makeArc(from, to);
 							// cache cabling state
 							hand.state = "cabling"
-							hand.stateData.object = object
-							hand.stateData.seeks = (object.kind == "inlet") ? "output" : "input";
+							hand.stateData.arc = arc;
+							// what end of the arc this hand needs to satisfy:
+							hand.stateData.cablingKind = (type == "input") ? "from" : "to";
 						} break;
 						case "jack": {
 							// if the jack's cable was fully connected, send a 'disconnect' delta
@@ -516,29 +634,7 @@ const UI = {
 
 	init(renderer, gl) {
 
-		// for temporary cables:
-		this.module_vao = glutils.createVao(gl, renderer.module_geom, renderer.module_program.id)
-		this.line_vao = glutils.createVao(gl, renderer.line_geom, renderer.line_program.id)
-		this.module_instances = glutils.createInstances(gl, [
-			{ name:"i_quat", components:4 },
-			{ name:"i_color", components:4 },
-			{ name:"i_pos", components:3 },
-			{ name:"i_bb0", components:3 },
-			{ name:"i_bb1", components:3 },
-			{ name:"i_value", components:1 },
-			{ name:"i_shape", components:1 },
-			{ name:"i_highlight", components:1 },
-		]),
-		this.line_instances = glutils.createInstances(gl, [
-			{ name:"i_color", components:4 },
-			{ name:"i_quat0", components:4 },
-			{ name:"i_quat1", components:4 },
-			{ name:"i_pos0", components:3 },
-			{ name:"i_pos1", components:3 },
-		]),
-		this.module_instances.attachTo(this.module_vao).allocate(4);
-		this.line_instances.attachTo(this.line_vao).allocate(2);
-
+		this.cables.init(renderer, gl)
 
 		this.ray_vao = glutils.createVao(gl, renderer.line_geom, renderer.ray_program.id)
 		this.ray_instances = glutils.createInstances(gl, [
@@ -566,43 +662,38 @@ const UI = {
 		return this.updateInstances();
 	},
 
-	updateInstances() {
+	makeLocalCable() {
 
-		this.wand_instances.count = 0;
-		for (let hand of this.hands) {
+	},
+
+	updateInstances() {
+		this.cables.updateInstances()
+
+		let i = 0;
+		for(; i<this.hands.length; i++) {
+			let hand = this.hands[i]
 			vec3.copy(hand.line.i_pos, hand.pos)
 			vec3.copy(hand.line.i_dir, hand.dir)
 
-			let wand = this.wand_instances.instances[this.wand_instances.count];
+			let wand = this.wand_instances.instances[i];
+			hand.wand = wand;
 			vec3.copy(wand.i_pos, hand.pos)
 			quat.copy(wand.i_quat, hand.orient)
-			this.wand_instances.count++;
 		}
+		this.wand_instances.count = i;
 		return this.submit()
 	},
 
 	submit() {
-		this.module_instances.bind().submit().unbind()
-		this.line_instances.bind().submit().unbind()
+		this.cables.submit();
+		
 		this.ray_instances.bind().submit().unbind()
 		this.wand_instances.bind().submit().unbind()
 		return this;
 	},
 
 	draw(gl) {
-		renderer.module_program.begin();
-		renderer.module_program.uniform("u_viewmatrix", viewmatrix);
-		renderer.module_program.uniform("u_projmatrix", projmatrix);
-		this.module_vao.bind().drawInstanced(this.module_instances.count).unbind()
-		renderer.module_program.end();
-
-		renderer.line_program.begin();
-		renderer.line_program.uniform("u_viewmatrix", viewmatrix);
-		renderer.line_program.uniform("u_projmatrix", projmatrix);
-		renderer.line_program.uniform("u_stiffness", 0.5)
-		// consider gl.LINE_STRIP with simpler geometry
-		this.line_vao.bind().drawInstanced(this.line_instances.count, gl.LINES).unbind()
-		renderer.line_program.end();
+		this.cables.draw(gl);
 		
 		renderer.wand_program.begin();
 		renderer.wand_program.uniform("u_viewmatrix", viewmatrix);
@@ -1501,7 +1592,7 @@ function makeSceneGraph(renderer, gl) {
 					obj.i_shape[0] = SHAPE_CYLINDER;
 					vec4.copy(obj.i_color, props.kind == "inlet" ? [0.5, 0.5, 0.5, 1] : [0.25, 0.25, 0.25, 1]);
 					obj.dim = [1/2, 1/2, -UI_DEPTH];
-					obj.cablingKind = (props.kind == "inlet") ? "input" : "output";
+					obj.cablingKind = (props.kind == "inlet") ? "to" : "from";
 					if (props.history) {
 						// render history outs differently:
 						obj.i_shape[0] = SHAPE_BOX;
@@ -1516,7 +1607,7 @@ function makeSceneGraph(renderer, gl) {
 					let range = props.range || [0,1];
 					let value = props.value || 0.;
 					obj.i_value[0] = (value - range[0])/(range[1]-range[0]);
-					obj.cablingKind = "input"
+					obj.cablingKind = "to"
 					this.addLabel(obj, label_text, text_pos, text_scale);
 				} break;
 				case "knob": 
@@ -1528,7 +1619,7 @@ function makeSceneGraph(renderer, gl) {
 					let range = props.range || [0,1];
 					let value = props.value || 0.;
 					obj.i_value[0] = (value - range[0])/(range[1]-range[0]);
-					obj.cablingKind = "input"
+					obj.cablingKind = "to"
 					this.addLabel(obj, label_text, text_pos, text_scale);
 				} break;
 				case "n_switch": {
@@ -1539,7 +1630,7 @@ function makeSceneGraph(renderer, gl) {
 					let throws = props.throws || [0,1];
 					let value = props.value || 0.;
 					obj.i_value[0] = value/(throws.length-1);
-					obj.cablingKind = "input"
+					obj.cablingKind = "to"
 					this.addLabel(obj, label_text, text_pos, text_scale);
 				} break;
 				default: {
