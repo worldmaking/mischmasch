@@ -35,10 +35,10 @@
             "feedback_cv":{"_props":{"kind":"inlet"}},
             "vco_1_rate":{"_props":{"kind":"large_knob","range":[0,6000],"taper":"log 3.8","value":120,"unit":"Hz"}},
             "vco_1_waveform":
-            {"_props":{"kind":"n_switch","throws":["Sine","Phasor","Triangle"],"value":0}},
+            {"_props":{"kind":"knob","range":[0,2],"value":0}},
             "vco_2_rate":{"_props":{"kind":"large_knob","range":[0,6000],"taper":"log 3.8","value":3,"unit":"Hz"}},
             "vco_2_waveform":
-            {"_props":{"kind":"n_switch","throws":["Sine","Phasor","Triangle"],"value":0}},
+            {"_props":{"kind":"knob","range":[0,2],"value":0}},
             "feedback":{"_props":{"kind":"small_knob","range":[0,6],"taper":"linear","value":0.25,"unit":"float"}},
             "vco_1":{"_props":{"kind":"outlet", "index": 0}},
             "vco_2":{"_props":{"kind":"outlet", "index": 1}},
@@ -74,7 +74,7 @@
         ["lfo_1.sine", "vca_1.signal"],
         ["lfo_1.sine", "lfo_2.fm_cv"],
         ["lfo_1.phasor","ffmvco_1.feedback_cv"],
-        ["lfo_1.pulse","ffmvco_1.vco_1_cv"],
+        ["lfo_1.pulse","vca_1.bias"],
         ["vca_1.output","comparator_1.A"],
         ["ffmvco_1.master","comparator_1.B"],
         ["comparator_1.max", "speaker_1.input"],

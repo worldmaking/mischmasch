@@ -353,18 +353,7 @@ const UI = {
 					hand.state = "default";
 				} 
 			} break;
-			case "buttoning": {
-				// stick to what we picked:
-				if (object) object.i_highlight[0] = 0
-				object = hand.stateData.object
-				object.i_highlight[0] = 1
-				if (hand.trigger_pressed) {
-					// option to use pad/pad scroll/tap to update button?
-
-				} else {
-					hand.state = "default";
-				}
-			} break;
+			case "buttoning": 
 			case "twiddling": 
 			case "swinging": {
 				// stick to what we picked:
@@ -1452,6 +1441,7 @@ function makeSceneGraph(renderer, gl) {
 			obj.quat = props.orient || [0, 0, 0, 1];
 			obj.scale = 1;
 			obj.dim = [1, 1, UI_DEPTH]
+			obj.nodes = []
 
 			obj.i_shape[0] = SHAPE_BOX;
 			vec4.set(obj.i_color, 0.5, 0.5, 0.5, 1);
@@ -1469,7 +1459,6 @@ function makeSceneGraph(renderer, gl) {
 					obj.i_shape[0] = SHAPE_CYLINDER;
 					vec4.copy(obj.i_color, props.kind == "inlet" ? [0.5, 0.5, 0.5, 1] : [0.25, 0.25, 0.25, 1]);
 					obj.dim = [1/2, 1/2, -UI_DEPTH];
-					obj.nodes = []
 					obj.cablingKind = (props.kind == "inlet") ? "input" : "output";
 					if (props.history) {
 						// render history outs differently:
