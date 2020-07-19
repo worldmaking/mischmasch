@@ -287,6 +287,9 @@ const UI = {
 	],
 	
 	updateStateMachines(scene) {
+		this.module_instances.count = 0;
+		this.line_instances.count = 0;
+
 		for (let hand of this.hands) this.updateHandStateMachine(hand, scene)
 	},
 
@@ -467,7 +470,6 @@ const UI = {
 							hand.stateData.seeks = (object.kind == "inlet") ? "output" : "input";
 						} break;
 						case "jack": {
-							// object.parent.kind tells you what this is connected to; likely "inlet"/"knob"/etc., "outlet", or null(root) for a non-connected jack
 							// if the jack's cable was fully connected, send a 'disconnect' delta
 							// use this to configure the cabling state
 							hand.state = "cabling";
@@ -513,14 +515,39 @@ const UI = {
 
 
 	init(renderer, gl) {
-		this.line_vao = glutils.createVao(gl, renderer.line_geom, renderer.ray_program.id)
+
+		// for temporary cables:
+		this.module_vao = glutils.createVao(gl, renderer.module_geom, renderer.module_program.id)
+		this.line_vao = glutils.createVao(gl, renderer.line_geom, renderer.line_program.id)
+		this.module_instances = glutils.createInstances(gl, [
+			{ name:"i_quat", components:4 },
+			{ name:"i_color", components:4 },
+			{ name:"i_pos", components:3 },
+			{ name:"i_bb0", components:3 },
+			{ name:"i_bb1", components:3 },
+			{ name:"i_value", components:1 },
+			{ name:"i_shape", components:1 },
+			{ name:"i_highlight", components:1 },
+		]),
 		this.line_instances = glutils.createInstances(gl, [
+			{ name:"i_color", components:4 },
+			{ name:"i_quat0", components:4 },
+			{ name:"i_quat1", components:4 },
+			{ name:"i_pos0", components:3 },
+			{ name:"i_pos1", components:3 },
+		]),
+		this.module_instances.attachTo(this.module_vao).allocate(4);
+		this.line_instances.attachTo(this.line_vao).allocate(2);
+
+
+		this.ray_vao = glutils.createVao(gl, renderer.line_geom, renderer.ray_program.id)
+		this.ray_instances = glutils.createInstances(gl, [
 			//{ name:"i_color", components:4 },
 			{ name:"i_pos", components:3 },
 			{ name:"i_len", components:1 },
 			{ name:"i_dir", components:3 },
 		]);
-		this.line_instances.attachTo(this.line_vao).allocate(16);
+		this.ray_instances.attachTo(this.ray_vao).allocate(16);
 
 		this.wand_vao = glutils.createVao(gl, renderer.wand_geom, renderer.wand_program.id)
 		this.wand_instances = glutils.createInstances(gl, [
@@ -528,20 +555,19 @@ const UI = {
 			{ name:"i_pos", components:3 },
 		]);
 		this.wand_instances.attachTo(this.wand_vao).allocate(16);
+		
 
 		for (let hand of this.hands) {
-			let line = this.line_instances.instances[this.line_instances.count];
-			this.line_instances.count++;
-			hand.line = line;
+			let ray = this.ray_instances.instances[this.ray_instances.count];
+			this.ray_instances.count++;
+			hand.line = ray;
 			//vec4.set(line.i_color, 1, 1, 1, 1);
-
-			
 		}
-
 		return this.updateInstances();
 	},
 
 	updateInstances() {
+
 		this.wand_instances.count = 0;
 		for (let hand of this.hands) {
 			vec3.copy(hand.line.i_pos, hand.pos)
@@ -556,12 +582,28 @@ const UI = {
 	},
 
 	submit() {
+		this.module_instances.bind().submit().unbind()
 		this.line_instances.bind().submit().unbind()
+		this.ray_instances.bind().submit().unbind()
 		this.wand_instances.bind().submit().unbind()
 		return this;
 	},
 
 	draw(gl) {
+		renderer.module_program.begin();
+		renderer.module_program.uniform("u_viewmatrix", viewmatrix);
+		renderer.module_program.uniform("u_projmatrix", projmatrix);
+		this.module_vao.bind().drawInstanced(this.module_instances.count).unbind()
+		renderer.module_program.end();
+
+		renderer.line_program.begin();
+		renderer.line_program.uniform("u_viewmatrix", viewmatrix);
+		renderer.line_program.uniform("u_projmatrix", projmatrix);
+		renderer.line_program.uniform("u_stiffness", 0.5)
+		// consider gl.LINE_STRIP with simpler geometry
+		this.line_vao.bind().drawInstanced(this.line_instances.count, gl.LINES).unbind()
+		renderer.line_program.end();
+		
 		renderer.wand_program.begin();
 		renderer.wand_program.uniform("u_viewmatrix", viewmatrix);
 		renderer.wand_program.uniform("u_projmatrix", projmatrix);
@@ -574,7 +616,7 @@ const UI = {
 		renderer.ray_program.uniform("u_viewmatrix", viewmatrix);
 		renderer.ray_program.uniform("u_projmatrix", projmatrix);
 		// consider gl.LINE_STRIP with simpler geometry
-		this.line_vao.bind().drawInstanced(this.line_instances.count, gl.LINES).unbind()
+		this.ray_vao.bind().drawInstanced(this.ray_instances.count, gl.LINES).unbind()
 		renderer.ray_program.end();
 		return this;
 	},
@@ -2006,11 +2048,7 @@ function draw(eye=0) {
 	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 	gl.depthMask(false)
 
-
-
 	UI.draw(gl);
-
-	// if either hand is in menu mode, draw the menu:
 	currentScene.draw(gl);
 
 	gl.disable(gl.BLEND);
