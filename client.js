@@ -259,6 +259,7 @@ const UI = {
 
 	hands: [
 		{
+			name: "hand_left",
 			pos: [-0.5, -1, 0.5],
 			orient: [0, 0, 0, 1],
 			mat: mat4.create(),
@@ -272,6 +273,7 @@ const UI = {
 			stateData: {},
 		},
 		{
+			name: "hand_right",
 			pos: [+0.5, -1, 0.5],
 			orient: [0, 0, 0, 1],
 			mat: mat4.create(),
@@ -404,7 +406,7 @@ const UI = {
 	updateHandStateMachine(hand, mainScene) {
 		if (!hand.mat) return; // i.e. not tracking
 
-		let hits = rayTestModules(mainScene.module_instances.instances, hand.pos, hand.dir)
+		let hits = rayTestModules(mainScene.module_instances, hand.pos, hand.dir)
 		hand.target = hits[0]
 		hand.line.i_len[0] = hand.target ? hand.target[1] : 1
 		
@@ -540,18 +542,25 @@ const UI = {
 				}
 
 				if (!hand.trigger_pressed) {
+					//console.log("end_cabling1", this.cables.arcs)
+					this.cables.destroyArc(arc)
+					//console.log("end_cabling2", this.cables.arcs)
 					// releasing jack now:
 					if (ok) {
 						//send "connect" delta.
-						console.log("connect", arc)
+						let delta = { op:"connect", paths: [
+                            arc.from.path,
+                            arc.to.path
+                        ]};
+                        //console.log("CONNECT", delta);
+                        outgoingDeltas.push(delta);
 					}
 					// now delete temporary local cable
-					this.cables.destroyArc(arc)
-					this.state = "default";
+					hand.state = "default";
 				}
 			} break;
 			default: {
-				this.state = "default"
+				hand.state = "default"
 				// we are not currently performing an action;
 				// check for starting a new one:
 				if (object && hand.trigger_pressed) {
@@ -592,17 +601,25 @@ const UI = {
 						} break;
 						case "jack": {
 							// if the jack's cable was fully connected, send a 'disconnect' delta
-							let target = object.parent
-							let type = target.cablingKind;
-							assert(type, "nlet has no .cablingKind")
-							let from = (type == "from") ? target : hand.wand;
-							let to = (type == "to") ? target : hand.wand;
-							let arc = this.cables.makeArc(from, to);
-							// cache cabling state
-							hand.state = "cabling"
-							hand.stateData.arc = arc;
-							// what end of the arc this hand needs to satisfy:
-							hand.stateData.cablingKind = (type == "to") ? "from" : "to";
+							let {line, parent} = object
+							if (line && line.name) {
+								let paths = line.name.split(">")
+								let delta = { op:"disconnect", paths: paths };
+								outgoingDeltas.push(delta)
+
+								// get widgets this line was connected to
+								let {from, to} = line;
+								if (from == parent) {
+									from = hand.wand;
+									hand.stateData.cablingKind = "from"
+								} else {
+									to = hand.wand;
+									hand.stateData.cablingKind = "to"
+								}
+								// cache cabling state
+								hand.stateData.arc = this.cables.makeArc(from, to);
+								hand.state = "cabling"
+							}
 						} break;
 						default: {
 							if (object.isModule) {
@@ -674,6 +691,7 @@ const UI = {
 			vec3.copy(hand.line.i_dir, hand.dir)
 
 			let wand = this.wand_instances.instances[i];
+			wand.name = hand.name
 			hand.wand = wand;
 			vec3.copy(wand.i_pos, hand.pos)
 			quat.copy(wand.i_quat, hand.orient)
@@ -1515,6 +1533,7 @@ function makeSceneGraph(renderer, gl) {
 					for (let parent of [line.from, line.to]) {
 						let obj = this.getNextModule(parent);
 						obj.name = line.name +":" + parent.name;
+						obj.line = line
 						obj.kind = "jack"
 						// TODO to allow stacked cables:
 						//obj.cablingKind = (parent.kind == "inlet") ? "input" : "output"
@@ -1522,9 +1541,10 @@ function makeSceneGraph(renderer, gl) {
 						obj.dim = [1/4, 1/4, 1/2]
 						obj.pos = [0, 0, 0]
 						obj.quat = [0, 0, 0, 1]
-						vec4.set(obj.i_color, 0.5, 0.5, 0.5, 1)
+						vec4.set(obj.i_color, 0.25, 0.25, 0.25, 1)
 						obj.i_shape[0] = SHAPE_CYLINDER;
 						obj.i_value[0] = 0;
+						obj.i_highlight[0] = 0;
 					}
 				}
 			}
@@ -1905,7 +1925,9 @@ function rayTestModules(instances, ray_origin, ray_dir) {
 	// hit test on each cube:
 	let hits = []
 	// naive hit-test by looping over all and testing in turn
-	for (let obj of instances) {
+	//for (let obj of instances) {
+	for (let i=0; i<instances.count; i++) {
+		let obj = instances.instances[i]
 		if (!obj.i_bb0 || !obj.i_bb1) continue;  // no bounding box, no test
 		// check for hits:
 		let [hit, distance] = intersectCube(obj.i_pos, obj.i_quat, obj.i_bb0, obj.i_bb1, ray_origin, ray_dir);
@@ -1983,7 +2005,7 @@ function animate() {
             try {
 				got.applyDeltasToGraph(localGraph, delta);
 				
-				//fs.writeFileSync("basicGraph.json", JSON.stringify(localGraph, null, "\t"), "utf8");
+				fs.writeFileSync("basicGraph.json", JSON.stringify(localGraph, null, "\t"), "utf8");
 			} catch (e) {
 				console.warn(e);
 			}
@@ -1996,9 +2018,9 @@ function animate() {
 
 
 	currentScene = (UI.hands[0].state == "menu" || UI.hands[1].state == "menu") ? menuScene : mainScene;
-	currentScene.module_instances.instances.forEach(obj=>{
-		obj.i_highlight[0] = 0;
-	})
+	for (let i=0; i<currentScene.module_instances.count; i++) {
+		currentScene.module_instances.instances[i].i_highlight[0] = 0;
+	}
 	
 	if (vr) {
 		vr.update();
