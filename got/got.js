@@ -218,7 +218,7 @@ let rebase = function(B, A, result) {
 				if (b.op == "propchange" && b.path==A.path && b.name==A.name && floatApproximatelyEqual(b.from, a.from) === false) {
 					// if both A and b change the same property, then they should be merged or sequenced
 					b.from = A.to;
-					console.log(b.from, A.to)
+					//console.log(b.from, A.to)
 				}
 			} break;
 		}
@@ -275,7 +275,6 @@ let applyDeltasToGraph = function (graph, delta) {
 			case "delnode": {
 				let [ctr, name] = findPathContainer(graph.nodes, delta.path);
 				let o = ctr[name];
-				console.log(o);
 				assert(o, "delnode failed: path not found");
 				// assert o._props match delta props:
 				for (let k in o._props) {

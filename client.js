@@ -103,6 +103,17 @@ function intersectCube(boxPos, boxQuat, p0, p1, rayOrigin, rayDir) {
 	return [tentry <= texit && texit > 0, tentry];
 }
 
+function makeDelNodeDelta(deltas, node, path) {
+	for (let name of Object.keys(node)) {
+		if (name != "_props") {
+			makeDelNodeDelta(deltas, node[name], path+"."+name)
+		}
+	}
+	let delta = {op:"delnode", path:path}
+	Object.assign(delta, node._props)
+	deltas.push(delta)
+}
+
 ////////////////////////////////////////////////////////////////
 
 const SHAPE_BOX = 0;
@@ -460,6 +471,18 @@ const UI = {
 					// delete?
 					if (object.i_pos[1] < 0) {
 						// send delete delta
+						let deltas = []
+						// first we need to check for arcs that reference this node:
+						let pat = new RegExp(`^${object.path}(\\..*)?$`)
+						for (let arc of localGraph.arcs) {
+							if (pat.test(arc[0]) || pat.test(arc[1])) {
+								deltas.push({op:"disconnect", paths:arc })
+							}
+						}
+						// then remove modules; children first
+						makeDelNodeDelta(deltas, object.node, object.path)
+						// now send them:
+						outgoingDeltas.push(deltas)
 					}
 					// release dragging:
 					hand.state = "default";
@@ -2295,3 +2318,4 @@ function shutdown() {
 }
 
 init();
+
