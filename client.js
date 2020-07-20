@@ -951,7 +951,7 @@ function initUI(window) {
 					let inputInt = 'speaker_' + int + '.input'
 					let z = (randomInt() * 0.001 + 0.3) * -1.0
 					
-					let delta = [ 
+					let delta = [[ 
 						 
 							{ op: 'newnode',
 								path: pathInt,
@@ -963,7 +963,7 @@ function initUI(window) {
 								path: inputInt,
 								kind: 'inlet',
 								index: 0 } 
-							] 
+							] ]
 						
 						let msg = JSON.stringify({
 							cmd: 'deltas',
