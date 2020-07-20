@@ -1,5 +1,3 @@
-// we use this to scan an entire graph for cycles, and return a list of nodes which should have their history property set to 'yes'
-
 const fs = require('fs')
 const got = require('./gotlib/got.js')
 const equals = require('array-equal')
@@ -155,14 +153,14 @@ let visit = function (node, nodes, adjacents, localGraph, nodeCount){
             // all nodes & their adjacent nodes have been visited.
             // console.log(applyHistoryToGraph(feedbackPaths, localGraph))
             // return applyHistoryToGraph(feedbackPaths, localGraph)
-            newGraph = applyHistoryToGraph(feedbackPaths, localGraph)
+            // newGraph = applyHistoryToGraph(feedbackPaths, localGraph)
             graphReady = true
         }
     // once the graph has been updated with location of feedback paths
     // return it
     if(graphReady===true){
         
-        return newGraph
+        return feedbackPaths
     }
     
 }
@@ -244,19 +242,18 @@ function checkDuplicatePaths(checkPath){
     return true
 }
 
-function applyHistoryToGraph(cycles, localGraph){
-    // outlet._props.history = true
-    for(i=0;i<cycles.length;i++){
-        // history outlet:
-        targetOutletParent = cycles[i][0].split('.')[0]
-        targetOutletChild = cycles[i][0].split('.')[1]
+// function applyHistoryToGraph(cycles, localGraph){
+//     // outlet._props.history = true
+//     for(i=0;i<cycles.length;i++){
+//         // history outlet:
+//         targetOutletParent = cycles[i][0].split('.')[0]
+//         targetOutletChild = cycles[i][0].split('.')[1]
         
-        localGraph.nodes[targetOutletParent][targetOutletChild]._props['history'] = true
-    }
+//         localGraph.nodes[targetOutletParent][targetOutletChild]._props['history'] = true
+//     }
     
-    let updatedGraph = localGraph
-    return updatedGraph
-}
+//     return cycles
+// }
 
 
 module.exports = {

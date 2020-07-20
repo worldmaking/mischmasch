@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/worldmaking/mischmasch#readme",
   "dependencies": {
+    "array-equal": "^1.0.0",
     "bottleneck": "^2.19.5",
     "chroma-js": "^2.1.0",
     "commander": "^5.1.0",

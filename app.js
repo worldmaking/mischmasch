@@ -51,7 +51,7 @@ const {argv} = require('yargs')
 const vorpal = require('vorpal')();
 var equal = require('deep-equal');
 const equals = require('array-equal')
-const fb = require('./detectCycles.js')
+const fb = require('./historify.js')
 
 // let ctrl-c quit:
 {
@@ -503,7 +503,7 @@ function pal(ip, port){
           case 'deltas':
             // synchronize our local copy:
             try {
-
+              console.log('deltas from host', msg.data, typeof msg.data)
               got.applyDeltasToGraph(localGraph, msg.data);
 
               // feedback path stuff
@@ -672,9 +672,9 @@ function startLocalWebsocket(){
       } else {
         try {
           // handlemessage(JSON.parse(e), ws, id);
-          let msg = JSON.parse(e)
-          console.log('msg', msg)
-          messageFromLocalClient(msg, localWebsocket)
+          // let msg = JSON.parse(e)
+          
+          messageFromLocalClient(e, localWebsocket)
         } catch (e) {
           console.log('bad JSON: ', e);
         }
@@ -688,10 +688,10 @@ function startLocalWebsocket(){
 
 }
 
-function messageFromLocalClient(msg, localWebsocket){
-  let message = msg
-  console.log('message from local client', msg)
-  switch(msg.cmd){
+function messageFromLocalClient(message, localWebsocket){
+  let foof = JSON.parse(message)
+  console.log('message from local client', foof)
+  switch(foof.cmd){
     case 'vrClientStatus':
       localConfig.vr = 1
       // teapartyWebsocket.send
@@ -716,42 +716,80 @@ function messageFromLocalClient(msg, localWebsocket){
     break
 
     case 'deltas':
-      console.log('delta from VR client', message)
+      console.log('delta from VR client', foof.data[0].op)
 
       try {
 
-        got.applyDeltasToGraph(localGraph, message.data);
+        got.applyDeltasToGraph(localGraph, foof.data);
 
-        console.log(localGraph)
 
       } catch (e) {
         console.warn(e);
       }
       // feedback path stuff
       //! urgent: need to apply a propchange to one outlet per feedback path outlet._props.history = true
-      // get list of child nodes in graph
-      let nodes = fb.setup(localGraph)
+      // if a connection delta, check if history node is needed: 
+      if (foof.data[0].op === 'connect'){
 
-      // get list of adjacent nodes per each node in the graph
-      let adjacents = fb.getAdjacents(0, nodes, localGraph)
+        console.log(foof.data)
 
-      // reset the nodes array with list of only parent nodes whose child nodes have adjacent connections:
-      nodes.length = 0
-      nodes = Object.keys(adjacents)
-      nodeCount = nodes.length
-      // get 
-      updatedGraph = fb.visit(0, nodes, adjacents, localGraph, nodeCount)
+        // get list of child nodes in graph
+        let nodes = fb.setup(localGraph)
 
-      newDeltas = got.deltasFromGraph(updatedGraph,[])
+        // get list of adjacent nodes per each node in the graph
+        let adjacents = fb.getAdjacents(0, nodes, localGraph)
 
-      let msg = JSON.stringify({
-        cmd: 'deltas',
-        date: Date.now(),
-        data: newDeltas
-      })
+        // reset the nodes array with list of only parent nodes whose child nodes have adjacent connections:
+        nodes.length = 0
+        nodes = Object.keys(adjacents)
+        nodeCount = nodes.length
+        // get 
+        historyPropchange = fb.visit(0, nodes, adjacents, localGraph, nodeCount)
+        console.log(historyPropchange)
+        let propchanges = []
+        for(i=0;i<historyPropchange.length;i++){
+          if(historyPropchange[i].includes(foof.data[0].paths[0]) === true && historyPropchange[i].includes(foof.data[0].paths[1]) === true){
+            let srcPath = foof.data[0].paths[0]
+            let parent = srcPath.split('.')[0]
+            let child = srcPath.split('.')[1]
+            console.log(srcPath)
+            propchange = [ { 
+              op: 'propchange',
+              path: srcPath,
+              name: 'history',
+              from: localGraph.nodes[parent][child]._props.history,
+              to: "yes" 
+            } ]
+            propchanges.push(propchange)
+          }
+        }
+        console.log(propchanges)
+        got.applyDeltasToGraph(localGraph, propchanges)
+        // append the connection delta to the msg
+        propchanges.push(foof.data[0])
+        
+        let msg = JSON.stringify({
+          cmd: 'deltas',
+          date: Date.now(),
+          data: propchanges
+        })
+        
+        sendAllLocalClients(msg)
+        deltaWebsocket.send(msg)
+
+      } else {
+        let msg = JSON.stringify({
+          cmd: 'deltas',
+          date: Date.now(),
+          data: foof.data
+        })
+        
+        sendAllLocalClients(msg)
+        deltaWebsocket.send(msg)
+        
+      }
       
-      sendAllLocalClients(msg)
-      deltaWebsocket.send(JSON.stringify(msg))
+
       // runGOT(id, msg.data)
     break
 
