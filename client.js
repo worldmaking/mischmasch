@@ -950,9 +950,9 @@ function initUI(window) {
 					let pathInt = 'speaker_' + int
 					let inputInt = 'speaker_' + int + '.input'
 					let z = (randomInt() * 0.001 + 0.3) * -1.0
-					console.log('\n\n\n\n\n\n\n\n', z)
+					
 					let delta = [ 
-						[ 
+						 
 							{ op: 'newnode',
 								path: pathInt,
 								kind: 'speaker',
@@ -964,7 +964,7 @@ function initUI(window) {
 								kind: 'inlet',
 								index: 0 } 
 							] 
-						]
+						
 						let msg = JSON.stringify({
 							cmd: 'deltas',
 							date: Date.now(),
@@ -977,7 +977,7 @@ function initUI(window) {
 							socket.send(msg)
 							console.log(delta)
 						}
-				}
+					}
 				
 
 
