@@ -128,6 +128,8 @@ const SHAPE_KNOB = 3;
 const UI_DEFAULT_SCALE = 0.1;
 const UI_DEPTH = 1/3;
 const UI_NUDGE = 0.01;
+const UI_SCROLL_SPEED = 1;
+const UI_ROTATE_SPEED = 180;
 const UI_TOUCH_DISTANCE = 0.1; // near enough to consider touch-based interaction
 const UI_KNOB_ANGLE_LIMIT = Math.PI * 5./6.; // 7 o'clock through 5 o'clock
 
@@ -519,17 +521,19 @@ const UI = {
 				let oldPos = vec3.copy([], object.pos)
 				let oldQuat = quat.copy([], object.quat)
 
-				if (hand.pad_dy) {
-					// the throw/pull gesture
-
-				}
-		
+				// use pad scroll to modify the module reel & rotate:
+				let v = mat4.getTranslation([0,0,0], hand.stateData.objectRelativeMat);
+				let q = mat4.getRotation([0,0,0,1], hand.stateData.objectRelativeMat);
+				v[2] = Math.min(0, v[2] - UI_SCROLL_SPEED * hand.pad_dy)
+				let r = quat.fromEuler([0, 0, 0, 1], 0, UI_ROTATE_SPEED*hand.pad_dx, 0)
+				quat.multiply(q, r, q)
+				mat4.fromRotationTranslation(hand.stateData.objectRelativeMat, q, v)
+				
+				// apply hand pose to the dragged object:
 				let m = mat4.multiply(mat4.create(), hand.mat, hand.stateData.objectRelativeMat);
-				// apply this to the dragged object:
 				mat4.getTranslation(object.pos, m)
 				mat4.getRotation(object.quat, m)
 
-				
 				// check for exit:
 				if (!hand.trigger_pressed) {
 					// delete?
@@ -735,7 +739,6 @@ const UI = {
 								hand.stateData.object = object
 								// get pose of object relative to hand:
 								hand.stateData.objectRelativeMat = mat4.multiply(mat4.create(), mat4.invert(mat4.create(), hand.mat), object.mat)
-								
 							}
 						} break;
 					}
