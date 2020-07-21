@@ -19,7 +19,7 @@ const max = require("max-api");
 const username = require('username')
 const filename = path.basename(__filename)
 
-
+const got = require('../gotlib/got.js')
 
 /*
 ////// handshake with the vrContext running on the same machine:
@@ -55,7 +55,14 @@ const options = {
 };
 //const rws = new ReconnectingWebSocket('ws://my.site.com', [], options);
 
+let localGraph = {
+	nodes: {		
+	},
+	arcs: [
+	]
 
+}
+max.setDict("scene", localGraph)
 
 let sessionList = []
 let sceneList = []
@@ -78,7 +85,7 @@ connection  = new ReconnectingWebSocket('ws://localhost:8080/', [], options);
 connection.addEventListener('open', () => {
 	connectionStatus = 1
 	max.outlet('toAudioviz', 1)
-	max.outlet('toMsvr_world_js','initiate')
+	max.outlet('toMsvr_world_js','loadbang')
 	// clear the filename umenu in the controller.maxpat
 	max.outlet('clearPlaybackList', 'clear')
 
@@ -114,8 +121,9 @@ connection.addEventListener('message', (data) => {
 		case "nuke":
 			// case "patch":	
 			deltas = JSON.stringify(data)
+
 			max.outlet('fromLocalWebsocket', deltas)
-			// max.post('arcs', deltas)
+
 		break;
 
 

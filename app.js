@@ -503,7 +503,6 @@ function pal(ip, port){
           case 'deltas':
             // synchronize our local copy:
             try {
-              console.log('deltas from host', msg.data, typeof msg.data)
               got.applyDeltasToGraph(localGraph, msg.data);
 
               // feedback path stuff
@@ -516,7 +515,11 @@ function pal(ip, port){
             } catch (e) {
               console.warn(e);
             }
-
+            for(i=0;i<msg.data.length; i++){
+              if(msg.data[i].op === 'connect'){
+                console.log(msg.data[i])
+              }
+            }
             // TODO: merge OTs
             
             let response = {
@@ -716,7 +719,6 @@ function messageFromLocalClient(message, localWebsocket){
     break
 
     case 'deltas':
-      console.log('delta from VR client', foof.data[0].op)
 
       try {
 
@@ -727,67 +729,31 @@ function messageFromLocalClient(message, localWebsocket){
         console.warn(e);
       }
       // feedback path stuff
-      //! urgent: need to apply a propchange to one outlet per feedback path outlet._props.history = true
-      // if a connection delta, check if history node is needed: 
-      if (foof.data[0].op === 'connect'){
-
-        console.log(foof.data)
-
-        // get list of child nodes in graph
-        let nodes = fb.setup(localGraph)
-
-        // get list of adjacent nodes per each node in the graph
-        let adjacents = fb.getAdjacents(0, nodes, localGraph)
-
-        // reset the nodes array with list of only parent nodes whose child nodes have adjacent connections:
-        nodes.length = 0
-        nodes = Object.keys(adjacents)
-        nodeCount = nodes.length
-        // get 
-        historyPropchange = fb.visit(0, nodes, adjacents, localGraph, nodeCount)
-        console.log(historyPropchange)
-        let propchanges = []
-        for(i=0;i<historyPropchange.length;i++){
-          if(historyPropchange[i].includes(foof.data[0].paths[0]) === true && historyPropchange[i].includes(foof.data[0].paths[1]) === true){
-            let srcPath = foof.data[0].paths[0]
-            let parent = srcPath.split('.')[0]
-            let child = srcPath.split('.')[1]
-            console.log(srcPath)
-            propchange = [ { 
-              op: 'propchange',
-              path: srcPath,
-              name: 'history',
-              from: localGraph.nodes[parent][child]._props.history,
-              to: "yes" 
-            } ]
-            propchanges.push(propchange)
-          }
+      for(i=0;i<foof.data.length; i++){
+        // if a connection delta, check if history node is needed: 
+        if(foof.data[i].op === 'connect'){
+          console.log(foof.data[i])
+          let historyDelta = getHistoryPropchanges(foof.data[i])
+          let msg = JSON.stringify({
+            cmd: 'deltas',
+            date: Date.now(),
+            data: historyDelta
+          })
+          sendAllLocalClients(msg)
+          deltaWebsocket.send(msg)
         }
-        console.log(propchanges)
-        got.applyDeltasToGraph(localGraph, propchanges)
-        // append the connection delta to the msg
-        propchanges.push(foof.data[0])
-        
-        let msg = JSON.stringify({
-          cmd: 'deltas',
-          date: Date.now(),
-          data: propchanges
-        })
-        
-        sendAllLocalClients(msg)
-        deltaWebsocket.send(msg)
-
-      } else {
-        let msg = JSON.stringify({
-          cmd: 'deltas',
-          date: Date.now(),
-          data: foof.data
-        })
-        
-        sendAllLocalClients(msg)
-        deltaWebsocket.send(msg)
-        
-      }
+        else {
+          let msg = JSON.stringify({
+            cmd: 'deltas',
+            date: Date.now(),
+            data: foof.data
+          })
+          
+          sendAllLocalClients(msg)
+          deltaWebsocket.send(msg)
+          
+        }
+      } 
       
 
       // runGOT(id, msg.data)
@@ -816,6 +782,44 @@ function sendToVRClient(msg, ignore) {
 }
 
 
+function getHistoryPropchanges(d){
+  // 'd' is a connection delta received from either the host or the 
+  // get list of child nodes in graph
+  let nodes = fb.setup(localGraph)
+
+  // get list of adjacent nodes per each node in the graph
+  let adjacents = fb.getAdjacents(0, nodes, localGraph)
+
+  // reset the nodes array with list of only parent nodes whose child nodes have adjacent connections:
+  nodes.length = 0
+  nodes = Object.keys(adjacents)
+  nodeCount = nodes.length
+  // get 
+  let historyPropchange = fb.visit(0, nodes, adjacents, localGraph, nodeCount)
+  console.log('cycles', historyPropchange)
+  let propchanges = []
+  for(i=0;i<historyPropchange.length;i++){
+    if(historyPropchange[i].includes(d.paths[0]) === true && historyPropchange[i].includes(d.paths[1]) === true){
+      let srcPath = d.paths[0]
+      let parent = srcPath.split('.')[0]
+      let child = srcPath.split('.')[1]
+      console.log(srcPath)
+      propchange = [ { 
+        op: 'propchange',
+        path: srcPath,
+        name: 'history',
+        from: localGraph.nodes[parent][child]._props.history,
+        to: true 
+      } ]
+      propchanges.push(propchange)
+    }
+  }
+  console.log(propchanges)
+  got.applyDeltasToGraph(localGraph, propchanges)
+  // append the connection delta to the msg
+  propchanges.push(d)
+  return propchanges
+}
 
 function runGOT(src, delta){
   console.log('runGOT', src, delta)

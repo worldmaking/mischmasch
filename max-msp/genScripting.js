@@ -1,8 +1,4 @@
-// import { max } from "gl-matrix/src/gl-matrix/vec2";
 
-// import { max } from "gl-matrix/src/gl-matrix/vec2";
-
-// import { max } from "gl-matrix/src/gl-matrix/vec2";
 inlets = 3
 outlets = 7
 
@@ -43,16 +39,15 @@ var namespace = new Dict("namespace")
 
 var speakerTableDict = new Dict("speakerTableDict");
 
-
-
+var graphNodes = {}
 function loadbang(){
 	
 	// things that need to be initiated only after patcher has finished loading
 	gen_patcher = this.patcher.getnamed("world").subpatcher();
 
-	initiate()
-}
-function initiate(){
+// 	initiate()
+// }
+// var initiate = function(){
 
 	
 	//! clear the parent patcher of any vr.source~ objects prior to receiving deltas
@@ -141,7 +136,14 @@ var handleDelta = function(delta) {
 					post('WARNING: duplicate newnode delta received. Was filtered out, but need to check the delta round-trip\n\n')
 				} else {
 					// add the node to the obj to prevent it being added as a duplicate
-					nodes[delta.path] = {}
+					// ... and if it is an outlet, keep track of its history property
+					if(delta.kind === 'outlet'){
+						nodes[delta.path] = {
+							history: delta.history
+						}
+					} else {
+						nodes[delta.path] = {}
+					}
 
 					
 					// if (nodes[])
@@ -417,39 +419,93 @@ var handleDelta = function(delta) {
 
 			// create a patchcord!
 			case "connect":
-				var pathString = '"' + delta.paths + '"' 
+				var pathString
+				
+				
 				if(nodes[pathString]){
 					// don't add a duplicate
 					// if this happens, it means something is wrong with the graph, maybe a delnode wasn't triggered or received, or duplicate deltas received
 					post('WARNING: received a connection delta that already exists in the graph. was filtered out, but need to check the delta round-trip\n\n')
 				} else {
+					pathString = '"' + delta.paths + '"' 
 					// add the node to the obj to prevent it being added as a duplicate
 					nodes[pathString] = {}
+
+					
 					var setOutlet = delta.paths[0].replace('.','__')
 					var setInlet = delta.paths[1].replace('.','__')
 					var input;
 					var output;
-						for (var i = 0; i < inletsTable.length; i++) {
+					var attenuvertor = null 
+					if(delta.kind === 'small_knob' || delta.kind === 'large_knob' ){
+						attenuvertor = delta.paths[1].replace('.','__') + '_attenuvertor'
+					}
+
+					for (var i = 0; i < inletsTable.length; i++) {
 						var inletsIndexes = inletsTable[i]
 								input = JSON.stringify(inletsIndexes[setInlet]);
 						}
-						for (var i = 0; i < outletsTable.length; i++) {
-						var outletsIndexes = outletsTable[i]
-								output = JSON.stringify(outletsIndexes[setOutlet]);
-						}
-					var selfPatch1 = delta.paths[0].split('.')[0]
+					for (var i = 0; i < outletsTable.length; i++) {
+					var outletsIndexes = outletsTable[i]
+							output = JSON.stringify(outletsIndexes[setOutlet]);
+					}
+
 					
+
+	
+					var selfPatch1 = delta.paths[0].split('.')[0]
+					var outletPath = delta.paths[0]
 					// detect a self-patch connection and insert a history object in between!
 					if (delta.paths[0].split('.')[0] === delta.paths[1].split('.')[0]){					
 						feedbackConnections++
 						var history = gen_patcher.newdefault([150,10, "history"])
 						history.varname = "feedback_" + feedbackConnections
-						gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
-						gen_patcher.message("script", "connect", history.varname, 0, delta.paths[1].split('.')[0], parseInt(input));
 
-					} else {
-						// if not self-patch connection exists, just connect them. 
-						gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
+						if(attenuvertor !== null){
+
+							// connect the outlet (arc[0]) to the history
+							gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
+							// connect the history to the attenuvertor
+							gen_patcher.message("script", "connect", history.varname, 0, parseInt(output), attenuvertor, 0);
+							// connect the attenuvertor to inlet (arc[1])
+							gen_patcher.message("script", "connect", attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
+						
+						} else {
+							gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
+							gen_patcher.message("script", "connect", history.varname, 0, delta.paths[1].split('.')[0], parseInt(input));
+						}
+					} else if (nodes[outletPath].history === 1 || nodes[outletPath].history === true) {
+
+						feedbackConnections++
+						var history = gen_patcher.newdefault([150,10, "history"])
+						history.varname = "feedback_" + feedbackConnections
+
+						if(attenuvertor !== null){
+
+							// connect the outlet (arc[0]) to the history
+							gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
+							// connect the history to the attenuvertor
+							gen_patcher.message("script", "connect", history.varname, 0, parseInt(output), attenuvertor, 0);
+							// connect the attenuvertor to inlet (arc[1])
+							gen_patcher.message("script", "connect", attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
+						
+						} else {
+							gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
+							gen_patcher.message("script", "connect", history.varname, 0, delta.paths[1].split('.')[0], parseInt(input));
+						}
+					}
+					
+					 else{
+						// if no self-patch connection exists, just connect them. 
+						if(attenuvertor !== null){
+							// connect the outlet (arc[0]) to the attenuvertor
+							gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), attenuvertor, 0);
+							// connect the attenuvertor to inlet (arc[1])
+							gen_patcher.message("script", "connect", attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
+						
+						} else {
+							gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
+						}
 					}
 				}
 			break;
@@ -493,12 +549,19 @@ var handleDelta = function(delta) {
 						
 						
 						var cleaveParam = param.split('.')[0]
-						outlet(2, cleaveParam, delta.to)
+
+						this.patcher.message("script", "send", "world", cleaveParam, delta.to)
+						// outlet(2, cleaveParam, delta.to)
 						// handle knob twiddle
 						// send to appropriate param
 						// based on delta.path and delta.to (new value)
 					break;
 					
+					case "history":
+						post(JSON.stringify(delta))
+
+
+					break
 					case "pos": 
 						// whatever
 					break;
@@ -526,7 +589,7 @@ function fromLocalWebsocket(msg){
 			} break;
 
 		case "nuke":
-			initiate()
+			loadbang()
 		break
 
         default: post("unknown msg received: ", msg)
