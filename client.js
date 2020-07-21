@@ -620,7 +620,7 @@ const UI = {
 						object.value = newval;
 
 						
-						console.log("send propchange", object.node._props.value, oldval, newval)
+						//console.log("send propchange", object.node._props.value, oldval, newval)
 						
 					}
 
