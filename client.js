@@ -152,10 +152,10 @@ let localGraph = {
 }
 
 
-let USEWS = false;
+let USEWS = true;
 let userDataChannel
 
-if(argv.w){
+if(USEWS || argv.w){
 	USEWS = true
 	console.log('using websockets')
 
@@ -582,29 +582,24 @@ const UI = {
 
 						// angle of line to hand relative to knob face:
 						let angle = Math.atan2(p[0], p[1]);
-						let value = angle2value(angle);
-						// clamp:
-						value = Math.min(1, Math.max(0, value));
-						// immediate update for rendering:
-						object.i_value[0] = value;
+						let value = Math.min(1, Math.max(0, angle2value(angle)));
 						// update prop:
 						let props = object.node._props
 						let range = props.range || [0,1];
-						let oldval = object.node._props.value;
+						let oldval = range[0] + object.i_value[0]*(range[1]-range[0]);
 						let newval = range[0] + value*(range[1]-range[0]);
-						
-						// somehow this is getting missed?
-						//props.value = newval;
+
 						// send propchange oldval->newval
-						let delta = { 
+						outgoingDeltas.push({ 
 							op:"propchange", 
 							path: object.path, 
 							name:"value", 
 							from: oldval, 
 							to: newval 
-						}
+						});
 						
-						outgoingDeltas.push(delta);
+						// immediate update for rendering:
+						object.i_value[0] = value;
 						
 					}
 
@@ -2115,7 +2110,6 @@ function animate() {
 		// handle incoming deltas:
         while (incomingDeltas.length > 0) {
 			let delta = incomingDeltas.shift();
-			//console.log("gotdelta", delta)
             // TODO: derive which world to add to:
             try {
 				console.log('incomingDelta', delta)
@@ -2373,7 +2367,6 @@ function onServerMessage(msg, sock) {
 	console.log('incoming msg:'), msg
     switch (msg.cmd) {
         case "deltas": {
-			console.log('incoming delta:',msg.data)
 			// insert into our TODO list:
             incomingDeltas.push.apply(incomingDeltas, msg.data);
 		} break;
