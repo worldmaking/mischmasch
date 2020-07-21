@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 30.0, 85.0, 888.0, 883.0 ],
+		"rect" : [ 608.0, 122.0, 888.0, 883.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -40,13 +40,35 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-1",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 4,
+					"outlettype" : [ "signal", "signal", "list", "list" ],
+					"patching_rect" : [ 76.0, 458.0, 83.0, 22.0 ],
+					"text" : "omx.peaklim~"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-8",
+					"maxclass" : "ezdac~",
+					"numinlets" : 2,
+					"numoutlets" : 0,
+					"patching_rect" : [ 76.0, 514.5, 45.0, 45.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-80",
 					"linecount" : 7,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 520.0, 410.0, 50.0, 105.0 ],
+					"patching_rect" : [ 603.0, 459.0, 53.0, 105.0 ],
 					"text" : "position 0.891667 0.910045 -0.602403"
 				}
 
@@ -58,7 +80,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 433.0, 363.0, 55.0, 22.0 ],
+					"patching_rect" : [ 516.0, 412.0, 55.0, 22.0 ],
 					"text" : "zl.slice 4"
 				}
 
@@ -70,7 +92,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 3,
 					"outlettype" : [ "signal", "signal", "" ],
-					"patching_rect" : [ 433.0, 431.0, 67.0, 22.0 ],
+					"patching_rect" : [ 516.0, 480.0, 67.0, 22.0 ],
 					"text" : "vr.context~"
 				}
 
@@ -83,7 +105,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 360.0, 389.0, 50.0, 229.0 ],
+					"patching_rect" : [ 443.0, 438.0, 53.0, 229.0 ],
 					"text" : "position 0.891667 0.910045 -0.602403 orient -0.72331 -0.211909 -0.244157 0.610168"
 				}
 
@@ -95,7 +117,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 391.0, 315.0, 63.0, 22.0 ],
+					"patching_rect" : [ 474.0, 364.0, 63.0, 22.0 ],
 					"text" : "route hmd"
 				}
 
@@ -108,7 +130,7 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 391.0, 237.5, 143.0, 22.0 ],
+					"patching_rect" : [ 474.0, 286.5, 143.0, 22.0 ],
 					"text" : "receive from_node_script"
 				}
 
@@ -157,7 +179,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 4,
 					"outlettype" : [ "signal", "signal", "list", "list" ],
-					"patching_rect" : [ 87.0, 547.0, 83.0, 22.0 ],
+					"patching_rect" : [ 516.0, 512.0, 83.0, 22.0 ],
 					"text" : "omx.peaklim~"
 				}
 
@@ -1064,7 +1086,6 @@
 						"style" : "",
 						"subpatcher_template" : "",
 						"assistshowspatchername" : 0,
-						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
 									"id" : "obj-125",
@@ -1576,7 +1597,7 @@
 					"maxclass" : "ezdac~",
 					"numinlets" : 2,
 					"numoutlets" : 0,
-					"patching_rect" : [ 87.0, 603.5, 45.0, 45.0 ]
+					"patching_rect" : [ 516.0, 568.5, 45.0, 45.0 ]
 				}
 
 			}
@@ -1681,8 +1702,6 @@
 					"saved_object_attributes" : 					{
 						"autostart" : 0,
 						"defer" : 0,
-						"node_bin_path" : "",
-						"npm_bin_path" : "",
 						"watch" : 1
 					}
 ,
@@ -1690,21 +1709,22 @@
 				}
 
 			}
-, 			{
-				"box" : 				{
-					"id" : "obj-88",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 5,
-					"outlettype" : [ "signal", "signal", "signal", "signal", "" ],
-					"patching_rect" : [ 50.0, 200.0, 182.0, 22.0 ],
-					"text" : "vr.source~ 0 @position 0.75 1 -1",
-					"varname" : "source_1"
+ ],
+		"lines" : [ 			{
+				"patchline" : 				{
+					"destination" : [ "obj-8", 1 ],
+					"source" : [ "obj-1", 1 ]
 				}
 
 			}
- ],
-		"lines" : [ 			{
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-8", 0 ],
+					"source" : [ "obj-1", 0 ]
+				}
+
+			}
+, 			{
 				"patchline" : 				{
 					"destination" : [ "obj-11", 0 ],
 					"source" : [ "obj-10", 0 ]
@@ -2118,14 +2138,14 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-76", 1 ],
+					"destination" : [ "obj-1", 1 ],
 					"source" : [ "obj-68", 1 ]
 				}
 
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-76", 0 ],
+					"destination" : [ "obj-1", 0 ],
 					"source" : [ "obj-68", 0 ]
 				}
 
@@ -2242,13 +2262,6 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-88", 0 ],
-					"source" : [ "obj-83", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-81", 0 ],
 					"midpoints" : [ 570.5, 969.0, 296.5, 969.0 ],
 					"source" : [ "obj-86", 0 ]
@@ -2260,20 +2273,6 @@
 					"destination" : [ "obj-81", 0 ],
 					"midpoints" : [ 470.5, 971.75, 296.5, 971.75 ],
 					"source" : [ "obj-87", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 1 ],
-					"source" : [ "obj-88", 1 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 0 ],
-					"source" : [ "obj-88", 0 ]
 				}
 
 			}
@@ -2341,34 +2340,6 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "lfo.gendsp",
-				"bootpath" : "D:/github/mischmasch/max-msp",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "dualvco.gendsp",
-				"bootpath" : "D:/github/mischmasch/max-msp",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "vca.gendsp",
-				"bootpath" : "D:/github/mischmasch/max-msp",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "pulsars.gendsp",
-				"bootpath" : "D:/github/mischmasch/max-msp",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
 				"name" : "genScripting.js",
 				"bootpath" : "D:/github/mischmasch/max-msp",
 				"patcherrelativepath" : ".",
@@ -2381,10 +2352,6 @@
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1
-			}
-, 			{
-				"name" : "vr~.mxe64",
-				"type" : "mx64"
 			}
 , 			{
 				"name" : "vr~.mxe64",
