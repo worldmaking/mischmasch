@@ -585,7 +585,7 @@
 			"sin_20.value"
 		],
 		[
-			"sin_20.out1",
+			"dualvco_1.master",
 			"speaker_1.input"
 		]
 	]
