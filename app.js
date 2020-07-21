@@ -692,14 +692,20 @@ function startLocalWebsocket(){
 }
 
 function messageFromLocalClient(message, localWebsocket){
-  let foof = JSON.parse(message)
-  console.log('message from local client', foof)
-  switch(foof.cmd){
+  let msg = JSON.parse(message)
+  switch(msg.cmd){
     case 'vrClientStatus':
-      localConfig.vr = 1
+
       // teapartyWebsocket.send
       // localWebsocket.id = 'vr'
       localClients.vr = localWebsocket
+    break;
+
+    case 'maxClientStatus':
+      
+      // teapartyWebsocket.send
+      // localWebsocket.id = 'vr'
+      localClients.sound = localWebsocket
     break;
 
     case 'get_scene':
@@ -719,21 +725,21 @@ function messageFromLocalClient(message, localWebsocket){
     break
 
     case 'deltas':
-
+      let deltaMsg = msg
       try {
 
-        got.applyDeltasToGraph(localGraph, foof.data);
+        got.applyDeltasToGraph(localGraph, deltaMsg.data);
 
 
       } catch (e) {
         console.warn(e);
       }
       // feedback path stuff
-      for(i=0;i<foof.data.length; i++){
+      for(i=0;i<deltaMsg.data.length; i++){
         // if a connection delta, check if history node is needed: 
-        if(foof.data[i].op === 'connect'){
-          console.log(foof.data[i])
-          let historyDelta = getHistoryPropchanges(foof.data[i])
+        if(deltaMsg.data[i].op === 'connect'){
+          console.log(deltaMsg.data[i])
+          let historyDelta = getHistoryPropchanges(deltaMsg.data[i])
           let msg = JSON.stringify({
             cmd: 'deltas',
             date: Date.now(),
@@ -746,7 +752,7 @@ function messageFromLocalClient(message, localWebsocket){
           let msg = JSON.stringify({
             cmd: 'deltas',
             date: Date.now(),
-            data: foof.data
+            data: deltaMsg.data
           })
           
           sendAllLocalClients(msg)
@@ -767,9 +773,36 @@ function messageFromLocalClient(message, localWebsocket){
       // 
       // need to send this just to the vr client!
       // console.log(localClients.vr)
-    break
+    break;
+
+    case "HMD":
+      // this is from the client.js, pass this directly to the max patch:
+      sendToMaxClient(JSON.stringify(msg), localClients.vr)
+    break;
   }
 }
+
+function sendToMaxClient(msg, ignore){
+  localWebsocketServer.clients.forEach(function each(client) {
+
+    if(client === ignore){
+      return
+    } 
+    
+      try {
+        client.send(msg);
+      } catch (e) {
+        console.error(e);
+      };
+    })
+
+  
+
+    // }
+
+	// });
+}
+
 function sendToVRClient(msg, ignore) {
 	deltaWebsocketServer.clients.forEach(function each(client) {
 		if (client == ignore) return;

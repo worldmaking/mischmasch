@@ -87,7 +87,7 @@ connection.addEventListener('open', () => {
 	max.outlet('toMsvr_world_js','loadbang')
 	// clear the filename umenu in the controller.maxpat
 	max.outlet('clearPlaybackList', 'clear')
-
+	connection.send(JSON.stringify({ cmd:"maxClientStatus"}))
 	max.post('connected to server')
 	// request the list of sessions and scenes from the server
 	// connection.send(JSON.stringify({
@@ -124,6 +124,12 @@ connection.addEventListener('message', (data) => {
 			max.outlet('fromLocalWebsocket', deltas)
 
 		break;
+
+		case "HMD":
+ 
+
+			max.outlet('hmd', 'position', data.data.pos[0], data.data.pos[1], data.data.pos[2], 'quat', data.data.orient[0], data.data.orient[1], data.data.orient[2], data.data.orient[3])
+		break 
 
 
 		// retrieve list of session recording filenames

@@ -2262,7 +2262,7 @@ function animate() {
 
 	// send outgoing deltas:
 
-	if (USEWS === true) {
+	if (USEWS === true && socket && socket.readyState === 1) {
 		// send any edits to the server:
 		if (outgoingDeltas.length > 0) {
 			let message = JSON.stringify({
@@ -2275,6 +2275,14 @@ function animate() {
 			outgoingDeltas.length = 0;
 			//console.log("Sending Deltas")
 		}
+		// HMD pos
+		let hmdMessage = JSON.stringify({
+			cmd: "HMD",
+			date: Date.now(),
+			data: UI.hmd
+		});
+		socket.send(hmdMessage);
+
 	} else {
 		// otherwise, just move them to our incoming list, 
 		// so we can work without a server:
@@ -2336,14 +2344,13 @@ function initMenu(menuModules) {
 }
 
 
-
 function serverConnect() {
 	const url = 'ws://localhost:8080'
 	socket = new ws(url)
 	socket.binaryType = 'arraybuffer';
 	socket.onopen = () => {
+		console.log(socket)
 		console.log("websocket connected to localWebsocket on "+url);
-		
 		// reset our local scene:
 		localGraph = {
 			nodes: {},
