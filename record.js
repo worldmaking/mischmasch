@@ -14,7 +14,7 @@ const { vec2, vec3, vec4, quat, mat3, mat4 } = require("gl-matrix");
 
 
 
-const got = require("./got/got")
+const got = require("./gotlib/got")
 
 const a = JSON.parse(fs.readFileSync(__dirname + "/session_recordings/session_1555703001037.json", "utf-8"))
 

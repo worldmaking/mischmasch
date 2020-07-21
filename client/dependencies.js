@@ -7,4 +7,4 @@ ADD ALL REQUIRES IN HERE AND RUN `browserify client/dependencies.js -o client/bu
 
 bm_createGeometry = require('three-bmfont-text');
 bm_loadFont = require('load-bmfont');
-got = require('../got/got');
+got = require('../gotlib/got');

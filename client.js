@@ -29,22 +29,53 @@ const assert = require("assert"),
 	path = require("path");
 const { vec2, vec3, vec4, quat, mat2, mat2d, mat3, mat4} = require("gl-matrix")
 const PNG = require("png-js");
-const WebSocket = require('ws')
-const chroma = require("chroma-js")
+// keep the 'ws' usage as well - coven requires this very spelling
+const ws = require('ws')
+const username = require('username')
+const filename = path.basename(__filename)
 
+const chroma = require("chroma-js")
+const {argv} = require('yargs')
 const nodeglpath = "../node-gles3"
+const rws = require('reconnecting-websocket');
+
+
 const gl = require(path.join(nodeglpath, "gles3.js")),
 glfw = require(path.join(nodeglpath, "glfw3.js")),
 glutils = require(path.join(nodeglpath, "glutils.js"))
 
-const got = require("./got/got.js")
+// let p2pID; // set by coven signalling server
+let name;
+if (argv.name){
+  name = argv.name
+} else {
+  name = username.sync()
+}
 
-// skip VR if on OSX:
-const USEVR = 1 && (process.platform === "win32");
+let peerHandle = name + '_' + filename
+const got = require("./gotlib/got.js")
+
+
+
+const rwsOptions = {
+	// make rws use the webSocket module implementation
+	WebSocket: ws, 
+	// ms to try reconnecting:
+	connectionTimeout: 30000,
+	//debug:true, 
+  }
+
+let USEVR = 0;
+// usevr if its specified on CLI & skip VR if on OSX:
+if(argv.vr === 'true' && process.platform === "win32"){
+	USEVR = 1
+	console.log('using VR')
+}
+
+// const USEVR = 1 && (process.platform === "win32");
 const vr = (USEVR) ? require(path.join(nodeglpath, "openvr.js")) : null
-const USEWS = 0;
 const url = 'ws://localhost:8080'
-const demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
+
 const shaderpath = path.join(__dirname, "shaders")
 
 // generate a random name for new object:
@@ -114,7 +145,13 @@ function makeDelNodeDelta(deltas, node, path) {
 	deltas.push(delta)
 }
 
+
 ////////////////////////////////////////////////////////////////
+
+let nav = {
+	pos: [],
+	quat: []
+}
 
 const SHAPE_BOX = 0;
 const SHAPE_BUTTON = 1;
@@ -145,6 +182,61 @@ let currentScene = null
 let localGraph = {
 	nodes: {},
 	arcs: []
+}
+
+
+let USEWS = false;
+let userDataChannel
+
+if(argv.w){
+	USEWS = true
+	console.log('using websockets')
+
+	// userDataChannel = new ws('ws://mischmasch-userdata.herokuapp.com/8082');
+	userDataChannel = new rws('ws://mischmasch-userdata.herokuapp.com/8082', [], rwsOptions);
+
+	// teapartyWebsocket.addEventListener('message', (data) => {
+	// 	let msg = JSON.parse(data.data);
+
+	userDataChannel.addEventListener('open', (data) => {
+		userDataChannel.send(JSON.stringify({
+			cmd: 'handshake',
+			source: peerHandle,
+			data: 'highFive'
+		}));
+	});
+	
+	userDataChannel.addEventListener('message', (data) => {
+		// console.log(typeof data.data);
+		let msg = JSON.parse(data.data)
+		// ensure non JSON data doesn't get parsed
+		// if (typeof data.data === 'object' && data.data !== null){
+			
+			switch(msg.cmd){
+
+				case 'handshake':
+					console.log('peer ' + msg.source + ' CONNECTED')
+				break
+
+				case 'cursorPosition':
+					console.log('cursor position from client ' + msg.source + ': ', msg.data)
+				break
+
+				default: console.log('unhandled msg: ', msg)
+			}
+		// } else {
+			// console.log('message "' + data.data + '" received by userDataChannel is a ' + typeof data.data + ', expected JSON object')
+		// }
+	})
+
+	userDataChannel.addEventListener('error', (err) => {
+		console.log(err)
+	})
+} else {
+	// no ws used
+	demoScene = path.join(__dirname, "temp", "simple.json")
+	localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
+
 }
 
 let menuGraph = {
@@ -456,6 +548,8 @@ const UI = {
 				if (object) object.i_highlight[0] = 0
 				object = hand.stateData.object
 				object.i_highlight[0] = 1
+				let oldPos = object.pos
+				let oldQuat = object.quat
 				// update object pose
 				//the transform from when dragging started to the current pose:
 				let transform = mat4.multiply(mat4.create(), hand.mat, hand.stateData.inverseHandMat)
@@ -466,6 +560,9 @@ const UI = {
 				
 				// use pad-scrollY to throw module closer/further?
 
+				if(object.node._props.kind === "speaker"){
+					outgoingDeltas.push({op:"propchange", path: object.path, name: "speakerPos", "from": oldPos, "to": object.pos  })
+				}
 				// check for exit:
 				if (!hand.trigger_pressed) {
 					// delete?
@@ -528,6 +625,7 @@ const UI = {
 						let range = props.range || [0,1];
 						let oldval = object.node._props.value;
 						let newval = range[0] + value*(range[1]-range[0]);
+						
 						// somehow this is getting missed?
 						//props.value = newval;
 						// send propchange oldval->newval
@@ -538,7 +636,9 @@ const UI = {
 							from: oldval, 
 							to: newval 
 						}
+						
 						outgoingDeltas.push(delta);
+						
 					}
 
 				} else {
@@ -764,7 +864,7 @@ const menuModules = Object.assign({
 	"knob":{
 		"_props":{ "kind":"param", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
 		"value":{"_props":{"kind":"large_knob", "range":[0,1], "value":0}},
-		"output":{"_props":{"kind":"outlet","index":0}}
+		"output":{"_props":{"kind":"outlet","index":0, "history": false}}
 	},
 }, JSON.parse(fs.readFileSync("menu.json", "utf-8")))
 
@@ -786,6 +886,7 @@ if (USEVR) {
 	assert(vr.connect(true), "vr failed to connect");
 	vr.update()
 	vrdim = [vr.getTextureWidth(), vr.getTextureHeight()]
+	
 }
 
 function createSDFFont(gl, pngpath, jsonpath) {
@@ -1999,6 +2100,25 @@ function initUI(window) {
 		UI.keynav.handleKeys(key, down, mod);
 	})
 }
+/*
+for key events:
+glfw.setKeyCallback(window, function(...args) {
+    console.log("key event", args);
+})
+for mouse position:
+glfw.setCursorPosCallback(window, (window, px, py) => {
+    // convert px,py to normalized 0..1 coordinates:
+    const pix_dim = vec2.div([1, 1], 
+        glfw.getWindowContentScale(window), 
+        glfw.getFramebufferSize(window)  
+    );
+    // -1..1 in each axis:
+    let ndcPoint = [+2pxpix_dim[0] - 1, -2pypix_dim[1] + 1 ];
+});
+
+vec3.transformQuat(up, [0, 1, 0], nav.quat) - UP vector
+vec3.transformQuat(forward, [0, 0, -1], nav.quat) - FORWARD vector
+*/
 
 
 let t = glfw.getTime();
@@ -2026,8 +2146,9 @@ function animate() {
 			//console.log("gotdelta", delta)
             // TODO: derive which world to add to:
             try {
+				console.log('incomingDelta', delta)
 				got.applyDeltasToGraph(localGraph, delta);
-				
+
 				fs.writeFileSync("basicGraph.json", JSON.stringify(localGraph, null, "\t"), "utf8");
 			} catch (e) {
 				console.warn(e);
@@ -2147,21 +2268,30 @@ function animate() {
 
 	// send outgoing deltas:
 
-	if (socket && socket.socket && socket.socket.readyState === 1) {
+	if (USEWS == true && socket && socket.readyState === 1) {
 		// send any edits to the server:
 		if (outgoingDeltas.length > 0) {
-			let message = {
+			let message = JSON.stringify({
 				cmd: "deltas",
 				date: Date.now(),
 				data: outgoingDeltas
-			};
+			});
 			socket.send(message);
+			console.log('outgoing message',message)
 			outgoingDeltas.length = 0;
-			//console.log("Sending Deltas")
 		}
-	} else {
+		// HMD pos
+		let hmdMessage = JSON.stringify({
+			cmd: "HMD",
+			date: Date.now(),
+			data: UI.hmd
+		});
+		socket.send(hmdMessage);
+
+	} else if (USEWS == false ){
 		// otherwise, just move them to our incoming list, 
 		// so we can work without a server:
+		console.log('\n\nogds',outgoingDeltas)
 		for (let delta of outgoingDeltas) {
 			incomingDeltas.push(delta);
 		}
@@ -2218,26 +2348,38 @@ function initMenu(menuModules) {
 	return menuModules
 }
 
+
 function serverConnect() {
 	const url = 'ws://localhost:8080'
-	socket = new WebSocket(url)
+	socket = new ws(url)
 	socket.binaryType = 'arraybuffer';
 	socket.onopen = () => {
-		console.log("websocket connected to "+url);
-		socket.send(JSON.stringify({ cmd:"get_scene"})) 
+		console.log("websocket connected to localWebsocket on "+url);
 		// reset our local scene:
 		localGraph = {
 			nodes: {},
 			arcs: []
 		};
 		mainScene.rebuild(localGraph)
+
+		socket.send(JSON.stringify({ cmd:"get_scene"})) 
+
+		// let the localWebsocket server assign our connection with an id
+		socket.send(JSON.stringify({ cmd:"vrClientStatus"})) 
+
 	}
 	socket.onerror = (error) => {
-	  console.error(`WebSocket error: ${error}`)
+	  console.error(`ws error: ${error}`)
+	  socket = null;
+	  localGraph = { nodes: {}, arcs: [] }
 	}
 	socket.onclose = function(e) {
 		socket = null;
 		console.log("websocket disconnected from "+url);
+		localGraph = {
+			nodes: {}, arcs: []
+		}
+		mainScene.rebuild(localGraph)
 		setTimeout(function(){
 			console.log("websocket reconnecting");
 			serverConnect();
@@ -2257,23 +2399,19 @@ function serverConnect() {
 }
 
 function onServerMessage(msg, sock) {
+	console.log('incoming msg:'), msg
     switch (msg.cmd) {
         case "deltas": {
-            // insert into our TODO list:
+			console.log('incoming delta:',msg.data)
+			// insert into our TODO list:
             incomingDeltas.push.apply(incomingDeltas, msg.data);
-        } break;
+		} break;
+		
+		case "audiovizLookup":
+			console.log(msg.data)
+			// this is where we get the state of a node's output, sent from the gen patcher!
+		break
 
-        // server assigns an iid for our session. use this to route controller and HMD data to local max client. 
-        // case "assignID":{
-             
-        // }
-        // break
-        // case "contexts":{
-        //     console.log(msg.data)
-        //     vrContextID = msg.data.vrContext
-        //     audioContextID = msg.data.audioContext
-        // }
-        break;
         default:
            console.log("received JSON", msg, typeof msg);
     }
@@ -2292,7 +2430,7 @@ async function init() {
 	menuScene.rebuild(menuGraph)
 
 	// default graph until server connects:
-	localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
+	// localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
 	// server connect
 	if (USEWS) {
 		serverConnect();

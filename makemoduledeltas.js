@@ -1,6 +1,6 @@
 let assert = require("assert");
 let fs = require("fs")
-let got = require("./got/got.js");
+let got = require("./gotlib/got.js");
 
 if (!Array.prototype.flat) {
   Array.prototype.flat = function() {

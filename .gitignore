@@ -76,3 +76,6 @@ typings/
 
 histories/
 select_histories/*
+
+basicGraph.json
+*/basicGraph.json

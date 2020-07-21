@@ -3,14 +3,14 @@
 		"fileversion" : 1,
 		"appversion" : 		{
 			"major" : 8,
-			"minor" : 0,
+			"minor" : 1,
 			"revision" : 5,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "dsp.gen",
-		"rect" : [ 220.0, 94.0, 1390.0, 810.0 ],
+		"rect" : [ 474.0, 663.0, 1390.0, 810.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -37,20 +37,8 @@
 		"tags" : "",
 		"style" : "",
 		"subpatcher_template" : "",
+		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
-				"box" : 				{
-					"fontname" : "Lato",
-					"fontsize" : 12.0,
-					"id" : "obj-5",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 0,
-					"patching_rect" : [ 143.0, 474.0, 40.0, 23.0 ],
-					"text" : "out 4"
-				}
-
-			}
-, 			{
 				"box" : 				{
 					"fontname" : "Lato",
 					"fontsize" : 12.0,
@@ -118,7 +106,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 952.0, 90.0, 150.0, 47.0 ],
+					"patching_rect" : [ 952.0, 90.0, 150.0, 48.0 ],
 					"text" : "inspired in-part by Mark Verbos' Complex Oscillator"
 				}
 
@@ -130,8 +118,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 986.0, 325.0, 328.0, 22.0 ],
-					"text" : "in 4 @min 0. @max 1 @comment feedback2_cv @default 1"
+					"patching_rect" : [ 986.0, 325.0, 321.0, 22.0 ],
+					"text" : "in 4 @min 0. @max 1 @comment feedback_cv @default 1"
 				}
 
 			}
@@ -326,7 +314,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 286.0, 600.5, 168.0, 36.0 ],
+					"patching_rect" : [ 286.0, 600.5, 168.0, 35.0 ],
 					"text" : "to do: get other functions to outputs 4 5 6..."
 				}
 
@@ -366,7 +354,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 540.0, 392.0, 150.0, 36.0 ],
+					"patching_rect" : [ 540.0, 392.0, 150.0, 35.0 ],
 					"text" : "using history node to accumulate phase"
 				}
 
@@ -421,8 +409,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 888.0, 274.0, 76.0, 23.0 ],
-					"text" : "param fb 0"
+					"patching_rect" : [ 859.0, 246.0, 112.0, 23.0 ],
+					"text" : "param feedback 0.3"
 				}
 
 			}
@@ -568,7 +556,7 @@
 		"lines" : [ 			{
 				"patchline" : 				{
 					"destination" : [ "obj-22", 0 ],
-					"order" : 2,
+					"order" : 1,
 					"source" : [ "obj-1", 0 ]
 				}
 
@@ -583,16 +571,8 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-5", 0 ],
-					"order" : 1,
-					"source" : [ "obj-1", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-9", 0 ],
-					"order" : 3,
+					"order" : 2,
 					"source" : [ "obj-1", 0 ]
 				}
 

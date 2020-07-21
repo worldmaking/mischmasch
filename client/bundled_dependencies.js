@@ -3461,8 +3461,8 @@ ADD ALL REQUIRES IN HERE AND RUN `browserify client/dependencies.js -o client/bu
 
 bm_createGeometry = require('three-bmfont-text');
 bm_loadFont = require('load-bmfont');
-got = require('../got/got');
-},{"../got/got":11,"load-bmfont":37,"three-bmfont-text":53}],11:[function(require,module,exports){
+got = require('../gotlib/got');
+},{"../gotlib/got":11,"load-bmfont":37,"three-bmfont-text":53}],11:[function(require,module,exports){
 /*
 	Graph Operational Transforms
 	(not game of thrones :-))

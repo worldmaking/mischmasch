@@ -9,8 +9,8 @@
 			"modernui" : 1
 		}
 ,
-		"classnamespace" : "dsp.gen",
-		"rect" : [ 1115.0, 322.0, 511.0, 386.0 ],
+		"classnamespace" : "box",
+		"rect" : [ 59.0, 107.0, 640.0, 480.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -38,22 +38,10 @@
 		"style" : "",
 		"subpatcher_template" : "",
 		"assistshowspatchername" : 0,
-		"boxes" : [ 			{
-				"box" : 				{
-					"id" : "obj-171",
-					"maxclass" : "newobj",
-					"numinlets" : 0,
-					"numoutlets" : 2,
-					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 9.0, 15.0, 86.0, 22.0 ],
-					"text" : "buffer audioviz",
-					"varname" : "reserved_audioviz_1"
-				}
-
-			}
- ],
+		"boxes" : [  ],
 		"lines" : [  ],
-		"editing_bgcolor" : [ 0.9, 0.9, 0.9, 1.0 ]
+		"dependency_cache" : [  ],
+		"autosave" : 0
 	}
 
 }

@@ -1,140 +1,992 @@
 {
   "UI": {
-    "range":["small_knob", "large_knob", "tuning_knob", "slider"],
-    "switches":["momentary","n_switch"],
-    "input":["inlet","trigger"],
-    "output":["outlet","line_level"],
-    "led":"led"    
+    "range": [
+      "small_knob",
+      "large_knob",
+      "tuning_knob",
+      "slider"
+    ],
+    "switches": [
+      "momentary",
+      "n_switch"
+    ],
+    "input": [
+      "inlet",
+      "trigger"
+    ],
+    "output": [
+      "outlet",
+      "line_level"
+    ],
+    "led": "led"
   },
   "modules": {
-    "freevoib":{
-      "_props":{ "kind":"freevoib", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "signal":{"_props":{"kind":"inlet","index":0}},
-      "damping_cv":{"_props":{"kind":"inlet", "index":1}},
-      "fb1_cv":{"_props":{"kind":"inlet","index":2}},
-      "fb2_cv":{"_props":{"kind":"inlet","index":3}},
-      "spread_cv":{"_props":{"kind":"inlet", "index":4}},
-      "feedback_1":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0.9,"unit":"float"}},
-      "feedback_2":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
-      "damping":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"flosat"}},
-      "spread":{"_props":{"kind":"small_knob","range":[0,400],"taper":"linear","value":100,"unit":"float"}},
-      "out":{"_props":{"kind":"outlet","index":0}}
+    "freevoib": {
+      "_props": {
+        "kind": "freevoib",
+        "category": "abstraction",
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "orient": [
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "signal": {
+        "_props": {
+          "kind": "inlet",
+          "index": 0
+        }
+      },
+      "damping_cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 1
+        }
+      },
+      "fb1_cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 2
+        }
+      },
+      "fb2_cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 3
+        }
+      },
+      "spread_cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 4
+        }
+      },
+      "feedback_1": {
+        "_props": {
+          "kind": "small_knob",
+          "range": [
+            0,
+            1
+          ],
+          "taper": "linear",
+          "value": 0.9,
+          "unit": "float"
+        }
+      },
+      "feedback_2": {
+        "_props": {
+          "kind": "small_knob",
+          "range": [
+            0,
+            1
+          ],
+          "taper": "linear",
+          "value": 0.5,
+          "unit": "float"
+        }
+      },
+      "damping": {
+        "_props": {
+          "kind": "small_knob",
+          "range": [
+            0,
+            1
+          ],
+          "taper": "linear",
+          "value": 0.5,
+          "unit": "flosat"
+        }
+      },
+      "spread": {
+        "_props": {
+          "kind": "small_knob",
+          "range": [
+            0,
+            400
+          ],
+          "taper": "linear",
+          "value": 100,
+          "unit": "float"
+        }
+      },
+      "out": {
+        "_props": {
+          "kind": "outlet",
+          "index": 0,
+          "history": "no"
+        }
+      }
     },
-    "shifter":{
-      "_props":{"kind":"shifter", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "signal":{"_props":{"kind":"inlet","index":0}},
-      "cv":{"_props":{"kind":"inlet","index":1}},
-      "shift":{"_props":{"kind":"small_knob", "range":[1  ,1000]}},
-      "out":{"_props":{"kind":"outlet","index":0}},
-      ">":{"_props":{"kind":"outlet","index":1}}
+    "shifter": {
+      "_props": {
+        "kind": "shifter",
+        "category": "abstraction",
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "orient": [
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "signal": {
+        "_props": {
+          "kind": "inlet",
+          "index": 0
+        }
+      },
+      "cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 1
+        }
+      },
+      "shift": {
+        "_props": {
+          "kind": "small_knob",
+          "range": [
+            1,
+            1000
+          ]
+        }
+      },
+      "out": {
+        "_props": {
+          "kind": "outlet",
+          "index": 0,
+          "history": "no"
+        }
+      },
+      ">": {
+        "_props": {
+          "kind": "outlet",
+          "index": 1,
+          "history": "no"
+        }
+      }
     },
-    "knob":{
-      "_props":{"kind":"knob", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "voltage":{"_props":{"kind":"large_knob", "range":[0.1,1000], "value":1}},
-      "out":{"_props":{"kind":"outlet","index":0}}
+    "knob": {
+      "_props": {
+        "kind": "knob",
+        "category": "abstraction",
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "orient": [
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "voltage": {
+        "_props": {
+          "kind": "large_knob",
+          "range": [
+            0.1,
+            1000
+          ],
+          "value": 1
+        }
+      },
+      "out": {
+        "_props": {
+          "kind": "outlet",
+          "index": 0,
+          "history": "no"
+        }
+      }
     },
-    "lfo":{
-      "_props":{"kind":"lfo", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "rate":{"_props":{"kind":"large_knob","range":[0.1,30],"taper":"log 3.8","value":10,"unit":"Hz"}},
-      "fm_cv":{"_props":{"kind":"inlet","index":0}},
-      "index":{"_props":{"kind":"small_knob","range":[0,10],"taper":"linear","value":1,"unit":"float"}},
-      "pulse_width":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0.25,"unit":"float"}},
-      "pulse_width_cv":{"_props":{"kind":"inlet","index":2}},
-      "onset":{"_props":{"kind":"small_knob","range":[0,1],"taper":"linear","value":0,"unit":"float"}},
-      "phasor_sync":{"_props":{"kind":"inlet","index":1}},
-      "sine":{"_props":{"kind":"outlet","index":0}},
-      "phasor":{"_props":{"kind":"outlet","index":1}},
-      "pulse":{"_props":{"kind":"outlet","index":2}},
-      "sine_index":{"_props":{"kind":"outlet","index":3}},
-      "saw":{"_props":{"kind":"outlet","index":4}}
+    "lfo": {
+      "_props": {
+        "kind": "lfo",
+        "category": "abstraction",
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "orient": [
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "rate": {
+        "_props": {
+          "kind": "large_knob",
+          "range": [
+            0.1,
+            30
+          ],
+          "taper": "log 3.8",
+          "value": 10,
+          "unit": "Hz"
+        }
+      },
+      "fm_cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 0
+        }
+      },
+      "index": {
+        "_props": {
+          "kind": "small_knob",
+          "range": [
+            0,
+            10
+          ],
+          "taper": "linear",
+          "value": 1,
+          "unit": "float"
+        }
+      },
+      "pulse_width": {
+        "_props": {
+          "kind": "small_knob",
+          "range": [
+            0,
+            1
+          ],
+          "taper": "linear",
+          "value": 0.25,
+          "unit": "float"
+        }
+      },
+      "pulse_width_cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 2
+        }
+      },
+      "onset": {
+        "_props": {
+          "kind": "small_knob",
+          "range": [
+            0,
+            1
+          ],
+          "taper": "linear",
+          "value": 0,
+          "unit": "float"
+        }
+      },
+      "phasor_sync": {
+        "_props": {
+          "kind": "inlet",
+          "index": 1
+        }
+      },
+      "sine": {
+        "_props": {
+          "kind": "outlet",
+          "index": 0,
+          "history": "no"
+        }
+      },
+      "phasor": {
+        "_props": {
+          "kind": "outlet",
+          "index": 1,
+          "history": "no"
+        }
+      },
+      "pulse": {
+        "_props": {
+          "kind": "outlet",
+          "index": 2,
+          "history": "no"
+        }
+      },
+      "sine_index": {
+        "_props": {
+          "kind": "outlet",
+          "index": 3,
+          "history": "no"
+        }
+      },
+      "saw": {
+        "_props": {
+          "kind": "outlet",
+          "index": 4,
+          "history": "no"
+        }
+      }
     },
-    "vco":{
-      "_props":{"kind":"vco", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "rate":{"_props":{"kind":"large_knob","range":[20,6000],"taper":"linear","value":440,"unit":"float"}},
-      "rate_cv":{"_props":{"kind":"inlet","index":0}},
-      "sine":{"_props":{"kind":"outlet","index":0}},
-      "phasor":{"_props":{"kind":"outlet","index":1}},
-      "triangle":{"_props":{"kind":"outlet","index":2}},
-      "saw":{"_props":{"kind":"outlet","index":3}}
+    "dualvco": {
+      "_props": {
+        "kind": "dualvco",
+        "category": "abstraction",
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "orient": [
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "vco_1_rate": {
+        "_props": {
+          "kind": "large_knob",
+          "range": [
+            20,
+            6000
+          ],
+          "taper": "linear",
+          "value": 200,
+          "unit": "float"
+        }
+      },
+      "vco_1_waveform": {
+        "_props": {
+          "kind": "n_switch",
+          "range": [
+            1,
+            3
+          ],
+          "taper": "linear",
+          "value": 1,
+          "unit": "int"
+        }
+      },
+      "vco_2_rate": {
+        "_props": {
+          "kind": "large_knob",
+          "range": [
+            20,
+            6000
+          ],
+          "taper": "linear",
+          "value": 3,
+          "unit": "float"
+        }
+      },
+      "vco_2_waveform": {
+        "_props": {
+          "kind": "n_switch",
+          "range": [
+            1,
+            3
+          ],
+          "taper": "linear",
+          "value": 1,
+          "unit": "int"
+        }
+      },
+      "index": {
+        "_props": {
+          "kind": "large_knob",
+          "range": [
+            20,
+            6000
+          ],
+          "taper": "linear",
+          "value": 0.01,
+          "unit": "float"
+        }
+      },
+      "feedback": {
+        "_props": {
+          "kind": "large_knob",
+          "range": [
+            0,
+            1
+          ],
+          "taper": "linear",
+          "value": 0.3,
+          "unit": "float"
+        }
+      },
+      "rate_1_cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 0
+        }
+      },
+      "index_cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 1
+        }
+      },
+      "rate_2_cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 2
+        }
+      },
+      "feedback_cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 3
+        }
+      },
+      "vco_1": {
+        "_props": {
+          "kind": "outlet",
+          "index": 0,
+          "history": "no"
+        }
+      },
+      "vco_2": {
+        "_props": {
+          "kind": "outlet",
+          "index": 1,
+          "history": "no"
+        }
+      },
+      "master": {
+        "_props": {
+          "kind": "outlet",
+          "index": 2,
+          "history": "no"
+        }
+      }
     },
-    "feedback_phase_mod":{
-      "_props":{"kind":"feedback_phase_mod", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "carrier":{"_props":{"kind":"inlet","index":0}},
-      "modulator":{"_props":{"kind":"inlet","index":1}},
-      "index":{"_props":{"kind":"large_knob","range":[0,100],"taper":"linear","value":20,"unit":"float"}},
-      "index_cv":{"_props":{"kind":"inlet","index":2}},
-      "feedback":{"_props":{"kind":"inlet","index":3}},
-      "master":{"_props":{"kind":"outlet","index":0}},
-      "feedback_out":{"_props":{"kind":"outlet","index":1}}
+    "feedback_phase_mod": {
+      "_props": {
+        "kind": "feedback_phase_mod",
+        "category": "abstraction",
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "orient": [
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "carrier": {
+        "_props": {
+          "kind": "inlet",
+          "index": 0
+        }
+      },
+      "modulator": {
+        "_props": {
+          "kind": "inlet",
+          "index": 1
+        }
+      },
+      "index": {
+        "_props": {
+          "kind": "large_knob",
+          "range": [
+            0,
+            100
+          ],
+          "taper": "linear",
+          "value": 20,
+          "unit": "float"
+        }
+      },
+      "index_cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 2
+        }
+      },
+      "feedback": {
+        "_props": {
+          "kind": "inlet",
+          "index": 3
+        }
+      },
+      "master": {
+        "_props": {
+          "kind": "outlet",
+          "index": 0,
+          "history": "no"
+        }
+      },
+      "feedback_out": {
+        "_props": {
+          "kind": "outlet",
+          "index": 1,
+          "history": "no"
+        }
+      }
     },
-    "vca":{
-      "_props":{"kind":"vca","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "signal":{"_props":{"kind":"inlet","index":0}},
-      "cv":{"_props":{"kind":"inlet","index":1}},
-      "cv_amount":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
-      "bias":{"_props":{"kind":"large_knob","range":[0,1],"taper":"linear","value":0.5,"unit":"float"}},
-      "output":{"_props":{"kind":"outlet","index":0}}
+    "vca": {
+      "_props": {
+        "kind": "vca",
+        "category": "abstraction",
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "orient": [
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "signal": {
+        "_props": {
+          "kind": "inlet",
+          "index": 0
+        }
+      },
+      "cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 1
+        }
+      },
+      "cv_amount": {
+        "_props": {
+          "kind": "large_knob",
+          "range": [
+            0,
+            1
+          ],
+          "taper": "linear",
+          "value": 0.5,
+          "unit": "float"
+        }
+      },
+      "bias": {
+        "_props": {
+          "kind": "large_knob",
+          "range": [
+            0,
+            1
+          ],
+          "taper": "linear",
+          "value": 0.5,
+          "unit": "float"
+        }
+      },
+      "output": {
+        "_props": {
+          "kind": "outlet",
+          "index": 0,
+          "history": "no"
+        }
+      }
     },
-    "comparator":{
-      "_props":{"kind":"comparator","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "A":{"_props":{"kind":"inlet","index":0}},
-      "B":{"_props":{"kind":"inlet","index":1}},
-      "max":{"_props":{"kind":"outlet","index":0}},
-      "min":{"_props":{"kind":"outlet","index":1}}
+    "comparator": {
+      "_props": {
+        "kind": "comparator",
+        "category": "abstraction",
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "orient": [
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "A": {
+        "_props": {
+          "kind": "inlet",
+          "index": 0
+        }
+      },
+      "B": {
+        "_props": {
+          "kind": "inlet",
+          "index": 1
+        }
+      },
+      "max": {
+        "_props": {
+          "kind": "outlet",
+          "index": 0,
+          "history": "no"
+        }
+      },
+      "min": {
+        "_props": {
+          "kind": "outlet",
+          "index": 1,
+          "history": "no"
+        }
+      }
     },
-
-    "speaker":{
-      "_props":{"kind":"speaker","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "input":{"_props":{"kind":"inlet","index":0}}
+    "speaker": {
+      "_props": {
+        "kind": "speaker",
+        "category": "abstraction",
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "orient": [
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "input": {
+        "_props": {
+          "kind": "inlet",
+          "index": 0,
+          "history": "no"
+        }
+      }
     },
-    "logic":{
-      "_props":{"kind":"logic","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "in_1":{"_props":{"kind":"inlet","index":0}},
-      "in_2":{"_props":{"kind":"inlet","index":1}},
-      "not_1":{"_props":{"kind":"outlet","index":2}},
-      "not_2":{"_props":{"kind":"outlet","index":3}},
-      "and":{"_props":{"kind":"outlet","index":4}},
-      "boolean_1":{"_props":{"kind":"outlet","index":5}},
-      "boolean_2":{"_props":{"kind":"outlet","index":6}},
-      "or":{"_props":{"kind":"outlet","index":7}},
-      "xor":{"_props":{"kind":"outlet","index":8}},
-      ">":{"_props":{"kind":"outlet","index":9}}
+    "logic": {
+      "_props": {
+        "kind": "logic",
+        "category": "abstraction",
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "orient": [
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "in_1": {
+        "_props": {
+          "kind": "inlet",
+          "index": 0
+        }
+      },
+      "in_2": {
+        "_props": {
+          "kind": "inlet",
+          "index": 1
+        }
+      },
+      "not_1": {
+        "_props": {
+          "kind": "outlet",
+          "index": 0,
+          "history": "no"
+        }
+      },
+      "not_2": {
+        "_props": {
+          "kind": "outlet",
+          "index": 1,
+          "history": "no"
+        }
+      },
+      "and": {
+        "_props": {
+          "kind": "outlet",
+          "index": 2,
+          "history": "no"
+        }
+      },
+      "boolean_1": {
+        "_props": {
+          "kind": "outlet",
+          "index": 3,
+          "history": "no"
+        }
+      },
+      "boolean_2": {
+        "_props": {
+          "kind": "outlet",
+          "index": 4,
+          "history": "no"
+        }
+      },
+      "or": {
+        "_props": {
+          "kind": "outlet",
+          "index": 5,
+          "history": "no"
+        }
+      },
+      "xor": {
+        "_props": {
+          "kind": "outlet",
+          "index": 6,
+          "history": "no"
+        }
+      },
+      ">": {
+        "_props": {
+          "kind": "outlet",
+          "index": 7,
+          "history": "no"
+        }
+      }
     },
     "resofilter": {
-      "_props":{"kind":"resofilter","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "source":{"_props":{"kind":"inlet","index":0}},
-      "frequency":{"_props":{"kind":"large_knob","range":[1,10000],"taper":"log 3.8","value":0.25,"unit":"float"}},
-      "freq_cv":{"_props":{"kind":"inlet","index":1}},
-      "resonance":{"_props":{"kind":"small_knob","range":[0,1],"taper":"log 3.8","value":0.5,"unit":"float"}},
-      "res_cv":{"_props":{"kind":"inlet","index":2}},
-      "lopass":{"_props":{"kind":"outlet","index":0}},
-      "hipass":{"_props":{"kind":"outlet","index":1}}
-    
+      "_props": {
+        "kind": "resofilter",
+        "category": "abstraction",
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "orient": [
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "source": {
+        "_props": {
+          "kind": "inlet",
+          "index": 0
+        }
+      },
+      "frequency": {
+        "_props": {
+          "kind": "large_knob",
+          "range": [
+            1,
+            10000
+          ],
+          "taper": "log 3.8",
+          "value": 0.25,
+          "unit": "float"
+        }
+      },
+      "freq_cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 1
+        }
+      },
+      "resonance": {
+        "_props": {
+          "kind": "small_knob",
+          "range": [
+            0,
+            1
+          ],
+          "taper": "log 3.8",
+          "value": 0.5,
+          "unit": "float"
+        }
+      },
+      "res_cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 2
+        }
+      },
+      "lopass": {
+        "_props": {
+          "kind": "outlet",
+          "index": 0,
+          "history": "no"
+        }
+      },
+      "hipass": {
+        "_props": {
+          "kind": "outlet",
+          "index": 1,
+          "history": "no"
+        }
+      }
     },
     "pulsars": {
-      "_props":{"kind":"pulsars","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "signal":{"_props":{"kind":"inlet","index":0}},
-      "period":{"_props":{"kind":"large_knob","range":[0,1],"taper":"log 3.8","value":0.25,"unit":"float"}},
-      "period_cv":{"_props":{"kind":"inlet","index":1}},
-      "formant":{"_props":{"kind":"large_knob","range":[0,1000],"taper":"log 3.8","value":0.25,"unit":"float"}},
-      "formant_cv":{"_props":{"kind":"inlet","index":2}},
-      "hipass":{"_props":{"kind":"outlet","index":0}}
-    
-    }
-    ,
+      "_props": {
+        "kind": "pulsars",
+        "category": "abstraction",
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "orient": [
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "signal": {
+        "_props": {
+          "kind": "inlet",
+          "index": 0
+        }
+      },
+      "period": {
+        "_props": {
+          "kind": "large_knob",
+          "range": [
+            0,
+            1
+          ],
+          "taper": "log 3.8",
+          "value": 0.25,
+          "unit": "float"
+        }
+      },
+      "period_cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 1
+        }
+      },
+      "formant": {
+        "_props": {
+          "kind": "large_knob",
+          "range": [
+            0,
+            1000
+          ],
+          "taper": "log 3.8",
+          "value": 0.25,
+          "unit": "float"
+        }
+      },
+      "formant_cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 2
+        }
+      },
+      "hipass": {
+        "_props": {
+          "kind": "outlet",
+          "index": 0,
+          "history": "no"
+        }
+      }
+    },
     "granola": {
-      "_props":{"kind":"granola","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "signal":{"_props":{"kind":"inlet","index":0}},
-      "density":{"_props":{"kind":"large_knob","range":[0.1,100],"taper":"log 3.8","value":10,"unit":"float"}},
-      "density_cv":{"_props":{"kind":"inlet","index":1}},
-      "rate":{"_props":{"kind":"large_knob","range":[1,2000],"taper":"log 3.8","value":100,"unit":"float"}},
-      "rate_cv":{"_props":{"kind":"inlet","index":2}},
-      "speed":{"_props":{"kind":"large_knob","range":[1,2000],"taper":"log 3.8","value":1,"unit":"float"}},
-      "speed_cv":{"_props":{"kind":"inlet","index":3}},
-      "lookahead":{"_props":{"kind":"large_knob","range":[0,1],"taper":"log 3.8","value":0,"unit":"float"}},
-      "lookahead_cv":{"_props":{"kind":"inlet","index":3}},
-      "left":{"_props":{"kind":"outlet","index":0}},
-      "right":{"_props":{"kind":"outlet","index":1}}    
+      "_props": {
+        "kind": "granola",
+        "category": "abstraction",
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "orient": [
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "signal": {
+        "_props": {
+          "kind": "inlet",
+          "index": 0
+        }
+      },
+      "density": {
+        "_props": {
+          "kind": "large_knob",
+          "range": [
+            0.1,
+            100
+          ],
+          "taper": "log 3.8",
+          "value": 10,
+          "unit": "float"
+        }
+      },
+      "density_cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 1
+        }
+      },
+      "rate": {
+        "_props": {
+          "kind": "large_knob",
+          "range": [
+            1,
+            2000
+          ],
+          "taper": "log 3.8",
+          "value": 100,
+          "unit": "float"
+        }
+      },
+      "rate_cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 2
+        }
+      },
+      "speed": {
+        "_props": {
+          "kind": "large_knob",
+          "range": [
+            1,
+            2000
+          ],
+          "taper": "log 3.8",
+          "value": 1,
+          "unit": "float"
+        }
+      },
+      "speed_cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 3
+        }
+      },
+      "lookahead": {
+        "_props": {
+          "kind": "large_knob",
+          "range": [
+            0,
+            1
+          ],
+          "taper": "log 3.8",
+          "value": 0,
+          "unit": "float"
+        }
+      },
+      "lookahead_cv": {
+        "_props": {
+          "kind": "inlet",
+          "index": 3
+        }
+      },
+      "left": {
+        "_props": {
+          "kind": "outlet",
+          "index": 0,
+          "history": "no"
+        }
+      },
+      "right": {
+        "_props": {
+          "kind": "outlet",
+          "index": 1,
+          "history": "no"
+        }
+      }
     }
   }
 }
