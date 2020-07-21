@@ -98,8 +98,13 @@ let localConfig = {
   // ip is figured out during init()
   ip: null, 
   // eventually, app.js will maintain status of connected client(s) and report them to the teaparty
-  vr: null,
-  sound: null,
+  vr: {
+    ws: null
+  },
+  sound: {
+    ws: null
+  },
+  
   // for example, if someone wanted to observe a performance but not be a player:
   spectator: 0,
   // this is set by the teaparty, or:
@@ -677,7 +682,7 @@ function startLocalWebsocket(){
           // handlemessage(JSON.parse(e), ws, id);
           // let msg = JSON.parse(e)
           
-          messageFromLocalClient(e, localWebsocket)
+          messageFromLocalClient(e, ws)
         } catch (e) {
           console.log('bad JSON: ', e);
         }
@@ -691,21 +696,22 @@ function startLocalWebsocket(){
 
 }
 
-function messageFromLocalClient(message, localWebsocket){
+function messageFromLocalClient(message, ws){
+  localWebsocket = ws
   let msg = JSON.parse(message)
   switch(msg.cmd){
     case 'vrClientStatus':
 
       // teapartyWebsocket.send
       // localWebsocket.id = 'vr'
-      localClients.vr = localWebsocket
+      localConfig.vr.ws = localWebsocket
     break;
 
     case 'maxClientStatus':
       
       // teapartyWebsocket.send
       // localWebsocket.id = 'vr'
-      localClients.sound = localWebsocket
+      localConfig.sound.ws = localWebsocket
     break;
 
     case 'get_scene':
@@ -768,7 +774,7 @@ function messageFromLocalClient(message, localWebsocket){
     case "audiovizLookup":
       // console.log(msg.data)
       if(localClients.vr){
-        localClients.vr.send(JSON.stringify(msg))
+        localClients.vr.ws.send(JSON.stringify(msg))
       }
       // 
       // need to send this just to the vr client!
@@ -786,8 +792,9 @@ function sendToMaxClient(msg, ignore){
   localWebsocketServer.clients.forEach(function each(client) {
 
     if(client === ignore){
+      
       return
-    } 
+    } else if (client == localConfig.sound.ws)
     
       try {
         client.send(msg);

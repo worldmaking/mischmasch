@@ -454,7 +454,6 @@ var handleDelta = function(delta) {
 	
 					var selfPatch1 = delta.paths[0].split('.')[0]
 					var outletPath = delta.paths[0]
-					post('nodes[outletPath]', JSON.stringify(nodes[outletPath]))
 					// detect a self-patch connection and insert a history object in between!
 					if (delta.paths[0].split('.')[0] === delta.paths[1].split('.')[0]){					
 						feedbackConnections++
@@ -541,22 +540,14 @@ var handleDelta = function(delta) {
 			
 			// modify a parameter
 			case "propchange": 
-				post('\n\n',JSON.stringify(delta))
-				// special case name == pos, name == orient, name == value
 				switch(delta.name) {
 
 					case "value": 
 						var param = delta.path
 						param = param.replace(".", "__")
-						
-						
 						var cleaveParam = param.split('.')[0]
-
 						this.patcher.message("script", "send", "world", cleaveParam, delta.to)
-						// outlet(2, cleaveParam, delta.to)
-						// handle knob twiddle
-						// send to appropriate param
-						// based on delta.path and delta.to (new value)
+
 					break;
 					
 					case "history":	
