@@ -183,6 +183,12 @@ connection.addEventListener('close', () => {
 	max.post('connection closed!')
 	connectionStatus = 0
 	max.outlet('toAudioviz', 0)
+	localGraph = {
+		nodes: {		
+		},
+		arcs: [
+		]
+	}
 })
 
 max.addHandler('audiovizLookup', (audiovizLookup)=>{

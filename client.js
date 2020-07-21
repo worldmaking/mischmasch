@@ -2273,7 +2273,6 @@ function animate() {
 			socket.send(message);
 			console.log('outgoing message',message)
 			outgoingDeltas.length = 0;
-			//console.log("Sending Deltas")
 		}
 		// HMD pos
 		let hmdMessage = JSON.stringify({
@@ -2366,10 +2365,16 @@ function serverConnect() {
 	}
 	socket.onerror = (error) => {
 	  console.error(`ws error: ${error}`)
+	  socket = null;
+	  localGraph = { nodes: {}, arcs: [] }
 	}
 	socket.onclose = function(e) {
 		socket = null;
 		console.log("websocket disconnected from "+url);
+		localGraph = {
+			nodes: {}, arcs: []
+		}
+		mainScene.rebuild(localGraph)
 		setTimeout(function(){
 			console.log("websocket reconnecting");
 			serverConnect();

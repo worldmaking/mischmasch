@@ -792,7 +792,7 @@ function sendToMaxClient(msg, ignore){
       try {
         client.send(msg);
       } catch (e) {
-        console.error(e);
+        // console.error(e);
       };
     })
 

@@ -1,5 +1,3 @@
-// we use this to scan an entire graph for cycles, and return a list of nodes which should have their history property set to 'yes'
-
 const fs = require('fs')
 const got = require('./gotlib/got.js')
 const equals = require('array-equal')

@@ -455,6 +455,7 @@ var handleDelta = function(delta) {
 	
 					var selfPatch1 = delta.paths[0].split('.')[0]
 					var outletPath = delta.paths[0]
+					post('nodes[outletPath]', JSON.stringify(nodes[outletPath]))
 					// detect a self-patch connection and insert a history object in between!
 					if (delta.paths[0].split('.')[0] === delta.paths[1].split('.')[0]){					
 						feedbackConnections++
@@ -558,9 +559,10 @@ var handleDelta = function(delta) {
 					break;
 					
 					case "history":
-						post(JSON.stringify(delta))
-
-
+						post(JSON.stringify(delta))		
+							nodes[delta.path] = {
+								history: delta.history
+							}
 					break
 					case "pos": 
 						// whatever
