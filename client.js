@@ -487,6 +487,7 @@ const UI = {
 		}
 
 		let pad_tap = (hand.pad_pressed == 1); // rising edge only
+
 		
 		switch(hand.state) {
 			case "menu": {
@@ -518,18 +519,15 @@ const UI = {
 				let oldPos = object.pos
 				let oldQuat = object.quat
 
-				console.log("dy", hand.pad_dy)
+				if (hand.pad_dy) {
+					// the throw/pull gesture
 
-
-				// update object pose
-				//the transform from when dragging started to the current pose:
-				let transform = mat4.multiply(mat4.create(), hand.mat, hand.stateData.inverseHandMat)
-
+				}
+		
+				let m = mat4.multiply(mat4.create(), hand.mat, hand.stateData.objectRelativeMat);
 				// apply this to the dragged object:
-				vec3.transformMat4(object.pos, hand.stateData.objectPos, transform)
-				quat.multiply(object.quat, mat4.getRotation(quat.create(), transform), hand.stateData.objectOrient)
-				
-				// use pad-scrollY to throw module closer/further?
+				mat4.getTranslation(object.pos, m)
+				mat4.getRotation(object.quat, m)
 
 				if(object.node._props.kind === "speaker"){
 					outgoingDeltas.push({op:"propchange", path: object.path, name: "speakerPos", "from": oldPos, "to": object.pos  })
@@ -716,13 +714,8 @@ const UI = {
 								hand.state = "dragging";
 								// cache initial hand & object transforms here
 								hand.stateData.object = object
-
-								// get pose of object at start of drag:
-								hand.stateData.objectPos = vec3.clone(object.pos)
-								hand.stateData.objectOrient = quat.clone(object.quat)
-
-								hand.stateData.inverseHandMat = mat4.clone(hand.mat)
-								mat4.invert(hand.stateData.inverseHandMat, hand.stateData.inverseHandMat)
+								// get pose of object relative to hand:
+								hand.stateData.objectRelativeMat = mat4.multiply(mat4.create(), mat4.invert(mat4.create(), hand.mat), object.mat)
 								
 							}
 						} break;
