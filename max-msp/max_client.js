@@ -120,14 +120,11 @@ connection.addEventListener('message', (data) => {
 		case "nuke":
 			// case "patch":	
 			deltas = JSON.stringify(data)
-
 			max.outlet('fromLocalWebsocket', deltas)
 
 		break;
 
 		case "HMD":
- 
-
 			max.outlet('hmd', 'position', data.data.pos[0], data.data.pos[1], data.data.pos[2], 'quat', data.data.orient[0], data.data.orient[1], data.data.orient[2], data.data.orient[3])
 		break 
 
