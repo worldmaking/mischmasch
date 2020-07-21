@@ -62,7 +62,6 @@ let localGraph = {
 	]
 
 }
-max.setDict("scene", localGraph)
 
 let sessionList = []
 let sceneList = []
