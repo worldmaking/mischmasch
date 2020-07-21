@@ -145,6 +145,7 @@ function makeDelNodeDelta(deltas, node, path) {
 	deltas.push(delta)
 }
 
+
 ////////////////////////////////////////////////////////////////
 
 let nav = {
@@ -547,6 +548,8 @@ const UI = {
 				if (object) object.i_highlight[0] = 0
 				object = hand.stateData.object
 				object.i_highlight[0] = 1
+				let oldPos = object.pos
+				let oldQuat = object.quat
 				// update object pose
 				//the transform from when dragging started to the current pose:
 				let transform = mat4.multiply(mat4.create(), hand.mat, hand.stateData.inverseHandMat)
@@ -557,6 +560,9 @@ const UI = {
 				
 				// use pad-scrollY to throw module closer/further?
 
+				if(object.node._props.kind === "speaker"){
+					outgoingDeltas.push({op:"propchange", path: object.path, name: "speakerPos", "from": oldPos, "to": object.pos  })
+				}
 				// check for exit:
 				if (!hand.trigger_pressed) {
 					// delete?
@@ -858,7 +864,7 @@ const menuModules = Object.assign({
 	"knob":{
 		"_props":{ "kind":"param", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
 		"value":{"_props":{"kind":"large_knob", "range":[0,1], "value":0}},
-		"output":{"_props":{"kind":"outlet","index":0}}
+		"output":{"_props":{"kind":"outlet","index":0, "history": false}}
 	},
 }, JSON.parse(fs.readFileSync("menu.json", "utf-8")))
 

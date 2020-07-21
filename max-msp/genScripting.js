@@ -21,7 +21,7 @@ var feedbackConnections = 0
 var checkspeaker = new Array();
 var Ycounter;
 var newModule;
-var speakerTable = []
+var speakerTable = {}
 var genOutCounter = 1
 
 var audiovizBuffer = new Buffer("audioviz");
@@ -177,7 +177,6 @@ var handleDelta = function(delta) {
 									// TODO this is one place where we need to deal with the speaker/vr_source lookup table
 									var newSpeaker = gen_patcher.newdefault([50, posY * 150, 'out', genOutCounter])
 									newSpeaker.varname = pathName;
-
 			
 									//need to get its position in vr and apply that to a vr.source~ position
 									// 1420. 544. 289. 22.
@@ -188,22 +187,22 @@ var handleDelta = function(delta) {
 									
 									// add a vr.Source~ abstraction to parent, script the new out to this abstraction, use delta.pos to provide the vr.source~ position
 									var vrSource = this.patcher.newdefault([-50 + (genOutCounter * 100), 200, "vr.source~", genOutCounter - 1, "@position", delta.pos[0], delta.pos[1], delta.pos[2] ])
-									vrSource.varname = "source_" + speakerNumber
+									vrSource.varname = "source_" + pathName
 
 
 									// key groundTruth, value = the same node path in its delta and scenegraph; genContext: number of speakers in scenegraph, correspond to number of out objects scripted into gen~ world with base 1. 
 									// the vr.source~ objects instantiated in parent patcher should also have their first arg be the genContext value, but scripting name be the groundTruth value
-									speakerTable.push({"groundTruth": vrSource.varname, "genContext": genOutCounter})
+									speakerTable[vrSource.varname] = {genOutNumber: genOutCounter }  
 									// speakerTableDict.setparse(speakerTable)
 									// gen~ and max outlets are base 0 (mth), our speaker numbers are base 1 (nth)
 									// TODO decide on base 0 or 1 (I advocate for 0, because this also works with array indices) 
 									
-									outlet(3, 'genConnect', genOutCounter, speakerNumber)
+									outlet(3, 'genConnect', genOutCounter, vrSource.varname)
 
 									// we use outlets below the gen~ world. All vr.Source~ objects script connect into outlets 1 and 2. 
-									this.patcher.message("script", "connect", "source_" + speakerNumber, 0, 'vrSource2CHMain', 0);
+									this.patcher.message("script", "connect", vrSource.varname, 0, 'vrSource2CHMain', 0);
 	
-									this.patcher.message("script", "connect", "source_" + speakerNumber, 1, 'vrSource2CHMain', 1);
+									this.patcher.message("script", "connect", vrSource.varname, 1, 'vrSource2CHMain', 1);
 
 									genOutCounter++ 
 								} else {
@@ -542,8 +541,10 @@ var handleDelta = function(delta) {
 			
 			// modify a parameter
 			case "propchange": 
+				post('\n\n',JSON.stringify(delta))
 				// special case name == pos, name == orient, name == value
 				switch(delta.name) {
+
 					case "value": 
 						var param = delta.path
 						param = param.replace(".", "__")
@@ -558,13 +559,15 @@ var handleDelta = function(delta) {
 						// based on delta.path and delta.to (new value)
 					break;
 					
-					case "history":
-						post(JSON.stringify(delta))		
-							nodes[delta.path] = {
-								history: delta.history
-							}
+					case "history":	
+						nodes[delta.path] = {
+							history: delta.history
+						}
 					break
-					case "pos": 
+					case "speakerPos": 
+						pathName = delta.path.split('.')[0] 
+						var vrSourceTarget = "source_" + pathName
+						this.patcher.message("script", "send", vrSourceTarget, "position", delta.to[0], delta.to[1], delta.to[2])
 						// whatever
 					break;
 				}
