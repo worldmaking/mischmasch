@@ -1,29 +1,3 @@
-/*
-
-For moving objects, convenient to have a graph structure so that moving a parent can iterate to update all children
-	- so a node needs a list of its children
-For child objects it would be convenient to store positions in units of the module grid,
-	- then can recompute the instance position and matrix more rapidly
-	- but a node will need pointer to its parent context
-
-Option of having a root node
-
-
-
-Two scale factors to consider:
-- "scale": A scalar value for the scale factor from parent system, which will be in the parent mat. E.g. modules by defualt will have scale=UI_DEFAULT_SCALE.
-- "dim": A bounding-scale used to stretch modules to fit no. rows & cols in their grid layout. Sets the bounding box of the object relative to its coordinate frame. 
-
-Child objects' world-space depends on parent's mat4, which factors in "scale", not "dim". 
-
-Consider whether to have anchors in centre or bottom-left
-(and if centre, is it +-1 or +-0.5?)
-Raycasting: corner is slightly better? Test by transforming ray to object space, then testing against object bounds. +-0.5 makes that more complicated; would be testing (transformed+0.5) against (0,dim).
-Knob rotation etc.: centre definitely better in thoery -- but perhaps this is something handled in the shader? +- doesn't matter.
-Widget layout: probably easier with centering. +- 0.5 preferred.
-Module grid layout: corner simpler. +- 0.5 preferred.
-Seems like centre +-0.5 might be the one?
-*/
 const assert = require("assert"),
 	fs = require("fs"),
 	path = require("path");
@@ -55,8 +29,6 @@ if (argv.name){
 let peerHandle = name + '_' + filename
 const got = require("./gotlib/got.js")
 
-
-
 const rwsOptions = {
 	// make rws use the webSocket module implementation
 	WebSocket: ws, 
@@ -65,15 +37,10 @@ const rwsOptions = {
 	//debug:true, 
   }
 
-let USEVR = 0;
+let USEVR = (process.platform === "win32") && !(argv.vr === 'false');
 // usevr if its specified on CLI & skip VR if on OSX:
-if(argv.vr === 'true' && process.platform === "win32"){
-	USEVR = 1
-	console.log('using VR')
-}
-
-// const USEVR = 1 && (process.platform === "win32");
-const vr = (USEVR) ? require(path.join(nodeglpath, "openvr.js")) : null
+console.log('using VR?', USEVR)
+let vr = (USEVR) ? require(path.join(nodeglpath, "openvr.js")) : null
 const url = 'ws://localhost:8080'
 
 const shaderpath = path.join(__dirname, "shaders")
@@ -883,10 +850,15 @@ console.log('glfw ' + version.major + '.' + version.minor + '.' + version.rev);
 console.log('glfw version-string: ' + glfw.getVersionString());
 
 if (USEVR) {
-	assert(vr.connect(true), "vr failed to connect");
-	vr.update()
-	vrdim = [vr.getTextureWidth(), vr.getTextureHeight()]
-	
+	try{
+		assert(vr.connect(true), "vr failed to connect");
+		vr.update()
+		vrdim = [vr.getTextureWidth(), vr.getTextureHeight()]
+	} catch (e) {
+		console.error(e)
+		// graceful
+		vr = null;
+	}
 }
 
 function createSDFFont(gl, pngpath, jsonpath) {
@@ -2288,10 +2260,10 @@ function animate() {
 		});
 		socket.send(hmdMessage);
 
-	} else if (USEWS == false ){
+	} else if (!USEWS) {
 		// otherwise, just move them to our incoming list, 
 		// so we can work without a server:
-		console.log('\n\nogds',outgoingDeltas)
+		//console.log('\n\nogds',outgoingDeltas)
 		for (let delta of outgoingDeltas) {
 			incomingDeltas.push(delta);
 		}
@@ -2299,7 +2271,6 @@ function animate() {
 	}
 }
 
-let once = 1
 function draw(eye=0) {
 
 	renderer.floor_program.begin();
