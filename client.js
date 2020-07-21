@@ -516,8 +516,8 @@ const UI = {
 				if (object) object.i_highlight[0] = 0
 				object = hand.stateData.object
 				object.i_highlight[0] = 1
-				let oldPos = object.pos
-				let oldQuat = object.quat
+				let oldPos = vec3.copy([], object.pos)
+				let oldQuat = quat.copy([], object.quat)
 
 				if (hand.pad_dy) {
 					// the throw/pull gesture
@@ -529,9 +529,7 @@ const UI = {
 				mat4.getTranslation(object.pos, m)
 				mat4.getRotation(object.quat, m)
 
-				if(object.node._props.kind === "speaker"){
-					outgoingDeltas.push({op:"propchange", path: object.path, name: "speakerPos", "from": oldPos, "to": object.pos  })
-				}
+				
 				// check for exit:
 				if (!hand.trigger_pressed) {
 					// delete?
@@ -549,10 +547,26 @@ const UI = {
 						makeDelNodeDelta(deltas, object.node, object.path)
 						// now send them:
 						outgoingDeltas.push(deltas)
-					}
+					} 
 					// release dragging:
 					hand.state = "default";
-				} 
+				} else {
+					// propchange!
+					outgoingDeltas.push({ 
+						op:"propchange", 
+						path: object.path, 
+						name: "pos", 
+						from: (oldPos), 
+						to: object.pos  
+					},
+					{ 
+						op:"propchange", 
+						path: object.path, 
+						name: "orient", 
+						from: (oldQuat), 
+						to: object.quat  
+					})
+				}
 			} break;
 			case "buttoning": 
 			case "twiddling": 
@@ -574,6 +588,7 @@ const UI = {
 						let origin = vec3.sub(vec3.create(), hand.pos, object.i_pos);
 						glutils.quat_unrotate(origin, object.i_quat, origin);
 
+
 						let t = -origin[2]/dir[2]
 						hand.line.i_len[0] = t
 						let p = vec3.create()
@@ -584,12 +599,12 @@ const UI = {
 
 						// angle of line to hand relative to knob face:
 						let angle = Math.atan2(p[0], p[1]);
-						let value = Math.min(1, Math.max(0, angle2value(angle)));
+						let i_value = Math.min(1, Math.max(0, angle2value(angle)));
 						// update prop:
 						let props = object.node._props
 						let range = props.range || [0,1];
-						let oldval = range[0] + object.i_value[0]*(range[1]-range[0]);
-						let newval = range[0] + value*(range[1]-range[0]);
+						let oldval = object.value//range[0] + object.i_value[0]*(range[1]-range[0]);
+						let newval = range[0] + i_value*(range[1]-range[0]);
 
 						// send propchange oldval->newval
 						outgoingDeltas.push({ 
@@ -601,7 +616,11 @@ const UI = {
 						});
 						
 						// immediate update for rendering:
-						object.i_value[0] = value;
+						object.i_value[0] = i_value;
+						object.value = newval;
+
+						
+						//console.log("send propchange", object.node._props.value, oldval, newval)
 						
 					}
 
@@ -1712,6 +1731,7 @@ function makeSceneGraph(renderer, gl) {
 					obj.dim = [1/2, 1/2, UI_DEPTH];
 					let range = props.range || [0,1];
 					let value = props.value || 0.;
+					obj.value = value;
 					obj.i_value[0] = (value - range[0])/(range[1]-range[0]);
 					obj.cablingKind = "to"
 					this.addLabel(obj, label_text, text_pos, text_scale);
@@ -1724,6 +1744,7 @@ function makeSceneGraph(renderer, gl) {
 					obj.dim = [2/3, 2/3, UI_DEPTH];
 					let range = props.range || [0,1];
 					let value = props.value || 0.;
+					obj.value = value;
 					obj.i_value[0] = (value - range[0])/(range[1]-range[0]);
 					obj.cablingKind = "to"
 					this.addLabel(obj, label_text, text_pos, text_scale);
@@ -1735,6 +1756,7 @@ function makeSceneGraph(renderer, gl) {
 					obj.dim = [2/3, 2/3, UI_DEPTH];
 					let throws = props.throws || [0,1];
 					let value = props.value || 0.;
+					obj.value = value;
 					obj.i_value[0] = value/(throws.length-1);
 					obj.cablingKind = "to"
 					this.addLabel(obj, label_text, text_pos, text_scale);
@@ -2365,8 +2387,7 @@ function serverConnect() {
 }
 
 function onServerMessage(msg, sock) {
-	console.log('incoming msg:'), msg
-    switch (msg.cmd) {
+	switch (msg.cmd) {
         case "deltas": {
 			// insert into our TODO list:
             incomingDeltas.push.apply(incomingDeltas, msg.data);
