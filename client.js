@@ -2112,7 +2112,7 @@ function animate() {
 			let delta = incomingDeltas.shift();
             // TODO: derive which world to add to:
             try {
-				console.log('incomingDelta', delta)
+				//console.log('incomingDelta', delta)
 				got.applyDeltasToGraph(localGraph, delta);
 
 				fs.writeFileSync("basicGraph.json", JSON.stringify(localGraph, null, "\t"), "utf8");
@@ -2243,7 +2243,7 @@ function animate() {
 				data: outgoingDeltas
 			});
 			socket.send(message);
-			console.log('outgoing message',message)
+			//console.log('outgoing message',message)
 			outgoingDeltas.length = 0;
 		}
 		// HMD pos
