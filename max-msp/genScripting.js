@@ -391,6 +391,7 @@ var handleDelta = function(delta) {
 						genOutCounter--
 						outlet(4, 'thispatcher', 'script', 'delete', thisVarname)
 						// this.patcher.remove(thisVarname)
+						this.patcher.message("script", 'delete', thisVarname)
 
 						// then remove from gen~ world
 						if(genOutCounter <1){

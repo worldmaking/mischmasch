@@ -21,31 +21,6 @@ const filename = path.basename(__filename)
 
 const got = require('../gotlib/got.js')
 
-/*
-////// handshake with the vrContext running on the same machine:
-const wss = new WebSocket.Server({ port: 8083 });
- 
-wss.on('connection', function connection(localHandshake) {
-	localHandshake.on('message', function incoming(message) {
-		msg = JSON.parse(message)
-		switch (msg.cmd){
-
-			case 'handshake':
-				max.post('\n\nvrContext', message);
-				max.outlet('vrContext', message.data)
-				vrContextID = data.data.vrContext
-			break
-		}
-  });
- 
-  localHandshake.send('something');
-});
-
-
-*/
-
-
-
 const ReconnectingWebSocket = require('reconnecting-websocket');
 
 const options = {
@@ -66,13 +41,6 @@ let localGraph = {
 let sessionList = []
 let sceneList = []
 
-// post(ip)
-
-
-//const scenefile = "scene_edited.json"
-//const playbackSessionJSON = []
-//function connect (){
-
 // create a ws connection which can automatically attempt reconnections if server goes down
 //let connection = new ReconnectingWebSocket('ws://192.168.137.1:8080/', [], options);
 let connection;
@@ -88,7 +56,7 @@ connection.addEventListener('open', () => {
 	// clear the filename umenu in the controller.maxpat
 	max.outlet('clearPlaybackList', 'clear')
 	connection.send(JSON.stringify({ cmd:"maxClientStatus"}))
-	max.post('connected to server')
+	max.post('connected to localWebsocketServer')
 	// request the list of sessions and scenes from the server
 	// connection.send(JSON.stringify({
 	// 	cmd: "initMax_Client",
@@ -111,7 +79,6 @@ tempcount = 0
 connection.addEventListener('message', (data) => {
 	// the ReconnectingWebSocket package adds an extra layer of JSON stringification... took me a while to figure this out. So, need to parse data.data :(
 	data = JSON.parse(data.data)
-	//max.post(data)
 	switch(data.cmd){
 
 		// case deltas
@@ -128,47 +95,6 @@ connection.addEventListener('message', (data) => {
 			max.outlet('hmd', 'position', data.data.pos[0], data.data.pos[1], data.data.pos[2], 'quat', data.data.orient[0], data.data.orient[1], data.data.orient[2], data.data.orient[3])
 		break 
 
-
-		// retrieve list of session recording filenames
-		// case "sessionRecordings":{
-		// 	sessionList.push(data.data)
-		// 	max.outlet('playbackList','append',data.data)
-		// } break;
-		// // retrieve list of sceneJSON filenames
-		// case "scene_files":{
-		// 	sceneList.push(data.data)
-		// 	max.outlet('sceneList','append',data.data)
-		// } break;
-
-// 		///////// vr and audio contexts handshake ////////
-		//NOTE: this is now in its own ws connection, served locally
-// 		case 'contexts':
-			
-// 			// if (data.data.ip === 'localhost' || data.data[0] === '127.0.0.1'){
-// 			// 	vrContextID = data.data[0]
-// 			// 	max.post(data.data[0])
-// 			// }
-// //max.post(data.data.ip)
-// 			if(data.data.vrContext){
-// 				max.outlet('vrContext', data.data.vrContext)
-// 				vrContextID = data.data.vrContext
-// 			}
-			
-// 		break
-		///////// GEN~ Client ///////////////////////
-
-
-		// headset & controller data
-		// ignore this data for the stability version of this client
-		/*
-		case "user_pose":
-		// userData = JSON.stringify(data.pose)
-		// newCmd = data.cmd
-		// // maxInstances.post(userData.cmd)
-		// max.outlet('userData', userData)
-		// break;
-		*/
-		///////////////////////
 		default: {
 		//	max.post('unhandled message received', data) // probably don't want to print everything else since the server and other clients talk to each other a LOT
 		} break;
