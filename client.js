@@ -336,7 +336,7 @@ const UI = {
 			dir: vec3.fromValues(0, 0, -1),
 			// UI:
 			trigger: 0, trigger_pressed: 0,
-			pax_x: 0, pad_y: 0, pad_pressed: 0, 
+			pax_x: 0, pad_y: 0, pax_dx: 0, pad_dy: 0, pad_pressed: 0, 
 			grip_pressed:0, menu_pressed: 0,
 			// state machine:
 			state: "default",
@@ -517,6 +517,10 @@ const UI = {
 				object.i_highlight[0] = 1
 				let oldPos = object.pos
 				let oldQuat = object.quat
+
+				console.log("dy", hand.pad_dy)
+
+
 				// update object pose
 				//the transform from when dragging started to the current pose:
 				let transform = mat4.multiply(mat4.create(), hand.mat, hand.stateData.inverseHandMat)
@@ -2148,12 +2152,16 @@ function animate() {
 				let idx = (input.handedness == "right") ? 1 : 0;
 				let hand = UI.hands[idx]
 
+
 				let {buttons, axes} = input.gamepad;
 				hand.trigger = buttons[0].value
 				hand.trigger_pressed = (buttons[0].pressed) ? hand.trigger_pressed+1 : 0;
-				hand.pad_pressed = (buttons[2].pressed) ? hand.pad_pressed+1 : 0;
+				hand.pad_dx = (buttons[2].touched && hand.pad_touched) ? axes[0] - hand.pad_x : 0;
+				hand.pad_dy = (buttons[2].touched && hand.pad_touched) ? axes[1] - hand.pad_y : 0;
+				hand.pad_touched = buttons[2].touched;
 				hand.pad_x = axes[0]
 				hand.pad_y = axes[1]
+				hand.pad_pressed = (buttons[2].pressed) ? hand.pad_pressed+1 : 0;
 				hand.grip_pressed = (buttons[1].pressed) ? hand.grip_pressed+1 : 0;
 				hand.menu_pressed = (buttons[3].pressed) ? hand.menu_pressed+1 : 0;
 
