@@ -555,11 +555,16 @@ var handleDelta = function(delta) {
 							history: delta.history
 						}
 					break
-					case "speakerPos": 
-						pathName = delta.path.split('.')[0] 
-						var vrSourceTarget = "source_" + pathName
-						this.patcher.message("script", "send", vrSourceTarget, "position", delta.to[0], delta.to[1], delta.to[2])
-						// whatever
+					case "pos":
+					case "orient":
+						pathName = delta.path.split('.')[0]
+						// is it a speaker?
+						if(pathName.split('_')[0] === "speaker"){
+							var vrSourceTarget = "source_" + pathName
+							this.patcher.message("script", "send", vrSourceTarget, "position", delta.to[0], delta.to[1], delta.to[2])
+						}
+						 
+
 					break;
 				}
 			break;
