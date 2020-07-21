@@ -2156,9 +2156,9 @@ function animate() {
 				let {buttons, axes} = input.gamepad;
 				hand.trigger = buttons[0].value
 				hand.trigger_pressed = (buttons[0].pressed) ? hand.trigger_pressed+1 : 0;
-				hand.pad_dx = axes[0] - hand.pad_x;
-				hand.pad_dy = axes[1] - hand.pad_y;
-				//console.log(hand.pad_dy )
+				hand.pad_dx = (buttons[2].touched && hand.pad_touched) ? axes[0] - hand.pad_x : 0;
+				hand.pad_dy = (buttons[2].touched && hand.pad_touched) ? axes[1] - hand.pad_y : 0;
+				hand.pad_touched = buttons[2].touched;
 				hand.pad_x = axes[0]
 				hand.pad_y = axes[1]
 				hand.pad_pressed = (buttons[2].pressed) ? hand.pad_pressed+1 : 0;
