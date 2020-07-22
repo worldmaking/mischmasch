@@ -844,17 +844,7 @@ let vrdim = [4096, 4096];
 
 
 
-const menuModules = Object.assign({
-    "speaker":{
-      "_props":{"kind":"speaker","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-      "input":{"_props":{"kind":"inlet","index":0}}
-	},
-	"knob":{
-		"_props":{ "kind":"param", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-		"value":{"_props":{"kind":"large_knob", "range":[0,1], "value":0}},
-		"output":{"_props":{"kind":"outlet","index":0, "history": false}}
-	},
-}, JSON.parse(fs.readFileSync(path.join("max-msp","menu.json"), "utf-8")))
+const menuModules = JSON.parse(fs.readFileSync(path.join("max-msp","menu.json"), "utf-8"))
 
 
 
