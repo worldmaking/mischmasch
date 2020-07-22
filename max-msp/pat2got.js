@@ -37,6 +37,7 @@ fs.readdirSync(dirname).forEach((filename, i) => {
 		if (attrs.comment && attrs.comment.includes("hidden")) return;
 		switch(args.shift()) {
 			case "param": {
+				let isInt = (attrs.comment && attrs.comment.includes("integer"))
 				// TODO could pack more param config into attrs.comment field if needed
 				knobs.push({
 					x: patching_rect[0], y: patching_rect[1],	

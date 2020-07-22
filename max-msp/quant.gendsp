@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "dsp.gen",
-		"rect" : [ 528.0, 256.0, 972.0, 760.0 ],
+		"rect" : [ 527.0, 255.0, 972.0, 760.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -211,8 +211,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 293.0, 73.0, 280.0, 22.0 ],
-					"text" : "param denom 12 @min 1 @max 24 @comment int"
+					"patching_rect" : [ 293.0, 73.0, 304.0, 22.0 ],
+					"text" : "param denom 12 @min 1 @max 24 @comment integer"
 				}
 
 			}
@@ -223,8 +223,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 281.0, 16.0, 270.0, 22.0 ],
-					"text" : "param numer 5 @min 1 @max 24 @comment int"
+					"patching_rect" : [ 281.0, 16.0, 294.0, 22.0 ],
+					"text" : "param numer 5 @min 1 @max 24 @comment integer"
 				}
 
 			}
