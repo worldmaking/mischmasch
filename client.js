@@ -1716,6 +1716,9 @@ function makeSceneGraph(renderer, gl) {
 			let scale = UI_DEFAULT_SCALE;
 			let text_scale = Math.min(1/(label_text.length+1), 1/font.charheight);
 			let text_pos = [ 0, 0.4 ];
+			
+			let text_scale1 = Math.min(1/8, 1/font.charheight);
+			let text_pos1 = [ 0, -0.4 ];
 
 			switch(obj.kind) {
 				case "outlet":
@@ -1749,6 +1752,7 @@ function makeSceneGraph(renderer, gl) {
 					obj.i_value[0] = (value - range[0])/(range[1]-range[0]);
 					obj.cablingKind = "to"
 					this.addLabel(obj, label_text, text_pos, text_scale);
+					this.addLabel(obj, obj.value.toPrecision(5), text_pos1, text_scale1);
 				} break;
 				case "n_switch": {
 					obj.kind = "button";
