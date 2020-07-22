@@ -33,7 +33,7 @@ const rwsOptions = {
 	// make rws use the webSocket module implementation
 	WebSocket: ws, 
 	// ms to try reconnecting:
-	connectionTimeout: 30000,
+	connectionTimeout: 1000,
 	//debug:true, 
   }
 
@@ -2283,7 +2283,7 @@ function animate() {
 				date: Date.now(),
 				data: outgoingDeltas
 			});
-			socket.send(message);
+			sendToAppJS(message);
 			//console.log('outgoing message',message)
 			outgoingDeltas.length = 0;
 		}
@@ -2294,7 +2294,7 @@ function animate() {
 				date: Date.now(),
 				data: UI.hmd
 			});
-			socket.send(hmdMessage);
+			sendToAppJS(hmdMessage);
 		}
 
 
@@ -2305,7 +2305,7 @@ function animate() {
 				date: Date.now(),
 				data: {pos: UI.hands[1].pos}
 			});
-			socket.send(wandsMessage);
+			sendToAppJS(wandsMessage);
 		}
 
 	} else if (!USEWS) {
@@ -2381,10 +2381,10 @@ function serverConnect() {
 		};
 		mainScene.rebuild(localGraph)
 
-		socket.send(JSON.stringify({ cmd:"get_scene"})) 
+		sendToAppJS(JSON.stringify({ cmd:"get_scene"})) 
 
 		// let the localWebsocket server assign our connection with an id
-		socket.send(JSON.stringify({ cmd:"vrClientStatus"})) 
+		sendToAppJS(JSON.stringify({ cmd:"vrClientStatus"})) 
 
 	}
 	socket.onerror = (error) => {
@@ -2432,6 +2432,13 @@ function onServerMessage(msg, sock) {
         default:
            console.log("received JSON", msg, typeof msg);
     }
+}
+
+// we use this to prevent attempting a ws.send if the socket becomes closed
+let sendToAppJS = function(message){
+	if(socket.readyState == 1){
+		socket.send(message)
+	}
 }
 
 async function init() {

@@ -796,7 +796,7 @@ function messageFromLocalClient(message, ws){
     case "hands":
     case "rightWandPos":
       // this is from the client.js, pass this directly to the max patch:
-      sendToMaxClient(JSON.stringify(msg), localClients.vr)
+      sendToMaxClient(message, localClients.vr)
     break;
   }
 }
