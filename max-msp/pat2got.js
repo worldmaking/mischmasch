@@ -5,7 +5,17 @@ const fs = require("fs"),
 // folder to search for gendsps:
 let dirname = __dirname
 
-let modules = {}
+let modules = {
+	"speaker":{
+		"_props":{"kind":"speaker","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
+		"input":{"_props":{"kind":"inlet","index":0}}
+	},
+	"control":{
+		"_props":{ "kind":"param", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
+		"value":{"_props":{"kind":"large_knob", "range":[0,1], "value":0}},
+		"output":{"_props":{"kind":"outlet","index":0, "history": false}}
+	},
+}
 fs.readdirSync(dirname).forEach((filename, i) => {
 	if (path.extname(filename) != ".gendsp") return;
 	const name = path.basename(filename).split(".")[0]

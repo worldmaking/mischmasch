@@ -541,8 +541,8 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 500.0, 780.0, 69.0, 22.0 ],
-					"text" : "out 1 gated"
+					"patching_rect" : [ 500.0, 780.0, 55.0, 22.0 ],
+					"text" : "out 1 lpg"
 				}
 
 			}
@@ -792,8 +792,7 @@
 				}
 
 			}
- ],
-		"autosave" : 0
+ ]
 	}
 
 }
