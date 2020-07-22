@@ -69,7 +69,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 114.0, 80.0, 154.0, 33.0 ],
-					"presentation_linecount" : 2,
 					"text" : "overdrive (or attenuate) input before saturation"
 				}
 
@@ -105,7 +104,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 161.0, 14.0, 190.0, 22.0 ],
-					"text" : "param preamp 1 @min 1 @max 3"
+					"text" : "param preamp 1 @min 0 @max 3"
 				}
 
 			}
@@ -128,8 +127,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 278.5, 194.0, 154.0, 114.0 ],
-					"presentation_linecount" : 8,
+					"patching_rect" : [ 278.5, 194.0, 155.0, 114.0 ],
 					"text" : "The sharpness of the bend as it limits the input. Set this too low and the harmonics will kick in too early. Set it too high, and there will be too many harmonics (which will alias). "
 				}
 
@@ -141,8 +139,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 512.0, 118.0, 152.0, 60.0 ],
-					"presentation_linecount" : 4,
+					"patching_rect" : [ 512.0, 118.0, 154.0, 60.0 ],
 					"text" : "The maximum out gain when fully saturated. If this is too low, the limiter will kick in on 'safe' signals."
 				}
 

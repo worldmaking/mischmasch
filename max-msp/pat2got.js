@@ -6,10 +6,6 @@ const fs = require("fs"),
 let dirname = __dirname
 
 let modules = {
-	"speaker":{
-		"_props":{"kind":"speaker","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-		"input":{"_props":{"kind":"inlet","index":0}}
-	},
 	"control":{
 		"_props":{ "kind":"param", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
 		"value":{"_props":{"kind":"large_knob", "range":[0,1], "value":0}},
@@ -37,6 +33,8 @@ fs.readdirSync(dirname).forEach((filename, i) => {
 			o[v.substring(0, idx)] = v.substring(idx+1)
 			return o
 		}, {})
+		// skip hidden features:
+		if (attrs.comment && attrs.comment.includes("hidden")) return;
 		switch(args.shift()) {
 			case "param": {
 				// TODO could pack more param config into attrs.comment field if needed
@@ -62,6 +60,7 @@ fs.readdirSync(dirname).forEach((filename, i) => {
 				})
 			} break;
 			case "out": {
+
 				let idx = args.length > 0 ? (+args[0])-1 : (+attrs.index)-1 || 0
 				outlets.push({
 					x: patching_rect[0], y: patching_rect[1],	
