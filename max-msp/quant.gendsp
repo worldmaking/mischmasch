@@ -3,14 +3,14 @@
 		"fileversion" : 1,
 		"appversion" : 		{
 			"major" : 8,
-			"minor" : 1,
-			"revision" : 2,
+			"minor" : 0,
+			"revision" : 3,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "dsp.gen",
-		"rect" : [ 529.0, 257.0, 971.0, 759.0 ],
+		"rect" : [ 528.0, 256.0, 972.0, 760.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -175,7 +175,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 648.0, 82.5, 239.0, 315.0 ],
+					"patching_rect" : [ 648.0, 82.5, 241.0, 315.0 ],
 					"text" : "quantization scale depends on the ratio of numer/denom.\n\nRegular major/minor scale is 7/12\nClassical pentatonic modes are 5/12\nAugmented scale is 1/3 (4/12)\nWhole tone scale is 1/2 (6/12)\nChromatic is any ratio >= 1 (e.g. 12/12)\n\nGenerally, the quantizer will output `numer` distinct notes for each `denom` range of semitones, so smaller ratios will specify less dense scales. \n\nWorking with prime denominators can make some interesting spaces.\n\nTo locate pitch jumps at exact semitone thresholds on the input, quantize the input to semitones first (e.g. [round 1/12 @mode floor])\n\nGraham Wakefield 2020"
 				}
 
@@ -211,8 +211,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 293.0, 73.0, 199.0, 22.0 ],
-					"text" : "param denom 12 @min 1 @max 24"
+					"patching_rect" : [ 293.0, 73.0, 280.0, 22.0 ],
+					"text" : "param denom 12 @min 1 @max 24 @comment int"
 				}
 
 			}
@@ -223,8 +223,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 281.0, 16.0, 190.0, 22.0 ],
-					"text" : "param numer 5 @min 1 @max 24"
+					"patching_rect" : [ 281.0, 16.0, 270.0, 22.0 ],
+					"text" : "param numer 5 @min 1 @max 24 @comment int"
 				}
 
 			}
