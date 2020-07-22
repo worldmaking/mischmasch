@@ -3,14 +3,14 @@
 		"fileversion" : 1,
 		"appversion" : 		{
 			"major" : 8,
-			"minor" : 0,
-			"revision" : 3,
+			"minor" : 1,
+			"revision" : 5,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 83.0, 83.0, 1320.0, 980.0 ],
+		"rect" : [ 89.0, 85.0, 749.0, 883.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -37,7 +37,58 @@
 		"tags" : "",
 		"style" : "",
 		"subpatcher_template" : "",
+		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-97",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 933.0, 457.0, 69.0, 22.0 ],
+					"text" : "clearScene"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-95",
+					"maxclass" : "textbutton",
+					"numinlets" : 1,
+					"numoutlets" : 3,
+					"outlettype" : [ "", "", "int" ],
+					"parameter_enable" : 0,
+					"patching_rect" : [ 933.0, 400.0, 136.0, 55.0 ],
+					"text" : "force clear the scene"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"color" : [ 0.811764705882353, 0.372549019607843, 0.372549019607843, 1.0 ],
+					"id" : "obj-64",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 102.5, 739.0, 143.0, 22.0 ],
+					"text" : "receive from_node_script"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-69",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "" ],
+					"patching_rect" : [ 102.5, 775.0, 99.0, 22.0 ],
+					"text" : "routepass wands"
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-92",
 					"maxclass" : "comment",
@@ -68,8 +119,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 524.0, 1162.0, 50.0, 49.0 ],
-					"text" : "sizeinsamps 10"
+					"patching_rect" : [ 524.0, 1162.0, 50.0, 50.0 ],
+					"text" : "sizeinsamps 37"
 				}
 
 			}
@@ -81,129 +132,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 15.0, 1069.0, 411.0, 22.0 ],
-					"text" : "script send world squine_100__square 0.999891"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-26",
-					"maxclass" : "newobj",
-					"numinlets" : 2,
-					"numoutlets" : 1,
-					"outlettype" : [ "signal" ],
-					"patcher" : 					{
-						"fileversion" : 1,
-						"appversion" : 						{
-							"major" : 8,
-							"minor" : 0,
-							"revision" : 3,
-							"architecture" : "x64",
-							"modernui" : 1
-						}
-,
-						"classnamespace" : "dsp.gen",
-						"rect" : [ 0.0, 0.0, 600.0, 450.0 ],
-						"bglocked" : 0,
-						"openinpresentation" : 0,
-						"default_fontsize" : 12.0,
-						"default_fontface" : 0,
-						"default_fontname" : "Arial",
-						"gridonopen" : 1,
-						"gridsize" : [ 15.0, 15.0 ],
-						"gridsnaponopen" : 1,
-						"objectsnaponopen" : 1,
-						"statusbarvisible" : 2,
-						"toolbarvisible" : 1,
-						"lefttoolbarpinned" : 0,
-						"toptoolbarpinned" : 0,
-						"righttoolbarpinned" : 0,
-						"bottomtoolbarpinned" : 0,
-						"toolbars_unpinned_last_save" : 0,
-						"tallnewobj" : 0,
-						"boxanimatetime" : 200,
-						"enablehscroll" : 1,
-						"enablevscroll" : 1,
-						"devicewidth" : 0.0,
-						"description" : "",
-						"digest" : "",
-						"tags" : "",
-						"style" : "",
-						"subpatcher_template" : "",
-						"boxes" : [ 							{
-								"box" : 								{
-									"id" : "obj-1",
-									"maxclass" : "newobj",
-									"numinlets" : 0,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 50.0, 14.0, 28.0, 22.0 ],
-									"text" : "in 1"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-2",
-									"maxclass" : "newobj",
-									"numinlets" : 0,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 305.0, 14.0, 28.0, 22.0 ],
-									"text" : "in 2"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-3",
-									"maxclass" : "newobj",
-									"numinlets" : 2,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 176.0, 149.0, 29.5, 22.0 ],
-									"text" : "+"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-4",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 176.0, 418.0, 35.0, 22.0 ],
-									"text" : "out 1"
-								}
-
-							}
- ],
-						"lines" : [ 							{
-								"patchline" : 								{
-									"destination" : [ "obj-3", 0 ],
-									"source" : [ "obj-1", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-3", 1 ],
-									"source" : [ "obj-2", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-4", 0 ],
-									"source" : [ "obj-3", 0 ]
-								}
-
-							}
- ]
-					}
-,
-					"patching_rect" : [ 952.0, 463.0, 88.0, 22.0 ],
-					"text" : "gen~ controller"
+					"text" : "script send world squine_40__skew -0.921457"
 				}
 
 			}
@@ -286,7 +215,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 553.0, 281.0, 150.0, 47.0 ],
+					"patching_rect" : [ 553.0, 281.0, 150.0, 48.0 ],
 					"text" : "rate-limit the incoming hmd data to within the signal vector size"
 				}
 
@@ -460,7 +389,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 956.0, 573.0, 52.0, 22.0 ],
-					"text" : "gate 1 1"
+					"text" : "gate 1 0"
 				}
 
 			}
@@ -498,8 +427,8 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 8,
-							"minor" : 0,
-							"revision" : 3,
+							"minor" : 1,
+							"revision" : 5,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -532,6 +461,7 @@
 						"tags" : "",
 						"style" : "",
 						"subpatcher_template" : "",
+						"assistshowspatchername" : 0,
 						"boxes" : [ 							{
 								"box" : 								{
 									"id" : "obj-24",
@@ -747,38 +677,13 @@
 			}
 , 			{
 				"box" : 				{
-					"color" : [ 0.811764705882353, 0.372549019607843, 0.372549019607843, 1.0 ],
-					"id" : "obj-34",
-					"maxclass" : "newobj",
-					"numinlets" : 0,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 512.0, 660.0, 143.0, 22.0 ],
-					"text" : "receive from_node_script"
-				}
-
-			}
-, 			{
-				"box" : 				{
 					"id" : "obj-29",
 					"maxclass" : "newobj",
 					"numinlets" : 2,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 287.0, 706.0, 178.0, 22.0 ],
+					"patching_rect" : [ 287.0, 706.0, 176.0, 22.0 ],
 					"text" : "routepass fromLocalWebsocket"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-27",
-					"maxclass" : "newobj",
-					"numinlets" : 2,
-					"numoutlets" : 2,
-					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 512.0, 701.5, 126.0, 22.0 ],
-					"text" : "route toMsvr_world_js"
 				}
 
 			}
@@ -1029,12 +934,12 @@
 					"presentation_rect" : [ 472.0, 10.0, 68.0, 137.0 ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
-							"parameter_unitstyle" : 4,
-							"parameter_mmin" : -70.0,
 							"parameter_longname" : "live.gain~[1]",
 							"parameter_mmax" : 6.0,
+							"parameter_mmin" : -70.0,
 							"parameter_shortname" : "live.gain~",
-							"parameter_type" : 0
+							"parameter_type" : 0,
+							"parameter_unitstyle" : 4
 						}
 
 					}
@@ -1066,8 +971,9 @@
 					"maxclass" : "bpatcher",
 					"name" : "n4m.monitor.maxpat",
 					"numinlets" : 1,
-					"numoutlets" : 0,
+					"numoutlets" : 1,
 					"offset" : [ 0.0, 0.0 ],
+					"outlettype" : [ "bang" ],
 					"patching_rect" : [ 872.0, 644.5, 400.0, 220.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 57.0, 514.0, 400.0, 220.0 ],
@@ -1085,12 +991,12 @@
 					"patching_rect" : [ 694.0, 606.0, 197.0, 22.0 ],
 					"presentation" : 1,
 					"presentation_linecount" : 2,
-					"presentation_rect" : [ 188.0, 490.0, 190.0, 35.0 ],
+					"presentation_rect" : [ 188.0, 490.0, 190.0, 36.0 ],
 					"saved_object_attributes" : 					{
 						"autostart" : 0,
 						"defer" : 0,
-						"node" : "",
-						"npm" : "",
+						"node_bin_path" : "",
+						"npm_bin_path" : "",
 						"watch" : 1
 					}
 ,
@@ -1229,21 +1135,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-81", 0 ],
-					"source" : [ "obj-27", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-81", 0 ],
 					"source" : [ "obj-29", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-27", 0 ],
-					"source" : [ "obj-34", 0 ]
 				}
 
 			}
@@ -1315,6 +1207,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-69", 0 ],
+					"source" : [ "obj-64", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-11", 0 ],
 					"source" : [ "obj-65", 0 ]
 				}
@@ -1346,6 +1245,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-1", 0 ],
 					"source" : [ "obj-68", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-81", 0 ],
+					"source" : [ "obj-69", 0 ]
 				}
 
 			}
@@ -1481,18 +1387,33 @@
 				}
 
 			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-97", 0 ],
+					"source" : [ "obj-95", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-2", 0 ],
+					"source" : [ "obj-97", 0 ]
+				}
+
+			}
  ],
 		"parameters" : 		{
 			"obj-68" : [ "live.gain~[1]", "live.gain~", 0 ],
 			"parameterbanks" : 			{
 
 			}
-
+,
+			"inherited_shortname" : 1
 		}
 ,
 		"dependency_cache" : [ 			{
 				"name" : "max_client.js",
-				"bootpath" : "~/Documents/msvr/max-msp",
+				"bootpath" : "D:/github/mischmasch/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1
@@ -1517,21 +1438,21 @@
 			}
 , 			{
 				"name" : "world.gendsp",
-				"bootpath" : "~/Documents/msvr/max-msp",
+				"bootpath" : "D:/github/mischmasch/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "genScripting.js",
-				"bootpath" : "~/Documents/msvr/max-msp",
+				"bootpath" : "D:/github/mischmasch/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "deferlowScript.js",
-				"bootpath" : "~/Documents/msvr/max-msp",
+				"bootpath" : "D:/github/mischmasch/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1

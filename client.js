@@ -2294,12 +2294,25 @@ function animate() {
 			outgoingDeltas.length = 0;
 		}
 		// HMD pos
-		let hmdMessage = JSON.stringify({
-			cmd: "HMD",
-			date: Date.now(),
-			data: UI.hmd
-		});
-		socket.send(hmdMessage);
+		if(UI.hmd){
+			let hmdMessage = JSON.stringify({
+				cmd: "HMD",
+				date: Date.now(),
+				data: UI.hmd
+			});
+			socket.send(hmdMessage);
+		}
+
+
+		// HMD pos
+		if(UI.hands[1]){
+			let wandsMessage = JSON.stringify({
+				cmd: "rightWandPos",
+				date: Date.now(),
+				data: {pos: UI.hands[1].pos}
+			});
+			socket.send(wandsMessage);
+		}
 
 	} else if (!USEWS) {
 		// otherwise, just move them to our incoming list, 

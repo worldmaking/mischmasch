@@ -52,7 +52,7 @@ connection  = new ReconnectingWebSocket('ws://localhost:8080/', [], options);
 connection.addEventListener('open', () => {
 	connectionStatus = 1
 	max.outlet('toAudioviz', 1)
-	max.outlet('toMsvr_world_js','loadbang')
+	max.outlet('fromLocalWebsocket','loadbang')
 	// clear the filename umenu in the controller.maxpat
 	max.outlet('clearPlaybackList', 'clear')
 	connection.send(JSON.stringify({ cmd:"maxClientStatus"}))
@@ -94,9 +94,11 @@ connection.addEventListener('message', (data) => {
 		case "HMD":
 			max.outlet('hmd', 'position', data.data.pos[0], data.data.pos[1], data.data.pos[2], 'quat', data.data.orient[0], data.data.orient[1], data.data.orient[2], data.data.orient[3])
 		break 
-		case "hands":
-			max.outlet('hands', 'position', data.data.pos[0], data.data.pos[1], data.data.pos[2], 'quat', data.data.orient[0], data.data.orient[1], data.data.orient[2], data.data.orient[3])
-		break 
+
+		case "rightWandPos":
+			max.outlet('wands', 'rightWand', JSON.stringify(data.data))
+
+		break
 
 		default: {
 		//	max.post('unhandled message received', data) // probably don't want to print everything else since the server and other clients talk to each other a LOT
@@ -125,6 +127,14 @@ max.addHandler('audiovizLookup', (audiovizLookup)=>{
 			data: [audiovizLookup]
 		}));
 	}
+})
+
+max.addHandler('clearScene', (audiovizLookup)=>{
+	connection.send(JSON.stringify({
+		cmd: "hostClearScene",
+		date: Date.now(),
+		data: null
+	}));
 })
 
 
