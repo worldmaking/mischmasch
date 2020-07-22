@@ -85,14 +85,7 @@ function resetCounters(){
 	audiovizLookup = {}
 	audiovizIndex = 0
 }
-// buffer channels for visual feedback
-// var bufferChannelCounter = 0;
-// var bufferChannelPaths = [];
-// use this to store the names of buffers created for visual feedback
-// var vizBuffers = new Array();
 
-// gen_patcher = this.patcher.getnamed("world").subpatcher();
-// bufferStorage = this.patcher.getnamed("bufferStorage").subpatcher();
 
 function getVarnames(target){
 	gen_patcher.apply(function(b) { 
