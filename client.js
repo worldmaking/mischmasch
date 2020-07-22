@@ -2195,6 +2195,7 @@ function animate() {
 
 				let mat = input.targetRaySpace;
 				if (mat) {
+					if (!hand.mat) hand.mat = mat4.create()
 					mat4.copy(hand.mat, mat)
 					mat4.getTranslation(hand.pos, mat);
 					mat4.getRotation(hand.orient, mat);
