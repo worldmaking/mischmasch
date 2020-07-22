@@ -338,7 +338,7 @@ const UI = {
 			dir: vec3.fromValues(0, 0, -1),
 			// UI:
 			trigger: 0, trigger_pressed: 0,
-			pax_x: 0, pad_y: 0, pax_dx: 0, pad_dy: 0, pad_pressed: 0, 
+			pad_x: 0, pad_y: 0, pad_dx: 0, pad_dy: 0, pad_pressed: 0, 
 			grip_pressed:0, menu_pressed: 0,
 			// state machine:
 			state: "default",
@@ -348,11 +348,11 @@ const UI = {
 			name: "hand_right",
 			pos: [+0.5, -1, 0.5],
 			orient: [0, 0, 0, 1],
-			mat: mat4.create(),
+			mat: null,//mat4.create(),
 			dir: vec3.fromValues(0, 0, -1),
 			// UI:
 			trigger: 0, trigger_pressed: 0,
-			pax_x: 0, pad_y: 0, pad_pressed: 0, 
+			pad_x: 0, pad_y: 0, pad_dx: 0, pad_dy: 0, pad_pressed: 0, 
 			grip_pressed:0, menu_pressed: 0,
 			// state machine:
 			state: "default",
@@ -478,7 +478,12 @@ const UI = {
 	updateHandStateMachine(hand, mainScene) {
 		if (!hand.mat) return; // i.e. not tracking
 
+
 		let hits = rayTestModules(mainScene.module_instances, hand.pos, hand.dir)
+
+
+		//console.log(hand.dir, hand.pos, hits.length && hits[0][0].name)
+
 		hand.target = hits[0]
 		hand.line.i_len[0] = hand.target ? hand.target[1] : 1
 		
@@ -618,7 +623,7 @@ const UI = {
 							from: oldval, 
 							to: newval 
 						});
-						
+
 						// immediate update for rendering:
 						object.i_value[0] = i_value;
 						object.value = newval;
@@ -737,8 +742,10 @@ const UI = {
 								hand.state = "dragging";
 								// cache initial hand & object transforms here
 								hand.stateData.object = object
+
+								let invHandMat = mat4.invert(mat4.create(), hand.mat)
 								// get pose of object relative to hand:
-								hand.stateData.objectRelativeMat = mat4.multiply(mat4.create(), mat4.invert(mat4.create(), hand.mat), object.mat)
+								hand.stateData.objectRelativeMat = mat4.multiply(mat4.create(), invHandMat, object.mat)
 							}
 						} break;
 					}
@@ -1698,8 +1705,14 @@ function makeSceneGraph(renderer, gl) {
 			this.paths[path] = obj;
 
 			// get basic pose:
-			obj.pos = props.pos || [0, 0, 0];
-			obj.quat = props.orient || [0, 0, 0, 1];
+			obj.pos = props.pos;
+			if (!obj.pos || obj.pos[0]===null) {
+				obj.pos = [0, 0, 0];
+			}  
+			obj.quat = props.orient;
+			if (!obj.quat || obj.quat[0]===null || quat.length(obj.quat)==0) {
+				obj.quat = [0, 0, 0, 1];
+			}
 			obj.scale = 1;
 			obj.dim = [1, 1, UI_DEPTH]
 			obj.nodes = []
@@ -1727,26 +1740,21 @@ function makeSceneGraph(renderer, gl) {
 					}
 					this.addLabel(obj, label_text, text_pos, text_scale);
 				} break;
-				case "small_knob": {
-					obj.kind = "knob";
-					obj.i_shape[0] = SHAPE_KNOB;
-					vec4.copy(obj.i_color, colorFromString(name));
-					obj.dim = [1/2, 1/2, UI_DEPTH];
-					let range = props.range || [0,1];
-					let value = props.value || 0.;
-					obj.value = value;
-					obj.i_value[0] = (value - range[0])/(range[1]-range[0]);
-					obj.cablingKind = "to"
-					this.addLabel(obj, label_text, text_pos, text_scale);
-				} break;
+				case "small_knob": 
 				case "knob": 
 				case "large_knob":  {
 					obj.kind = "knob";
 					obj.i_shape[0] = SHAPE_KNOB;
 					vec4.copy(obj.i_color, colorFromString(name));
 					obj.dim = [2/3, 2/3, UI_DEPTH];
-					let range = props.range || [0,1];
+					let range = props.range; 
+					if (!range || range[0]===null) {
+						range = [0, 1];
+					}
+					range[0] = +range[0]; // coerce to number, just in case
+					range[1] = +range[1]; // coerce to number, just in case
 					let value = props.value || 0.;
+					value = +value;
 					obj.value = value;
 					obj.i_value[0] = (value - range[0])/(range[1]-range[0]);
 					obj.cablingKind = "to"
@@ -2044,7 +2052,9 @@ function rayTestModules(instances, ray_origin, ray_dir) {
 		if (!obj.i_bb0 || !obj.i_bb1) continue;  // no bounding box, no test
 		// check for hits:
 		let [hit, distance] = intersectCube(obj.i_pos, obj.i_quat, obj.i_bb0, obj.i_bb1, ray_origin, ray_dir);
-		if (hit) hits.push([obj, distance]);
+		if (hit) {
+			hits.push([obj, distance]);
+		}
 	}
 	// if there are hits, sort them by distance
 	// then highlight the nearest
@@ -2137,7 +2147,7 @@ function animate() {
 				//console.log('incomingDelta', delta)
 				got.applyDeltasToGraph(localGraph, delta);
 
-				fs.writeFileSync("basicGraph.json", JSON.stringify(localGraph, null, "\t"), "utf8");
+				fs.writeFileSync("_debugCurrentGraph.json", JSON.stringify(localGraph, null, "\t"), "utf8");
 			} catch (e) {
 				console.warn(e);
 			}

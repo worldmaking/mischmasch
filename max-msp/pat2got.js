@@ -10,6 +10,7 @@ fs.readdirSync(dirname).forEach((filename, i) => {
 	if (path.extname(filename) != ".gendsp") return;
 	const name = path.basename(filename).split(".")[0]
 	if (name.charAt(0) == "_") return;
+	if (["world"].indexOf(name) >= 0) return;
 	const module = {
 		_props:{kind:name,category:"abstraction",pos:[0,0,0],orient:[0,0,0,1] },
 	}
@@ -35,15 +36,15 @@ fs.readdirSync(dirname).forEach((filename, i) => {
 					module: { _props:{
 						kind:"knob", 
 						range:[
-							attrs.min != undefined ? attrs.min : 0, 
-							attrs.max != undefined ? attrs.max : 1
+							attrs.min != undefined ? (+attrs.min) : 0, 
+							attrs.max != undefined ? (+attrs.max) : 1
 						],
 						value: args.length > 1 ? args[1] : attrs.default || 0,
 					}}
 				})
 			} break;
 			case "in": {
-				let idx = args.length > 0 ? args[0] : attrs.index || 0
+				let idx = args.length > 0 ? (+args[0])-1 : (+attrs.index)-1 || 0
 				inlets.push({
 					x: patching_rect[0], y: patching_rect[1],	
 					name: args.length > 1 ? args[1] : attrs.comment || "in"+idx,
@@ -51,11 +52,11 @@ fs.readdirSync(dirname).forEach((filename, i) => {
 				})
 			} break;
 			case "out": {
-				let idx = args.length > 0 ? args[0] : attrs.index || 0
+				let idx = args.length > 0 ? (+args[0])-1 : (+attrs.index)-1 || 0
 				outlets.push({
 					x: patching_rect[0], y: patching_rect[1],	
 					name: args.length > 1 ? args[1] : attrs.comment || "out"+idx,
-					module: { _props:{ kind:"outlet", index: idx, }}
+					module: { _props:{ kind:"outlet", index: idx, history:false }}
 				})
 			} break;
 			default: {
@@ -117,11 +118,11 @@ ops.forEach(op=>{
 		let module = { _props: { kind: name, category:"operator", pos:[0,0,0], orient:[0,0,0,1] }, }
 		// inlets:
 		in_names.forEach((k,i)=>{
-			module[k] = { _props: { kind:"inlet", index:i+1 }}
+			module[k] = { _props: { kind:"inlet", index:i }}
 		});
 		// outlets:
 		out_names.forEach((k,i)=>{
-			module[k] = { _props: { kind:"outlet", index:i+1, history:false }}
+			module[k] = { _props: { kind:"outlet", index:i, history:false }}
 		});
 		modules[name] = module
 	}
@@ -189,7 +190,7 @@ ops.forEach(op=>{
 
 console.log(Object.keys(modules).length, "modules")
 
-fs.writeFileSync(path.join(dirname, "..", "menu.json"), JSON.stringify(modules, null, "\t"), "utf-8");
+fs.writeFileSync("menu.json", JSON.stringify(modules, null, "\t"), "utf-8");
 
 // now parse maxpats to turn them into scenes:
 fs.readdirSync(dirname).forEach((filename, i) => {
