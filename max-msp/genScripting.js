@@ -548,7 +548,7 @@ var handleDelta = function(delta) {
 						param = param.replace(".", "__")
 						var cleaveParam = param.split('.')[0]
 						this.patcher.message("script", "send", "world", cleaveParam, delta.to)
-
+						outlet(2, "script", "send", "world", cleaveParam, delta.to)
 					break;
 					
 					case "history":	
