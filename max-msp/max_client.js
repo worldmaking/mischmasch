@@ -52,7 +52,7 @@ connection  = new ReconnectingWebSocket('ws://localhost:8080/', [], options);
 connection.addEventListener('open', () => {
 	connectionStatus = 1
 	max.outlet('toAudioviz', 1)
-	max.outlet('fromLocalWebsocket','loadbang')
+	max.outlet('loadbang')
 	// clear the filename umenu in the controller.maxpat
 	max.outlet('clearPlaybackList', 'clear')
 	connection.send(JSON.stringify({ cmd:"maxClientStatus"}))

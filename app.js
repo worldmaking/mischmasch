@@ -700,7 +700,7 @@ function startLocalWebsocket(){
 
 function messageFromLocalClient(message, ws){
   localWebsocket = ws
-  let msg = JSON.parse(message)
+  msg = JSON.parse(message)
   switch(msg.cmd){
     case 'vrClientStatus':
 
@@ -733,7 +733,8 @@ function messageFromLocalClient(message, ws){
     break
 
     case 'deltas':
-      let deltaMsg = msg
+      console.log(message)
+      let deltaMsg = JSON.parse(message)
       try {
 
         got.applyDeltasToGraph(localGraph, deltaMsg.data);

@@ -5,8 +5,6 @@ outlets = 3
 // the reference to the gen~ world object we'll be scripting to. 
 var gen_patcher; 
 
-var varnameCount = 0
-
 // store inlet&outlet indexes per node
 var inletsTable = new Array();
 var outletsTable = new Array();
@@ -16,23 +14,21 @@ var varnamesTable = new Array();
 
 var object = {};
 var pathName;
-var counter = 1;
-var feedbackConnections = 0
+
 var checkspeaker = new Array();
 var Ycounter;
 var newModule;
 var speakerTable = {}
 var genOutCounter = 1
 
-var wands = {}
+var wandsLookup = {}
+// access the buffer in the gen~ world. this can/should be independent of the scripting dict
 var audiovizBuffer = new Buffer("audioviz");
-
 var getAudioVizErrorDirty = 0
-
 // we use these vars for the visualization of gen audio in the local vr client
 var audiovizLookup = new Object()
 var audiovizIndex = 0
-//
+
 var nodes = {}
 
 // this is where the parameter min/max & init-value get stored
@@ -44,9 +40,13 @@ var graphNodes = {}
 
 // lets store all of the scripting related objects/arrays in one dict. otherwise its hard to keep track of. 
 
+var scripting = {
+	counters: {
+		newNodeCounter: 1,
+		feedbackConnections: 0
 
-
-
+	}
+}
 
 function loadbang(){
 	
@@ -63,7 +63,7 @@ function loadbang(){
 	});
 	//! clear the gen~ world patcher prior to receiving deltas
 	gen_patcher.apply(function(b) { 
-		if(b.varname !== "reserved_audioviz" && b.varname !== "reserved_audioviz_1" && b.varname !== "PLO" && b.varname !== "rightWand_pos_x" && b.varname !== "rightWand_pos_y" && b.varname !== "rightWand_pos_z"){
+		if(b.varname !== "reserved_audioviz" && b.varname !== "reserved_audioviz_1" && b.varname !== "PLO" && b.varname !== "rightWand_pos_x" && b.varname !== "rightWand_pos_y" && b.varname !== "rightWand_pos_z" && b.varname !== "c1Px" && b.varname !== "c1Py" && b.varname !== "c1Pz" ){
 
 		gen_patcher.remove(b); 	
 		}	
@@ -75,8 +75,8 @@ function loadbang(){
 }
 
 function resetCounters(){
-	counter = 1;
-	feedbackConnections = 0
+	scripting.counters.newNodeCounter = 1;
+	scripting.counters.feedbackConnections = 0
 	genOutCounter = 1
 	nodes = {}
 	audiovizLookup = {}
@@ -101,9 +101,7 @@ function getVarnames(target){
 }
 var handleDelta = function(delta) {
 	var index = JSON.stringify(delta.index)
-				if (counter > 20){
-				counter = 1
-				}
+
 			
 	// iterate through the array of deltas, passing one by one through handleDelta
 	if (Array.isArray(delta)) {
@@ -112,7 +110,7 @@ var handleDelta = function(delta) {
 		}
 	} else {
 
-		Ycounter = counter * 5 + 10
+		Ycounter = scripting.counters.newNodeCounter * 5 + 10
 		if (Ycounter > 500){
 			Ycounter = 50
 		}
@@ -121,6 +119,9 @@ var handleDelta = function(delta) {
 
 			// create an object!
 			case "newnode": 
+				if (scripting.counters.newNodeCounter > 20){
+					scripting.counters.newNodeCounter = 1
+					}
 				if(nodes[delta.path]){
 					// don't add a duplicate
 					// if this happens, it means something is wrong with the graph, maybe a delnode wasn't triggered or received, or duplicate deltas received
@@ -150,7 +151,7 @@ var handleDelta = function(delta) {
 					var posY = 10
 					if (delta.pos) {
 
-						counter++
+						scripting.counters.newNodeCounter++
 						posX = (delta.pos[0] + 3)
 						posY = (delta.pos[1] + 3) 
 						pathName = delta.path.split('.')[0] 
@@ -162,9 +163,16 @@ var handleDelta = function(delta) {
 
 								
 
+								if(kind === "wand"){
+									// add in the 'speaker.gendsp'
+									var newWand = gen_patcher.newdefault([25, posY * 150, 'wand'])
+									newWand.varname = pathName;
 
+									gen_patcher.message("script", "connect", "c1Px", 0, newWand.varname, 0);
+									gen_patcher.message("script", "connect", "c1Py", 0, newWand.varname, 0);
+									gen_patcher.message("script", "connect", "c1Pz", 0, newWand.varname, 0);
 
-								if(kind === "speaker"){
+								} else if(kind === "speaker"){
 									var speakerNumber = pathName.split('_')[1];
 									// make gen 'out'										
 									var newOut = gen_patcher.newdefault([10, posY * 150, 'out', genOutCounter])
@@ -359,7 +367,7 @@ var handleDelta = function(delta) {
 										
 										case 'range':
 										
-										outlet(4, delta.path.replace('.','__'), delta.value, delta.range)
+										// outlet(4, delta.path.replace('.','__'), delta.value, delta.range)
 										break;
 										
 										case 'value':
@@ -398,7 +406,7 @@ var handleDelta = function(delta) {
 						
 						var thisVarname = 'source_' + delta.path
 						genOutCounter--
-						outlet(4, 'thispatcher', 'script', 'delete', thisVarname)
+						// outlet(4, 'thispatcher', 'script', 'delete', thisVarname)
 						// this.patcher.remove(thisVarname)
 						this.patcher.message("script", 'delete', thisVarname)
 
@@ -466,9 +474,9 @@ var handleDelta = function(delta) {
 					var outletPath = delta.paths[0]
 					// detect a self-patch connection and insert a history object in between!
 					if (delta.paths[0].split('.')[0] === delta.paths[1].split('.')[0]){					
-						feedbackConnections++
+						scripting.counters.feedbackConnections++
 						var history = gen_patcher.newdefault([150,10, "history"])
-						history.varname = "feedback_" + feedbackConnections
+						history.varname = "feedback_" + scripting.counters.feedbackConnections
 
 						if(attenuvertor !== null){
 
@@ -485,9 +493,9 @@ var handleDelta = function(delta) {
 						}
 					} else if (nodes[outletPath].history === 1 || nodes[outletPath].history === true) {
 
-						feedbackConnections++
+						scripting.counters.feedbackConnections++
 						var history = gen_patcher.newdefault([150,10, "history"])
-						history.varname = "feedback_" + feedbackConnections
+						history.varname = "feedback_" + scripting.counters.feedbackConnections
 
 						if(attenuvertor !== null){
 
@@ -597,14 +605,12 @@ function wands(wand, data){
 }
 
 function fromLocalWebsocket(msg){
-	
 	var ot = JSON.parse(msg)
 	cmd = ot.cmd
 
 
 	switch(cmd){
 		case "deltas": {
-			counter++;
 	
 				//var delta = new Dict("delta");
 				//delta.parse(msg);

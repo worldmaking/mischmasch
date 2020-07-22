@@ -2289,7 +2289,7 @@ function animate() {
 				date: Date.now(),
 				data: outgoingDeltas
 			});
-			sendToAppJS(message);
+			socket.send(message);
 			//console.log('outgoing message',message)
 			outgoingDeltas.length = 0;
 		}
@@ -2442,9 +2442,9 @@ function onServerMessage(msg, sock) {
 }
 
 // we use this to prevent attempting a ws.send if the socket becomes closed
-let sendToAppJS = function(message){
+function sendToAppJS(outgoingMessage){
 	if(socket.readyState == 1){
-		socket.send(message)
+		socket.send(outgoingMessage)
 	}
 }
 
