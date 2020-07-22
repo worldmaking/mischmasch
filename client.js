@@ -508,6 +508,7 @@ const UI = {
 						// send delta to spawn it:
 						let deltas = got.nodesToDeltas([module.node], [], path)
 						outgoingDeltas.push(deltas)
+						console.log("creating new node at", path, JSON.stringify(deltas))
 						// exit menu:
 						hand.state = "default";
 					}
@@ -1981,6 +1982,8 @@ function makeSceneGraph(renderer, gl) {
 			for (let i=0; i<this.line_instances.count; i++) {
 				let obj = this.line_instances.instances[i];
 				let {from, to} = obj;
+				assert(from, `line ${obj.name} from is missing`)
+				assert(to, `line ${obj.name} to is missing`)
 				quat.copy(obj.i_quat0, from.i_quat);
 				quat.copy(obj.i_quat1, to.i_quat);
 				vec3.copy(obj.i_pos0, from.i_pos);
