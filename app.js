@@ -488,7 +488,7 @@ function pal(ip, port){
     // on successful connection to deltaWebsocket Host:
     deltaWebsocket.addEventListener('open', () => {
       console.log('connected to deltaWebsocket host')
-      console.log('\n\nto send controls to the mischmasch host, run the "hostcontrol.js" script in a separate terminal\n\n')
+      // console.log('\n\nto send controls to the mischmasch host, run the "hostcontrol.js" script in a separate terminal\n\n')
       // no point sending a blank graph!
       if(equal(localGraph, {nodes: {}, arcs: []}) === false){
         
