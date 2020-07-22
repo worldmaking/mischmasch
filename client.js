@@ -2280,6 +2280,14 @@ function animate() {
 		});
 		socket.send(hmdMessage);
 
+		// handData
+		let handMessage = JSON.stringify({
+			cmd: "hands",
+			date: Date.now(),
+			data: UI.hand
+		});
+		socket.send(handMessage);
+
 	} else if (!USEWS) {
 		// otherwise, just move them to our incoming list, 
 		// so we can work without a server:
@@ -2360,7 +2368,7 @@ function serverConnect() {
 
 	}
 	socket.onerror = (error) => {
-	  console.error(`ws error: ${error}`)
+	  console.error(`ws error: ${JSON.stringify(error)}`)
 	  socket = null;
 	  localGraph = { nodes: {}, arcs: [] }
 	}
