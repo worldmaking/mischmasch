@@ -508,7 +508,7 @@ function pal(ip, port){
 
           case 'deltas':
             // synchronize our local copy:
-            console.log('deltas from host:', msg.data)
+           // console.log('deltas from host:', msg.data)
             try {
               got.applyDeltasToGraph(localGraph, msg.data);
 
