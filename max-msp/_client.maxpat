@@ -40,6 +40,31 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-97",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 933.0, 457.0, 69.0, 22.0 ],
+					"text" : "clearScene"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-95",
+					"maxclass" : "textbutton",
+					"numinlets" : 1,
+					"numoutlets" : 3,
+					"outlettype" : [ "", "", "int" ],
+					"parameter_enable" : 0,
+					"patching_rect" : [ 933.0, 400.0, 136.0, 55.0 ],
+					"text" : "force clear the scene"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"color" : [ 0.811764705882353, 0.372549019607843, 0.372549019607843, 1.0 ],
 					"id" : "obj-64",
 					"maxclass" : "newobj",
@@ -95,7 +120,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 524.0, 1162.0, 50.0, 50.0 ],
-					"text" : "sizeinsamps 18"
+					"text" : "sizeinsamps 37"
 				}
 
 			}
@@ -107,7 +132,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 15.0, 1069.0, 411.0, 22.0 ],
-					"text" : "script send world pulse_70__pitch 0.55586"
+					"text" : "script send world squine_40__skew -0.921457"
 				}
 
 			}
@@ -979,20 +1004,6 @@
 				}
 
 			}
-, 			{
-				"box" : 				{
-					"id" : "obj-84",
-					"linecount" : 5,
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 5,
-					"outlettype" : [ "signal", "signal", "signal", "signal", "" ],
-					"patching_rect" : [ 50.0, 200.0, 100.0, 77.0 ],
-					"text" : "vr.source~ 0 @position 0.672058 1.028428 -0.30244",
-					"varname" : "source_speaker_00"
-				}
-
-			}
  ],
 		"lines" : [ 			{
 				"patchline" : 				{
@@ -1320,27 +1331,6 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-84", 0 ],
-					"source" : [ "obj-83", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 1 ],
-					"source" : [ "obj-84", 1 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 0 ],
-					"source" : [ "obj-84", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-81", 0 ],
 					"midpoints" : [ 570.5, 969.0, 296.5, 969.0 ],
 					"source" : [ "obj-86", 0 ]
@@ -1394,6 +1384,20 @@
 				"patchline" : 				{
 					"destination" : [ "obj-65", 1 ],
 					"source" : [ "obj-90", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-97", 0 ],
+					"source" : [ "obj-95", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-2", 0 ],
+					"source" : [ "obj-97", 0 ]
 				}
 
 			}
@@ -1452,10 +1456,6 @@
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1
-			}
-, 			{
-				"name" : "vr~.mxe64",
-				"type" : "mx64"
 			}
 , 			{
 				"name" : "vr~.mxe64",

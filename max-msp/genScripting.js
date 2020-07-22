@@ -24,7 +24,7 @@ var newModule;
 var speakerTable = {}
 var genOutCounter = 1
 
-let wands = {}
+var wands = {}
 var audiovizBuffer = new Buffer("audioviz");
 
 var getAudioVizErrorDirty = 0
