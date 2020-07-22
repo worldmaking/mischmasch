@@ -332,7 +332,7 @@ const UI = {
 	hands: [
 		{
 			name: "hand_left",
-			pos: [-0.5, -1, 0.5],
+			pos: [-0.5, -1, 0.5], dpos: [0,0,0],
 			orient: [0, 0, 0, 1],
 			mat: mat4.create(),
 			dir: vec3.fromValues(0, 0, -1),
@@ -346,7 +346,7 @@ const UI = {
 		},
 		{
 			name: "hand_right",
-			pos: [+0.5, -1, 0.5],
+			pos: [+0.5, -1, 0.5], dpos: [0,0,0],
 			orient: [0, 0, 0, 1],
 			mat: null,//mat4.create(),
 			dir: vec3.fromValues(0, 0, -1),
@@ -2187,7 +2187,12 @@ function animate() {
 				if (mat) {
 					if (!hand.mat) hand.mat = mat4.create()
 					mat4.copy(hand.mat, mat)
-					mat4.getTranslation(hand.pos, mat);
+					let p = vec3.create()
+					mat4.getTranslation(p, mat);
+					vec3.sub(hand.dpos, p, hand.pos)
+					vec3.scale(hand.dpos, hand.dpos, 1/dt)
+					//console.log(hand.dpos)
+					vec3.copy(hand.pos, p)
 					mat4.getRotation(hand.orient, mat);
 					vec3.negate(hand.dir, mat.slice(8, 11))
 				} 
