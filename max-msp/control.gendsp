@@ -3,8 +3,8 @@
 		"fileversion" : 1,
 		"appversion" : 		{
 			"major" : 8,
-			"minor" : 0,
-			"revision" : 5,
+			"minor" : 1,
+			"revision" : 2,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
@@ -44,8 +44,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 176.0, 137.0, 82.0, 22.0 ],
-					"text" : "param knob 1"
+					"patching_rect" : [ 176.0, 137.0, 185.0, 22.0 ],
+					"text" : "param control 0 @min 0 @max 1"
 				}
 
 			}
@@ -55,8 +55,8 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 176.0, 188.0, 35.0, 22.0 ],
-					"text" : "out 1"
+					"patching_rect" : [ 176.0, 188.0, 67.0, 22.0 ],
+					"text" : "out 1 value"
 				}
 
 			}
@@ -68,7 +68,8 @@
 				}
 
 			}
- ]
+ ],
+		"autosave" : 0
 	}
 
 }

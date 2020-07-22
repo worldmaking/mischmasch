@@ -10,6 +10,7 @@ fs.readdirSync(dirname).forEach((filename, i) => {
 	if (path.extname(filename) != ".gendsp") return;
 	const name = path.basename(filename).split(".")[0]
 	if (name.charAt(0) == "_") return;
+	if (["world"].indexOf(name) >= 0) return;
 	const module = {
 		_props:{kind:name,category:"abstraction",pos:[0,0,0],orient:[0,0,0,1] },
 	}

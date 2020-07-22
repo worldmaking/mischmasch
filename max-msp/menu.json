@@ -1,7 +1,7 @@
 {
-	"comparator": {
+	"control": {
 		"_props": {
-			"kind": "comparator",
+			"kind": "control",
 			"category": "abstraction",
 			"pos": [
 				0,
@@ -15,41 +15,17 @@
 				1
 			]
 		},
-		"": {
-			"_props": {
-				"kind": "outlet",
-				"index": 1,
-				"history": false
-			}
-		}
-	},
-	"constant": {
-		"_props": {
-			"kind": "constant",
-			"category": "abstraction",
-			"pos": [
-				0,
-				0,
-				0
-			],
-			"orient": [
-				0,
-				0,
-				0,
-				1
-			]
-		},
-		"knob": {
+		"control": {
 			"_props": {
 				"kind": "knob",
 				"range": [
 					0,
 					1
 				],
-				"value": "1"
+				"value": "0"
 			}
 		},
-		"out0": {
+		"value": {
 			"_props": {
 				"kind": "outlet",
 				"index": 0,
@@ -419,9 +395,9 @@
 			}
 		}
 	},
-	"knob": {
+	"minmeanmax": {
 		"_props": {
-			"kind": "knob",
+			"kind": "minmeanmax",
 			"category": "abstraction",
 			"pos": [
 				0,
@@ -435,20 +411,36 @@
 				1
 			]
 		},
-		"voltage": {
+		"A": {
 			"_props": {
-				"kind": "knob",
-				"range": [
-					0,
-					1
-				],
-				"value": 0
+				"kind": "inlet",
+				"index": 0
 			}
 		},
-		"out0": {
+		"B": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"min": {
 			"_props": {
 				"kind": "outlet",
 				"index": 0,
+				"history": false
+			}
+		},
+		"mean": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		},
+		"max": {
+			"_props": {
+				"kind": "outlet",
+				"index": 2,
 				"history": false
 			}
 		}
@@ -1154,23 +1146,6 @@
 			}
 		}
 	},
-	"tester": {
-		"_props": {
-			"kind": "tester",
-			"category": "abstraction",
-			"pos": [
-				0,
-				0,
-				0
-			],
-			"orient": [
-				0,
-				0,
-				0,
-				1
-			]
-		}
-	},
 	"trig": {
 		"_props": {
 			"kind": "trig",
@@ -1235,23 +1210,6 @@
 				"index": 0,
 				"history": false
 			}
-		}
-	},
-	"world": {
-		"_props": {
-			"kind": "world",
-			"category": "abstraction",
-			"pos": [
-				0,
-				0,
-				0
-			],
-			"orient": [
-				0,
-				0,
-				0,
-				1
-			]
 		}
 	},
 	"cycle": {
