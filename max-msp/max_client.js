@@ -94,6 +94,9 @@ connection.addEventListener('message', (data) => {
 		case "HMD":
 			max.outlet('hmd', 'position', data.data.pos[0], data.data.pos[1], data.data.pos[2], 'quat', data.data.orient[0], data.data.orient[1], data.data.orient[2], data.data.orient[3])
 		break 
+		case "hands":
+			max.outlet('hands', 'position', data.data.pos[0], data.data.pos[1], data.data.pos[2], 'quat', data.data.orient[0], data.data.orient[1], data.data.orient[2], data.data.orient[3])
+		break 
 
 		default: {
 		//	max.post('unhandled message received', data) // probably don't want to print everything else since the server and other clients talk to each other a LOT

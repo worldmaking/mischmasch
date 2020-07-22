@@ -52,9 +52,9 @@ function loadbang(){
 	
 	//! clear the parent patcher of any vr.source~ objects prior to receiving deltas
 	this.patcher.apply(function(b) { 
-		
-		if(b.varname.split('_')[0] === 'source'){
-			outlet(4, 'thispatcher', 'script', 'delete', b.varname)
+		post(b.varname)
+		if(b.varname.split('_speaker')[0] === 'source'){
+			this.patcher.message('script', 'delete', b.varname)
 		}
 	});
 	//! clear the gen~ world patcher prior to receiving deltas
@@ -379,6 +379,8 @@ var handleDelta = function(delta) {
 			
 			// delete an object
 			case "delnode":
+				// js: {"op":"delnode","path":"speaker_50.input","kind":"inlet","index":0}  {"op":"delnode","path":"speaker_50","kind":"speaker","category":"abstraction","pos":[-0.0033256448805332184,-0.8113799095153809,-2.032186269760132],"orient":[-0.40548140108925446,-0.001008427298806405,0.5440172089960219,0.7345945867262966]}  dsp 48000.000000 32
+
 				if(nodes[delta.path]){
 					// remove node from the nodes object
 					delete nodes[delta.path]
@@ -388,13 +390,13 @@ var handleDelta = function(delta) {
 					// dict.set(delta)
 					if(delta.path.split('_')[0] === 'speaker'){
 						
-						var thisVarname = 'source_' + delta.path.split('_')[1]
+						var thisVarname = 'source_' + delta.path
 						genOutCounter--
 						outlet(4, 'thispatcher', 'script', 'delete', thisVarname)
 						// this.patcher.remove(thisVarname)
 						this.patcher.message("script", 'delete', thisVarname)
 
-						// then remove from gen~ world
+						// then lower the gen~world counter
 						if(genOutCounter <1){
 							genOutCounter = 1
 						}
@@ -438,7 +440,7 @@ var handleDelta = function(delta) {
 					var input;
 					var output;
 					var attenuvertor = null 
-					if(delta.kind === 'small_knob' || delta.kind === 'large_knob' ){
+					if(delta.kind === 'small_knob' || delta.kind === 'large_knob' || delta.kind === 'knob'  ){
 						attenuvertor = delta.paths[1].replace('.','__') + '_attenuvertor'
 					}
 
@@ -548,9 +550,8 @@ var handleDelta = function(delta) {
 						var param = delta.path
 						param = param.replace(".", "__")
 						var cleaveParam = param.split('.')[0]
-						var parameterValue = delta.to.split(" ")[1]
-						this.patcher.message("script", "send", "world", cleaveParam, parseFloat(parameterValue))
-						outlet(2, "script", "send", "world", cleaveParam, parseFloat(parameterValue))
+						this.patcher.message("script", "send", "world", cleaveParam, delta.to)
+						outlet(2, "script", "send", "world", cleaveParam, delta.to)
 					break;
 					
 					case "history":	

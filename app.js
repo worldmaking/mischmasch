@@ -508,9 +508,10 @@ function pal(ip, port){
 
           case 'deltas':
             // synchronize our local copy:
-           // console.log('deltas from host:', msg.data)
+          //  console.log('deltas from host:', msg.data)
             try {
               got.applyDeltasToGraph(localGraph, msg.data);
+              console.log(localGraph)
 
               // feedback path stuff
               //! urgent: need to apply a propchange to one outlet per feedback path outlet._props.history = true
@@ -784,6 +785,7 @@ function messageFromLocalClient(message, ws){
     break;
 
     case "HMD":
+    case "hands":
       // this is from the client.js, pass this directly to the max patch:
       sendToMaxClient(JSON.stringify(msg), localClients.vr)
     break;
