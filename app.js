@@ -511,7 +511,6 @@ function pal(ip, port){
           //  console.log('deltas from host:', msg.data)
             try {
               got.applyDeltasToGraph(localGraph, msg.data);
-              console.log(localGraph)
 
               // feedback path stuff
               //! urgent: need to apply a propchange to one outlet per feedback path outlet._props.history = true
@@ -523,11 +522,11 @@ function pal(ip, port){
             } catch (e) {
               console.warn(e);
             }
-            for(i=0;i<msg.data.length; i++){
-              if(msg.data[i].op === 'connect'){
-                console.log(msg.data[i])
-              }
-            }
+            // for(i=0;i<msg.data.length; i++){
+            //   if(msg.data[i].op === 'connect'){
+            //     console.log(msg.data[i])
+            //   }
+            // }
             // TODO: merge OTs
             
             let response = {
@@ -774,6 +773,15 @@ function messageFromLocalClient(message, ws){
       // runGOT(id, msg.data)
     break
 
+    case "hostClearScene":
+      let msg = JSON.stringify({
+        cmd: 'clearScene',
+        date: Date.now(),
+        data: 'clearScene'
+      })
+      deltaWebsocket.send(msg)
+    break;
+
     case "audiovizLookup":
       // console.log(msg.data)
       if(localClients.vr){
@@ -783,9 +791,10 @@ function messageFromLocalClient(message, ws){
       // need to send this just to the vr client!
       // console.log(localClients.vr)
     break;
-
+    // send to max client:
     case "HMD":
     case "hands":
+    case "rightWandPos":
       // this is from the client.js, pass this directly to the max patch:
       sendToMaxClient(JSON.stringify(msg), localClients.vr)
     break;

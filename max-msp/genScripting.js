@@ -24,6 +24,7 @@ var newModule;
 var speakerTable = {}
 var genOutCounter = 1
 
+let wands = {}
 var audiovizBuffer = new Buffer("audioviz");
 
 var getAudioVizErrorDirty = 0
@@ -59,7 +60,7 @@ function loadbang(){
 	});
 	//! clear the gen~ world patcher prior to receiving deltas
 	gen_patcher.apply(function(b) { 
-		if(b.varname !== "reserved_audioviz" && b.varname !== "reserved_audioviz_1" && b.varname !== "PLO"){
+		if(b.varname !== "reserved_audioviz" && b.varname !== "reserved_audioviz_1" && b.varname !== "PLO" && b.varname !== "rightWand_pos_x" && b.varname !== "rightWand_pos_y" && b.varname !== "rightWand_pos_z"){
 
 		gen_patcher.remove(b); 	
 		}	
@@ -593,6 +594,19 @@ var handleDelta = function(delta) {
 			// ETC
 		} 
 	}
+}
+
+function wands(wand, data){
+
+	switch(wand){
+		case "rightWand":
+			//post(data)
+
+		break
+
+
+	}
+
 }
 
 function fromLocalWebsocket(msg){

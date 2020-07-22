@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "dsp.gen",
-		"rect" : [ 1115.0, 322.0, 511.0, 386.0 ],
+		"rect" : [ 702.0, 454.0, 511.0, 386.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -40,6 +40,60 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-852",
+					"linecount" : 3,
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 250.0, 15.0, 61.0, 50.0 ],
+					"text" : "param rightWand_pos_z",
+					"varname" : "rightWand_pos_z"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-851",
+					"linecount" : 3,
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 188.0, 15.0, 59.0, 50.0 ],
+					"text" : "param rightWand_pos_y",
+					"varname" : "rightWand_pos_y"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-850",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 9.0, -2.0, 414.0, 20.0 ],
+					"text" : "These are reserved. don't delete them :) ----------------------------------------------|",
+					"varname" : "PLO"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-848",
+					"linecount" : 3,
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 120.0, 15.0, 66.0, 50.0 ],
+					"text" : "param rightWand_pos_x",
+					"varname" : "rightWand_pos_x"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-171",
 					"maxclass" : "newobj",
 					"numinlets" : 0,
@@ -51,8 +105,408 @@
 				}
 
 			}
+, 			{
+				"box" : 				{
+					"id" : "obj-816",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 10.0, 675.0, 100.0, 22.0 ],
+					"text" : "out 1",
+					"varname" : "speaker_00_out"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-817",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 25.0, 675.0, 100.0, 22.0 ],
+					"text" : "speaker",
+					"varname" : "speaker_00"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-818",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 275.0, 60.0, 100.0, 22.0 ],
+					"text" : "setparam gain",
+					"varname" : "setparam_speaker_00__gain"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-819",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 450.0, 60.0, 100.0, 22.0 ],
+					"text" : "*",
+					"varname" : "speaker_00__gain_attenuvertor"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-820",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 600.0, 45.0, 155.0, 22.0 ],
+					"text" : "param speaker_00__gain 1",
+					"varname" : "speaker_00__gain"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-821",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 10.0, 675.0, 100.0, 22.0 ],
+					"text" : "out 2",
+					"varname" : "speaker_10_out"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-822",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 25.0, 675.0, 100.0, 22.0 ],
+					"text" : "speaker",
+					"varname" : "speaker_10"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-823",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 275.0, 80.0, 100.0, 22.0 ],
+					"text" : "setparam gain",
+					"varname" : "setparam_speaker_10__gain"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-824",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 450.0, 80.0, 100.0, 22.0 ],
+					"text" : "*",
+					"varname" : "speaker_10__gain_attenuvertor"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-825",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 600.0, 60.0, 155.0, 22.0 ],
+					"text" : "param speaker_10__gain 1",
+					"varname" : "speaker_10__gain"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-832",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 125.0, 850.0, 100.0, 22.0 ],
+					"text" : "mooglo",
+					"varname" : "mooglo_30"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-833",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 3,
+					"outlettype" : [ "", "", "" ],
+					"patching_rect" : [ 125.0, 900.0, 100.0, 22.0 ],
+					"text" : "pulse",
+					"varname" : "pulse_70"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-834",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "" ],
+					"patching_rect" : [ 125.0, 950.0, 100.0, 22.0 ],
+					"text" : "lpg",
+					"varname" : "lpg_80"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-835",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 3,
+					"outlettype" : [ "", "", "" ],
+					"patching_rect" : [ 125.0, 1000.0, 100.0, 22.0 ],
+					"text" : "pulse",
+					"varname" : "pulse_100"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-839",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 125.0, 350.0, 100.0, 22.0 ],
+					"text" : "saw",
+					"varname" : "saw0"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-840",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 275.0, 80.0, 100.0, 22.0 ],
+					"text" : "setparam pitch",
+					"varname" : "setparam_saw0__pitch"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-841",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 450.0, 80.0, 100.0, 22.0 ],
+					"text" : "*",
+					"varname" : "saw0__pitch_attenuvertor"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-842",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 600.0, 60.0, 123.0, 22.0 ],
+					"text" : "param saw0__pitch 0",
+					"varname" : "saw0__pitch"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-843",
+					"maxclass" : "newobj",
+					"numinlets" : 4,
+					"numoutlets" : 0,
+					"patching_rect" : [ 50.0, 100.0, 100.0, 22.0 ],
+					"text" : "poke audioviz",
+					"varname" : "saw0.saw_poke"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-844",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 50.0, 50.0, 100.0, 22.0 ],
+					"text" : "constant 20",
+					"varname" : "saw0.saw_poke[1]"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-845",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 125.0, 850.0, 100.0, 22.0 ],
+					"text" : "noise",
+					"varname" : "noise0"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-846",
+					"maxclass" : "newobj",
+					"numinlets" : 4,
+					"numoutlets" : 0,
+					"patching_rect" : [ 50.0, 100.0, 100.0, 22.0 ],
+					"text" : "poke audioviz",
+					"varname" : "noise0.random-stream_poke"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-847",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 50.0, 50.0, 100.0, 22.0 ],
+					"text" : "constant 21",
+					"varname" : "noise0.random-stream_poke[1]"
+				}
+
+			}
  ],
-		"lines" : [  ],
+		"lines" : [ 			{
+				"patchline" : 				{
+					"destination" : [ "obj-816", 0 ],
+					"source" : [ "obj-817", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-817", 0 ],
+					"source" : [ "obj-818", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-818", 0 ],
+					"source" : [ "obj-819", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-819", 1 ],
+					"source" : [ "obj-820", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-821", 0 ],
+					"source" : [ "obj-822", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-822", 0 ],
+					"source" : [ "obj-823", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-823", 0 ],
+					"source" : [ "obj-824", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-824", 1 ],
+					"source" : [ "obj-825", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-843", 0 ],
+					"source" : [ "obj-839", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-839", 0 ],
+					"source" : [ "obj-840", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-840", 0 ],
+					"source" : [ "obj-841", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-841", 1 ],
+					"source" : [ "obj-842", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-843", 1 ],
+					"source" : [ "obj-844", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-846", 0 ],
+					"source" : [ "obj-845", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-846", 1 ],
+					"source" : [ "obj-847", 0 ]
+				}
+
+			}
+ ],
 		"editing_bgcolor" : [ 0.9, 0.9, 0.9, 1.0 ]
 	}
 
