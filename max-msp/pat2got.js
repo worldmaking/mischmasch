@@ -6,10 +6,6 @@ const fs = require("fs"),
 let dirname = __dirname
 
 let modules = {
-	"speaker":{
-		"_props":{"kind":"speaker","category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-		"input":{"_props":{"kind":"inlet","index":0}}
-	},
 	"control":{
 		"_props":{ "kind":"param", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
 		"value":{"_props":{"kind":"large_knob", "range":[0,1], "value":0}},

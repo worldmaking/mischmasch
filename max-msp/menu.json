@@ -1,27 +1,4 @@
 {
-	"speaker": {
-		"_props": {
-			"kind": "speaker",
-			"category": "abstraction",
-			"pos": [
-				0,
-				0,
-				0
-			],
-			"orient": [
-				0,
-				0,
-				0,
-				1
-			]
-		},
-		"input": {
-			"_props": {
-				"kind": "inlet",
-				"index": 0
-			}
-		}
-	},
 	"control": {
 		"_props": {
 			"kind": "control",
