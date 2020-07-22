@@ -815,7 +815,7 @@
 			"_props": {
 				"kind": "knob",
 				"range": [
-					1,
+					0,
 					3
 				],
 				"value": "1"
@@ -946,6 +946,39 @@
 				"kind": "outlet",
 				"index": 2,
 				"history": false
+			}
+		}
+	},
+	"speaker": {
+		"_props": {
+			"kind": "speaker",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"gain": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					0,
+					2
+				],
+				"value": "1"
+			}
+		},
+		"audio": {
+			"_props": {
+				"kind": "inlet",
+				"index": 0
 			}
 		}
 	},
