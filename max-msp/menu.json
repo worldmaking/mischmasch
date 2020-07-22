@@ -1,0 +1,2323 @@
+{
+	"drumkit": {
+		"_props": {
+			"kind": "drumkit",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"hatdur": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": ""
+			}
+		},
+		"kick": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"snare": {
+			"_props": {
+				"kind": "inlet",
+				"index": "2"
+			}
+		},
+		"hat": {
+			"_props": {
+				"kind": "inlet",
+				"index": "3"
+			}
+		},
+		"kicks": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		},
+		"snares": {
+			"_props": {
+				"kind": "outlet",
+				"index": "2"
+			}
+		},
+		"hats": {
+			"_props": {
+				"kind": "outlet",
+				"index": "3"
+			}
+		},
+		"mix": {
+			"_props": {
+				"kind": "outlet",
+				"index": "4"
+			}
+		}
+	},
+	"dverb": {
+		"_props": {
+			"kind": "dverb",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"drywet": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": "0.3"
+			}
+		},
+		"predelay": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": "0.15"
+			}
+		},
+		"indamping": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": "0.75"
+			}
+		},
+		"damping": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": "0.4"
+			}
+		},
+		"decay": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": "0.75"
+			}
+		},
+		"in1": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"L": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		},
+		"R": {
+			"_props": {
+				"kind": "outlet",
+				"index": "2"
+			}
+		}
+	},
+	"euclid": {
+		"_props": {
+			"kind": "euclid",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"steps": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"-32 ",
+					"32"
+				],
+				"value": "3"
+			}
+		},
+		"length": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"1 ",
+					"32"
+				],
+				"value": "8"
+			}
+		},
+		"offset": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"-32 ",
+					"32"
+				],
+				"value": "0"
+			}
+		},
+		"ramp": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"reset": {
+			"_props": {
+				"kind": "inlet",
+				"index": "2"
+			}
+		},
+		"trig": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		},
+		"retrig": {
+			"_props": {
+				"kind": "outlet",
+				"index": "2"
+			}
+		}
+	},
+	"mooglo": {
+		"_props": {
+			"kind": "mooglo",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"pitch": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"-4 ",
+					"8"
+				],
+				"value": "2"
+			}
+		},
+		"resonance": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": ""
+			}
+		},
+		"input": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"filtered": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		}
+	},
+	"pitchchroma": {
+		"_props": {
+			"kind": "pitchchroma",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"tuning": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					0,
+					1
+				],
+				"value": "2"
+			}
+		},
+		"pitch": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"chroma": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		},
+		"register": {
+			"_props": {
+				"kind": "outlet",
+				"index": "2"
+			}
+		}
+	},
+	"pulse": {
+		"_props": {
+			"kind": "pulse",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"pitch": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"-3 ",
+					"7"
+				],
+				"value": "0"
+			}
+		},
+		"pulsewidth": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": "0.5"
+			}
+		},
+		"hardsync": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"pulse": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		},
+		"impulse": {
+			"_props": {
+				"kind": "outlet",
+				"index": "2"
+			}
+		},
+		"clock": {
+			"_props": {
+				"kind": "outlet",
+				"index": "3"
+			}
+		}
+	},
+	"quant": {
+		"_props": {
+			"kind": "quant",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"numer": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"1 ",
+					"24"
+				],
+				"value": "5"
+			}
+		},
+		"denom": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"1 ",
+					"24"
+				],
+				"value": "12"
+			}
+		},
+		"trans": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"-1 ",
+					"1"
+				],
+				"value": "0"
+			}
+		},
+		"align": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": "0"
+			}
+		},
+		"pitch": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"quantized": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		}
+	},
+	"rampdiv": {
+		"_props": {
+			"kind": "rampdiv",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"ramp": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"division": {
+			"_props": {
+				"kind": "inlet",
+				"index": "2"
+			}
+		},
+		"divided": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		}
+	},
+	"rampshift": {
+		"_props": {
+			"kind": "rampshift",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"ramp": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"phase": {
+			"_props": {
+				"kind": "inlet",
+				"index": "2"
+			}
+		},
+		"shifted": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		}
+	},
+	"rampsteps": {
+		"_props": {
+			"kind": "rampsteps",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"steps": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"1 ",
+					"32"
+				],
+				"value": ""
+			}
+		},
+		"ramp": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"step": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		},
+		"stepped": {
+			"_props": {
+				"kind": "outlet",
+				"index": "2"
+			}
+		}
+	},
+	"s+h": {
+		"_props": {
+			"kind": "s+h",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"input": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"clock": {
+			"_props": {
+				"kind": "inlet",
+				"index": "2"
+			}
+		},
+		"s&h": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		}
+	},
+	"saturate": {
+		"_props": {
+			"kind": "saturate",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"preamp": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"1 ",
+					"3"
+				],
+				"value": "1"
+			}
+		},
+		"hard": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": "0.5"
+			}
+		},
+		"input": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"saturated": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		}
+	},
+	"saw": {
+		"_props": {
+			"kind": "saw",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"pitch": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"-3 ",
+					"7"
+				],
+				"value": "0"
+			}
+		},
+		"saw": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		}
+	},
+	"semiperm": {
+		"_props": {
+			"kind": "semiperm",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"stability": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"-1 ",
+					"1"
+				],
+				"value": "0.875"
+			}
+		},
+		"steps": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"2 ",
+					"8"
+				],
+				"value": "8"
+			}
+		},
+		"clock": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"reset": {
+			"_props": {
+				"kind": "inlet",
+				"index": "2"
+			}
+		},
+		"value": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		},
+		"gate": {
+			"_props": {
+				"kind": "outlet",
+				"index": "2"
+			}
+		},
+		"trig": {
+			"_props": {
+				"kind": "outlet",
+				"index": "3"
+			}
+		}
+	},
+	"squine": {
+		"_props": {
+			"kind": "squine",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"pitch": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"-3 ",
+					"7"
+				],
+				"value": "0"
+			}
+		},
+		"skew": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"-1 ",
+					"1"
+				],
+				"value": "0"
+			}
+		},
+		"square": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"1"
+				],
+				"value": "0"
+			}
+		},
+		"squine": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		},
+		"ramp": {
+			"_props": {
+				"kind": "outlet",
+				"index": "2"
+			}
+		}
+	},
+	"svf": {
+		"_props": {
+			"kind": "svf",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"pitch": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"-4 ",
+					"8"
+				],
+				"value": "4"
+			}
+		},
+		"bandwidth": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					"0 ",
+					"10"
+				],
+				"value": "1"
+			}
+		},
+		"input": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"low": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		},
+		"mid": {
+			"_props": {
+				"kind": "outlet",
+				"index": "2"
+			}
+		},
+		"high": {
+			"_props": {
+				"kind": "outlet",
+				"index": "3"
+			}
+		}
+	},
+	"trig": {
+		"_props": {
+			"kind": "trig",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"input": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"trigs": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		}
+	},
+	"trigwhen": {
+		"_props": {
+			"kind": "trigwhen",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"trig": {
+			"_props": {
+				"kind": "inlet",
+				"index": "1"
+			}
+		},
+		"when": {
+			"_props": {
+				"kind": "inlet",
+				"index": "2"
+			}
+		},
+		"trigwhen": {
+			"_props": {
+				"kind": "outlet",
+				"index": "1"
+			}
+		}
+	},
+	"cycle": {
+		"_props": {
+			"kind": "cycle",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"freq": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		},
+		"out2": {
+			"_props": {
+				"kind": "outlet",
+				"index": 2,
+				"history": false
+			}
+		}
+	},
+	"phasor": {
+		"_props": {
+			"kind": "phasor",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"freq": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"reset": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"noise": {
+		"_props": {
+			"kind": "noise",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"random-stream": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"change": {
+		"_props": {
+			"kind": "change",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"input": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"latch": {
+		"_props": {
+			"kind": "latch",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"input": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"control": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"delta": {
+		"_props": {
+			"kind": "delta",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"input": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"dcblock": {
+		"_props": {
+			"kind": "dcblock",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"input": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"mix": {
+		"_props": {
+			"kind": "mix",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"loval": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"hival": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"interp": {
+			"_props": {
+				"kind": "inlet",
+				"index": 3
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"smoothstep": {
+		"_props": {
+			"kind": "smoothstep",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"loval": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"hival": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"interp": {
+			"_props": {
+				"kind": "inlet",
+				"index": 3
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"wrap": {
+		"_props": {
+			"kind": "wrap",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"input": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"min": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"max": {
+			"_props": {
+				"kind": "inlet",
+				"index": 3
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"scale": {
+		"_props": {
+			"kind": "scale",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"input": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"ilo": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"ihi": {
+			"_props": {
+				"kind": "inlet",
+				"index": 3
+			}
+		},
+		"olo": {
+			"_props": {
+				"kind": "inlet",
+				"index": 4
+			}
+		},
+		"ohi": {
+			"_props": {
+				"kind": "inlet",
+				"index": 5
+			}
+		},
+		"exp": {
+			"_props": {
+				"kind": "inlet",
+				"index": 6
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"clamp": {
+		"_props": {
+			"kind": "clamp",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"input": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"min": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"max": {
+			"_props": {
+				"kind": "inlet",
+				"index": 3
+			}
+		},
+		"clamped": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"fold": {
+		"_props": {
+			"kind": "fold",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"input": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"min": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"max": {
+			"_props": {
+				"kind": "inlet",
+				"index": 3
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"and": {
+		"_props": {
+			"kind": "and",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value1": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"value2": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"xor": {
+		"_props": {
+			"kind": "xor",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value1": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"value2": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"bool": {
+		"_props": {
+			"kind": "bool",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"bool": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"not": {
+		"_props": {
+			"kind": "not",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"or": {
+		"_props": {
+			"kind": "or",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value1": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"value2": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"max": {
+		"_props": {
+			"kind": "max",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value1": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"value2": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"gt": {
+		"_props": {
+			"kind": "gt",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value1": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"value2": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"min": {
+		"_props": {
+			"kind": "min",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value1": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"value2": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"lt": {
+		"_props": {
+			"kind": "lt",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value1": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"value2": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"abs": {
+		"_props": {
+			"kind": "abs",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"abs": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"round": {
+		"_props": {
+			"kind": "round",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"input": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"base": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"sign": {
+		"_props": {
+			"kind": "sign",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"fract": {
+		"_props": {
+			"kind": "fract",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"fract": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"add": {
+		"_props": {
+			"kind": "add",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value1": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"value2": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"sum": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"poltocar": {
+		"_props": {
+			"kind": "poltocar",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"r": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"theta": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"x": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		},
+		"y": {
+			"_props": {
+				"kind": "outlet",
+				"index": 2,
+				"history": false
+			}
+		}
+	},
+	"neg": {
+		"_props": {
+			"kind": "neg",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"sub": {
+		"_props": {
+			"kind": "sub",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value1": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"value2": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"difference": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"cartopol": {
+		"_props": {
+			"kind": "cartopol",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"x": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"y": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"distance": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		},
+		"angle": {
+			"_props": {
+				"kind": "outlet",
+				"index": 2,
+				"history": false
+			}
+		}
+	},
+	"div": {
+		"_props": {
+			"kind": "div",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value1": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"value2": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"quotient": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"absdiff": {
+		"_props": {
+			"kind": "absdiff",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value1": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"value2": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"abs-diff": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"mod": {
+		"_props": {
+			"kind": "mod",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value1": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"value2": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"modulo": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"mul": {
+		"_props": {
+			"kind": "mul",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value1": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"value2": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"product": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"cos": {
+		"_props": {
+			"kind": "cos",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"atan2": {
+		"_props": {
+			"kind": "atan2",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"opposite": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"adjacent": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"sin": {
+		"_props": {
+			"kind": "sin",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
+	"tanh": {
+		"_props": {
+			"kind": "tanh",
+			"category": "operator",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"value": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"out1": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	}
+}

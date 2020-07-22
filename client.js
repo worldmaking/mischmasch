@@ -847,7 +847,7 @@ const menuModules = Object.assign({
 		"value":{"_props":{"kind":"large_knob", "range":[0,1], "value":0}},
 		"output":{"_props":{"kind":"outlet","index":0, "history": false}}
 	},
-}, JSON.parse(fs.readFileSync("menu.json", "utf-8")))
+}, JSON.parse(fs.readFileSync(path.join("max-msp","menu.json"), "utf-8")))
 
 
 
