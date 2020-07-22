@@ -1,6 +1,6 @@
 
-inlets = 3
-outlets = 7
+inlets = 1
+outlets = 3
 
 // the reference to the gen~ world object we'll be scripting to. 
 var gen_patcher; 
@@ -41,14 +41,17 @@ var namespace = new Dict("namespace")
 var speakerTableDict = new Dict("speakerTableDict");
 
 var graphNodes = {}
+
+// lets store all of the scripting related objects/arrays in one dict. otherwise its hard to keep track of. 
+
+
+
+
+
 function loadbang(){
 	
 	// things that need to be initiated only after patcher has finished loading
 	gen_patcher = this.patcher.getnamed("world").subpatcher();
-
-// 	initiate()
-// }
-// var initiate = function(){
 
 	
 	//! clear the parent patcher of any vr.source~ objects prior to receiving deltas
@@ -70,12 +73,6 @@ function loadbang(){
 	
 	resetCounters()
 }
-
-	// get a reference to "thegen"'s embedded gen patcher:
-
-
-// contain all the buffers
-// var pb = new PolyBuffer('world_polybuffer');       // PolyBuffer instantiates a polybuffer~ object named by second argument to js  
 
 function resetCounters(){
 	counter = 1;
@@ -209,8 +206,9 @@ var handleDelta = function(delta) {
 									// speakerTableDict.setparse(speakerTable)
 									// gen~ and max outlets are base 0 (mth), our speaker numbers are base 1 (nth)
 									// TODO decide on base 0 or 1 (I advocate for 0, because this also works with array indices) 
-									
-									outlet(3, 'genConnect', genOutCounter, vrSource.varname)
+									//! do not use patcher scripting for this message:
+									//! we need to use the deferlow script
+									outlet(0, 'genConnect', genOutCounter, vrSource.varname)
 
 									// we use outlets below the gen~ world. All vr.Source~ objects script connect into outlets 1 and 2. 
 									this.patcher.message("script", "connect", vrSource.varname, 0, 'vrSource2CHMain', 0);
@@ -270,7 +268,6 @@ var handleDelta = function(delta) {
 									param.varname = paramName
 									gen_patcher.message("script", "connect", param.varname, 0, attenuvertor.varname, 1);
 								
-									outlet(1, paramName, delta.range)
 									paramCounter++
 								
 								break;
@@ -298,8 +295,7 @@ var handleDelta = function(delta) {
 									param.varname = paramName
 									gen_patcher.message("script", "connect", param.varname, 0, attenuvertor.varname, 1);
 								
-									//gen_patcher.message("script", "send", param.varname, paramValue);
-									outlet(1, paramName, delta.value, 'n_switch')
+
 									paramCounter++
 								break;
 								
@@ -335,10 +331,9 @@ var handleDelta = function(delta) {
 									gen_patcher.message("script", "connect", newModule.varname, delta.index, newAudiovizPoke.varname, 0);
 
 									audiovizIndex++
-									outlet(5, 'sizeinsamps', audiovizIndex + 1)
+									outlet(1, 'sizeinsamps', audiovizIndex + 1)
 									object[delta.path.replace('.','__')] = delta.index
 									outletsTable.push(object)	
-									//outlet(0, outletsTable)
 									
 									// TODO: if a module is deleted, find which channels in the buffer are now freed, make those available to the next newnode.
 								}
@@ -386,7 +381,6 @@ var handleDelta = function(delta) {
 							}
 						}
 				}	
-					// outlet(0, bufferChannelPaths)
 			break;
 			
 			// delete an object
@@ -641,7 +635,7 @@ function getAudioviz(){
 					outletViz[foo] = {value: audiovizBuffer.peek(1, targetModule[foo].audiovizIndex)}
 				}
 			});
-			outlet(6, 'audiovizLookup', JSON.stringify(outletViz))
+			outlet(2, 'audiovizLookup', JSON.stringify(outletViz))
 			
 			if(getAudioVizErrorDirty === 1){
 				getAudioVizErrorDirty = 0
