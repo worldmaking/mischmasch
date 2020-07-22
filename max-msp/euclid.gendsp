@@ -3,14 +3,14 @@
 		"fileversion" : 1,
 		"appversion" : 		{
 			"major" : 8,
-			"minor" : 1,
-			"revision" : 2,
+			"minor" : 0,
+			"revision" : 3,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "dsp.gen",
-		"rect" : [ 919.0, 78.0, 709.0, 827.0 ],
+		"rect" : [ 918.0, 83.0, 711.0, 828.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -258,7 +258,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 233.5, 13.5, 254.0, 33.0 ],
+					"patching_rect" : [ 233.5, 13.5, 257.0, 33.0 ],
 					"text" : "reset trigger to lock pattern to a fixed measure (otherwise it can make a polymeter)"
 				}
 
@@ -294,8 +294,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 68.0, 288.0, 195.0, 22.0 ],
-					"text" : "param offset 0 @min -32 @max 32"
+					"patching_rect" : [ 68.0, 288.0, 300.0, 22.0 ],
+					"text" : "param offset 0 @min -32 @max 32 @comment integer"
 				}
 
 			}
@@ -330,8 +330,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 268.5, 98.0, 188.0, 22.0 ],
-					"text" : "param length 8 @min 1 @max 32"
+					"patching_rect" : [ 268.5, 98.0, 293.0, 22.0 ],
+					"text" : "param length 8 @min 1 @max 32 @comment integer"
 				}
 
 			}
@@ -342,8 +342,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 224.5, 66.5, 195.0, 22.0 ],
-					"text" : "param steps 3 @min -32 @max 32"
+					"patching_rect" : [ 224.5, 66.5, 300.0, 22.0 ],
+					"text" : "param steps 3 @min -32 @max 32 @comment integer"
 				}
 
 			}

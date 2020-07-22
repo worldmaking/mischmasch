@@ -49,6 +49,7 @@ fs.readdirSync(dirname).forEach((filename, i) => {
 							attrs.max != undefined ? (+attrs.max) : 1
 						],
 						value: args.length > 1 ? args[1] : attrs.default || 0,
+						type: isInt ? "int" : "float",
 					}}
 				})
 			} break;

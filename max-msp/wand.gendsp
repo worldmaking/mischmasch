@@ -3,14 +3,14 @@
 		"fileversion" : 1,
 		"appversion" : 		{
 			"major" : 8,
-			"minor" : 1,
-			"revision" : 2,
+			"minor" : 0,
+			"revision" : 3,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "dsp.gen",
-		"rect" : [ -1378.0, 803.0, 1242.0, 450.0 ],
+		"rect" : [ 209.0, 618.0, 1243.0, 451.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -110,8 +110,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 188.0, 153.0, 73.0, 22.0 ],
-					"text" : "param c1Pz"
+					"patching_rect" : [ 188.0, 153.0, 177.0, 22.0 ],
+					"text" : "param c1Pz @comment hidden"
 				}
 
 			}
@@ -122,8 +122,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 106.0, 153.0, 73.0, 22.0 ],
-					"text" : "param c1Py"
+					"patching_rect" : [ 106.0, 153.0, 177.0, 22.0 ],
+					"text" : "param c1Py @comment hidden"
 				}
 
 			}
@@ -145,8 +145,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 24.0, 153.0, 73.0, 22.0 ],
-					"text" : "param c1Px"
+					"patching_rect" : [ 24.0, 153.0, 177.0, 22.0 ],
+					"text" : "param c1Px @comment hidden"
 				}
 
 			}
@@ -168,8 +168,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 558.0, 153.0, 77.0, 22.0 ],
-					"text" : "param c1Ow"
+					"patching_rect" : [ 558.0, 153.0, 181.0, 22.0 ],
+					"text" : "param c1Ow @comment hidden"
 				}
 
 			}
@@ -180,8 +180,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 470.0, 153.0, 74.0, 22.0 ],
-					"text" : "param c1Oz"
+					"patching_rect" : [ 470.0, 153.0, 178.0, 22.0 ],
+					"text" : "param c1Oz @comment hidden"
 				}
 
 			}
@@ -192,8 +192,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 384.0, 153.0, 74.0, 22.0 ],
-					"text" : "param c1Oy"
+					"patching_rect" : [ 384.0, 153.0, 178.0, 22.0 ],
+					"text" : "param c1Oy @comment hidden"
 				}
 
 			}
@@ -204,8 +204,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 300.0, 153.0, 74.0, 22.0 ],
-					"text" : "param c1Ox"
+					"patching_rect" : [ 300.0, 153.0, 178.0, 22.0 ],
+					"text" : "param c1Ox @comment hidden"
 				}
 
 			}
@@ -270,7 +270,8 @@
 				}
 
 			}
- ]
+ ],
+		"autosave" : 0
 	}
 
 }
