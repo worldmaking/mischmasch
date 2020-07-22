@@ -50,7 +50,8 @@ let gensym = (function() {
     let nodeid = 0;
     return function (prefix="node") {
         //return `${prefix}_${nodeid++}_${userPose.id}`
-        return `${prefix}_${nodeid++}`
+		//return `${prefix}_${nodeid++}`
+		return `${prefix}_${Date.now()}`
     }
 })();
 
@@ -504,7 +505,8 @@ const UI = {
 					while (module && !module.isModule) module = module.parent;
 					if (module && module.isModule) {
 						// derive delta from module.node:
-						let path = gensym(module.kind);
+						let path = module.kind;
+						path = gensym(path);
 						// send delta to spawn it:
 						let deltas = got.nodesToDeltas([module.node], [], path)
 						outgoingDeltas.push(deltas)
@@ -1038,6 +1040,7 @@ out vec4 outColor;
 
 void main() {
 
+	// fade in the distance
 	float alpha = 1.-length(v_uv);
 	float soft = 0.02;
 
@@ -1048,7 +1051,10 @@ void main() {
 	float d = length(v_xz);
 	float b = floor(mod(d * 8., 1.) / 8.);
 	float ribs = smoothstep(soft, -soft, abs(mod(d, 1.) - 0.5));
+
 	outColor = vec4(ribs);
+
+
 	//outColor = vec4(clamp(0.3-0.2*floor(d)/10., 0., 1.));
 
 	// vec2 checks = floor(mod(v_xz, 1.) + alpha);
@@ -2308,15 +2314,16 @@ function animate() {
 
 function draw(eye=0) {
 
+
+	gl.enable(gl.BLEND);
+	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+	gl.depthMask(false)
+
 	renderer.floor_program.begin();
 	renderer.floor_program.uniform("u_viewmatrix", viewmatrix);
 	renderer.floor_program.uniform("u_projmatrix", projmatrix);
 	renderer.floor_vao.bind().draw().unbind();
 	renderer.floor_program.end();
-
-	gl.enable(gl.BLEND);
-	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-	gl.depthMask(false)
 
 	UI.draw(gl);
 	currentScene.draw(gl);
