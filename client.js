@@ -614,6 +614,8 @@ const UI = {
 						let range = props.range || [0,1];
 						let oldval = object.value//range[0] + object.i_value[0]*(range[1]-range[0]);
 						let newval = range[0] + i_value*(range[1]-range[0]);
+						// post-processing:
+						if (props.type == "int") newval = Math.max(range[0], Math.floor(newval))
 
 						// send propchange oldval->newval
 						outgoingDeltas.push({ 

@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "dsp.gen",
-		"rect" : [ 186.0, 83.0, 962.0, 939.0 ],
+		"rect" : [ 186.0, 83.0, 963.0, 940.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -79,8 +79,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 232.0, 126.0, 178.0, 22.0 ],
-					"text" : "param steps 8 @min 2 @max 8"
+					"patching_rect" : [ 232.0, 126.0, 282.0, 22.0 ],
+					"text" : "param steps 8 @min 2 @max 8 @comment integer"
 				}
 
 			}

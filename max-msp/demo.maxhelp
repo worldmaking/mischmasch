@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 106.0, 282.0, 987.0, 524.0 ],
+		"rect" : [ 246.0, 510.0, 988.0, 524.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -55,7 +55,7 @@
 						}
 ,
 						"classnamespace" : "dsp.gen",
-						"rect" : [ 326.0, 152.0, 888.0, 862.0 ],
+						"rect" : [ 326.0, 151.0, 888.0, 863.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
@@ -1079,14 +1079,14 @@
 					"patching_rect" : [ 59.25, 167.2152099609375, 49.0, 120.0 ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
-							"parameter_mmin" : -70.0,
-							"parameter_longname" : "out[2]",
-							"parameter_initial_enable" : 1,
-							"parameter_mmax" : 6.0,
 							"parameter_initial" : [ -12 ],
 							"parameter_shortname" : "out",
 							"parameter_type" : 0,
-							"parameter_unitstyle" : 4
+							"parameter_unitstyle" : 4,
+							"parameter_mmin" : -70.0,
+							"parameter_longname" : "out[2]",
+							"parameter_initial_enable" : 1,
+							"parameter_mmax" : 6.0
 						}
 
 					}
@@ -1170,78 +1170,78 @@
 		}
 ,
 		"dependency_cache" : [ 			{
-				"name" : "rampdiv.gendsp",
-				"bootpath" : "~/Documents/msvr_modules",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "trig.gendsp",
-				"bootpath" : "~/Documents/msvr_modules",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "dverb.gendsp",
-				"bootpath" : "~/Documents/msvr_modules",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "drumkit.gendsp",
-				"bootpath" : "~/Documents/msvr_modules",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "euclid.gendsp",
-				"bootpath" : "~/Documents/msvr_modules",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "semiperm.gendsp",
-				"bootpath" : "~/Documents/msvr_modules",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "quant.gendsp",
-				"bootpath" : "~/Documents/msvr_modules",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "mooglo.gendsp",
-				"bootpath" : "~/Documents/msvr_modules",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "squine.gendsp",
-				"bootpath" : "~/Documents/msvr_modules",
+				"name" : "saturate.gendsp",
+				"bootpath" : "~/Documents/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "svf.gendsp",
-				"bootpath" : "~/Documents/msvr_modules",
+				"bootpath" : "~/Documents/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
-				"name" : "saturate.gendsp",
-				"bootpath" : "~/Documents/msvr_modules",
+				"name" : "rampdiv.gendsp",
+				"bootpath" : "~/Documents/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "trig.gendsp",
+				"bootpath" : "~/Documents/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "dverb.gendsp",
+				"bootpath" : "~/Documents/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "drumkit.gendsp",
+				"bootpath" : "~/Documents/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "euclid.gendsp",
+				"bootpath" : "~/Documents/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "semiperm.gendsp",
+				"bootpath" : "~/Documents/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "quant.gendsp",
+				"bootpath" : "~/Documents/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "mooglo.gendsp",
+				"bootpath" : "~/Documents/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "squine.gendsp",
+				"bootpath" : "~/Documents/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1

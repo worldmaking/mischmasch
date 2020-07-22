@@ -22,7 +22,8 @@
 					0,
 					1
 				],
-				"value": "0"
+				"value": "0",
+				"type": "float"
 			}
 		},
 		"value": {
@@ -56,7 +57,8 @@
 					0,
 					1
 				],
-				"value": "0.05"
+				"value": "0.05",
+				"type": "float"
 			}
 		},
 		"kick": {
@@ -129,7 +131,8 @@
 					0,
 					1
 				],
-				"value": "0.3"
+				"value": "0.3",
+				"type": "float"
 			}
 		},
 		"predelay": {
@@ -139,7 +142,8 @@
 					0,
 					1
 				],
-				"value": "0.15"
+				"value": "0.15",
+				"type": "float"
 			}
 		},
 		"indamping": {
@@ -149,7 +153,8 @@
 					0,
 					1
 				],
-				"value": "0.75"
+				"value": "0.75",
+				"type": "float"
 			}
 		},
 		"damping": {
@@ -159,7 +164,8 @@
 					0,
 					1
 				],
-				"value": "0.4"
+				"value": "0.4",
+				"type": "float"
 			}
 		},
 		"decay": {
@@ -169,7 +175,8 @@
 					0,
 					1
 				],
-				"value": "0.75"
+				"value": "0.75",
+				"type": "float"
 			}
 		},
 		"in0": {
@@ -216,7 +223,8 @@
 					-32,
 					32
 				],
-				"value": "3"
+				"value": "3",
+				"type": "int"
 			}
 		},
 		"length": {
@@ -226,7 +234,8 @@
 					1,
 					32
 				],
-				"value": "8"
+				"value": "8",
+				"type": "int"
 			}
 		},
 		"offset": {
@@ -236,7 +245,8 @@
 					-32,
 					32
 				],
-				"value": "0"
+				"value": "0",
+				"type": "int"
 			}
 		},
 		"ramp": {
@@ -289,7 +299,8 @@
 					0.01,
 					1
 				],
-				"value": "0.1"
+				"value": "0.1",
+				"type": "float"
 			}
 		},
 		"fall": {
@@ -299,7 +310,8 @@
 					0.01,
 					1
 				],
-				"value": "0.25"
+				"value": "0.25",
+				"type": "float"
 			}
 		},
 		"audio": {
@@ -352,7 +364,8 @@
 					-4,
 					8
 				],
-				"value": "2"
+				"value": "2",
+				"type": "float"
 			}
 		},
 		"resonance": {
@@ -362,7 +375,8 @@
 					0,
 					1
 				],
-				"value": ""
+				"value": "",
+				"type": "float"
 			}
 		},
 		"input": {
@@ -402,7 +416,8 @@
 					0,
 					1
 				],
-				"value": "2"
+				"value": "2",
+				"type": "float"
 			}
 		},
 		"pitch": {
@@ -449,7 +464,8 @@
 					-3,
 					7
 				],
-				"value": "0"
+				"value": "0",
+				"type": "float"
 			}
 		},
 		"formant": {
@@ -459,7 +475,8 @@
 					0,
 					10
 				],
-				"value": "1"
+				"value": "1",
+				"type": "float"
 			}
 		},
 		"audio": {
@@ -506,7 +523,8 @@
 					-3,
 					7
 				],
-				"value": "0"
+				"value": "0",
+				"type": "float"
 			}
 		},
 		"pulsewidth": {
@@ -516,7 +534,8 @@
 					0,
 					1
 				],
-				"value": "0.5"
+				"value": "0.5",
+				"type": "float"
 			}
 		},
 		"hardsync": {
@@ -570,7 +589,8 @@
 					1,
 					24
 				],
-				"value": "5"
+				"value": "5",
+				"type": "int"
 			}
 		},
 		"denom": {
@@ -580,7 +600,8 @@
 					1,
 					24
 				],
-				"value": "12"
+				"value": "12",
+				"type": "int"
 			}
 		},
 		"trans": {
@@ -590,7 +611,8 @@
 					-1,
 					1
 				],
-				"value": "0"
+				"value": "0",
+				"type": "float"
 			}
 		},
 		"align": {
@@ -600,7 +622,8 @@
 					0,
 					1
 				],
-				"value": "0"
+				"value": "0",
+				"type": "float"
 			}
 		},
 		"pitch": {
@@ -712,7 +735,8 @@
 					1,
 					32
 				],
-				"value": ""
+				"value": "",
+				"type": "float"
 			}
 		},
 		"ramp": {
@@ -795,7 +819,8 @@
 					0,
 					3
 				],
-				"value": "1"
+				"value": "1",
+				"type": "float"
 			}
 		},
 		"hard": {
@@ -805,7 +830,8 @@
 					0,
 					1
 				],
-				"value": "0.5"
+				"value": "0.5",
+				"type": "float"
 			}
 		},
 		"input": {
@@ -845,7 +871,8 @@
 					-3,
 					7
 				],
-				"value": "0"
+				"value": "0",
+				"type": "float"
 			}
 		},
 		"saw": {
@@ -879,7 +906,8 @@
 					-1,
 					1
 				],
-				"value": "0.875"
+				"value": "0.875",
+				"type": "float"
 			}
 		},
 		"steps": {
@@ -889,7 +917,8 @@
 					2,
 					8
 				],
-				"value": "8"
+				"value": "8",
+				"type": "int"
 			}
 		},
 		"clock": {
@@ -949,7 +978,8 @@
 					0,
 					2
 				],
-				"value": "1"
+				"value": "1",
+				"type": "float"
 			}
 		},
 		"audio": {
@@ -982,7 +1012,8 @@
 					-3,
 					7
 				],
-				"value": "0"
+				"value": "0",
+				"type": "float"
 			}
 		},
 		"skew": {
@@ -992,7 +1023,8 @@
 					-1,
 					1
 				],
-				"value": "0"
+				"value": "0",
+				"type": "float"
 			}
 		},
 		"square": {
@@ -1002,7 +1034,8 @@
 					0,
 					1
 				],
-				"value": "0"
+				"value": "0",
+				"type": "float"
 			}
 		},
 		"squine": {
@@ -1043,7 +1076,8 @@
 					-4,
 					8
 				],
-				"value": "4"
+				"value": "4",
+				"type": "float"
 			}
 		},
 		"bandwidth": {
@@ -1053,7 +1087,8 @@
 					0,
 					10
 				],
-				"value": "1"
+				"value": "1",
+				"type": "float"
 			}
 		},
 		"input": {
@@ -1165,76 +1200,6 @@
 				0,
 				1
 			]
-		},
-		"c1Px": {
-			"_props": {
-				"kind": "knob",
-				"range": [
-					0,
-					1
-				],
-				"value": 0
-			}
-		},
-		"c1Py": {
-			"_props": {
-				"kind": "knob",
-				"range": [
-					0,
-					1
-				],
-				"value": 0
-			}
-		},
-		"c1Pz": {
-			"_props": {
-				"kind": "knob",
-				"range": [
-					0,
-					1
-				],
-				"value": 0
-			}
-		},
-		"c1Ox": {
-			"_props": {
-				"kind": "knob",
-				"range": [
-					0,
-					1
-				],
-				"value": 0
-			}
-		},
-		"c1Oy": {
-			"_props": {
-				"kind": "knob",
-				"range": [
-					0,
-					1
-				],
-				"value": 0
-			}
-		},
-		"c1Oz": {
-			"_props": {
-				"kind": "knob",
-				"range": [
-					0,
-					1
-				],
-				"value": 0
-			}
-		},
-		"c1Ow": {
-			"_props": {
-				"kind": "knob",
-				"range": [
-					0,
-					1
-				],
-				"value": 0
-			}
 		},
 		"out0": {
 			"_props": {
