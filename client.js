@@ -2147,7 +2147,7 @@ function animate() {
 				//console.log('incomingDelta', delta)
 				got.applyDeltasToGraph(localGraph, delta);
 
-				fs.writeFileSync("basicGraph.json", JSON.stringify(localGraph, null, "\t"), "utf8");
+				fs.writeFileSync("_debugCurrentGraph.json", JSON.stringify(localGraph, null, "\t"), "utf8");
 			} catch (e) {
 				console.warn(e);
 			}

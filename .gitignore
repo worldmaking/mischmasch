@@ -1,3 +1,8 @@
+
+*/session_recordings/
+session_recordings/
+_debugCurrentGraph.json
+
 # osx
 .DS_Store
 */.DS_Store
@@ -6,11 +11,8 @@
 *.mp4
 *.mpg
 *.wav
-session_recordings/
 
 package-lock.json
-
-*/session_recordings/
 
 # Logs
 logs
