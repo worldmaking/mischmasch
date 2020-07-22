@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 89.0, 85.0, 657.0, 883.0 ],
+		"rect" : [ 89.0, 85.0, 749.0, 883.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -39,6 +39,18 @@
 		"subpatcher_template" : "",
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-21",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 15.0, 1069.0, 411.0, 22.0 ],
+					"text" : "script send world semiperm_40__steps 2.788392"
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-26",
 					"maxclass" : "newobj",
@@ -131,34 +143,6 @@
 					"numoutlets" : 0,
 					"patching_rect" : [ 553.0, 281.0, 150.0, 48.0 ],
 					"text" : "rate-limit the incoming hmd data to within the signal vector size"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-93",
-					"lastchannelcount" : 0,
-					"maxclass" : "live.gain~",
-					"numinlets" : 2,
-					"numoutlets" : 5,
-					"outlettype" : [ "signal", "signal", "", "float", "list" ],
-					"parameter_enable" : 1,
-					"patching_rect" : [ 220.0, 308.5, 123.0, 130.0 ],
-					"presentation" : 1,
-					"presentation_rect" : [ 487.0, 25.0, 68.0, 137.0 ],
-					"saved_attribute_attributes" : 					{
-						"valueof" : 						{
-							"parameter_longname" : "live.gain~[2]",
-							"parameter_mmax" : 6.0,
-							"parameter_mmin" : -70.0,
-							"parameter_shortname" : "live.gain~",
-							"parameter_type" : 0,
-							"parameter_unitstyle" : 4
-						}
-
-					}
-,
-					"varname" : "vrSource2CHMain[1]"
 				}
 
 			}
@@ -756,8 +740,8 @@
 					"id" : "obj-83",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
-					"numoutlets" : 2,
-					"outlettype" : [ "signal", "signal" ],
+					"numoutlets" : 1,
+					"outlettype" : [ "signal" ],
 					"patching_rect" : [ 50.0, 147.0, 877.0, 22.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 576.0, 10.0, 68.0, 22.0 ],
@@ -981,45 +965,6 @@
 				}
 
 			}
-, 			{
-				"box" : 				{
-					"id" : "obj-30",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 5,
-					"outlettype" : [ "signal", "signal", "signal", "signal", "" ],
-					"patching_rect" : [ 50.0, 200.0, 182.0, 22.0 ],
-					"text" : "vr.source~ 0 @position 0.75 1 -1",
-					"varname" : "source_speaker_1"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-32",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 5,
-					"outlettype" : [ "signal", "signal", "signal", "signal", "" ],
-					"patching_rect" : [ 50.0, 200.0, 182.0, 22.0 ],
-					"text" : "vr.source~ 0 @position 0.75 1 -1",
-					"varname" : "source_speaker_1[1]"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-33",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 5,
-					"outlettype" : [ "signal", "signal", "signal", "signal", "" ],
-					"patching_rect" : [ 150.0, 200.0, 175.0, 22.0 ],
-					"text" : "vr.source~ 1 @position 0.5 1 -1",
-					"varname" : "source_speaker_2"
-				}
-
-			}
  ],
 		"lines" : [ 			{
 				"patchline" : 				{
@@ -1168,48 +1113,6 @@
 				"patchline" : 				{
 					"destination" : [ "obj-81", 0 ],
 					"source" : [ "obj-29", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 1 ],
-					"source" : [ "obj-30", 1 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 0 ],
-					"source" : [ "obj-30", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 1 ],
-					"source" : [ "obj-32", 1 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 0 ],
-					"source" : [ "obj-32", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 1 ],
-					"source" : [ "obj-33", 1 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-68", 0 ],
-					"source" : [ "obj-33", 0 ]
 				}
 
 			}
@@ -1376,32 +1279,16 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-21", 1 ],
+					"source" : [ "obj-81", 2 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-46", 0 ],
 					"midpoints" : [ 485.666666666666629, 1012.5, 58.583333333333314, 1012.5, 58.583333333333314, 915.0, 75.5, 915.0 ],
 					"source" : [ "obj-81", 5 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-30", 0 ],
-					"order" : 1,
-					"source" : [ "obj-83", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-32", 0 ],
-					"order" : 0,
-					"source" : [ "obj-83", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-33", 0 ],
-					"source" : [ "obj-83", 1 ]
 				}
 
 			}
@@ -1466,7 +1353,6 @@
  ],
 		"parameters" : 		{
 			"obj-68" : [ "live.gain~[1]", "live.gain~", 0 ],
-			"obj-93" : [ "live.gain~[2]", "live.gain~", 0 ],
 			"parameterbanks" : 			{
 
 			}
@@ -1507,34 +1393,6 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "lfo.gendsp",
-				"bootpath" : "D:/github/mischmasch/max-msp",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "dualvco.gendsp",
-				"bootpath" : "D:/github/mischmasch/max-msp",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "vca.gendsp",
-				"bootpath" : "D:/github/mischmasch/max-msp",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "comparator.gendsp",
-				"bootpath" : "D:/github/mischmasch/max-msp",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
 				"name" : "genScripting.js",
 				"bootpath" : "D:/github/mischmasch/max-msp",
 				"patcherrelativepath" : ".",
@@ -1554,10 +1412,6 @@
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
-			}
-, 			{
-				"name" : "vr~.mxe64",
-				"type" : "mx64"
 			}
 , 			{
 				"name" : "vr~.mxe64",

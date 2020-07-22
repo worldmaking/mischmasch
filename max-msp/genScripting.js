@@ -163,6 +163,7 @@ var handleDelta = function(delta) {
 						posX = (delta.pos[0] + 3)
 						posY = (delta.pos[1] + 3) 
 						pathName = delta.path.split('.')[0] 
+						post(JSON.stringify(delta))
 						switch(delta.category){
 							
 							case "abstraction": 
@@ -227,7 +228,7 @@ var handleDelta = function(delta) {
 						
 						} else {
 							switch(kind){
-								
+								case "knob":
 								case 'small_knob':
 								case 'large_knob':
 								case 'tuning_knob':
@@ -547,8 +548,9 @@ var handleDelta = function(delta) {
 						var param = delta.path
 						param = param.replace(".", "__")
 						var cleaveParam = param.split('.')[0]
-						this.patcher.message("script", "send", "world", cleaveParam, delta.to)
-						outlet(2, "script", "send", "world", cleaveParam, delta.to)
+						var parameterValue = delta.to.split(" ")[1]
+						this.patcher.message("script", "send", "world", cleaveParam, parseFloat(parameterValue))
+						outlet(2, "script", "send", "world", cleaveParam, parseFloat(parameterValue))
 					break;
 					
 					case "history":	
