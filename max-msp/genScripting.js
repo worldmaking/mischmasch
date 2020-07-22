@@ -164,6 +164,7 @@ var handleDelta = function(delta) {
 						posY = (delta.pos[1] + 3) 
 						pathName = delta.path.split('.')[0] 
 						post(JSON.stringify(delta))
+						
 						switch(delta.category){
 							
 							case "abstraction": 
@@ -174,16 +175,33 @@ var handleDelta = function(delta) {
 
 								if(kind === "speaker"){
 									var speakerNumber = pathName.split('_')[1];
-									
-									// TODO this is one place where we need to deal with the speaker/vr_source lookup table
-									var newSpeaker = gen_patcher.newdefault([50, posY * 150, 'out', genOutCounter])
-									newSpeaker.varname = pathName;
+									// make gen 'out'										
+									var newOut = gen_patcher.newdefault([10, posY * 150, 'out', genOutCounter])
+									newOut.varname = pathName + '_out';
 			
+									// add in the 'speaker.gendsp'
+									var newSpeaker = gen_patcher.newdefault([25, posY * 150, 'speaker'])
+									newSpeaker.varname = pathName;
+
+									gen_patcher.message("script", "connect", newSpeaker.varname, 0, newOut.varname, 0);
+
+									// var setParamName = 
+									// paramX = paramCounter * 150
+									// // generate the setparam which the param will bind to
+									// var setparam = gen_patcher.newdefault([275, Ycounter * 2, "setparam", setparamName])
+									// setparam.varname = 'setparam_' + paramName
+									// gen_patcher.message("script", "connect", setparam.varname, 0, pathName, 0);
+
+									// // generate the param which the js script will bind to
+									// var param = gen_patcher.newdefault([600, Ycounter * 1.5, "param", paramName, delta.value])
+									// param.varname = paramName
+									// gen_patcher.message("script", "connect", param.varname, 0, attenuvertor.varname, 1);
+
 									//need to get its position in vr and apply that to a vr.source~ position
 									// 1420. 544. 289. 22.
 									
 									// if kind is speaker, connect its outlets to the out1 and out2 in gen~ world
-									//newSpeaker = gen_patcher.newdefault([20, Ycounter * 10, 'out', speakerNumber])
+									//newOut = gen_patcher.newdefault([20, Ycounter * 10, 'out', speakerNumber])
 									
 									
 									// add a vr.Source~ abstraction to parent, script the new out to this abstraction, use delta.pos to provide the vr.source~ position
