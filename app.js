@@ -110,11 +110,6 @@ let localConfig = {
   // this is set by the teaparty, or:
   //TODO option to set as localhost using a cli arg (todo)
   host: {},
-  // TODO determine where this should run. 
-  p2pSignalServer: {
-    ip: null,
-    port: null
-  },
   recordStatus: 0
 };
 
@@ -446,13 +441,6 @@ init();
 function pal(ip, port){
 
   // update the p2p webrtc client(s) with the new host ip/port
-  //TODO use the send_all_clients function for this. 
-  let configp2p = JSON.stringify({
-    cmd: 'p2pSignalServer',
-    date: Date.now(), 
-    data: localConfig.p2pSignalServer
-  })
-  sendAllLocalClients(configp2p)
 
   let deltaWebsocketAddress
   if(!argv.l){
@@ -631,14 +619,6 @@ function startLocalWebsocket(){
   localWebsocketServer.on('connection', function(ws, req) {
     localWebsocket = ws
    
-
-    // inform client that the p2p signal server is running on localhost
-    // let configp2p = JSON.stringify({
-    //   cmd: 'p2pSignalServer',
-    //   date: Date.now(), 
-    //   data: localConfig.p2pSignalServer
-    // })
-    // localWebsocket.send(configp2p)
     // do any
     console.log("server received a connection");
     // console.log("server has "+ws.clients.size+" connected clients");
@@ -733,7 +713,6 @@ function messageFromLocalClient(message, ws){
     break
 
     case 'deltas':
-      console.log(message)
       let deltaMsg = JSON.parse(message)
       try {
 
