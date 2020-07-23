@@ -192,6 +192,13 @@ if(USEWS || argv.w){
 					console.log('cursor position from client ' + msg.source + ': ', msg.data)
 				break
 
+				case 'hmd': {
+
+				} break;
+				case 'hands': {
+
+				} break;
+
 				default: console.log('unhandled msg: ', msg)
 			}
 		// } else {
