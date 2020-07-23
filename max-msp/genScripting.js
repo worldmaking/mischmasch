@@ -45,6 +45,10 @@ var scripting = {
 		newNodeCounter: 1,
 		feedbackConnections: 0
 
+	},
+	// need to keep track of knobs so we can treat them as inlets and script connect to their attenuvertors
+	knobs:{
+		// eg "path_path_#": "attenuvertor_path_#"
 	}
 }
 
@@ -259,6 +263,9 @@ var handleDelta = function(delta) {
 									setparamName = delta.path.split('.')[1]
 									attenuvertorName = paramName + '_attenuvertor'
 									
+									scripting.knobs[delta.path] = {
+										attenuvertor: attenuvertorName
+									}
 									
 									paramX = paramCounter * 150
 									// generate the setparam which the param will bind to
@@ -436,25 +443,29 @@ var handleDelta = function(delta) {
 
 			// create a patchcord!
 			case "connect":
-				var pathString
+				var arcString = '"' + delta.paths + '"'
+
 				
 				
-				if(nodes[pathString]){
+				if(nodes[arcString]){
 					// don't add a duplicate
 					// if this happens, it means something is wrong with the graph, maybe a delnode wasn't triggered or received, or duplicate deltas received
 					post('WARNING: received a connection delta that already exists in the graph. was filtered out, but need to check the delta round-trip\n\n')
 				} else {
-					pathString = '"' + delta.paths + '"' 
-					// add the node to the obj to prevent it being added as a duplicate
-					nodes[pathString] = {}
+					arcString = '"' + delta.paths + '"' 
+					// add the arc to the obj to prevent it being added as a duplicate
+					nodes[arcString] = {}
 
-					
 					var setOutlet = delta.paths[0].replace('.','__')
 					var setInlet = delta.paths[1].replace('.','__')
 					var input;
 					var output;
 					var attenuvertor = null 
-					if(delta.kind === 'small_knob' || delta.kind === 'large_knob' || delta.kind === 'knob'  ){
+
+					// if the inlet path (arc path [1]) is a knob, it will be found in the knobs object
+					// scripting.knobs[delta.paths[1]]
+					// then connect delta.paths[0] to the attenuvertor of delta.paths[1]
+					if(scripting.knobs[delta.paths[1]]){
 						attenuvertor = delta.paths[1].replace('.','__') + '_attenuvertor'
 					}
 
@@ -470,7 +481,6 @@ var handleDelta = function(delta) {
 					
 
 	
-					var selfPatch1 = delta.paths[0].split('.')[0]
 					var outletPath = delta.paths[0]
 					// detect a self-patch connection and insert a history object in between!
 					if (delta.paths[0].split('.')[0] === delta.paths[1].split('.')[0]){					
@@ -528,10 +538,10 @@ var handleDelta = function(delta) {
 			break;
 
 			case "disconnect":
-				var pathString = '"' + delta.paths + '"' 
-				if(nodes[pathString]){
+				var arcString = '"' + delta.paths + '"' 
+				if(nodes[arcString]){
 					// remove node from the nodes object
-					delete nodes[pathString]
+					delete nodes[arcString]
 
 					var setOutlet = delta.paths[0].replace('.','__')
 				
