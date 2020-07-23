@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 85.0, 85.0, 1290.0, 873.0 ],
+		"rect" : [ 85.0, 85.0, 559.0, 873.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -1435,7 +1435,7 @@
 					"numoutlets" : 5,
 					"outlettype" : [ "signal", "signal", "", "float", "list" ],
 					"parameter_enable" : 1,
-					"patching_rect" : [ 53.0, 141.0, 140.0, 130.0 ],
+					"patching_rect" : [ 53.0, 153.0, 140.0, 130.0 ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_longname" : "live.gain~[1]",
@@ -1500,6 +1500,20 @@
 					}
 ,
 					"text" : "node.script max_client.js @watch 1"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-5",
+					"linecount" : 5,
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 5,
+					"outlettype" : [ "signal", "signal", "signal", "signal", "" ],
+					"patching_rect" : [ 67.0, 61.0, 100.0, 77.0 ],
+					"text" : "vr.source~ 0 @position -1.392698 -0.874333 -0.344057",
+					"varname" : "source_speaker_15955235715570"
 				}
 
 			}
@@ -1682,6 +1696,20 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-68", 1 ],
+					"source" : [ "obj-5", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-68", 0 ],
+					"source" : [ "obj-5", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-13", 0 ],
 					"source" : [ "obj-50", 0 ]
 				}
@@ -1778,6 +1806,13 @@
 					"destination" : [ "obj-46", 0 ],
 					"midpoints" : [ 589.0, 609.5, 236.750000000000057, 609.5, 236.750000000000057, 533.0, 254.5, 533.0 ],
 					"source" : [ "obj-81", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-5", 0 ],
+					"source" : [ "obj-83", 0 ]
 				}
 
 			}
@@ -1896,6 +1931,27 @@
 				"implicit" : 1
 			}
 , 			{
+				"name" : "slew.gendsp",
+				"bootpath" : "D:/github/mischmasch/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "speaker.gendsp",
+				"bootpath" : "D:/github/mischmasch/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "saturate.gendsp",
+				"bootpath" : "D:/github/mischmasch/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
 				"name" : "genScripting.js",
 				"bootpath" : "D:/github/mischmasch/max-msp",
 				"patcherrelativepath" : ".",
@@ -1908,6 +1964,10 @@
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1
+			}
+, 			{
+				"name" : "vr~.mxe64",
+				"type" : "mx64"
 			}
 , 			{
 				"name" : "vr~.mxe64",
