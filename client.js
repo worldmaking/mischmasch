@@ -508,9 +508,12 @@ const UI = {
 						let path = module.kind;
 						path = gensym(path);
 						// send delta to spawn it:
-						let deltas = got.nodesToDeltas([module.node], [], path)
+						//let deltas = got.nodesToDeltas([module.node], [], path)
+						let nodes = {}
+						nodes[path] = module.node
+						let deltas = got.nodesToDeltas(nodes, [], "")
 						outgoingDeltas.push(deltas)
-						console.log("creating new node at", path, JSON.stringify(deltas))
+						//console.log("creating new node at", path, JSON.stringify(deltas))
 						// exit menu:
 						hand.state = "default";
 					}
