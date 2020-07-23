@@ -203,24 +203,24 @@ console.log(Object.keys(modules).length, "modules")
 
 fs.writeFileSync("menu.json", JSON.stringify(modules, null, "\t"), "utf-8");
 
-// now parse maxpats to turn them into scenes:
-fs.readdirSync(dirname).forEach((filename, i) => {
-	if (path.extname(filename) != ".maxpat") return;
-	const name = path.basename(filename).split(".")[0]
-	console.log("---- ", name)
-	// search for gen~ object in patcher, to convert it into a scene
-	JSON.parse(fs.readFileSync(filename, "utf-8")).patcher.boxes.forEach((box)=>{ 
-		let {id, maxclass, numinlets, numoutlets, patching_rect, text} = box.box
-		if (maxclass != "newobj") return;
+// // now parse maxpats to turn them into scenes:
+// fs.readdirSync(dirname).forEach((filename, i) => {
+// 	if (path.extname(filename) != ".maxpat") return;
+// 	const name = path.basename(filename).split(".")[0]
+// 	console.log("---- ", name)
+// 	// search for gen~ object in patcher, to convert it into a scene
+// 	JSON.parse(fs.readFileSync(filename, "utf-8")).patcher.boxes.forEach((box)=>{ 
+// 		let {id, maxclass, numinlets, numoutlets, patching_rect, text} = box.box
+// 		if (maxclass != "newobj") return;
 
-		let attributes = text.split("@")
-		let args = attributes.shift().split(" ");
-		let attrs = attributes.reduce((o, v)=>{
-			let idx = v.indexOf(" ")
-			o[v.substring(0, idx)] = v.substring(idx+1)
-			return o
-		}, {})
-		let op = args.shift();
-		console.log(op)
-	});
-});
+// 		let attributes = text.split("@")
+// 		let args = attributes.shift().split(" ");
+// 		let attrs = attributes.reduce((o, v)=>{
+// 			let idx = v.indexOf(" ")
+// 			o[v.substring(0, idx)] = v.substring(idx+1)
+// 			return o
+// 		}, {})
+// 		let op = args.shift();
+// 		console.log(op)
+// 	});
+// });
