@@ -34,6 +34,54 @@
 			}
 		}
 	},
+	"average": {
+		"_props": {
+			"kind": "average",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"seconds": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					0.001,
+					2
+				],
+				"value": "0.5",
+				"type": "float"
+			}
+		},
+		"signal": {
+			"_props": {
+				"kind": "inlet",
+				"index": 0
+			}
+		},
+		"average": {
+			"_props": {
+				"kind": "outlet",
+				"index": 0,
+				"history": false
+			}
+		},
+		"rms": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
 	"bi2uni": {
 		"_props": {
 			"kind": "bi2uni",
@@ -559,6 +607,42 @@
 			}
 		}
 	},
+	"monotonic": {
+		"_props": {
+			"kind": "monotonic",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"ramp": {
+			"_props": {
+				"kind": "inlet",
+				"index": 0
+			}
+		},
+		"ref_ramp": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"monotonic": {
+			"_props": {
+				"kind": "outlet",
+				"index": 0,
+				"history": false
+			}
+		}
+	},
 	"mooglo": {
 		"_props": {
 			"kind": "mooglo",
@@ -607,6 +691,49 @@
 			"_props": {
 				"kind": "outlet",
 				"index": 0,
+				"history": false
+			}
+		}
+	},
+	"pan2": {
+		"_props": {
+			"kind": "pan2",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"signal": {
+			"_props": {
+				"kind": "inlet",
+				"index": 0
+			}
+		},
+		"pan": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"mid": {
+			"_props": {
+				"kind": "outlet",
+				"index": 0,
+				"history": false
+			}
+		},
+		"side": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
 				"history": false
 			}
 		}
@@ -1347,6 +1474,58 @@
 			}
 		}
 	},
+	"slew": {
+		"_props": {
+			"kind": "slew",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"slew": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					0,
+					3
+				],
+				"value": "0.01",
+				"type": "float"
+			}
+		},
+		"decay": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					0,
+					3
+				],
+				"value": "0.1",
+				"type": "float"
+			}
+		},
+		"in0": {
+			"_props": {
+				"kind": "inlet",
+				"index": 0
+			}
+		},
+		"out0": {
+			"_props": {
+				"kind": "outlet",
+				"index": 0,
+				"history": false
+			}
+		}
+	},
 	"speaker": {
 		"_props": {
 			"kind": "speaker",
@@ -1507,6 +1686,70 @@
 			"_props": {
 				"kind": "outlet",
 				"index": 2,
+				"history": false
+			}
+		}
+	},
+	"swing": {
+		"_props": {
+			"kind": "swing",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"ramp": {
+			"_props": {
+				"kind": "inlet",
+				"index": 0
+			}
+		},
+		"swing": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"bouncy": {
+			"_props": {
+				"kind": "outlet",
+				"index": 0,
+				"history": false
+			}
+		},
+		"curvy": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		},
+		"kinky": {
+			"_props": {
+				"kind": "outlet",
+				"index": 2,
+				"history": false
+			}
+		},
+		"sticky": {
+			"_props": {
+				"kind": "outlet",
+				"index": 3,
+				"history": false
+			}
+		},
+		"whippy": {
+			"_props": {
+				"kind": "outlet",
+				"index": 4,
 				"history": false
 			}
 		}
