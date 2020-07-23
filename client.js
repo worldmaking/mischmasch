@@ -930,7 +930,11 @@ function initWindow() {
 	glfw.windowHint(glfw.OPENGL_FORWARD_COMPAT, 1);
 	glfw.windowHint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE);
 
-	window = glfw.createWindow(800, 800, "Test");
+	let h = 1024;
+	let vraspect = vrdim[0]/vrdim[1];
+	if (vraspect > 1.5) vraspect /= 2;
+	let w = Math.floor(h * vraspect)
+	window = glfw.createWindow(w, h, "Test");
 	if (!window) {
 		console.log("Failed to open GLFW window");
 		glfw.terminate();
