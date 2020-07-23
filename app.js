@@ -836,7 +836,6 @@ function getHistoryPropchanges(d){
       let srcPath = d.paths[0]
       let parent = srcPath.split('.')[0]
       let child = srcPath.split('.')[1]
-      console.log(srcPath)
       propchange = [ { 
         op: 'propchange',
         path: srcPath,
@@ -847,12 +846,16 @@ function getHistoryPropchanges(d){
       propchanges.push(propchange)
     }
   }
-  console.log(propchanges)
+  
   got.applyDeltasToGraph(localGraph, propchanges)
   // append the connection delta to the msg
   propchanges.push(d)
+  console.log(propchanges)
   return propchanges
 }
+
+
+
 
 function runGOT(src, delta){
   console.log('runGOT', src, delta)
