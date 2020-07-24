@@ -40,6 +40,31 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-25",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 2,
+					"outlettype" : [ "bang", "" ],
+					"patching_rect" : [ 671.0, 221.0, 83.0, 22.0 ],
+					"text" : "sel hardReset"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"color" : [ 0.811764705882353, 0.372549019607843, 0.372549019607843, 1.0 ],
+					"id" : "obj-24",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 671.0, 195.0, 143.0, 22.0 ],
+					"text" : "receive from_node_script"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-17",
 					"maxclass" : "message",
 					"numinlets" : 2,
@@ -1470,7 +1495,7 @@
 					"numoutlets" : 5,
 					"outlettype" : [ "signal", "signal", "", "float", "list" ],
 					"parameter_enable" : 1,
-					"patching_rect" : [ 53.0, 153.0, 140.0, 130.0 ],
+					"patching_rect" : [ 191.0, 221.0, 140.0, 130.0 ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_longname" : "live.gain~[1]",
@@ -1529,6 +1554,8 @@
 					"saved_object_attributes" : 					{
 						"autostart" : 0,
 						"defer" : 0,
+						"node_bin_path" : "",
+						"npm_bin_path" : "",
 						"watch" : 1
 					}
 ,
@@ -1671,6 +1698,20 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-25", 0 ],
+					"source" : [ "obj-24", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-54", 0 ],
+					"source" : [ "obj-25", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-54", 0 ],
 					"midpoints" : [ 783.5, 749.0, 634.0, 749.0, 634.0, 474.0, 634.0, 474.0, 634.0, 252.0, 680.5, 252.0 ],
 					"source" : [ "obj-26", 0 ]
@@ -1751,7 +1792,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-68", 0 ],
-					"midpoints" : [ 22.5, 138.25, 62.5, 138.25 ],
+					"midpoints" : [ 22.5, 138.25, 200.5, 138.25 ],
 					"source" : [ "obj-67", 0 ]
 				}
 
@@ -1912,7 +1953,7 @@
 ,
 		"dependency_cache" : [ 			{
 				"name" : "max_client.js",
-				"bootpath" : "~/Documents/msvr/max-msp",
+				"bootpath" : "D:/github/mischmasch/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1
@@ -1937,21 +1978,42 @@
 			}
 , 			{
 				"name" : "world.gendsp",
-				"bootpath" : "~/Documents/msvr/max-msp",
+				"bootpath" : "D:/github/mischmasch/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "wand.gendsp",
+				"bootpath" : "D:/github/mischmasch/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "s+h.gendsp",
+				"bootpath" : "D:/github/mischmasch/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "trig.gendsp",
+				"bootpath" : "D:/github/mischmasch/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "genScripting.js",
-				"bootpath" : "~/Documents/msvr/max-msp",
+				"bootpath" : "D:/github/mischmasch/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "deferlowScript.js",
-				"bootpath" : "~/Documents/msvr/max-msp",
+				"bootpath" : "D:/github/mischmasch/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1

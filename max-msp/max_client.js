@@ -111,6 +111,7 @@ connection.addEventListener('close', () => {
 	max.post('connection closed!')
 	connectionStatus = 0
 	max.outlet('toAudioviz', 0)
+	max.outlet('hardReset')
 	localGraph = {
 		nodes: {		
 		},
