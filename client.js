@@ -157,51 +157,62 @@ let localGraph = {
 
 let USEWS = true;
 let userDataChannel
+// use this to represent others' movements/presence in the world
+let pals = {}
 
 if(USEWS || argv.w){
 	USEWS = true
 	console.log('using websockets')
 
-	// userDataChannel = new ws('ws://mischmasch-userdata.herokuapp.com/8082');
-	userDataChannel = new rws('ws://mischmasch-userdata.herokuapp.com/8082', [], rwsOptions);
+	// // userDataChannel = new ws('ws://mischmasch-userdata.herokuapp.com/8082');
+	// userDataChannel = new rws('ws://mischmasch-userdata.herokuapp.com/8082', [], rwsOptions);
 
-	// teapartyWebsocket.addEventListener('message', (data) => {
-	// 	let msg = JSON.parse(data.data);
+	// // teapartyWebsocket.addEventListener('message', (data) => {
+	// // 	let msg = JSON.parse(data.data);
 
-	userDataChannel.addEventListener('open', (data) => {
-		userDataChannel.send(JSON.stringify({
-			cmd: 'handshake',
-			source: peerHandle,
-			data: 'highFive'
-		}));
-	});
+	// userDataChannel.addEventListener('open', (data) => {
+	// 	userDataChannel.send(JSON.stringify({
+	// 		cmd: 'handshake',
+	// 		source: peerHandle,
+	// 		data: 'highFive'
+	// 	}));
+	// });
 	
-	userDataChannel.addEventListener('message', (data) => {
-		// console.log(typeof data.data);
-		let msg = JSON.parse(data.data)
-		// ensure non JSON data doesn't get parsed
-		// if (typeof data.data === 'object' && data.data !== null){
+	// userDataChannel.addEventListener('message', (data) => {
+	// 	let msg = JSON.parse(data.data)
 			
-			switch(msg.cmd){
+	// 		switch(msg.cmd){
 
-				case 'handshake':
-					console.log('peer ' + msg.source + ' CONNECTED')
-				break
+	// 			case 'handshake':
+	// 				console.log('peer ' + msg.source + ' CONNECTED')
+	// 				pals[msg.source] = {
+	// 					hands: {},
+	// 					hmd: {}
+	// 				}
+	// 			break
 
-				case 'cursorPosition':
-					console.log('cursor position from client ' + msg.source + ': ', msg.data)
-				break
 
-				default: console.log('unhandled msg: ', msg)
-			}
-		// } else {
-			// console.log('message "' + data.data + '" received by userDataChannel is a ' + typeof data.data + ', expected JSON object')
-		// }
-	})
+	// 			case "hands":
+	// 				// Graham, you can use this object elsewhere to access where in the world to place a pal's hand controllers
+	// 				pals[msg.source].hands = msg.data
+	// 			break
 
-	userDataChannel.addEventListener('error', (err) => {
-		console.log(err)
-	})
+	// 			case "hmd":
+	// 				// Graham, you can use this object elsewhere to access where in the world to place a pal's hand controllers
+	// 				pals[msg.source].hmd = msg.data
+	// 			break
+
+	// 			case 'cursorPosition':
+	// 				console.log('cursor position from client ' + msg.source + ': ', msg.data)
+	// 			break
+
+	// 			default: console.log('unhandled msg: ', msg)
+	// 		}
+	// })
+
+	// userDataChannel.addEventListener('error', (err) => {
+	// 	console.log(err)
+	// })
 } else {
 	// no ws used
 	demoScene = path.join(__dirname, "temp", "simple.json")
@@ -2311,7 +2322,7 @@ function animate() {
 		}
 
 
-		// HMD pos
+		// right hand pos
 		if(UI.hands[1]){
 			let wandsMessage = JSON.stringify({
 				cmd: "rightWandPos",
@@ -2320,6 +2331,36 @@ function animate() {
 			});
 			sendToAppJS(wandsMessage);
 		}
+
+		// client<>client userMovement
+		// if(userDataChannel){
+		// 	// hands
+		// 	if(UI.hands){
+		// 		let wandsMessage = JSON.stringify({
+		// 			cmd: "hands",
+		// 			source: peerHandle,
+		// 			data: {
+		// 				left: {
+		// 					pos: UI.hands[0].pos, 
+		// 					orient: UI.hands[0].orient
+		// 				},
+		// 				right: {
+		// 					pos: UI.hands[1].pos, 
+		// 					orient: UI.hands[1].orient
+		// 				}
+		// 			}
+		// 		});
+		// 		userDataChannel.send(wandsMessage);
+		// 	}
+		// 	if(UI.hmd){
+		// 		let hmdMessage = JSON.stringify({
+		// 			cmd: "hmd",
+		// 			source: peerHandle,
+		// 			data: UI.hmd
+		// 		})
+		// 		userDataChannel.send(hmdMessage);
+		// 	}
+		// }
 
 	} else if (!USEWS) {
 		// otherwise, just move them to our incoming list, 
