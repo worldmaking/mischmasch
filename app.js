@@ -533,6 +533,15 @@ function pal(ip, port){
             sayGoodbye()
  
           break
+
+          case "keyFrame":
+            //TODO need to decide whether to run sayGoodbye(), or just discard pending edits and set localGraph = keyFrame (which would likely require some delta inversion sent to client...)
+            // Periodically (e.g. 20 seconds) the host broadcasts a current copy of the graph to all pals. On receiving a keyframe, the pal checks it is deep equal to their own version of the graph. If it is not, they discard any pending edits and reset their scene to match the keyframe. So long as we implement conflict resolution well, this keyframe-based regraphing should be very rare. The keyframe is more of a debugging/verification tool than anything. 
+            let keyFrameCheck = got.deepEqual(msg.data, localGraph)
+            if (keyFrameCheck == false){
+              console.log('keyFrame check detected our graph differs from host\'s graph. dev decide what should be done here')
+            }
+            break
           case 'ping':
             // keepAlive for heroku instance
             let keepAlive = JSON.stringify({
