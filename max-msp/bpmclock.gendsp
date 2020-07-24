@@ -44,7 +44,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 505.0, 65.0, 25.0, 22.0 ],
+					"patching_rect" : [ 517.0, 144.0, 25.0, 22.0 ],
 					"text" : "trig"
 				}
 
@@ -68,8 +68,8 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 287.0, 65.0, 47.0, 22.0 ],
-					"text" : "schmitt"
+					"patching_rect" : [ 287.0, 65.0, 31.0, 22.0 ],
+					"text" : "bool"
 				}
 
 			}
@@ -92,7 +92,7 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 505.0, 30.0, 67.0, 22.0 ],
+					"patching_rect" : [ 517.0, 109.0, 67.0, 22.0 ],
 					"text" : "in 2 rewind"
 				}
 
@@ -235,8 +235,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 287.0, 30.0, 185.0, 22.0 ],
-					"text" : "param enable 1 @min 0 @max 1"
+					"patching_rect" : [ 287.0, 30.0, 290.0, 22.0 ],
+					"text" : "param enable 1 @min 0 @max 1 @comment integer"
 				}
 
 			}

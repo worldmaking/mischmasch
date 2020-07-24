@@ -39,9 +39,33 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
-					"id" : "obj-38",
+					"id" : "obj-40",
 					"maxclass" : "newobj",
 					"numinlets" : 2,
+					"numoutlets" : 2,
+					"outlettype" : [ "signal", "signal" ],
+					"patching_rect" : [ 227.0, 121.0, 68.0, 22.0 ],
+					"text" : "gen~ ms2lr"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-39",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 2,
+					"outlettype" : [ "signal", "signal" ],
+					"patching_rect" : [ 150.0, 121.0, 68.0, 22.0 ],
+					"text" : "gen~ lr2ms"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-38",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
 					"numoutlets" : 5,
 					"outlettype" : [ "signal", "signal", "signal", "signal", "signal" ],
 					"patching_rect" : [ 691.0, 104.0, 70.0, 22.0 ],
@@ -281,7 +305,7 @@
 				"box" : 				{
 					"id" : "obj-18",
 					"maxclass" : "newobj",
-					"numinlets" : 2,
+					"numinlets" : 3,
 					"numoutlets" : 1,
 					"outlettype" : [ "signal" ],
 					"patching_rect" : [ 335.5, 171.0, 59.0, 22.0 ],
@@ -342,8 +366,8 @@
 					"id" : "obj-13",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
-					"numoutlets" : 2,
-					"outlettype" : [ "signal", "signal" ],
+					"numoutlets" : 3,
+					"outlettype" : [ "signal", "signal", "signal" ],
 					"patching_rect" : [ 234.0, 392.0, 74.0, 22.0 ],
 					"text" : "gen~ squine"
 				}
@@ -365,7 +389,7 @@
 				"box" : 				{
 					"id" : "obj-11",
 					"maxclass" : "newobj",
-					"numinlets" : 1,
+					"numinlets" : 2,
 					"numoutlets" : 3,
 					"outlettype" : [ "signal", "signal", "signal" ],
 					"patching_rect" : [ 331.0, 380.0, 68.0, 22.0 ],
@@ -377,7 +401,7 @@
 				"box" : 				{
 					"id" : "obj-10",
 					"maxclass" : "newobj",
-					"numinlets" : 1,
+					"numinlets" : 2,
 					"numoutlets" : 2,
 					"outlettype" : [ "signal", "signal" ],
 					"patching_rect" : [ 406.5, 419.0, 78.0, 22.0 ],
@@ -401,7 +425,7 @@
 				"box" : 				{
 					"id" : "obj-8",
 					"maxclass" : "newobj",
-					"numinlets" : 1,
+					"numinlets" : 2,
 					"numoutlets" : 3,
 					"outlettype" : [ "signal", "signal", "signal" ],
 					"patching_rect" : [ 568.0, 433.0, 54.0, 22.0 ],
@@ -413,7 +437,7 @@
 				"box" : 				{
 					"id" : "obj-7",
 					"maxclass" : "newobj",
-					"numinlets" : 1,
+					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "signal" ],
 					"patching_rect" : [ 386.5, 455.0, 78.0, 22.0 ],
@@ -756,6 +780,20 @@
 			}
 , 			{
 				"name" : "swing.gendsp",
+				"bootpath" : "~/code/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "lr2ms.gendsp",
+				"bootpath" : "~/code/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "ms2lr.gendsp",
 				"bootpath" : "~/code/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",

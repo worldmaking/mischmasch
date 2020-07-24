@@ -1536,23 +1536,6 @@
 				}
 
 			}
-<<<<<<< HEAD
-=======
-, 			{
-				"box" : 				{
-					"id" : "obj-5",
-					"linecount" : 5,
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 5,
-					"outlettype" : [ "signal", "signal", "signal", "signal", "" ],
-					"patching_rect" : [ 50.0, 200.0, 100.0, 77.0 ],
-					"text" : "vr.source~ 0 @position -0.129229 1.007862 -0.660174",
-					"varname" : "source_speaker_1595538699005"
-				}
-
-			}
->>>>>>> dcdf10ccf546641b1318623b82fcbc249e91f891
  ],
 		"lines" : [ 			{
 				"patchline" : 				{
@@ -1960,51 +1943,6 @@
 				"implicit" : 1
 			}
 , 			{
-<<<<<<< HEAD
-=======
-				"name" : "speaker.gendsp",
-				"bootpath" : "~/Documents/msvr/max-msp",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "saturate.gendsp",
-				"bootpath" : "~/Documents/msvr/max-msp",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "squine.gendsp",
-				"bootpath" : "~/Documents/msvr/max-msp",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "lfo.gendsp",
-				"bootpath" : "~/Documents/msvr/max-msp",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "trig.gendsp",
-				"bootpath" : "~/Documents/msvr/max-msp",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "vca.gendsp",
-				"bootpath" : "~/Documents/msvr/max-msp",
-				"patcherrelativepath" : ".",
-				"type" : "gDSP",
-				"implicit" : 1
-			}
-, 			{
->>>>>>> dcdf10ccf546641b1318623b82fcbc249e91f891
 				"name" : "genScripting.js",
 				"bootpath" : "~/Documents/msvr/max-msp",
 				"patcherrelativepath" : ".",

@@ -181,6 +181,7 @@ if(USEWS || argv.w){
 	// userDataChannel.addEventListener('message', (data) => {
 	// 	let msg = JSON.parse(data.data)
 			
+<<<<<<< HEAD
 	// 		switch(msg.cmd){
 
 	// 			case 'handshake':
@@ -213,6 +214,34 @@ if(USEWS || argv.w){
 	// userDataChannel.addEventListener('error', (err) => {
 	// 	console.log(err)
 	// })
+=======
+			switch(msg.cmd){
+
+				case 'handshake':
+					console.log('peer ' + msg.source + ' CONNECTED')
+				break
+
+				case 'cursorPosition':
+					console.log('cursor position from client ' + msg.source + ': ', msg.data)
+				break
+
+				case 'hmd': {
+					//
+				} break;
+				case 'hands': {
+					//
+				} break;
+				default: console.log('unhandled msg: ', msg)
+			}
+		// } else {
+			// console.log('message "' + data.data + '" received by userDataChannel is a ' + typeof data.data + ', expected JSON object')
+		// }
+	})
+
+	userDataChannel.addEventListener('error', (err) => {
+		console.log(err)
+	})
+>>>>>>> 192036a0c5bb344fc8239c4275f6c0afdf95fae1
 } else {
 	// no ws used
 	demoScene = path.join(__dirname, "temp", "simple.json")
@@ -2398,31 +2427,6 @@ function draw(eye=0) {
 // BOOT SEQUENCE
 //////////////////////////////////////////////////////////////////////////////////////////
 
-
-function initMenu(menuModules) {
-	let module_names = Object.keys(menuModules)
-		//.concat(operatorNames)
-	let ncols = 16
-	let nrows = Math.min(6, Math.ceil(module_names.length / ncols));
-	let i = 0;
-    for (let row = 0; row < nrows; row++) {
-        for(let col = 0; col < ncols && i < module_names.length; col++, i++){
-			let name = module_names[i]
-			let theta = col * (2 * Math.PI) / ncols;
-            let r = 1;
-            let x = r * Math.sin(theta);
-            let z = r * Math.cos(theta);
-			let y = 1.1 + -.4 * (row - (nrows/2));
-			
-			let module = menuModules[name]
-			quat.fromEuler(module._props.orient, 0, 180 + theta*180/Math.PI, 0)
-			vec3.set(module._props.pos, x, y, z);
-		}
-	}
-	return menuModules
-}
-
-
 function serverConnect() {
 	const url = 'ws://localhost:8080'
 	socket = new ws(url)
@@ -2503,7 +2507,7 @@ async function init() {
 
 	UI.init(renderer, gl)
 
-	menuGraph.nodes = initMenu(menuModules);
+	menuGraph.nodes = menuModules;
 	menuScene = makeSceneGraph(renderer, gl)
 	menuScene.init(gl)
 	menuScene.rebuild(menuGraph)

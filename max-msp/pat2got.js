@@ -2,16 +2,14 @@ const fs = require("fs"),
 	path = require("path"),
 	assert = require("assert")
 
+const { vec2, vec3, vec4, quat, mat2, mat2d, mat3, mat4} = require("gl-matrix")
+
 // folder to search for gendsps:
 let dirname = __dirname
 
-let modules = {
-	"control":{
-		"_props":{ "kind":"param", "category":"abstraction", "pos": [0,0,0], "orient": [0, 0, 0, 1] },
-		"value":{"_props":{"kind":"large_knob", "range":[0,1], "value":0}},
-		"output":{"_props":{"kind":"outlet","index":0, "history": false}}
-	},
-}
+let modules = []
+let operators = []
+
 fs.readdirSync(dirname).forEach((filename, i) => {
 	if (path.extname(filename) != ".gendsp") return;
 	const name = path.basename(filename).split(".")[0]
@@ -80,8 +78,7 @@ fs.readdirSync(dirname).forEach((filename, i) => {
 	knobs.sort((a,b)=>(a.y-b.y)*3+(a.x-b.x)).forEach(v=>{ module[v.name] = v.module;});
 	inlets.sort((a,b)=>(a.module._props.index-b.module._props.index)).forEach(v=>{ module[v.name] = v.module;});
 	outlets.sort((a,b)=>(a.module._props.index-b.module._props.index)).forEach(v=>{ module[v.name] = v.module;});
-	modules[name] = module
-
+	modules.push(module)
 	delete module.parts
 })
 
@@ -135,73 +132,44 @@ ops.forEach(op=>{
 		out_names.forEach((k,i)=>{
 			module[k] = { _props: { kind:"outlet", index:i, history:false }}
 		});
-		modules[name] = module
+		operators.push(module)
 	}
-	/*
-	
-  
-  let name = op.op
-  
-  let ctors = op.constructors
-  let inputs = op.inputs
-  let outputs = op.outputs
-  let specification = op.category
-  console.log(op.category)
-  //console.log(op)
-
-  let default_ctor = ctors[ctors.length-1]
-  let ninlets = default_ctor.inlets.length
-  let noutlets = outputs.length
-  //console.log(name,ninlets,noutlets)
-  // skip objects that need args
-  if (Array.isArray(default_ctor.arguments) && default_ctor.arguments.length > 0) continue;
-
-  // skip constants for now
-  if (op.category == "constant") continue;
-
-  // only handle objects with fixed no. inlets / outlets
-  if (ninlets !== undefined && noutlets !== undefined) {
-
-    let in_names = default_ctor.inlets
-    let out_names = outputs.map(o => o.name)
-    //console.log(outputs.map(o => o.name))
-
-    let codes = [`
-      { "op":"newnode", "path":"\${path}", "kind":"${name}", "specification":"${specification}","category":"operator", "pos":[0,0,0], "orient":[0,0,0,1] }`];
-
-    for (let i=0; i<in_names.length; i++) {
-      let inlet_name = in_names[i]
-      
-      
-      codes.push(`
-      { "op":"newnode", "kind":"inlet", "path":"\${path}.${inlet_name}", "specification":"${specification}", "category":"operator", "index":${i} }`);
-    }
-    for (let i=0; i<out_names.length; i++) {
-      let outlet_name = out_names[i]
-      //console.log(outlet_name)
-      codes.push(`
-      { "op":"newnode", "kind":"outlet", "path":"\${path}.${outlet_name}", "specification":"${specification}", "category":"operator", "index":${i} }`);
-    }
-
-
-    operator_constructors.push(`
-  "${name}": function(path) { 
-    return JSON.parse(\`[${codes.join(",")}
-    ]\`);
-  }`)
-
-
-  } else {
-    //if (!Array.isArray(default_ctor.inlets)) console.log("weird inlets", name, default_ctor.inlets, outputs)
-    //if (!Array.isArray(outputs)) console.log("weird outputs", name, default_ctor.inlets, outputs)
-  }
-}
-*/
 })
 
-console.log(Object.keys(modules).length, "modules")
+let count = modules.length + operators.length
+console.log(modules.length, "modules", operators.length, "operators", count, "total")
 
-fs.writeFileSync("menu.json", JSON.stringify(modules, null, "\t"), "utf-8");
+
+// now sort these into something meaningful:
+modules.sort((a,b) => a._props.kind < b._props.kind ? -1 : 1)
+operators.sort((a,b) => a._props.kind < b._props.kind ? -1 : 1)
+
+modules = modules.concat(operators)
+
+let ncols = 16
+let nrows = Math.min(6, Math.ceil(count / ncols));
+let i = 0;
+for (let row = 0; row < nrows; row++) {
+	for(let col = 0; col < ncols && i < modules.length; col++, i++){
+
+		let module = modules[i]
+
+		let theta = col * (-2 * Math.PI) / ncols;
+		let r = 1;
+		let x = r * Math.sin(theta);
+		let z = r * Math.cos(theta);
+		let y = 2-((i / modules.length)*2)//1 - 0.4 * (row - (nrows/2));
+		
+		quat.fromEuler(module._props.orient, 0, 180 + theta*180/Math.PI, 0)
+		vec3.set(module._props.pos, x, y, z);
+	}
+}
+
+// objectify:
+let menu = {}
+modules.map(m => menu[m._props.kind] = m)
+
+fs.writeFileSync("menu.json", JSON.stringify(menu, null, "\t"), "utf-8");
 
 // // now parse maxpats to turn them into scenes:
 // fs.readdirSync(dirname).forEach((filename, i) => {
