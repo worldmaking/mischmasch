@@ -222,39 +222,19 @@ let guestlist = {
 
 }
 
-let blankifyScene = async () => { 
-
-    let deltas = got.deltasFromGraph(localGraph, []);
-    let inverse = got.inverseDelta(deltas)
-    localGraph = got.applyDeltasToGraph(localGraph, inverse)
-    return inverse
-
-};
-
-
 function sayGoodbye() {
 
-  blankifyScene().then((inverse) => {
-    let blankify = JSON.stringify({
-      cmd: 'deltas',
-      date: Date.now(), 
-      data: inverse
-    })
-    sendAllLocalClients(blankify)
 
-    let nuke = JSON.stringify({
-      cmd: 'nuke',
-      date: Date.now(), 
-      data: 'nuke'
-    })
-    sendAllLocalClients(nuke)
+  localWebsocketServer.clients.forEach(function each(client) {
+    try {
+      client.close();
+    } catch (e) {
+      console.error(e);
+    };
+  });
 
-    
-    teapartyWebsocket.close()
-  })
-
+    deltaWebsocket.close()
   
-
   teapartyWebsocket.addEventListener('close', () => {
     isConnectedToteaparty = 0;
     deltaWebsocket.close()
@@ -547,7 +527,9 @@ function pal(ip, port){
 
           case "nuclearOption":
             // line from a certain movie...
-            console.log(msg.data)
+            console.log(msg.quote)
+
+            // kick both clients, leave teaparty, rejoin...
             sayGoodbye()
  
           break
@@ -713,39 +695,56 @@ function messageFromLocalClient(message, ws){
     break
 
     case 'deltas':
+      let attempt 
       let deltaMsg = JSON.parse(message)
       try {
 
-        got.applyDeltasToGraph(localGraph, deltaMsg.data);
+        attempt = got.applyDeltasToGraph(localGraph, deltaMsg.data);
 
-
+        
       } catch (e) {
         console.warn(e);
       }
-      // feedback path stuff
-      for(i=0;i<deltaMsg.data.length; i++){
-        // if a connection delta, check if history node is needed: 
-        if(deltaMsg.data[i].op === 'connect'){
-          console.log(deltaMsg.data[i])
-          let historyDelta = getHistoryPropchanges(deltaMsg.data[i])
-          let msg = JSON.stringify({
-            cmd: 'deltas',
-            date: Date.now(),
-            data: historyDelta
-          })
-          sendAllLocalClients(msg)
-          deltaWebsocket.send(msg)
-        }
-        else {
-          let msg = JSON.stringify({
-            cmd: 'deltas',
-            date: Date.now(),
-            data: deltaMsg.data
-          })
-          
-          sendAllLocalClients(msg)
-          deltaWebsocket.send(msg)
-          
+      // if the got detected a malformed delta, it will be reported as an object in an array after the graph
+      if (attempt[1]){
+        console.log(attempt[1])
+        // report malformed delta to client
+        let clientMsg = JSON.stringify({
+          cmd: 'nuke',
+          data: attempt[1]
+        })
+        localWebsocket.send(clientMsg)
+        // then disconnect, forcing it to wipe its scene and rejoin
+        localWebsocket.close()
+
+        return
+      } else {
+        // got detected no malformed deltas, so we can proceed:
+        // feedback path stuff
+        for(i=0;i<deltaMsg.data.length; i++){
+          // if a connection delta, check if history node is needed: 
+          if(deltaMsg.data[i].op === 'connect'){
+            console.log(deltaMsg.data[i])
+            let historyDelta = getHistoryPropchanges(deltaMsg.data[i])
+            let msg = JSON.stringify({
+              cmd: 'deltas',
+              date: Date.now(),
+              data: historyDelta
+            })
+            sendAllLocalClients(msg)
+            deltaWebsocket.send(msg)
+          }
+          else {
+            let msg = JSON.stringify({
+              cmd: 'deltas',
+              date: Date.now(),
+              data: deltaMsg.data
+            })
+            
+            sendAllLocalClients(msg)
+            deltaWebsocket.send(msg)
+            
+          }
         }
       } 
       

@@ -2170,7 +2170,7 @@ function animate() {
 				//console.log('incomingDelta', delta)
 				got.applyDeltasToGraph(localGraph, delta);
 
-				fs.writeFileSync("_debugCurrentGraph.json", JSON.stringify(localGraph, null, "\t"), "utf8");
+				// fs.writeFileSync("_debugCurrentGraph.json", JSON.stringify(localGraph, null, "\t"), "utf8");
 			} catch (e) {
 				console.warn(e);
 			}
@@ -2432,7 +2432,7 @@ function serverConnect() {
 		setTimeout(function(){
 			console.log("websocket reconnecting");
 			serverConnect();
-		}, 2000);		
+		}, 5000);		
 	}
 	socket.onmessage = (e) => {
 		if (e.data instanceof ArrayBuffer) {
@@ -2457,6 +2457,23 @@ function onServerMessage(msg, sock) {
 		case "audiovizLookup":
 			console.log(msg.data)
 			// this is where we get the state of a node's output, sent from the gen patcher!
+		break
+
+		case "nuke":
+			// either app.js or host.js detected that this client has sent one or more malformed deltas. so, clear the localscene here, wipe delta history and all buffers, then request the current scene from app.js
+			// find out what the malformed delta was. one day this will be very useful for debugging whilst in VR!
+			console.log(msg.data)
+		
+			// disable sending deltas
+			socket.close()
+			// wipe the scene
+			localGraph = {
+				nodes: {}, arcs: []
+			}
+			mainScene.rebuild(localGraph)
+			
+			// reconnect to app.js thereby receiving current state of scene
+			serverConnect()
 		break
 
         default:
