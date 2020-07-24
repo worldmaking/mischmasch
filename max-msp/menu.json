@@ -147,7 +147,7 @@
 					1
 				],
 				"value": "1",
-				"type": "float"
+				"type": "int"
 			}
 		},
 		"pause": {
@@ -607,6 +607,49 @@
 			}
 		}
 	},
+	"lr2ms": {
+		"_props": {
+			"kind": "lr2ms",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"L": {
+			"_props": {
+				"kind": "inlet",
+				"index": 0
+			}
+		},
+		"R": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"mid": {
+			"_props": {
+				"kind": "outlet",
+				"index": 0,
+				"history": false
+			}
+		},
+		"side": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
+				"history": false
+			}
+		}
+	},
 	"monotonic": {
 		"_props": {
 			"kind": "monotonic",
@@ -687,10 +730,59 @@
 				"index": 0
 			}
 		},
+		"pitch_v": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
 		"filtered": {
 			"_props": {
 				"kind": "outlet",
 				"index": 0,
+				"history": false
+			}
+		}
+	},
+	"ms2lr": {
+		"_props": {
+			"kind": "ms2lr",
+			"category": "abstraction",
+			"pos": [
+				0,
+				0,
+				0
+			],
+			"orient": [
+				0,
+				0,
+				0,
+				1
+			]
+		},
+		"mid": {
+			"_props": {
+				"kind": "inlet",
+				"index": 0
+			}
+		},
+		"side": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
+		"L": {
+			"_props": {
+				"kind": "outlet",
+				"index": 0,
+				"history": false
+			}
+		},
+		"R": {
+			"_props": {
+				"kind": "outlet",
+				"index": 1,
 				"history": false
 			}
 		}
@@ -723,14 +815,14 @@
 				"index": 1
 			}
 		},
-		"mid": {
+		"L": {
 			"_props": {
 				"kind": "outlet",
 				"index": 0,
 				"history": false
 			}
 		},
-		"side": {
+		"R": {
 			"_props": {
 				"kind": "outlet",
 				"index": 1,
@@ -859,10 +951,16 @@
 				"type": "float"
 			}
 		},
-		"audio": {
+		"pitch_v": {
 			"_props": {
 				"kind": "inlet",
 				"index": 0
+			}
+		},
+		"audio": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
 			}
 		},
 		"pulsared": {
@@ -918,10 +1016,16 @@
 				"type": "float"
 			}
 		},
-		"hardsync": {
+		"pitch_v": {
 			"_props": {
 				"kind": "inlet",
 				"index": 0
+			}
+		},
+		"hardsync": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
 			}
 		},
 		"pulse": {
@@ -988,8 +1092,8 @@
 			"_props": {
 				"kind": "knob",
 				"range": [
-					-1,
-					1
+					-2,
+					2
 				],
 				"value": "0",
 				"type": "float"
@@ -1095,7 +1199,7 @@
 					1,
 					32
 				],
-				"value": "1",
+				"value": "16",
 				"type": "int"
 			}
 		},
@@ -1106,7 +1210,7 @@
 					1,
 					32
 				],
-				"value": "4",
+				"value": "32",
 				"type": "int"
 			}
 		},
@@ -1140,15 +1244,26 @@
 				1
 			]
 		},
-		"steps": {
+		"numer": {
 			"_props": {
 				"kind": "knob",
 				"range": [
 					1,
 					32
 				],
-				"value": "",
-				"type": "float"
+				"value": "1",
+				"type": "int"
+			}
+		},
+		"denom": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					1,
+					32
+				],
+				"value": "4",
+				"type": "int"
 			}
 		},
 		"ramp": {
@@ -1255,7 +1370,13 @@
 				"index": 1
 			}
 		},
-		"s&h": {
+		"gate": {
+			"_props": {
+				"kind": "inlet",
+				"index": 2
+			}
+		},
+		"held": {
 			"_props": {
 				"kind": "outlet",
 				"index": 0,
@@ -1340,6 +1461,12 @@
 				],
 				"value": "0",
 				"type": "float"
+			}
+		},
+		"pitch_v": {
+			"_props": {
+				"kind": "inlet",
+				"index": 0
 			}
 		},
 		"saw": {
@@ -1512,13 +1639,13 @@
 				"type": "float"
 			}
 		},
-		"in0": {
+		"input": {
 			"_props": {
 				"kind": "inlet",
 				"index": 0
 			}
 		},
-		"out0": {
+		"slewed": {
 			"_props": {
 				"kind": "outlet",
 				"index": 0,
@@ -1609,6 +1736,12 @@
 				"type": "float"
 			}
 		},
+		"pitch_v": {
+			"_props": {
+				"kind": "inlet",
+				"index": 0
+			}
+		},
 		"squine": {
 			"_props": {
 				"kind": "outlet",
@@ -1620,6 +1753,13 @@
 			"_props": {
 				"kind": "outlet",
 				"index": 1,
+				"history": false
+			}
+		},
+		"tri": {
+			"_props": {
+				"kind": "outlet",
+				"index": 2,
 				"history": false
 			}
 		}
@@ -1668,6 +1808,12 @@
 				"index": 0
 			}
 		},
+		"pitch_v": {
+			"_props": {
+				"kind": "inlet",
+				"index": 1
+			}
+		},
 		"low": {
 			"_props": {
 				"kind": "outlet",
@@ -1706,16 +1852,21 @@
 				1
 			]
 		},
+		"swing": {
+			"_props": {
+				"kind": "knob",
+				"range": [
+					-1,
+					1
+				],
+				"value": "0.16",
+				"type": "float"
+			}
+		},
 		"ramp": {
 			"_props": {
 				"kind": "inlet",
 				"index": 0
-			}
-		},
-		"swing": {
-			"_props": {
-				"kind": "inlet",
-				"index": 1
 			}
 		},
 		"bouncy": {
@@ -1888,7 +2039,13 @@
 				1
 			]
 		},
-		"": {
+		"unipolar": {
+			"_props": {
+				"kind": "inlet",
+				"index": 0
+			}
+		},
+		"bipolar": {
 			"_props": {
 				"kind": "outlet",
 				"index": 0,

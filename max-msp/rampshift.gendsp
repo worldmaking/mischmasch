@@ -65,11 +65,11 @@
 				"box" : 				{
 					"id" : "obj-12",
 					"maxclass" : "newobj",
-					"numinlets" : 1,
+					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 246.0, 110.0, 21.0, 22.0 ],
-					"text" : "int"
+					"patching_rect" : [ 255.0, 110.0, 39.0, 22.0 ],
+					"text" : "round"
 				}
 
 			}
@@ -77,11 +77,11 @@
 				"box" : 				{
 					"id" : "obj-11",
 					"maxclass" : "newobj",
-					"numinlets" : 1,
+					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 212.0, 76.0, 21.0, 22.0 ],
-					"text" : "int"
+					"patching_rect" : [ 212.0, 76.0, 39.0, 22.0 ],
+					"text" : "round"
 				}
 
 			}
@@ -92,8 +92,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 246.0, 76.0, 297.0, 22.0 ],
-					"text" : "param denom 4 @min 1 @max 32 @comment integer"
+					"patching_rect" : [ 255.0, 76.0, 304.0, 22.0 ],
+					"text" : "param denom 32 @min 1 @max 32 @comment integer"
 				}
 
 			}
@@ -104,8 +104,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 212.0, 39.0, 296.0, 22.0 ],
-					"text" : "param numer 1 @min 1 @max 32 @comment integer"
+					"patching_rect" : [ 212.0, 39.0, 301.0, 22.0 ],
+					"text" : "param numer 16 @min 1 @max 32 @comment integer"
 				}
 
 			}

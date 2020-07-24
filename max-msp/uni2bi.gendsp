@@ -3,8 +3,8 @@
 		"fileversion" : 1,
 		"appversion" : 		{
 			"major" : 8,
-			"minor" : 0,
-			"revision" : 8,
+			"minor" : 1,
+			"revision" : 2,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
@@ -67,8 +67,8 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 50.0, 245.0, 176.0, 22.0 ],
-					"text" : "out 1 @comment output:bipolar"
+					"patching_rect" : [ 50.0, 245.0, 75.0, 22.0 ],
+					"text" : "out 1 bipolar"
 				}
 
 			}
@@ -79,8 +79,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 50.0, 14.0, 168.0, 22.0 ],
-					"text" : "in 1 @comment input:unipolar"
+					"patching_rect" : [ 50.0, 14.0, 74.0, 22.0 ],
+					"text" : "in 1 unipolar"
 				}
 
 			}
