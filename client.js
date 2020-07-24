@@ -181,7 +181,6 @@ if(USEWS || argv.w){
 	// userDataChannel.addEventListener('message', (data) => {
 	// 	let msg = JSON.parse(data.data)
 			
-<<<<<<< HEAD
 	// 		switch(msg.cmd){
 
 	// 			case 'handshake':
@@ -214,34 +213,6 @@ if(USEWS || argv.w){
 	// userDataChannel.addEventListener('error', (err) => {
 	// 	console.log(err)
 	// })
-=======
-			switch(msg.cmd){
-
-				case 'handshake':
-					console.log('peer ' + msg.source + ' CONNECTED')
-				break
-
-				case 'cursorPosition':
-					console.log('cursor position from client ' + msg.source + ': ', msg.data)
-				break
-
-				case 'hmd': {
-					//
-				} break;
-				case 'hands': {
-					//
-				} break;
-				default: console.log('unhandled msg: ', msg)
-			}
-		// } else {
-			// console.log('message "' + data.data + '" received by userDataChannel is a ' + typeof data.data + ', expected JSON object')
-		// }
-	})
-
-	userDataChannel.addEventListener('error', (err) => {
-		console.log(err)
-	})
->>>>>>> 192036a0c5bb344fc8239c4275f6c0afdf95fae1
 } else {
 	// no ws used
 	demoScene = path.join(__dirname, "temp", "simple.json")
