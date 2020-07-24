@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 85.0, 85.0, 559.0, 873.0 ],
+		"rect" : [ 85.0, 85.0, 1329.0, 879.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -1529,8 +1529,6 @@
 					"saved_object_attributes" : 					{
 						"autostart" : 0,
 						"defer" : 0,
-						"node_bin_path" : "",
-						"npm_bin_path" : "",
 						"watch" : 1
 					}
 ,
@@ -1538,6 +1536,23 @@
 				}
 
 			}
+<<<<<<< HEAD
+=======
+, 			{
+				"box" : 				{
+					"id" : "obj-5",
+					"linecount" : 5,
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 5,
+					"outlettype" : [ "signal", "signal", "signal", "signal", "" ],
+					"patching_rect" : [ 50.0, 200.0, 100.0, 77.0 ],
+					"text" : "vr.source~ 0 @position -0.129229 1.007862 -0.660174",
+					"varname" : "source_speaker_1595538699005"
+				}
+
+			}
+>>>>>>> dcdf10ccf546641b1318623b82fcbc249e91f891
  ],
 		"lines" : [ 			{
 				"patchline" : 				{
@@ -1914,7 +1929,7 @@
 ,
 		"dependency_cache" : [ 			{
 				"name" : "max_client.js",
-				"bootpath" : "D:/github/mischmasch/max-msp",
+				"bootpath" : "~/Documents/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1
@@ -1939,21 +1954,66 @@
 			}
 , 			{
 				"name" : "world.gendsp",
-				"bootpath" : "D:/github/mischmasch/max-msp",
+				"bootpath" : "~/Documents/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
+<<<<<<< HEAD
+=======
+				"name" : "speaker.gendsp",
+				"bootpath" : "~/Documents/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "saturate.gendsp",
+				"bootpath" : "~/Documents/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "squine.gendsp",
+				"bootpath" : "~/Documents/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "lfo.gendsp",
+				"bootpath" : "~/Documents/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "trig.gendsp",
+				"bootpath" : "~/Documents/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "vca.gendsp",
+				"bootpath" : "~/Documents/msvr/max-msp",
+				"patcherrelativepath" : ".",
+				"type" : "gDSP",
+				"implicit" : 1
+			}
+, 			{
+>>>>>>> dcdf10ccf546641b1318623b82fcbc249e91f891
 				"name" : "genScripting.js",
-				"bootpath" : "D:/github/mischmasch/max-msp",
+				"bootpath" : "~/Documents/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "deferlowScript.js",
-				"bootpath" : "D:/github/mischmasch/max-msp",
+				"bootpath" : "~/Documents/msvr/max-msp",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1
