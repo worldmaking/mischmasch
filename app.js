@@ -714,7 +714,7 @@ function messageFromLocalClient(message, ws){
       } catch (e) {
         console.warn(e);
       }
-      // if the got detected a malformed delta, it will be reported as an object in an array after the graph
+      // if the got detected a malformed delta (or a conflict delta for which we have no merge strategy), it will be reported as an object in an array after the graph
       if (attempt[1]){
         console.log(attempt[1])
         // report malformed delta to client

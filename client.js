@@ -2432,7 +2432,7 @@ function serverConnect() {
 		setTimeout(function(){
 			console.log("websocket reconnecting");
 			serverConnect();
-		}, 5000);		
+		}, 2000);		
 	}
 	socket.onmessage = (e) => {
 		if (e.data instanceof ArrayBuffer) {
