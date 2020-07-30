@@ -715,16 +715,51 @@ function messageFromLocalClient(message, ws){
         console.warn(e);
       }
       // if the got detected a malformed delta (or a conflict delta for which we have no merge strategy), it will be reported as an object in an array after the graph
-      if (attempt[1]){
-        console.log(attempt[1])
+      if (attempt && attempt.length > 1 && attempt[1]){
         // report malformed delta to client
-        let clientMsg = JSON.stringify({
-          cmd: 'nuke',
-          data: attempt[1]
-        })
-        localWebsocket.send(clientMsg)
-        // then disconnect, forcing it to wipe its scene and rejoin
-        localWebsocket.close()
+        switch(attempt[1].type){
+          case "conflictDelta":
+          console.log(attempt[1])
+          // for now, a conflict delta will still be passed through, just so we can test and capture when they occur
+          // feedback path stuff
+          for(i=0;i<deltaMsg.data.length; i++){
+            // if a connection delta, check if history node is needed: 
+            if(deltaMsg.data[i].op === 'connect'){
+              console.log(deltaMsg.data[i])
+              let historyDelta = getHistoryPropchanges(deltaMsg.data[i])
+              let msg = JSON.stringify({
+                cmd: 'deltas',
+                date: Date.now(),
+                data: historyDelta
+              })
+              sendAllLocalClients(msg)
+              deltaWebsocket.send(msg)
+            }
+            else {
+              let msg = JSON.stringify({
+                cmd: 'deltas',
+                date: Date.now(),
+                data: deltaMsg.data
+              })
+              
+              sendAllLocalClients(msg)
+              deltaWebsocket.send(msg)
+              
+            }
+          }
+          break
+          case "malformedDelta":
+            let clientMsg = JSON.stringify({
+              cmd: 'nuke',
+              data: attempt[1]
+            })
+            localWebsocket.send(clientMsg)
+            // then disconnect, forcing it to wipe its scene and rejoin
+            localWebsocket.close()
+          break
+
+        }
+
 
         return
       } else {
