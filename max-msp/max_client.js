@@ -130,7 +130,7 @@ max.addHandler('audiovizLookup', (audiovizLookup)=>{
 	}
 })
 
-max.addHandler('clearScene', (audiovizLookup)=>{
+max.addHandler('clearScene', ()=>{
 	connection.send(JSON.stringify({
 		cmd: "hostClearScene",
 		date: Date.now(),

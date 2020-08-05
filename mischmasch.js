@@ -171,7 +171,7 @@ const rwsOptions = {
   //debug:true, 
 }
 
-startLocalWebsocket()
+// startLocalWebsocket()
 // attempt to connect to teaparty 
 // returns the websocket via a Promise
 function teapartyWebsocketConnect() {
@@ -211,13 +211,13 @@ let guestlist = {
 function sayGoodbye() {
 
 
-  localWebsocketServer.clients.forEach(function each(client) {
-    try {
-      client.close();
-    } catch (e) {
-      console.error(e);
-    };
-  });
+//   localWebsocketServer.clients.forEach(function each(client) {
+//     try {
+//       client.close();
+//     } catch (e) {
+//       console.error(e);
+//     };
+//   });
 
     hostWebsocket.close()
   
@@ -229,8 +229,13 @@ function sayGoodbye() {
   
   hostWebsocket.addEventListener('close', () => {
     // localWebsocketServer.close()
+    if (max){
+        max.post('connection closed!')
+        max.outlet('toAudioviz', 0)
+        max.outlet('hardReset')
+    }
     hostWebsocket = null
-    localGraph = {
+    hostGraph = {
             nodes: {},
             arcs: []
         }
@@ -390,6 +395,10 @@ async function networkInit() {
 
 }
 
+hostGraph = {
+    nodes: {},
+    arcs: []
+}
 // attempt to connect to Host
 function pal(ip, port){
 
@@ -410,8 +419,8 @@ function pal(ip, port){
     
     hostWebsocket.addEventListener('error', (error) => {
       console.log(`connection error from ${hostWebsocketAddress}:`, error)
-      // nuclear option. discard localGraph because the host is about to send us the deltas to build the current form of the graph
-      localGraph = {
+      // nuclear option. discard hostGraph because the host is about to send us the deltas to build the current form of the graph
+      hostGraph = {
         nodes: {},
         arcs: []
       }
@@ -419,8 +428,8 @@ function pal(ip, port){
 
     hostWebsocket.addEventListener('close', (data)=>{
       console.log('hostWebsocket closed')
-      // nuclear option. discard localGraph because the host is about to send us the deltas to build the current form of the graph
-      localGraph = {
+      // nuclear option. discard hostGraph because the host is about to send us the deltas to build the current form of the graph
+      hostGraph = {
         nodes: {},
         arcs: []
       }
@@ -431,15 +440,15 @@ function pal(ip, port){
       console.log('connected to hostWebsocket host')
       // console.log('\n\nto send controls to the mischmasch host, run the "hostcontrol.js" script in a separate terminal\n\n')
       // no point sending a blank graph!
-      if(equal(localGraph, {nodes: {}, arcs: []}) === false){
+      if(equal(hostGraph, {nodes: {}, arcs: []}) === false){
         
-        let updateScene = got.deltasFromGraph(localGraph, [])
+        let updateScene = got.deltasFromGraph(hostGraph, [])
         let msg = JSON.stringify({
           cmd: 'deltas',
           date: Date.now(), 
           data: updateScene
         })
-        sendAllLocalClients(msg)
+        toVRtoMax(msg)
       }
 
       hostWebsocket.addEventListener('message', (data) =>{
@@ -451,7 +460,7 @@ function pal(ip, port){
             // synchronize our local copy:
           //  console.log('deltas from host:', msg.data)
             try {
-              got.applyDeltasToGraph(localGraph, msg.data);
+              got.applyDeltasToGraph(hostGraph, msg.data);
 
               // feedback path stuff
               //! urgent: need to apply a propchange to one outlet per feedback path outlet._props.history = true
@@ -491,7 +500,9 @@ function pal(ip, port){
 
             //OTHistory.push(JSON.stringify(response))
             // send to all LOCAL clients:
-            sendAllLocalClients(JSON.stringify(response));
+
+            
+            toVRtoMax(JSON.stringify(response));
           break
 
           case "sceneList":
@@ -508,9 +519,9 @@ function pal(ip, port){
           break
 
           case "keyFrame":
-            //TODO need to decide whether to run sayGoodbye(), or just discard pending edits and set localGraph = keyFrame (which would likely require some delta inversion sent to client...)
+            //TODO need to decide whether to run sayGoodbye(), or just discard pending edits and set hostGraph = keyFrame (which would likely require some delta inversion sent to client...)
             // Periodically (e.g. 20 seconds) the host broadcasts a current copy of the graph to all pals. On receiving a keyframe, the pal checks it is deep equal to their own version of the graph. If it is not, they discard any pending edits and reset their scene to match the keyframe. So long as we implement conflict resolution well, this keyframe-based regraphing should be very rare. The keyframe is more of a debugging/verification tool than anything. 
-            let keyFrameCheck = got.deepEqual(msg.data, localGraph)
+            let keyFrameCheck = got.deepEqual(msg.data, hostGraph)
             if (keyFrameCheck == false){
               console.log('keyFrame check detected our graph differs from host\'s graph. dev decide what should be done here')
             }
@@ -535,21 +546,25 @@ function pal(ip, port){
 
 }
 
+/*
 localClients = {
     vr: null,
     audio: {}
 }
 localClientID = 0
 function startLocalWebsocket(){
+    console.log('local ws')
   // host webapp (only on mojave)
   const app = express();
   //app.use(express.static(client_path))
-  app.use(express.static(gotlibPath))	
-  app.get('/', function(req, res) {
-    //res.sendFile(path.join(client_path, 'index.html'));
-    res.sendFile(path.join(__dirname, '/got/got.js'));
-  });
-  const server = http.createServer(app);
+
+//   app.use(express.static(gotlibPath))	
+//   app.get('/', function(req, res) {
+//     //res.sendFile(path.join(client_path, 'index.html'));
+//     res.sendFile(path.join(__dirname, '/got/got.js'));
+//   });
+//   const server = http.createServer(app);
+
   // add a websocket service to the http server:
   // const wss = new WebSocket.Server({ 
   //   server: server,
@@ -559,8 +574,8 @@ function startLocalWebsocket(){
 
 
   localWebsocketServer = new webSocket.Server({ 
-    server: server,
-    // port: 8080,
+    // server: server,
+    port: 8080,
     maxPayload: 1024 * 1024, 
   });
   let sessionId = 0;
@@ -627,6 +642,7 @@ function startLocalWebsocket(){
   });
 
 }
+*/
 
 function messageFromLocalClient(message, ws){
   localWebsocket = ws
@@ -639,25 +655,18 @@ function messageFromLocalClient(message, ws){
       localConfig.vr.ws = localWebsocket
     break;
 
-    case 'maxClientStatus':
-      
-      // teapartyWebsocket.send
-      // localWebsocket.id = 'vr'
-      localConfig.sound.ws = localWebsocket
-    break;
-
     case 'get_scene':
       
       // no point sending a blank graph!
-      if(equal(localGraph, {nodes: {}, arcs: []}) === false){
-        let deltas = got.deltasFromGraph(localGraph, [])
+      if(equal(hostGraph, {nodes: {}, arcs: []}) === false){
+        let deltas = got.deltasFromGraph(hostGraph, [])
         let msg = JSON.stringify({
           cmd: 'deltas',
           date: Date.now(),
           data: deltas
         })
         
-        localWebsocket.send(msg)
+        toVRtoMax(msg)
       }
 
     break
@@ -668,7 +677,7 @@ function messageFromLocalClient(message, ws){
       
       try {
 
-        attempt = got.applyDeltasToGraph(localGraph, deltaMsg.data);
+        attempt = got.applyDeltasToGraph(hostGraph, deltaMsg.data);
 
         
       } catch (e) {
@@ -696,7 +705,7 @@ function messageFromLocalClient(message, ws){
                 date: Date.now(),
                 data: historyDelta
               })
-              sendAllLocalClients(msg)
+              toVRtoMax(msg)
               hostWebsocket.send(msg)
             }
             else {
@@ -706,7 +715,7 @@ function messageFromLocalClient(message, ws){
                 data: deltaMsg.data
               })
               
-              sendAllLocalClients(msg)
+              toVRtoMax(msg)
               hostWebsocket.send(msg)
               
             }
@@ -717,7 +726,7 @@ function messageFromLocalClient(message, ws){
               cmd: 'nuke',
               data: attempt[1]
             })
-            localWebsocket.send(clientMsg)
+            toVRtoMax(clientMsg)
             // then disconnect, forcing it to wipe its scene and rejoin
             localWebsocket.close()
           break
@@ -739,7 +748,7 @@ function messageFromLocalClient(message, ws){
               date: Date.now(),
               data: historyDelta
             })
-            sendAllLocalClients(msg)
+            toVRtoMax(msg)
             hostWebsocket.send(msg)
           }
           else {
@@ -749,7 +758,7 @@ function messageFromLocalClient(message, ws){
               data: deltaMsg.data
             })
             
-            sendAllLocalClients(msg)
+            toVRtoMax(msg)
             hostWebsocket.send(msg)
             
           }
@@ -780,10 +789,16 @@ function messageFromLocalClient(message, ws){
     break;
     // send to max client:
     case "HMD":
+        if (max) {
+			max.outlet('hmd', 'position', data.data.pos[0], data.data.pos[1], data.data.pos[2], 'quat', data.data.orient[0], data.data.orient[1], data.data.orient[2], data.data.orient[3])
+        }
     case "hands":
     case "rightWandPos":
         // this is from the client.js, pass this directly to the max patch:
-        toMaxMSP(message, localClients.vr)
+        if (max){
+            max.outlet('wands', 'rightWand', JSON.stringify(data.data))
+        }
+
     break;
   }
 }
@@ -812,17 +827,17 @@ function toMaxMSP(msg, ignore){
 function getHistoryPropchanges(d){
   // 'd' is a connection delta received from either the host or the 
   // get list of child nodes in graph
-  let nodes = fb.setup(localGraph)
+  let nodes = fb.setup(hostGraph)
 
   // get list of adjacent nodes per each node in the graph
-  let adjacents = fb.getAdjacents(0, nodes, localGraph)
+  let adjacents = fb.getAdjacents(0, nodes, hostGraph)
 
   // reset the nodes array with list of only parent nodes whose child nodes have adjacent connections:
   nodes.length = 0
   nodes = Object.keys(adjacents)
   nodeCount = nodes.length
   // get 
-  let historyPropchange = fb.visit(0, nodes, adjacents, localGraph, nodeCount)
+  let historyPropchange = fb.visit(0, nodes, adjacents, hostGraph, nodeCount)
   console.log('cycles', historyPropchange)
   let propchanges = []
   for(i=0;i<historyPropchange.length;i++){
@@ -834,29 +849,31 @@ function getHistoryPropchanges(d){
         op: 'propchange',
         path: srcPath,
         name: 'history',
-        from: localGraph.nodes[parent][child]._props.history,
+        from: hostGraph.nodes[parent][child]._props.history,
         to: true 
       } ]
       propchanges.push(propchange)
     }
   }
   
-  got.applyDeltasToGraph(localGraph, propchanges)
+  got.applyDeltasToGraph(hostGraph, propchanges)
   // append the connection delta to the msg
   propchanges.push(d)
   console.log(propchanges)
   return propchanges
 }
 
-function sendAllLocalClients(msg){
-  localWebsocketServer.clients.forEach(function each(client) {
-		// if (client == ignore) return;
-		try {
-      client.send(msg);
-		} catch (e) {
-			console.error(e);
-		};
-	});
+function toVRtoMax(msg){
+    console.log('\ntoVRtoMax: ', msg)
+    toVR(msg)
+//   localWebsocketServer.clients.forEach(function each(client) {
+// 		// if (client == ignore) return;
+// 		try {
+//       client.send(msg);
+// 		} catch (e) {
+// 			console.error(e);
+// 		};
+// 	});
 }
 
 
@@ -2447,7 +2464,7 @@ function makeSceneGraph(renderer, gl) {
 					// the anchor coordinate system for the text:
 					mat4.copy(obj.i_modelmatrix, modelmatrix);
 					// color:
-		//			vec4.set(obj.i_color, 1, 1, 1, 1)
+		            // vec4.set(obj.i_color, 1, 1, 1, 1)
 					// bounding coordinates of the quad for this character:
 					vec4.copy(obj.i_fontbounds, char.quad);
 					// offset by character location:
@@ -3140,7 +3157,7 @@ function animate() {
 
 	// send outgoing deltas:
 
-	if (USEWS == true && socket && socket.readyState === 1) {
+	if (USEWS == true) {
 		// send any edits to the server:
 		if (outgoingDeltas.length > 0) {
 			let message = JSON.stringify({
@@ -3148,7 +3165,7 @@ function animate() {
 				date: Date.now(),
 				data: outgoingDeltas
 			});
-			socket.send(message);
+			messageFromLocalClient(message);
 			//console.log('outgoing message',message)
 			outgoingDeltas.length = 0;
 		}
@@ -3159,7 +3176,7 @@ function animate() {
 				date: Date.now(),
 				data: UI.hmd
 			});
-			sendToAppJS(hmdMessage);
+			messageFromLocalClient(hmdMessage);
 		}
 
 
@@ -3170,7 +3187,7 @@ function animate() {
 				date: Date.now(),
 				data: {pos: UI.hands[1].pos}
 			});
-			sendToAppJS(wandsMessage);
+			messageFromLocalClient(wandsMessage);
 		}
 
 		// client<>client userMovement
@@ -3254,16 +3271,16 @@ function serverConnect() {
 		};
 		mainScene.rebuild(localGraph)
 
-		sendToAppJS(JSON.stringify({ cmd:"get_scene"})) 
+		messageFromLocalClient(JSON.stringify({ cmd:"get_scene"})) 
 
 		// let the localWebsocket server assign our connection with an id
-		sendToAppJS(JSON.stringify({ cmd:"vrClientStatus"})) 
+		messageFromLocalClient(JSON.stringify({ cmd:"vrClientStatus"})) 
 
 	}
 	socket.onerror = (error) => {
-	  console.error(`ws error: ${error}`)
-	  socket = null;
-	  localGraph = { nodes: {}, arcs: [] }
+        console.error(`ws error: ${error}`)
+        socket = null;
+        localGraph = { nodes: {}, arcs: [] }
 	}
 	socket.onclose = function(e) {
 		socket = null;
@@ -3283,14 +3300,17 @@ function serverConnect() {
 		} else {
 			let msg = e.data;
 			try {
-				msg = JSON.parse(msg);
+                msg = JSON.parse(msg);
+                onServerMessage(msg, socket);
+
 			} catch(e) {}
-			onServerMessage(msg, socket);
 		} 
 	}
 }
 
-function onServerMessage(msg, sock) {
+function toVR(ms) {
+    msg = JSON.parse(ms)
+    console.log('toVR', typeof msg)
 	switch (msg.cmd) {
         case "deltas": {
 			// insert into our TODO list:
@@ -3324,13 +3344,6 @@ function onServerMessage(msg, sock) {
     }
 }
 
-// we use this to prevent attempting a ws.send if the socket becomes closed
-function sendToAppJS(outgoingMessage){
-	if(socket.readyState == 1){
-		socket.send(outgoingMessage)
-	}
-}
-
 async function init() {
 	// init opengl 
 	window = initWindow();
@@ -3347,7 +3360,9 @@ async function init() {
 	// localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
 	// connect to teaparty and host
 	if (USEWS) {
-		networkInit();
+        networkInit();
+        
+
 	} 
 	mainScene = makeSceneGraph(renderer, gl);
 	mainScene.init(gl);
