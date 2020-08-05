@@ -706,6 +706,7 @@ function messageFromLocalClient(message, ws){
     case 'deltas':
       let attempt 
       let deltaMsg = JSON.parse(message)
+      
       try {
 
         attempt = got.applyDeltasToGraph(localGraph, deltaMsg.data);
@@ -719,7 +720,11 @@ function messageFromLocalClient(message, ws){
         // report malformed delta to client
         switch(attempt[1].type){
           case "conflictDelta":
-          console.log(attempt[1])
+          // let nodes4props =  Object.keys(attempt[1].graph.nodes)
+          // for(i=0;i<nodes4props.length;i++){
+          //   // console.log('from props', attempt[1].graph.nodes[nodes4props[i]]._props)
+          // }
+          console.log(attempt[1].error)
           // for now, a conflict delta will still be passed through, just so we can test and capture when they occur
           // feedback path stuff
           for(i=0;i<deltaMsg.data.length; i++){
@@ -761,7 +766,7 @@ function messageFromLocalClient(message, ws){
         }
 
 
-        return
+        // return
       } else {
         // got detected no malformed deltas, so we can proceed:
         // feedback path stuff

@@ -518,11 +518,13 @@ const UI = {
 						// derive delta from module.node:
 						let path = module.kind;
 						path = gensym(path);
+						console.log('lets get the props!', module.pos, module.quat, module.node._props.pos, module.node._props.orient)
 						// send delta to spawn it:
 						//let deltas = got.nodesToDeltas([module.node], [], path)
 						let nodes = {}
 						nodes[path] = module.node
 						let deltas = got.nodesToDeltas(nodes, [], "")
+						console.log(deltas[0][0].pos)
 						outgoingDeltas.push(deltas)
 						//console.log("creating new node at", path, JSON.stringify(deltas))
 						// exit menu:
