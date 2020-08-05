@@ -81,6 +81,7 @@ const fb = require('./historify.js')
 const project_path = process.cwd();
 const server_path = __dirname;
 const client_path = path.join(server_path, "client");
+const gotlibPath = path.join(__dirname, '/gotlib/')
 
 let name;
 if (process.argv[3]){
@@ -562,20 +563,6 @@ function pal(ip, port){
 
 }
 
-
-
-function handlemessage(msg, id) {
-
-  switch (msg.cmd) {
-    case "deltas": {
-      
-      runGOT(id, msg.data)
-    } break;
-
-    default: console.log("received JSON", msg, typeof msg);
-  }
-}
-
 localClients = {
   vr: null,
   audio: {}
@@ -584,10 +571,10 @@ localClientID = 0
 function startLocalWebsocket(){
   // host webapp (only on mojave)
   const app = express();
-  app.use(express.static(client_path))
-  app.use(express.static(path.join(__dirname, '/got/')))	
+  //app.use(express.static(client_path))
+  app.use(express.static(gotlibPath))	
   app.get('/', function(req, res) {
-    res.sendFile(path.join(client_path, 'index.html'));
+    //res.sendFile(path.join(client_path, 'index.html'));
     res.sendFile(path.join(__dirname, '/got/got.js'));
   });
   const server = http.createServer(app);
