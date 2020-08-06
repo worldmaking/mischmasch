@@ -612,6 +612,7 @@ function processLocalDeltas(vrDeltas){
                 // pass these deltas back to VR:
                 incomingDeltas.push.apply(incomingDeltas, deltasToHost);
                 // pass the deltas to the gen~ script:
+                max.outlet('fromApp', JSON.stringify(deltasToHost))
                 // TODO: code this ^^^
             break
 
@@ -662,6 +663,7 @@ function processLocalDeltas(vrDeltas){
             // pass these deltas back to VR:
             incomingDeltas.push.apply(incomingDeltas, deltasToHost);
             // pass the deltas to the gen~ script:
+            max.outlet('fromApp', JSON.stringify(deltasToHost))
             // TODO: code this ^^^
 
         }
@@ -2990,6 +2992,10 @@ vec3.transformQuat(up, [0, 1, 0], nav.quat) - UP vector
 vec3.transformQuat(forward, [0, 0, -1], nav.quat) - FORWARD vector
 */
 
+// outlet visualization
+max.addHandler('audiovizLookup', (audiovizLookup)=>{
+    console.log(audiovizLookup)
+})
 
 let t = glfw.getTime();
 let fps = 60;
@@ -3279,7 +3285,9 @@ async function init() {
 	initUI(window);
 
 	
-	animate()
+    animate()
+    // init the max patcher
+    max.outlet('loadbang')
 }
 
 function shutdown() {

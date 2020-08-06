@@ -614,27 +614,10 @@ function wands(wand, data){
 
 }
 
-function fromLocalWebsocket(msg){
+function fromApp(msg){
 	var ot = JSON.parse(msg)
-	cmd = ot.cmd
 
-
-	switch(cmd){
-		case "deltas": {
-	
-				//var delta = new Dict("delta");
-				//delta.parse(msg);
-				
-				handleDelta(ot.data);
-			} break;
-
-		case "nuke":
-			loadbang()
-		break
-
-        default: post("unknown msg received: ", msg)
-		break;
-    }
+	handleDelta(ot)
 	
 }
 // only visualizing the outlets for now:
