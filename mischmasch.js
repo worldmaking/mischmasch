@@ -790,24 +790,24 @@ function messageFromLocalClient(message, ws){
       // runGOT(id, msg.data)
     break
 
-    case "hostClearScene":
-      let msg = JSON.stringify({
-        cmd: 'clearScene',
-        date: Date.now(),
-        data: 'clearScene'
-      })
-      hostWebsocket.send(msg)
-    break;
+    // case "hostClearScene":
+    //   let msg = JSON.stringify({
+    //     cmd: 'clearScene',
+    //     date: Date.now(),
+    //     data: 'clearScene'
+    //   })
+    //   hostWebsocket.send(msg)
+    // break;
 
-    case "audiovizLookup":
-        // console.log(msg.data)
-        if(localClients.vr){
-            localClients.vr.ws.send(JSON.stringify(msg))
-        }
-        // 
-        // need to send this just to the vr client!
-        // console.log(localClients.vr)
-    break;
+    // case "audiovizLookup":
+    //     // console.log(msg.data)
+    //     if(localClients.vr){
+    //         localClients.vr.ws.send(JSON.stringify(msg))
+    //     }
+    //     // 
+    //     // need to send this just to the vr client!
+    //     // console.log(localClients.vr)
+    // break;
     // send to max client:
     // case "HMD":
     //     if (max) {
@@ -826,23 +826,7 @@ function messageFromLocalClient(message, ws){
 
 
 
-function toMaxMSP(msg, ignore){
 
-
-//   localWebsocketServer.clients.forEach(function each(client) {
-
-//     if(client === ignore){
-      
-//       return
-//     } else if (client == localConfig.sound.ws)
-    
-//       try {
-//         client.send(msg);
-//       } catch (e) {
-//         // console.error(e);
-//       };
-//     })
-}
 
 
 function getHistoryPropchanges(d){
@@ -2992,10 +2976,6 @@ vec3.transformQuat(up, [0, 1, 0], nav.quat) - UP vector
 vec3.transformQuat(forward, [0, 0, -1], nav.quat) - FORWARD vector
 */
 
-// outlet visualization
-max.addHandler('audiovizLookup', (audiovizLookup)=>{
-    console.log(audiovizLookup)
-})
 
 let t = glfw.getTime();
 let fps = 60;
@@ -3159,7 +3139,7 @@ function animate() {
     // transmit userdata to gen~world
     // HMD pos
     if(UI.hmd){
-        max.outlet("HMD", UI.hmd)
+        max.outlet("hmd", UI.hmd)
     }
     // right hand pos
     if(UI.hands[1]){
@@ -3301,3 +3281,31 @@ function shutdown() {
 
 init();
 
+/////////////////////////////////////////////////////////
+
+// Max/MSP
+//TODO: move as much of the gen_scripting.js code into this section as possible, ideally we only use gen_scripting for things that node.script cannot perform. (this also should mean that the max patch can finally take advantage of got!)
+
+// outlet visualization
+max.addHandler('audiovizLookup', (audiovizLookup)=>{
+    // eventually pass this to VR
+    // console.log(audiovizLookup)
+})
+
+max.addHandler('clearScene', ()=>{
+
+    if(USEWS && hostWebsocket){
+        let msg = JSON.stringify({
+            cmd: 'clearScene',
+            date: Date.now(),
+            data: 'clearScene'
+          })
+        hostWebsocket.send(msg)
+    } 
+    // wipe the scene locally
+    localGraph = {
+        nodes: {}, arcs: []
+    }
+    mainScene.rebuild(localGraph)
+    
+})

@@ -1,6 +1,6 @@
 
 inlets = 1
-outlets = 3
+outlets = 4
 
 // the reference to the gen~ world object we'll be scripting to. 
 var gen_patcher; 
@@ -76,6 +76,8 @@ function loadbang(){
 
 	
 	resetCounters()
+	// enable viz of outlets
+	outlet(3, 'toAudioviz', 1)
 }
 
 function resetCounters(){
