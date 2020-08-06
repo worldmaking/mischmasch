@@ -38,27 +38,24 @@ const ReconnectingWebSocket = require('reconnecting-websocket');
 // https://www.npmjs.com/package/progress
 // cute way to show progress on the command line
 const ProgressBar = require('progress');
-const url = require('url')
-const http = require('http');
-const express = require('express');
 const fs = require("fs");
 const path = require("path");
 // const bottleneck = require('Bottleneck')
 const got = require(__dirname + "/gotlib/got.js")
 // simplified cli args for script
 const {argv} = require('yargs')
-// interactive cli:
 
 var equal = require('deep-equal');
-const equals = require('array-equal')
+// feedback cycle detection for both max and VR:
 const fb = require('./historify.js')
 
 // max/msp api
 const max = (() => {
-    try {Mutation
+    try {
+        console.log('\n\nrunning in Max')
         return require("max-api");
     } catch(e) {
-        console.log("not running in Max")
+        console.log("not running in Max", e)
     }
 })();
 
@@ -84,8 +81,12 @@ let USEVR = (process.platform === "win32") && !(argv.vr === 'false');
 console.log('using VR?', USEVR)
 let vr = (USEVR) ? require(path.join(nodeglpath, "openvr.js")) : null
 
-const shaderpath = path.join(__dirname, "shaders")
-
+let name;
+if (process.argv[3]){
+  name = process.argv[3]
+} else {
+  name = username.sync()
+}
 ////////////////////////////////////
 
 // let ctrl-c quit:
@@ -111,19 +112,6 @@ const shaderpath = path.join(__dirname, "shaders")
 	});
 }
 
-// LOCAL STUFF //
-/// paths
-const project_path = process.cwd();
-const server_path = __dirname;
-const client_path = path.join(server_path, "client");
-const gotlibPath = path.join(__dirname, '/gotlib/')
-
-let name;
-if (process.argv[3]){
-  name = process.argv[3]
-} else {
-  name = username.sync()
-}
 
 
 // NETWORKING //
@@ -236,24 +224,15 @@ let guestlist = {
 
 function sayGoodbye() {
 
-
-//   localWebsocketServer.clients.forEach(function each(client) {
-//     try {
-//       client.close();
-//     } catch (e) {
-//       console.error(e);
-//     };
-//   });
-
     hostWebsocket.close()
   
-  teapartyWebsocket.addEventListener('close', () => {
-    isConnectedToteaparty = 0;
-    hostWebsocket.close()
+    teapartyWebsocket.addEventListener('close', () => {
+        isConnectedToteaparty = 0;
+        hostWebsocket.close()
+        
+    });
     
-  });
-  
-  hostWebsocket.addEventListener('close', () => {
+    hostWebsocket.addEventListener('close', () => {
     // localWebsocketServer.close()
     if (max){
         max.post('connection closed!')
@@ -279,6 +258,8 @@ async function networkInit() {
     
     // get our public IP address:
     localConfig.ip = await publicIP.v4()
+
+    name = name + '_' + localConfig.ip
     //=> '46.5.21.123'
     //localConfig.ip = await publicIP.v6()
     //=> 'fe80::200:f8ff:fe21:67cf'
@@ -474,7 +455,7 @@ function pal(ip, port){
           date: Date.now(), 
           data: updateScene
         })
-        toVRtoMax(msg)
+        console.log('received deltas from hostWebsocket:',msg);
       }
 
       hostWebsocket.addEventListener('message', (data) =>{
@@ -528,7 +509,7 @@ function pal(ip, port){
             // send to all LOCAL clients:
 
             
-            toVRtoMax(JSON.stringify(response));
+            console.log('received deltas from hostWebsocket:',JSON.stringify(response));
           break
 
           case "sceneList":
@@ -572,224 +553,236 @@ function pal(ip, port){
 
 }
 
-/*
-localClients = {
-    vr: null,
-    audio: {}
-}
-localClientID = 0
-function startLocalWebsocket(){
-    console.log('local ws')
-  // host webapp (only on mojave)
-  const app = express();
-  //app.use(express.static(client_path))
-
-//   app.use(express.static(gotlibPath))	
-//   app.get('/', function(req, res) {
-//     //res.sendFile(path.join(client_path, 'index.html'));
-//     res.sendFile(path.join(__dirname, '/got/got.js'));
-//   });
-//   const server = http.createServer(app);
-
-  // add a websocket service to the http server:
-  // const wss = new WebSocket.Server({ 
-  //   server: server,
-  //   maxPayload: 1024 * 1024, 
-  // });
-  // ws for deltas
-
-
-  localWebsocketServer = new webSocket.Server({ 
-    // server: server,
-    port: 8080,
-    maxPayload: 1024 * 1024, 
-  });
-  let sessionId = 0;
-      
-  // whenever a pal connects to this websocket:
-  localWebsocketServer.on('connection', function(ws, req) {
-    localWebsocket = ws
-   
-    // do any
-    console.log("server received a connection");
-    // console.log("server has "+ws.clients.size+" connected clients");
-    //	ws.id = uuid.v4();
-    const id = ++sessionId;
-    const location = url.parse(req.url, true);
-    // ip = req.connection.remoteAddress.split(':')[3] 
-    // ip = req.headers.host.split(':')[0]
-    // if(!ip){
-    //   // console.log('vr', req.connection)
-    //   ip = req.ip
-    // }
-    // const location = urlw.parse(req.url, true);
-
-
-    localWebsocket.on('error', function (e) {
-      if (e.message === "read ECONNRESET") {
-        // ignore this, client will still emit close event
-      } else {
-        console.error("websocket error: ", e.message);
-        if (localClients.vr = localWebsocket){
-          localClients.vr = null
-        }
-      }
-    });
-
-    // what to do if client disconnects?
-    localWebsocket.on('close', function(connection) {
-      //clearInterval(handShakeInterval);
-      console.log("connection closed");
-      if (localClients.vr = localWebsocket){
-        localClients.vr = null
-      }
-    });
+let palDeltaIndex = 0
+let indexedDeltas = {}
+function processLocalDeltas(vrDeltas){
+    // increment each incoming delta array with an index, stored in either an object or DB, and apply this to localGraph AND if USEWS then pass this out to hostWebsocket after got validation
+    let attempt 
+    let deltasToHost = []
     
-    // respond to any messages from the client:
-    localWebsocket.on('message', function(e) {
-      if (e instanceof Buffer) {
-        // get an arraybuffer from the message:
-        const ab = e.buffer.slice(e.byteOffset,e.byteOffset+e.byteLength);
-      } else {
-        try {
-          // handlemessage(JSON.parse(e), ws, id);
-          // let msg = JSON.parse(e)
-          
-          messageFromLocalClient(e, ws)
-        } catch (e) {
-          console.log('bad JSON: ', e);
-        }
-      }
-    });
+    try {
 
-  });
-  server.listen(8080, function() {
-    console.log(`localWebsocketServer listening on localhost:${server.address().port}`);
-  });
+        attempt = got.applyDeltasToGraph(localGraph, vrDeltas);
 
-}
-*/
-
-function messageFromLocalClient(message, ws){
-  localWebsocket = ws
-  msg = JSON.parse(message)
-  switch(msg.cmd){
-    case 'vrClientStatus':
-
-      // teapartyWebsocket.send
-      // localWebsocket.id = 'vr'
-      localConfig.vr.ws = localWebsocket
-    break;
-
-    case 'get_scene':
-      
-      // no point sending a blank graph!
-      if(equal(hostGraph, {nodes: {}, arcs: []}) === false){
-        let deltas = got.deltasFromGraph(hostGraph, [])
-        let msg = JSON.stringify({
-          cmd: 'deltas',
-          date: Date.now(),
-          data: deltas
-        })
-        
-        toVRtoMax(msg)
-      }
-
-    break
-
-    case 'deltas':
-      let attempt 
-      let deltaMsg = JSON.parse(message)
-      
-      try {
-
-        attempt = got.applyDeltasToGraph(hostGraph, deltaMsg.data);
-
-        
-      } catch (e) {
+    
+    } catch (e) {
         console.warn(e);
-      }
-      // if the got detected a malformed delta (or a conflict delta for which we have no merge strategy), it will be reported as an object in an array after the graph
-      if (attempt && attempt.length > 1 && attempt[1]){
+    }
+    // if the got detected a malformed delta (or a conflict delta for which we have no merge strategy), it will be reported as an object in an array after the graph
+    if (attempt && attempt.length > 1 && attempt[1]){
         // report malformed delta to client
         switch(attempt[1].type){
-          case "conflictDelta":
-          // let nodes4props =  Object.keys(attempt[1].graph.nodes)
-          // for(i=0;i<nodes4props.length;i++){
-          //   // console.log('from props', attempt[1].graph.nodes[nodes4props[i]]._props)
-          // }
-          console.log(attempt[1].error)
-          // for now, a conflict delta will still be passed through, just so we can test and capture when they occur
-          // feedback path stuff
-          for(i=0;i<deltaMsg.data.length; i++){
-            // if a connection delta, check if history node is needed: 
-            if(deltaMsg.data[i].op === 'connect'){
-              console.log(deltaMsg.data[i])
-              let historyDelta = getHistoryPropchanges(deltaMsg.data[i])
-              let msg = JSON.stringify({
-                cmd: 'deltas',
-                date: Date.now(),
-                data: historyDelta
-              })
-              toVRtoMax(msg)
-              hostWebsocket.send(msg)
-            }
-            else {
-              let msg = JSON.stringify({
-                cmd: 'deltas',
-                date: Date.now(),
-                data: deltaMsg.data
-              })
-              
-              toVRtoMax(msg)
-              hostWebsocket.send(msg)
-              
-            }
-          }
-          break
-          case "malformedDelta":
-            let clientMsg = JSON.stringify({
-              cmd: 'nuke',
-              data: attempt[1]
-            })
-            toVRtoMax(clientMsg)
-            // then disconnect, forcing it to wipe its scene and rejoin
-            localWebsocket.close()
-          break
+            case "conflictDelta":
+                // let nodes4props =  Object.keys(attempt[1].graph.nodes)
+                // for(i=0;i<nodes4props.length;i++){
+                //   // console.log('from props', attempt[1].graph.nodes[nodes4props[i]]._props)
+                // }
+                console.log(attempt[1].error)
+                // for now, a conflict delta will still be passed through, just so we can test and capture when they occur
+                // feedback path stuff
+                for(i=0;i<vrDeltas.length; i++){
+                    // if a connection delta, check if history node is needed: 
+                    if(vrDeltas[i].op === 'connect'){
+                        let historyDelta = getHistoryPropchanges(vrDeltas[i])
+                        deltasToHost.push(historyDelta)
+                    }
+                    else {
+                        deltasToHost.push(vrDeltas[i])
 
+                        
+                    }
+                }
+                // If we are running in online mode, do we still send the deltas to hostWebsocket?
+                if(USEWS == true && hostWebsocket){
+                    // package deltas along with name of this mischmasch instance (name_ip) and index
+                    let msg = JSON.stringify({
+                        cmd: 'deltas',
+                        date: Date.now(),
+                        data: deltasToHost,
+                        pal: name,
+                        index: palDeltaIndex
+                    })
+
+                    // send indexed deltas to host:
+                    hostWebsocket.send(msg)
+                    let entry = palDeltaIndex.toString()
+                    indexedDeltas[entry] = deltasToHost
+                    palDeltaIndex++
+                }
+                // pass these deltas back to VR:
+                incomingDeltas.push.apply(incomingDeltas, deltasToHost);
+                // pass the deltas to the gen~ script:
+                // TODO: code this ^^^
+            break
+
+            case "malformedDelta":
+                if (USEWS == true && hostWebsocket){
+                    let warning = JSON.stringify({
+                        cmd: 'nuke',
+                        data: attempt[1]
+                    })
+                    max.post(warning)
+                }
+            break
         }
 
 
         // return
-      } else {
+        } else {
         // got detected no malformed deltas, so we can proceed:
+        
         // feedback path stuff
-        for(i=0;i<deltaMsg.data.length; i++){
-          // if a connection delta, check if history node is needed: 
-          if(deltaMsg.data[i].op === 'connect'){
-            console.log(deltaMsg.data[i])
-            let historyDelta = getHistoryPropchanges(deltaMsg.data[i])
-            let msg = JSON.stringify({
-              cmd: 'deltas',
-              date: Date.now(),
-              data: historyDelta
-            })
-            toVRtoMax(msg)
-            hostWebsocket.send(msg)
-          }
-          else {
-            let msg = JSON.stringify({
-              cmd: 'deltas',
-              date: Date.now(),
-              data: deltaMsg.data
-            })
+        for(i=0;i<vrDeltas.length; i++){
             
-            toVRtoMax(msg)
-            hostWebsocket.send(msg)
-            
-          }
+            // if a connection delta, check if history node is needed: 
+            if(vrDeltas[i].op === 'connect'){
+                let historyDelta = getHistoryPropchanges(vrDeltas[i])
+                deltasToHost.push(historyDelta)
+            }
+            else {                
+                deltasToHost.push(vrDeltas[i])
+            }
+            // If we are running in online mode, send the deltas to hostWebsocket:
+            if(USEWS == true && hostWebsocket){
+                // package deltas along with name of this mischmasch instance (name_ip) and index
+                let msg = JSON.stringify({
+                    cmd: 'deltas',
+                    date: Date.now(),
+                    data: deltasToHost,
+                    pal: name,
+                    index: palDeltaIndex
+                })
+
+                // send indexed deltas to host:
+                hostWebsocket.send(msg)
+                let entry = palDeltaIndex.toString()
+                indexedDeltas[entry] = deltasToHost
+                palDeltaIndex++
+            }
+            // pass these deltas back to VR:
+            incomingDeltas.push.apply(incomingDeltas, deltasToHost);
+            // pass the deltas to the gen~ script:
+            // TODO: code this ^^^
+
         }
-      } 
+
+
+    } 
+}
+function messageFromLocalClient(message, ws){
+  localWebsocket = ws
+  msg = JSON.parse(message)
+  switch(msg.cmd){
+
+    // case 'get_scene':
+      
+    //   // no point sending a blank graph!
+    //   if(equal(hostGraph, {nodes: {}, arcs: []}) === false){
+    //     let deltas = got.deltasFromGraph(hostGraph, [])
+    //     let msg = JSON.stringify({
+    //       cmd: 'deltas',
+    //       date: Date.now(),
+    //       data: deltas
+    //     })
+        
+    //     toVRtoMax(msg)
+    //   }
+
+    // break
+
+    case 'deltas':
+    //   let attempt 
+    //   let deltaMsg = JSON.parse(message)
+      
+    //   try {
+
+    //     attempt = got.applyDeltasToGraph(hostGraph, vrDeltas);
+
+        
+    //   } catch (e) {
+    //     console.warn(e);
+    //   }
+    //   // if the got detected a malformed delta (or a conflict delta for which we have no merge strategy), it will be reported as an object in an array after the graph
+    //   if (attempt && attempt.length > 1 && attempt[1]){
+    //     // report malformed delta to client
+    //     switch(attempt[1].type){
+    //       case "conflictDelta":
+    //       // let nodes4props =  Object.keys(attempt[1].graph.nodes)
+    //       // for(i=0;i<nodes4props.length;i++){
+    //       //   // console.log('from props', attempt[1].graph.nodes[nodes4props[i]]._props)
+    //       // }
+    //       console.log(attempt[1].error)
+    //       // for now, a conflict delta will still be passed through, just so we can test and capture when they occur
+    //       // feedback path stuff
+    //       for(i=0;i<vrDeltas.length; i++){
+    //         // if a connection delta, check if history node is needed: 
+    //         if(vrDeltas[i].op === 'connect'){
+    //           console.log(vrDeltas[i])
+    //           let historyDelta = getHistoryPropchanges(vrDeltas[i])
+    //           let msg = JSON.stringify({
+    //             cmd: 'deltas',
+    //             date: Date.now(),
+    //             data: historyDelta
+    //           })
+    //           toVRtoMax(msg)
+    //           hostWebsocket.send(msg)
+    //         }
+    //         else {
+    //           let msg = JSON.stringify({
+    //             cmd: 'deltas',
+    //             date: Date.now(),
+    //             data: vrDeltas
+    //           })
+              
+    //           toVRtoMax(msg)
+    //           hostWebsocket.send(msg)
+              
+    //         }
+    //       }
+    //       break
+    //       case "malformedDelta":
+    //         let clientMsg = JSON.stringify({
+    //           cmd: 'nuke',
+    //           data: attempt[1]
+    //         })
+    //         toVRtoMax(clientMsg)
+    //         // then disconnect, forcing it to wipe its scene and rejoin
+    //         localWebsocket.close()
+    //       break
+
+    //     }
+
+
+    //     // return
+    //   } else {
+    //     // got detected no malformed deltas, so we can proceed:
+    //     // feedback path stuff
+    //     for(i=0;i<vrDeltas.length; i++){
+    //       // if a connection delta, check if history node is needed: 
+    //       if(vrDeltas[i].op === 'connect'){
+    //         console.log(vrDeltas[i])
+    //         let historyDelta = getHistoryPropchanges(vrDeltas[i])
+    //         let msg = JSON.stringify({
+    //           cmd: 'deltas',
+    //           date: Date.now(),
+    //           data: historyDelta
+    //         })
+    //         toVRtoMax(msg)
+    //         hostWebsocket.send(msg)
+    //       }
+    //       else {
+    //         let msg = JSON.stringify({
+    //           cmd: 'deltas',
+    //           date: Date.now(),
+    //           data: vrDeltas
+    //         })
+            
+    //         toVRtoMax(msg)
+    //         hostWebsocket.send(msg)
+            
+    //       }
+    //     }
+    //   } 
       
 
       // runGOT(id, msg.data)
@@ -814,18 +807,18 @@ function messageFromLocalClient(message, ws){
         // console.log(localClients.vr)
     break;
     // send to max client:
-    case "HMD":
-        if (max) {
-			max.outlet('hmd', 'position', data.data.pos[0], data.data.pos[1], data.data.pos[2], 'quat', data.data.orient[0], data.data.orient[1], data.data.orient[2], data.data.orient[3])
-        }
-    case "hands":
-    case "rightWandPos":
-        // this is from the client.js, pass this directly to the max patch:
-        if (max){
-            max.outlet('wands', 'rightWand', JSON.stringify(data.data))
-        }
+    // case "HMD":
+    //     if (max) {
+	// 		max.outlet('hmd', 'position', msg.data.pos[0], msg.data.pos[1], msg.data.pos[2], 'quat', msg.data.orient[0], msg.data.orient[1], msg.data.orient[2], msg.data.orient[3])
+    //     }
+    // case "hands":
+    // case "rightWandPos":
+    //     // this is from the client.js, pass this directly to the max patch:
+    //     if (max){
+    //         max.outlet('wands', 'rightWand', JSON.stringify(msg.data))
+    //     }
 
-    break;
+    // break;
   }
 }
 
@@ -853,17 +846,17 @@ function toMaxMSP(msg, ignore){
 function getHistoryPropchanges(d){
   // 'd' is a connection delta received from either the host or the 
   // get list of child nodes in graph
-  let nodes = fb.setup(hostGraph)
+  let nodes = fb.setup(localGraph)
 
   // get list of adjacent nodes per each node in the graph
-  let adjacents = fb.getAdjacents(0, nodes, hostGraph)
+  let adjacents = fb.getAdjacents(0, nodes, localGraph)
 
   // reset the nodes array with list of only parent nodes whose child nodes have adjacent connections:
   nodes.length = 0
   nodes = Object.keys(adjacents)
   nodeCount = nodes.length
   // get 
-  let historyPropchange = fb.visit(0, nodes, adjacents, hostGraph, nodeCount)
+  let historyPropchange = fb.visit(0, nodes, adjacents, localGraph, nodeCount)
   console.log('cycles', historyPropchange)
   let propchanges = []
   for(i=0;i<historyPropchange.length;i++){
@@ -875,14 +868,14 @@ function getHistoryPropchanges(d){
         op: 'propchange',
         path: srcPath,
         name: 'history',
-        from: hostGraph.nodes[parent][child]._props.history,
+        from: localGraph.nodes[parent][child]._props.history,
         to: true 
       } ]
       propchanges.push(propchange)
     }
   }
   
-  got.applyDeltasToGraph(hostGraph, propchanges)
+  got.applyDeltasToGraph(localGraph, propchanges)
   // append the connection delta to the msg
   propchanges.push(d)
   console.log(propchanges)
@@ -1007,12 +1000,12 @@ let localGraph = {
 }
 
 
-let USEWS = true;
+let USEWS;
 let userDataChannel
 // use this to represent others' movements/presence in the world
 let pals = {}
 
-if(USEWS || argv.w){
+if(USEWS || argv.offline != 1){
 	USEWS = true
 	console.log('using websockets')
 
@@ -1066,9 +1059,10 @@ if(USEWS || argv.w){
 	// 	console.log(err)
 	// })
 } else {
-	// no ws used
-	demoScene = path.join(__dirname, "temp", "simple.json")
-	localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
+    // no ws used
+    console.log('not using WS')
+	// demoScene = path.join(__dirname, "temp", "simple.json")
+	// localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
 
 }
 
@@ -3151,80 +3145,51 @@ function animate() {
 	// Swap buffers
 	glfw.swapBuffers(window);
 
-	// send outgoing deltas:
+    // send outgoing deltas:
+    
+    processLocalDeltas(outgoingDeltas)
+    outgoingDeltas.length = 0;
 
-	if (USEWS == true) {
-		// send any edits to the server:
-		if (outgoingDeltas.length > 0) {
-			let message = JSON.stringify({
-				cmd: "deltas",
-				date: Date.now(),
-				data: outgoingDeltas
-			});
-			messageFromLocalClient(message);
-			//console.log('outgoing message',message)
-			outgoingDeltas.length = 0;
-		}
-		// HMD pos
-		if(UI.hmd){
-			let hmdMessage = JSON.stringify({
-				cmd: "HMD",
-				date: Date.now(),
-				data: UI.hmd
-			});
-			messageFromLocalClient(hmdMessage);
-		}
+    // transmit userdata to gen~world
+    // HMD pos
+    if(UI.hmd){
+        max.outlet("HMD", UI.hmd)
+    }
+    // right hand pos
+    if(UI.hands[1]){
+        max.outlet("rightWandPos", UI.hands[1].pos)
+    }
 
+	// if (USEWS == true) {
+	// 	// send any edits to the server:
+	// 	if (outgoingDeltas.length > 0) {
+	// 		let message = JSON.stringify({
+	// 			cmd: "deltas",
+	// 			date: Date.now(),
+	// 			data: outgoingDeltas
+	// 		});
+	// 		messageFromLocalClient(message);
+	// 		//console.log('outgoing message',message)
+	// 		outgoingDeltas.length = 0;
+	// 	}
+	// 	// HMD pos
+	// 	if(UI.hmd){
+    //         max.outlet("HMD", UI.hmd)
+	// 	}
+	// 	// right hand pos
+	// 	if(UI.hands[1]){
+    //         max.outlet("rightWandPos", UI.hands[1].pos)
+	// 	}
 
-		// right hand pos
-		if(UI.hands[1]){
-			let wandsMessage = JSON.stringify({
-				cmd: "rightWandPos",
-				date: Date.now(),
-				data: {pos: UI.hands[1].pos}
-			});
-			messageFromLocalClient(wandsMessage);
-		}
-
-		// client<>client userMovement
-		// if(userDataChannel){
-		// 	// hands
-		// 	if(UI.hands){
-		// 		let wandsMessage = JSON.stringify({
-		// 			cmd: "hands",
-		// 			source: peerHandle,
-		// 			data: {
-		// 				left: {
-		// 					pos: UI.hands[0].pos, 
-		// 					orient: UI.hands[0].orient
-		// 				},
-		// 				right: {
-		// 					pos: UI.hands[1].pos, 
-		// 					orient: UI.hands[1].orient
-		// 				}
-		// 			}
-		// 		});
-		// 		userDataChannel.send(wandsMessage);
-		// 	}
-		// 	if(UI.hmd){
-		// 		let hmdMessage = JSON.stringify({
-		// 			cmd: "hmd",
-		// 			source: peerHandle,
-		// 			data: UI.hmd
-		// 		})
-		// 		userDataChannel.send(hmdMessage);
-		// 	}
-		// }
-
-	} else if (!USEWS) {
-		// otherwise, just move them to our incoming list, 
-		// so we can work without a server:
-		//console.log('\n\nogds',outgoingDeltas)
-		for (let delta of outgoingDeltas) {
-			incomingDeltas.push(delta);
-		}
-		outgoingDeltas.length = 0;
-	}
+	// } else if (!USEWS) {
+	// 	// otherwise, just move them to our incoming list, 
+	// 	// so we can work without a server:
+	// 	//console.log('\n\nogds',outgoingDeltas)
+	// 	for (let delta of outgoingDeltas) {
+	// 		incomingDeltas.push(delta);
+	// 	}
+	// 	outgoingDeltas.length = 0;
+	// }
 }
 
 function draw(eye=0) {
@@ -3252,66 +3217,10 @@ function draw(eye=0) {
 // BOOT SEQUENCE
 //////////////////////////////////////////////////////////////////////////////////////////
 
-
-//! We don't need to use this anymore, because it's all within a single script. 
-// function serverConnect() {
-// 	const url = 'ws://localhost:8080'
-// 	socket = new ws(url)
-// 	socket.binaryType = 'arraybuffer';
-// 	socket.onopen = () => {
-// 		console.log("websocket connected to localWebsocket on "+url);
-// 		// reset our local scene:
-// 		localGraph = {
-// 			nodes: {},
-// 			arcs: []
-// 		};
-// 		mainScene.rebuild(localGraph)
-
-// 		messageFromLocalClient(JSON.stringify({ cmd:"get_scene"})) 
-
-// 		// let the localWebsocket server assign our connection with an id
-// 		messageFromLocalClient(JSON.stringify({ cmd:"vrClientStatus"})) 
-
-// 	}
-// 	socket.onerror = (error) => {
-//         console.error(`ws error: ${error}`)
-//         socket = null;
-//         localGraph = { nodes: {}, arcs: [] }
-// 	}
-// 	socket.onclose = function(e) {
-// 		socket = null;
-// 		console.log("websocket disconnected from "+url);
-// 		localGraph = {
-// 			nodes: {}, arcs: []
-// 		}
-// 		mainScene.rebuild(localGraph)
-// 		setTimeout(function(){
-// 			console.log("websocket reconnecting");
-// 			serverConnect();
-// 		}, 2000);		
-// 	}
-// 	socket.onmessage = (e) => {
-// 		if (e.data instanceof ArrayBuffer) {
-// 			console.log("ws received arraybuffer of " + e.data.byteLength + " bytes")
-// 		} else {
-// 			let msg = e.data;
-// 			try {
-//                 msg = JSON.parse(msg);
-//                 onServerMessage(msg, socket);
-
-// 			} catch(e) {}
-// 		} 
-// 	}
-// }
-
 function toVR(ms) {
     msg = JSON.parse(ms)
     
 	switch (msg.cmd) {
-        case "deltas": {
-			// insert into our TODO list:
-            incomingDeltas.push.apply(incomingDeltas, msg.data);
-		} break;
 		
 		case "audiovizLookup":
 			console.log(msg.data)
@@ -3331,8 +3240,10 @@ function toVR(ms) {
 			}
 			mainScene.rebuild(localGraph)
 			
-			// reconnect to app.js thereby receiving current state of scene
-			serverConnect()
+			if (USEWS){
+                networkInit()
+            }
+			
 		break
 
         default:
