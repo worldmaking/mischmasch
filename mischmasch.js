@@ -70,6 +70,7 @@ const filename = path.basename(__filename)
 const chroma = require("chroma-js")
 const nodeglpath = "../node-gles3"
 const rws = require('reconnecting-websocket');
+const { inverseDelta } = require('./gotlib/got.js');
 
 
 const gl = require(path.join(nodeglpath, "gles3.js")),
@@ -613,7 +614,7 @@ function processLocalDeltas(vrDeltas){
                 incomingDeltas.push.apply(incomingDeltas, deltasToHost);
                 // pass the deltas to the gen~ script:
                 max.outlet('fromApp', JSON.stringify(deltasToHost))
-                // TODO: code this ^^^
+                
             break
 
             case "malformedDelta":
@@ -3293,7 +3294,9 @@ max.addHandler('audiovizLookup', (audiovizLookup)=>{
 })
 
 max.addHandler('clearScene', ()=>{
-
+    let deltas = got.deltasFromGraph(localGraph, []);
+    let inverse = got.inverseDelta(deltas)
+    max.outlet('fromApp', JSON.stringify(inverse))
     if(USEWS && hostWebsocket){
         let msg = JSON.stringify({
             cmd: 'clearScene',
@@ -3307,5 +3310,7 @@ max.addHandler('clearScene', ()=>{
         nodes: {}, arcs: []
     }
     mainScene.rebuild(localGraph)
+
+    
     
 })
