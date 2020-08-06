@@ -62,6 +62,32 @@ const max = (() => {
     }
 })();
 
+// VR libs:
+const assert = require("assert")
+const { vec2, vec3, vec4, quat, mat2, mat2d, mat3, mat4} = require("gl-matrix")
+const PNG = require("png-js");
+// keep the 'ws' usage as well - coven requires this very spelling
+const ws = require('ws')
+const filename = path.basename(__filename)
+
+const chroma = require("chroma-js")
+const nodeglpath = "../node-gles3"
+const rws = require('reconnecting-websocket');
+
+
+const gl = require(path.join(nodeglpath, "gles3.js")),
+glfw = require(path.join(nodeglpath, "glfw3.js")),
+glutils = require(path.join(nodeglpath, "glutils.js"))
+
+let USEVR = (process.platform === "win32") && !(argv.vr === 'false');
+// usevr if its specified on CLI & skip VR if on OSX:
+console.log('using VR?', USEVR)
+let vr = (USEVR) ? require(path.join(nodeglpath, "openvr.js")) : null
+
+const shaderpath = path.join(__dirname, "shaders")
+
+////////////////////////////////////
+
 // let ctrl-c quit:
 {
 	let stdin = process.stdin;
@@ -152,7 +178,7 @@ if (argv.l){
   hostIP = "localhost"
   teapartyWebsocketAddress = `ws://${teapartyAddress}:${teapartyWebsocketPort}`
   console.log(`running app.js in local mode\nteaparty address 'ws://localhost:8090'\nhostWebsocket host address 'ws://localhost:8081'`)
-  fs.readdirSync('./scenes').forEach(file=>{
+  fs.readdirSync('./scene_files').forEach(file=>{
     sceneList.push(file)
   })
   console.log(sceneList)
@@ -864,42 +890,12 @@ function getHistoryPropchanges(d){
 }
 
 function toVRtoMax(msg){
-    console.log('\ntoVRtoMax: ', msg)
     toVR(msg)
-//   localWebsocketServer.clients.forEach(function each(client) {
-// 		// if (client == ignore) return;
-// 		try {
-//       client.send(msg);
-// 		} catch (e) {
-// 			console.error(e);
-// 		};
-// 	});
 }
 
 
 
-const assert = require("assert")
-const { vec2, vec3, vec4, quat, mat2, mat2d, mat3, mat4} = require("gl-matrix")
-const PNG = require("png-js");
-// keep the 'ws' usage as well - coven requires this very spelling
-const ws = require('ws')
-const filename = path.basename(__filename)
 
-const chroma = require("chroma-js")
-const nodeglpath = "../node-gles3"
-const rws = require('reconnecting-websocket');
-
-
-const gl = require(path.join(nodeglpath, "gles3.js")),
-glfw = require(path.join(nodeglpath, "glfw3.js")),
-glutils = require(path.join(nodeglpath, "glutils.js"))
-
-let USEVR = (process.platform === "win32") && !(argv.vr === 'false');
-// usevr if its specified on CLI & skip VR if on OSX:
-console.log('using VR?', USEVR)
-let vr = (USEVR) ? require(path.join(nodeglpath, "openvr.js")) : null
-
-const shaderpath = path.join(__dirname, "shaders")
 
 // generate a random name for new object:
 let gensym = (function() {
@@ -3258,59 +3254,59 @@ function draw(eye=0) {
 
 
 //! We don't need to use this anymore, because it's all within a single script. 
-function serverConnect() {
-	const url = 'ws://localhost:8080'
-	socket = new ws(url)
-	socket.binaryType = 'arraybuffer';
-	socket.onopen = () => {
-		console.log("websocket connected to localWebsocket on "+url);
-		// reset our local scene:
-		localGraph = {
-			nodes: {},
-			arcs: []
-		};
-		mainScene.rebuild(localGraph)
+// function serverConnect() {
+// 	const url = 'ws://localhost:8080'
+// 	socket = new ws(url)
+// 	socket.binaryType = 'arraybuffer';
+// 	socket.onopen = () => {
+// 		console.log("websocket connected to localWebsocket on "+url);
+// 		// reset our local scene:
+// 		localGraph = {
+// 			nodes: {},
+// 			arcs: []
+// 		};
+// 		mainScene.rebuild(localGraph)
 
-		messageFromLocalClient(JSON.stringify({ cmd:"get_scene"})) 
+// 		messageFromLocalClient(JSON.stringify({ cmd:"get_scene"})) 
 
-		// let the localWebsocket server assign our connection with an id
-		messageFromLocalClient(JSON.stringify({ cmd:"vrClientStatus"})) 
+// 		// let the localWebsocket server assign our connection with an id
+// 		messageFromLocalClient(JSON.stringify({ cmd:"vrClientStatus"})) 
 
-	}
-	socket.onerror = (error) => {
-        console.error(`ws error: ${error}`)
-        socket = null;
-        localGraph = { nodes: {}, arcs: [] }
-	}
-	socket.onclose = function(e) {
-		socket = null;
-		console.log("websocket disconnected from "+url);
-		localGraph = {
-			nodes: {}, arcs: []
-		}
-		mainScene.rebuild(localGraph)
-		setTimeout(function(){
-			console.log("websocket reconnecting");
-			serverConnect();
-		}, 2000);		
-	}
-	socket.onmessage = (e) => {
-		if (e.data instanceof ArrayBuffer) {
-			console.log("ws received arraybuffer of " + e.data.byteLength + " bytes")
-		} else {
-			let msg = e.data;
-			try {
-                msg = JSON.parse(msg);
-                onServerMessage(msg, socket);
+// 	}
+// 	socket.onerror = (error) => {
+//         console.error(`ws error: ${error}`)
+//         socket = null;
+//         localGraph = { nodes: {}, arcs: [] }
+// 	}
+// 	socket.onclose = function(e) {
+// 		socket = null;
+// 		console.log("websocket disconnected from "+url);
+// 		localGraph = {
+// 			nodes: {}, arcs: []
+// 		}
+// 		mainScene.rebuild(localGraph)
+// 		setTimeout(function(){
+// 			console.log("websocket reconnecting");
+// 			serverConnect();
+// 		}, 2000);		
+// 	}
+// 	socket.onmessage = (e) => {
+// 		if (e.data instanceof ArrayBuffer) {
+// 			console.log("ws received arraybuffer of " + e.data.byteLength + " bytes")
+// 		} else {
+// 			let msg = e.data;
+// 			try {
+//                 msg = JSON.parse(msg);
+//                 onServerMessage(msg, socket);
 
-			} catch(e) {}
-		} 
-	}
-}
+// 			} catch(e) {}
+// 		} 
+// 	}
+// }
 
 function toVR(ms) {
     msg = JSON.parse(ms)
-    console.log('toVR', typeof msg)
+    
 	switch (msg.cmd) {
         case "deltas": {
 			// insert into our TODO list:
