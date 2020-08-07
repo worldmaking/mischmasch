@@ -348,7 +348,7 @@ var handleDelta = function(delta) {
 									gen_patcher.message("script", "connect", newModule.varname, delta.index, newAudiovizPoke.varname, 0);
 
 									audiovizIndex++
-									outlet(1, 'sizeinsamps', audiovizIndex + 1)
+									outlet(2, 'sizeinsamps', audiovizIndex + 1)
 									object[delta.path.replace('.','__')] = delta.index
 									outletsTable.push(object)	
 									
@@ -635,7 +635,7 @@ function getAudioviz(){
 					outletViz[foo] = {value: audiovizBuffer.peek(1, targetModule[foo].audiovizIndex)}
 				}
 			});
-			outlet(2, 'audiovizLookup', JSON.stringify(outletViz))
+			outlet(1, 'audiovizLookup', JSON.stringify(outletViz))
 			
 			if(getAudioVizErrorDirty === 1){
 				getAudioVizErrorDirty = 0
