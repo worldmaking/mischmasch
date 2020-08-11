@@ -2121,45 +2121,52 @@
 				0.9807852804032304
 			]
 		},
-		"out0": {
+		"pos_X": {
 			"_props": {
 				"kind": "outlet",
 				"index": 0,
 				"history": false
 			}
 		},
-		"out1": {
+		"pos_Y": {
 			"_props": {
 				"kind": "outlet",
 				"index": 1,
 				"history": false
 			}
 		},
-		"out2": {
+		"pos_Z": {
 			"_props": {
 				"kind": "outlet",
 				"index": 2,
 				"history": false
 			}
 		},
-		"out3": {
+		"orient_X": {
 			"_props": {
 				"kind": "outlet",
 				"index": 3,
 				"history": false
 			}
 		},
-		"out4": {
+		"orient_Y": {
 			"_props": {
 				"kind": "outlet",
 				"index": 4,
 				"history": false
 			}
 		},
-		"out5": {
+		"orient_Z": {
 			"_props": {
 				"kind": "outlet",
 				"index": 5,
+				"history": false
+			}
+		},
+		"orient_W": {
+			"_props": {
+				"kind": "outlet",
+				"index": 6,
 				"history": false
 			}
 		}
