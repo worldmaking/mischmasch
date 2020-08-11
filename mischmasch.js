@@ -890,7 +890,7 @@ if(USEWS || argv.offline != 1){
 } else {
     // no ws used
     console.log('not using WS')
-	// demoScene = path.join(__dirname, "temp", "simple.json")
+	// demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
 	// localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
 
 }
@@ -3033,7 +3033,7 @@ function animate() {
                 incomingDeltas.push.apply(incomingDeltas, deltasToHost);
                 // pass the deltas to the gen~ script:
                 max.outlet('fromApp', JSON.stringify(deltasToHost))
-                
+                maxMSPScripting(deltasToHost)
             break
             case "malformedDelta":
                 if (USEWS == true && hostWebsocket){
@@ -3077,8 +3077,9 @@ function animate() {
             // pass these deltas back to VR:
             incomingDeltas.push.apply(incomingDeltas, deltasToHost);
             // pass the deltas to the gen~ script:
-            max.outlet('fromApp', JSON.stringify(deltasToHost))
-            // TODO: code this ^^^
+			max.outlet('fromApp', JSON.stringify(deltasToHost))
+			maxMSPScripting(deltasToHost)
+            
         }
     } 
     outgoingDeltas.length = 0;
@@ -3223,3 +3224,475 @@ max.addHandler('clearScene', ()=>{
     mainScene.rebuild(localGraph)
  
 })
+
+// data related to scripting max
+var scripting = {
+	counters: {
+		newNodeCounter: 1,
+		feedbackConnections: 0,
+		genOutCounter: 1,
+		box_y: 0
+	},
+	// need to keep track of knobs so we can treat them as inlets and script connect to their attenuvertors
+	knobs:{
+		// eg "path_path_#": "attenuvertor_path_#"
+	},
+	nodes: {},
+	inletsTable: [],
+	outletsTable: [],
+	newGenModule: null,
+	vrSource: {
+		varname: null
+	},
+	object: {},
+	speakerTable: {}
+}
+
+max.addHandler('resetCounters',()=>{
+	scripting.counters.newNodeCounter = 1;
+	scripting.counters.feedbackConnections = 0
+	scripting.counters.genOutCounter = 1
+	scripting.counters.box_y = 0
+	scripting.inletsTable = []
+	scripting.outletsTable = []
+	scripting.nodes = {}
+	scripting.object = {}
+	scripting.speakerTable = {}
+	audiovizLookup = {}
+	audiovizIndex = 0
+})
+
+function maxMSPScripting(delta){
+	max.post(delta)
+	var index = JSON.stringify(delta.index)
+
+			
+	// iterate through the array of deltas, passing one by one through handleDelta
+	if (Array.isArray(delta)) {
+		for (var i=0; i<delta.length; i++) {
+			
+			maxMSPScripting(delta[i]);
+		}
+	} else {
+
+		scripting.counters.box_y = scripting.counters.newNodeCounter * 5 + 10
+		if (scripting.counters.box_y > 500){
+			scripting.counters.box_y = 50
+		}
+		switch (delta.op){
+			// prevent new objects from being srcipted too low on the patcher page (we encountered a bug when objects were written above 1000 on the y axis)
+
+			// create an object!
+			case "newnode": 
+				if (scripting.counters.newNodeCounter > 20){
+					scripting.counters.newNodeCounter = 1
+					}
+				if(scripting.nodes[delta.path]){
+					// don't add a duplicate
+					// if this happens, it means something is wrong with the graph, maybe a delnode wasn't triggered or received, or duplicate deltas received
+					post('WARNING: duplicate newnode delta received. Was filtered out, but need to check the delta round-trip\n\n')
+				} else {
+					// add the node to the obj to prevent it being added as a duplicate
+					// ... and if it is an outlet, keep track of its history property
+					if(delta.kind === 'outlet'){
+						scripting.nodes[delta.path] = {
+							history: delta.history
+						}
+					} else {
+						scripting.nodes[delta.path] = {}
+					}
+
+					// individual delta to handle:
+					paramCounter = 0;
+					
+					var kind = delta.kind
+					
+
+					var posX = 10
+					
+					if (delta.pos) {
+
+						scripting.counters.newNodeCounter++
+						posX = (delta.pos[0] + 3)
+						 
+						pathName = delta.path.split('.')[0] 
+												
+						switch(delta.category){
+							
+							case "abstraction": 
+
+								if(kind === "wand"){
+									max.outlet('toMaxScripting', 'addWand',  pathName)
+									
+								} else if(kind === "speaker"){
+									
+									scripting.vrSource.varname = "source_" + pathName
+									// the vr.source~ objects instantiated in parent patcher should also have their first arg be the genContext value, but scripting name be the groundTruth value
+									scripting.speakerTable[scripting.vrSource.varname] = {genOutNumber: scripting.counters.genOutCounter }  
+									
+									max.outlet('toMaxScripting', 'addSpeaker',  scripting, pathName, delta.pos)
+
+									scripting.counters.genOutCounter = (scripting.counters.genOutCounter + 1) 
+	
+								} else {
+									max.outlet('toMaxScripting', 'addModule',  scripting, pathName, kind)
+								}
+
+							break;
+							
+							case "operator":
+								max.outlet('toMaxScripting', 'addOperator',  scripting, pathName, kind)
+									
+							break;
+							
+							default:
+								max.outlet('toMaxScripting', 'addDefault',  scripting, pathName, kind)
+							break;	
+							}
+						
+						} else {
+							switch(kind){
+								case "knob":
+								case 'small_knob':
+								case 'large_knob':
+								case 'tuning_knob':
+								case 'slider':
+								case 'momentary':
+								case 'led':
+
+									pathName = delta.path.split('.')[0]
+									paramName = delta.path.replace('.','__')
+									setparamName = delta.path.split('.')[1]
+									attenuvertorName = paramName + '_attenuvertor'
+									
+									scripting.knobs[delta.path] = {
+										attenuvertor: attenuvertorName
+									}
+									
+									paramX = paramCounter * 150
+									// generate the setparam which the param will bind to
+									var setparam = gen_patcher.newdefault([275, scripting.counters.box_y * 2, "setparam", setparamName])
+									setparam.varname = 'setparam_' + paramName
+									gen_patcher.message("script", "connect", setparam.varname, 0, pathName, 0);
+
+									// generate the multiplier to insert between the param and setparam (for knobs-as-inlets)
+									var attenuvertor = gen_patcher.newdefault([450, scripting.counters.box_y * 2, "*"])
+									attenuvertor.varname = attenuvertorName
+									gen_patcher.message("script", "connect", attenuvertor.varname, 0, setparam.varname, 0);
+
+									// generate the param which the js script will bind to
+									var param = gen_patcher.newdefault([600, scripting.counters.box_y * 1.5, "param", paramName, delta.value])
+									param.varname = paramName
+									gen_patcher.message("script", "connect", param.varname, 0, attenuvertor.varname, 1);
+								
+									paramCounter++
+								
+								break;
+								
+								case 'n_switch':
+									// pathName = delta.path.split('.')[0]
+									// paramName = delta.path.replace('.','__')
+									// setparamName = delta.path.split('.')[1]
+									// attenuvertorName = paramName + '_attenuvertor'
+
+									
+									// paramX = paramCounter * 150
+									// // generate the setparam which the param will bind to
+									// var setparam = gen_patcher.newdefault([275, scripting.counters.box_y * 2, "setparam", setparamName])
+									// setparam.varname = 'setparam_' + paramName
+									// gen_patcher.message("script", "connect", setparam.varname, 0, pathName, 0);
+
+									// // generate the multiplier to insert between the param and setparam (for knobs-as-inlets)
+									// var attenuvertor = gen_patcher.newdefault([450, scripting.counters.box_y * 2, "*"])
+									// attenuvertor.varname = attenuvertorName
+									// gen_patcher.message("script", "connect", attenuvertor.varname, 0, setparam.varname, 0);
+									
+									// // generate the param which the js script will bind to
+									// var param = gen_patcher.newdefault([600, scripting.counters.box_y * 1.5, "param", paramName, delta.value])
+									// param.varname = paramName
+									// gen_patcher.message("script", "connect", param.varname, 0, attenuvertor.varname, 1);
+								
+
+									// paramCounter++
+								break;
+								
+								case "inlet": 
+									scripting.object[delta.path.replace('.','__')] = delta.index
+									scripting.inletsTable.push(scripting.object)
+								
+								
+								case "outlet":
+								// poke all outlets to buffer for visual feedback:
+								// first make sure that the outlet has an index, and is not an inlet (sometimes this occurs...)
+								if (index && kind !== 'inlet' && kind !== 'controller2' && kind !== 'headset'){
+									
+									if(audiovizLookup[pathName]){
+										audiovizLookup[pathName].paths[delta.path] = {audiovizIndex: audiovizIndex, deltaIndex: delta.index, value: null}
+									} else {
+										audiovizLookup[pathName] = {
+											paths: {
+
+											}
+										}
+										audiovizLookup[pathName].paths[delta.path] = {audiovizIndex: audiovizIndex, deltaIndex: delta.index, value: null}
+									}
+									// pass along to scripting for visualizing each gen object's audio state
+									max.outlet('toMaxScripting', 'addOutlet', scripting, delta, audiovizIndex)
+									// audiovizLookup[pathName][delta.path] = {audiovizIndex: audiovizIndex, deltaIndex: delta.index}
+									
+									
+
+									audiovizIndex++
+									max.outlet('sizeinsamps', audiovizIndex + 1)
+									scripting.object[delta.path.replace('.','__')] = delta.index
+									scripting.outletsTable.push(scripting.object)	
+									
+									// TODO: if a module is deleted, find which channels in the buffer are now freed, make those available to the next newnode.
+								}
+
+								break;
+									// TEMP HACK!!!!
+								// so we can ignore UI objects that we don't need to patcher script at this point
+								// NEED TO FIX
+
+								// handle "inlet", "outlet", and "small_knob" etc here
+								// you need to cache them somehwere, even though they don't exist as objects in a patcher
+								// so we can know how to connect to them or change their values
+
+							}		
+
+
+							for (var k in delta){
+								if (delta.hasOwnProperty(k)) {
+									switch (k){
+										case 'path':
+										
+										break;
+										
+										case 'range':
+										
+										// outlet(4, delta.path.replace('.','__'), delta.value, delta.range)
+										break;
+										
+										case 'value':
+										
+										break;
+										
+										case 'taper':
+										
+										break;
+										
+										default:
+										
+										
+										break;
+										
+										
+									}
+								}
+							}
+						}
+				}	
+			break;
+			
+			// delete an object
+			case "delnode":
+				// js: {"op":"delnode","path":"speaker_50.input","kind":"inlet","index":0}  {"op":"delnode","path":"speaker_50","kind":"speaker","category":"abstraction","pos":[-0.0033256448805332184,-0.8113799095153809,-2.032186269760132],"orient":[-0.40548140108925446,-0.001008427298806405,0.5440172089960219,0.7345945867262966]}  dsp 48000.000000 32
+
+				if(scripting.nodes[delta.path]){
+					// remove node from the scripting.nodes object
+					delete scripting.nodes[delta.path]
+
+					// var newDict = new Dict
+					var deleteMe = delta.path.replace('.', '__');
+					// dict.set(delta)
+					if(delta.path.split('_')[0] === 'speaker'){
+						
+						var thisVarname = 'source_' + delta.path
+						scripting.counters.genOutCounter = (scripting.counters.genOutCounter - 1)
+						// outlet(4, 'thispatcher', 'script', 'delete', thisVarname)
+						// this.patcher.remove(thisVarname)
+						this.patcher.message("script", 'delete', thisVarname)
+
+						// then lower the gen~world counter
+						if(scripting.counters.genOutCounter <1){
+							scripting.counters.genOutCounter = 1
+						}
+
+					}
+					gen_patcher.apply(function(b) { 
+						// prevent erasing our audio outputs from genpatcher
+						if(b.varname !== "reserved_audioviz" && b.varname !== "PLO"){
+							if (b.varname.indexOf(deleteMe) != -1){
+		
+								gen_patcher.remove(b); 				
+							}
+						}
+					});
+
+				} else {
+					// error. received a delnode for a nonexistent node
+					post('WARNING: received a delnode for a node that does not exist in the graph\n')
+
+				}
+				
+			break;
+
+			// create a patchcord!
+			case "connect":
+				var arcString = '"' + delta.paths + '"'
+
+				
+				
+				if(scripting.nodes[arcString]){
+					// don't add a duplicate
+					// if this happens, it means something is wrong with the graph, maybe a delnode wasn't triggered or received, or duplicate deltas received
+					post('WARNING: received a connection delta that already exists in the graph. was filtered out, but need to check the delta round-trip\n\n')
+				} else {
+					arcString = '"' + delta.paths + '"' 
+					// add the arc to the obj to prevent it being added as a duplicate
+					scripting.nodes[arcString] = {}
+
+					var setOutlet = delta.paths[0].replace('.','__')
+					var setInlet = delta.paths[1].replace('.','__')
+					var input;
+					var output;
+					var attenuvertor = null 
+
+					// if the inlet path (arc path [1]) is a knob, it will be found in the knobs object
+					// scripting.knobs[delta.paths[1]]
+					// then connect delta.paths[0] to the attenuvertor of delta.paths[1]
+					if(scripting.knobs[delta.paths[1]]){
+						attenuvertor = delta.paths[1].replace('.','__') + '_attenuvertor'
+					}
+
+					for (var i = 0; i < scripting.inletsTable.length; i++) {
+						var inletsIndexes = scripting.inletsTable[i]
+								input = JSON.stringify(inletsIndexes[setInlet]);
+						}
+					for (var i = 0; i < scripting.outletsTable.length; i++) {
+					var outletsIndexes = scripting.outletsTable[i]
+							output = JSON.stringify(outletsIndexes[setOutlet]);
+					}
+
+					
+
+	
+					var outletPath = delta.paths[0]
+					// detect a self-patch connection and insert a history object in between!
+					if (delta.paths[0].split('.')[0] === delta.paths[1].split('.')[0]){					
+						scripting.counters.feedbackConnections++
+						var history = gen_patcher.newdefault([150,10, "history"])
+						history.varname = "feedback_" + scripting.counters.feedbackConnections
+
+						if(attenuvertor !== null){
+
+							// connect the outlet (arc[0]) to the history
+							gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
+							// connect the history to the attenuvertor
+							gen_patcher.message("script", "connect", history.varname, 0, parseInt(output), attenuvertor, 0);
+							// connect the attenuvertor to inlet (arc[1])
+							gen_patcher.message("script", "connect", attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
+						
+						} else {
+							gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
+							gen_patcher.message("script", "connect", history.varname, 0, delta.paths[1].split('.')[0], parseInt(input));
+						}
+					} else if (scripting.nodes[outletPath].history === 1 || scripting.nodes[outletPath].history === true) {
+
+						scripting.counters.feedbackConnections++
+						var history = gen_patcher.newdefault([150,10, "history"])
+						history.varname = "feedback_" + scripting.counters.feedbackConnections
+
+						if(attenuvertor !== null){
+
+							// connect the outlet (arc[0]) to the history
+							gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
+							// connect the history to the attenuvertor
+							gen_patcher.message("script", "connect", history.varname, 0, parseInt(output), attenuvertor, 0);
+							// connect the attenuvertor to inlet (arc[1])
+							gen_patcher.message("script", "connect", attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
+						
+						} else {
+							gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
+							gen_patcher.message("script", "connect", history.varname, 0, delta.paths[1].split('.')[0], parseInt(input));
+						}
+					}
+					
+					 else{
+						// if no self-patch connection exists, just connect them. 
+						if(attenuvertor !== null){
+							// connect the outlet (arc[0]) to the attenuvertor
+							gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), attenuvertor, 0);
+							// connect the attenuvertor to inlet (arc[1])
+							gen_patcher.message("script", "connect", attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
+						
+						} else {
+							gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
+						}
+					}
+				}
+			break;
+
+			case "disconnect":
+				var arcString = '"' + delta.paths + '"' 
+				if(scripting.nodes[arcString]){
+					// remove node from the scripting.nodes object
+					delete scripting.nodes[arcString]
+
+					var setOutlet = delta.paths[0].replace('.','__')
+				
+					var setInlet = delta.paths[1].replace('.','__')
+					var input;
+					var output;
+					for (var i = 0; i < scripting.inletsTable.length; i++) {
+						var inletsIndexes = scripting.inletsTable[i]
+						input = JSON.stringify(inletsIndexes[setInlet]);
+					}
+					for (var i = 0; i < scripting.outletsTable.length; i++) {
+						var outletsIndexes = scripting.outletsTable[i]
+						output = JSON.stringify(outletsIndexes[setOutlet]);
+					}
+					gen_patcher.message("script", "disconnect", delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
+
+				} else {
+					// error. received a delnode for a nonexistent node
+					post('WARNING: received a delnode for a node that does not exist in the graph\n')
+
+				}
+				
+			break;
+			
+			// modify a parameter
+			case "propchange": 
+				switch(delta.name) {
+
+					case "value": 
+						var param = delta.path
+						param = param.replace(".", "__")
+						var cleaveParam = param.split('.')[0]
+						this.patcher.message("script", "send", "world", cleaveParam, delta.to)
+					break;
+					
+					case "history":	
+						scripting.nodes[delta.path] = {
+							history: delta.history
+						}
+					break
+					case "pos":
+					case "orient":
+						pathName = delta.path.split('.')[0]
+						// is it a speaker?
+						if(pathName.split('_')[0] === "speaker"){
+							var vrSourceTarget = "source_" + pathName
+							this.patcher.message("script", "send", vrSourceTarget, "position", delta.to[0], delta.to[1], delta.to[2])
+						}
+						 
+
+					break;
+				}
+			break;
+			// ETC
+		} 
+	}
+}
