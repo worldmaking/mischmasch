@@ -29,9 +29,9 @@ function loadbang(){
 
 	
 	
-	outlet(1, 'resetCounters')
+	outlet(0, 'resetCounters')
 	// enable viz of outlets
-	outlet(3, 'toAudioviz', 1)
+	outlet(0, 'toAudioviz', 1)
 }
 function addWand(pathName, posY){
     var newWand = gen_patcher.newdefault([25, posY * 150, 'wand'])
@@ -46,27 +46,28 @@ function addWand(pathName, posY){
     gen_patcher.message("script", "connect", "c1Ow", 0, newWand.varname, 0);
 }
 
-function addSpeaker(scripting, pathName, position){
+function addSpeaker(pathName, x,y,z, posY, genOutCounter, vrSourceVarname){
 
     // make gen 'out'										
-    var newOut = gen_patcher.newdefault([10, scripting.counters.box_y * 150, 'out', scripting.counters.genOutCounter])
+    var newOut = gen_patcher.newdefault([10, posY * 150, 'out', genOutCounter])
     newOut.varname = pathName + '_out';
     
     // add in the 'speaker.gendsp'
-    var newSpeaker = gen_patcher.newdefault([25, scripting.counters.box_y * 150, 'speaker'])
+    var newSpeaker = gen_patcher.newdefault([25, posY * 150, 'speaker'])
     newSpeaker.varname = pathName;
 
     gen_patcher.message("script", "connect", newSpeaker.varname, 0, newOut.varname, 0);
 
     // add a vr.Source~ abstraction to parent, script the new out to this abstraction, use delta.pos to provide the vr.source~ position
-    var vrSource = this.patcher.newdefault([-50 + (scripting.counters.genOutCounter * 100), 200, "vr.source~", scripting.counters.genOutCounter - 1, "@position", position[0], position[1], position[2] ])
-    vrSource.varname = scripting.vrSource.varname
+    var vrSource = this.patcher.newdefault([-50 + (genOutCounter * 100), 200, "vr.source~", genOutCounter - 1, "@position", x,y,z ])
+    vrSource.varname = vrSourceVarname
 
     // gen~ and max outlets are base 0 (mth), our speaker numbers are base 1 (nth)
     // TODO decide on base 0 or 1 (I advocate for 0, because this also works with array indices) 
     //! do not use patcher scripting for this message:
     //! we need to use the deferlow script
-    outlet(0, 'genConnect', scripting.counters.genOutCounter, vrSource.varname)
+    post(0, 'genConnect', genOutCounter, vrSource.varname)
+    outlet(0, 'genConnect', genOutCounter, vrSource.varname)
 
     // we use outlets below the gen~ world. All vr.Source~ objects script connect into outlets 1 and 2. 
     this.patcher.message("script", "connect", vrSource.varname, 0, 'vrSource2CHMain', 0);
@@ -101,7 +102,7 @@ function addOutlet(currentParent, outletIndex, deltaPath, audiovizIndex){
     gen_patcher.message("script", "connect", currentParent, outletIndex, newAudiovizPoke.varname, 0);
 }
 
-function addParam(path, posY, value){
+function addParam(path, posY, value, paramCounter){
     pathName = path.split('.')[0]
     paramName = path.replace('.','__')
     setparamName = path.split('.')[1]
@@ -161,34 +162,9 @@ function updateValue(param, value){
 }
 
 function updateSpeakerPosition(target, x, y, z){
+    post('updateposition:', x,y,z)
     this.patcher.message("script", "send", target, "position", x,y,z)
 }
 
-// only visualizing the outlets for now:
-var outletViz = {}
-function getAudioviz(){
-	// seems the audiovizLookup isn't properly instantiated at start
-	if (typeof audiovizLookup === "object"){
-		if (Object.keys(audiovizLookup).length > 0){
-			Object.keys(audiovizLookup).forEach(function (item) {
-				var targetModule = audiovizLookup[item].paths
-				var pathList = Object.keys(targetModule)
-				for(i=0;i<pathList.length;i++){
-					foo = pathList[i]
-					outletViz[foo] = {value: audiovizBuffer.peek(1, targetModule[foo].audiovizIndex)}
-				}
-			});
-			outlet(1, 'audiovizLookup', JSON.stringify(outletViz))
-			
-			if(getAudioVizErrorDirty === 1){
-				getAudioVizErrorDirty = 0
-			}
-		} else {
-			if(getAudioVizErrorDirty === 0){
-				post('function getAudioviz called when no graph present\n')
-				getAudioVizErrorDirty = 1
-			}
-		}
 
-	}
-}
+

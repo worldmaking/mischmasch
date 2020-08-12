@@ -40,25 +40,142 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
-					"id" : "obj-103",
+					"color" : [ 0.811764705882353, 0.372549019607843, 0.372549019607843, 1.0 ],
+					"id" : "obj-17",
 					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 0,
-					"patching_rect" : [ 241.5, 637.0, 99.0, 22.0 ],
-					"text" : "print"
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 727.0, 205.5, 143.0, 22.0 ],
+					"text" : "receive from_node_script"
 				}
 
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-102",
-					"linecount" : 2,
+					"id" : "obj-9",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "" ],
+					"patching_rect" : [ 727.0, 241.0, 148.0, 22.0 ],
+					"text" : "route toOutletVisualization"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-6",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 727.0, 278.0, 129.0, 22.0 ],
+					"saved_object_attributes" : 					{
+						"filename" : "outletVisualization.js",
+						"parameter_enable" : 0
+					}
+,
+					"text" : "js outletVisualization.js"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-113",
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 932.0, 1036.0, 50.0, 36.0 ],
-					"text" : "getAudioviz"
+					"patching_rect" : [ 323.0, 385.0, 75.0, 22.0 ],
+					"text" : "script reboot"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-111",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "" ],
+					"patching_rect" : [ 319.333332061767578, 532.333332061767578, 127.0, 22.0 ],
+					"text" : "routepass getAudioviz"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"color" : [ 0.945098039215686, 0.913725490196078, 0.407843137254902, 1.0 ],
+					"id" : "obj-110",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 319.333332061767578, 502.0, 122.0, 22.0 ],
+					"text" : "receive fromAudioViz"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"color" : [ 0.054901960784314, 0.996078431372549, 0.0, 1.0 ],
+					"id" : "obj-108",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 825.333332061767578, 1061.0, 144.0, 22.0 ],
+					"text" : "receive fromMaxScripting"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-107",
+					"maxclass" : "newobj",
+					"numinlets" : 3,
+					"numoutlets" : 3,
+					"outlettype" : [ "", "", "" ],
+					"patching_rect" : [ 437.333332061767578, 356.0, 227.0, 22.0 ],
+					"text" : "routepass resetCounters audiovizLookup"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"color" : [ 0.054901960784314, 0.996078431372549, 0.0, 1.0 ],
+					"id" : "obj-106",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 955.833332061767578, 167.107421875, 144.0, 22.0 ],
+					"text" : "receive fromMaxScripting"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-105",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "" ],
+					"patching_rect" : [ 825.0, 1091.0, 129.0, 22.0 ],
+					"text" : "routepass genConnect"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"color" : [ 0.054901960784314, 0.996078431372549, 0.0, 1.0 ],
+					"id" : "obj-104",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 163.0, 597.0, 131.0, 22.0 ],
+					"text" : "send fromMaxScripting"
 				}
 
 			}
@@ -70,7 +187,7 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 729.0, 843.0, 143.0, 22.0 ],
+					"patching_rect" : [ 881.333332061767578, 115.0, 143.0, 22.0 ],
 					"text" : "receive from_node_script"
 				}
 
@@ -82,7 +199,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 729.0, 871.0, 131.0, 22.0 ],
+					"patching_rect" : [ 881.333332061767578, 143.0, 131.0, 22.0 ],
 					"text" : "routepass sizeinsamps"
 				}
 
@@ -137,7 +254,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 50.0, 1249.0, 701.0, 353.0 ],
+					"patching_rect" : [ 50.0, 1249.0, 707.0, 353.0 ],
 					"text" : "Event Interval is the rate, in milliseconds, at which Max services the low-priority queue, which includes redrawing the screen. The effective rate of redrawing is limited by the Refresh Interval, but other, less expensive low-priority events may occur more often. The default value of is 2 ms. When Overdrive is enabled, Max gives priority to timing and MIDI processing over screen drawing and user interface tasks such as responding to mouse clicks. If you are primarily going to be using Max for MIDI or audio processing, Overdrive should be enabled. If you are primarily going to be using Jitter, Overdrive should be disabled. In addition, the debugging features of Max only work if overdrive is disabled. Poll Throttle sets the number of high-priority events processed per by the scheduler at one time. High priority events include MIDI as well as events generated by metro and other timing objects. A lower setting (e.g., 1) means less event clumping, while a higher value (e.g., 100) will result in less of an event backlog. The default value is 20 events. Queue Throttle sets the number of events processed per servicing of the low priority event queue (Low priority events include user interface events, graphics operations, reading files from disk, and other expensive operations that would otherwise cause timing problems for the scheduler). A lower setting (e.g. 1) means less event clumping, while a higher value (e.g. 100) will result in less of an event backlog. The default value is 10 events. Redraw Queue Throttle sets the maximum number of patcher UI update events to process at a time. Lower values can lead to more processing power being made available to other low-priority Max processes, and higher values make user interfaces more responsive (especially for patches in which large numbers of bpatcher objects are being used). The default value is 1000 events. Refresh Rate sets the minimum time, in milliseconds, between updating of the interface. A lower setting (e.g., 5) means that Max will devote more time to redrawing the screen and less to responding to user input, while a higher value (e.g., 60) will mean that the interface is faster and more responsive. The default value is 33.3 ms. Scheduler Interval sets the interval, in milliseconds, at which the low priority thread services the low priority event queue. A lower setting (e.g. 1) results in greater responsiveness, while a higher value (e.g. 20) will mean that more time is available for other applications. The default value is 1 millisecond. Scheduler slop is the amount of time, in milliseconds, the scheduler is permitted to fall behind actual time before correcting the scheduler time to actual time. The scheduler will fall behind actual time if there are more high priority events than the computer can process. Typically some amount of slop is desired so that high priority events will maintain long term temporal accuracy despite small temporal deviations. A lower setting (e.g., 1) results in greater short term accuracy, while a higher value (e.g., 100) will mean that the scheduler is more accurate in the long term. The default value is 25 milliseconds."
 				}
 
@@ -163,7 +280,6 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 864.0, 1223.0, 57.0, 36.0 ],
-					"presentation_linecount" : 2,
 					"text" : ";\r\ndsp set 1"
 				}
 
@@ -213,7 +329,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 696.0, 306.0, 29.5, 22.0 ],
+					"patching_rect" : [ 403.0, 385.0, 29.5, 22.0 ],
 					"text" : "api"
 				}
 
@@ -1086,7 +1202,6 @@
 						"style" : "",
 						"subpatcher_template" : "",
 						"assistshowspatchername" : 0,
-						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
 									"id" : "obj-3",
@@ -1388,7 +1503,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 463.333332061767578, 1067.0, 150.0, 20.0 ],
+					"patching_rect" : [ 463.333332061767578, 1092.0, 150.0, 20.0 ],
 					"text" : "don't remove thispatcher"
 				}
 
@@ -1531,7 +1646,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 764.333332061767578, 914.5, 83.0, 22.0 ],
+					"patching_rect" : [ 1030.333332061767578, 191.0, 83.0, 22.0 ],
 					"text" : "loadmess 100"
 				}
 
@@ -1542,7 +1657,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 816.333332061767578, 939.5, 90.0, 20.0 ],
+					"patching_rect" : [ 1082.333332061767578, 215.0, 90.0, 20.0 ],
 					"text" : "Poll Rate (ms)"
 				}
 
@@ -1777,7 +1892,7 @@
  ]
 					}
 ,
-					"patching_rect" : [ 615.333332061767578, 964.5, 168.0, 22.0 ],
+					"patching_rect" : [ 881.333332061767578, 241.0, 168.0, 22.0 ],
 					"saved_object_attributes" : 					{
 						"description" : "",
 						"digest" : "",
@@ -1797,19 +1912,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "bang" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 764.333332061767578, 938.5, 50.0, 22.0 ]
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"color" : [ 0.054901960784314, 0.996078431372549, 0.0, 1.0 ],
-					"id" : "obj-14",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 0,
-					"patching_rect" : [ 538.999998728434207, 1001.0, 131.0, 22.0 ],
-					"text" : "send fromGenScripting"
+					"patching_rect" : [ 1030.333332061767578, 215.0, 50.0, 22.0 ]
 				}
 
 			}
@@ -1845,7 +1948,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 463.333332061767578, 1009.0, 54.0, 22.0 ],
+					"patching_rect" : [ 825.333332061767578, 1120.0, 54.0, 22.0 ],
 					"text" : "deferlow"
 				}
 
@@ -1857,7 +1960,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 463.333332061767578, 1038.0, 256.0, 22.0 ],
+					"patching_rect" : [ 825.333332061767578, 1149.0, 256.0, 22.0 ],
 					"saved_object_attributes" : 					{
 						"filename" : "deferlowScript.js",
 						"parameter_enable" : 0
@@ -1875,7 +1978,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 463.333332061767578, 1089.0, 67.0, 22.0 ],
+					"patching_rect" : [ 463.333332061767578, 1114.0, 67.0, 22.0 ],
 					"save" : [ "#N", "thispatcher", ";", "#Q", "end", ";" ],
 					"text" : "thispatcher"
 				}
@@ -1920,7 +2023,7 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 437.333332061767578, 359.0, 144.0, 22.0 ],
+					"patching_rect" : [ 437.333332061767578, 323.0, 144.0, 22.0 ],
 					"text" : "receive fromGenScripting"
 				}
 
@@ -2003,7 +2106,7 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 463.333332061767578, 1116.0, 54.0, 22.0 ],
+					"patching_rect" : [ 463.333332061767578, 1141.0, 54.0, 22.0 ],
 					"text" : "onecopy"
 				}
 
@@ -2060,8 +2163,57 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-136", 0 ],
+					"source" : [ "obj-105", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-46", 1 ],
+					"source" : [ "obj-106", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-2", 0 ],
+					"source" : [ "obj-107", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-105", 0 ],
+					"source" : [ "obj-108", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-21", 0 ],
 					"source" : [ "obj-11", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-111", 0 ],
+					"source" : [ "obj-110", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-91", 0 ],
+					"source" : [ "obj-111", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-2", 0 ],
+					"source" : [ "obj-113", 0 ]
 				}
 
 			}
@@ -2098,6 +2250,13 @@
 					"destination" : [ "obj-2", 0 ],
 					"midpoints" : [ 512.333332061767578, 414.0, 446.833332061767578, 414.0 ],
 					"source" : [ "obj-16", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-9", 0 ],
+					"source" : [ "obj-17", 0 ]
 				}
 
 			}
@@ -2283,7 +2442,7 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-2", 0 ],
+					"destination" : [ "obj-107", 0 ],
 					"source" : [ "obj-4", 0 ]
 				}
 
@@ -2298,17 +2457,8 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-102", 1 ],
-					"order" : 0,
-					"source" : [ "obj-46", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-81", 0 ],
-					"midpoints" : [ 624.833332061767578, 994.5, 912.333332061767578, 994.5, 912.333332061767578, 908.5, 472.833332061767578, 908.5 ],
-					"order" : 1,
+					"destination" : [ "obj-6", 0 ],
+					"midpoints" : [ 890.833332061767578, 270.5, 736.5, 270.5 ],
 					"source" : [ "obj-46", 0 ]
 				}
 
@@ -2435,37 +2585,6 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-136", 0 ],
-					"source" : [ "obj-81", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-14", 0 ],
-					"source" : [ "obj-81", 1 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-46", 1 ],
-					"midpoints" : [ 699.833332061767578, 952.0, 699.333332061767578, 952.0 ],
-					"source" : [ "obj-81", 3 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-46", 0 ],
-					"disabled" : 1,
-					"midpoints" : [ 624.166665395100949, 961.0, 624.833332061767578, 961.0 ],
-					"source" : [ "obj-81", 2 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-15", 0 ],
 					"source" : [ "obj-86", 0 ]
 				}
@@ -2501,6 +2620,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-6", 0 ],
+					"source" : [ "obj-9", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-65", 1 ],
 					"source" : [ "obj-90", 0 ]
 				}
@@ -2508,23 +2634,14 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-136", 0 ],
+					"destination" : [ "obj-104", 0 ],
 					"source" : [ "obj-91", 0 ]
 				}
 
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-103", 0 ],
-					"order" : 0,
-					"source" : [ "obj-93", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-91", 0 ],
-					"order" : 1,
 					"source" : [ "obj-93", 0 ]
 				}
 
@@ -2660,11 +2777,22 @@
 				"implicit" : 1
 			}
 , 			{
+				"name" : "outletVisualization.js",
+				"bootpath" : "D:/github/mischmasch",
+				"patcherrelativepath" : ".",
+				"type" : "TEXT",
+				"implicit" : 1
+			}
+, 			{
 				"name" : "vr~.mxe64",
 				"type" : "mx64"
 			}
  ],
-		"autosave" : 0
+		"autosave" : 0,
+		"boxgroups" : [ 			{
+				"boxes" : [ "obj-108", "obj-105", "obj-136", "obj-130" ]
+			}
+ ]
 	}
 
 }
