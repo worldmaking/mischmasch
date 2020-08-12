@@ -1,11 +1,10 @@
 inlets = 1
-
 outlets = 3
 // the reference to the gen~ world object we'll be scripting to. 
 var gen_patcher; 
 
 
-// max api
+// max api, init
 function loadbang(){
 	
 	// things that need to be initiated only after patcher has finished loading
@@ -13,7 +12,7 @@ function loadbang(){
 
 	//! clear the parent patcher of any vr.source~ objects prior to receiving deltas
 	this.patcher.apply(function(b) { 
-		post(b.varname)
+		
 		if(b.varname.split('_speaker')[0] === 'source'){
 			this.patcher.message('script', 'delete', b.varname)
 		}
@@ -25,14 +24,12 @@ function loadbang(){
 		gen_patcher.remove(b); 	
 		}		
 	});
-
-
-	
-	
 	outlet(0, 'resetCounters')
 	// enable viz of outlets
 	outlet(0, 'toAudioviz', 1)
 }
+
+//! patcher scripting from deltas:
 function addWand(pathName, posY){
     var newWand = gen_patcher.newdefault([25, posY * 150, 'wand'])
     newWand.varname = pathName;
@@ -63,15 +60,12 @@ function addSpeaker(pathName, x,y,z, posY, genOutCounter, vrSourceVarname){
     vrSource.varname = vrSourceVarname
 
     // gen~ and max outlets are base 0 (mth), our speaker numbers are base 1 (nth)
-    // TODO decide on base 0 or 1 (I advocate for 0, because this also works with array indices) 
     //! do not use patcher scripting for this message:
     //! we need to use the deferlow script
-    post(0, 'genConnect', genOutCounter, vrSource.varname)
     outlet(0, 'genConnect', genOutCounter, vrSource.varname)
 
-    // we use outlets below the gen~ world. All vr.Source~ objects script connect into outlets 1 and 2. 
+    // All vr.Source~ objects script connect into inlets 0 & 1 of a live.gain~ object called vrSource2CHMain
     this.patcher.message("script", "connect", vrSource.varname, 0, 'vrSource2CHMain', 0);
-	
     this.patcher.message("script", "connect", vrSource.varname, 1, 'vrSource2CHMain', 1);
 }
 
@@ -91,7 +85,7 @@ function addDefault(posY, pathName, kind){
 }
 
 function addOutlet(currentParent, outletIndex, deltaPath, audiovizIndex){
-    
+    // poke the outlet's audio into a buffer index for visualization
     var newAudiovizPoke = gen_patcher.newdefault([50, 100, 'poke', 'audioviz'])
     newAudiovizPoke.varname = deltaPath + '_poke';
     var newAudiovizConstant = gen_patcher.newdefault([50, 50, 'constant', audiovizIndex])
@@ -123,9 +117,7 @@ function addParam(path, posY, value, paramCounter){
     var param = gen_patcher.newdefault([600, posY * 1.5, "param", paramName, value])
     param.varname = paramName
     gen_patcher.message("script", "connect", param.varname, 0, attenuvertor.varname, 1);
-
     paramCounter++
-
 }
 
 function delNode(target){
@@ -133,7 +125,6 @@ function delNode(target){
         // prevent erasing our audio outputs from genpatcher
         if(b.varname !== "reserved_audioviz" && b.varname !== "reserved_audioviz_1" && b.varname !== "PLO" && b.varname !== "rightWand_pos_x" && b.varname !== "rightWand_pos_y" && b.varname !== "rightWand_pos_z" && b.varname !== "c1Px" && b.varname !== "c1Py" && b.varname !== "c1Pz" && b.varname !== "rightWand_orient_x" && b.varname !== "rightWand_orient_y" && b.varname !== "rightWand_orient_z" && b.varname !== "rightWand_orient_w" && b.varname !== "c1Ox" && b.varname !== "c1Oy" && b.varname !== "c1Oz" && b.varname !== "c1Ow"){
             if (b.varname.indexOf(target) != -1){
-
                 gen_patcher.remove(b); 				
             }
         }
@@ -162,7 +153,6 @@ function updateValue(param, value){
 }
 
 function updateSpeakerPosition(target, x, y, z){
-    post('updateposition:', x,y,z)
     this.patcher.message("script", "send", target, "position", x,y,z)
 }
 

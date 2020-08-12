@@ -48,6 +48,7 @@ const {argv} = require('yargs')
 var equal = require('deep-equal');
 // feedback cycle detection for both max and VR:
 const fb = require('./historify.js')
+const moment = require('moment')
 
 // max/msp api
 const max = (() => {
@@ -3033,7 +3034,10 @@ function animate() {
                 incomingDeltas.push.apply(incomingDeltas, deltasToHost);
                 // pass the deltas to the gen~ script:
                 // max.outlet('fromApp', JSON.stringify(deltasToHost))
-                maxMSPScripting(deltasToHost)
+				maxMSPScripting(deltasToHost)
+				
+				sessionRecording(deltasToHost)
+
             break
             case "malformedDelta":
                 if (USEWS == true && hostWebsocket){
@@ -3079,6 +3083,8 @@ function animate() {
             // pass the deltas to the gen~ script:
 			// max.outlet('fromApp', JSON.stringify(deltasToHost))
 			maxMSPScripting(deltasToHost)
+
+			sessionRecording(deltasToHost)
             
         }
     } 
@@ -3208,7 +3214,8 @@ max.addHandler('audiovizLookup', (audiovizLookup)=>{
 max.addHandler('clearScene', ()=>{
     let deltas = got.deltasFromGraph(localGraph, []);
     let inverse = got.inverseDelta(deltas)
-    maxMSPScripting(inverse)
+	maxMSPScripting(inverse)
+	sessionRecording(inverse)
     if(USEWS && hostWebsocket){
         let msg = JSON.stringify({
             cmd: 'clearScene',
@@ -3245,7 +3252,8 @@ var scripting = {
 		varname: null
 	},
 	object: {},
-	speakerTable: {}
+	speakerTable: {},
+	genOutArray: []
 }
 
 audiovizIndex = 0;
@@ -3257,6 +3265,7 @@ max.addHandler('resetCounters',()=>{
 	scripting.counters.box_y = 0
 	scripting.inletsTable = []
 	scripting.outletsTable = []
+	scripting.genOutArray = []
 	scripting.nodes = {}
 	scripting.object = {}
 	scripting.speakerTable = {}
@@ -3327,14 +3336,37 @@ function maxMSPScripting(delta){
 									max.outlet('toMaxScripting', 'addWand',  pathName, scripting.counters.box_y)
 									
 								} else if(kind === "speaker"){
-									
 									scripting.vrSource.varname = "source_" + pathName
+									let genOutNumber
+									// manage the real gen~ outs
+									if (scripting.genOutArray.length == 0){
+										scripting.genOutArray.push(scripting.vrSource.varname)
+										genOutNumber = 1
+									} else {
+										let availableOutlets = []
+										for(i=0;i<scripting.genOutArray.length;i++){
+											if(scripting.genOutArray[i] == null){
+												availableOutlets.push(i)												
+											}
+										}
+										if(availableOutlets[0]){
+											let assignOutlet = availableOutlets[0]
+											scripting.genOutArray[assignOutlet] = scripting.vrSource.varname
+											genOutNumber = assignOutlet + 1
+										} else {
+											let assignOutlet = scripting.genOutArray.length
+											scripting.genOutArray[assignOutlet] = scripting.vrSource.varname
+											genOutNumber = assignOutlet + 1
+										}
+									}
 									// the vr.source~ objects instantiated in parent patcher should also have their first arg be the genContext value, but scripting name be the groundTruth value
-									scripting.speakerTable[scripting.vrSource.varname] = {genOutNumber: scripting.counters.genOutCounter}  
-									max.post('\n\ntoMaxScripting', 'addSpeaker', pathName, delta.pos[0], delta.pos[1], delta.pos[2], scripting.counters.box_y, scripting.counters.genOutCounter, scripting.vrSource.varname, '\n\n')
-									max.outlet('toMaxScripting', 'addSpeaker', pathName, delta.pos[0], delta.pos[1], delta.pos[2], scripting.counters.box_y, scripting.counters.genOutCounter, scripting.vrSource.varname)
+									scripting.speakerTable[scripting.vrSource.varname] = {genOutNumber: genOutNumber}  
+									max.outlet('toMaxScripting', 'addSpeaker', pathName, delta.pos[0], delta.pos[1], delta.pos[2], scripting.counters.box_y, genOutNumber, scripting.vrSource.varname)
 									
-									scripting.counters.genOutCounter = scripting.counters.genOutCounter++
+									
+									console.log(scripting.genOutArray)
+									
+									
 	
 								} else {
 									max.outlet('toMaxScripting', 'addModule',  scripting.counters.box_y, pathName, kind)
@@ -3367,7 +3399,7 @@ function maxMSPScripting(delta){
 									scripting.knobs[delta.path] = {
 										attenuvertor: (delta.path.replace('.','__') + '_attenuvertor')
 									}
-									max.post('delta.value', delta.value)
+									
 									max.outlet('toMaxScripting', 'addParam',  delta.path, scripting.counters.box_y, delta.value, paramCounter)
 
 								break;
@@ -3483,15 +3515,24 @@ function maxMSPScripting(delta){
 						//! 
 						//TODO: the genOutCounter won't work after a delnode, because it's not referring the specific outlet number that's being removed.
 						//TODO instead, the genOutCounter should be an array whose indexes represent gen outs
-						scripting.counters.genOutCounter = (scripting.counters.genOutCounter - 1)
+						
+						for(i=0;i<scripting.genOutArray.length;i++){
+							
+							if(scripting.genOutArray[i] == thisVarname){
+								max.post(thisVarname, scripting.genOutArray[i])
+								scripting.genOutArray[i] = null
+							}
+						}
+						console.log('genOutArrayafterDeletion', scripting.genOutArray)
+						// scripting.counters.genOutCounter = (scripting.counters.genOutCounter - 1)
 						// outlet(4, 'thispatcher', 'script', 'delete', thisVarname)
 						// this.patcher.remove(thisVarname)
 						
 						max.outlet('toMaxScripting', 'deleteSpeaker', thisVarname)
 						// then lower the gen~world counter
-						if(scripting.counters.genOutCounter <1){
-							scripting.counters.genOutCounter = 1
-						}
+						// if(scripting.counters.genOutCounter <1){
+						// 	scripting.counters.genOutCounter = 1
+						// }
 
 					}
 					max.outlet('toMaxScripting', 'delNode', deleteMe)
@@ -3652,7 +3693,6 @@ function maxMSPScripting(delta){
 						// is it a speaker?
 						if(pathName.split('_')[0] === "speaker"){
 							var vrSourceTarget = "source_" + pathName
-							max.post('fromnodePosition:', delta.to[0], delta.to[1], delta.to[2])
 							max.outlet('toMaxScripting', 'updateSpeakerPosition', vrSourceTarget, delta.to[0], delta.to[1], delta.to[2])
 						}
 						 
@@ -3664,3 +3704,5 @@ function maxMSPScripting(delta){
 		} 
 	}
 }
+
+////////////////////////////////////////////////////////////////

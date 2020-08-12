@@ -607,12 +607,12 @@ function wands(wand, data){
 
 }
 
-// function fromApp(msg){
-// 	var ot = JSON.parse(msg)
+function fromApp(msg){
+	var ot = JSON.parse(msg)
 
-// 	handleDelta(ot)
+	handleDelta(ot)
 	
-// }
+}
 // only visualizing the outlets for now:
 var outletViz = {}
 function getAudioviz(){
