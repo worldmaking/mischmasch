@@ -33,7 +33,162 @@ function loadbang(){
 	// enable viz of outlets
 	outlet(3, 'toAudioviz', 1)
 }
+function addWand(pathName, posY){
+    var newWand = gen_patcher.newdefault([25, posY * 150, 'wand'])
+    newWand.varname = pathName;
+   
+    gen_patcher.message("script", "connect", "c1Px", 0, newWand.varname, 0);
+    gen_patcher.message("script", "connect", "c1Py", 0, newWand.varname, 0);
+    gen_patcher.message("script", "connect", "c1Pz", 0, newWand.varname, 0);
+    gen_patcher.message("script", "connect", "c1Ox", 0, newWand.varname, 0);
+    gen_patcher.message("script", "connect", "c1Oy", 0, newWand.varname, 0);
+    gen_patcher.message("script", "connect", "c1Oz", 0, newWand.varname, 0);
+    gen_patcher.message("script", "connect", "c1Ow", 0, newWand.varname, 0);
+}
 
-function newWand(name){
+function addSpeaker(scripting, pathName, position){
 
+    // make gen 'out'										
+    var newOut = gen_patcher.newdefault([10, scripting.counters.box_y * 150, 'out', scripting.counters.genOutCounter])
+    newOut.varname = pathName + '_out';
+    
+    // add in the 'speaker.gendsp'
+    var newSpeaker = gen_patcher.newdefault([25, scripting.counters.box_y * 150, 'speaker'])
+    newSpeaker.varname = pathName;
+
+    gen_patcher.message("script", "connect", newSpeaker.varname, 0, newOut.varname, 0);
+
+    // add a vr.Source~ abstraction to parent, script the new out to this abstraction, use delta.pos to provide the vr.source~ position
+    var vrSource = this.patcher.newdefault([-50 + (scripting.counters.genOutCounter * 100), 200, "vr.source~", scripting.counters.genOutCounter - 1, "@position", position[0], position[1], position[2] ])
+    vrSource.varname = scripting.vrSource.varname
+
+    // gen~ and max outlets are base 0 (mth), our speaker numbers are base 1 (nth)
+    // TODO decide on base 0 or 1 (I advocate for 0, because this also works with array indices) 
+    //! do not use patcher scripting for this message:
+    //! we need to use the deferlow script
+    outlet(0, 'genConnect', scripting.counters.genOutCounter, vrSource.varname)
+
+    // we use outlets below the gen~ world. All vr.Source~ objects script connect into outlets 1 and 2. 
+    this.patcher.message("script", "connect", vrSource.varname, 0, 'vrSource2CHMain', 0);
+	
+    this.patcher.message("script", "connect", vrSource.varname, 1, 'vrSource2CHMain', 1);
+}
+
+function addModule(posY, pathName, kind){
+    newGenModule = gen_patcher.newdefault([125, posY * 10, kind])
+    newGenModule.varname = pathName
+}
+
+function addOperator(posY, pathName, kind){
+    newGenModule = gen_patcher.newdefault([125, posY * 10, kind])
+    newGenModule.varname = pathName
+}
+
+function addDefault(posY, pathName, kind){
+    newGenModule = gen_patcher.newdefault([125, posY * 10, kind])
+    newGenModule.varname = pathName
+}
+
+function addOutlet(currentParent, outletIndex, deltaPath, audiovizIndex){
+    
+    var newAudiovizPoke = gen_patcher.newdefault([50, 100, 'poke', 'audioviz'])
+    newAudiovizPoke.varname = deltaPath + '_poke';
+    var newAudiovizConstant = gen_patcher.newdefault([50, 50, 'constant', audiovizIndex])
+    newAudiovizConstant.varname = deltaPath + '_poke';
+    // connect the constant to the poke
+    gen_patcher.message("script", "connect", newAudiovizConstant.varname, 0, newAudiovizPoke.varname, 1);
+    // need to get the index of the node! (if its an abstraction, then the outlet of the gendsp is represented as an index in the scene's graph)
+    gen_patcher.message("script", "connect", currentParent, outletIndex, newAudiovizPoke.varname, 0);
+}
+
+function addParam(path, posY, value){
+    pathName = path.split('.')[0]
+    paramName = path.replace('.','__')
+    setparamName = path.split('.')[1]
+    attenuvertorName = paramName + '_attenuvertor'
+
+    paramX = paramCounter * 150
+    // generate the setparam which the param will bind to
+    var setparam = gen_patcher.newdefault([275, posY * 2, "setparam", setparamName])
+    setparam.varname = 'setparam_' + paramName
+    gen_patcher.message("script", "connect", setparam.varname, 0, pathName, 0);
+
+    // generate the multiplier to insert between the param and setparam (for knobs-as-inlets)
+    var attenuvertor = gen_patcher.newdefault([450, posY * 2, "*"])
+    attenuvertor.varname = attenuvertorName
+    gen_patcher.message("script", "connect", attenuvertor.varname, 0, setparam.varname, 0);
+
+    // generate the param which the js script will bind to
+    var param = gen_patcher.newdefault([600, posY * 1.5, "param", paramName, value])
+    param.varname = paramName
+    gen_patcher.message("script", "connect", param.varname, 0, attenuvertor.varname, 1);
+
+    paramCounter++
+
+}
+
+function delNode(target){
+    gen_patcher.apply(function(b) { 
+        // prevent erasing our audio outputs from genpatcher
+        if(b.varname !== "reserved_audioviz" && b.varname !== "reserved_audioviz_1" && b.varname !== "PLO" && b.varname !== "rightWand_pos_x" && b.varname !== "rightWand_pos_y" && b.varname !== "rightWand_pos_z" && b.varname !== "c1Px" && b.varname !== "c1Py" && b.varname !== "c1Pz" && b.varname !== "rightWand_orient_x" && b.varname !== "rightWand_orient_y" && b.varname !== "rightWand_orient_z" && b.varname !== "rightWand_orient_w" && b.varname !== "c1Ox" && b.varname !== "c1Oy" && b.varname !== "c1Oz" && b.varname !== "c1Ow"){
+            if (b.varname.indexOf(target) != -1){
+
+                gen_patcher.remove(b); 				
+            }
+        }
+    });
+}
+
+function deleteSpeaker(target){
+    this.patcher.message("script", 'delete', target)
+}
+
+function connect(src, srcIndex, dst, dstIndex){
+    gen_patcher.message("script", "connect", src, srcIndex, dst, dstIndex)
+}
+
+function disconnect(src, srcIndex, dst, dstIndex){
+    gen_patcher.message("script", "disconnect", src, srcIndex, dst, dstIndex)
+}
+
+function history(varname){
+    var history = gen_patcher.newdefault([150,10, "history"])
+    history.varname = varname
+}
+
+function updateValue(param, value){
+    this.patcher.message("script", "send", "world", param, value)
+}
+
+function updateSpeakerPosition(target, x, y, z){
+    this.patcher.message("script", "send", target, "position", x,y,z)
+}
+
+// only visualizing the outlets for now:
+var outletViz = {}
+function getAudioviz(){
+	// seems the audiovizLookup isn't properly instantiated at start
+	if (typeof audiovizLookup === "object"){
+		if (Object.keys(audiovizLookup).length > 0){
+			Object.keys(audiovizLookup).forEach(function (item) {
+				var targetModule = audiovizLookup[item].paths
+				var pathList = Object.keys(targetModule)
+				for(i=0;i<pathList.length;i++){
+					foo = pathList[i]
+					outletViz[foo] = {value: audiovizBuffer.peek(1, targetModule[foo].audiovizIndex)}
+				}
+			});
+			outlet(1, 'audiovizLookup', JSON.stringify(outletViz))
+			
+			if(getAudioVizErrorDirty === 1){
+				getAudioVizErrorDirty = 0
+			}
+		} else {
+			if(getAudioVizErrorDirty === 0){
+				post('function getAudioviz called when no graph present\n')
+				getAudioVizErrorDirty = 1
+			}
+		}
+
+	}
 }

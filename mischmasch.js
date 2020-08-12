@@ -3240,7 +3240,7 @@ var scripting = {
 	nodes: {},
 	inletsTable: [],
 	outletsTable: [],
-	newGenModule: null,
+	currentParent: null,
 	vrSource: {
 		varname: null
 	},
@@ -3263,7 +3263,6 @@ max.addHandler('resetCounters',()=>{
 })
 
 function maxMSPScripting(delta){
-	max.post(delta)
 	var index = JSON.stringify(delta.index)
 
 			
@@ -3320,9 +3319,10 @@ function maxMSPScripting(delta){
 						switch(delta.category){
 							
 							case "abstraction": 
-
+								scripting.currentParent = pathName
 								if(kind === "wand"){
-									max.outlet('toMaxScripting', 'addWand',  pathName)
+									
+									max.outlet('toMaxScripting', 'addWand',  pathName, scripting.counters.box_y)
 									
 								} else if(kind === "speaker"){
 									
@@ -3335,18 +3335,20 @@ function maxMSPScripting(delta){
 									scripting.counters.genOutCounter = (scripting.counters.genOutCounter + 1) 
 	
 								} else {
-									max.outlet('toMaxScripting', 'addModule',  scripting, pathName, kind)
+									max.outlet('toMaxScripting', 'addModule',  scripting.counters.box_y, pathName, kind)
 								}
 
 							break;
 							
 							case "operator":
-								max.outlet('toMaxScripting', 'addOperator',  scripting, pathName, kind)
+								scripting.currentParent = pathName
+								max.outlet('toMaxScripting', 'addOperator',  scripting.counters.box_y, pathName, kind)
 									
 							break;
 							
 							default:
-								max.outlet('toMaxScripting', 'addDefault',  scripting, pathName, kind)
+								scripting.currentParent = pathName
+								max.outlet('toMaxScripting', 'addDefault',  scripting.counters.box_y, pathName, kind)
 							break;	
 							}
 						
@@ -3360,33 +3362,12 @@ function maxMSPScripting(delta){
 								case 'momentary':
 								case 'led':
 
-									pathName = delta.path.split('.')[0]
-									paramName = delta.path.replace('.','__')
-									setparamName = delta.path.split('.')[1]
-									attenuvertorName = paramName + '_attenuvertor'
-									
 									scripting.knobs[delta.path] = {
-										attenuvertor: attenuvertorName
+										attenuvertor: (delta.path.replace('.','__') + '_attenuvertor')
 									}
-									
-									paramX = paramCounter * 150
-									// generate the setparam which the param will bind to
-									var setparam = gen_patcher.newdefault([275, scripting.counters.box_y * 2, "setparam", setparamName])
-									setparam.varname = 'setparam_' + paramName
-									gen_patcher.message("script", "connect", setparam.varname, 0, pathName, 0);
+									max.post('delta.value', delta.value)
+									max.outlet('toMaxScripting', 'addParam',  delta.path, scripting.counters.box_y, delta.value)
 
-									// generate the multiplier to insert between the param and setparam (for knobs-as-inlets)
-									var attenuvertor = gen_patcher.newdefault([450, scripting.counters.box_y * 2, "*"])
-									attenuvertor.varname = attenuvertorName
-									gen_patcher.message("script", "connect", attenuvertor.varname, 0, setparam.varname, 0);
-
-									// generate the param which the js script will bind to
-									var param = gen_patcher.newdefault([600, scripting.counters.box_y * 1.5, "param", paramName, delta.value])
-									param.varname = paramName
-									gen_patcher.message("script", "connect", param.varname, 0, attenuvertor.varname, 1);
-								
-									paramCounter++
-								
 								break;
 								
 								case 'n_switch':
@@ -3437,7 +3418,8 @@ function maxMSPScripting(delta){
 										audiovizLookup[pathName].paths[delta.path] = {audiovizIndex: audiovizIndex, deltaIndex: delta.index, value: null}
 									}
 									// pass along to scripting for visualizing each gen object's audio state
-									max.outlet('toMaxScripting', 'addOutlet', scripting, delta, audiovizIndex)
+									max.post(scripting.currentParent, delta.index, delta.path, audiovizIndex)
+									max.outlet('toMaxScripting', 'addOutlet', scripting.currentParent, delta.index, delta.path, audiovizIndex)
 									// audiovizLookup[pathName][delta.path] = {audiovizIndex: audiovizIndex, deltaIndex: delta.index}
 									
 									
@@ -3502,33 +3484,28 @@ function maxMSPScripting(delta){
 				if(scripting.nodes[delta.path]){
 					// remove node from the scripting.nodes object
 					delete scripting.nodes[delta.path]
-
-					// var newDict = new Dict
+					
 					var deleteMe = delta.path.replace('.', '__');
-					// dict.set(delta)
+					
 					if(delta.path.split('_')[0] === 'speaker'){
 						
 						var thisVarname = 'source_' + delta.path
+						//! 
+						//TODO: the genOutCounter won't work after a delnode, because it's not referring the specific outlet number that's being removed.
+						//TODO instead, the genOutCounter should be an array whose indexes represent gen outs
 						scripting.counters.genOutCounter = (scripting.counters.genOutCounter - 1)
 						// outlet(4, 'thispatcher', 'script', 'delete', thisVarname)
 						// this.patcher.remove(thisVarname)
-						this.patcher.message("script", 'delete', thisVarname)
-
+						
+						max.outlet('toMaxScripting', 'deleteSpeaker', thisVarname)
 						// then lower the gen~world counter
 						if(scripting.counters.genOutCounter <1){
 							scripting.counters.genOutCounter = 1
 						}
 
 					}
-					gen_patcher.apply(function(b) { 
-						// prevent erasing our audio outputs from genpatcher
-						if(b.varname !== "reserved_audioviz" && b.varname !== "PLO"){
-							if (b.varname.indexOf(deleteMe) != -1){
-		
-								gen_patcher.remove(b); 				
-							}
-						}
-					});
+					max.outlet('toMaxScripting', 'delNode', deleteMe)
+
 
 				} else {
 					// error. received a delnode for a nonexistent node
@@ -3582,40 +3559,38 @@ function maxMSPScripting(delta){
 					// detect a self-patch connection and insert a history object in between!
 					if (delta.paths[0].split('.')[0] === delta.paths[1].split('.')[0]){					
 						scripting.counters.feedbackConnections++
-						var history = gen_patcher.newdefault([150,10, "history"])
-						history.varname = "feedback_" + scripting.counters.feedbackConnections
+						max.outlet('toMaxScripting', 'history', "feedback_" + scripting.counters.feedbackConnections)
 
 						if(attenuvertor !== null){
-
+							 
 							// connect the outlet (arc[0]) to the history
-							gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
+							max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
 							// connect the history to the attenuvertor
-							gen_patcher.message("script", "connect", history.varname, 0, parseInt(output), attenuvertor, 0);
+							max.outlet('toMaxScripting', 'connect', history.varname, 0, parseInt(output), attenuvertor, 0);
 							// connect the attenuvertor to inlet (arc[1])
-							gen_patcher.message("script", "connect", attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
+							max.outlet('toMaxScripting', 'connect', attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
 						
 						} else {
-							gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
-							gen_patcher.message("script", "connect", history.varname, 0, delta.paths[1].split('.')[0], parseInt(input));
+							max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
+							max.outlet('toMaxScripting', 'connect', history.varname, 0, delta.paths[1].split('.')[0], parseInt(input));
 						}
 					} else if (scripting.nodes[outletPath].history === 1 || scripting.nodes[outletPath].history === true) {
 
 						scripting.counters.feedbackConnections++
-						var history = gen_patcher.newdefault([150,10, "history"])
-						history.varname = "feedback_" + scripting.counters.feedbackConnections
-
+						
+						max.outlet('toMaxScripting', 'history', "feedback_" + scripting.counters.feedbackConnections)
 						if(attenuvertor !== null){
 
 							// connect the outlet (arc[0]) to the history
-							gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
+							max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
 							// connect the history to the attenuvertor
-							gen_patcher.message("script", "connect", history.varname, 0, parseInt(output), attenuvertor, 0);
+							max.outlet('toMaxScripting', 'connect', history.varname, 0, parseInt(output), attenuvertor, 0);
 							// connect the attenuvertor to inlet (arc[1])
-							gen_patcher.message("script", "connect", attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
+							max.outlet('toMaxScripting', 'connect', attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
 						
 						} else {
-							gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
-							gen_patcher.message("script", "connect", history.varname, 0, delta.paths[1].split('.')[0], parseInt(input));
+							max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), history.varname, 0);
+							max.outlet('toMaxScripting', 'connect', history.varname, 0, delta.paths[1].split('.')[0], parseInt(input));
 						}
 					}
 					
@@ -3623,12 +3598,12 @@ function maxMSPScripting(delta){
 						// if no self-patch connection exists, just connect them. 
 						if(attenuvertor !== null){
 							// connect the outlet (arc[0]) to the attenuvertor
-							gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), attenuvertor, 0);
+							max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), attenuvertor, 0);
 							// connect the attenuvertor to inlet (arc[1])
-							gen_patcher.message("script", "connect", attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
+							max.outlet('toMaxScripting', 'connect', attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
 						
 						} else {
-							gen_patcher.message("script", "connect", delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
+							max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
 						}
 					}
 				}
@@ -3653,7 +3628,7 @@ function maxMSPScripting(delta){
 						var outletsIndexes = scripting.outletsTable[i]
 						output = JSON.stringify(outletsIndexes[setOutlet]);
 					}
-					gen_patcher.message("script", "disconnect", delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
+					max.outlet('toMaxScripting', "disconnect", delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
 
 				} else {
 					// error. received a delnode for a nonexistent node
@@ -3671,7 +3646,7 @@ function maxMSPScripting(delta){
 						var param = delta.path
 						param = param.replace(".", "__")
 						var cleaveParam = param.split('.')[0]
-						this.patcher.message("script", "send", "world", cleaveParam, delta.to)
+						max.outlet('toMaxScripting', 'updateValue', cleaveParam, delta.to)
 					break;
 					
 					case "history":	
@@ -3685,7 +3660,7 @@ function maxMSPScripting(delta){
 						// is it a speaker?
 						if(pathName.split('_')[0] === "speaker"){
 							var vrSourceTarget = "source_" + pathName
-							this.patcher.message("script", "send", vrSourceTarget, "position", delta.to[0], delta.to[1], delta.to[2])
+							max.outlet('toMaxScripting', 'updateSpeakerPosition', vrSourceTarget, "position", delta.to[0], delta.to[1], delta.to[2])
 						}
 						 
 
