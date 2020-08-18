@@ -49,6 +49,10 @@ var equal = require('deep-equal');
 // feedback cycle detection for both max and VR:
 const fb = require('./historify.js')
 const moment = require('moment')
+// fifo for as-yet unsychronized deltas (see issue #86)
+const Queue = require('tiny-queue');
+let fifo = new Queue();
+
 
 // max/msp api
 const max = (() => {
@@ -85,9 +89,9 @@ let vr = (USEVR) ? require(path.join(nodeglpath, "openvr.js")) : null
 
 let name;
 if (process.argv[3]){
-  name = process.argv[3]
+  name = process.argv[3] + moment().format('MMMM_Do_YYYY-h_mm_ssa')
 } else {
-  name = username.sync()
+  name = username.sync() + moment().format('MMMM_Do_YYYY-h_mm_ssa')
 }
 ////////////////////////////////////
 
@@ -554,126 +558,7 @@ function pal(ip, port){
 
 
 }
-/*
-let palDeltaIndex = 0
-let indexedDeltas = {}
-function processLocalDeltas(vrDeltas){
-    // increment each incoming delta array with an index, stored in either an object or DB, and apply this to localGraph AND if USEWS then pass this out to hostWebsocket after got validation
-    let attempt 
-    let deltasToHost = []
-    
-    try {
 
-        attempt = got.applyDeltasToGraph(localGraph, vrDeltas);
-
-    
-    } catch (e) {
-        console.warn(e);
-    }
-    // if the got detected a malformed delta (or a conflict delta for which we have no merge strategy), it will be reported as an object in an array after the graph
-    if (attempt && attempt.length > 1 && attempt[1]){
-        // report malformed delta to client
-        switch(attempt[1].type){
-            case "conflictDelta":
-                // let nodes4props =  Object.keys(attempt[1].graph.nodes)
-                // for(i=0;i<nodes4props.length;i++){
-                //   // console.log('from props', attempt[1].graph.nodes[nodes4props[i]]._props)
-                // }
-                console.log(attempt[1].error)
-                // for now, a conflict delta will still be passed through, just so we can test and capture when they occur
-                // feedback path stuff
-                for(i=0;i<vrDeltas.length; i++){
-                    // if a connection delta, check if history node is needed: 
-                    if(vrDeltas[i].op === 'connect'){
-                        let historyDelta = getHistoryPropchanges(vrDeltas[i])
-                        deltasToHost.push(historyDelta)
-                    }
-                    else {
-                        deltasToHost.push(vrDeltas[i])
-
-                        
-                    }
-                }
-                // If we are running in online mode, do we still send the deltas to hostWebsocket?
-                if(USEWS == true && hostWebsocket){
-                    // package deltas along with name of this mischmasch instance (name_ip) and index
-                    let msg = JSON.stringify({
-                        cmd: 'deltas',
-                        date: Date.now(),
-                        data: deltasToHost,
-                        pal: name,
-                        index: palDeltaIndex
-                    })
-
-                    // send indexed deltas to host:
-                    hostWebsocket.send(msg)
-                    let entry = palDeltaIndex.toString()
-                    indexedDeltas[entry] = deltasToHost
-                    palDeltaIndex++
-                }
-                // pass these deltas back to VR:
-                incomingDeltas.push.apply(incomingDeltas, deltasToHost);
-                // pass the deltas to the gen~ script:
-                max.outlet('fromApp', JSON.stringify(deltasToHost))
-                
-            break
-
-            case "malformedDelta":
-                if (USEWS == true && hostWebsocket){
-                    let warning = JSON.stringify({
-                        cmd: 'nuke',
-                        data: attempt[1]
-                    })
-                    max.post(warning)
-                }
-            break
-        }
-
-
-        // return
-        } else {
-        // got detected no malformed deltas, so we can proceed:
-        
-        // feedback path stuff
-        for(i=0;i<vrDeltas.length; i++){
-            
-            // if a connection delta, check if history node is needed: 
-            if(vrDeltas[i].op === 'connect'){
-                let historyDelta = getHistoryPropchanges(vrDeltas[i])
-                deltasToHost.push(historyDelta)
-            }
-            else {                
-                deltasToHost.push(vrDeltas[i])
-            }
-            // If we are running in online mode, send the deltas to hostWebsocket:
-            if(USEWS == true && hostWebsocket){
-                // package deltas along with name of this mischmasch instance (name_ip) and index
-                let msg = JSON.stringify({
-                    cmd: 'deltas',
-                    date: Date.now(),
-                    data: deltasToHost,
-                    pal: name,
-                    index: palDeltaIndex
-                })
-
-                // send indexed deltas to host:
-                hostWebsocket.send(msg)
-                let entry = palDeltaIndex.toString()
-                indexedDeltas[entry] = deltasToHost
-                palDeltaIndex++
-            }
-            // pass these deltas back to VR:
-            incomingDeltas.push.apply(incomingDeltas, deltasToHost);
-            // pass the deltas to the gen~ script:
-            max.outlet('fromApp', JSON.stringify(deltasToHost))
-            // TODO: code this ^^^
-
-        }
-
-
-    } 
-}
-*/
 function getHistoryPropchanges(d){
 	// 'd' is a connection delta received from either the host or the 
 	// get list of child nodes in graph
@@ -2824,7 +2709,7 @@ vec3.transformQuat(up, [0, 1, 0], nav.quat) - UP vector
 vec3.transformQuat(forward, [0, 0, -1], nav.quat) - FORWARD vector
 */
 
-
+let outgoingDeltaIndex = 0
 let t = glfw.getTime();
 let fps = 60;
 
@@ -2979,8 +2864,6 @@ function animate() {
 	// Swap buffers
 	glfw.swapBuffers(window);
 
-    // process the outgoing deltas:
-    //TODO Michael: place the processLocalDeltas Function here instead
 	//processLocalDeltas(outgoingDeltas)	
 	let palDeltaIndex = 0
 	let indexedDeltas = {}	
@@ -3027,7 +2910,9 @@ function animate() {
                     // send indexed deltas to host:
                     hostWebsocket.send(msg)
                     let entry = palDeltaIndex.toString()
-                    indexedDeltas[entry] = deltasToHost
+					indexedDeltas[entry] = deltasToHost
+					// might be redundant, but we'll use a fifo as well
+					fifo.push(deltasToHost)
                     palDeltaIndex++
                 }
                 // pass these deltas back to VR:
@@ -3035,9 +2920,9 @@ function animate() {
                 // pass the deltas to the gen~ script:
                 // max.outlet('fromApp', JSON.stringify(deltasToHost))
 				maxMSPScripting(deltasToHost)
-				
-				sessionRecording(deltasToHost)
 
+				
+				
             break
             case "malformedDelta":
                 if (USEWS == true && hostWebsocket){
@@ -3076,18 +2961,20 @@ function animate() {
                 hostWebsocket.send(msg)
                 let entry = palDeltaIndex.toString()
                 indexedDeltas[entry] = deltasToHost
-                palDeltaIndex++
+				palDeltaIndex++
+				// might be redundant, but we'll use a fifo as well
+				fifo.push(deltasToHost)
+				
             }
             // pass these deltas back to VR:
             incomingDeltas.push.apply(incomingDeltas, deltasToHost);
             // pass the deltas to the gen~ script:
 			// max.outlet('fromApp', JSON.stringify(deltasToHost))
 			maxMSPScripting(deltasToHost)
-
-			sessionRecording(deltasToHost)
             
         }
-    } 
+	} 
+	outgoingDeltaIndex++
     outgoingDeltas.length = 0;
     // transmit userdata to gen~world
     // HMD pos
@@ -3215,7 +3102,6 @@ max.addHandler('clearScene', ()=>{
     let deltas = got.deltasFromGraph(localGraph, []);
     let inverse = got.inverseDelta(deltas)
 	maxMSPScripting(inverse)
-	sessionRecording(inverse)
     if(USEWS && hostWebsocket){
         let msg = JSON.stringify({
             cmd: 'clearScene',
@@ -3300,7 +3186,7 @@ function maxMSPScripting(delta){
 				if(scripting.nodes[delta.path]){
 					// don't add a duplicate
 					// if this happens, it means something is wrong with the graph, maybe a delnode wasn't triggered or received, or duplicate deltas received
-					post('WARNING: duplicate newnode delta received. Was filtered out, but need to check the delta round-trip\n\n')
+					max.post('WARNING: duplicate newnode delta received. Was filtered out, but need to check the delta round-trip\n\n')
 				} else {
 					// add the node to the obj to prevent it being added as a duplicate
 					// ... and if it is an outlet, keep track of its history property
@@ -3364,7 +3250,6 @@ function maxMSPScripting(delta){
 									max.outlet('toMaxScripting', 'addSpeaker', pathName, delta.pos[0], delta.pos[1], delta.pos[2], scripting.counters.box_y, genOutNumber, scripting.vrSource.varname)
 									
 									
-									console.log(scripting.genOutArray)
 									
 									
 	
@@ -3540,7 +3425,7 @@ function maxMSPScripting(delta){
 
 				} else {
 					// error. received a delnode for a nonexistent node
-					post('WARNING: received a delnode for a node that does not exist in the graph\n')
+					max.post('WARNING: received a delnode for a node that does not exist in the graph\n')
 
 				}
 				
@@ -3555,7 +3440,7 @@ function maxMSPScripting(delta){
 				if(scripting.nodes[arcString]){
 					// don't add a duplicate
 					// if this happens, it means something is wrong with the graph, maybe a delnode wasn't triggered or received, or duplicate deltas received
-					post('WARNING: received a connection delta that already exists in the graph. was filtered out, but need to check the delta round-trip\n\n')
+					max.post('WARNING: received a connection delta that already exists in the graph. was filtered out, but need to check the delta round-trip\n\n')
 				} else {
 					arcString = '"' + delta.paths + '"' 
 					// add the arc to the obj to prevent it being added as a duplicate
@@ -3665,7 +3550,7 @@ function maxMSPScripting(delta){
 
 				} else {
 					// error. received a delnode for a nonexistent node
-					post('WARNING: received a delnode for a node that does not exist in the graph\n')
+					max.post('WARNING: received a delnode for a node that does not exist in the graph\n')
 
 				}
 				

@@ -38,7 +38,7 @@ function getAudioviz(){
 			}
 		} else {
 			if(getAudioVizErrorDirty === 0){
-				post('function getAudioviz called when no graph present\n')
+				//post('function getAudioviz called when no graph present\n')
 				getAudioVizErrorDirty = 1
 			}
 		}

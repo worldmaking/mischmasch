@@ -3,8 +3,7 @@ inlets = 1
 outlets = 1
 
 function genConnect(genOutCounter, speakerVarname){
-    post("script", "connect", 'world', genOutCounter -1, speakerVarname, 0)								
     //post('\n\nvarname', vrSource.varname, '\n')
-    this.patcher.message("script", "connect", 'world', genOutCounter -1, speakerVarname, 0);
+    this.patcher.message("script", "connect", 'world', genOutCounter - 1, speakerVarname, 0);
     
 }
