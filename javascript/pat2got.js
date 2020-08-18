@@ -5,12 +5,13 @@ const fs = require("fs"),
 const { vec2, vec3, vec4, quat, mat2, mat2d, mat3, mat4} = require("gl-matrix")
 
 // folder to search for gendsps:
-let dirname = __dirname
+let dirname = __dirname + '/../code/'
 
 let modules = []
 let operators = []
 
 fs.readdirSync(dirname).forEach((filename, i) => {
+	filename = __dirname + '/../code/' + filename
 	if (path.extname(filename) != ".gendsp") return;
 	const name = path.basename(filename).split(".")[0]
 	if (name.charAt(0) == "_") return;
@@ -84,7 +85,8 @@ fs.readdirSync(dirname).forEach((filename, i) => {
 
 // now add some of the gen operators:
 let categories = ["buffer", "waveform", "filter", "integrator", "route", "range", "logic", "comparison", "numeric", "math", "trigonometry"]
-let ops = JSON.parse(fs.readFileSync("operators.json", "utf-8")).sort((a,b)=>categories.indexOf(a.category)-categories.indexOf(b.category)).filter(op=>{
+let opsFile = __dirname + '/../misc/' + "operators.json"
+let ops = JSON.parse(fs.readFileSync(opsFile, "utf-8")).sort((a,b)=>categories.indexOf(a.category)-categories.indexOf(b.category)).filter(op=>{
 	let default_ctor = op.constructors[op.constructors.length-1]
 	return !(
 		(op.box_expr && ["constant", "illegal", "revop"].indexOf(op.box_expr) >= 0) 
@@ -168,8 +170,8 @@ for (let row = 0; row < nrows; row++) {
 // objectify:
 let menu = {}
 modules.map(m => menu[m._props.kind] = m)
-
-fs.writeFileSync("menu.json", JSON.stringify(menu, null, "\t"), "utf-8");
+let menuFile = __dirname + '/../misc/' + "menu.json"
+fs.writeFileSync(menuFile, JSON.stringify(menu, null, "\t"), "utf-8");
 
 // // now parse maxpats to turn them into scenes:
 // fs.readdirSync(dirname).forEach((filename, i) => {
