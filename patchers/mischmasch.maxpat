@@ -2065,8 +2065,6 @@
 					"saved_object_attributes" : 					{
 						"autostart" : 0,
 						"defer" : 0,
-						"node_bin_path" : "",
-						"npm_bin_path" : "",
 						"watch" : 1
 					}
 ,
@@ -2630,22 +2628,22 @@
 ,
 		"dependency_cache" : [ 			{
 				"name" : "mischmasch.js",
-				"bootpath" : "D:/github/mischmasch",
-				"patcherrelativepath" : ".",
+				"bootpath" : "~/Documents/Max 8/Packages/mischmasch/javascript",
+				"patcherrelativepath" : "../javascript",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "world.gendsp",
-				"bootpath" : "D:/github/mischmasch/max-msp",
-				"patcherrelativepath" : "./max-msp",
+				"bootpath" : "~/Documents/Max 8/Packages/mischmasch/code",
+				"patcherrelativepath" : "../code",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "deferlowScript.js",
-				"bootpath" : "D:/github/mischmasch",
-				"patcherrelativepath" : ".",
+				"bootpath" : "~/Documents/Max 8/Packages/mischmasch/javascript",
+				"patcherrelativepath" : "../javascript",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
@@ -2669,22 +2667,22 @@
 			}
 , 			{
 				"name" : "maxapi.js",
-				"bootpath" : "D:/github/mischmasch",
-				"patcherrelativepath" : ".",
+				"bootpath" : "~/Documents/Max 8/Packages/mischmasch/javascript",
+				"patcherrelativepath" : "../javascript",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "maxScripting.js",
-				"bootpath" : "D:/github/mischmasch",
-				"patcherrelativepath" : ".",
+				"bootpath" : "~/Documents/Max 8/Packages/mischmasch/javascript",
+				"patcherrelativepath" : "../javascript",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "outletVisualization.js",
-				"bootpath" : "D:/github/mischmasch",
-				"patcherrelativepath" : ".",
+				"bootpath" : "~/Documents/Max 8/Packages/mischmasch/javascript",
+				"patcherrelativepath" : "../javascript",
 				"type" : "TEXT",
 				"implicit" : 1
 			}

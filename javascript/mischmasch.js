@@ -47,7 +47,7 @@ const {argv} = require('yargs')
 
 var equal = require('deep-equal');
 // feedback cycle detection for both max and VR:
-const fb = require('./historify.js')
+const fb = require(__dirname + '/../javascript/historify.js')
 const moment = require('moment')
 // fifo for as-yet unsychronized deltas (see issue #86)
 const Queue = require('tiny-queue');
@@ -73,9 +73,9 @@ const ws = require('ws')
 const filename = path.basename(__filename)
 
 const chroma = require("chroma-js")
-const nodeglpath = "../node-gles3"
+const nodeglpath = __dirname + "/../node-gles3"
 const rws = require('reconnecting-websocket');
-const { inverseDelta } = require('./gotlib/got.js');
+const { inverseDelta } = require(__dirname + '/../gotlib/got.js');
 
 
 const gl = require(path.join(nodeglpath, "gles3.js")),
@@ -1426,7 +1426,7 @@ let vrdim = [4096, 4096];
 
 
 
-const menuModules = JSON.parse(fs.readFileSync(path.join("max-msp","menu.json"), "utf-8"))
+const menuModules = JSON.parse(fs.readFileSync(path.join("..","misc","menu.json"), "utf-8"))
 
 
 
@@ -1529,10 +1529,10 @@ function initWindow() {
 	
 	return window
 }
-
+let miscPath = __dirname + '/../misc/'
 function initRenderer(renderer) {
 	
-	renderer.font = createSDFFont(gl, "font/CONSOLATTF.png", "font/CONSOLA.TTF-msdf.json")
+	renderer.font = createSDFFont(gl, miscPath + "CONSOLATTF.png", miscPath + "CONSOLA.TTF-msdf.json")
 
 	renderer.textquad_geom = glutils.makeQuad({ min:0., max:1, div:8 });
 	renderer.module_geom = glutils.makeCube({ 
@@ -1545,7 +1545,7 @@ function initRenderer(renderer) {
 	// 	max:[ 0.03, 0.03, 0.1], 
 	// 	div: [13, 13, 1] 
 	// });
-	renderer.wand_geom = glutils.geomFromOBJ(fs.readFileSync(path.join(__dirname, "objs", "vr_controller_vive_1_5.obj"), "utf-8"))
+	renderer.wand_geom = glutils.geomFromOBJ(fs.readFileSync(path.join(__dirname, "..", "misc", "vr_controller_vive_1_5.obj"), "utf-8"))
 
 	renderer.line_geom = glutils.makeLine({ min:0, max:1, div: 24 });
 	const floor_m = 6;
