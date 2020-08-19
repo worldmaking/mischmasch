@@ -1,5 +1,5 @@
 const fs = require('fs')
-const got = require('./gotlib/got.js')
+const got = require('gotlib')
 const equals = require('array-equal')
 
 nodes = []

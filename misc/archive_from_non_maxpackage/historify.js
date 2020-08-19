@@ -1,4 +1,3 @@
-const fs = require('fs')
 const got = require('gotlib')
 const equals = require('array-equal')
 
@@ -6,7 +5,6 @@ nodes = []
 let adjacentCount = 0
 let adjacents = {}
 // let arcsLength
-let localGraph
 let nodeCount
 let setup = function(localGraph){
     parents = Object.keys(localGraph.nodes)
@@ -153,14 +151,14 @@ let visit = function (node, nodes, adjacents, localGraph, nodeCount){
             // all nodes & their adjacent nodes have been visited.
             // console.log(applyHistoryToGraph(feedbackPaths, localGraph))
             // return applyHistoryToGraph(feedbackPaths, localGraph)
-            newGraph = applyHistoryToGraph(feedbackPaths, localGraph)
+            // newGraph = applyHistoryToGraph(feedbackPaths, localGraph)
             graphReady = true
         }
     // once the graph has been updated with location of feedback paths
     // return it
     if(graphReady===true){
         
-        return newGraph
+        return feedbackPaths
     }
     
 }
@@ -241,21 +239,6 @@ function checkDuplicatePaths(checkPath){
     sortedFeedbackPaths.push(tempArr)
     return true
 }
-
-function applyHistoryToGraph(cycles, localGraph){
-    // outlet._props.history = true
-    for(i=0;i<cycles.length;i++){
-        // history outlet:
-        targetOutletParent = cycles[i][0].split('.')[0]
-        targetOutletChild = cycles[i][0].split('.')[1]
-        
-        localGraph.nodes[targetOutletParent][targetOutletChild]._props['history'] = true
-    }
-    
-    let updatedGraph = localGraph
-    return updatedGraph
-}
-
 
 module.exports = {
     setup: setup,

@@ -27,7 +27,7 @@ if (argv.name){
 }
 
 let peerHandle = name + '_' + filename
-const got = require("./gotlib/got.js")
+const got = require("gotlib")
 
 const rwsOptions = {
 	// make rws use the webSocket module implementation

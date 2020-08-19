@@ -13,7 +13,7 @@ const express = require('express');
 const WebSocket = require('ws');
 const { vec2, vec3, vec4, quat, mat3, mat4 } = require("gl-matrix");
 
-const got = require("./gotlib/got")
+const got = require("gotlib")
 //console.log(got)
 
 //const scenefile = "scene_edited.json"

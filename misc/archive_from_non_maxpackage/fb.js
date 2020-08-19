@@ -1,7 +1,7 @@
 const fb = require('./historify.js')
 
 const fs = require('fs')
-const got = require('./gotlib/got.js');
+const got = require('gotlib');
 const historify = require('./historify.js');
 let scene = JSON.parse(fs.readFileSync('./scene_feedback.json'))
 let localGraph = {nodes: {}, arcs:[]};
