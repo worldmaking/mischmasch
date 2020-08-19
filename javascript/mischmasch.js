@@ -41,13 +41,11 @@ const ProgressBar = require('progress');
 const fs = require("fs");
 const path = require("path");
 // const bottleneck = require('Bottleneck')
-const got = require(__dirname + "/../gotlib/got.js")
+const got = require('gotlib')
 // simplified cli args for script
 const {argv} = require('yargs')
 
 var equal = require('deep-equal');
-// feedback cycle detection for both max and VR:
-const fb = require(__dirname + '/../javascript/historify.js')
 const moment = require('moment')
 // fifo for as-yet unsychronized deltas (see issue #86)
 const Queue = require('tiny-queue');
@@ -75,7 +73,7 @@ const filename = path.basename(__filename)
 const chroma = require("chroma-js")
 const nodeglpath = __dirname + "/../node-gles3"
 const rws = require('reconnecting-websocket');
-const { inverseDelta } = require(__dirname + '/../gotlib/got.js');
+const { inverseDelta } = require('gotlib');
 
 
 const gl = require(path.join(nodeglpath, "gles3.js")),
@@ -562,17 +560,17 @@ function pal(ip, port){
 function getHistoryPropchanges(d){
 	// 'd' is a connection delta received from either the host or the 
 	// get list of child nodes in graph
-	let nodes = fb.setup(localGraph)
+	let nodes = got.getNodes(localGraph)
 
 	// get list of adjacent nodes per each node in the graph
-	let adjacents = fb.getAdjacents(0, nodes, localGraph)
+	let adjacents = got.getAdjacents(0, nodes, localGraph)
 
 	// reset the nodes array with list of only parent nodes whose child nodes have adjacent connections:
 	nodes.length = 0
 	nodes = Object.keys(adjacents)
 	nodeCount = nodes.length
 	// get 
-	let historyPropchange = fb.visit(0, nodes, adjacents, localGraph, nodeCount)
+	let historyPropchange = got.visit(0, nodes, adjacents, localGraph, nodeCount)
 	console.log('cycles', historyPropchange)
 	let propchanges = []
 	for(i=0;i<historyPropchange.length;i++){
