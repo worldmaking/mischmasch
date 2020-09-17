@@ -76,9 +76,9 @@ const rws = require('reconnecting-websocket');
 const { inverseDelta } = require('gotlib');
 
 
-const gl = require(path.join(nodeglpath, "gles3.js")),
-glfw = require(path.join(nodeglpath, "glfw3.js")),
-glutils = require(path.join(nodeglpath, "glutils.js"))
+const gl = require("node-gles3/gles3.js"),
+glfw = require("node-gles3/glfw3.js"),
+glutils = require("node-gles3/glutils.js")
 
 let USEVR = (process.platform === "win32") && !(argv.vr === 'false');
 // usevr if its specified on CLI & skip VR if on OSX:

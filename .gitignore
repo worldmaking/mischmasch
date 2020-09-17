@@ -82,8 +82,6 @@ select_histories/*
 basicGraph.json
 */basicGraph.json
 
-oculusMirror.exe
-
 /session_recordings
 
 /node-gles3
