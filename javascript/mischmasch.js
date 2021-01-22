@@ -3087,7 +3087,7 @@ init();
 /////////////////////////////////////////////////////////
 
 // Max/MSP
-//TODO: move as much of the gen_scripting.js code into this section as possible, ideally we only use gen_scripting for things that node.script cannot perform. (this also should mean that the max patch can finally take advantage of got!)
+//TODO: (in progress) move as much of the gen_scripting.js code into this section as possible, ideally we only use gen_scripting for things that node.script cannot perform. (this also should mean that the max patch can finally take advantage of got!)
 
 // outlet visualization
 max.addHandler('audiovizLookup', (audiovizLookup)=>{
