@@ -1,27 +1,3 @@
-/*
-  Goal:
-
-  Want to establish P2P socket connections between clients over remote network, to make a teaparty
-  But we don't know in advance the IP addresses or who is online, so we use a remote teaparty:
-  - first we connect to the remote teaparty and let them know our IP, name, and other stats 
-  - (we should also let the teaparty know when we leave)
-  - the teaparty maintains a list of such connected users (called 'pals')
-  - the teaparty shares with all pals the connection info for all the pals, including updating when pals join and leave
-  - pals use this information to establish direct P2P connections between each other
-
-  // Migrating host model (no longer in use)
-  // - teaparty (signal server) chooses who is host (ground truth) at any time
-  // - normally it would be the first to connect, but could be migrated to next partygoer if the host exits (e.g. internet dropout)
-  // - everyone would have a socket connection to current host, and assume that the host has the 'ground truth' for merging OTs. 
-
-  Future: many worlds, like server rooms. Anyone can start a world and invite. The default world is open like a lobby. 
-  For now just do this default world.
-
-  // Q: does it make sense to use websockets for this?
-  // is there a more natural framework for such networks? e.g. the BUS pattern from nanomsg?
-
-*/
-
 // NOTE: The heroku app 'teaparty' will go to sleep if it goes 30 minutes before 
 // receiving a connection request from an app.js. So, when you run app.js don't be 
 // surprised if it takes 10-20 seconds to receive a response from teaparty
@@ -239,7 +215,7 @@ function sayGoodbye() {
     hostWebsocket.addEventListener('close', () => {
     // localWebsocketServer.close()
     if (max){
-        max.post('connection closed!')
+        console.log('connection closed!')
         max.outlet('toAudioviz', 0)
         max.outlet('hardReset')
     }
@@ -2928,7 +2904,7 @@ function animate() {
                         cmd: 'nuke',
                         data: attempt[1]
                     })
-                    max.post(warning)
+                    console.log(warning)
                 }
             break
         }
@@ -3184,7 +3160,7 @@ function maxMSPScripting(delta){
 				if(scripting.nodes[delta.path]){
 					// don't add a duplicate
 					// if this happens, it means something is wrong with the graph, maybe a delnode wasn't triggered or received, or duplicate deltas received
-					max.post('WARNING: duplicate newnode delta received. Was filtered out, but need to check the delta round-trip\n\n')
+					console.log('WARNING: duplicate newnode delta received. Was filtered out, but need to check the delta round-trip\n\n')
 				} else {
 					// add the node to the obj to prevent it being added as a duplicate
 					// ... and if it is an outlet, keep track of its history property
@@ -3402,7 +3378,7 @@ function maxMSPScripting(delta){
 						for(i=0;i<scripting.genOutArray.length;i++){
 							
 							if(scripting.genOutArray[i] == thisVarname){
-								max.post(thisVarname, scripting.genOutArray[i])
+								console.log(thisVarname, scripting.genOutArray[i])
 								scripting.genOutArray[i] = null
 							}
 						}
@@ -3423,7 +3399,7 @@ function maxMSPScripting(delta){
 
 				} else {
 					// error. received a delnode for a nonexistent node
-					max.post('WARNING: received a delnode for a node that does not exist in the graph\n')
+					console.log('WARNING: received a delnode for a node that does not exist in the graph\n')
 
 				}
 				
@@ -3438,7 +3414,7 @@ function maxMSPScripting(delta){
 				if(scripting.nodes[arcString]){
 					// don't add a duplicate
 					// if this happens, it means something is wrong with the graph, maybe a delnode wasn't triggered or received, or duplicate deltas received
-					max.post('WARNING: received a connection delta that already exists in the graph. was filtered out, but need to check the delta round-trip\n\n')
+					console.log('WARNING: received a connection delta that already exists in the graph. was filtered out, but need to check the delta round-trip\n\n')
 				} else {
 					arcString = '"' + delta.paths + '"' 
 					// add the arc to the obj to prevent it being added as a duplicate
@@ -3548,7 +3524,7 @@ function maxMSPScripting(delta){
 
 				} else {
 					// error. received a delnode for a nonexistent node
-					max.post('WARNING: received a delnode for a node that does not exist in the graph\n')
+					console.log('WARNING: received a delnode for a node that does not exist in the graph\n')
 
 				}
 				
