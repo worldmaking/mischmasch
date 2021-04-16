@@ -216,8 +216,8 @@ function sayGoodbye() {
     // localWebsocketServer.close()
     if (max){
         console.log('connection closed!')
-        max.outlet('toAudioviz', 0)
-        max.outlet('hardReset')
+        console.log('toAudioviz', 0)
+        console.log('hardReset')
     }
     hostWebsocket = null
     hostGraph = {
@@ -435,7 +435,7 @@ function pal(ip, port){
           date: Date.now(), 
           data: updateScene
         })
-        console.log('received deltas from hostWebsocket:',msg);
+        console.log('received initial deltas from hostWebsocket');
       }
 
       hostWebsocket.addEventListener('message', (data) =>{
@@ -448,7 +448,7 @@ function pal(ip, port){
           //  console.log('deltas from host:', msg.data)
             try {
               got.applyDeltasToGraph(hostGraph, msg.data);
-
+				console.log('try')
               // feedback path stuff
               //! urgent: need to apply a propchange to one outlet per feedback path outlet._props.history = true
               
@@ -1400,7 +1400,7 @@ let vrdim = [4096, 4096];
 
 
 
-const menuModules = JSON.parse(fs.readFileSync(path.join("..","misc","menu.json"), "utf-8"))
+const menuModules = JSON.parse(fs.readFileSync(path.join("misc","menu.json"), "utf-8"))
 
 
 
@@ -1503,7 +1503,7 @@ function initWindow() {
 	
 	return window
 }
-let miscPath = __dirname + '/../misc/'
+let miscPath = __dirname + '/misc/'
 function initRenderer(renderer) {
 	
 	renderer.font = createSDFFont(gl, miscPath + "CONSOLATTF.png", miscPath + "CONSOLA.TTF-msdf.json")
@@ -1519,7 +1519,7 @@ function initRenderer(renderer) {
 	// 	max:[ 0.03, 0.03, 0.1], 
 	// 	div: [13, 13, 1] 
 	// });
-	renderer.wand_geom = glutils.geomFromOBJ(fs.readFileSync(path.join(__dirname, "..", "misc", "vr_controller_vive_1_5.obj"), "utf-8"))
+	renderer.wand_geom = glutils.geomFromOBJ(fs.readFileSync(path.join(__dirname, "misc", "vr_controller_vive_1_5.obj"), "utf-8"))
 
 	renderer.line_geom = glutils.makeLine({ min:0, max:1, div: 24 });
 	const floor_m = 6;
@@ -2953,11 +2953,11 @@ function animate() {
     // transmit userdata to gen~world
     // HMD pos
     if(UI.hmd){
-        max.outlet("hmd", UI.hmd)
+       //TODO console.log("hmd", UI.hmd)
     }
     // right hand pos
     if(UI.hands[1]){
-        max.outlet("rightWand_pos_x",UI.hands[1].pos[0], "rightWand_pos_y",UI.hands[1].pos[1], "rightWand_pos_z",UI.hands[1].pos[2], "rightWand_orient_x",UI.hands[1].orient[0], "rightWand_orient_y",UI.hands[1].orient[1], "rightWand_orient_z",UI.hands[1].orient[2], "rightWand_orient_w",UI.hands[1].orient[3])
+        //TODO console.log("rightWand_pos_x",UI.hands[1].pos[0], "rightWand_pos_y",UI.hands[1].pos[1], "rightWand_pos_z",UI.hands[1].pos[2], "rightWand_orient_x",UI.hands[1].orient[0], "rightWand_orient_y",UI.hands[1].orient[1], "rightWand_orient_z",UI.hands[1].orient[2], "rightWand_orient_w",UI.hands[1].orient[3])
     }
 }
 
@@ -3046,7 +3046,6 @@ async function init() {
 	
     animate()
     // init the max patcher
-    max.outlet('loadbang')
 }
 
 function shutdown() {
@@ -3066,31 +3065,32 @@ init();
 //TODO: (in progress) move as much of the gen_scripting.js code into this section as possible, ideally we only use gen_scripting for things that node.script cannot perform. (this also should mean that the max patch can finally take advantage of got!)
 
 // outlet visualization
-max.addHandler('audiovizLookup', (audiovizLookup)=>{
-	// eventually pass this to VR
-	audiovizLookup = audiovizLookup
-    // console.log(audiovizLookup)
-})
 
-max.addHandler('clearScene', ()=>{
-    let deltas = got.deltasFromGraph(localGraph, []);
-    let inverse = got.inverseDelta(deltas)
-	maxMSPScripting(inverse)
-    if(USEWS && hostWebsocket){
-        let msg = JSON.stringify({
-            cmd: 'clearScene',
-            date: Date.now(),
-            data: 'clearScene'
-          })
-        hostWebsocket.send(msg)
-    } 
-    // wipe the scene locally
-    localGraph = {
-        nodes: {}, arcs: []
-    }
-    mainScene.rebuild(localGraph)
+// max.addHandler('audiovizLookup', (audiovizLookup)=>{
+// 	// eventually pass this to VR
+// 	audiovizLookup = audiovizLookup
+//     // console.log(audiovizLookup)
+// })
+
+// max.addHandler('clearScene', ()=>{
+//     let deltas = got.deltasFromGraph(localGraph, []);
+//     let inverse = got.inverseDelta(deltas)
+// 	maxMSPScripting(inverse)
+//     if(USEWS && hostWebsocket){
+//         let msg = JSON.stringify({
+//             cmd: 'clearScene',
+//             date: Date.now(),
+//             data: 'clearScene'
+//           })
+//         hostWebsocket.send(msg)
+//     } 
+//     // wipe the scene locally
+//     localGraph = {
+//         nodes: {}, arcs: []
+//     }
+//     mainScene.rebuild(localGraph)
  
-})
+// })
 
 // data related to scripting max
 var scripting = {
@@ -3118,20 +3118,20 @@ var scripting = {
 
 audiovizIndex = 0;
 
-max.addHandler('resetCounters',()=>{
-	scripting.counters.newNodeCounter = 1;
-	scripting.counters.feedbackConnections = 0
-	scripting.counters.genOutCounter = 1
-	scripting.counters.box_y = 0
-	scripting.inletsTable = []
-	scripting.outletsTable = []
-	scripting.genOutArray = []
-	scripting.nodes = {}
-	scripting.object = {}
-	scripting.speakerTable = {}
-	audiovizLookup = {}
-	audiovizIndex = 0
-})
+// max.addHandler('resetCounters',()=>{
+// 	scripting.counters.newNodeCounter = 1;
+// 	scripting.counters.feedbackConnections = 0
+// 	scripting.counters.genOutCounter = 1
+// 	scripting.counters.box_y = 0
+// 	scripting.inletsTable = []
+// 	scripting.outletsTable = []
+// 	scripting.genOutArray = []
+// 	scripting.nodes = {}
+// 	scripting.object = {}
+// 	scripting.speakerTable = {}
+// 	audiovizLookup = {}
+// 	audiovizIndex = 0
+// })
 
 function maxMSPScripting(delta){
 	var index = JSON.stringify(delta.index)
@@ -3193,7 +3193,7 @@ function maxMSPScripting(delta){
 								scripting.currentParent = pathName
 								if(kind === "wand"){
 									
-									max.outlet('toMaxScripting', 'addWand',  pathName, scripting.counters.box_y)
+									console.log('toMaxScripting', 'addWand',  pathName, scripting.counters.box_y)
 									
 								} else if(kind === "speaker"){
 									scripting.vrSource.varname = "source_" + pathName
@@ -3221,27 +3221,27 @@ function maxMSPScripting(delta){
 									}
 									// the vr.source~ objects instantiated in parent patcher should also have their first arg be the genContext value, but scripting name be the groundTruth value
 									scripting.speakerTable[scripting.vrSource.varname] = {genOutNumber: genOutNumber}  
-									max.outlet('toMaxScripting', 'addSpeaker', pathName, delta.pos[0], delta.pos[1], delta.pos[2], scripting.counters.box_y, genOutNumber, scripting.vrSource.varname)
+									//TODO max.outlet('toMaxScripting', 'addSpeaker', pathName, delta.pos[0], delta.pos[1], delta.pos[2], scripting.counters.box_y, genOutNumber, scripting.vrSource.varname)
 									
 									
 									
 									
 	
 								} else {
-									max.outlet('toMaxScripting', 'addModule',  scripting.counters.box_y, pathName, kind)
+									//TODO max.outlet('toMaxScripting', 'addModule',  scripting.counters.box_y, pathName, kind)
 								}
 
 							break;
 							
 							case "operator":
 								scripting.currentParent = pathName
-								max.outlet('toMaxScripting', 'addOperator',  scripting.counters.box_y, pathName, kind)
+								//TODO max.outlet('toMaxScripting', 'addOperator',  scripting.counters.box_y, pathName, kind)
 									
 							break;
 							
 							default:
 								scripting.currentParent = pathName
-								max.outlet('toMaxScripting', 'addDefault',  scripting.counters.box_y, pathName, kind)
+								//TODO max.outlet('toMaxScripting', 'addDefault',  scripting.counters.box_y, pathName, kind)
 							break;	
 							}
 						
@@ -3259,7 +3259,7 @@ function maxMSPScripting(delta){
 										attenuvertor: (delta.path.replace('.','__') + '_attenuvertor')
 									}
 									
-									max.outlet('toMaxScripting', 'addParam',  delta.path, scripting.counters.box_y, delta.value, paramCounter)
+									//TODO max.outlet('toMaxScripting', 'addParam',  delta.path, scripting.counters.box_y, delta.value, paramCounter)
 
 								break;
 								
@@ -3300,13 +3300,13 @@ function maxMSPScripting(delta){
 								// first make sure that the outlet has an index, and is not an inlet (sometimes this occurs...)
 								if (index && kind !== 'inlet' && kind !== 'controller2' && kind !== 'headset'){
 									// add outlet to the audioViz js object for reference 
-									max.outlet('toOutletVisualization', "setAudioViz", pathName, delta.path, delta.index, audiovizIndex)
+									//TODO max.outlet('toOutletVisualization', "setAudioViz", pathName, delta.path, delta.index, audiovizIndex)
 									// pass along to scripting for visualizing each gen object's audio state
-									max.outlet('toMaxScripting', 'addOutlet', scripting.currentParent, delta.index, delta.path, audiovizIndex)
+									//TODO max.outlet('toMaxScripting', 'addOutlet', scripting.currentParent, delta.index, delta.path, audiovizIndex)
 									// audiovizLookup[pathName][delta.path] = {audiovizIndex: audiovizIndex, deltaIndex: delta.index}
 									audiovizIndex++
 
-									max.outlet('sizeinsamps', audiovizIndex + 1)
+									//TODO max.outlet('sizeinsamps', audiovizIndex + 1)
 									scripting.object[delta.path.replace('.','__')] = delta.index
 									scripting.outletsTable.push(scripting.object)	
 									
@@ -3387,14 +3387,14 @@ function maxMSPScripting(delta){
 						// outlet(4, 'thispatcher', 'script', 'delete', thisVarname)
 						// this.patcher.remove(thisVarname)
 						
-						max.outlet('toMaxScripting', 'deleteSpeaker', thisVarname)
+						//TODO max.outlet('toMaxScripting', 'deleteSpeaker', thisVarname)
 						// then lower the gen~world counter
 						// if(scripting.counters.genOutCounter <1){
 						// 	scripting.counters.genOutCounter = 1
 						// }
 
 					}
-					max.outlet('toMaxScripting', 'delNode', deleteMe)
+					//TODO max.outlet('toMaxScripting', 'delNode', deleteMe)
 
 
 				} else {
@@ -3450,39 +3450,39 @@ function maxMSPScripting(delta){
 					if (delta.paths[0].split('.')[0] === delta.paths[1].split('.')[0]){					
 						scripting.counters.feedbackConnections++
 						historyVarname = "feedback_" + scripting.counters.feedbackConnections
-						max.outlet('toMaxScripting', 'history', historyVarname)
+						//TODO max.outlet('toMaxScripting', 'history', historyVarname)
 
 						if(attenuvertor !== null){
 							 
 							// connect the outlet (arc[0]) to the history
-							max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), historyVarname, 0);
+							//TODO max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), historyVarname, 0);
 							// connect the history to the attenuvertor
-							max.outlet('toMaxScripting', 'connect', historyVarname, 0, parseInt(output), attenuvertor, 0);
+							//TODO max.outlet('toMaxScripting', 'connect', historyVarname, 0, parseInt(output), attenuvertor, 0);
 							// connect the attenuvertor to inlet (arc[1])
-							max.outlet('toMaxScripting', 'connect', attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
+							//TODO max.outlet('toMaxScripting', 'connect', attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
 						
 						} else {
-							max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), historyVarname, 0);
-							max.outlet('toMaxScripting', 'connect', historyVarname, 0, delta.paths[1].split('.')[0], parseInt(input));
+							//TODO max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), historyVarname, 0);
+							//TODO max.outlet('toMaxScripting', 'connect', historyVarname, 0, delta.paths[1].split('.')[0], parseInt(input));
 						}
 					} else if (scripting.nodes[outletPath].history === 1 || scripting.nodes[outletPath].history === true) {
 
 						scripting.counters.feedbackConnections++
 						historyVarname = "feedback_" + scripting.counters.feedbackConnections
 
-						max.outlet('toMaxScripting', 'history', "feedback_" + scripting.counters.feedbackConnections)
+						//TODO max.outlet('toMaxScripting', 'history', "feedback_" + scripting.counters.feedbackConnections)
 						if(attenuvertor !== null){
 
 							// connect the outlet (arc[0]) to the history
-							max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), historyVarname, 0);
+							//TODO max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), historyVarname, 0);
 							// connect the history to the attenuvertor
-							max.outlet('toMaxScripting', 'connect', historyVarname, 0, parseInt(output), attenuvertor, 0);
+							//TODO max.outlet('toMaxScripting', 'connect', historyVarname, 0, parseInt(output), attenuvertor, 0);
 							// connect the attenuvertor to inlet (arc[1])
-							max.outlet('toMaxScripting', 'connect', attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
+							//TODO max.outlet('toMaxScripting', 'connect', attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
 						
 						} else {
-							max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), historyVarname, 0);
-							max.outlet('toMaxScripting', 'connect', historyVarname, 0, delta.paths[1].split('.')[0], parseInt(input));
+							//TODO max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), historyVarname, 0);
+							//TODO max.outlet('toMaxScripting', 'connect', historyVarname, 0, delta.paths[1].split('.')[0], parseInt(input));
 						}
 					}
 					
@@ -3490,12 +3490,12 @@ function maxMSPScripting(delta){
 						// if no self-patch connection exists, just connect them. 
 						if(attenuvertor !== null){
 							// connect the outlet (arc[0]) to the attenuvertor
-							max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), attenuvertor, 0);
+							//TODO max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), attenuvertor, 0);
 							// connect the attenuvertor to inlet (arc[1])
-							max.outlet('toMaxScripting', 'connect', attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
+							//TODO max.outlet('toMaxScripting', 'connect', attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
 						
 						} else {
-							max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
+							//TODO max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
 						}
 					}
 				}
@@ -3520,7 +3520,7 @@ function maxMSPScripting(delta){
 						var outletsIndexes = scripting.outletsTable[i]
 						output = JSON.stringify(outletsIndexes[setOutlet]);
 					}
-					max.outlet('toMaxScripting', "disconnect", delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
+					//TODO max.outlet('toMaxScripting', "disconnect", delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
 
 				} else {
 					// error. received a delnode for a nonexistent node
@@ -3538,7 +3538,7 @@ function maxMSPScripting(delta){
 						var param = delta.path
 						param = param.replace(".", "__")
 						var cleaveParam = param.split('.')[0]
-						max.outlet('toMaxScripting', 'updateValue', cleaveParam, delta.to)
+						//TODO max.outlet('toMaxScripting', 'updateValue', cleaveParam, delta.to)
 					break;
 					
 					case "history":	
@@ -3552,7 +3552,7 @@ function maxMSPScripting(delta){
 						// is it a speaker?
 						if(pathName.split('_')[0] === "speaker"){
 							var vrSourceTarget = "source_" + pathName
-							max.outlet('toMaxScripting', 'updateSpeakerPosition', vrSourceTarget, delta.to[0], delta.to[1], delta.to[2])
+							//TODO max.outlet('toMaxScripting', 'updateSpeakerPosition', vrSourceTarget, delta.to[0], delta.to[1], delta.to[2])
 						}
 						 
 
