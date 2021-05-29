@@ -33,7 +33,7 @@
     "reconnecting-websocket": "^4.1.10",
     "three-bmfont-text": "^2.3.0",
     "tslib": "^1.10.0",
-    "ws": "^6.2.0"
+    "ws": "^7.4.6"
   },
   "nodemonConfig": {
     "ignore": [
