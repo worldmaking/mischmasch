@@ -165,56 +165,22 @@ if(USEWS || argv.w){
 	console.log('using websockets')
 
 	// // userDataChannel = new ws('ws://mischmasch-userdata.herokuapp.com/8082');
-	// userDataChannel = new rws('ws://mischmasch-userdata.herokuapp.com/8082', [], rwsOptions);
+	userDataChannel = new rws('ws://mischmasch-userdata.herokuapp.com/8082', [], rwsOptions);
 
-	// // teapartyWebsocket.addEventListener('message', (data) => {
-	// // 	let msg = JSON.parse(data.data);
+	// teapartyWebsocket.addEventListener('message', (data) => {
+	// 	let msg = JSON.parse(data.data);
 
-	// userDataChannel.addEventListener('open', (data) => {
-	// 	userDataChannel.send(JSON.stringify({
-	// 		cmd: 'handshake',
-	// 		source: peerHandle,
-	// 		data: 'highFive'
-	// 	}));
-	// });
+	userDataChannel.addEventListener('open', (data) => {
+		userDataChannel.send(JSON.stringify({
+			cmd: 'handshake',
+			source: peerHandle,
+			data: 'highFive'
+		}));
+	});
 	
-	// userDataChannel.addEventListener('message', (data) => {
-	// 	let msg = JSON.parse(data.data)
+	userDataChannel.addEventListener('message', (data) => {
+		let msg = JSON.parse(data.data)
 			
-<<<<<<< HEAD
-	// 		switch(msg.cmd){
-
-	// 			case 'handshake':
-	// 				console.log('peer ' + msg.source + ' CONNECTED')
-	// 				pals[msg.source] = {
-	// 					hands: {},
-	// 					hmd: {}
-	// 				}
-	// 			break
-
-
-	// 			case "hands":
-	// 				// Graham, you can use this object elsewhere to access where in the world to place a pal's hand controllers
-	// 				pals[msg.source].hands = msg.data
-	// 			break
-
-	// 			case "hmd":
-	// 				// Graham, you can use this object elsewhere to access where in the world to place a pal's hand controllers
-	// 				pals[msg.source].hmd = msg.data
-	// 			break
-
-	// 			case 'cursorPosition':
-	// 				console.log('cursor position from client ' + msg.source + ': ', msg.data)
-	// 			break
-
-	// 			default: console.log('unhandled msg: ', msg)
-	// 		}
-	// })
-
-	// userDataChannel.addEventListener('error', (err) => {
-	// 	console.log(err)
-	// })
-=======
 			switch(msg.cmd){
 
 				case 'handshake':
@@ -241,7 +207,6 @@ if(USEWS || argv.w){
 	userDataChannel.addEventListener('error', (err) => {
 		console.log(err)
 	})
->>>>>>> 192036a0c5bb344fc8239c4275f6c0afdf95fae1
 } else {
 	// no ws used
 	demoScene = path.join(__dirname, "temp", "simple.json")
@@ -2032,16 +1997,16 @@ function makeSceneGraph(renderer, gl) {
 				mat4.copy(obj.i_modelmatrix, parent.mat)
 			}
 
-			for (let i=0; i<this.line_instances.count; i++) {
-				let obj = this.line_instances.instances[i];
-				let {from, to} = obj;
-				assert(from, `line ${obj.name} from is missing`)
-				assert(to, `line ${obj.name} to is missing`)
-				quat.copy(obj.i_quat0, from.i_quat);
-				quat.copy(obj.i_quat1, to.i_quat);
-				vec3.copy(obj.i_pos0, from.i_pos);
-				vec3.copy(obj.i_pos1, to.i_pos);
-			}
+			// for (let i=0; i<this.line_instances.count; i++) {
+			// 	let obj = this.line_instances.instances[i];
+			// 	let {from, to} = obj;
+			// 	assert(from, `line ${obj.name} from is missing`)
+			// 	assert(to, `line ${obj.name} to is missing`)
+			// 	quat.copy(obj.i_quat0, from.i_quat);
+			// 	quat.copy(obj.i_quat1, to.i_quat);
+			// 	vec3.copy(obj.i_pos0, from.i_pos);
+			// 	vec3.copy(obj.i_pos1, to.i_pos);
+			// }
 			return this.submit();
 		},
 
@@ -2207,6 +2172,7 @@ function animate() {
 		//console.log("updated localGraph", JSON.stringify(localGraph, null, "  "))
 		
 		// // re-layout:
+		console.log(localGraph)
 		mainScene.rebuild(localGraph)
 	}
 
