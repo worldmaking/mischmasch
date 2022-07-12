@@ -2004,16 +2004,22 @@ function makeSceneGraph(renderer, gl) {
 				let parent = obj.parent;
 				mat4.copy(obj.i_modelmatrix, parent.mat)
 			}
-
+			// console.log(this.line_instances.count)
 			for (let i=0; i<this.line_instances.count; i++) {
 				let obj = this.line_instances.instances[i];
+				
 				let {from, to} = obj;
-				assert(from, `line ${obj.name} from is missing`)
-				assert(to, `line ${obj.name} to is missing`)
-				quat.copy(obj.i_quat0, from.i_quat);
-				quat.copy(obj.i_quat1, to.i_quat);
-				vec3.copy(obj.i_pos0, from.i_pos);
-				vec3.copy(obj.i_pos1, to.i_pos);
+				// console.log('\n\nfrom', from, '\n\nto', to)
+				if(from && to){
+					assert(from, `line ${obj.name} from is missing`)
+					assert(to, `line ${obj.name} to is missing`)
+					quat.copy(obj.i_quat0, from.i_quat);
+					quat.copy(obj.i_quat1, to.i_quat);
+					vec3.copy(obj.i_pos0, from.i_pos);
+					vec3.copy(obj.i_pos1, to.i_pos);
+				}else {
+					//!  for some reason this script was receiving some undefined from/to arcs, so ignore them here for now
+				}
 			}
 			return this.submit();
 		},

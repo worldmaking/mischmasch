@@ -684,7 +684,7 @@ function messageFromLocalClient(message, ws){
           date: Date.now(),
           data: deltas
         })
-        
+        console.log(localGraph)
         localWebsocket.send(msg)
       }
 
