@@ -24,6 +24,7 @@
     "deep-equal": "^2.0.3",
     "express": "^4.17.1",
     "gl-matrix": "^3.3.0",
+    "gotlib": "file:gotlib",
     "moment": "^2.29.4",
     "png-js": "^1.0.0",
     "progress": "^2.0.3",
