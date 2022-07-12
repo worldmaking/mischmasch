@@ -1,49 +1,610 @@
-const assert = require("assert"),
-	fs = require("fs"),
-	path = require("path");
+/*
+  Goal:
+
+  Want to establish P2P socket connections between clients over remote network, to make a teaparty
+  But we don't know in advance the IP addresses or who is online, so we use a remote teaparty:
+  - first we connect to the remote teaparty and let them know our IP, name, and other stats 
+  - (we should also let the teaparty know when we leave)
+  - the teaparty maintains a list of such connected users (called 'pals')
+  - the teaparty shares with all pals the connection info for all the pals, including updating when pals join and leave
+  - pals use this information to establish direct P2P connections between each other
+
+  // Migrating host model (no longer in use)
+  // - teaparty (signal server) chooses who is host (ground truth) at any time
+  // - normally it would be the first to connect, but could be migrated to next partygoer if the host exits (e.g. internet dropout)
+  // - everyone would have a socket connection to current host, and assume that the host has the 'ground truth' for merging OTs. 
+
+  Future: many worlds, like server rooms. Anyone can start a world and invite. The default world is open like a lobby. 
+  For now just do this default world.
+
+  // Q: does it make sense to use websockets for this?
+  // is there a more natural framework for such networks? e.g. the BUS pattern from nanomsg?
+
+*/
+
+// NOTE: The heroku app 'teaparty' will go to sleep if it goes 30 minutes before 
+// receiving a connection request from an app.js. So, when you run app.js don't be 
+// surprised if it takes 10-20 seconds to receive a response from teaparty
+
+// most widely-used websocket module for node.js
+const webSocket = require('ws');
+// 
+const publicIP = require('public-ip');
+// https://www.npmjs.com/package/username Get the username of the current user
+// It first tries to get the username from the SUDO_USER LOGNAME USER LNAME USERNAME environment letiables. Then falls back to $ id -un on macOS / Linux and $ whoami on Windows, in the rare case none of the environment letiables are set. The result is cached.
+const username = require('username')
+// https://www.npmjs.com/package/reconnecting-websocket WebSocket that will automatically reconnect if the connection is closed
+const ReconnectingWebSocket = require('reconnecting-websocket');
+// https://www.npmjs.com/package/progress
+// cute way to show progress on the command line
+const ProgressBar = require('progress');
+const fs = require("fs");
+const path = require("path");
+// const bottleneck = require('Bottleneck')
+const got = require(__dirname + "/gotlib/got.js")
+// simplified cli args for script
+const {argv} = require('yargs')
+
+var equal = require('deep-equal');
+// feedback cycle detection for both max and VR:
+const fb = require('./historify.js')
+const moment = require('moment')
+// fifo for as-yet unsychronized deltas (see issue #86)
+const Queue = require('tiny-queue');
+let fifo = new Queue();
+
+
+// max/msp api
+const max = (() => {
+    try {
+        console.log('\n\nrunning in Max')
+        return require("max-api");
+    } catch(e) {
+        console.log("not running in Max", e)
+    }
+})();
+
+// VR libs:
+const assert = require("assert")
 const { vec2, vec3, vec4, quat, mat2, mat2d, mat3, mat4} = require("gl-matrix")
 const PNG = require("png-js");
 // keep the 'ws' usage as well - coven requires this very spelling
 const ws = require('ws')
-const username = require('username')
 const filename = path.basename(__filename)
 
 const chroma = require("chroma-js")
-const {argv} = require('yargs')
 const nodeglpath = "../node-gles3"
 const rws = require('reconnecting-websocket');
+const { inverseDelta } = require('../../gotlib/got.js');
 
 
 const gl = require(path.join(nodeglpath, "gles3.js")),
 glfw = require(path.join(nodeglpath, "glfw3.js")),
 glutils = require(path.join(nodeglpath, "glutils.js"))
 
-// let p2pID; // set by coven signalling server
-let name;
-if (argv.name){
-  name = argv.name
-} else {
-  name = username.sync()
-}
-
-let peerHandle = name + '_' + filename
-const got = require("./gotlib/got.js")
-
-const rwsOptions = {
-	// make rws use the webSocket module implementation
-	WebSocket: ws, 
-	// ms to try reconnecting:
-	connectionTimeout: 1000,
-	//debug:true, 
-  }
-
 let USEVR = (process.platform === "win32") && !(argv.vr === 'false');
 // usevr if its specified on CLI & skip VR if on OSX:
 console.log('using VR?', USEVR)
 let vr = (USEVR) ? require(path.join(nodeglpath, "openvr.js")) : null
-const url = 'ws://localhost:8080'
 
-const shaderpath = path.join(__dirname, "shaders")
+let name;
+if (process.argv[3]){
+  name = process.argv[3] + moment().format('MMMM_Do_YYYY-h_mm_ssa')
+} else {
+  name = username.sync() + moment().format('MMMM_Do_YYYY-h_mm_ssa')
+}
+////////////////////////////////////
+
+// let ctrl-c quit:
+{
+	let stdin = process.stdin;
+	// without this, we would only get streams once enter is pressed
+	if (process.stdin.setRawMode){
+		process.stdin.setRawMode(true)
+	}
+	// resume stdin in the parent process (node app won't quit all by itself
+	// unless an error or process.exit() happens)
+	stdin.resume();
+	// i don't want binary, do you?
+	stdin.setEncoding( 'utf8' );
+	// on any data into stdin
+	stdin.on( 'data', function( key ){
+		// ctrl-c ( end of text )
+		if ( key === '\u0003' ) {
+			process.exit();
+		}
+		// write the key to stdout all normal like
+		process.stdout.write( key );
+	});
+}
+
+
+
+// NETWORKING //
+
+let localConfig = {
+  // get a username for this machine:
+  username: name,
+  // ip is figured out during networkinit()
+  ip: null, 
+  // eventually, app.js will maintain status of connected client(s) and report them to the teaparty
+  vr: {
+    ws: null
+  },
+  sound: {
+    ws: null
+  },
+  
+  // for example, if someone wanted to observe a performance but not be a player:
+  spectator: 0,
+  // this is set by the teaparty, or:
+  //TODO option to set as localhost using a cli arg (todo)
+  host: {},
+  recordStatus: 0
+};
+
+// all websockets
+
+// teapartyWebsocket operates on port 8090, runs as a client, and connects to the 
+// teaparty (heroku cloud instance)
+let teapartyWebsocket
+
+// hostWebsocket operates on port 8080, and connects as a client to mischmasch-host.herokuapp.com
+// it's what communicates with all other machines (for got deltas)
+let hostWebsocket
+
+// localWebsocket operates on port 8081, and handles communication between other 
+// clients apps like VR and the max client
+let localWebsocket
+
+let teapartyHost
+let teapartyAddress
+let hostIP
+const teapartyWebsocketPort = '8090';
+let teapartyWebsocketAddress
+
+
+// we receive this as an array from the host. 
+let sceneList =[]
+
+if (argv.l){
+  teapartyAddress = 'localhost'
+  hostIP = "localhost"
+  teapartyWebsocketAddress = `ws://${teapartyAddress}:${teapartyWebsocketPort}`
+  console.log(`running app.js in local mode\nteaparty address 'ws://localhost:8090'\nhostWebsocket host address 'ws://localhost:8081'`)
+  fs.readdirSync('./scene_files').forEach(file=>{
+    sceneList.push(file)
+  })
+  console.log(sceneList)
+} else {
+  teapartyAddress = "teaparty.herokuapp.com"
+  hostIP = "mischmasch-host.herokuapp.com"
+  teapartyWebsocketAddress = `ws://${teapartyAddress}/${teapartyWebsocketPort}`
+  console.log('using heroku-based host.js at mischmasch-host.herokuapp.com')
+}
+
+const rwsOptions = {
+  // make rws use the webSocket module implementation
+  WebSocket: webSocket, 
+  // ms to try reconnecting:
+  connectionTimeout: 30000,
+  //debug:true, 
+}
+
+// startLocalWebsocket()
+// attempt to connect to teaparty 
+// returns the websocket via a Promise
+function teapartyWebsocketConnect() {
+  return new Promise((resolve, reject) => {
+    // create a websocket to find out who is at the teaparty:
+    console.log(`attempting to connect to teaparty at ${teapartyWebsocketAddress}`)
+    teapartyWebsocket = new ReconnectingWebSocket(teapartyWebsocketAddress, [], rwsOptions);
+    // show a progress bar while connecting:
+    let bar = new ProgressBar(':bar', { total: 25 });
+    let progressBarTimer = setInterval(function () {
+      bar.tick();
+      if (bar.complete) {
+          clearInterval(progressBarTimer)
+          // TODO: should it give up like this, or maybe ask user if they want to retry?
+          reject(`connection timeout: ${teapartyAddress} might be down`);
+      }
+    }, 1000);
+    
+    // fail the promise if the server responds with an error
+    //! i commented this out because it was interfering with the progressBar and attempts to rws
+    teapartyWebsocket.addEventListener('error', (error) => {
+      // clearInterval(progressBarTimer); 
+      // reject(error.error);
+    });
+    
+    // on successful connection to teaparty:
+    teapartyWebsocket.addEventListener('open', () => {
+      clearInterval(progressBarTimer);
+      resolve(teapartyWebsocket);
+    });
+  });
+}
+let guestlist = {
+
+}
+
+function sayGoodbye() {
+
+    hostWebsocket.close()
+  
+    teapartyWebsocket.addEventListener('close', () => {
+        isConnectedToteaparty = 0;
+        hostWebsocket.close()
+        
+    });
+    
+    hostWebsocket.addEventListener('close', () => {
+    // localWebsocketServer.close()
+    if (max){
+        max.post('connection closed!')
+        max.outlet('toAudioviz', 0)
+        max.outlet('hardReset')
+    }
+    hostWebsocket = null
+    hostGraph = {
+            nodes: {},
+            arcs: []
+        }
+        networkInit()
+    });
+}
+
+/* 
+  TEAPARTY WEBSOCKET: 
+*/
+// run everything inside an async() so we can await as needed:
+async function networkInit() {
+  
+  try {
+    
+    // get our public IP address:
+    localConfig.ip = await publicIP.v4()
+
+    name = name + '_' + localConfig.ip
+    //=> '46.5.21.123'
+    //localConfig.ip = await publicIP.v6()
+    //=> 'fe80::200:f8ff:fe21:67cf'
+  } catch(e) {
+    console.log("error resolving public IP", e);
+    process.exit();
+  }
+
+
+  // connect:
+  teapartyWebsocket;
+  try{
+    teapartyWebsocket = await teapartyWebsocketConnect();
+  } catch(e) {
+    console.log("error connecting to teaparty maître d'", e);
+    console.trace()
+    networkInit()
+    // process.exit();
+  }
+  console.log('connected to teaparty')
+  // TODO Q: shouldn't we be able to ask teapartyWebsocket this, rather than duplicating in a local variable?
+  isConnectedToteaparty = 1;
+
+  teapartyWebsocket.addEventListener('close', () => {
+    isConnectedToteaparty = 0;
+    console.log("teaparty connection closed");
+    // TODO now what? 
+    // shouldn't the ReconnectingWebSocket already be trying to reconnect?
+    // didn't seem to be for me
+
+  });
+
+  // inform the teaparty teaparty of our important details
+  let thisClient = JSON.stringify({
+    cmd: 'newClient',
+    date: Date.now(), 
+    data: localConfig,
+  })
+
+  teapartyWebsocket.send(thisClient);
+
+  // TODO: should have a way to send a message when we leave to notify teaparty we are gone
+  // send a "goodbye" message
+  // call teapartyWebsocket.close()
+  // also notify partygoers via wsP2P.close(() => {});
+
+
+
+  process.on('SIGINT', function() {
+      console.log("Caught interrupt signal");
+      sayGoodbye();
+      process.exit();
+  });
+
+
+
+
+  teapartyWebsocket.addEventListener('message', (data) => {
+    let msg = JSON.parse(data.data);
+    let cmd = msg.cmd;
+    switch (cmd) {
+
+        // lists all clients actively registered with the teaparty
+        // should be received at reasonable frequency (i.e. also serves as a ping)
+        case 'guestlist': {
+            guestlist = msg.data
+            let teapartyPals = msg.data.pals;
+            let teapartyHeadCount = msg.data.headcount;
+            teapartyHost = msg.data.host.name;
+
+
+
+            // if the hostWebsocket connection doesn't already exist
+            if (!hostWebsocket){
+            // we are a pal! need to connect to host's websocket server
+            // get host's ip
+            if(!argv.l){
+                hostIP = msg.data.host.ip          
+            } else if (argv.host){
+                // if the host ip is specified
+                hostIP = argv.host
+            } 
+                //startLocalWebsocket(hostIP, 8082)       
+                pal(hostIP, '8081')
+            }
+
+            // update our list of Pals here
+            // i.e. we want a remove list and an add list to update our set of Pals
+
+            // TODO possibly also p2p connections to all other members, if we want to have direct lines?
+            // (e.g. for sending head/hand position data with minimal lag)
+            //? not sure why this is necessary:
+            /* 
+            let addList = [];
+            for (let username in teapartyPals) {
+            // don't add ourselves!
+            //if (guest == localConfig.username) continue;
+            // don't add if we already know about them
+            if (pals[username]) continue;
+            // otherwise, we need to add them
+            addList.push(teapartyPals[username]);
+            }
+
+            let removeList = [];
+            for (let guest in pals) {
+            // is this in the teapartypals set?
+            if (!teapartyPals[guest]) {
+                removeList.push(guest);
+            }
+            }
+
+            if (removeList.length) {
+            for (let username of removeList) {
+                delete pals[username];
+            }
+            }
+            if (addList.length) {
+            for (let o of addList) {
+                pals[o.username] = o;
+            }
+            }
+            */
+            // TODO implement these actions in separate functions, as they may be triggered in other ways.
+            // adding should attempt to create a p2p rws-socket
+            // removing should cancel such a socket
+
+
+            } break;
+            case "ping": {
+                // ignore
+            }
+            break;
+        
+            default:
+                console.log('\n\nunhandled message from remote teaparty: ', msg);
+            break;
+        }
+
+    });
+
+}
+
+hostGraph = {
+    nodes: {},
+    arcs: []
+}
+// attempt to connect to Host
+function pal(ip, port){
+
+  // update the p2p webrtc client(s) with the new host ip/port
+
+  let hostWebsocketAddress
+  if(!argv.l){
+    hostWebsocketAddress = 'ws://' + ip + '/' + port
+
+  } else {
+    hostWebsocketAddress = 'ws://' + ip + ':' + port
+  }
+   
+
+    console.log(`attempting to connect to hostWebsocket Host at `, hostWebsocketAddress)
+
+    hostWebsocket = new ReconnectingWebSocket(hostWebsocketAddress, [], rwsOptions);
+    
+    hostWebsocket.addEventListener('error', (error) => {
+      console.log(`connection error from ${hostWebsocketAddress}:`, error)
+      // nuclear option. discard hostGraph because the host is about to send us the deltas to build the current form of the graph
+      hostGraph = {
+        nodes: {},
+        arcs: []
+      }
+    });
+
+    hostWebsocket.addEventListener('close', (data)=>{
+      console.log('hostWebsocket closed')
+      // nuclear option. discard hostGraph because the host is about to send us the deltas to build the current form of the graph
+      hostGraph = {
+        nodes: {},
+        arcs: []
+      }
+    })
+    
+    // on successful connection to hostWebsocket Host:
+    hostWebsocket.addEventListener('open', () => {
+      console.log('connected to hostWebsocket host')
+      // console.log('\n\nto send controls to the mischmasch host, run the "hostcontrol.js" script in a separate terminal\n\n')
+      // no point sending a blank graph!
+      if(equal(hostGraph, {nodes: {}, arcs: []}) === false){
+        
+        let updateScene = got.deltasFromGraph(hostGraph, [])
+        let msg = JSON.stringify({
+          cmd: 'deltas',
+          date: Date.now(), 
+          data: updateScene
+        })
+        console.log('received deltas from hostWebsocket:',msg);
+      }
+
+      hostWebsocket.addEventListener('message', (data) =>{
+        let msg = JSON.parse(data.data)
+
+        switch(msg.cmd){
+
+          case 'deltas':
+            // synchronize our local copy:
+          //  console.log('deltas from host:', msg.data)
+            try {
+              got.applyDeltasToGraph(hostGraph, msg.data);
+
+              // feedback path stuff
+              //! urgent: need to apply a propchange to one outlet per feedback path outlet._props.history = true
+              
+
+
+
+
+            } catch (e) {
+              console.warn(e);
+            }
+            // for(i=0;i<msg.data.length; i++){
+            //   if(msg.data[i].op === 'connect'){
+            //     console.log(msg.data[i])
+            //   }
+            // }
+            // TODO: merge OTs
+            
+            let response = {
+              cmd: "deltas",
+              date: Date.now(),
+              data: msg.data
+            };
+            
+            // check if the recording status is active, if so push received delta(s) to the recordJSON
+            if (localConfig.recordStatus === 1){
+              
+              for(i = 0; i < msg.data.length; i++){
+                
+                msg.data[i]["timestamp"] = Date.now()
+                recordJSON.deltas.push(msg.data[i])
+              }
+              
+            }
+
+            //fs.appendFileSync(OTHistoryFile, ',' + JSON.stringify(response), "utf-8")
+
+            //OTHistory.push(JSON.stringify(response))
+            // send to all LOCAL clients:
+
+            
+            console.log('received deltas from hostWebsocket:',JSON.stringify(response));
+          break
+
+          case "sceneList":
+            sceneList = msg.data
+          break 
+
+          case "nuclearOption":
+            // line from a certain movie...
+            console.log(msg.quote)
+
+            // kick both clients, leave teaparty, rejoin...
+            sayGoodbye()
+ 
+          break
+
+          case "keyFrame":
+            //TODO need to decide whether to run sayGoodbye(), or just discard pending edits and set hostGraph = keyFrame (which would likely require some delta inversion sent to client...)
+            // Periodically (e.g. 20 seconds) the host broadcasts a current copy of the graph to all pals. On receiving a keyframe, the pal checks it is deep equal to their own version of the graph. If it is not, they discard any pending edits and reset their scene to match the keyframe. So long as we implement conflict resolution well, this keyframe-based regraphing should be very rare. The keyframe is more of a debugging/verification tool than anything. 
+            let keyFrameCheck = got.deepEqual(msg.data, hostGraph)
+            if (keyFrameCheck == false){
+              console.log('keyFrame check detected our graph differs from host\'s graph. dev decide what should be done here')
+            }
+            break
+          case 'ping':
+            // keepAlive for heroku instance
+            let keepAlive = JSON.stringify({
+              cmd: 'keepAlive',
+              date: Date.now(), 
+              data: name,
+            })
+            hostWebsocket.send(keepAlive)
+            
+          break
+          default: console.log('unhandled deltaWS message: ', msg)
+        }
+      })
+
+      
+    });
+
+
+}
+
+function getHistoryPropchanges(d){
+	// 'd' is a connection delta received from either the host or the 
+	// get list of child nodes in graph
+	let nodes = fb.setup(localGraph)
+
+	// get list of adjacent nodes per each node in the graph
+	let adjacents = fb.getAdjacents(0, nodes, localGraph)
+
+	// reset the nodes array with list of only parent nodes whose child nodes have adjacent connections:
+	nodes.length = 0
+	nodes = Object.keys(adjacents)
+	nodeCount = nodes.length
+	// get 
+	let historyPropchange = fb.visit(0, nodes, adjacents, localGraph, nodeCount)
+	console.log('cycles', historyPropchange)
+	let propchanges = []
+	for(i=0;i<historyPropchange.length;i++){
+		if(historyPropchange[i].includes(d.paths[0]) === true && historyPropchange[i].includes(d.paths[1]) === true){
+		let srcPath = d.paths[0]
+		let parent = srcPath.split('.')[0]
+		let child = srcPath.split('.')[1]
+		propchange = [ { 
+			op: 'propchange',
+			path: srcPath,
+			name: 'history',
+			from: localGraph.nodes[parent][child]._props.history,
+			to: true 
+		} ]
+		propchanges.push(propchange)
+		}
+	}
+  
+	got.applyDeltasToGraph(localGraph, propchanges)
+	// append the connection delta to the msg
+	propchanges.push(d)
+	console.log(propchanges)
+	return propchanges
+}
+
+function toVRtoMax(msg){
+    toVR(msg)
+}
+
+
+
+
 
 // generate a random name for new object:
 let gensym = (function() {
@@ -155,12 +716,11 @@ let localGraph = {
 }
 
 
-let USEWS = true;
-let userDataChannel
+let USEWS;
 // use this to represent others' movements/presence in the world
 let pals = {}
 
-if(USEWS || argv.w){
+if(USEWS || argv.offline != 1){
 	USEWS = true
 	console.log('using websockets')
 
@@ -214,9 +774,10 @@ if(USEWS || argv.w){
 	// 	console.log(err)
 	// })
 } else {
-	// no ws used
-	demoScene = path.join(__dirname, "temp", "simple.json")
-	localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
+    // no ws used
+    console.log('not using WS')
+	// demoScene = path.join(__dirname, "scene_files", "scene_rich.json")
+	// localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
 
 }
 
@@ -865,7 +1426,7 @@ let vrdim = [4096, 4096];
 
 
 
-const menuModules = JSON.parse(fs.readFileSync(path.join("useful_for_2022","menu.json"), "utf-8"))
+const menuModules = JSON.parse(fs.readFileSync(path.join("max-msp","menu.json"), "utf-8"))
 
 
 
@@ -1608,7 +2169,7 @@ function makeSceneGraph(renderer, gl) {
 					// the anchor coordinate system for the text:
 					mat4.copy(obj.i_modelmatrix, modelmatrix);
 					// color:
-		//			vec4.set(obj.i_color, 1, 1, 1, 1)
+		            // vec4.set(obj.i_color, 1, 1, 1, 1)
 					// bounding coordinates of the quad for this character:
 					vec4.copy(obj.i_fontbounds, char.quad);
 					// offset by character location:
@@ -1997,6 +2558,10 @@ function makeSceneGraph(renderer, gl) {
 					obj.i_quat, obj.i_pos, 
 					[scale, scale, scale]
 				);
+				
+
+				//TODO: draw outlet amplitude:
+				// console.log(audiovizLookup)
 			}
 
 			for (let i=0; i<this.textquad_instances.count; i++) {
@@ -2004,22 +2569,16 @@ function makeSceneGraph(renderer, gl) {
 				let parent = obj.parent;
 				mat4.copy(obj.i_modelmatrix, parent.mat)
 			}
-			// console.log(this.line_instances.count)
+
 			for (let i=0; i<this.line_instances.count; i++) {
 				let obj = this.line_instances.instances[i];
-				
 				let {from, to} = obj;
-				// console.log('\n\nfrom', from, '\n\nto', to)
-				if(from && to){
-					assert(from, `line ${obj.name} from is missing`)
-					assert(to, `line ${obj.name} to is missing`)
-					quat.copy(obj.i_quat0, from.i_quat);
-					quat.copy(obj.i_quat1, to.i_quat);
-					vec3.copy(obj.i_pos0, from.i_pos);
-					vec3.copy(obj.i_pos1, to.i_pos);
-				}else {
-					//!  for some reason this script was receiving some undefined from/to arcs, so ignore them here for now
-				}
+				assert(from, `line ${obj.name} from is missing`)
+				assert(to, `line ${obj.name} to is missing`)
+				quat.copy(obj.i_quat0, from.i_quat);
+				quat.copy(obj.i_quat1, to.i_quat);
+				vec3.copy(obj.i_pos0, from.i_pos);
+				vec3.copy(obj.i_pos1, to.i_pos);
 			}
 			return this.submit();
 		},
@@ -2150,7 +2709,7 @@ vec3.transformQuat(up, [0, 1, 0], nav.quat) - UP vector
 vec3.transformQuat(forward, [0, 0, -1], nav.quat) - FORWARD vector
 */
 
-
+let outgoingDeltaIndex = 0
 let t = glfw.getTime();
 let fps = 60;
 
@@ -2305,85 +2864,130 @@ function animate() {
 	// Swap buffers
 	glfw.swapBuffers(window);
 
-	// send outgoing deltas:
+	//processLocalDeltas(outgoingDeltas)	
+	let palDeltaIndex = 0
+	let indexedDeltas = {}	
+	// increment each incoming delta array with an index, stored in either an object or DB, and apply this to localGraph AND if USEWS then pass this out to hostWebsocket after got validation
+    let attempt 
+    let deltasToHost = []    
+    try {
+        attempt = got.applyDeltasToGraph(localGraph, outgoingDeltas);
+    } catch (e) {
+        console.warn(e);
+    }
+    // if the got detected a malformed delta (or a conflict delta for which we have no merge strategy), it will be reported as an object in an array after the graph
+    if (attempt && attempt.length > 1 && attempt[1]){
+        // report malformed delta to client
+        switch(attempt[1].type){
+            case "conflictDelta":
+                // let nodes4props =  Object.keys(attempt[1].graph.nodes)
+                // for(i=0;i<nodes4props.length;i++){
+                //   // console.log('from props', attempt[1].graph.nodes[nodes4props[i]]._props)
+                // }
+                console.log(attempt[1].error)
+                // for now, a conflict delta will still be passed through, just so we can test and capture when they occur
+                // feedback path stuff
+                for(i=0;i<outgoingDeltas.length; i++){
+                    // if a connection delta, check if history node is needed: 
+                    if(outgoingDeltas[i].op === 'connect'){
+                        let historyDelta = getHistoryPropchanges(outgoingDeltas[i])
+                        deltasToHost.push(historyDelta)
+                    }
+                    else {
+                        deltasToHost.push(outgoingDeltas[i])                       
+                    }
+                }
+                // If we are running in online mode, do we still send the deltas to hostWebsocket?
+                if(USEWS == true && hostWebsocket){
+                    // package deltas along with name of this mischmasch instance (name_ip) and index
+                    let msg = JSON.stringify({
+                        cmd: 'deltas',
+                        date: Date.now(),
+                        data: deltasToHost,
+                        pal: name,
+                        index: palDeltaIndex
+                    })
+                    // send indexed deltas to host:
+                    hostWebsocket.send(msg)
+                    let entry = palDeltaIndex.toString()
+					indexedDeltas[entry] = deltasToHost
+					// might be redundant, but we'll use a fifo as well
+					fifo.push(deltasToHost)
+                    palDeltaIndex++
+                }
+                // pass these deltas back to VR:
+                incomingDeltas.push.apply(incomingDeltas, deltasToHost);
+                // pass the deltas to the gen~ script:
+                // max.outlet('fromApp', JSON.stringify(deltasToHost))
+				maxMSPScripting(deltasToHost)
 
-	if (USEWS == true && socket && socket.readyState === 1) {
-		// send any edits to the server:
-		if (outgoingDeltas.length > 0) {
-			let message = JSON.stringify({
-				cmd: "deltas",
-				date: Date.now(),
-				data: outgoingDeltas
-			});
-			socket.send(message);
-			//console.log('outgoing message',message)
-			outgoingDeltas.length = 0;
-		}
-		// HMD pos
-		if(UI.hmd){
-			let hmdMessage = JSON.stringify({
-				cmd: "HMD",
-				date: Date.now(),
-				data: UI.hmd
-			});
-			sendToAppJS(hmdMessage);
-		}
-
-
-		// right hand pos
-		if(UI.hands[1]){
-			let wandsMessage = JSON.stringify({
-				cmd: "rightWandPos",
-				date: Date.now(),
-				data: {pos: UI.hands[1].pos}
-			});
-			sendToAppJS(wandsMessage);
-		}
-
-		// client<>client userMovement
-		// if(userDataChannel){
-		// 	// hands
-		// 	if(UI.hands){
-		// 		let wandsMessage = JSON.stringify({
-		// 			cmd: "hands",
-		// 			source: peerHandle,
-		// 			data: {
-		// 				left: {
-		// 					pos: UI.hands[0].pos, 
-		// 					orient: UI.hands[0].orient
-		// 				},
-		// 				right: {
-		// 					pos: UI.hands[1].pos, 
-		// 					orient: UI.hands[1].orient
-		// 				}
-		// 			}
-		// 		});
-		// 		userDataChannel.send(wandsMessage);
-		// 	}
-		// 	if(UI.hmd){
-		// 		let hmdMessage = JSON.stringify({
-		// 			cmd: "hmd",
-		// 			source: peerHandle,
-		// 			data: UI.hmd
-		// 		})
-		// 		userDataChannel.send(hmdMessage);
-		// 	}
-		// }
-
-	} else if (!USEWS) {
-		// otherwise, just move them to our incoming list, 
-		// so we can work without a server:
-		//console.log('\n\nogds',outgoingDeltas)
-		for (let delta of outgoingDeltas) {
-			incomingDeltas.push(delta);
-		}
-		outgoingDeltas.length = 0;
-	}
+				
+				
+            break
+            case "malformedDelta":
+                if (USEWS == true && hostWebsocket){
+                    let warning = JSON.stringify({
+                        cmd: 'nuke',
+                        data: attempt[1]
+                    })
+                    max.post(warning)
+                }
+            break
+        }
+        // return
+        } else {
+        // got detected no malformed deltas, so we can proceed:        
+        // feedback path stuff
+        for(i=0;i<outgoingDeltas.length; i++){
+            // if a connection delta, check if history node is needed: 
+            if(outgoingDeltas[i].op === 'connect'){
+                let historyDelta = getHistoryPropchanges(outgoingDeltas[i])
+                deltasToHost.push(historyDelta)
+            }
+            else {                
+                deltasToHost.push(outgoingDeltas[i])
+            }
+            // If we are running in online mode, send the deltas to hostWebsocket:
+            if(USEWS == true && hostWebsocket){
+                // package deltas along with name of this mischmasch instance (name_ip) and index
+                let msg = JSON.stringify({
+                    cmd: 'deltas',
+                    date: Date.now(),
+                    data: deltasToHost,
+                    pal: name,
+                    index: palDeltaIndex
+                })
+                // send indexed deltas to host:
+                hostWebsocket.send(msg)
+                let entry = palDeltaIndex.toString()
+                indexedDeltas[entry] = deltasToHost
+				palDeltaIndex++
+				// might be redundant, but we'll use a fifo as well
+				fifo.push(deltasToHost)
+				
+            }
+            // pass these deltas back to VR:
+            incomingDeltas.push.apply(incomingDeltas, deltasToHost);
+            // pass the deltas to the gen~ script:
+			// max.outlet('fromApp', JSON.stringify(deltasToHost))
+			maxMSPScripting(deltasToHost)
+            
+        }
+	} 
+	outgoingDeltaIndex++
+    outgoingDeltas.length = 0;
+    // transmit userdata to gen~world
+    // HMD pos
+    if(UI.hmd){
+        max.outlet("hmd", UI.hmd)
+    }
+    // right hand pos
+    if(UI.hands[1]){
+        max.outlet("rightWand_pos_x",UI.hands[1].pos[0], "rightWand_pos_y",UI.hands[1].pos[1], "rightWand_pos_z",UI.hands[1].pos[2], "rightWand_orient_x",UI.hands[1].orient[0], "rightWand_orient_y",UI.hands[1].orient[1], "rightWand_orient_z",UI.hands[1].orient[2], "rightWand_orient_w",UI.hands[1].orient[3])
+    }
 }
 
 function draw(eye=0) {
-
-
 	gl.enable(gl.BLEND);
 	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 	gl.depthMask(false)
@@ -2401,71 +3005,16 @@ function draw(eye=0) {
 	gl.depthMask(true)
 }
 
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// BOOT SEQUENCE
-//////////////////////////////////////////////////////////////////////////////////////////
-
-function serverConnect() {
-	const url = 'ws://localhost:8080'
-	socket = new ws(url)
-	socket.binaryType = 'arraybuffer';
-	socket.onopen = () => {
-		console.log("websocket connected to localWebsocket on "+url);
-		// reset our local scene:
-		localGraph = {
-			nodes: {},
-			arcs: []
-		};
-		mainScene.rebuild(localGraph)
-
-		sendToAppJS(JSON.stringify({ cmd:"get_scene"})) 
-
-		// let the localWebsocket server assign our connection with an id
-		sendToAppJS(JSON.stringify({ cmd:"vrClientStatus"})) 
-
-	}
-	socket.onerror = (error) => {
-	  console.error(`ws error: ${error}`)
-	  socket = null;
-	  localGraph = { nodes: {}, arcs: [] }
-	}
-	socket.onclose = function(e) {
-		socket = null;
-		console.log("websocket disconnected from "+url);
-		localGraph = {
-			nodes: {}, arcs: []
-		}
-		mainScene.rebuild(localGraph)
-		setTimeout(function(){
-			console.log("websocket reconnecting");
-			serverConnect();
-		}, 2000);		
-	}
-	socket.onmessage = (e) => {
-		if (e.data instanceof ArrayBuffer) {
-			console.log("ws received arraybuffer of " + e.data.byteLength + " bytes")
-		} else {
-			let msg = e.data;
-			try {
-				msg = JSON.parse(msg);
-			} catch(e) {}
-			onServerMessage(msg, socket);
-		} 
-	}
-}
-
-function onServerMessage(msg, sock) {
+let audiovizLookup = []
+function toVR(ms) {
+    msg = JSON.parse(ms)
+    
 	switch (msg.cmd) {
-        case "deltas": {
-			// insert into our TODO list:
-            incomingDeltas.push.apply(incomingDeltas, msg.data);
-		} break;
 		
-		case "audiovizLookup":
-			console.log(msg.data)
-			// this is where we get the state of a node's output, sent from the gen patcher!
-		break
+		// case "audiovizLookup":
+		// 	console.log(msg.data)
+		// 	// this is where we get the state of a node's output, sent from the gen patcher!
+		// break
 
 		case "nuke":
 			// either app.js or host.js detected that this client has sent one or more malformed deltas. so, clear the localscene here, wipe delta history and all buffers, then request the current scene from app.js
@@ -2480,8 +3029,10 @@ function onServerMessage(msg, sock) {
 			}
 			mainScene.rebuild(localGraph)
 			
-			// reconnect to app.js thereby receiving current state of scene
-			serverConnect()
+			if (USEWS){
+                networkInit()
+            }
+			
 		break
 
         default:
@@ -2489,12 +3040,9 @@ function onServerMessage(msg, sock) {
     }
 }
 
-// we use this to prevent attempting a ws.send if the socket becomes closed
-function sendToAppJS(outgoingMessage){
-	if(socket.readyState == 1){
-		socket.send(outgoingMessage)
-	}
-}
+//////////////////////////////////////////////////////////////////////////////////////////
+// BOOT SEQUENCE
+//////////////////////////////////////////////////////////////////////////////////////////
 
 async function init() {
 	// init opengl 
@@ -2510,9 +3058,9 @@ async function init() {
 
 	// default graph until server connects:
 	// localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
-	// server connect
+	// connect to teaparty and host
 	if (USEWS) {
-		serverConnect();
+        networkInit();
 	} 
 	mainScene = makeSceneGraph(renderer, gl);
 	mainScene.init(gl);
@@ -2522,7 +3070,9 @@ async function init() {
 	initUI(window);
 
 	
-	animate()
+    animate()
+    // init the max patcher
+    max.outlet('loadbang')
 }
 
 function shutdown() {
@@ -2536,3 +3086,508 @@ function shutdown() {
 
 init();
 
+/////////////////////////////////////////////////////////
+
+// Max/MSP
+//TODO: move as much of the gen_scripting.js code into this section as possible, ideally we only use gen_scripting for things that node.script cannot perform. (this also should mean that the max patch can finally take advantage of got!)
+
+// outlet visualization
+max.addHandler('audiovizLookup', (audiovizLookup)=>{
+	// eventually pass this to VR
+	audiovizLookup = audiovizLookup
+    // console.log(audiovizLookup)
+})
+
+max.addHandler('clearScene', ()=>{
+    let deltas = got.deltasFromGraph(localGraph, []);
+    let inverse = got.inverseDelta(deltas)
+	maxMSPScripting(inverse)
+    if(USEWS && hostWebsocket){
+        let msg = JSON.stringify({
+            cmd: 'clearScene',
+            date: Date.now(),
+            data: 'clearScene'
+          })
+        hostWebsocket.send(msg)
+    } 
+    // wipe the scene locally
+    localGraph = {
+        nodes: {}, arcs: []
+    }
+    mainScene.rebuild(localGraph)
+ 
+})
+
+// data related to scripting max
+var scripting = {
+	counters: {
+		newNodeCounter: 1,
+		feedbackConnections: 0,
+		genOutCounter: 1,
+		box_y: 0
+	},
+	// need to keep track of knobs so we can treat them as inlets and script connect to their attenuvertors
+	knobs:{
+		// eg "path_path_#": "attenuvertor_path_#"
+	},
+	nodes: {},
+	inletsTable: [],
+	outletsTable: [],
+	currentParent: null,
+	vrSource: {
+		varname: null
+	},
+	object: {},
+	speakerTable: {},
+	genOutArray: []
+}
+
+audiovizIndex = 0;
+
+max.addHandler('resetCounters',()=>{
+	scripting.counters.newNodeCounter = 1;
+	scripting.counters.feedbackConnections = 0
+	scripting.counters.genOutCounter = 1
+	scripting.counters.box_y = 0
+	scripting.inletsTable = []
+	scripting.outletsTable = []
+	scripting.genOutArray = []
+	scripting.nodes = {}
+	scripting.object = {}
+	scripting.speakerTable = {}
+	audiovizLookup = {}
+	audiovizIndex = 0
+})
+
+function maxMSPScripting(delta){
+	var index = JSON.stringify(delta.index)
+
+			
+	// iterate through the array of deltas, passing one by one through handleDelta
+	if (Array.isArray(delta)) {
+		for (var i=0; i<delta.length; i++) {
+			
+			maxMSPScripting(delta[i]);
+		}
+	} else {
+
+		scripting.counters.box_y = scripting.counters.newNodeCounter * 5 + 10
+		if (scripting.counters.box_y > 500){
+			scripting.counters.box_y = 50
+		}
+		switch (delta.op){
+			// prevent new objects from being srcipted too low on the patcher page (we encountered a bug when objects were written above 1000 on the y axis)
+
+			// create an object!
+			case "newnode": 
+				if (scripting.counters.newNodeCounter > 20){
+					scripting.counters.newNodeCounter = 1
+					}
+				if(scripting.nodes[delta.path]){
+					// don't add a duplicate
+					// if this happens, it means something is wrong with the graph, maybe a delnode wasn't triggered or received, or duplicate deltas received
+					max.post('WARNING: duplicate newnode delta received. Was filtered out, but need to check the delta round-trip\n\n')
+				} else {
+					// add the node to the obj to prevent it being added as a duplicate
+					// ... and if it is an outlet, keep track of its history property
+					if(delta.kind === 'outlet'){
+						scripting.nodes[delta.path] = {
+							history: delta.history
+						}
+					} else {
+						scripting.nodes[delta.path] = {}
+					}
+
+					// individual delta to handle:
+					paramCounter = 0;
+					
+					var kind = delta.kind
+					
+
+					var posX = 10
+					
+					if (delta.pos) {
+
+						scripting.counters.newNodeCounter++
+						posX = (delta.pos[0] + 3)
+						 
+						pathName = delta.path.split('.')[0] 
+												
+						switch(delta.category){
+							
+							case "abstraction": 
+								scripting.currentParent = pathName
+								if(kind === "wand"){
+									
+									max.outlet('toMaxScripting', 'addWand',  pathName, scripting.counters.box_y)
+									
+								} else if(kind === "speaker"){
+									scripting.vrSource.varname = "source_" + pathName
+									let genOutNumber
+									// manage the real gen~ outs
+									if (scripting.genOutArray.length == 0){
+										scripting.genOutArray.push(scripting.vrSource.varname)
+										genOutNumber = 1
+									} else {
+										let availableOutlets = []
+										for(i=0;i<scripting.genOutArray.length;i++){
+											if(scripting.genOutArray[i] == null){
+												availableOutlets.push(i)												
+											}
+										}
+										if(availableOutlets[0]){
+											let assignOutlet = availableOutlets[0]
+											scripting.genOutArray[assignOutlet] = scripting.vrSource.varname
+											genOutNumber = assignOutlet + 1
+										} else {
+											let assignOutlet = scripting.genOutArray.length
+											scripting.genOutArray[assignOutlet] = scripting.vrSource.varname
+											genOutNumber = assignOutlet + 1
+										}
+									}
+									// the vr.source~ objects instantiated in parent patcher should also have their first arg be the genContext value, but scripting name be the groundTruth value
+									scripting.speakerTable[scripting.vrSource.varname] = {genOutNumber: genOutNumber}  
+									max.outlet('toMaxScripting', 'addSpeaker', pathName, delta.pos[0], delta.pos[1], delta.pos[2], scripting.counters.box_y, genOutNumber, scripting.vrSource.varname)
+									
+									
+									
+									
+	
+								} else {
+									max.outlet('toMaxScripting', 'addModule',  scripting.counters.box_y, pathName, kind)
+								}
+
+							break;
+							
+							case "operator":
+								scripting.currentParent = pathName
+								max.outlet('toMaxScripting', 'addOperator',  scripting.counters.box_y, pathName, kind)
+									
+							break;
+							
+							default:
+								scripting.currentParent = pathName
+								max.outlet('toMaxScripting', 'addDefault',  scripting.counters.box_y, pathName, kind)
+							break;	
+							}
+						
+						} else {
+							switch(kind){
+								case "knob":
+								case 'small_knob':
+								case 'large_knob':
+								case 'tuning_knob':
+								case 'slider':
+								case 'momentary':
+								case 'led':
+
+									scripting.knobs[delta.path] = {
+										attenuvertor: (delta.path.replace('.','__') + '_attenuvertor')
+									}
+									
+									max.outlet('toMaxScripting', 'addParam',  delta.path, scripting.counters.box_y, delta.value, paramCounter)
+
+								break;
+								
+								case 'n_switch':
+									// pathName = delta.path.split('.')[0]
+									// paramName = delta.path.replace('.','__')
+									// setparamName = delta.path.split('.')[1]
+									// attenuvertorName = paramName + '_attenuvertor'
+
+									
+									// paramX = paramCounter * 150
+									// // generate the setparam which the param will bind to
+									// var setparam = gen_patcher.newdefault([275, scripting.counters.box_y * 2, "setparam", setparamName])
+									// setparam.varname = 'setparam_' + paramName
+									// gen_patcher.message("script", "connect", setparam.varname, 0, pathName, 0);
+
+									// // generate the multiplier to insert between the param and setparam (for knobs-as-inlets)
+									// var attenuvertor = gen_patcher.newdefault([450, scripting.counters.box_y * 2, "*"])
+									// attenuvertor.varname = attenuvertorName
+									// gen_patcher.message("script", "connect", attenuvertor.varname, 0, setparam.varname, 0);
+									
+									// // generate the param which the js script will bind to
+									// var param = gen_patcher.newdefault([600, scripting.counters.box_y * 1.5, "param", paramName, delta.value])
+									// param.varname = paramName
+									// gen_patcher.message("script", "connect", param.varname, 0, attenuvertor.varname, 1);
+								
+
+									// paramCounter++
+								break;
+								
+								case "inlet": 
+									scripting.object[delta.path.replace('.','__')] = delta.index
+									scripting.inletsTable.push(scripting.object)
+								
+								
+								case "outlet":
+								// poke all outlets to buffer for visual feedback:
+								// first make sure that the outlet has an index, and is not an inlet (sometimes this occurs...)
+								if (index && kind !== 'inlet' && kind !== 'controller2' && kind !== 'headset'){
+									// add outlet to the audioViz js object for reference 
+									max.outlet('toOutletVisualization', "setAudioViz", pathName, delta.path, delta.index, audiovizIndex)
+									// pass along to scripting for visualizing each gen object's audio state
+									max.outlet('toMaxScripting', 'addOutlet', scripting.currentParent, delta.index, delta.path, audiovizIndex)
+									// audiovizLookup[pathName][delta.path] = {audiovizIndex: audiovizIndex, deltaIndex: delta.index}
+									audiovizIndex++
+
+									max.outlet('sizeinsamps', audiovizIndex + 1)
+									scripting.object[delta.path.replace('.','__')] = delta.index
+									scripting.outletsTable.push(scripting.object)	
+									
+									// TODO: if a module is deleted, find which channels in the buffer are now freed, make those available to the next newnode.
+								}
+
+								break;
+									// TEMP HACK!!!!
+								// so we can ignore UI objects that we don't need to patcher script at this point
+								// NEED TO FIX
+
+								// handle "inlet", "outlet", and "small_knob" etc here
+								// you need to cache them somehwere, even though they don't exist as objects in a patcher
+								// so we can know how to connect to them or change their values
+
+							}		
+
+
+							for (var k in delta){
+								if (delta.hasOwnProperty(k)) {
+									switch (k){
+										case 'path':
+										
+										break;
+										
+										case 'range':
+										
+										// outlet(4, delta.path.replace('.','__'), delta.value, delta.range)
+										break;
+										
+										case 'value':
+										
+										break;
+										
+										case 'taper':
+										
+										break;
+										
+										default:
+										
+										
+										break;
+										
+										
+									}
+								}
+							}
+						}
+				}	
+			break;
+			
+			// delete an object
+			case "delnode":
+				// js: {"op":"delnode","path":"speaker_50.input","kind":"inlet","index":0}  {"op":"delnode","path":"speaker_50","kind":"speaker","category":"abstraction","pos":[-0.0033256448805332184,-0.8113799095153809,-2.032186269760132],"orient":[-0.40548140108925446,-0.001008427298806405,0.5440172089960219,0.7345945867262966]}  dsp 48000.000000 32
+
+				if(scripting.nodes[delta.path]){
+					// remove node from the scripting.nodes object
+					delete scripting.nodes[delta.path]
+					
+					var deleteMe = delta.path.replace('.', '__');
+					
+					if(delta.path.split('_')[0] === 'speaker'){
+						
+						var thisVarname = 'source_' + delta.path
+						//! 
+						//TODO: the genOutCounter won't work after a delnode, because it's not referring the specific outlet number that's being removed.
+						//TODO instead, the genOutCounter should be an array whose indexes represent gen outs
+						
+						for(i=0;i<scripting.genOutArray.length;i++){
+							
+							if(scripting.genOutArray[i] == thisVarname){
+								max.post(thisVarname, scripting.genOutArray[i])
+								scripting.genOutArray[i] = null
+							}
+						}
+						console.log('genOutArrayafterDeletion', scripting.genOutArray)
+						// scripting.counters.genOutCounter = (scripting.counters.genOutCounter - 1)
+						// outlet(4, 'thispatcher', 'script', 'delete', thisVarname)
+						// this.patcher.remove(thisVarname)
+						
+						max.outlet('toMaxScripting', 'deleteSpeaker', thisVarname)
+						// then lower the gen~world counter
+						// if(scripting.counters.genOutCounter <1){
+						// 	scripting.counters.genOutCounter = 1
+						// }
+
+					}
+					max.outlet('toMaxScripting', 'delNode', deleteMe)
+
+
+				} else {
+					// error. received a delnode for a nonexistent node
+					max.post('WARNING: received a delnode for a node that does not exist in the graph\n')
+
+				}
+				
+			break;
+
+			// create a patchcord!
+			case "connect":
+				var arcString = '"' + delta.paths + '"'
+
+				
+				
+				if(scripting.nodes[arcString]){
+					// don't add a duplicate
+					// if this happens, it means something is wrong with the graph, maybe a delnode wasn't triggered or received, or duplicate deltas received
+					max.post('WARNING: received a connection delta that already exists in the graph. was filtered out, but need to check the delta round-trip\n\n')
+				} else {
+					arcString = '"' + delta.paths + '"' 
+					// add the arc to the obj to prevent it being added as a duplicate
+					scripting.nodes[arcString] = {}
+
+					var setOutlet = delta.paths[0].replace('.','__')
+					var setInlet = delta.paths[1].replace('.','__')
+					var input;
+					var output;
+					var attenuvertor = null 
+
+					// if the inlet path (arc path [1]) is a knob, it will be found in the knobs object
+					// scripting.knobs[delta.paths[1]]
+					// then connect delta.paths[0] to the attenuvertor of delta.paths[1]
+					if(scripting.knobs[delta.paths[1]]){
+						attenuvertor = delta.paths[1].replace('.','__') + '_attenuvertor'
+					}
+
+					for (var i = 0; i < scripting.inletsTable.length; i++) {
+						var inletsIndexes = scripting.inletsTable[i]
+								input = JSON.stringify(inletsIndexes[setInlet]);
+						}
+					for (var i = 0; i < scripting.outletsTable.length; i++) {
+					var outletsIndexes = scripting.outletsTable[i]
+							output = JSON.stringify(outletsIndexes[setOutlet]);
+					}
+
+					
+
+	
+					var outletPath = delta.paths[0]
+					// detect a self-patch connection and insert a history object in between!
+					if (delta.paths[0].split('.')[0] === delta.paths[1].split('.')[0]){					
+						scripting.counters.feedbackConnections++
+						historyVarname = "feedback_" + scripting.counters.feedbackConnections
+						max.outlet('toMaxScripting', 'history', historyVarname)
+
+						if(attenuvertor !== null){
+							 
+							// connect the outlet (arc[0]) to the history
+							max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), historyVarname, 0);
+							// connect the history to the attenuvertor
+							max.outlet('toMaxScripting', 'connect', historyVarname, 0, parseInt(output), attenuvertor, 0);
+							// connect the attenuvertor to inlet (arc[1])
+							max.outlet('toMaxScripting', 'connect', attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
+						
+						} else {
+							max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), historyVarname, 0);
+							max.outlet('toMaxScripting', 'connect', historyVarname, 0, delta.paths[1].split('.')[0], parseInt(input));
+						}
+					} else if (scripting.nodes[outletPath].history === 1 || scripting.nodes[outletPath].history === true) {
+
+						scripting.counters.feedbackConnections++
+						historyVarname = "feedback_" + scripting.counters.feedbackConnections
+
+						max.outlet('toMaxScripting', 'history', "feedback_" + scripting.counters.feedbackConnections)
+						if(attenuvertor !== null){
+
+							// connect the outlet (arc[0]) to the history
+							max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), historyVarname, 0);
+							// connect the history to the attenuvertor
+							max.outlet('toMaxScripting', 'connect', historyVarname, 0, parseInt(output), attenuvertor, 0);
+							// connect the attenuvertor to inlet (arc[1])
+							max.outlet('toMaxScripting', 'connect', attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
+						
+						} else {
+							max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), historyVarname, 0);
+							max.outlet('toMaxScripting', 'connect', historyVarname, 0, delta.paths[1].split('.')[0], parseInt(input));
+						}
+					}
+					
+					 else{
+						// if no self-patch connection exists, just connect them. 
+						if(attenuvertor !== null){
+							// connect the outlet (arc[0]) to the attenuvertor
+							max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), attenuvertor, 0);
+							// connect the attenuvertor to inlet (arc[1])
+							max.outlet('toMaxScripting', 'connect', attenuvertor, 0, delta.paths[1].split('.')[0], parseInt(input));
+						
+						} else {
+							max.outlet('toMaxScripting', 'connect', delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
+						}
+					}
+				}
+			break;
+
+			case "disconnect":
+				var arcString = '"' + delta.paths + '"' 
+				if(scripting.nodes[arcString]){
+					// remove node from the scripting.nodes object
+					delete scripting.nodes[arcString]
+
+					var setOutlet = delta.paths[0].replace('.','__')
+				
+					var setInlet = delta.paths[1].replace('.','__')
+					var input;
+					var output;
+					for (var i = 0; i < scripting.inletsTable.length; i++) {
+						var inletsIndexes = scripting.inletsTable[i]
+						input = JSON.stringify(inletsIndexes[setInlet]);
+					}
+					for (var i = 0; i < scripting.outletsTable.length; i++) {
+						var outletsIndexes = scripting.outletsTable[i]
+						output = JSON.stringify(outletsIndexes[setOutlet]);
+					}
+					max.outlet('toMaxScripting', "disconnect", delta.paths[0].split('.')[0], parseInt(output), delta.paths[1].split('.')[0], parseInt(input));
+
+				} else {
+					// error. received a delnode for a nonexistent node
+					max.post('WARNING: received a delnode for a node that does not exist in the graph\n')
+
+				}
+				
+			break;
+			
+			// modify a parameter
+			case "propchange": 
+				switch(delta.name) {
+
+					case "value": 
+						var param = delta.path
+						param = param.replace(".", "__")
+						var cleaveParam = param.split('.')[0]
+						max.outlet('toMaxScripting', 'updateValue', cleaveParam, delta.to)
+					break;
+					
+					case "history":	
+						scripting.nodes[delta.path] = {
+							history: delta.history
+						}
+					break
+					case "pos":
+					case "orient":
+						pathName = delta.path.split('.')[0]
+						// is it a speaker?
+						if(pathName.split('_')[0] === "speaker"){
+							var vrSourceTarget = "source_" + pathName
+							max.outlet('toMaxScripting', 'updateSpeakerPosition', vrSourceTarget, delta.to[0], delta.to[1], delta.to[2])
+						}
+						 
+
+					break;
+				}
+			break;
+			// ETC
+		} 
+	}
+}
+
+////////////////////////////////////////////////////////////////

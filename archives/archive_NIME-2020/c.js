@@ -27,13 +27,13 @@ if (argv.name){
 }
 
 let peerHandle = name + '_' + filename
-const got = require("./gotlib/got.js")
+const got = require("../../gotlib/got.js")
 
 const rwsOptions = {
 	// make rws use the webSocket module implementation
 	WebSocket: ws, 
 	// ms to try reconnecting:
-	connectionTimeout: 1000,
+	connectionTimeout: 30000,
 	//debug:true, 
   }
 
@@ -50,8 +50,7 @@ let gensym = (function() {
     let nodeid = 0;
     return function (prefix="node") {
         //return `${prefix}_${nodeid++}_${userPose.id}`
-		//return `${prefix}_${nodeid++}`
-		return `${prefix}_${Date.now()}`
+        return `${prefix}_${nodeid++}`
     }
 })();
 
@@ -157,62 +156,51 @@ let localGraph = {
 
 let USEWS = true;
 let userDataChannel
-// use this to represent others' movements/presence in the world
-let pals = {}
 
 if(USEWS || argv.w){
 	USEWS = true
 	console.log('using websockets')
 
-	// // userDataChannel = new ws('ws://mischmasch-userdata.herokuapp.com/8082');
-	// userDataChannel = new rws('ws://mischmasch-userdata.herokuapp.com/8082', [], rwsOptions);
+	// userDataChannel = new ws('ws://mischmasch-userdata.herokuapp.com/8082');
+	userDataChannel = new rws('ws://mischmasch-userdata.herokuapp.com/8082', [], rwsOptions);
 
-	// // teapartyWebsocket.addEventListener('message', (data) => {
-	// // 	let msg = JSON.parse(data.data);
+	// teapartyWebsocket.addEventListener('message', (data) => {
+	// 	let msg = JSON.parse(data.data);
 
-	// userDataChannel.addEventListener('open', (data) => {
-	// 	userDataChannel.send(JSON.stringify({
-	// 		cmd: 'handshake',
-	// 		source: peerHandle,
-	// 		data: 'highFive'
-	// 	}));
-	// });
+	userDataChannel.addEventListener('open', (data) => {
+		userDataChannel.send(JSON.stringify({
+			cmd: 'handshake',
+			source: peerHandle,
+			data: 'highFive'
+		}));
+	});
 	
-	// userDataChannel.addEventListener('message', (data) => {
-	// 	let msg = JSON.parse(data.data)
+	userDataChannel.addEventListener('message', (data) => {
+		// console.log(typeof data.data);
+		let msg = JSON.parse(data.data)
+		// ensure non JSON data doesn't get parsed
+		// if (typeof data.data === 'object' && data.data !== null){
 			
-	// 		switch(msg.cmd){
+			switch(msg.cmd){
 
-	// 			case 'handshake':
-	// 				console.log('peer ' + msg.source + ' CONNECTED')
-	// 				pals[msg.source] = {
-	// 					hands: {},
-	// 					hmd: {}
-	// 				}
-	// 			break
+				case 'handshake':
+					console.log('peer ' + msg.source + ' CONNECTED')
+				break
 
+				case 'cursorPosition':
+					console.log('cursor position from client ' + msg.source + ': ', msg.data)
+				break
 
-	// 			case "hands":
-	// 				// Graham, you can use this object elsewhere to access where in the world to place a pal's hand controllers
-	// 				pals[msg.source].hands = msg.data
-	// 			break
+				default: console.log('unhandled msg: ', msg)
+			}
+		// } else {
+			// console.log('message "' + data.data + '" received by userDataChannel is a ' + typeof data.data + ', expected JSON object')
+		// }
+	})
 
-	// 			case "hmd":
-	// 				// Graham, you can use this object elsewhere to access where in the world to place a pal's hand controllers
-	// 				pals[msg.source].hmd = msg.data
-	// 			break
-
-	// 			case 'cursorPosition':
-	// 				console.log('cursor position from client ' + msg.source + ': ', msg.data)
-	// 			break
-
-	// 			default: console.log('unhandled msg: ', msg)
-	// 		}
-	// })
-
-	// userDataChannel.addEventListener('error', (err) => {
-	// 	console.log(err)
-	// })
+	userDataChannel.addEventListener('error', (err) => {
+		console.log(err)
+	})
 } else {
 	// no ws used
 	demoScene = path.join(__dirname, "temp", "simple.json")
@@ -516,17 +504,10 @@ const UI = {
 					while (module && !module.isModule) module = module.parent;
 					if (module && module.isModule) {
 						// derive delta from module.node:
-						let path = module.kind;
-						path = gensym(path);
-						console.log('lets get the props!', module.pos, module.quat, module.node._props.pos, module.node._props.orient)
+						let path = gensym(module.kind);
 						// send delta to spawn it:
-						//let deltas = got.nodesToDeltas([module.node], [], path)
-						let nodes = {}
-						nodes[path] = module.node
-						let deltas = got.nodesToDeltas(nodes, [], "")
-						console.log(deltas[0][0].pos)
+						let deltas = got.nodesToDeltas([module.node], [], path)
 						outgoingDeltas.push(deltas)
-						//console.log("creating new node at", path, JSON.stringify(deltas))
 						// exit menu:
 						hand.state = "default";
 					}
@@ -633,8 +614,6 @@ const UI = {
 						let range = props.range || [0,1];
 						let oldval = object.value//range[0] + object.i_value[0]*(range[1]-range[0]);
 						let newval = range[0] + i_value*(range[1]-range[0]);
-						// post-processing:
-						if (props.type == "int") newval = Math.max(range[0], Math.floor(newval))
 
 						// send propchange oldval->newval
 						outgoingDeltas.push({ 
@@ -865,7 +844,7 @@ let vrdim = [4096, 4096];
 
 
 
-const menuModules = JSON.parse(fs.readFileSync(path.join("useful_for_2022","menu.json"), "utf-8"))
+const menuModules = JSON.parse(fs.readFileSync(path.join("max-msp","menu.json"), "utf-8"))
 
 
 
@@ -946,11 +925,7 @@ function initWindow() {
 	glfw.windowHint(glfw.OPENGL_FORWARD_COMPAT, 1);
 	glfw.windowHint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE);
 
-	let h = 1024;
-	let vraspect = vrdim[0]/vrdim[1];
-	if (vraspect > 1.5) vraspect /= 2;
-	let w = Math.floor(h * vraspect)
-	window = glfw.createWindow(w, h, "Test");
+	window = glfw.createWindow(800, 800, "Test");
 	if (!window) {
 		console.log("Failed to open GLFW window");
 		glfw.terminate();
@@ -1060,7 +1035,6 @@ out vec4 outColor;
 
 void main() {
 
-	// fade in the distance
 	float alpha = 1.-length(v_uv);
 	float soft = 0.02;
 
@@ -1071,10 +1045,7 @@ void main() {
 	float d = length(v_xz);
 	float b = floor(mod(d * 8., 1.) / 8.);
 	float ribs = smoothstep(soft, -soft, abs(mod(d, 1.) - 0.5));
-
 	outColor = vec4(ribs);
-
-
 	//outColor = vec4(clamp(0.3-0.2*floor(d)/10., 0., 1.));
 
 	// vec2 checks = floor(mod(v_xz, 1.) + alpha);
@@ -1745,9 +1716,6 @@ function makeSceneGraph(renderer, gl) {
 			let scale = UI_DEFAULT_SCALE;
 			let text_scale = Math.min(1/(label_text.length+1), 1/font.charheight);
 			let text_pos = [ 0, 0.4 ];
-			
-			let text_scale1 = Math.min(1/8, 1/font.charheight);
-			let text_pos1 = [ 0, -0.4 ];
 
 			switch(obj.kind) {
 				case "outlet":
@@ -1781,7 +1749,6 @@ function makeSceneGraph(renderer, gl) {
 					obj.i_value[0] = (value - range[0])/(range[1]-range[0]);
 					obj.cablingKind = "to"
 					this.addLabel(obj, label_text, text_pos, text_scale);
-					this.addLabel(obj, obj.value.toPrecision(5), text_pos1, text_scale1);
 				} break;
 				case "n_switch": {
 					obj.kind = "button";
@@ -2004,22 +1971,14 @@ function makeSceneGraph(renderer, gl) {
 				let parent = obj.parent;
 				mat4.copy(obj.i_modelmatrix, parent.mat)
 			}
-			// console.log(this.line_instances.count)
+
 			for (let i=0; i<this.line_instances.count; i++) {
 				let obj = this.line_instances.instances[i];
-				
 				let {from, to} = obj;
-				// console.log('\n\nfrom', from, '\n\nto', to)
-				if(from && to){
-					assert(from, `line ${obj.name} from is missing`)
-					assert(to, `line ${obj.name} to is missing`)
-					quat.copy(obj.i_quat0, from.i_quat);
-					quat.copy(obj.i_quat1, to.i_quat);
-					vec3.copy(obj.i_pos0, from.i_pos);
-					vec3.copy(obj.i_pos1, to.i_pos);
-				}else {
-					//!  for some reason this script was receiving some undefined from/to arcs, so ignore them here for now
-				}
+				quat.copy(obj.i_quat0, from.i_quat);
+				quat.copy(obj.i_quat1, to.i_quat);
+				vec3.copy(obj.i_pos0, from.i_pos);
+				vec3.copy(obj.i_pos1, to.i_pos);
 			}
 			return this.submit();
 		},
@@ -2178,7 +2137,7 @@ function animate() {
 				//console.log('incomingDelta', delta)
 				got.applyDeltasToGraph(localGraph, delta);
 
-				// fs.writeFileSync("_debugCurrentGraph.json", JSON.stringify(localGraph, null, "\t"), "utf8");
+				fs.writeFileSync("_debugCurrentGraph.json", JSON.stringify(localGraph, null, "\t"), "utf8");
 			} catch (e) {
 				console.warn(e);
 			}
@@ -2320,55 +2279,12 @@ function animate() {
 			outgoingDeltas.length = 0;
 		}
 		// HMD pos
-		if(UI.hmd){
-			let hmdMessage = JSON.stringify({
-				cmd: "HMD",
-				date: Date.now(),
-				data: UI.hmd
-			});
-			sendToAppJS(hmdMessage);
-		}
-
-
-		// right hand pos
-		if(UI.hands[1]){
-			let wandsMessage = JSON.stringify({
-				cmd: "rightWandPos",
-				date: Date.now(),
-				data: {pos: UI.hands[1].pos}
-			});
-			sendToAppJS(wandsMessage);
-		}
-
-		// client<>client userMovement
-		// if(userDataChannel){
-		// 	// hands
-		// 	if(UI.hands){
-		// 		let wandsMessage = JSON.stringify({
-		// 			cmd: "hands",
-		// 			source: peerHandle,
-		// 			data: {
-		// 				left: {
-		// 					pos: UI.hands[0].pos, 
-		// 					orient: UI.hands[0].orient
-		// 				},
-		// 				right: {
-		// 					pos: UI.hands[1].pos, 
-		// 					orient: UI.hands[1].orient
-		// 				}
-		// 			}
-		// 		});
-		// 		userDataChannel.send(wandsMessage);
-		// 	}
-		// 	if(UI.hmd){
-		// 		let hmdMessage = JSON.stringify({
-		// 			cmd: "hmd",
-		// 			source: peerHandle,
-		// 			data: UI.hmd
-		// 		})
-		// 		userDataChannel.send(hmdMessage);
-		// 	}
-		// }
+		let hmdMessage = JSON.stringify({
+			cmd: "HMD",
+			date: Date.now(),
+			data: UI.hmd
+		});
+		socket.send(hmdMessage);
 
 	} else if (!USEWS) {
 		// otherwise, just move them to our incoming list, 
@@ -2383,16 +2299,15 @@ function animate() {
 
 function draw(eye=0) {
 
-
-	gl.enable(gl.BLEND);
-	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-	gl.depthMask(false)
-
 	renderer.floor_program.begin();
 	renderer.floor_program.uniform("u_viewmatrix", viewmatrix);
 	renderer.floor_program.uniform("u_projmatrix", projmatrix);
 	renderer.floor_vao.bind().draw().unbind();
 	renderer.floor_program.end();
+
+	gl.enable(gl.BLEND);
+	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+	gl.depthMask(false)
 
 	UI.draw(gl);
 	currentScene.draw(gl);
@@ -2405,6 +2320,31 @@ function draw(eye=0) {
 //////////////////////////////////////////////////////////////////////////////////////////
 // BOOT SEQUENCE
 //////////////////////////////////////////////////////////////////////////////////////////
+
+
+function initMenu(menuModules) {
+	let module_names = Object.keys(menuModules)
+		//.concat(operatorNames)
+	let ncols = 16
+	let nrows = Math.min(6, Math.ceil(module_names.length / ncols));
+	let i = 0;
+    for (let row = 0; row < nrows; row++) {
+        for(let col = 0; col < ncols && i < module_names.length; col++, i++){
+			let name = module_names[i]
+			let theta = col * (2 * Math.PI) / ncols;
+            let r = 1;
+            let x = r * Math.sin(theta);
+            let z = r * Math.cos(theta);
+			let y = 1.1 + -.4 * (row - (nrows/2));
+			
+			let module = menuModules[name]
+			quat.fromEuler(module._props.orient, 0, 180 + theta*180/Math.PI, 0)
+			vec3.set(module._props.pos, x, y, z);
+		}
+	}
+	return menuModules
+}
+
 
 function serverConnect() {
 	const url = 'ws://localhost:8080'
@@ -2419,10 +2359,10 @@ function serverConnect() {
 		};
 		mainScene.rebuild(localGraph)
 
-		sendToAppJS(JSON.stringify({ cmd:"get_scene"})) 
+		socket.send(JSON.stringify({ cmd:"get_scene"})) 
 
 		// let the localWebsocket server assign our connection with an id
-		sendToAppJS(JSON.stringify({ cmd:"vrClientStatus"})) 
+		socket.send(JSON.stringify({ cmd:"vrClientStatus"})) 
 
 	}
 	socket.onerror = (error) => {
@@ -2467,33 +2407,9 @@ function onServerMessage(msg, sock) {
 			// this is where we get the state of a node's output, sent from the gen patcher!
 		break
 
-		case "nuke":
-			// either app.js or host.js detected that this client has sent one or more malformed deltas. so, clear the localscene here, wipe delta history and all buffers, then request the current scene from app.js
-			// find out what the malformed delta was. one day this will be very useful for debugging whilst in VR!
-			console.log(msg.data)
-		
-			// disable sending deltas
-			socket.close()
-			// wipe the scene
-			localGraph = {
-				nodes: {}, arcs: []
-			}
-			mainScene.rebuild(localGraph)
-			
-			// reconnect to app.js thereby receiving current state of scene
-			serverConnect()
-		break
-
         default:
            console.log("received JSON", msg, typeof msg);
     }
-}
-
-// we use this to prevent attempting a ws.send if the socket becomes closed
-function sendToAppJS(outgoingMessage){
-	if(socket.readyState == 1){
-		socket.send(outgoingMessage)
-	}
 }
 
 async function init() {
@@ -2503,7 +2419,7 @@ async function init() {
 
 	UI.init(renderer, gl)
 
-	menuGraph.nodes = menuModules;
+	menuGraph.nodes = initMenu(menuModules);
 	menuScene = makeSceneGraph(renderer, gl)
 	menuScene.init(gl)
 	menuScene.rebuild(menuGraph)

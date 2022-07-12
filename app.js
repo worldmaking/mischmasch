@@ -51,7 +51,7 @@ const {argv} = require('yargs')
 
 var equal = require('deep-equal');
 const equals = require('array-equal')
-const fb = require('./historify.js')
+const fb = require('./useful_for_2022/historify.js')
 
 // let ctrl-c quit:
 {
