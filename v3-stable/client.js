@@ -10,7 +10,7 @@ const filename = path.basename(__filename)
 
 const chroma = require("chroma-js")
 const {argv} = require('yargs')
-const nodeglpath = "../node-gles3"
+const nodeglpath = "../../node-gles3"
 const rws = require('reconnecting-websocket');
 
 
@@ -43,7 +43,7 @@ console.log('using VR?', USEVR)
 let vr = (USEVR) ? require(path.join(nodeglpath, "openvr.js")) : null
 const url = 'ws://localhost:8080'
 
-const shaderpath = path.join(__dirname, "shaders")
+// const shaderpath = path.join(__dirname, "shaders")
 
 // generate a random name for new object:
 let gensym = (function() {

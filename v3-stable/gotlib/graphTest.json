@@ -1,0 +1,120 @@
+{
+	"nodes": {
+		"lfo_1": {
+			"_props": {
+				"kind": "lfo",
+				"pos": [
+					-2.326367085370336,
+					1.5209056349935186,
+					-0.7035861792005239
+				],
+				"orient": [
+					0.12358177055502231,
+					0.41713355199484253,
+					0.13623412932103282,
+					0.8900378687419946
+				]
+			},
+			"fm_cv": {
+				"_props": {
+					"kind": "inlet",
+					"index": 0
+				}
+			},
+			"phasor_sync": {
+				"_props": {
+					"kind": "inlet",
+					"index": 1
+				}
+			},
+			"pulse_width_cv": {
+				"_props": {
+					"kind": "inlet",
+					"index": 2
+				}
+			},
+			"rate": {
+				"_props": {
+					"kind": "large_knob",
+					"range": [
+						0,
+						80
+					],
+					"taper": "log 3.8",
+					"value": 0.17,
+					"unit": "Hz"
+				}
+			},
+			"index": {
+				"_props": {
+					"kind": "small_knob",
+					"range": [
+						0,
+						10
+					],
+					"taper": "linear",
+					"value": 3,
+					"unit": "float"
+				}
+			},
+			"pulse_width": {
+				"_props": {
+					"kind": "small_knob",
+					"range": [
+						0,
+						1
+					],
+					"taper": "linear",
+					"value": 5,
+					"unit": "float"
+				}
+			},
+			"onset": {
+				"_props": {
+					"kind": "small_knob",
+					"range": [
+						0,
+						1
+					],
+					"taper": "linear",
+					"value": 2.8,
+					"unit": "float"
+				}
+			},
+			"sine": {
+				"_props": {
+					"kind": "outlet",
+					"index": 0
+				}
+			},
+			"phasor": {
+				"_props": {
+					"kind": "outlet",
+					"index": 1
+				}
+			},
+			"pulse": {
+				"_props": {
+					"kind": "outlet",
+					"index": 2
+				}
+			},
+			"sine_index": {
+				"_props": {
+					"kind": "outlet",
+					"index": 3
+				}
+			}
+		}
+	},
+	"arcs": [
+		[
+			"lfo_1.sine",
+			"lfo_1.fm_cv"
+		],
+		[
+			"lfo_1.sine",
+			"lfo_1.cv"
+		]
+	]
+}
