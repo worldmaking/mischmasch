@@ -1,25 +1,25 @@
 #!/usr/bin/env node
 
-const http = require('http');
-const url = require('url');
-const fs = require("fs");
+// const http = require('http');
+// const url = require('url');
+// const fs = require("fs");
 const path = require("path");
-const os = require("os");
-const assert = require("assert");
-const performance = require('perf_hooks').performance;
-const { exec, execSync, spawn, spawnSync, fork } = require('child_process');
-// const IP = require('ip')
-// const ip = IP.address()
-const express = require('express');
+// const os = require("os");
+// const assert = require("assert");
+// const performance = require('perf_hooks').performance;
+// const { exec, execSync, spawn, spawnSync, fork } = require('child_process');
+// // const IP = require('ip')
+// // const ip = IP.address()
+// const express = require('express');
 const WebSocket = require('ws');
 //console.log(got)
 
 const max = require("max-api");
 
-const username = require('username')
-const filename = path.basename(__filename)
+// const username = require('username')
+// const filename = path.basename(__filename)
 
-const got = require('../gotlib/got.js')
+// const got = require('../gotlib/got.js')
 
 const ReconnectingWebSocket = require('reconnecting-websocket');
 
@@ -83,6 +83,7 @@ connection.addEventListener('message', (data) => {
 
 		// case deltas
 		case "deltas":
+			max.post(data)
 		// in case the nuclear option was called
 		case "nuke":
 			// case "patch":	

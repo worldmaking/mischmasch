@@ -1,0 +1,33 @@
+{
+  "name": "mischmasch",
+  "version": "0.4.0",
+  "description": "vr-based modular synthesizer and editor in the browser",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/worldmaking/mischmasch.git"
+  },
+  "keywords": [
+    "modualarsynth",
+    "synth",
+    "automerge",
+    "synthesis",
+    "music",
+    "browser",
+    "vr",
+    "threejs"
+  ],
+  "author": "michael palumbo, graham wakefield",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/worldmaking/mischmasch/issues"
+  },
+  "homepage": "https://github.com/worldmaking/mischmasch#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
