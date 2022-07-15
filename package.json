@@ -2,7 +2,7 @@
   "name": "mischmasch",
   "version": "0.4.0",
   "description": "vr-based modular synthesizer and editor in the browser",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
