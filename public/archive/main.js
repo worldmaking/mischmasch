@@ -8,9 +8,9 @@ import {
     Mesh,
     WebGLRenderer,
 
-  } from "https://cdn.skypack.dev/three@0.132.2";
+  } from "https://cdn.skypack.dev/three";
   
-  import { OrbitControls } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/OrbitControls.js";
+  import { OrbitControls } from "https://cdn.skypack.dev/three/examples/jsm/controls/OrbitControls.js";
 
 
 // Get a reference to the container element that will hold our scene
