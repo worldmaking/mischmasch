@@ -2,6 +2,7 @@
 import { createCamera } from './components/camera.js';
 import { createCube } from './components/cube.js';
 import { createScene } from './components/scene.js';
+import { createLights } from './components/lights.js'
 // modules from the systems folder
 import { createRenderer } from './systems/renderer.js';
 import { Resizer } from './systems/Resizer.js';
@@ -21,16 +22,22 @@ class World {
         container.append(renderer.domElement); // add the canvas to the container
     
         const cube = createCube();
-
-        scene.add(cube);
-
+        const light = createLights();
+        
+        scene.add(cube, light);
+        console.log(cube)
+        cube.position.x = 0.5 // update cube's pos X
         const resizer = new Resizer(container, camera, renderer);
+        resizer.onResize = () => {
+            this.render();
+        };
     }
     
     // 2. Render the scene
     render() {
         // draw a single frame
         renderer.render(scene, camera);
+        console.log(scene.children)
     }
 }
     
