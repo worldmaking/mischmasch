@@ -2340,36 +2340,6 @@ function animate() {
 			sendToAppJS(wandsMessage);
 		}
 
-		// client<>client userMovement
-		// if(userDataChannel){
-		// 	// hands
-		// 	if(UI.hands){
-		// 		let wandsMessage = JSON.stringify({
-		// 			cmd: "hands",
-		// 			source: peerHandle,
-		// 			data: {
-		// 				left: {
-		// 					pos: UI.hands[0].pos, 
-		// 					orient: UI.hands[0].orient
-		// 				},
-		// 				right: {
-		// 					pos: UI.hands[1].pos, 
-		// 					orient: UI.hands[1].orient
-		// 				}
-		// 			}
-		// 		});
-		// 		userDataChannel.send(wandsMessage);
-		// 	}
-		// 	if(UI.hmd){
-		// 		let hmdMessage = JSON.stringify({
-		// 			cmd: "hmd",
-		// 			source: peerHandle,
-		// 			data: UI.hmd
-		// 		})
-		// 		userDataChannel.send(hmdMessage);
-		// 	}
-		// }
-
 	} else if (!USEWS) {
 		// otherwise, just move them to our incoming list, 
 		// so we can work without a server:

@@ -4,6 +4,10 @@ import { OrbitControls } from "https://unpkg.com/three@0.126.0/examples/jsm/cont
 import { TransformControls } from "https://unpkg.com/three@0.126.0/examples/jsm/controls/TransformControls.js";
 import { VRButton } from './VRButton.js';
 
+// utilities
+// import colorFromString from "../utils/ColorFromString.js";
+// import scale from "..utils/Scale.js"
+
 // GL stuff for browser
 import { vec2, vec3, vec4, quat, mat2, mat2d, mat3, mat4 } from "https://cdn.skypack.dev/gl-matrix@3.4.3";
 
@@ -29,9 +33,21 @@ document.body.appendChild( VRButton.createButton( renderer ) );
 //  enable XR rendering
 renderer.xr.enabled = true;
 
+
+let t = millis();
+let fps = 60;
+
 // animation render loop
 function animate () {
 
+    let t1 = millis();
+	let dt = t1-t;
+	fps += 0.1*((1/dt)-fps);
+	t = t1;
+    console.log(fps)
+	// glfw.setWindowTitle(window, `fps ${fps}`);
+	
+	
     // draw the scene:
     renderer.render( scene, camera );
 
