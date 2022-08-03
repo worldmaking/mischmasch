@@ -1,6 +1,7 @@
 // modules from the components folder
 import { createCamera } from './components/camera.js';
 import { Op } from './components/Op/Op.js';
+import { Palette } from './components/Palette/Palette.js';
 // import { createCube } from './components/cube.js';
 // import { createMeshGroup } from './components/meshGroup.js';
 import { createScene } from './components/scene.js';
@@ -20,6 +21,7 @@ let camera;
 let renderer;
 let scene;
 let loop;
+let palette;
 class World {
     // 1. Create an instance of the World app
     constructor(container) {
@@ -32,11 +34,9 @@ class World {
         const controls = createControls(camera, renderer.domElement);
         loop = new Loop(camera, scene, renderer);
         container.append(renderer.domElement); // add the canvas to the container
-    
-        // const cube = createCube(); // commented out during tutorial. left in as it might prove useful
 
-        // const meshGroup = createMeshGroup();
-
+        // create the Palette of available Ops
+        palette = new Palette()
         loop.updatables.push(controls);
 
         const { ambientLight, mainLight } = createLights();
@@ -44,9 +44,6 @@ class World {
         scene.add(ambientLight, mainLight);
 
         // controls.target.copy(cube.position) ;// commented out during tutorial. left in as it might prove useful
-        
-        
-        // cube.position.x = 0.5 // update cube's pos X
         const resizer = new Resizer(container, camera, renderer);
     }
     
@@ -71,6 +68,14 @@ class World {
         loop.updatables.push(op);
         
         scene.add(op);
+    }
+
+    showPalette(){
+        // make Palette visible & clickable
+    }
+
+    hidePalette(){
+        // make Palette invisible & unclickable
     }
 }
     

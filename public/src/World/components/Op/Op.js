@@ -18,7 +18,9 @@ class Op extends Group {
             // this.meshes.nose,
             this.meshes.panel,
             this.meshes.jackIn,
-            this.meshes.jackOut
+            this.meshes.jackOut,
+            this.meshes.opName
+            
             // this.meshes.chimney,
             // this.meshes.smallWheelRear,
             // this.meshes.smallWheelCenter,
@@ -28,6 +30,7 @@ class Op extends Group {
     }
     // animation tick
     tick(delta) {
+        // todo: LED animation here?
         // this.meshes.bigWheel.rotation.y += wheelSpeed * delta;
         // this.meshes.smallWheelRear.rotation.y += wheelSpeed * delta;
         // this.meshes.smallWheelCenter.rotation.y += wheelSpeed * delta;

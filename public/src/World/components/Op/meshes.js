@@ -2,6 +2,8 @@ import { Mesh } from 'three';
 
 import { createGeometries } from './geometries.js';
 import { createMaterials } from './materials.js';
+import {Text} from 'troika-three-text'
+// todo: see https://www.npmjs.com/package/troika-three-text#preloading for optimizing text loading
 
 function createMeshes() {
     const geometries = createGeometries();
@@ -19,38 +21,18 @@ function createMeshes() {
     jackOut.position.set(-0.5, 1, 0.2);
     jackOut.rotation.set(1.55, 1, 0)
 
-//   const chimney = new Mesh(geometries.chimney, materials.detail);
-//   chimney.position.set(-2, 1.9, 0);
-
-//   const nose = new Mesh(geometries.nose, materials.body);
-//   nose.position.set(-1, 1, 0);
-//   nose.rotation.z = Math.PI / 2;
-
-//   const smallWheelRear = new Mesh(geometries.wheel, materials.detail);
-//   smallWheelRear.position.y = 0.5;
-//   smallWheelRear.rotation.x = Math.PI / 2;
-
-//   const smallWheelCenter = smallWheelRear.clone();
-//   smallWheelCenter.position.x = -1;
-
-//   const smallWheelFront = smallWheelRear.clone();
-//   smallWheelFront.position.x = -2;
-
-//   const bigWheel = smallWheelRear.clone();
-//   bigWheel.position.set(1.5, 0.9, 0);
-//   bigWheel.scale.set(2, 1.25, 2);
+    const opName = new Text();
+    opName.text = 'Hello world!'
+    opName.fontSize = 0.2
+    opName.color = 0x9966FF
+    opName.position.set(-0.5, 1, 0.2);
+    opName.rotation.set(1.55, 1, 0)
 
   return {
     panel,
     jackIn,
-    jackOut
-    // nose,
-    // cabin,
-    // chimney,
-    // smallWheelRear,
-    // smallWheelCenter,
-    // smallWheelFront,
-    // bigWheel,
+    jackOut,
+    opName
   };
 }
 
