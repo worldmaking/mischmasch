@@ -1,7 +1,8 @@
 // modules from the components folder
 import { createCamera } from './components/camera.js';
-import { createCube } from './components/cube.js';
-import { createMeshGroup } from './components/meshGroup.js';
+import { Op } from './components/Op/Op.js';
+// import { createCube } from './components/cube.js';
+// import { createMeshGroup } from './components/meshGroup.js';
 import { createScene } from './components/scene.js';
 import { createLights } from './components/lights.js'
 // modules from the systems folder
@@ -34,14 +35,15 @@ class World {
     
         // const cube = createCube(); // commented out during tutorial. left in as it might prove useful
 
-        const meshGroup = createMeshGroup();
+        // const meshGroup = createMeshGroup();
 
-        loop.updatables.push(controls, meshGroup);
+        const op = new Op();
+
+        loop.updatables.push(controls, op);
 
         const { ambientLight, mainLight } = createLights();
-
-        loop.updatables.push(controls);
-        scene.add(ambientLight, mainLight, meshGroup);
+        
+        scene.add(ambientLight, mainLight, op);
 
         // controls.target.copy(cube.position) ;// commented out during tutorial. left in as it might prove useful
         
