@@ -1,6 +1,7 @@
 // modules from the components folder
 import { createCamera } from './components/camera.js';
 import { createCube } from './components/cube.js';
+import { createMeshGroup } from './components/meshGroup.js';
 import { createScene } from './components/scene.js';
 import { createLights } from './components/lights.js'
 // modules from the systems folder
@@ -31,13 +32,18 @@ class World {
         loop = new Loop(camera, scene, renderer);
         container.append(renderer.domElement); // add the canvas to the container
     
-        const cube = createCube();
+        // const cube = createCube(); // commented out during tutorial. left in as it might prove useful
+
+        const meshGroup = createMeshGroup();
+
+        loop.updatables.push(controls, meshGroup);
+
         const { ambientLight, mainLight } = createLights();
 
         loop.updatables.push(controls);
-        scene.add(ambientLight, mainLight, cube);
+        scene.add(ambientLight, mainLight, meshGroup);
 
-        controls.target.copy(cube.position);
+        // controls.target.copy(cube.position) ;// commented out during tutorial. left in as it might prove useful
         
         
         // cube.position.x = 0.5 // update cube's pos X
