@@ -13,7 +13,16 @@ function main() {
     // 2. Render the scene
     world.start();
 
+    
+    let button = document.querySelector('#addNode');
+
+    button.addEventListener('click', ()=>{
+        world.addNode()
+    })
+
+
 }
 
 // call main to start the app
 main();
+

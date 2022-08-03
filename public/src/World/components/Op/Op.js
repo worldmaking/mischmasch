@@ -5,7 +5,7 @@ import { createGeometries } from "./geometries.js";
 import { createMaterials } from "./materials.js";
 import { createMeshes } from "./meshes.js";
 
-// todo: for now this is a rotation speed. but I bet this is how we could update the inlet and outlet LED saturation to respond to signal amplitude!
+// todo: for now this is a rotation speed. but I bet this is how we could update the inlet and outlet LED saturation to respond to signal amplitude! use this when ready to make LED jacks: https://discoverthreejs.com/book/first-steps/animation-system/
 const wheelSpeed = MathUtils.degToRad(24);
 
 class Op extends Group {

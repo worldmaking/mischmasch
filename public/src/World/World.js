@@ -37,13 +37,11 @@ class World {
 
         // const meshGroup = createMeshGroup();
 
-        const op = new Op();
-
-        loop.updatables.push(controls, op);
+        loop.updatables.push(controls);
 
         const { ambientLight, mainLight } = createLights();
         
-        scene.add(ambientLight, mainLight, op);
+        scene.add(ambientLight, mainLight);
 
         // controls.target.copy(cube.position) ;// commented out during tutorial. left in as it might prove useful
         
@@ -56,7 +54,6 @@ class World {
     render() {
         // draw a single frame
         renderer.render(scene, camera);
-        console.log(scene.children)
     }
 
     //  animation methods
@@ -66,6 +63,14 @@ class World {
       
     stop() {
         loop.stop();
+    }
+
+    addNode(){
+        const op = new Op();
+        console.log(op)
+        loop.updatables.push(op);
+        
+        scene.add(op);
     }
 }
     
