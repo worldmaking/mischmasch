@@ -3,7 +3,7 @@ import { BoxBufferGeometry,
     MeshStandardMaterial,
     MathUtils,
     TextureLoader
-} from 'https://cdn.skypack.dev/three';
+} from 'three';
 function createMaterial() {
     // create a texture loader.
     const textureLoader = new TextureLoader();

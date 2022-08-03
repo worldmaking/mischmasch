@@ -4,6 +4,7 @@ import { createCube } from './components/cube.js';
 import { createScene } from './components/scene.js';
 import { createLights } from './components/lights.js'
 // modules from the systems folder
+import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
 import { Resizer } from './systems/Resizer.js';
 import { Loop } from './systems/Loop.js';
@@ -23,15 +24,22 @@ class World {
         camera = createCamera();
         scene = createScene();
         renderer = createRenderer();
+        container.append(renderer.domElement);
+
+
+        const controls = createControls(camera, renderer.domElement);
         loop = new Loop(camera, scene, renderer);
         container.append(renderer.domElement); // add the canvas to the container
     
         const cube = createCube();
-        const light = createLights();
+        const { ambientLight, mainLight } = createLights();
+
+        loop.updatables.push(controls);
+        scene.add(ambientLight, mainLight, cube);
+
+        controls.target.copy(cube.position);
         
-        loop.updatables.push(cube)
-        scene.add(cube, light);
-        console.log(cube)
+        
         // cube.position.x = 0.5 // update cube's pos X
         const resizer = new Resizer(container, camera, renderer);
     }

@@ -1,4 +1,4 @@
-import { Clock } from 'https://cdn.skypack.dev/three';
+import { Clock } from 'three';
 
 const clock = new Clock();
 class Loop {
