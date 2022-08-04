@@ -2,23 +2,52 @@ import { Group, MathUtils } from 'three';
 
 import { Op } from "../Op/Op.js";
 
-
+import { opsList } from "./operators.js"
 
 // ! at page load, create the menu from available operators. each operator is then available to be cloned into the scene when selected (or regenerated from an automerge doc)
 
-function Palette(){
-    // try to get 3 ops to render in palette
-    // for(let i=0; i< 3; i++){
-    //     let opName = opsList[i].op
-    //     // we get add, mul, and mix.
-    //     // add and mul have 2 inputs, mix has 3
-    //     console.log(opName)
-    //     if(i=0){
-    //         // just work with add for now
+class Palette extends Group {
+    constructor(opName) {
+        super();
 
-    //     }
+        // try to get 3 ops to render in palette
+        for(let i=0; i < opsList.length; i++){
+            let panelOffset = 2
+            if(opsList[i].inputs){
+                panelOffset = Object.keys(opsList[i].inputs).length * 2
+            }
+            
+            let row = Math.floor(i/15)
+            let column = (i % 15)
+            let opName = opsList[i].op
+            // just work with add for now
+            let op = new Op(opName);
+            let opPosX = column * 3 + panelOffset
+            let opPosY = row * -3
+            op.position.x = opPosX
+            op.position.y = opPosY
+            this.add(op)
+            console.log(row, column, opName, panelOffset)
+            
 
-    // }
+
+            
+                
+
+        }
+
+
+    // loop.updatables.push(op);
+
+    }
+    // animation tick
+    tick(delta) {
+        // todo: LED animation here?
+        // this.meshes.bigWheel.rotation.y += wheelSpeed * delta;
+        // this.meshes.smallWheelRear.rotation.y += wheelSpeed * delta;
+        // this.meshes.smallWheelCenter.rotation.y += wheelSpeed * delta;
+        // this.meshes.smallWheelFront.rotation.y += wheelSpeed * delta;
+    }
 }
 
 export { Palette }

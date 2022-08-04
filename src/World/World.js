@@ -41,6 +41,7 @@ class World {
 
         // create the Palette of available Ops
         palette = new Palette()
+
         loop.updatables.push(controls);
 
         const { ambientLight, mainLight } = createLights();
@@ -75,12 +76,17 @@ class World {
         
     }
 
-    showPalette(){
+    displayPalette(){
         // make Palette visible & clickable
+        // palette.position()
+        loop.updatables.push(palette);
+        scene.add(palette);
+        console.log('camera pos', camera.position)
     }
 
     hidePalette(){
         // make Palette invisible & unclickable
+        scene.remove(palette);
     }
 }
     

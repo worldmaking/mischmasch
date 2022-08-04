@@ -15,13 +15,17 @@ function main() {
     // 2. Render the scene
     world.start();
 
-    
-    let button = document.querySelector('#addNode');
-
-    button.addEventListener('click', ()=>{
-        world.addNode()
+    // display the operators palette
+    let displayPaletteButton = document.querySelector('#displayPalette');
+    displayPaletteButton.addEventListener('click', ()=>{
+        world.displayPalette()
     })
-
+    
+    // hide the operators palette
+    let hidePaletteButton = document.querySelector('#hidePalette');
+    hidePaletteButton.addEventListener('click', ()=>{
+        world.hidePalette()
+    })
 
 }
 

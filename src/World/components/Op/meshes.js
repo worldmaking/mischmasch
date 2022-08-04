@@ -8,49 +8,64 @@ import {Text} from 'troika-three-text'
 function createMeshes(opProps) {
   const geometries = createGeometries();
   const materials = createMaterials();
-
-  // get inputs
-  let inputs = opProps.inputs
-  let inputNames = Object.keys(inputs)
-  let numInputs = inputNames.length
-  
-  // loop through inputs and create the inlets aand labels for this op
+  let panelGeometry;
   let inputJacks = []
   let inputLabels = []
-  inputNames.forEach(inputName => {
-    // jacks
-    let jackIn = new Mesh(geometries.jack, materials.jackIn);
-    let posX = inputNames.indexOf(inputName) + -1
-    jackIn.position.set(posX, 1.8, 0.2);
-    jackIn.rotation.set(1.55, 1, 0)
-    inputJacks.push(jackIn)
+  // does it have inputs?
+  if(opProps.inputs){
+    let inputs = opProps.inputs
+    let inputNames = Object.keys(inputs)
+    let numInputs = inputNames.length
+    
+    // loop through inputs and create the inlets aand labels for this op
+    // //
 
-    // labels
-    let inputLabel = new Text();
-    inputLabel.text = inputName
-    inputLabel.fontSize = 0.2
-    inputLabel.color = 'white'
-    inputLabel.anchorX = 'center'
-    inputLabel.position.set(posX, 1.6, 0.2);
-    inputLabel.rotation.set(0, 0, 0)
-    inputLabels.push(inputLabel)
-  })
+    inputNames.forEach(inputName => {
+      // jacks
+      let jackIn = new Mesh(geometries.jack, materials.jackIn);
+      let posX = inputNames.indexOf(inputName) + -0.5
+      jackIn.position.set(posX, 1.8, 0.2);
+      jackIn.rotation.set(1.55, 1, 0)
+      inputJacks.push(jackIn)
+
+      // labels
+      let inputLabel = new Text();
+      inputLabel.text = inputName
+      inputLabel.fontSize = 0.2
+      inputLabel.color = 'white'
+      inputLabel.anchorX = 'center'
+      inputLabel.position.set(posX, 1.6, 0.2);
+      inputLabel.rotation.set(0, 0, 0)
+      inputLabels.push(inputLabel)
+    })
+    panelGeometry = createGeometries(numInputs);
+  } else {
+    // op has no inputs, set panel width to 2
+    panelGeometry = createGeometries(1);
+  }
+  
 
   // panel width depends on number of UI elements. for now it's only inlets
-  const panel = new Mesh(createGeometries(numInputs).panel, materials.panel);
+  
+  const panel = new Mesh(panelGeometry.panel, materials.panel);
   panel.position.set(0, 1.4, 0);
   panel.rotation.set(0, 0, 0)
 
   const jackOut = new Mesh(geometries.jack, materials.jackOut);
-  jackOut.position.set(-1, 1, 0.2);
+  jackOut.position.set(0, 1, 0.2);
   jackOut.rotation.set(1.55, 1, 0)
 
   let outputLabel = new Text();
-  outputLabel.text = opProps.outputs[0].label
+  if(opProps.outputs[0]){
+    outputLabel.text = opProps.outputs[0].label
+  } else {
+    outputLabel.text = opProps.op + '_out'
+
+  }
   outputLabel.fontSize = 0.2
   outputLabel.color = 'white'
   outputLabel.anchorX = 'left'
-  outputLabel.position.set(-1.2, 0.8, 0.2);
+  outputLabel.position.set(-0.3, 0.8, 0.2);
   outputLabel.rotation.set(0, 0, 0)
   
 
@@ -61,8 +76,6 @@ function createMeshes(opProps) {
   opLabel.anchorX = 'center'
   opLabel.position.set(0, 2.3, 0.2);
   opLabel.rotation.set(0, 0, 0)
-
-    
 
   return {
     panel,

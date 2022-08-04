@@ -15,7 +15,6 @@ class Op extends Group {
         // retrieve the op's info
         let opProps = opsList.find(item => item.op === opName)
 
-        console.log(opProps)
         // import and create the meshes
         this.meshes = createMeshes(opProps);
         
@@ -26,14 +25,17 @@ class Op extends Group {
             this.meshes.outputLabel,
             this.meshes.opLabel
         );
-        // some ops have 2 or more inlets, so we need to iterate over them
-        // loop through the inlets array
-        for(let i=0; i<this.meshes.inputJacks.length; i++){
-            this.add(
-                this.meshes.inputJacks[i],
-                this.meshes.inputLabels[i]
-            )
+        // some ops have no inlets, others have 2 or more inlets, so we need to iterate over them
+        if(this.meshes.inputJacks.length > 0){
+            // loop through the inlets array
+            for(let i=0; i<this.meshes.inputJacks.length; i++){
+                this.add(
+                    this.meshes.inputJacks[i],
+                    this.meshes.inputLabels[i]
+                )
+            }
         }
+
     }
     // animation tick
     tick(delta) {

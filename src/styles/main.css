@@ -31,5 +31,5 @@ body {
       Set the container's background color to the same as the scene's
       background to prevent flashing on load
     */
-    background-color: skyblue;
+    background-color: rgb(0, 0, 0);
   }
