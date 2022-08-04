@@ -4,7 +4,7 @@ import { Group, MathUtils } from 'three';
 import { createGeometries } from "./geometries.js";
 import { createMaterials } from "./materials.js";
 import { createMeshes } from "./meshes.js";
-import { opsList } from "./operators.js"
+import { opsList } from "../Palette/operators.js"
 // todo: for now this is a rotation speed. but I bet this is how we could update the inlet and outlet LED saturation to respond to signal amplitude! use this when ready to make LED jacks: https://discoverthreejs.com/book/first-steps/animation-system/
 const wheelSpeed = MathUtils.degToRad(24);
 
@@ -13,7 +13,8 @@ class Op extends Group {
         super();
 
         // retrieve the op's info
-        
+        let opProps = opsList.find(item => item.op === opName)
+        console.log(opProps)
         // import and create the meshes
         this.meshes = createMeshes(opName);
     
