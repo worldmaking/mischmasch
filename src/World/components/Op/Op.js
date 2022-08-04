@@ -20,12 +20,6 @@ class Op extends Group {
             this.meshes.jackIn,
             this.meshes.jackOut,
             this.meshes.opName
-            
-            // this.meshes.chimney,
-            // this.meshes.smallWheelRear,
-            // this.meshes.smallWheelCenter,
-            // this.meshes.smallWheelFront,
-            // this.meshes.bigWheel
         );
     }
     // animation tick

@@ -12,8 +12,12 @@ import { createRenderer } from './systems/renderer.js';
 import { Resizer } from './systems/Resizer.js';
 import { Loop } from './systems/Loop.js';
 
+// webXR
+import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 
-// todo: you can add other folders to /World, like /utils, etc.
+
+
+
 
 // These variables are module-scoped: we cannot access them
 // from outside the module
@@ -29,8 +33,8 @@ class World {
         scene = createScene();
         renderer = createRenderer();
         container.append(renderer.domElement);
-
-
+        
+        document.body.appendChild( VRButton.createButton( renderer ) );
         const controls = createControls(camera, renderer.domElement);
         loop = new Loop(camera, scene, renderer);
         container.append(renderer.domElement); // add the canvas to the container
@@ -68,6 +72,7 @@ class World {
         loop.updatables.push(op);
         
         scene.add(op);
+        
     }
 
     showPalette(){

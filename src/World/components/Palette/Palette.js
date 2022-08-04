@@ -6,12 +6,19 @@ import { opsList } from "./operators.js"
 
 // ! at page load, create the menu from available operators. each operator is then available to be cloned into the scene when selected (or regenerated from an automerge doc)
 
-
 function Palette(){
     // try to get 3 ops to render in palette
-    for(let i=0; i< 3; i++){
+    // for(let i=0; i< 3; i++){
+    //     let opName = opsList[i].op
+    //     // we get add, mul, and mix.
+    //     // add and mul have 2 inputs, mix has 3
+    //     console.log(opName)
+    //     if(i=0){
+    //         // just work with add for now
 
-    }
+    //     }
+
+    // }
 }
 
 export { Palette }

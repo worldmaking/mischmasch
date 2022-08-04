@@ -1,5 +1,7 @@
 import { World} from './World/World.js'
 
+import "./styles/main.css"
+
 // create the main function
 function main() {
     // code to set up the World App will go here
