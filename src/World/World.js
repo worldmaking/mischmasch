@@ -67,7 +67,7 @@ class World {
     }
 
     addNode(){
-        const op = new Op();
+        const op = new Op('mul');
         console.log(op)
         loop.updatables.push(op);
         

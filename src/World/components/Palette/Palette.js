@@ -2,7 +2,7 @@ import { Group, MathUtils } from 'three';
 
 import { Op } from "../Op/Op.js";
 
-import { opsList } from "./operators.js"
+
 
 // ! at page load, create the menu from available operators. each operator is then available to be cloned into the scene when selected (or regenerated from an automerge doc)
 

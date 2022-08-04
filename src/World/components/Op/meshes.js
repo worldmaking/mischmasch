@@ -5,7 +5,7 @@ import { createMaterials } from './materials.js';
 import {Text} from 'troika-three-text'
 // todo: see https://www.npmjs.com/package/troika-three-text#preloading for optimizing text loading
 
-function createMeshes() {
+function createMeshes(opName) {
     const geometries = createGeometries();
     const materials = createMaterials();
 
@@ -21,12 +21,13 @@ function createMeshes() {
     jackOut.position.set(-0.5, 1, 0.2);
     jackOut.rotation.set(1.55, 1, 0)
 
-    const opName = new Text();
-    opName.text = 'Hello world!'
-    opName.fontSize = 0.2
-    opName.color = 'white'
-    opName.position.set(-0.5, 2.3, 0.2);
-    opName.rotation.set(0, 0, 0)
+    const op = new Text();
+    op.text = opName
+    op.fontSize = 0.2
+    op.color = 'white'
+    op.anchorX = 'center'
+    op.position.set(0, 2.3, 0.2);
+    op.rotation.set(0, 0, 0)
 
     
 
@@ -34,7 +35,7 @@ function createMeshes() {
     panel,
     jackIn,
     jackOut,
-    opName
+    op
   };
 }
 
