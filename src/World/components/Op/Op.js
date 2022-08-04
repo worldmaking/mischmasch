@@ -18,16 +18,21 @@ class Op extends Group {
         console.log(opProps)
         // import and create the meshes
         this.meshes = createMeshes(opProps);
-    
+        
+        // these are single items
         this.add(
             this.meshes.panel,
-            // this.meshes.jackIn,
             this.meshes.jackOut,
-            this.meshes.op
+            this.meshes.outputLabel,
+            this.meshes.opLabel
         );
+        // some ops have 2 or more inlets, so we need to iterate over them
         // loop through the inlets array
         for(let i=0; i<this.meshes.inputJacks.length; i++){
-            this.add(this.meshes.inputJacks[i])
+            this.add(
+                this.meshes.inputJacks[i],
+                this.meshes.inputLabels[i]
+            )
         }
     }
     // animation tick
