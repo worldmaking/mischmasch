@@ -67,7 +67,7 @@ class World {
         loop.stop();
     }
 
-    addNode(){
+    addOp(){
         const op = new Op('mix');
         console.log(op)
         loop.updatables.push(op);
