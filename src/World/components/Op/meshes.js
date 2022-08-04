@@ -25,8 +25,8 @@ function createMeshes() {
     opName.text = 'Hello world!'
     opName.fontSize = 0.2
     opName.color = 'white'
-    opName.position.set(-0.5, 1, 0.2);
-    opName.rotation.set(1.55, 1, 0)
+    opName.position.set(-0.5, 2.3, 0.2);
+    opName.rotation.set(0, 0, 0)
 
     
 
