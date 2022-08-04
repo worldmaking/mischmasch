@@ -11357,4 +11357,9 @@ let ops = [
 
 let result = ops.find(item => item.op === 'add')
 
-console.log(result)
+let categories = {}
+
+for(i=0; i<ops.length;i++){
+    categories[ops[i].domain]={}
+}
+console.log(categories)
