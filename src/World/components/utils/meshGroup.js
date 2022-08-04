@@ -1,3 +1,5 @@
+// this is just here to demo how to create a mesh group
+
 import {
     SphereBufferGeometry,
     Group,

@@ -1,11 +1,11 @@
 // modules from the components folder
-import { createCamera } from './components/camera.js';
+import { createCamera } from './systems/camera.js';
 import { Op } from './components/Op/Op.js';
 import { Palette } from './components/Palette/Palette.js';
 // import { createCube } from './components/cube.js';
 // import { createMeshGroup } from './components/meshGroup.js';
 import { createScene } from './components/scene.js';
-import { createLights } from './components/lights.js'
+import { createLights } from './components/Lights/lights.js'
 // modules from the systems folder
 import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
@@ -40,7 +40,7 @@ class World {
         container.append(renderer.domElement); // add the canvas to the container
 
         // create the Palette of available Ops
-        palette = new Palette()
+        palette = new Palette(camera.position)
 
         loop.updatables.push(controls);
 
@@ -80,7 +80,11 @@ class World {
         // make Palette visible & clickable
         // palette.position()
         loop.updatables.push(palette);
+        // palette.position.x = camera.position.x // - 20
+        // palette.position.y = camera.position.y // - 0
+        // palette.position.z = camera.position.z - 50
         scene.add(palette);
+        
         console.log('camera pos', camera.position)
     }
 

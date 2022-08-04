@@ -7,33 +7,30 @@ import { opsList } from "./operators.js"
 // ! at page load, create the menu from available operators. each operator is then available to be cloned into the scene when selected (or regenerated from an automerge doc)
 
 class Palette extends Group {
-    constructor(opName) {
+    constructor(cameraPosition) {
         super();
-
+        let middleRow = Math.floor(opsList.length / 15 / 2)
         // try to get 3 ops to render in palette
         for(let i=0; i < opsList.length; i++){
             let panelOffset = 2
-            if(opsList[i].inputs){
+            if(opsList[i].inputs && opsList[i].inputs.length > 0){
                 panelOffset = Object.keys(opsList[i].inputs).length * 2
             }
             
             let row = Math.floor(i/15)
+            let opPosY = (row * -3) - cameraPosition.y
             let column = (i % 15)
-            let opName = opsList[i].op
+            
             // just work with add for now
+            let opName = opsList[i].op
             let op = new Op(opName);
             let opPosX = column * 3 + panelOffset
-            let opPosY = row * -3
+            
             op.position.x = opPosX
             op.position.y = opPosY
-            this.add(op)
-            console.log(row, column, opName, panelOffset)
+            op.position.z = cameraPosition.z - 50
             
-
-
-            
-                
-
+            this.add(op)       
         }
 
 
