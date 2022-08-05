@@ -11,10 +11,10 @@ import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
 import { Resizer } from './systems/Resizer.js';
 import { Loop } from './systems/Loop.js';
-
+import { mouse } from './systems/rayCasting.js';
 // webXR
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
-
+import { Raycaster, Vector2 } from 'three'
 
 
 
@@ -26,6 +26,9 @@ let renderer;
 let scene;
 let loop;
 let palette;
+let raycaster;
+const pointer = new Vector2();
+let opIDMap = {}
 class World {
     // 1. Create an instance of the World app
     constructor(container) {
@@ -33,10 +36,11 @@ class World {
         scene = createScene();
         renderer = createRenderer();
         container.append(renderer.domElement);
+        raycaster = new Raycaster();
         
         document.body.appendChild( VRButton.createButton( renderer ) );
         const controls = createControls(camera, renderer.domElement);
-        loop = new Loop(camera, scene, renderer);
+        loop = new Loop(camera, scene, renderer, pointer, raycaster);
         container.append(renderer.domElement); // add the canvas to the container
 
         // create the Palette of available Ops
@@ -50,17 +54,30 @@ class World {
 
         // controls.target.copy(cube.position) ;// commented out during tutorial. left in as it might prove useful
         const resizer = new Resizer(container, camera, renderer);
+
+        // get mouse activity
+
+        window.addEventListener( 'pointermove', function(event){
+            pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+            pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+        } );
     }
     
     // 2. Render the scene
     render() {
+
+        
         // draw a single frame
-        renderer.render(scene, camera);
+        // renderer.render(scene, camera);
+
+
     }
 
     //  animation methods
     start() {
         loop.start();
+                // raycasting:
+
     }
       
     stop() {
