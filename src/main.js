@@ -16,19 +16,19 @@ function main() {
     world.start();
 
     
-    // display the operators palette
-    let displayPaletteButton = document.querySelector('#displayPalette');
-    displayPaletteButton.addEventListener('click', ()=>{
-        world.displayPalette()
-        paletteState = 1;
-    })
+    window.oncontextmenu = (e) => {  
+        e.preventDefault()  
+        if(paletteState === 0){
+            world.displayPalette()
+            paletteState = 1;
+        } else {
+            world.hidePalette()
+            paletteState = 0;
+        }
+
+    }
     
-    // hide the operators palette
-    let hidePaletteButton = document.querySelector('#hidePalette');
-    hidePaletteButton.addEventListener('click', ()=>{
-        world.hidePalette()
-        paletteState = 0;
-    })
+
 
     // get palette clicks:
     window.addEventListener("mousedown", function(event){
@@ -39,6 +39,8 @@ function main() {
         }
 
     });
+
+
 
 }
 
