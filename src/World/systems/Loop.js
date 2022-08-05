@@ -27,6 +27,7 @@ class Loop {
                 for ( let i = 0; i < intersects.length; i ++ ) {
                     // console.log(intersects[i])
                     this.hoveredPaletteOp = intersects[i]
+                    console.log(intersects[i])
                     intersects[ i ].object.material.color.set( 0xff0000 );
 
                 }

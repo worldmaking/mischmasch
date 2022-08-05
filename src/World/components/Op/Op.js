@@ -9,7 +9,7 @@ import { opsList } from "../Palette/operators.js"
 const wheelSpeed = MathUtils.degToRad(24);
 
 class Op extends Group {
-    constructor(opName) {
+    constructor(opName, position) {
         super();
 
         // retrieve the op's info

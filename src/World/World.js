@@ -11,7 +11,6 @@ import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
 import { Resizer } from './systems/Resizer.js';
 import { Loop } from './systems/Loop.js';
-import { mouse } from './systems/rayCasting.js';
 // webXR
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { Raycaster, Vector2 } from 'three'
@@ -76,13 +75,21 @@ class World {
     }
 
     addOp(){
-        let opName = loop.paletteHover().object.name
-        console.log(opName)
-        const op = new Op(opName);
-        console.log(op)
-        loop.updatables.push(op);
-        scene.remove(palette);
-        scene.add(op);
+        // first check if palette is open. if not, block this action
+        if(scene.children.some(element => element.name === 'Palette')){
+            let opName = loop.paletteHover().object.name
+            
+            const op = new Op(opName);
+            let inPalettePos = loop.paletteHover().point
+            
+            op.position.x = inPalettePos.x
+            op.position.y = inPalettePos.y
+            op.position.z = inPalettePos.z
+            console.log('pointer', loop.paletteHover().point, 'op.position', op.position)
+            loop.updatables.push(op);
+            scene.remove(palette);
+            scene.add(op);
+        }
         
     }
 

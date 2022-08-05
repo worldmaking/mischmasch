@@ -1,7 +1,7 @@
 import { World} from './World/World.js'
 
 import "./styles/main.css"
-
+let paletteState = 0;
 // create the main function
 function main() {
     // code to set up the World App will go here
@@ -15,7 +15,7 @@ function main() {
     // 2. Render the scene
     world.start();
 
-    let paletteState = 0;
+    
     // display the operators palette
     let displayPaletteButton = document.querySelector('#displayPalette');
     displayPaletteButton.addEventListener('click', ()=>{
@@ -33,7 +33,7 @@ function main() {
     // get palette clicks:
     window.addEventListener("mousedown", function(event){
         // chosen op name
-        if(paletteState === 1){
+        if(paletteState == 1){
             world.addOp()
 
         }
