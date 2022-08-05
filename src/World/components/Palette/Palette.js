@@ -35,13 +35,12 @@ class Palette extends Group {
             for(let j=0; j<op.children.length; j++){
                 op.children[j].name = opName
             }
-            console.log(op)
                 
 
             this.add(op)       
         }
 
-
+        this.name = 'Palette'
     // loop.updatables.push(op);
 
     }

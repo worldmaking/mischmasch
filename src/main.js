@@ -15,17 +15,30 @@ function main() {
     // 2. Render the scene
     world.start();
 
+    let paletteState = 0;
     // display the operators palette
     let displayPaletteButton = document.querySelector('#displayPalette');
     displayPaletteButton.addEventListener('click', ()=>{
         world.displayPalette()
+        paletteState = 1;
     })
     
     // hide the operators palette
     let hidePaletteButton = document.querySelector('#hidePalette');
     hidePaletteButton.addEventListener('click', ()=>{
         world.hidePalette()
+        paletteState = 0;
     })
+
+    // get palette clicks:
+    window.addEventListener("mousedown", function(event){
+        // chosen op name
+        if(paletteState === 1){
+            world.addOp()
+
+        }
+
+    });
 
 }
 

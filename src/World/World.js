@@ -61,14 +61,7 @@ class World {
             pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
             pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
         } );
-    }
-    
-    // 2. Render the scene
-    render() {
 
-        
-        // draw a single frame
-        // renderer.render(scene, camera);
 
 
     }
@@ -76,8 +69,6 @@ class World {
     //  animation methods
     start() {
         loop.start();
-                // raycasting:
-
     }
       
     stop() {
@@ -85,10 +76,12 @@ class World {
     }
 
     addOp(){
-        const op = new Op('mix');
+        let opName = loop.paletteHover().object.name
+        console.log(opName)
+        const op = new Op(opName);
         console.log(op)
         loop.updatables.push(op);
-        
+        scene.remove(palette);
         scene.add(op);
         
     }
@@ -101,8 +94,6 @@ class World {
         // palette.position.y = camera.position.y // - 0
         // palette.position.z = camera.position.z - 50
         scene.add(palette);
-        
-        console.log('camera pos', camera.position)
     }
 
     hidePalette(){
