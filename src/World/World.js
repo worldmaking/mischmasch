@@ -45,10 +45,20 @@ class World {
         document.body.appendChild( VRButton.createButton( renderer ) );
         renderer.xr.enabled = true;
 
+        
+        // create the Palette of available Ops
+        palette = new Palette(camera.position)
+        // place palette in front of camera
+        camera.add(palette);
+        palette.position.set(0,0,-50);
+        palette.position.copy( camera.position );
+        palette.rotation.copy( camera.rotation );
+        palette.updateMatrix();
+        palette.translateZ( - 10 );
+
         // XR controllers
         const xrCtlRight = new XRController(renderer, 0)
         const xrCtlLeft = new XRController(renderer, 1)
-        console.log(xrCtlRight)
         scene.add(xrCtlRight.model, xrCtlLeft.model)
         let xrControllers = [xrCtlLeft, xrCtlRight]
         xrControllers.forEach(ctlr => {
@@ -72,8 +82,13 @@ class World {
                 // this refers to the controller
                 ctlr.controller.children[0].scale.z = 10;
                 ctlr.controller.userData.selectPressed = true;
+                // set palette position in front of player
+                palette.position.set(0,0,-50);
                 // make Palette visible & clickable
-                loop.updatables.push(palette);
+                palette.position.copy( camera.position );
+                palette.rotation.copy( camera.rotation );
+                palette.updateMatrix();
+                palette.translateZ( - 10 );
                 scene.add(palette);
             });
 
@@ -104,8 +119,6 @@ class World {
         // add the three canvas to the html container
         container.append(renderer.domElement); 
 
-        // create the Palette of available Ops
-        palette = new Palette(camera.position)
 
         
         // ligthing
@@ -158,7 +171,7 @@ class World {
     displayPalette(){
         // make Palette visible & clickable
         // palette.position()
-        loop.updatables.push(palette);
+        // loop.updatables.push(palette);
         // palette.position.x = camera.position.x // - 20
         // palette.position.y = camera.position.y // - 0
         // palette.position.z = camera.position.z - 50
