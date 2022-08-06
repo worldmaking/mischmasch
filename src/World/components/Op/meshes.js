@@ -50,6 +50,7 @@ function createMeshes(opProps) {
   const panel = new Mesh(panelGeometry.panel, materials.panel);
   panel.position.set(0, 1.4, 0);
   panel.rotation.set(0, 0, 0)
+  // panel.name = opProps.op 
 
   const jackOut = new Mesh(geometries.jack, materials.jackOut);
   jackOut.position.set(0, 1, 0.2);

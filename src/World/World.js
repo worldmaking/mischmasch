@@ -11,11 +11,13 @@ import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
 import { Resizer } from './systems/Resizer.js';
 import { Loop } from './systems/Loop.js';
+import { state } from './systems/state.js'
 // webXR
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { Raycaster, Vector2 } from 'three'
 
-
+// versioning
+import * as Automerge from 'automerge'
 
 
 // These variables are module-scoped: we cannot access them
@@ -26,6 +28,8 @@ let scene;
 let loop;
 let palette;
 let raycaster;
+let doc1;
+let mischmaschState;
 const pointer = new Vector2();
 let opIDMap = {}
 class World {
@@ -61,7 +65,12 @@ class World {
             pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
         } );
 
-
+        // versioning
+        doc1 = Automerge.init()
+        doc1 = Automerge.change(doc1, 'create blank scene', doc => {
+            doc.scene = {nodes:{}, arcs:[]}
+        })
+        updateMischmaschState(doc1)
 
     }
 
@@ -80,15 +89,22 @@ class World {
             let opName = loop.paletteHover().object.name
             
             const op = new Op(opName);
+            
             let inPalettePos = loop.paletteHover().point
             
             op.position.x = inPalettePos.x
             op.position.y = inPalettePos.y
             op.position.z = inPalettePos.z
-            console.log('pointer', loop.paletteHover().point, 'op.position', op.position)
             loop.updatables.push(op);
             scene.remove(palette);
             scene.add(op);
+            let stateChange = state('addNode', [opName, op])
+            //! fuckin can't get this to work :(
+            doc1 = Automerge.change(doc1, stateChange[3], doc => {
+                doc.scene[stateChange[2]] = stateChange[1]
+            })
+            updateMischmaschState(doc1)
+            
         }
         
     }
@@ -109,4 +125,10 @@ class World {
     }
 }
     
+function updateMischmaschState(newState) {
+    mischmaschState = newState
+    // genish.js will read from mischmaschState
+    console.log(mischmaschState)
+}
+
 export { World };

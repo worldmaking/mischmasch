@@ -2,7 +2,7 @@ import { Group, MathUtils } from 'three';
 
 import { Op } from "../Op/Op.js";
 
-import { opsList } from "./operators.js"
+import { opsList } from "./genishOperators.js"
 
 // ! at page load, create the menu from available operators. each operator is then available to be cloned into the scene when selected (or regenerated from an automerge doc)
 
@@ -21,7 +21,6 @@ class Palette extends Group {
             let opPosY = (row * -3) - cameraPosition.y
             let column = (i % 15)
             
-            // just work with add for now
             let opName = opsList[i].op
             let op = new Op(opName);
             let opPosX = column * 3 + panelOffset
