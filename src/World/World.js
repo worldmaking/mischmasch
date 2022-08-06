@@ -46,8 +46,9 @@ class World {
         renderer.xr.enabled = true;
 
         const xrCtlRight = new XRController(renderer, 0)
-        console.log(xrCtlRight)
-        scene.add(xrCtlRight)
+        console.log(xrCtlRight.model)
+
+        scene.add(xrCtlRight.model)
         const controls = createControls(camera, renderer.domElement);
         loop = new Loop(camera, scene, renderer, pointer, raycaster);
         container.append(renderer.domElement); // add the canvas to the container
