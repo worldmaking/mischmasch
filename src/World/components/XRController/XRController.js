@@ -1,30 +1,32 @@
 
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
-
-
+import { BufferGeometry, Vector3, Line } from 'three';
 class XRController{
     constructor (renderer, controllerNumber){
-        this.controller = renderer.xr.getController(controllerNumber)
-        
-        // // create a geometry
-        // const geometry = new BoxBufferGeometry(2, 2, 2);
-
-        // // create a default (white) Basic material
-        // const material = new MeshBasicMaterial();
-
-        // // create a Mesh containing the geometry and material
-        // const cube = new Mesh(geometry, material);
-
-        // cube.position.set(0,0.2,0)
-        // this.controller.add(cube)
+        // import model
         const controllerModelFactory = new XRControllerModelFactory()
-        const controllerGrip = renderer.xr.getControllerGrip(controllerNumber);
 
+        // create raycast beam
+        const geometry = new BufferGeometry().setFromPoints([
+            new Vector3(0, 0, 0),
+            new Vector3(0, 0, -1)
+        ]);
+        const line = new Line(geometry);
+        line.scale.z = 10;
+
+        // setup controller
+        this.controller = renderer.xr.getController(controllerNumber)
+        this.controller.add(line)
+        this.controller.userData.selectPressed = false;
+        this.controller.userData.selectPressedPrev = false;
+        // get hand side
+        const controllerGrip = renderer.xr.getControllerGrip(controllerNumber);
+        // get model corresponding to hand side (left or right)
         const model = controllerModelFactory
         .createControllerModel( controllerGrip );
-
+        // add model
         controllerGrip.add( model );
-
+        // add controller model to exported controller
         this.model = controllerGrip
 
     }

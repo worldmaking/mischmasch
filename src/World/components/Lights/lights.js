@@ -8,7 +8,7 @@ function createLights() {
         3, // intensity
     )
     // Create a directional light. color, intensity
-    const mainLight = new DirectionalLight('white', 2);
+    const mainLight = new DirectionalLight('white', 8);
 
     // move the light right, up, and towards us
     mainLight.position.set(10, 10, 10);

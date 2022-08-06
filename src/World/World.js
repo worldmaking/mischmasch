@@ -41,36 +41,39 @@ class World {
         container.append(renderer.domElement);
         raycaster = new Raycaster();
         
+        // XR rendering
         document.body.appendChild( VRButton.createButton( renderer ) );
-
         renderer.xr.enabled = true;
 
+        // controllers
         const xrCtlRight = new XRController(renderer, 0)
-        console.log(xrCtlRight.model)
+        const xrCtlLeft = new XRController(renderer, 1)
+        scene.add(xrCtlRight.model, xrCtlLeft.model)
 
-        scene.add(xrCtlRight.model)
+        // mouse controls 
         const controls = createControls(camera, renderer.domElement);
-        loop = new Loop(camera, scene, renderer, pointer, raycaster);
-        container.append(renderer.domElement); // add the canvas to the container
-
-        // create the Palette of available Ops
-        palette = new Palette(camera.position)
-
-        loop.updatables.push(controls);
-
-        const { ambientLight, mainLight } = createLights();
-        
-        scene.add(ambientLight, mainLight);
-
-        // controls.target.copy(cube.position) ;// commented out during tutorial. left in as it might prove useful
-        const resizer = new Resizer(container, camera, renderer);
-
-        // get mouse activity
-
         window.addEventListener( 'pointermove', function(event){
             pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
             pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
         } );
+
+        // rendering loop
+        loop = new Loop(camera, scene, renderer, pointer, raycaster);
+        loop.updatables.push(controls);
+
+        // add the three canvas to the html container
+        container.append(renderer.domElement); 
+
+        // create the Palette of available Ops
+        palette = new Palette(camera.position)
+
+        
+        // ligthing
+        const { ambientLight, mainLight } = createLights();
+        scene.add(ambientLight, mainLight);
+
+        // resizer. See discoverthreejs for how/why this is useful
+        // const resizer = new Resizer(container, camera, renderer);
 
         // versioning
         doc1 = Automerge.init()
