@@ -2,7 +2,7 @@ import { Clock } from 'three';
 
 const clock = new Clock();
 class Loop {
-    constructor(camera, scene, renderer, pointer, raycaster) {
+    constructor(camera, scene, renderer, pointer, raycaster, xrCtlRight, xrCtlleft) {
         this.camera = camera;
         this.scene = scene;
         this.renderer = renderer;
@@ -10,6 +10,8 @@ class Loop {
         this.pointer = pointer;
         this.raycaster = raycaster;
         this.hoveredPaletteOp;
+        this.xrCtlRight = xrCtlRight;
+        this.xrCtlleft = xrCtlleft;
         
     }
 
@@ -33,6 +35,11 @@ class Loop {
             }
 
             this.renderer.render(this.scene, this.camera);
+
+            // // set right controller 'B' state
+            // if(this.xrCtlRight.controller.gamepad && this.xrCtlRight.controller.gamepad.buttons[5].touched){
+            //     xrCtlRight.controller.userData.buttons.b = this.xrCtlRight.controller.gamepad.buttons[5].value;
+            // }
         });   
     }
 

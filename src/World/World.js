@@ -48,21 +48,48 @@ class World {
         // XR controllers
         const xrCtlRight = new XRController(renderer, 0)
         const xrCtlLeft = new XRController(renderer, 1)
+        console.log(xrCtlRight)
         scene.add(xrCtlRight.model, xrCtlLeft.model)
-        xrCtlRight.controller.addEventListener('selectstart', function(){
-            // this refers to the controller
-            xrCtlRight.controller.children[0].scale.z = 10;
-            xrCtlRight.controller.userData.selectPressed = true;
-            console.log('trigger pressed', )
-        });
-        xrCtlRight.controller.addEventListener('selectend',  function(){
-            // this refers to the controller
-            xrCtlRight.controller.children[0].scale.z = 10;
-            xrCtlRight.controller.userData.selectPressed = false;
-            console.log('trigger unpressed', )
-        });;
-        // xrCtlLeft.controller.addEventListener('selectstart', this.selectStart);
-        // xrCtlLeft.controller.addEventListener('selectend', this.selectEnd);
+        let xrControllers = [xrCtlLeft, xrCtlRight]
+        xrControllers.forEach(ctlr => {
+            // trigger press
+            ctlr.controller.addEventListener('selectstart', function(){
+                // this refers to the controller
+                ctlr.controller.children[0].scale.z = 10;
+                ctlr.controller.userData.selectPressed = true;
+                console.log('select pressed', )
+            });
+
+            // trigger unpress
+            ctlr.controller.addEventListener('selectend', function(){
+                // this refers to the controller
+                ctlr.controller.children[0].scale.z = 10;
+                ctlr.controller.userData.selectPressed = true;
+                console.log('select unpressed', )
+            });
+            // squeeze press
+            ctlr.controller.addEventListener('squeezestart', function(){
+                // this refers to the controller
+                ctlr.controller.children[0].scale.z = 10;
+                ctlr.controller.userData.selectPressed = true;
+                // make Palette visible & clickable
+                loop.updatables.push(palette);
+                scene.add(palette);
+            });
+
+            // squeeze unpress
+            ctlr.controller.addEventListener('squeezeend', function(){
+                // this refers to the controller
+                ctlr.controller.children[0].scale.z = 10;
+                ctlr.controller.userData.selectPressed = true;
+                // make Palette invisible & unclickable
+                scene.remove(palette);
+            });
+            
+     
+        })
+                     
+
         // mouse controls 
         const controls = createControls(camera, renderer.domElement);
         window.addEventListener( 'pointermove', function(event){
@@ -71,7 +98,7 @@ class World {
         } );
 
         // rendering loop
-        loop = new Loop(camera, scene, renderer, pointer, raycaster);
+        loop = new Loop(camera, scene, renderer, pointer, raycaster, xrCtlRight, xrCtlLeft);
         loop.updatables.push(controls);
 
         // add the three canvas to the html container
