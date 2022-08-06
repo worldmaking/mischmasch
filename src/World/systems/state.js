@@ -11,6 +11,7 @@ function state(operation, payload){
             let genishProps = opsList.find(item => item.op === nodeName)
             let nodeID = `${nodeName}_${threeProps.uuid}`
             let automergeMsg = `add node ${nodeID} to scene`
+       
             let newNode = {
                 genish: genishProps,
                 // reduce number of properties from three group, automerge has a weird error with too-large objects
@@ -19,14 +20,16 @@ function state(operation, payload){
                     id: threeProps.id,
                     op: nodeName,
                     position: threeProps.position,
-                    rotation: threeProps.rotation,
+                    rotation: {
+                        x: threeProps.rotation._x,
+                        y: threeProps.rotation._y,
+                        z: threeProps.rotation._z
+                    },
                     scale: threeProps.scale,
                 }
             }
-            console.log(nodeName, newNode, nodeID, automergeMsg)
             return [nodeName, newNode, nodeID, automergeMsg]
 
-        break
     }
 
 

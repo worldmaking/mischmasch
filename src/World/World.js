@@ -99,8 +99,10 @@ class World {
             scene.remove(palette);
             scene.add(op);
             let stateChange = state('addNode', [opName, op])
-            console.log(stateChange)
             let newNode = stateChange[1]
+            // let newNode = {michael: 'foo'}
+            
+            
             let nodeID = stateChange[2]
             let automergeMsg = stateChange[3]
             doc1 = Automerge.change(doc1, automergeMsg, doc => {
@@ -136,7 +138,6 @@ class World {
 function updateMischmaschState(newState) {
     mischmaschState = newState
     // genish.js will read from mischmaschState
-    console.log(mischmaschState)
 }
 
 export { World };
