@@ -83,7 +83,6 @@ class World {
                 ctlr.controller.children[0].scale.z = 10;
                 ctlr.controller.userData.selectPressed = true;
                 // set palette position in front of player
-                palette.position.set(0,0,-50);
                 // make Palette visible & clickable
                 palette.position.copy( camera.position );
                 palette.rotation.copy( camera.rotation );
@@ -170,11 +169,6 @@ class World {
 
     displayPalette(){
         // make Palette visible & clickable
-        // palette.position()
-        // loop.updatables.push(palette);
-        // palette.position.x = camera.position.x // - 20
-        // palette.position.y = camera.position.y // - 0
-        // palette.position.z = camera.position.z - 50
         scene.add(palette);
     }
 
