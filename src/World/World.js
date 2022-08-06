@@ -99,10 +99,18 @@ class World {
             scene.remove(palette);
             scene.add(op);
             let stateChange = state('addNode', [opName, op])
-            //! fuckin can't get this to work :(
-            doc1 = Automerge.change(doc1, stateChange[3], doc => {
-                doc.scene[stateChange[2]] = stateChange[1]
+            console.log(stateChange)
+            let newNode = stateChange[1]
+            let nodeID = stateChange[2]
+            let automergeMsg = stateChange[3]
+            doc1 = Automerge.change(doc1, automergeMsg, doc => {
+                doc.scene.nodes[nodeID] = newNode
             })
+
+            // doc1 = Automerge.change(doc1, 'change', doc => {
+            //     doc.scene.nodes['add_asdfasdf'] = {genish: {op:'add'}}
+            // })
+
             updateMischmaschState(doc1)
             
         }
