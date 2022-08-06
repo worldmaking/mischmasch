@@ -45,11 +45,24 @@ class World {
         document.body.appendChild( VRButton.createButton( renderer ) );
         renderer.xr.enabled = true;
 
-        // controllers
+        // XR controllers
         const xrCtlRight = new XRController(renderer, 0)
         const xrCtlLeft = new XRController(renderer, 1)
         scene.add(xrCtlRight.model, xrCtlLeft.model)
-
+        xrCtlRight.controller.addEventListener('selectstart', function(){
+            // this refers to the controller
+            xrCtlRight.controller.children[0].scale.z = 10;
+            xrCtlRight.controller.userData.selectPressed = true;
+            console.log('trigger pressed', )
+        });
+        xrCtlRight.controller.addEventListener('selectend',  function(){
+            // this refers to the controller
+            xrCtlRight.controller.children[0].scale.z = 10;
+            xrCtlRight.controller.userData.selectPressed = false;
+            console.log('trigger unpressed', )
+        });;
+        // xrCtlLeft.controller.addEventListener('selectstart', this.selectStart);
+        // xrCtlLeft.controller.addEventListener('selectend', this.selectEnd);
         // mouse controls 
         const controls = createControls(camera, renderer.domElement);
         window.addEventListener( 'pointermove', function(event){
@@ -99,9 +112,8 @@ class World {
             let opName = loop.paletteHover().object.name
             
             const op = new Op(opName);
-            
+            // get current position of op from within the palette
             let inPalettePos = loop.paletteHover().point
-            
             op.position.x = inPalettePos.x
             op.position.y = inPalettePos.y
             op.position.z = inPalettePos.z
@@ -109,24 +121,11 @@ class World {
             scene.remove(palette);
             scene.add(op);
             let stateChange = state('addNode', [opName, op])
-            let newNode = stateChange[1]
-            // let newNode = {michael: 'foo'}
-            
-            
-            let nodeID = stateChange[2]
-            let automergeMsg = stateChange[3]
-            doc1 = Automerge.change(doc1, automergeMsg, doc => {
-                doc.scene.nodes[nodeID] = newNode
+            doc1 = Automerge.change(doc1, stateChange[3], doc => {
+                doc.scene.nodes[stateChange[2]] = stateChange[1]
             })
-
-            // doc1 = Automerge.change(doc1, 'change', doc => {
-            //     doc.scene.nodes['add_asdfasdf'] = {genish: {op:'add'}}
-            // })
-
             updateMischmaschState(doc1)
-            
-        }
-        
+        }        
     }
 
     displayPalette(){

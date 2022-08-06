@@ -1,6 +1,7 @@
 
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
 import { BufferGeometry, Vector3, Line } from 'three';
+
 class XRController{
     constructor (renderer, controllerNumber){
         // import model
@@ -19,6 +20,9 @@ class XRController{
         this.controller.add(line)
         this.controller.userData.selectPressed = false;
         this.controller.userData.selectPressedPrev = false;
+        
+
+        // setup controller model
         // get hand side
         const controllerGrip = renderer.xr.getControllerGrip(controllerNumber);
         // get model corresponding to hand side (left or right)
@@ -30,6 +34,9 @@ class XRController{
         this.model = controllerGrip
 
     }
+
+
+
 }
 
 export { XRController }
