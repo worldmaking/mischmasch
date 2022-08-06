@@ -2,16 +2,16 @@
 import { createCamera } from './systems/camera.js';
 import { Op } from './components/Op/Op.js';
 import { Palette } from './components/Palette/Palette.js';
-// import { createCube } from './components/cube.js';
-// import { createMeshGroup } from './components/meshGroup.js';
 import { createScene } from './components/scene.js';
 import { createLights } from './components/Lights/lights.js'
+import { XRController } from './components/XRController/XRController.js'
 // modules from the systems folder
 import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
 import { Resizer } from './systems/Resizer.js';
 import { Loop } from './systems/Loop.js';
 import { state } from './systems/state.js'
+
 // webXR
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { Raycaster, Vector2 } from 'three'
@@ -42,6 +42,12 @@ class World {
         raycaster = new Raycaster();
         
         document.body.appendChild( VRButton.createButton( renderer ) );
+
+        renderer.xr.enabled = true;
+
+        const xrCtlRight = new XRController(renderer, 0)
+        console.log(xrCtlRight)
+        scene.add(xrCtlRight)
         const controls = createControls(camera, renderer.domElement);
         loop = new Loop(camera, scene, renderer, pointer, raycaster);
         container.append(renderer.domElement); // add the canvas to the container
