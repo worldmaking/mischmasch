@@ -68,6 +68,25 @@ class World {
                 ctlr.controller.children[0].scale.z = 10;
                 ctlr.controller.userData.selectPressed = true;
                 console.log('select pressed', )
+                // first check if palette is open. if not, block this action
+                if(scene.children.some(element => element.name === 'Palette')){
+                    let opName = loop.paletteHover().object.name
+                    
+                    const op = new Op(opName);
+                    // get current position of op from within the palette
+                    let inPalettePos = loop.paletteHover().point
+                    op.position.x = inPalettePos.x
+                    op.position.y = inPalettePos.y
+                    op.position.z = inPalettePos.z
+                    loop.updatables.push(op);
+                    scene.remove(palette);
+                    scene.add(op);
+                    let stateChange = state('addNode', [opName, op])
+                    doc1 = Automerge.change(doc1, stateChange[3], doc => {
+                        doc.scene.nodes[stateChange[2]] = stateChange[1]
+                    })
+                    updateMischmaschState(doc1)
+                }  
             });
 
             // trigger unpress
@@ -99,8 +118,6 @@ class World {
                 // make Palette invisible & unclickable
                 scene.remove(palette);
             });
-            
-     
         })
                      
 
