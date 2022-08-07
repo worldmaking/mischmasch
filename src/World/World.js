@@ -182,6 +182,13 @@ class World {
         }        
     }
 
+    keyboardScaffolding(command, payload){
+        switch(command){
+            case 'addNode':
+                loop.paletteHover().object.name = 'add'
+            break
+        }
+    }
     displayPalette(){
         // make Palette visible & clickable
         scene.add(palette);

@@ -15,6 +15,18 @@ function main() {
     // 2. Render the scene
     world.start();
 
+
+    // keyboard scaffolding
+    window.addEventListener("keydown", (event) => {
+        switch(event.keyCode){
+            case 49: // 1 == select 'add' op from palette
+                world.keyboardScaffolding('addNode', 'add')
+            break
+        }
+
+        console.log(event.keyCode)
+        // do something
+    });
     
     window.oncontextmenu = (e) => {  
         e.preventDefault()  
