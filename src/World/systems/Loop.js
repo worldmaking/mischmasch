@@ -1,4 +1,4 @@
-import { Clock } from 'three';
+import { Clock, Vector3, Matrix4, Raycaster } from 'three';
 
 const clock = new Clock();
 class Loop {
@@ -8,7 +8,7 @@ class Loop {
         this.renderer = renderer;
         this.updatables = [] // list to hold animated objects //! this might need to reference the automerge document eventually?
         this.pointer = pointer;
-        this.raycaster = raycaster;
+        this.raycaster = new Raycaster;
         this.hoveredPaletteOp;
         this.xrCtlRight = xrCtlRight;
         this.xrCtlleft = xrCtlleft;
@@ -19,17 +19,37 @@ class Loop {
         this.renderer.setAnimationLoop(() => {
             // tell every animated object to tick forward one frame
             this.tick();
-            // palette raycaster
+                // palette: is controller squeeze button pressed?
+                // is the palette in the scene
+            
+            const rotationMatrix = new Matrix4();
+            let ctrlMatrixWorld = this.xrCtlRight.controller.matrixWorld
+            rotationMatrix.extractRotation(ctrlMatrixWorld);
+            this.raycaster.ray.origin.setFromMatrixPosition(ctrlMatrixWorld);
+            this.raycaster.ray.direction.set(0, -35, -1).applyMatrix4(rotationMatrix);
+            
             if(this.scene.children.some(element => element.name === 'Palette')){
-                // update the picking ray with the camera and pointer position
-                this.raycaster.setFromCamera( this.pointer, this.camera );
+                // update the picking ray with the controller this.raycaster position and rotation
+                
+                // let rotation = this.xrCtlRight.controller.rotation
+                // let origin = this.xrCtlRight.controller.position
+                
+                // let direction = new Vector3( rotation._x, rotation._y, rotation._z ).normalize()
+                // this.this.raycaster.set( origin, direction )
+                // this.this.raycaster.name = 'controller'
+
                 // calculate objects intersecting the picking ray
                 const intersects = this.raycaster.intersectObjects( this.scene.children );
                 
                 for ( let i = 0; i < intersects.length; i ++ ) {
-                    // console.log(intersects[i])
-                    this.hoveredPaletteOp = intersects[i]
-                    intersects[ i ].object.material.color.set( 0xff0000 );
+                    if(intersects[i].object.name && intersects[i].object.name == 'xrControllerRaycastBeam'){
+                        // ignore the raycast beam
+                    } else {
+                        console.log(intersects[i])
+                        this.hoveredPaletteOp = intersects[i]
+                        intersects[ i ].object.material.color.set( 0xff0000 );
+                    }
+
 
                 }
             }

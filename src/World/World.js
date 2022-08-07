@@ -14,7 +14,7 @@ import { state } from './systems/state.js'
 
 // webXR
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
-import { Raycaster, Vector2 } from 'three'
+import { Vector2 } from 'three'
 
 // versioning
 import * as Automerge from 'automerge'
@@ -27,7 +27,6 @@ let renderer;
 let scene;
 let loop;
 let palette;
-let raycaster;
 let doc1;
 let mischmaschState;
 const pointer = new Vector2();
@@ -39,7 +38,6 @@ class World {
         scene = createScene();
         renderer = createRenderer();
         container.append(renderer.domElement);
-        raycaster = new Raycaster();
         
         // XR rendering
         document.body.appendChild( VRButton.createButton( renderer ) );
@@ -120,7 +118,6 @@ class World {
                 scene.remove(palette);
             });
         })
-                     
 
         // mouse controls 
         const controls = createControls(camera, renderer.domElement);
@@ -130,8 +127,8 @@ class World {
         } );
 
         // rendering loop
-        loop = new Loop(camera, scene, renderer, pointer, raycaster, xrCtlRight, xrCtlLeft, xrCtlRight.controller.rayCastBeam, xrCtlLeft.controller.rayCastBeam);
-        loop.updatables.push(controls, xrCtlRight, xrCtlLeft);
+        loop = new Loop(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft);
+        loop.updatables.push(controls);
 
         // add the three canvas to the html container
         container.append(renderer.domElement); 

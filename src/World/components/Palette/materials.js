@@ -9,11 +9,14 @@ function createMaterials() {
   const jackIn = new MeshStandardMaterial({
     color: 'skyblue',
     flatShading: true,
+    opacity: 0.5,
+    side: 'doubleside'
   });
 
   const jackOut = new MeshStandardMaterial({
     color: 'darkslategray',
     flatShading: true,
+    opacity: 0.5,
   });
 
   return { panel, jackIn, jackOut };
