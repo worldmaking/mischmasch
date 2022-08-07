@@ -24,7 +24,8 @@ class XRController{
         // setup controller
         this.controller = renderer.xr.getController(handedness)
         
-        this.controller.add(line)
+        // this.controller.rayCastBeam = line
+        
         this.controller.userData.selectPressed = false;
         this.controller.userData.selectPressedPrev = false;
         // the gamepad events are not available natively in threejs. so a little workaround to map in the gamepad data:
@@ -47,6 +48,11 @@ class XRController{
         controllerGrip.add( model );
         // add controller model to exported controller
         this.model = controllerGrip
+        // add raycast beam
+        this.model.add(line)
+    }
+    tick(delta) {
+
     }
     
 }

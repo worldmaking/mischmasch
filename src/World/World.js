@@ -60,12 +60,13 @@ class World {
         const xrCtlRight = new XRController(renderer, 0)
         const xrCtlLeft = new XRController(renderer, 1)
         scene.add(xrCtlRight.model, xrCtlLeft.model)
+        // xrCtlRight.controller.rayCastBeam, xrCtlLeft.controller.rayCastBeam
         let xrControllers = [xrCtlLeft, xrCtlRight]
         xrControllers.forEach(ctlr => {
             // trigger press
             ctlr.controller.addEventListener('selectstart', function(){
                 // this refers to the controller
-                ctlr.controller.children[0].scale.z = 10;
+                // ctlr.controller.children[0].scale.z = 10;
                 ctlr.controller.userData.selectPressed = true;
                 console.log('select pressed', )
                 // first check if palette is open. if not, block this action
@@ -92,14 +93,14 @@ class World {
             // trigger unpress
             ctlr.controller.addEventListener('selectend', function(){
                 // this refers to the controller
-                ctlr.controller.children[0].scale.z = 10;
+                // ctlr.controller.children[0].scale.z = 10;
                 ctlr.controller.userData.selectPressed = true;
                 console.log('select unpressed', )
             });
             // squeeze press
             ctlr.controller.addEventListener('squeezestart', function(){
                 // this refers to the controller
-                ctlr.controller.children[0].scale.z = 10;
+                // ctlr.controller.children[0].scale.z = 10;
                 ctlr.controller.userData.selectPressed = true;
                 // set palette position in front of player
                 // make Palette visible & clickable
@@ -113,7 +114,7 @@ class World {
             // squeeze unpress
             ctlr.controller.addEventListener('squeezeend', function(){
                 // this refers to the controller
-                ctlr.controller.children[0].scale.z = 10;
+                // ctlr.controller.children[0].scale.z = 10;
                 ctlr.controller.userData.selectPressed = true;
                 // make Palette invisible & unclickable
                 scene.remove(palette);
@@ -129,8 +130,8 @@ class World {
         } );
 
         // rendering loop
-        loop = new Loop(camera, scene, renderer, pointer, raycaster, xrCtlRight, xrCtlLeft);
-        loop.updatables.push(controls);
+        loop = new Loop(camera, scene, renderer, pointer, raycaster, xrCtlRight, xrCtlLeft, xrCtlRight.controller.rayCastBeam, xrCtlLeft.controller.rayCastBeam);
+        loop.updatables.push(controls, xrCtlRight, xrCtlLeft);
 
         // add the three canvas to the html container
         container.append(renderer.domElement); 
