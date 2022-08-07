@@ -19,8 +19,11 @@ function main() {
     // keyboard scaffolding
     window.addEventListener("keydown", (event) => {
         switch(event.keyCode){
-            case 49: // 1 == select 'add' op from palette
-                world.keyboardScaffolding('addNode', 'add')
+            case 49: // 1 == select 'abs' op from palette
+                world.keyboardScaffolding('addNode', 'abs')
+            break
+            case 50: // 2 == select 'div' op from palette
+                world.keyboardScaffolding('addNode', 'div')
             break
         }
 

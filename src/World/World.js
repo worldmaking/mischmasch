@@ -19,6 +19,8 @@ import { Vector2 } from 'three'
 // versioning
 import * as Automerge from 'automerge'
 
+// scaffolding
+import { abs, div } from "./scaffolding.js"
 
 // These variables are module-scoped: we cannot access them
 // from outside the module
@@ -185,7 +187,43 @@ class World {
     keyboardScaffolding(command, payload){
         switch(command){
             case 'addNode':
-                loop.paletteHover().object.name = 'add'
+                switch(payload){
+                    case 'abs':
+                        
+            
+                        const thisOp = new Op('abs');
+                        thisOp.position.x = abs.point.x
+                        thisOp.position.y = abs.point.y
+                        thisOp.position.z = abs.point.z
+                        loop.updatables.push(thisOp);
+                        scene.remove(palette);
+                        scene.add(thisOp);
+                        let statec = state('addNode', ['abs', thisOp])
+                        doc1 = Automerge.change(doc1, statec[3], doc => {
+                            doc.scene.nodes[statec[2]] = statec[1]
+                        })
+                        updateMischmaschState(doc1)
+                    break
+                    case 'div':
+                        let opName = 'div'
+            
+                        const op = new Op(opName);
+                        // get current position of op from within the palette
+                        let inPalettePos = div.point
+                        op.position.x = inPalettePos.x
+                        op.position.y = inPalettePos.y
+                        op.position.z = inPalettePos.z
+                        loop.updatables.push(op);
+                        scene.remove(palette);
+                        scene.add(op);
+                        let stateChange = state('addNode', [opName, op])
+                        doc1 = Automerge.change(doc1, stateChange[3], doc => {
+                            doc.scene.nodes[stateChange[2]] = stateChange[1]
+                        })
+                        updateMischmaschState(doc1)
+                    break
+                }
+                
             break
         }
     }
