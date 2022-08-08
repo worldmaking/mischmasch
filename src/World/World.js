@@ -148,6 +148,7 @@ class World {
             pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
         } );
 
+
         // rendering loop
         loop = new Loop(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel);
         loop.updatables.push(controls);
