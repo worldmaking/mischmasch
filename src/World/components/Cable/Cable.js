@@ -55,7 +55,7 @@ class Cable{
 
         line = new Line2( geometry, matLine );
         line.computeLineDistances();
-        line.scale.set( 1, 1, 1 );
+        // line.scale.set( 1, 1, 1 );
         // scene.add( line );
         this.line = line
     }

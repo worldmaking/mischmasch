@@ -28,7 +28,7 @@ function main() {
             case 50: // 2 == select 'div' op from palette
                 world.keyboardScaffolding('addNode', 'div')
             break
-            case 32:
+            case 67:
                 world.keyboardScaffolding('addCable', ['abs_0', 'div_0'])
             break
         }

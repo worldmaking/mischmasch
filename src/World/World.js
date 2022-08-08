@@ -273,12 +273,11 @@ class World {
                 
                 // console.log(abs, div)
                 let fromObj = scene.getObjectByName(from)
-
                 let toObj = scene.getObjectByName(to)
                 console.log(fromObj, toObj)
 
-                let fromPos = fromObj.position
-                let toPos = toObj.position
+                let fromPos = newAbs.localToWorld(fromObj.position)
+                let toPos = newDiv.localToWorld(toObj.position)
 
                 // add a cable
                 const cable = new Cable(fromPos, toPos);
