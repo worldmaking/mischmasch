@@ -49,7 +49,12 @@ function createMaterials(opCategory) {
     flatShading: true,
   });
 
-  return { panel, jackIn, jackOut };
+  const cableConnector = new MeshStandardMaterial({
+    transparent: true,
+    opacity: 0
+  });
+
+  return { panel, jackIn, jackOut, cableConnector };
 }
 
 export { createMaterials };

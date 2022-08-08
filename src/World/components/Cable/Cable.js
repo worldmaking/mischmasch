@@ -12,14 +12,19 @@ class Cable{
         const colors = [];
 
         // const points = GeometryUtils.hilbert3D( new Vector3( 0, 0, 0 ), 20.0, 1, 0, 1, 2, 3, 4, 5, 6, 7 );
+        // calculate a mid-point in the cable
+        let midPoint = new Vector3().lerpVectors(fromPosition, toPosition, 0.5)
+        // try stretching the midpoint outward
+        midPoint.setZ += 0.2
 
+        // ensure 
         let points = [fromPosition,
             toPosition]
         const spline = new CatmullRomCurve3( points );
         const divisions = Math.round( 12 * points.length );
         const point = new Vector3();
         const color = new Color();
-
+        console.log(points, 'lerp', lerp)
         // rainbow colouring
         for ( let i = 0, l = divisions; i < l; i ++ ) {
 

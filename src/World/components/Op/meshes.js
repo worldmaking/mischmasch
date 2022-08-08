@@ -27,6 +27,15 @@ function createMeshes(opProps) {
       jackIn.position.set(posX, 1.8, 0.2);
       jackIn.rotation.set(1.55, 1, 0)
       jackIn.name = `inlet_${inputName}_${jackIn.uuid}`
+      // each jack needs a cable connection mesh in front. 
+      let cableConnector = new Mesh(geometries.cableConnector, materials.cableConnector);
+      cableConnector.position.set(posX, 2, 0.2);
+      cableConnector.rotation.set(1.55, 1, 0)
+      cableConnector.name = `cableConnector_${inputName}_${cableConnector.uuid}`
+      // add the cableConnector to the jack inlet
+      console.log(cableConnector)
+      jackIn.add(cableConnector)
+
       inputJacks.push(jackIn)
 
       // labels
@@ -59,6 +68,14 @@ function createMeshes(opProps) {
   jackOut.position.set(0, 1, 0.2);
   jackOut.rotation.set(1.55, 1, 0)
   jackOut.name = `outlet_${opProps.op}_${jackOut.uuid}`
+  // output jack needs a cable connection mesh in front. 
+  let jackOutConnector = new Mesh(geometries.cableConnector, materials.jackOutConnector);
+  jackOutConnector.position.set(0, 1.2, 0.2);
+  jackOutConnector.rotation.set(1.55, 1, 0)
+  jackOutConnector.name = `jackOutConnector_${opProps.op}_${jackOutConnector.uuid}`
+  // add the cableConnector to the jackOut
+  jackOut.add(jackOutConnector)
+
 
   let outputLabel = new Text();
   if(opProps.outputs[0]){

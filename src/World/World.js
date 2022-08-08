@@ -268,9 +268,9 @@ class World {
                 
             break
             case 'addCable':
-                let from = newAbs.meshes.jackOut.name
+                let from = newAbs.meshes.jackOutConnector.name
                 let to = newDiv.meshes.inputJacks[0].name
-                
+                console.log('newdiv', newDiv.meshes)
                 // console.log(abs, div)
                 let fromObj = scene.getObjectByName(from)
                 let toObj = scene.getObjectByName(to)
@@ -283,6 +283,7 @@ class World {
                 const cable = new Cable(fromPos, toPos);
                 // console.log(cable)
                 // cable.curveObject.name = `cable_${cable.curveObject.uuid}`
+                console.log(cable.line)
                 scene.add(cable.line)
 
             break
