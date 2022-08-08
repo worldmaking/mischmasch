@@ -9,7 +9,7 @@ class Audio{
             // ugen needs to reference the genish object (so, genish.cycle, genish.mul etc.)
             genish.export( window )
             
-            let saw = mul( phasor(330), .05 )
+            let saw = cycle(330)
             
         
             // make our audio context with a buffer size of 2048 samples.
@@ -23,7 +23,7 @@ class Audio{
 
             window.onclick = ()=> {
             
-                utilities.playWorklet( saw, 'fmsynth', true ) 
+                utilities.playWorklet( saw, 'sawSynth', true ) 
 
             
             }

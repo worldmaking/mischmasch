@@ -9,7 +9,7 @@ import { Cable } from './components/Cable/Cable.js'
 // modules from the systems folder
 import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
-import { Resizer } from './systems/Resizer.js';
+// import { Resizer } from './systems/Resizer.js';
 import { Loop } from './systems/Loop.js';
 import { state } from './systems/state.js'
 import { Audio } from './systems/Audio.js'
