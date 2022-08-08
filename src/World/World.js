@@ -12,7 +12,7 @@ import { createRenderer } from './systems/renderer.js';
 import { Resizer } from './systems/Resizer.js';
 import { Loop } from './systems/Loop.js';
 import { state } from './systems/state.js'
-
+import { Audio } from './systems/Audio.js'
 // webXR
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { Vector2 } from 'three'
@@ -188,6 +188,9 @@ class World {
             doc.scene = {nodes:{}, arcs:[]}
         })
         updateMischmaschState(doc1)
+
+        // audio
+        const audio = new Audio()
 
     }
 
