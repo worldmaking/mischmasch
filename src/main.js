@@ -1,9 +1,12 @@
 import { World} from './World/World.js'
 
 import "./styles/main.css"
+
 let paletteState = 0;
 // create the main function
 function main() {
+
+   // 
     // code to set up the World App will go here
     
     // Get a reference to the container element
@@ -24,6 +27,9 @@ function main() {
             break
             case 50: // 2 == select 'div' op from palette
                 world.keyboardScaffolding('addNode', 'div')
+            break
+            case 32:
+                world.keyboardScaffolding('addCable', ['abs_0', 'div_0'])
             break
         }
 

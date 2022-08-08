@@ -40,6 +40,10 @@ let gui;
 let mischmaschState;
 const pointer = new Vector2();
 let opIDMap = {}
+
+// temp vars for keyboard scaffolding
+let newAbs, newDiv;
+
 class World {
     // 1. Create an instance of the World app
     constructor(container) {
@@ -48,14 +52,13 @@ class World {
         renderer = createRenderer();
         container.append(renderer.domElement);
         
-        // stats
+        // gpu stats panel
         stats = new Stats();
-        document.body.appendChild( stats.dom );
-
+        
         gpuPanel = new GPUStatsPanel( renderer.getContext() );
         stats.addPanel( gpuPanel );
-        stats.showPanel( 0 );
 
+        // user settings
         initGui();
 
         // XR rendering
@@ -146,16 +149,31 @@ class World {
         } );
 
         // rendering loop
-        loop = new Loop(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats);
+        loop = new Loop(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel);
         loop.updatables.push(controls);
 
         // add the three canvas to the html container
         container.append(renderer.domElement); 
 
 
-        // try a cable
-        const cable = new Cable();
-        scene.add(cable.curveObject)
+                
+
+
+				// Line ( BufferGeometry, LineBasicMaterial ) - rendered with gl.LINE_STRIP
+
+				// const geo = new BufferGeometry();
+				// geo.setAttribute( 'position', new Float32BufferAttribute( positions, 3 ) );
+				// geo.setAttribute( 'color', new Float32BufferAttribute( colors, 3 ) );
+
+				// matLineBasic = new LineBasicMaterial( { vertexColors: true } );
+				// // matLineDashed = new LineDashedMaterial( { vertexColors: true, scale: 2, dashSize: 1, gapSize: 1 } );
+
+				// line1 = new Line( geo, matLineBasic );
+				// line1.computeLineDistances();
+				// line1.visible = false;
+				// scene.add( line1 );
+
+
         // ligthing
         const { ambientLight, mainLight } = createLights();
         scene.add(ambientLight, mainLight);
@@ -202,7 +220,7 @@ class World {
             updateMischmaschState(doc1)
         }        
     }
-
+    
     keyboardScaffolding(command, payload){
         switch(command){
             case 'addNode':
@@ -221,6 +239,8 @@ class World {
                         doc1 = Automerge.change(doc1, statec[3], doc => {
                             doc.scene.nodes[statec[2]] = statec[1]
                         })
+                        console.log('abs', thisOp)
+                        newAbs = thisOp // this is used by spacebar to get the id of the object that is the outlet
                         updateMischmaschState(doc1)
                     break
                     case 'div':
@@ -239,11 +259,35 @@ class World {
                         doc1 = Automerge.change(doc1, stateChange[3], doc => {
                             doc.scene.nodes[stateChange[2]] = stateChange[1]
                         })
+                        console.log('div', op)
+                        newDiv = op // this is used by spacebar to get the id of the object that is the inlet
                         updateMischmaschState(doc1)
                     break
+
                 }
                 
             break
+            case 'addCable':
+                let from = newAbs.meshes.jackOut.name
+                let to = newDiv.meshes.inputJacks[0].name
+                
+                // console.log(abs, div)
+                let fromObj = scene.getObjectByName(from)
+
+                let toObj = scene.getObjectByName(to)
+                console.log(fromObj, toObj)
+
+                let fromPos = fromObj.position
+                let toPos = toObj.position
+
+                // add a cable
+                const cable = new Cable(fromPos, toPos);
+                // console.log(cable)
+                // cable.curveObject.name = `cable_${cable.curveObject.uuid}`
+                scene.add(cable.line)
+
+            break
+
         }
     }
     displayPalette(){
@@ -265,7 +309,8 @@ function updateMischmaschState(newState) {
 function initGui() {
 
     gui = new GUI();
-
+    gui.close()
+    gui.title('User Settings')
     const param = {
         // 'line type': 0,
         // 'world units': false,
@@ -274,6 +319,7 @@ function initGui() {
         'Controller Beam Width': 20,
         'Controller Beam Angle': -35,
         'Controller Vibration': true,
+        'GPU Stats Window': false,
         // 'dash scale': 1,
         // 'dash / gap': 1
     };
@@ -297,6 +343,19 @@ function initGui() {
     gui.add( param, 'Controller Vibration').onChange( function ( val ) {
         console.log('Controller Vibration', val)
     } );
+
+    gui.add( param, 'GPU Stats Window').onChange( function ( val ) {
+        if(val == true){
+            document.body.appendChild( stats.dom );
+            // stats.showPanel( 1 );
+        } else {
+            document.body.removeChild( stats.dom );
+            // stats.showPanel( 0 );
+        }
+        
+    } );
+
+
     // gui.add( param, 'line type', { 'LineGeometry': 0, 'gl.LINE': 1 } ).onChange( function ( val ) {
 
     //     switch ( val ) {

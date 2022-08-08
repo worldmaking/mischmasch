@@ -17,7 +17,19 @@ class Op extends Group {
 
         // import and create the meshes
         this.meshes = createMeshes(opProps);
-        
+        console.log('opGroup', this)
+        this.name = opName
+        // iterate the children, name them childUIName_uuid
+        let thisUUID = this.uuid
+        for(let i = 0; i<this.meshes.length; i++){
+            let child = this.meshes[i]
+            if(child.isArray()){
+                // iterate it
+
+            }else{
+                // this.meshes[i].name = 
+            }
+        }
         // these are single items
         this.add(
             this.meshes.panel,

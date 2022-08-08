@@ -10,7 +10,7 @@ class XRController{
         // create raycast beam
         const geometry = new BufferGeometry().setFromPoints([
             new Vector3(0, 0, 0),
-            new Vector3(0, -35, -1)
+            new Vector3(0, -45, -1)
         ]);
         const material = new LineBasicMaterial( {
             color: 0xffffff,

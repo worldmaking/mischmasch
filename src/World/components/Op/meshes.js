@@ -26,6 +26,7 @@ function createMeshes(opProps) {
       let posX = inputNames.indexOf(inputName) + -0.5
       jackIn.position.set(posX, 1.8, 0.2);
       jackIn.rotation.set(1.55, 1, 0)
+      jackIn.name = `inlet_${inputName}_${jackIn.uuid}`
       inputJacks.push(jackIn)
 
       // labels
@@ -36,6 +37,7 @@ function createMeshes(opProps) {
       inputLabel.anchorX = 'center'
       inputLabel.position.set(posX, 1.6, 0.2);
       inputLabel.rotation.set(0, 0, 0)
+
       inputLabels.push(inputLabel)
     })
     panelGeometry = createGeometries(numInputs);
@@ -50,11 +52,13 @@ function createMeshes(opProps) {
   const panel = new Mesh(panelGeometry.panel, materials.panel);
   panel.position.set(0, 1.4, 0);
   panel.rotation.set(0, 0, 0)
-  // panel.name = opProps.op 
+  panel.name = `panel_${opProps.op}_${panel.uuid}`
+
 
   const jackOut = new Mesh(geometries.jack, materials.jackOut);
   jackOut.position.set(0, 1, 0.2);
   jackOut.rotation.set(1.55, 1, 0)
+  jackOut.name = `outlet_${opProps.op}_${jackOut.uuid}`
 
   let outputLabel = new Text();
   if(opProps.outputs[0]){
