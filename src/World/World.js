@@ -5,6 +5,7 @@ import { Palette } from './components/Palette/Palette.js';
 import { createScene } from './components/scene.js';
 import { createLights } from './components/Lights/lights.js'
 import { XRController } from './components/XRController/XRController.js'
+import { Cable } from './components/Cable/Cable.js'
 // modules from the systems folder
 import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
@@ -15,6 +16,9 @@ import { state } from './systems/state.js'
 // webXR
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { Vector2 } from 'three'
+import Stats from 'three/examples/jsm/libs/stats.module.js';
+import { GPUStatsPanel } from 'three/examples/jsm/utils/GPUStatsPanel.js';
+import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 
 // versioning
 import * as Automerge from 'automerge'
@@ -30,6 +34,9 @@ let scene;
 let loop;
 let palette;
 let doc1;
+let stats, gpuPanel;
+let gui;
+
 let mischmaschState;
 const pointer = new Vector2();
 let opIDMap = {}
@@ -41,6 +48,16 @@ class World {
         renderer = createRenderer();
         container.append(renderer.domElement);
         
+        // stats
+        stats = new Stats();
+        document.body.appendChild( stats.dom );
+
+        gpuPanel = new GPUStatsPanel( renderer.getContext() );
+        stats.addPanel( gpuPanel );
+        stats.showPanel( 0 );
+
+        initGui();
+
         // XR rendering
         document.body.appendChild( VRButton.createButton( renderer ) );
         renderer.xr.enabled = true;
@@ -129,14 +146,16 @@ class World {
         } );
 
         // rendering loop
-        loop = new Loop(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft);
+        loop = new Loop(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats);
         loop.updatables.push(controls);
 
         // add the three canvas to the html container
         container.append(renderer.domElement); 
 
 
-        
+        // try a cable
+        const cable = new Cable();
+        scene.add(cable.curveObject)
         // ligthing
         const { ambientLight, mainLight } = createLights();
         scene.add(ambientLight, mainLight);
@@ -242,5 +261,107 @@ function updateMischmaschState(newState) {
     mischmaschState = newState
     // genish.js will read from mischmaschState
 }
+
+function initGui() {
+
+    gui = new GUI();
+
+    const param = {
+        // 'line type': 0,
+        // 'world units': false,
+        'Cable Width': 5,
+        'Controller Beam Colour': 0xffffff,
+        'Controller Beam Width': 20,
+        'Controller Beam Angle': -35,
+        'Controller Vibration': true,
+        // 'dash scale': 1,
+        // 'dash / gap': 1
+    };
+
+    gui.add( param, 'Cable Width', 1, 10 ).onChange( function ( val ) {
+        console.log('Cable Width', val);
+    } );
+
+    gui.addColor( param, 'Controller Beam Colour' ).onChange( function ( val ) {
+        console.log('beam colour', val)
+    } );
+
+    gui.add( param, 'Controller Beam Width', 5, 50 ).onChange( function ( val ) {
+        console.log('Controller Beam Width', val)
+    } );
+
+    gui.add( param, 'Controller Beam Angle', -180, 180 ).onChange( function ( val ) {
+        console.log('Controller Beam Angle', val)
+    } );
+
+    gui.add( param, 'Controller Vibration').onChange( function ( val ) {
+        console.log('Controller Vibration', val)
+    } );
+    // gui.add( param, 'line type', { 'LineGeometry': 0, 'gl.LINE': 1 } ).onChange( function ( val ) {
+
+    //     switch ( val ) {
+
+    //         case 0:
+    //             line.visible = true;
+
+    //             line1.visible = false;
+
+    //             break;
+
+    //         case 1:
+    //             line.visible = false;
+
+    //             line1.visible = true;
+
+    //             break;
+
+    //     }
+
+    // } );
+
+    // gui.add( param, 'dash scale', 0.5, 2, 0.1 ).onChange( function ( val ) {
+
+    //     matLine.dashScale = val;
+    //     matLineDashed.scale = val;
+
+    // } );
+
+    // gui.add( param, 'dash / gap', { '2 : 1': 0, '1 : 1': 1, '1 : 2': 2 } ).onChange( function ( val ) {
+
+    //     switch ( val ) {
+
+    //         case 0:
+    //             matLine.dashSize = 2;
+    //             matLine.gapSize = 1;
+
+    //             matLineDashed.dashSize = 2;
+    //             matLineDashed.gapSize = 1;
+
+    //             break;
+
+    //         case 1:
+    //             matLine.dashSize = 1;
+    //             matLine.gapSize = 1;
+
+    //             matLineDashed.dashSize = 1;
+    //             matLineDashed.gapSize = 1;
+
+    //             break;
+
+    //         case 2:
+    //             matLine.dashSize = 1;
+    //             matLine.gapSize = 2;
+
+    //             matLineDashed.dashSize = 1;
+    //             matLineDashed.gapSize = 2;
+
+    //             break;
+
+    //     }
+
+    // } );
+
+}
+
 
 export { World };

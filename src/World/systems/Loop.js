@@ -2,7 +2,7 @@ import { Clock, Vector3, Matrix4, Raycaster } from 'three';
 
 const clock = new Clock();
 class Loop {
-    constructor(camera, scene, renderer, pointer, raycaster, xrCtlRight, xrCtlleft) {
+    constructor(camera, scene, renderer, pointer, raycaster, xrCtlRight, xrCtlleft, stats) {
         this.camera = camera;
         this.scene = scene;
         this.renderer = renderer;
@@ -12,6 +12,7 @@ class Loop {
         this.hoveredPaletteOp;
         this.xrCtlRight = xrCtlRight;
         this.xrCtlleft = xrCtlleft;
+        this.stats = stats;
         
     }
 
@@ -19,6 +20,10 @@ class Loop {
         this.renderer.setAnimationLoop(() => {
             // tell every animated object to tick forward one frame
             this.tick();
+
+            this.stats.update();
+
+            
                 // palette: is controller squeeze button pressed?
                 // is the palette in the scene
             
@@ -53,9 +58,11 @@ class Loop {
 
                 }
             }
-
+            gpuPanel.startQuery();
+            
             this.renderer.render(this.scene, this.camera);
 
+            gpuPanel.endQuery();
             // // set right controller 'B' state
             // if(this.xrCtlRight.controller.gamepad && this.xrCtlRight.controller.gamepad.buttons[5].touched){
             //     xrCtlRight.controller.userData.buttons.b = this.xrCtlRight.controller.gamepad.buttons[5].value;
