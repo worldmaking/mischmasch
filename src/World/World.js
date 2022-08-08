@@ -268,9 +268,9 @@ class World {
                 
             break
             case 'addCable':
-                let from = newAbs.meshes.jackOutConnector.name
+                let from = newAbs.meshes.jackOut.name
                 let to = newDiv.meshes.inputJacks[0].name
-                console.log('newdiv', newDiv.meshes)
+                
                 // console.log(abs, div)
                 let fromObj = scene.getObjectByName(from)
                 let toObj = scene.getObjectByName(to)

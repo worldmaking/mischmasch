@@ -16,6 +16,7 @@ class Cable{
         let midPoint = new Vector3().lerpVectors(fromPosition, toPosition, 0.5)
         // try stretching the midpoint outward
         midPoint.setZ += 0.2
+        midPoint.setY += 0.2
 
         // ensure 
         let points = [fromPosition,
@@ -24,7 +25,6 @@ class Cable{
         const divisions = Math.round( 12 * points.length );
         const point = new Vector3();
         const color = new Color();
-        console.log(points, 'lerp', lerp)
         // rainbow colouring
         for ( let i = 0, l = divisions; i < l; i ++ ) {
 

@@ -24,7 +24,7 @@ class Op extends Group {
             
             this.meshes.panel,
             this.meshes.jackOut,
-            this.meshes.jackOutConnector,
+            // this.meshes.jackOutConnector,
             this.meshes.outputLabel,
             this.meshes.opLabel
         );
