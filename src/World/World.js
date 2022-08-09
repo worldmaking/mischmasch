@@ -178,12 +178,6 @@ class World {
         // audio
         const audio = new Audio()
 
-        // load from sceneFile
-        // var sceneLoader = new SceneLoader();
-
-        // sceneLoader.parse(JSON.parse(tempScene), function (e) {
-        //     scene = e.scene;
-        // }, '.');
         // how to load a scene from 
         const loader = new ObjectLoader()
         loader.parse(tempScene, (theObj) => {
@@ -192,21 +186,7 @@ class World {
             scene.add(theObj)
             console.log(scene)
         })
-        // scene = new ObjectLoader()(tempScene);
-        // loader.parse( tempScene, function ( result ) {
-
-        //     if ( result.isScene ) {
-
-        //         scene.execute( new SetSceneCommand( scene, result ) );
-
-        //     } else {
-
-        //         scene.execute( new AddObjectCommand( scene, result ) );
-
-        //     }
-
-        // } );
-
+        
     }
 
     //  animation methods
