@@ -19,9 +19,10 @@ class Cable{
         midPoint.setY += 0.2
 
         // ensure 
-        let points = [fromPosition,
+        let points = [fromPosition, midPoint,
             toPosition]
-        const spline = new CatmullRomCurve3( points );
+        const spline = new CatmullRomCurve3( points, 0, 'catmullrom', 0.01  );
+        
         const divisions = Math.round( 12 * points.length );
         const point = new Vector3();
         const color = new Color();

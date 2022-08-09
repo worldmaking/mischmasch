@@ -29,7 +29,7 @@ function main() {
                 world.keyboardScaffolding('addNode', 'div')
             break
             case 67:
-                world.keyboardScaffolding('addCable', ['abs_0', 'div_0'])
+                world.keyboardScaffolding('addConnection', ['abs_0', 'div_0'])
             break
         }
 

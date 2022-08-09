@@ -1,19 +1,17 @@
-import * as Automerge from 'automerge'
-import {opsList} from '../components/Palette/genishOperators.js'
+// import * as Automerge from 'automerge'
+// import {opsList} from '../components/Palette/genishOperators.js'
 
-function state(operation, payload){
+function stateChange(operation, payload){
     switch(operation){
 
         case 'addNode':
             let nodeName = payload[0]
-            
             let threeProps = payload[1]
-            let genishProps = opsList.find(item => item.op === nodeName)
             let nodeID = `${nodeName}_${threeProps.uuid}`
             let automergeMsg = `add node ${nodeID} to scene`
        
             let newNode = {
-                genish: genishProps,
+                // genish: genishProps,
                 // reduce number of properties from three group, automerge has a weird error with too-large objects
                 threeProps: {
                     uuid: threeProps.uuid,
@@ -30,11 +28,18 @@ function state(operation, payload){
             }
             return [nodeName, newNode, nodeID, automergeMsg]
 
-    }
+        break
+        case 'addConnection':
+            
 
+        break
+
+    }
 
 }
 
-export { state }
+
+export { stateChange }
+
 
 

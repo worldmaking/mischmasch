@@ -6,12 +6,13 @@ import { createScene } from './components/scene.js';
 import { createLights } from './components/Lights/lights.js'
 import { XRController } from './components/XRController/XRController.js'
 import { Cable } from './components/Cable/Cable.js'
+import { Curve } from './components/Cable/Curve.js'
 // modules from the systems folder
 import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
 // import { Resizer } from './systems/Resizer.js';
 import { Loop } from './systems/Loop.js';
-import { state } from './systems/state.js'
+import { stateChange } from './systems/state.js'
 import { Audio } from './systems/Audio.js'
 // webXR
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
@@ -102,7 +103,7 @@ class World {
                     loop.updatables.push(op);
                     scene.remove(palette);
                     scene.add(op);
-                    let stateChange = state('addNode', [opName, op])
+                    let stateChange = stateChange('addNode', [opName, op])
                     doc1 = Automerge.change(doc1, stateChange[3], doc => {
                         doc.scene.nodes[stateChange[2]] = stateChange[1]
                     })
@@ -217,7 +218,7 @@ class World {
             loop.updatables.push(op);
             scene.remove(palette);
             scene.add(op);
-            let stateChange = state('addNode', [opName, op])
+            let stateChange = stateChange('addNode', [opName, op])
             doc1 = Automerge.change(doc1, stateChange[3], doc => {
                 doc.scene.nodes[stateChange[2]] = stateChange[1]
             })
@@ -239,9 +240,9 @@ class World {
                         loop.updatables.push(thisOp);
                         scene.remove(palette);
                         scene.add(thisOp);
-                        let statec = state('addNode', ['abs', thisOp])
-                        doc1 = Automerge.change(doc1, statec[3], doc => {
-                            doc.scene.nodes[statec[2]] = statec[1]
+                        let s = stateChange('addNode', ['abs', thisOp])
+                        doc1 = Automerge.change(doc1, s[3], doc => {
+                            doc.scene.nodes[s[2]] = s[1]
                         })
                         console.log('abs', thisOp)
                         newAbs = thisOp // this is used by spacebar to get the id of the object that is the outlet
@@ -259,11 +260,11 @@ class World {
                         loop.updatables.push(op);
                         scene.remove(palette);
                         scene.add(op);
-                        let stateChange = state('addNode', [opName, op])
-                        doc1 = Automerge.change(doc1, stateChange[3], doc => {
-                            doc.scene.nodes[stateChange[2]] = stateChange[1]
+                        let newState = stateChange('addNode', [opName, op])
+                        console.log(newState)
+                        doc1 = Automerge.change(doc1, newState[3], doc => {
+                            doc.scene.nodes[newState[2]] = newState[1]
                         })
-                        console.log('div', op)
                         newDiv = op // this is used by spacebar to get the id of the object that is the inlet
                         updateMischmaschState(doc1)
                     break
@@ -271,24 +272,33 @@ class World {
                 }
                 
             break
-            case 'addCable':
+            case 'addConnection':
                 let from = newAbs.meshes.jackOut.name
                 let to = newDiv.meshes.inputJacks[0].name
                 
                 // console.log(abs, div)
                 let fromObj = scene.getObjectByName(from)
                 let toObj = scene.getObjectByName(to)
-                console.log(fromObj, toObj)
-
+                // console.log(fromObj, toObj)
+                
                 let fromPos = newAbs.localToWorld(fromObj.position)
                 let toPos = newDiv.localToWorld(toObj.position)
 
                 // add a cable
                 const cable = new Cable(fromPos, toPos);
-                // console.log(cable)
-                // cable.curveObject.name = `cable_${cable.curveObject.uuid}`
-                console.log(cable.line)
                 scene.add(cable.line)
+                // const curve = new Curve(fromPos, toPos)
+                // console.log(curve)
+                // scene.add(curve.line)
+                // 
+                let msg = `connect ${from} to ${to}`
+                let newState = stateChange('addConnection', [from, to])
+                doc1 = Automerge.change(doc1, msg, doc => {
+                    doc.scene.arcs.push([from, to])
+                })
+                
+                updateMischmaschState(doc1)
+
 
             break
 
@@ -307,6 +317,10 @@ class World {
     
 function updateMischmaschState(newState) {
     mischmaschState = newState
+    console.log(mischmaschState)
+    let jsonScene = scene.toJSON()
+    scene.fromObj
+    console.log('jsonScene', jsonScene)
     // genish.js will read from mischmaschState
 }
 
