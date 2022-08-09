@@ -10,22 +10,25 @@ import { Curve } from './components/Cable/Curve.js'
 // modules from the systems folder
 import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
+
 // import { Resizer } from './systems/Resizer.js';
 import { Loop } from './systems/Loop.js';
 import { stateChange } from './systems/state.js'
 import { Audio } from './systems/Audio.js'
 // webXR
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
-import { Vector2 } from 'three'
+import { Vector2, ObjectLoader, SetSceneCommand, AddObjectCommand } from 'three'
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GPUStatsPanel } from 'three/examples/jsm/utils/GPUStatsPanel.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
+
 
 // versioning
 import * as Automerge from 'automerge'
 
 // scaffolding
 import { abs, div } from "./scaffolding.js"
+import { tempScene } from './temp/tempScene.js'
 
 // These variables are module-scoped: we cannot access them
 // from outside the module
@@ -157,25 +160,6 @@ class World {
         // add the three canvas to the html container
         container.append(renderer.domElement); 
 
-
-                
-
-
-				// Line ( BufferGeometry, LineBasicMaterial ) - rendered with gl.LINE_STRIP
-
-				// const geo = new BufferGeometry();
-				// geo.setAttribute( 'position', new Float32BufferAttribute( positions, 3 ) );
-				// geo.setAttribute( 'color', new Float32BufferAttribute( colors, 3 ) );
-
-				// matLineBasic = new LineBasicMaterial( { vertexColors: true } );
-				// // matLineDashed = new LineDashedMaterial( { vertexColors: true, scale: 2, dashSize: 1, gapSize: 1 } );
-
-				// line1 = new Line( geo, matLineBasic );
-				// line1.computeLineDistances();
-				// line1.visible = false;
-				// scene.add( line1 );
-
-
         // ligthing
         const { ambientLight, mainLight } = createLights();
         scene.add(ambientLight, mainLight);
@@ -193,6 +177,35 @@ class World {
 
         // audio
         const audio = new Audio()
+
+        // load from sceneFile
+        // var sceneLoader = new SceneLoader();
+
+        // sceneLoader.parse(JSON.parse(tempScene), function (e) {
+        //     scene = e.scene;
+        // }, '.');
+        // how to load a scene from 
+        const loader = new ObjectLoader()
+        loader.parse(tempScene, (theObj) => {
+            /*...*/
+            console.log(theObj)
+            scene.add(theObj)
+            console.log(scene)
+        })
+        // scene = new ObjectLoader()(tempScene);
+        // loader.parse( tempScene, function ( result ) {
+
+        //     if ( result.isScene ) {
+
+        //         scene.execute( new SetSceneCommand( scene, result ) );
+
+        //     } else {
+
+        //         scene.execute( new AddObjectCommand( scene, result ) );
+
+        //     }
+
+        // } );
 
     }
 
@@ -327,12 +340,14 @@ class World {
 function updateMischmaschState() {
     // apply new scene to automerge doc
     //todo automerge breaks when trying to apply the sceneJSON. posted this in their github issues: https://github.com/automerge/automerge/issues/504
-    //! let sceneJSON = scene.toJSON()
+    // update matrix world before exporting it to json
+    scene.updateMatrixWorld()
+    let sceneJSON = scene.toJSON()
     //! doc1 = Automerge.change(doc1, 'update state', doc => {
     //!     doc.three = sceneJSON
     //! })
     mischmaschState = doc1
-    console.log(mischmaschState)
+    console.log(sceneJSON)
     // let jsonScene = scene.toJSON()
     // scene.fromObj
     // console.log('jsonScene', jsonScene)
