@@ -28,7 +28,6 @@ import * as Automerge from 'automerge'
 
 // scaffolding
 import { abs, div } from "./scaffolding.js"
-import { tempScene } from './temp/tempScene.js'
 
 // These variables are module-scoped: we cannot access them
 // from outside the module
@@ -40,6 +39,7 @@ let palette;
 let doc1;
 let stats, gpuPanel;
 let gui;
+let audio;
 
 let mischmaschState;
 const pointer = new Vector2();
@@ -176,16 +176,20 @@ class World {
         // updateMischmaschState()
 
         // audio
-        const audio = new Audio()
+        audio = new Audio()
 
         // how to load a scene from 
+        // todo THIS WORKS, its only commented out to work on other stuff
+        /*
         const loader = new ObjectLoader()
         loader.parse(tempScene, (theObj) => {
-            /*...*/
             console.log(theObj)
             scene.add(theObj)
             console.log(scene)
         })
+        */
+
+        
         
     }
 
@@ -235,13 +239,15 @@ class World {
                         scene.remove(palette);
                         scene.add(thisOp);
                         updateMischmaschState()
+                        newAbs = thisOp // this is used by spacebar to get the id of the object that is the outlet
+
                         /*
                         let s = stateChange('addNode', ['abs', thisOp])
                         doc1 = Automerge.change(doc1, s[3], doc => {
                             doc.scene.nodes[s[2]] = s[1]
                         })
                         console.log('abs', thisOp)
-                        newAbs = thisOp // this is used by spacebar to get the id of the object that is the outlet
+                        
                         */
                         
                     break
@@ -258,13 +264,15 @@ class World {
                         scene.remove(palette);
                         scene.add(op);
                         updateMischmaschState()
+                        newDiv = op // this is used by spacebar to get the id of the object that is the inlet
+
                         /*
                         let newState = stateChange('addNode', [opName, op])
                         console.log(newState)
                         doc1 = Automerge.change(doc1, newState[3], doc => {
                             doc.scene.nodes[newState[2]] = newState[1]
                         })
-                        newDiv = op // this is used by spacebar to get the id of the object that is the inlet
+                        
                         
                         */
                     break
@@ -273,6 +281,8 @@ class World {
                 
             break
             case 'addConnection':
+                audio.updateGraph()
+                
                 let from = newAbs.meshes.jackOut.name
                 let to = newDiv.meshes.inputJacks[0].name
                 
@@ -288,7 +298,6 @@ class World {
                 const cable = new Cable(fromPos, toPos);
                 scene.add(cable.line)
 
-                updateMischmaschState()
                 // const curve = new Curve(fromPos, toPos)
                 // console.log(curve)
                 // scene.add(curve.line)
@@ -303,6 +312,7 @@ class World {
 
 
             break
+            
 
         }
     }
@@ -319,19 +329,22 @@ class World {
     
 function updateMischmaschState() {
     // apply new scene to automerge doc
-    //todo automerge breaks when trying to apply the sceneJSON. posted this in their github issues: https://github.com/automerge/automerge/issues/504
+    //todo automerge breaks when trying to apply the scene.toJSON(). posted this in their github issues: https://github.com/automerge/automerge/issues/504 --- so for now, I'm stringifying the resulting JSON and passing it into automerge, which does not seem to have a problem. 
     // update matrix world before exporting it to json
-    scene.updateMatrixWorld()
-    let sceneJSON = scene.toJSON()
+    //! scene.updateMatrixWorld()
+    //! let sceneJSON = scene.toJSON()
+    //! console.log(sceneJSON)
     //! doc1 = Automerge.change(doc1, 'update state', doc => {
     //!     doc.three = sceneJSON
     //! })
-    mischmaschState = doc1
-    console.log(sceneJSON)
+    // mischmaschState = doc1
     // let jsonScene = scene.toJSON()
     // scene.fromObj
     // console.log('jsonScene', jsonScene)
     // genish.js will read from mischmaschState
+    
+    // update audio graph
+    // audio.updateGraph()
 }
 
 function initGui() {

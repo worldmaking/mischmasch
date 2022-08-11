@@ -32,8 +32,6 @@ function main() {
                 world.keyboardScaffolding('addConnection', ['abs_0', 'div_0'])
             break
         }
-
-        console.log(event.keyCode)
         // do something
     });
     
