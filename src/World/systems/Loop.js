@@ -47,6 +47,14 @@ class Loop {
             bubbles: true, // allow parent script(s) like World.js to listen
             detail: {button: 'pressed'}
         })
+        let leftBPress = new CustomEvent('leftBPress', {
+            bubbles: true, // allow parent script(s) like World.js to listen
+            detail: {button: 'pressed'}
+        })
+        let leftAPress = new CustomEvent('leftAPress', {
+            bubbles: true, // allow parent script(s) like World.js to listen
+            detail: {button: 'pressed'}
+        })
         this.renderer.setAnimationLoop(() => {
             // tell every animated object to tick forward one frame
             this.tick();
@@ -78,7 +86,6 @@ class Loop {
                         window.dispatchEvent(rightAPress)
                     }
 
-                    // console.log(this.xrCtlRight.controller.gamepad.buttons)
                 }
                 
             } 
@@ -92,8 +99,18 @@ class Loop {
 
                     // thumbstick button press
                     if(this.xrCtlLeft.controller.gamepad.buttons[3].pressed === true){
-                        // this.xrCtlRight.thumbstickPress = true
+                        // this.xrCtlLeft.thumbstickPress = true
                         window.dispatchEvent(leftThumbstickPress)
+                    }
+
+                    // B button press
+                    if(this.xrCtlLeft.controller.gamepad.buttons[5].pressed === true){
+                        window.dispatchEvent(leftBPress)
+                    }
+
+                    // A button press
+                    if(this.xrCtlLeft.controller.gamepad.buttons[4].pressed === true){
+                        window.dispatchEvent(leftAPress)
                     }
                 }
             }
