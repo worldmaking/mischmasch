@@ -167,6 +167,26 @@ class World {
                 // do something with the press event
             })
 
+            // get 'B'' button presses
+            window.addEventListener('rightBPress', (e)=>{
+                // do something with the press event
+            })
+
+            // get 'B' button presses
+            window.addEventListener('leftBPress', (e)=>{
+                // do something with the press event
+            })
+
+            // get 'A' button presses
+            window.addEventListener('rightAPress', (e)=>{
+                // do something with the press event
+            })
+
+            // get 'A' button presses
+            window.addEventListener('leftAPress', (e)=>{
+                // do something with the press event
+            })
+
         // mouse controls 
         const controls = createControls(camera, renderer.domElement);
         window.addEventListener( 'pointermove', function(event){

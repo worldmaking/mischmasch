@@ -19,6 +19,7 @@ class Loop {
 
     start() {
         // create event emitter for the controller thumbsticks, which aren't available natively in threejs
+        // right controller
         let rightThumbstickAxes = new CustomEvent('rightThumbstickAxes', {
             bubbles: true, // allow parent script(s) like World.js to listen
             detail: {axes: 'touched'}
@@ -27,7 +28,17 @@ class Loop {
             bubbles: true, // allow parent script(s) like World.js to listen
             detail: {button: 'pressed'}
         })
-        
+        let rightBPress = new CustomEvent('rightBPress', {
+            bubbles: true, // allow parent script(s) like World.js to listen
+            detail: {button: 'pressed'}
+        })
+        let rightAPress = new CustomEvent('rightAPress', {
+            bubbles: true, // allow parent script(s) like World.js to listen
+            detail: {button: 'pressed'}
+        })
+
+
+        // left controller
         let leftThumbstickAxes = new CustomEvent('leftThumbstickAxes', {
             bubbles: true, // allow parent script(s) like World.js to listen
             detail: {axes: 'touched'}
@@ -56,6 +67,18 @@ class Loop {
                         // this.xrCtlRight.thumbstickPress = true
                         window.dispatchEvent(rightThumbstickPress)
                     }
+
+                    // B button press
+                    if(this.xrCtlRight.controller.gamepad.buttons[5].pressed === true){
+                        window.dispatchEvent(rightBPress)
+                    }
+
+                    // A button press
+                    if(this.xrCtlRight.controller.gamepad.buttons[4].pressed === true){
+                        window.dispatchEvent(rightAPress)
+                    }
+
+                    // console.log(this.xrCtlRight.controller.gamepad.buttons)
                 }
                 
             } 
@@ -74,6 +97,7 @@ class Loop {
                     }
                 }
             }
+            
             
             
 
