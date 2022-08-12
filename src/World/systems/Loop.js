@@ -18,15 +18,65 @@ class Loop {
     }
 
     start() {
+        // create event emitter for the controller thumbsticks, which aren't available natively in threejs
+        let rightThumbstickAxes = new CustomEvent('rightThumbstickAxes', {
+            bubbles: true, // allow parent script(s) like World.js to listen
+            detail: {axes: 'touched'}
+        })
+        let rightThumbstickPress = new CustomEvent('rightThumbstickPress', {
+            bubbles: true, // allow parent script(s) like World.js to listen
+            detail: {button: 'pressed'}
+        })
+        
+        let leftThumbstickAxes = new CustomEvent('leftThumbstickAxes', {
+            bubbles: true, // allow parent script(s) like World.js to listen
+            detail: {axes: 'touched'}
+        })
+        let leftThumbstickPress = new CustomEvent('leftThumbstickPress', {
+            bubbles: true, // allow parent script(s) like World.js to listen
+            detail: {button: 'pressed'}
+        })
         this.renderer.setAnimationLoop(() => {
             // tell every animated object to tick forward one frame
             this.tick();
 
             this.stats.update();
 
+            // XR controller custom events
+            // right controller
+            if(this.xrCtlRight){
+                // thumbstick axes
+                if(this.xrCtlRight.controller.gamepad){
+                    // thumbstick axes
+                    this.xrCtlRight.thumbstickAxes = this.xrCtlRight.controller.gamepad.axes
+                    window.dispatchEvent(rightThumbstickAxes)
+
+                    // thumbstick button press
+                    if(this.xrCtlRight.controller.gamepad.buttons[3].pressed === true){
+                        // this.xrCtlRight.thumbstickPress = true
+                        window.dispatchEvent(rightThumbstickPress)
+                    }
+                }
+                
+            } 
+            //  left controller
+            else if(this.xrCtlLeft){
+                
+                if(this.xrCtlLeft.controller.gamepad){
+                    // thumbstick axes
+                    this.xrCtlLeft.thumbstickAxes = this.xrCtlLeft.controller.gamepad.axes
+                    window.dispatchEvent(leftThumbstickAxes)
+
+                    // thumbstick button press
+                    if(this.xrCtlLeft.controller.gamepad.buttons[3].pressed === true){
+                        // this.xrCtlRight.thumbstickPress = true
+                        window.dispatchEvent(leftThumbstickPress)
+                    }
+                }
+            }
             
-                // palette: is controller squeeze button pressed?
-                // is the palette in the scene
+            
+
             
             // const rotationMatrix = new Matrix4();
             // let ctrlMatrixWorld = this.xrCtlRight.controller.matrixWorld

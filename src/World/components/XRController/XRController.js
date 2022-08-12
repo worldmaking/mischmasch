@@ -10,11 +10,11 @@ class XRController{
         // create raycast beam
         const geometry = new BufferGeometry().setFromPoints([
             new Vector3(0, 0, 0),
-            new Vector3(0, -45, -1)
+            new Vector3(0, -30, -1)
         ]);
         const material = new LineBasicMaterial( {
             color: 0xffffff,
-            linewidth: 20,
+            linewidth: 50,
             linecap: 'round', //ignored by WebGLRenderer
             linejoin:  'round' //ignored by WebGLRenderer
         } );
@@ -51,6 +51,9 @@ class XRController{
         this.model = controllerGrip
         // add raycast beam
         this.model.add(line)
+
+        // this will be from a custom event emitter in loop.js       
+        this.controller.thumbstickAxes = []
     }
     
 }

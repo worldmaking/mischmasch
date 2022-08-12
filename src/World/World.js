@@ -17,7 +17,7 @@ import { stateChange } from './systems/state.js'
 import { Audio } from './systems/Audio.js'
 // webXR
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
-import { Vector2, ObjectLoader, SetSceneCommand, AddObjectCommand } from 'three'
+import { Vector2, ObjectLoader, SetSceneCommand, AddObjectCommand,TubeGeometry, MeshBasicMaterial, LineCurve3, Mesh } from 'three'
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GPUStatsPanel } from 'three/examples/jsm/utils/GPUStatsPanel.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
@@ -142,8 +142,30 @@ class World {
                 ctlr.controller.userData.selectPressed = true;
                 // make Palette invisible & unclickable
                 scene.remove(palette);
+                
             });
+           
         })
+         // CUSTOM EVENTS:
+            // get thumbstick axes
+            window.addEventListener('rightThumbstickAxes', (e) => {
+                //! the axes data is found below. commented out just for now:  
+                //! xrCtlRight.thumbstickAxes
+            })
+            window.addEventListener('leftThumbstickAxes', (e) => {
+                //! the axes data is found below. commented out just for now:  
+                //! xrCtlLeft.thumbstickAxes
+            })
+
+            // get thumbstick button presses
+            window.addEventListener('rightThumbstickPress', (e)=>{
+                // do something with the press event
+            })
+
+            // get thumbstick button presses
+            window.addEventListener('leftThumbstickPress', (e)=>{
+                // do something with the press event
+            })
 
         // mouse controls 
         const controls = createControls(camera, renderer.domElement);
@@ -176,7 +198,7 @@ class World {
         // updateMischmaschState()
 
         // audio
-        audio = new Audio()
+        // audio = new Audio()
 
         // how to load a scene from 
         // todo THIS WORKS, its only commented out to work on other stuff
@@ -281,7 +303,7 @@ class World {
                 
             break
             case 'addConnection':
-                audio.updateGraph()
+                // audio.updateGraph()
                 
                 let from = newAbs.meshes.jackOut.name
                 let to = newDiv.meshes.inputJacks[0].name
@@ -295,9 +317,16 @@ class World {
                 let toPos = newDiv.localToWorld(toObj.position)
 
                 // add a cable
-                const cable = new Cable(fromPos, toPos);
-                scene.add(cable.line)
+                // const cable = new Cable(fromPos, toPos);
+                // scene.add(cable.line)
 
+
+                var path = new LineCurve3(fromPos, toPos);
+                var tubegeometry = new TubeGeometry(path, 2, .02, 8, false);
+                var material = new MeshBasicMaterial({ color: 0x0000ff });
+                var line = new Mesh(tubegeometry, material);
+
+                scene.add(line)
                 // const curve = new Curve(fromPos, toPos)
                 // console.log(curve)
                 // scene.add(curve.line)
