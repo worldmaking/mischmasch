@@ -1,5 +1,4 @@
 import { Clock, Vector3, Matrix4, Raycaster } from 'three';
-
 const clock = new Clock();
 class Loop {
     constructor(camera, scene, renderer, pointer, xrCtlRight, xrCtlleft, stats, gpuPanel) {
@@ -55,12 +54,12 @@ class Loop {
             bubbles: true, // allow parent script(s) like World.js to listen
             detail: {button: 'pressed'}
         })
+
         this.renderer.setAnimationLoop(() => {
             // tell every animated object to tick forward one frame
             this.tick();
 
             this.stats.update();
-
             // XR controller custom events
             // right controller
             if(this.xrCtlRight){
@@ -129,7 +128,7 @@ class Loop {
             let origin = this.xrCtlRight.controller.position
             
             let direction = new Vector3( rotation._x, rotation._y, rotation._z ) //.normalize()
-            this.raycaster.set( origin, direction )
+            this.raycaster.set( origin, rotation )
             this.raycaster.name = 'controller'
 
             // calculate objects intersecting the picking ray

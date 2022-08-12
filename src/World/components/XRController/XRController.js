@@ -54,6 +54,8 @@ class XRController{
 
         // this will be from a custom event emitter in loop.js       
         this.controller.thumbstickAxes = []
+        console.log('ctr info', this)
+
     }
     
 }

@@ -10,6 +10,7 @@ import { Curve } from './components/Cable/Curve.js'
 // modules from the systems folder
 import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
+import { Resizer } from './systems/Resizer.js'
 
 // import { Resizer } from './systems/Resizer.js';
 import { Loop } from './systems/Loop.js';
@@ -207,7 +208,7 @@ class World {
         scene.add(ambientLight, mainLight);
 
         // resizer. See discoverthreejs for how/why this is useful
-        // const resizer = new Resizer(container, camera, renderer);
+        const resizer = new Resizer(container, camera, renderer);
 
         // versioning
         doc1 = Automerge.init()
