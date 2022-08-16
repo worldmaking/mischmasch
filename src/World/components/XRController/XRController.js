@@ -19,7 +19,7 @@ class XRController{
             linejoin:  'round' //ignored by WebGLRenderer
         } );
         const line = new Line(geometry, material);
-        line.scale.z = 100;
+        line.scale.z = 10;
         line.name = 'xrControllerRaycastBeam'
 
         // setup controller

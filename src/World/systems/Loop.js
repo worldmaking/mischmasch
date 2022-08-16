@@ -114,8 +114,14 @@ class Loop {
                 }
             }
             
+            const rotationMatrix = new Matrix4();
+            rotationMatrix.extractRotation(this.xrCtlRight.controller.matrixWorld);
+            const raycaster = new Raycaster();
+            raycaster.ray.origin.setFromMatrixPosition(this.xrCtlRight.controller.matrixWorld);
+            raycaster.ray.direction.set(0, 0, -1).applyMatrix4(rotationMatrix);
+            const intersects = raycaster.intersectObjects(this.scene.children);
             
-            
+            console.log(intersects)
 
             
             // const rotationMatrix = new Matrix4();
@@ -123,7 +129,7 @@ class Loop {
             // rotationMatrix.extractRotation(ctrlMatrixWorld);
             // this.raycaster.ray.origin.setFromMatrixPosition(ctrlMatrixWorld);
             // this.raycaster.ray.direction.set(0, -35, -1).applyMatrix4(rotationMatrix);
-            
+            /* //!
             let rotation = this.xrCtlRight.controller.rotation
             let origin = this.xrCtlRight.controller.position
             
@@ -133,6 +139,7 @@ class Loop {
 
             // calculate objects intersecting the picking ray
             const intersects = this.raycaster.intersectObjects( this.scene.children );
+            console.log(intersects.slice(2))
             
             for ( let i = 0; i < intersects.length; i ++ ) {
                 if(intersects[i].object.name && (intersects[i].object.name == 'xrControllerRaycastBeam' || intersects[i].object.name == 'controller' || intersects[i].object.name == 'thumbstick' || intersects[i].object.name == 'trigger')){
@@ -155,6 +162,7 @@ class Loop {
 
             }
             
+            */ //!
 
             this.gpuPanel.startQuery();
             
