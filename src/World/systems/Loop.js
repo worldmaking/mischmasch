@@ -119,9 +119,30 @@ class Loop {
             const raycaster = new Raycaster();
             raycaster.ray.origin.setFromMatrixPosition(this.xrCtlRight.controller.matrixWorld);
             raycaster.ray.direction.set(0, 0, -1).applyMatrix4(rotationMatrix);
+            // the lighting and xr controller need to be ignored. 
+            // todo make a more elegant solution, as eventually more than 2 objects will be added, like a second controller, like other players' controllers, etc. 
+            // let userObjects = this.scene.children.slice(2)
             const intersects = raycaster.intersectObjects(this.scene.children);
             
-            console.log(intersects)
+
+            if (intersects.length > 0){
+                for(let i = 0; i <intersects.length; i++){
+                    
+                    if(intersects[i].object.name && intersects[i].object.name !== 'xrControllerRaycastBeam' && intersects[i].object.name !== 'controller' && intersects[i].object.name !== 'thumbstick'){
+                        console.log(intersects[i].object.name, intersects[i])
+                        this.xrCtlRight.model.children[1].scale.z = intersects[i].distance;
+                        this.selectedObject = intersects[i].object;
+                        this.selectedObject.material.color = 0xff0000;
+                        this.selectedObjectDistance = this.selectedObject.position.distanceTo(this.xrCtlRight.controller.position);
+                        // stage this op to be added to the scene
+                        this.hoveredPaletteOp = intersects[i]
+                    }
+                }
+                
+              
+            }
+          
+            
 
             
             // const rotationMatrix = new Matrix4();
@@ -129,7 +150,7 @@ class Loop {
             // rotationMatrix.extractRotation(ctrlMatrixWorld);
             // this.raycaster.ray.origin.setFromMatrixPosition(ctrlMatrixWorld);
             // this.raycaster.ray.direction.set(0, -35, -1).applyMatrix4(rotationMatrix);
-            /* //!
+            /* 
             let rotation = this.xrCtlRight.controller.rotation
             let origin = this.xrCtlRight.controller.position
             
@@ -162,7 +183,7 @@ class Loop {
 
             }
             
-            */ //!
+            */ 
 
             this.gpuPanel.startQuery();
             

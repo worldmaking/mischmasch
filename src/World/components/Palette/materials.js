@@ -2,7 +2,7 @@ import { MeshStandardMaterial } from 'three';
 
 function createMaterials() {
   const panel = new MeshStandardMaterial({
-    color: 'firebrick',
+    color: '#ff5c33',
     flatShading: true,
   });
 

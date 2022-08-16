@@ -107,11 +107,11 @@ class World {
                     loop.updatables.push(op);
                     scene.remove(palette);
                     scene.add(op);
-                    let stateChange = stateChange('addNode', [opName, op])
-                    doc1 = Automerge.change(doc1, stateChange[3], doc => {
-                        doc.scene.nodes[stateChange[2]] = stateChange[1]
-                    })
-                    updateMischmaschState(doc1)
+                    // let stateChange = stateChange('addNode', [opName, op])
+                    // doc1 = Automerge.change(doc1, stateChange[3], doc => {
+                    //     doc.scene.nodes[stateChange[2]] = stateChange[1]
+                    // })
+                    // updateMischmaschState(doc1)
                 }  
             });
 
