@@ -10,7 +10,7 @@ class XRController{
         // create raycast beam
         const geometry = new BufferGeometry().setFromPoints([
             new Vector3(0, 0, 0),
-            new Vector3(0, -30, -1)
+            new Vector3(0, -35, -1)
         ]);
         const material = new LineBasicMaterial( {
             color: 0xffffff,
@@ -19,7 +19,7 @@ class XRController{
             linejoin:  'round' //ignored by WebGLRenderer
         } );
         const line = new Line(geometry, material);
-        line.scale.z = 10;
+        line.scale.z = 0;
         line.name = 'xrControllerRaycastBeam'
 
         // setup controller

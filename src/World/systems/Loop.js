@@ -1,16 +1,19 @@
-import { Clock, Vector3, Matrix4, Raycaster } from 'three';
+import { Clock, Vector3, Matrix4, Raycaster, Color } from 'three';
 const clock = new Clock();
+
+const objectUnselectedColor = new Color(0x5853e6);
+const objectSelectedColor = new Color(0xf0520a);
 class Loop {
-    constructor(camera, scene, renderer, pointer, xrCtlRight, xrCtlleft, stats, gpuPanel) {
+    constructor(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel) {
         this.camera = camera;
         this.scene = scene;
         this.renderer = renderer;
         this.updatables = [] // list to hold animated objects //! this might need to reference the automerge document eventually?
         this.pointer = pointer;
-        this.raycaster = new Raycaster;
+        // this.raycaster = new Raycaster;
         this.hoveredPaletteOp;
         this.xrCtlRight = xrCtlRight;
-        this.xrCtlleft = xrCtlleft;
+        this.xrCtlLeft = xrCtlLeft;
         this.stats = stats;
         this.gpuPanel = gpuPanel;
         
@@ -118,13 +121,13 @@ class Loop {
             rotationMatrix.extractRotation(this.xrCtlRight.controller.matrixWorld);
             const raycaster = new Raycaster();
             raycaster.ray.origin.setFromMatrixPosition(this.xrCtlRight.controller.matrixWorld);
-            raycaster.ray.direction.set(0, 0, -1).applyMatrix4(rotationMatrix);
+            raycaster.ray.direction.set(0, -35, -1).applyMatrix4(rotationMatrix);
             // the lighting and xr controller need to be ignored. 
             // todo make a more elegant solution, as eventually more than 2 objects will be added, like a second controller, like other players' controllers, etc. 
             // let userObjects = this.scene.children.slice(2)
             const intersects = raycaster.intersectObjects(this.scene.children);
             
-
+            
             if (intersects.length > 0){
                 for(let i = 0; i <intersects.length; i++){
                     
@@ -185,15 +188,9 @@ class Loop {
             
             */ 
 
-            this.gpuPanel.startQuery();
-            
+            this.gpuPanel.startQuery();       
             this.renderer.render(this.scene, this.camera);
-
             this.gpuPanel.endQuery();
-            // // set right controller 'B' state
-            // if(this.xrCtlRight.controller.gamepad && this.xrCtlRight.controller.gamepad.buttons[5].touched){
-            //     xrCtlRight.controller.userData.buttons.b = this.xrCtlRight.controller.gamepad.buttons[5].value;
-            // }
         });   
     }
 

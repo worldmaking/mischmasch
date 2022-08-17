@@ -7,6 +7,10 @@ function createRenderer() {
       
     // turn on the physically correct lighting model
     renderer.physicallyCorrectLights = true;
+
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
     return renderer;
 }
 

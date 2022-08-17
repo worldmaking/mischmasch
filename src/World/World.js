@@ -75,6 +75,7 @@ class World {
         palette = new Palette(camera.position)
         // place palette in front of camera
         camera.add(palette);
+        console.log(palette)
         palette.position.set(0,0,-50);
         palette.position.copy( camera.position );
         palette.rotation.copy( camera.rotation );
@@ -282,7 +283,7 @@ class World {
                         scene.remove(palette);
                         scene.add(thisOp);
                         updateMischmaschState()
-                        newAbs = thisOp // this is used by spacebar to get the id of the object that is the outlet
+                        newAbs = thisOp // this is used by 'c' key to get the id of the object that is the outlet
 
                         /*
                         let s = stateChange('addNode', ['abs', thisOp])

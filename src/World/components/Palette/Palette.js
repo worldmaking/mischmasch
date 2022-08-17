@@ -33,6 +33,7 @@ class Palette extends Group {
             op.name = opName
             for(let j=0; j<op.children.length; j++){
                 op.children[j].name = opName
+                console.log()
             }
                 
 
