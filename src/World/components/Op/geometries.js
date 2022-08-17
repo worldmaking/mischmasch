@@ -6,7 +6,7 @@ function createGeometries(numInputs) {
 
   const jack = new CylinderBufferGeometry(0.2, 0.2, 0.1, 50);
 
-  const cableConnector = new CylinderBufferGeometry(0.2, 0.2, 0.1, 50);
+  const cableConnector = new CylinderBufferGeometry(0.1, 0.1, 0.1, 50);
 
   return {
     panel,

@@ -31,7 +31,11 @@ function createMeshes(opProps) {
 
       // labels
       let inputLabel = new Text();
-      inputLabel.text = inputName
+      if(/\s/.test(inputName)){
+        inputLabel.text = inputName.replace(' ', '\n')
+      } else {
+        inputLabel.text = inputName
+      }
       inputLabel.fontSize = 0.2
       inputLabel.color = 'white'
       inputLabel.anchorX = 'center'
@@ -43,7 +47,7 @@ function createMeshes(opProps) {
     panelGeometry = createGeometries(numInputs);
   } else {
     // op has no inputs, set panel width to 2
-    panelGeometry = createGeometries(1);
+    panelGeometry = createGeometries(2);
   }
   
 
@@ -62,7 +66,11 @@ function createMeshes(opProps) {
 
   let outputLabel = new Text();
   if(opProps.outputs[0]){
-    outputLabel.text = opProps.outputs[0].label
+    if(/\s/.test(opProps.outputs[0].label)){
+      outputLabel.text = opProps.outputs[0].label.replace(' ', '\n')
+    } else {
+      outputLabel.text = opProps.outputs[0].label
+    }
   } else {
     outputLabel.text = opProps.op + '_out'
 
@@ -75,6 +83,7 @@ function createMeshes(opProps) {
   
 
   const opLabel = new Text();
+
   opLabel.text = opProps.op
   opLabel.fontSize = 0.2
   opLabel.color = 'white'

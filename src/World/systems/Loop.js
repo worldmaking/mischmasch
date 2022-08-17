@@ -130,10 +130,10 @@ class Loop {
             // the lighting and xr controller need to be ignored. 
             // todo make a more elegant solution, as eventually more than 2 objects will be added, like a second controller, like other players' controllers, etc. 
             // let userObjects = this.scene.children.slice(2)
-            const intersects = raycaster.intersectObjects(this.raycastObjects);
-            console.log(this.raycastObjects)
+            const intersects = raycaster.intersectObjects(this.raycastObjects, true);
+            // console.log(this.raycastObjects)
             if (intersects.length > 0){
-                console.log(intersects)
+                console.log('intersections:', intersects)
 
                 for(let i = 0; i <intersects.length; i++){
                     

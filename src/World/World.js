@@ -75,7 +75,7 @@ class World {
         // place palette in front of camera
         camera.add(palette);
         console.log(palette)
-        palette.position.set(0,0,-50);
+        palette.position.set(-25,0,-50);
         palette.position.copy( camera.position );
         palette.rotation.copy( camera.rotation );
         palette.updateMatrix();
@@ -132,6 +132,7 @@ class World {
                 // make Palette visible & clickable
                 palette.position.copy( camera.position );
                 palette.rotation.copy( camera.rotation );
+                palette.position.x -= 25
                 palette.updateMatrix();
                 palette.translateZ( - 10 );
                 scene.add(palette);
