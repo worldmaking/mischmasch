@@ -10,7 +10,7 @@ class XRController{
         // create raycast beam
         const geometry = new BufferGeometry().setFromPoints([
             new Vector3(0, 0, 0),
-            new Vector3(0, -35, -1)
+            new Vector3(0, 0, -1)
         ]);
         const material = new LineBasicMaterial( {
             color: 0xffffff,
@@ -19,12 +19,12 @@ class XRController{
             linejoin:  'round' //ignored by WebGLRenderer
         } );
         const line = new Line(geometry, material);
-        line.scale.z = 0;
+        line.scale.z = 10;
         line.name = 'xrControllerRaycastBeam'
 
         // setup controller
-        this.controller = renderer.xr.getController(handedness)
-        
+        this.controller = renderer.xr.getController(handedness);
+        this.controller.matrixAutoUpdate = true;
         // this.controller.rayCastBeam = line
         
         this.controller.userData.selectPressed = false;
@@ -49,12 +49,14 @@ class XRController{
         controllerGrip.add( model );
         // add controller model to exported controller
         this.model = controllerGrip
+        this.model.matrixAutoUpdate = true;
         // add raycast beam
         this.model.add(line)
 
         // this will be from a custom event emitter in loop.js       
         this.controller.thumbstickAxes = []
-        console.log('ctr info', this)
+
+        this.name = `controller_${handedness}`
 
     }
     

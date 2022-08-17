@@ -16,12 +16,14 @@ class Loop {
         this.xrCtlLeft = xrCtlLeft;
         this.stats = stats;
         this.gpuPanel = gpuPanel;
+        this.raycastObjects = [];
         
     }
 
     start() {
         // create event emitter for the controller thumbsticks, which aren't available natively in threejs
         // right controller
+        this.xrCtlRight.controller.matrixWorldNeedsUpdate = true;
         let rightThumbstickAxes = new CustomEvent('rightThumbstickAxes', {
             bubbles: true, // allow parent script(s) like World.js to listen
             detail: {axes: 'touched'}
@@ -117,18 +119,22 @@ class Loop {
                 }
             }
             
+            
             const rotationMatrix = new Matrix4();
             rotationMatrix.extractRotation(this.xrCtlRight.controller.matrixWorld);
             const raycaster = new Raycaster();
+            // only intersect with world elements that aren't the controllers
+            // raycaster.layers.set( 1 )
             raycaster.ray.origin.setFromMatrixPosition(this.xrCtlRight.controller.matrixWorld);
-            raycaster.ray.direction.set(0, -35, -1).applyMatrix4(rotationMatrix);
+            raycaster.ray.direction.set(0, 0, -1).applyMatrix4(rotationMatrix);
             // the lighting and xr controller need to be ignored. 
             // todo make a more elegant solution, as eventually more than 2 objects will be added, like a second controller, like other players' controllers, etc. 
             // let userObjects = this.scene.children.slice(2)
-            const intersects = raycaster.intersectObjects(this.scene.children);
-            
-            
+            const intersects = raycaster.intersectObjects(this.raycastObjects);
+            console.log(this.raycastObjects)
             if (intersects.length > 0){
+                console.log(intersects)
+
                 for(let i = 0; i <intersects.length; i++){
                     
                     if(intersects[i].object.name && intersects[i].object.name !== 'xrControllerRaycastBeam' && intersects[i].object.name !== 'controller' && intersects[i].object.name !== 'thumbstick'){

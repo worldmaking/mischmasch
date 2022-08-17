@@ -37,7 +37,9 @@ class Op extends Group {
                 )
             }
         }
-
+        // make this available to raycaster
+        // this.layers.enable( 1 )
+        // console.log('op', this)
     }
     // animation tick
     tick(delta) {

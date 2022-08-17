@@ -41,7 +41,6 @@ let doc1;
 let stats, gpuPanel;
 let gui;
 let audio;
-
 let mischmaschState;
 const pointer = new Vector2();
 let opIDMap = {}
@@ -108,6 +107,7 @@ class World {
                     loop.updatables.push(op);
                     scene.remove(palette);
                     scene.add(op);
+                    loop.raycastObjects.push(op)
                     // let stateChange = stateChange('addNode', [opName, op])
                     // doc1 = Automerge.change(doc1, stateChange[3], doc => {
                     //     doc.scene.nodes[stateChange[2]] = stateChange[1]
@@ -282,6 +282,7 @@ class World {
                         loop.updatables.push(thisOp);
                         scene.remove(palette);
                         scene.add(thisOp);
+                        loop.raycastObjects.push(thisOp)
                         updateMischmaschState()
                         newAbs = thisOp // this is used by 'c' key to get the id of the object that is the outlet
 
@@ -307,6 +308,8 @@ class World {
                         loop.updatables.push(op);
                         scene.remove(palette);
                         scene.add(op);
+                        loop.raycastObjects.push(op)
+
                         updateMischmaschState()
                         newDiv = op // this is used by spacebar to get the id of the object that is the inlet
 
@@ -511,6 +514,8 @@ function initGui() {
     //     }
 
     // } );
+
+    
 
 }
 
