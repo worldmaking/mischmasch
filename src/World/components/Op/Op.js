@@ -31,7 +31,6 @@ class Op extends Group {
         let panelWidth = this.meshes.panel.geometry.parameters.width
         let inputOffset = ((panelWidth / 2) * -1) + 0.5
 
-        console.log('panel', this.meshes.panel)
         // some ops have no inlets, others have 2 or more inlets, so we need to iterate over them
         if(this.meshes.inputJacks.length > 0){
             // loop through the inlets array
