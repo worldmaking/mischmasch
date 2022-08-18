@@ -16,14 +16,14 @@ function createMeshes(opProps) {
     let inputs = opProps.inputs
     let inputNames = Object.keys(inputs)
     let numInputs = inputNames.length
-    console.log(opProps.op, numInputs)
     // loop through inputs and create the inlets aand labels for this op
     // //
 
     inputNames.forEach(inputName => {
       // jacks
       let jackIn = new Mesh(geometries.jack, materials.jackIn);
-      let posX = inputNames.indexOf(inputName) + -0.5
+      let posX = inputNames.indexOf(inputName)
+      console.log(opProps.op, inputName, posX)
       jackIn.position.set(posX, 1.8, 0.2);
       jackIn.rotation.set(1.55, 1, 0)
       jackIn.name = `inlet_${inputName}_${jackIn.uuid}`
@@ -38,7 +38,7 @@ function createMeshes(opProps) {
       }
       inputLabel.fontSize = 0.2
       inputLabel.color = 'white'
-      inputLabel.anchorX = 'center'
+      inputLabel.anchorX = 'left'
       inputLabel.position.set(posX, 1.6, 0.2);
       inputLabel.rotation.set(0, 0, 0)
 
