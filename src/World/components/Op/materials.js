@@ -35,8 +35,10 @@ function createMaterials(opCategory) {
     
   // }
   const panel = new MeshStandardMaterial({
-    color: 'firebrick',
+    color: 'white',
     flatShading: true,
+    transparent: true,
+    opacity: 0.2
   });
 
   const jackIn = new MeshStandardMaterial({

@@ -65,12 +65,20 @@ function createMeshes(opProps) {
 
   let outputLabel = new Text();
   if(opProps.outputs[0]){
-    if(/\s/.test(opProps.outputs[0].label)){
-      outputLabel.text = opProps.outputs[0].label.replace(' ', '\n')
+
+    let label = opProps.outputs[0].label
+    // some labels have long text using () for explanation, so remove those
+    if(opProps.outputs[0].label.includes('(')){
+      label = label.slice(0, label.indexOf('('))
+    }
+    if(/\s/.test(label)){
+      // if label has more than one word, split label into two lines at first space
+      outputLabel.text = label.replace(' ', '\n')
     } else {
-      outputLabel.text = opProps.outputs[0].label
+      outputLabel.text = label
     }
   } else {
+    // todo: if this is the case, then there shouldn't be an output or a label on the op, right?
     outputLabel.text = opProps.op + '_out'
 
   }
