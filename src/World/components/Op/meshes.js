@@ -23,7 +23,7 @@ function createMeshes(opProps) {
       // jacks
       let jackIn = new Mesh(geometries.jack, materials.jackIn);
       let posX = inputNames.indexOf(inputName)
-      jackIn.position.set(posX, 1.8, 0.2);
+      jackIn.position.set(posX, 2, 0.2);
       jackIn.rotation.set(1.55, 1, 0)
       jackIn.name = `inlet_${inputName}_${jackIn.uuid}`
       inputJacks.push(jackIn)
@@ -38,7 +38,7 @@ function createMeshes(opProps) {
       inputLabel.fontSize = 0.2
       inputLabel.color = 'white'
       inputLabel.anchorX = 'center'
-      inputLabel.position.set(posX, 1.6, 0.2);
+      inputLabel.position.set(posX, 1.8, 0.2);
       inputLabel.rotation.set(0, 0, 0)
 
       inputLabels.push(inputLabel)
@@ -53,13 +53,13 @@ function createMeshes(opProps) {
   // panel width depends on number of UI elements. for now it's only inlets
   
   const panel = new Mesh(panelGeometry.panel, materials.panel);
-  panel.position.set(0, 1.4, 0);
+  panel.position.set(0, 1.6, 0);
   panel.rotation.set(0, 0, 0)
   panel.name = `panel_${opProps.op}_${panel.uuid}`
 
 
   const jackOut = new Mesh(geometries.jack, materials.jackOut);
-  jackOut.position.set(0, 1, 0.2);
+  jackOut.position.set(0, 1.2, 0.2);
   jackOut.rotation.set(1.55, 1, 0)
   jackOut.name = `outlet_${opProps.op}_${jackOut.uuid}`
 
@@ -77,7 +77,7 @@ function createMeshes(opProps) {
   outputLabel.fontSize = 0.2
   outputLabel.color = 'white'
   outputLabel.anchorX = 'left'
-  outputLabel.position.set(-0.3, 0.8, 0.2);
+  outputLabel.position.set(-0.3, 1, 0.2);
   outputLabel.rotation.set(0, 0, 0)
   
 
@@ -87,7 +87,7 @@ function createMeshes(opProps) {
   opLabel.fontSize = 0.2
   opLabel.color = 'white'
   opLabel.anchorX = 'center'
-  opLabel.position.set(0, 2.3, 0.2);
+  opLabel.position.set(0, 2.5, 0.2);
   opLabel.rotation.set(0, 0, 0)
 
   return {
