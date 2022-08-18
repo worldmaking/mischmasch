@@ -12,11 +12,11 @@ function createMeshes(opProps) {
   let inputJacks = []
   let inputLabels = []
   // does it have inputs?
-  if(opProps.inputs){
+  if(opProps.inputs && Object.keys(opProps.inputs).length > 0){
     let inputs = opProps.inputs
     let inputNames = Object.keys(inputs)
     let numInputs = inputNames.length
-    
+    console.log(opProps.op, numInputs)
     // loop through inputs and create the inlets aand labels for this op
     // //
 
@@ -46,8 +46,8 @@ function createMeshes(opProps) {
     })
     panelGeometry = createGeometries(numInputs);
   } else {
-    // op has no inputs, set panel width to 2
-    panelGeometry = createGeometries(2);
+    // op has no inputs, set panel width to 1
+    panelGeometry = createGeometries(1);
   }
   
 
