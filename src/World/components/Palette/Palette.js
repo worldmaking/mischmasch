@@ -17,9 +17,9 @@ class Palette extends Group {
                 panelOffset = Object.keys(opsList[i].inputs).length * 2
             }
             
-            let row = Math.floor(i/15)
+            let row = Math.floor(i/10)
             let opPosY = (row * -3) - cameraPosition.y
-            let column = (i % 15)
+            let column = (i % 10)
             
             let opName = opsList[i].op
             let op = new Op(opName);
@@ -33,7 +33,6 @@ class Palette extends Group {
             op.name = opName
             for(let j=0; j<op.children.length; j++){
                 op.children[j].name = opName
-                console.log()
             }
                 
 
