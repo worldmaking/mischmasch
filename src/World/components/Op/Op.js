@@ -27,25 +27,24 @@ class Op extends Group {
             this.meshes.outputLabel,
             this.meshes.opLabel
         );
+        // using the op's panel width, we can calculate the offset for the first input
         let panelWidth = this.meshes.panel.geometry.parameters.width
-        let inputColumn = ((panelWidth / 2) * -1) + 0.5
+        let inputOffset = ((panelWidth / 2) * -1) + 0.5
 
         console.log('panel', this.meshes.panel)
         // some ops have no inlets, others have 2 or more inlets, so we need to iterate over them
         if(this.meshes.inputJacks.length > 0){
             // loop through the inlets array
             for(let i=0; i<this.meshes.inputJacks.length; i++){
-                this.meshes.inputJacks[i].position.x = inputColumn + i
-                this.meshes.inputLabels[i].position.x = inputColumn + i
+                // set the the 1st input position to the input offset, then increment for each additional input
+                this.meshes.inputJacks[i].position.x = inputOffset + i
+                this.meshes.inputLabels[i].position.x = inputOffset + i
                 this.add(
                     this.meshes.inputJacks[i],
                     this.meshes.inputLabels[i]
                 )
             }
         }
-        // make this available to raycaster
-        // this.layers.enable( 1 )
-        // console.log('op', this)
     }
     // animation tick
     tick(delta) {

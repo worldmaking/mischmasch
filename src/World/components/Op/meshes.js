@@ -38,7 +38,7 @@ function createMeshes(opProps) {
       }
       inputLabel.fontSize = 0.2
       inputLabel.color = 'white'
-      inputLabel.anchorX = 'left'
+      inputLabel.anchorX = 'center'
       inputLabel.position.set(posX, 1.6, 0.2);
       inputLabel.rotation.set(0, 0, 0)
 
