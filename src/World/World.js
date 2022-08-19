@@ -92,14 +92,14 @@ class World {
                 // this refers to the controller
                 // ctlr.controller.children[0].scale.z = 10;
                 ctlr.controller.userData.selectPressed = true;
-                console.log('select pressed', )
                 // first check if palette is open. if not, block this action
                 if(scene.children.some(element => element.name === 'Palette')){
-                    let opName = loop.paletteHover().object.name
+                    let paletteOp = loop.userSelect().paletteOp;
+                    let opName = paletteOp.object.name
                     
                     const op = new Op(opName);
                     // get current position of op from within the palette
-                    let inPalettePos = loop.paletteHover().point
+                    let inPalettePos = paletteOp.point
                     op.position.x = inPalettePos.x
                     op.position.y = inPalettePos.y
                     op.position.z = inPalettePos.z
@@ -107,12 +107,56 @@ class World {
                     scene.remove(palette);
                     palette.userData.active = false;
                     scene.add(op);
-                    loop.raycastObjects.push(op)
                     // let stateChange = stateChange('addNode', [opName, op])
                     // doc1 = Automerge.change(doc1, stateChange[3], doc => {
                     //     doc.scene.nodes[stateChange[2]] = stateChange[1]
                     // })
                     // updateMischmaschState(doc1)
+                } else {
+                    // palette isn't open
+                    // check controller hover
+                    let selection = loop.userSelect().ui
+                    console.log(selection)
+                    if(selection.element){
+                        switch(selection.element){
+                            case "inlet":
+                                
+                                // // for now, just get the cable from inlet to controller
+                                // let from = newAbs.meshes.jackOut.name
+                                // let to = newDiv.meshes.inputJacks[0].name
+                                
+                                // // console.log(abs, div)
+                                // let fromObj = scene.getObjectByName(from)
+                                // let toObj = scene.getObjectByName(to)
+                                // // console.log(fromObj, toObj)
+                                
+                                // let fromPos = newAbs.localToWorld(fromObj.position)
+                                // let toPos = newDiv.localToWorld(toObj.position)
+                
+                                // // add a cable
+                                // // const cable = new Cable(fromPos, toPos);
+                                // // scene.add(cable.line)
+                
+                
+                                // var path = new LineCurve3(fromPos, toPos);
+                                // var tubegeometry = new TubeGeometry(path, 2, .02, 8, false);
+                                // var material = new MeshBasicMaterial({ color: 0x0000ff });
+                                // var line = new Mesh(tubegeometry, material);
+                
+                                // scene.add(line)
+                            break
+
+                            case "outlet":
+
+                            break
+
+                            case "panel":
+
+                            break
+                        }
+                    }
+                    
+
                 }  
             });
 
@@ -319,11 +363,8 @@ class World {
                         doc1 = Automerge.change(doc1, newState[3], doc => {
                             doc.scene.nodes[newState[2]] = newState[1]
                         })
-                        
-                        
                         */
                     break
-
                 }
                 
             break
