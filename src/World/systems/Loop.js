@@ -27,7 +27,8 @@ class Loop {
             paletteOp: false,
             ui: {
                 element: false,
-                object: false
+                object: false,
+                name: false
             } // element can be inlet, outlet, panel, knob, etc. object is the threeJS object. if nothing is hovered over, set both to false 
         }
         
@@ -170,17 +171,22 @@ class Loop {
                                 case "panel":
                                     this.hover.ui.element = 'panel'
                                     this.hover.ui.object = intersects[0]
+                                    this.hover.ui.name = intersects[0].object.name
                                     setHoverColour(intersects[0])
                                 break;
 
                                 case "inlet":
                                     this.hover.ui.element = 'inlet'
-                                    this.hover.ui.object = intersects[0]                               
+                                    this.hover.ui.object = intersects[0]    
+                                    this.hover.ui.name = worldObjectName                      
+                                    setHoverColour(intersects[0])
                                 break;
 
                                 case "outlet":
                                     this.hover.ui.element = 'outlet'
-                                    this.hover.ui.object = intersects[0]                                
+                                    this.hover.ui.object = intersects[0] 
+                                    this.hover.ui.name = intersects[0].object.name                             
+                                    setHoverColour(intersects[0])
                                 break;
 
                                 default: console.log('no switch case for selected object in loop', worldObjectName)
@@ -263,7 +269,7 @@ class Loop {
                     previous.object.material.color.set(hoverColour[1]);
                 }
                 // get the object's original colour
-                let originalColour = current.object.material.color.getHex();
+                let originalColour = nextObject.object.material.color.getHex();
                 // store the object, and its original colour in the hoverColour object
                 hoverColour[0] = nextObject
                 hoverColour[1] = originalColour

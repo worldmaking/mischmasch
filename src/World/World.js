@@ -116,10 +116,13 @@ class World {
                     // palette isn't open
                     // check controller hover
                     let selection = loop.userSelect().ui
-                    console.log(selection)
+                    
                     if(selection.element){
                         switch(selection.element){
                             case "inlet":
+                                //todo decide how to pass this to genish?
+                                //todo let nm = selection.name
+                                let ob = selection.object
                                 
                                 // // for now, just get the cable from inlet to controller
                                 // let from = newAbs.meshes.jackOut.name
