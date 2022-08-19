@@ -74,7 +74,6 @@ class World {
         palette = new Palette(camera.position)
         // place palette in front of camera
         camera.add(palette);
-        console.log(palette)
         palette.position.set(-25,0,-30);
         palette.position.copy( camera.position );
         palette.rotation.copy( camera.rotation );
@@ -106,6 +105,7 @@ class World {
                     op.position.z = inPalettePos.z
                     loop.updatables.push(op);
                     scene.remove(palette);
+                    palette.userData.active = false;
                     scene.add(op);
                     loop.raycastObjects.push(op)
                     // let stateChange = stateChange('addNode', [opName, op])
@@ -136,7 +136,7 @@ class World {
                 palette.updateMatrix();
                 palette.translateZ( - 10 );
                 scene.add(palette);
-                loop.raycastObjects.push(palette)
+                palette.userData.active = true;
             });
 
             // squeeze unpress
@@ -146,7 +146,7 @@ class World {
                 ctlr.controller.userData.selectPressed = true;
                 // make Palette invisible & unclickable
                 scene.remove(palette);
-                loop.raycastObjects.splice(loop.raycastObjects.indexOf(palette), 1)
+                palette.userData.active = false;
             });
            
         })
@@ -200,7 +200,7 @@ class World {
 
 
         // rendering loop
-        loop = new Loop(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel);
+        loop = new Loop(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette);
         loop.updatables.push(controls);
 
         // add the three canvas to the html container

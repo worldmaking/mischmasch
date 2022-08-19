@@ -40,6 +40,7 @@ class Palette extends Group {
         }
 
         this.name = 'Palette'
+        this.userData.active = false;
     // loop.updatables.push(op);
 
     }

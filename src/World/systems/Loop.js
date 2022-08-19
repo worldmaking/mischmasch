@@ -4,25 +4,24 @@ const clock = new Clock();
 const objectUnselectedColor = new Color(0x5853e6);
 const objectSelectedColor = new Color(0xf0520a);
 class Loop {
-    constructor(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel) {
+    constructor(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette) {
         this.camera = camera;
         this.scene = scene;
         this.renderer = renderer;
         this.updatables = [] // list to hold animated objects //! this might need to reference the automerge document eventually?
         this.pointer = pointer;
         this.raycaster = new Raycaster();
-        this.arrow = new ArrowHelper( this.raycaster.ray.direction, this.raycaster.ray.origin, 100, Math.random() * 0xffffff ) // for the hmd raycaster
+        this.arrow = new ArrowHelper( this.raycaster.ray.direction, this.raycaster.ray.origin, 60, Math.random() * 0xffffff ) // for the hmd raycaster
         this.arrow.name = 'arrowHelper'
         this.hoveredPaletteOp;
         this.xrCtlRight = xrCtlRight;
         this.xrCtlLeft = xrCtlLeft;
         this.stats = stats;
         this.gpuPanel = gpuPanel;
-        this.raycastObjects = [{ignore: 'foo'}];
-
-        this.tempMatrix = new Matrix4();
-        this.controllerToObjectMap = new Map();
-        this.objectToColorMap = new Map();
+        this.palette = palette;        
+        // this.tempMatrix = new Matrix4();
+        // this.controllerToObjectMap = new Map();
+        // this.objectToColorMap = new Map();
         
         this.scene.add( this.arrow )
     }
@@ -126,8 +125,8 @@ class Loop {
                 }
             }
             
+            // use HMD for picking ray
             let raycaster = new Raycaster();
-            let pickedObject = null;
             // cast a ray through the frustrum
             raycaster.setFromCamera(this.pointer, this.camera)
             // update the position of arrow
@@ -138,33 +137,44 @@ class Loop {
                 for(let i = 0; i <intersects.length; i++){
                     
                     if(intersects[i].object.name && intersects[i].object.name !== 'arrowHelper' ){
-                        // console.log(intersects[i].object.name, intersects[i])
-                        // this.arrow.length = intersects[i].distance;
-                        // this.selectedObject = intersects[i].object;
-                        // this.selectedObject.material.color = 0xff0000;
-                        // this.selectedObjectDistance = this.selectedObject.position.distanceTo(this.arrow.distance);
-                        // stage this op to be added to the scene
-                        this.hoveredPaletteOp = intersects[i]
+                        // set arrow ray length to distance of object
+                        this.arrow.setLength(intersects[i].distance)
+                        // if the palette is open, do palette stuff
+                        if (this.palette.userData.active){
+                            // stage this op to be added to the scene 
+                            this.hoveredPaletteOp = intersects[i]
+                        } else {
+                            // palette isn't open, allow manipulation of scene objects
+                            let worldObjectName = intersects[i].object.name;
+                            let worldObjectKind = worldObjectName.split('_')[0]
+                            switch(worldObjectKind){
+                                case "panel":
+                                    console.log('panel', intersects[i])
+                                break;
+
+                                case "inlet":
+                                    console.log('inlet', worldObjectName)
+                                break;
+
+                                case "outlet":
+                                    console.log('outlet', worldObjectName)
+                                break;
+
+                                default: console.log('no switch case', worldObjectName)
+                            }
+                        }
+            
                     }
                 }
+            }else {
+                // reset the picking arrow length
+                // TODO: this is commented out because the calibration of the arrow is off. possibly related to https://stackoverflow.com/questions/49009873/why-is-raycast-direction-calculated-incorrectly-in-webxr
+                //! this.arrow.setLength(100)
+
+                
             }
 
-            // use HMD for picking ray
-            // update the position of arrow
-            // this.arrow.setDirection(this.raycaster.ray.direction);
-            
-            // // update the raycaster
-            // this.raycaster.set(this.camera.getWorldPosition(), this.camera.getWorldDirection());
-            
-            // // intersect with all scene meshes.
-            // let intersects = this.raycaster.intersectObjects(this.scene.children);
-            // let intersectedObject = intersects;
-
-            // if (intersects.length > 0) {
-            //     console.log(intersects)
-            // }
-            // try another way to detect collisions
-            /* //!
+            /* //! one way to pick from touch controller (not working yet)
             console.log(this.scene.children, this.raycaster)
             // cast a ray from the controller
             this.tempMatrix.identity().extractRotation( this.xrCtlRight.controller.matrixWorld );
@@ -181,7 +191,7 @@ class Loop {
                 // console.log( 'intersections', intersections )
 
             } */ //!
-            /* //!
+            /* //! way #2 to pick from touch controller (not working yet)
             const rotationMatrix = new Matrix4();
             rotationMatrix.extractRotation(this.xrCtlRight.controller.matrixWorld);
             const raycaster = new Raycaster();
@@ -214,47 +224,6 @@ class Loop {
             }
           
             */ //!
-
-            
-            // const rotationMatrix = new Matrix4();
-            // let ctrlMatrixWorld = this.xrCtlRight.controller.matrixWorld
-            // rotationMatrix.extractRotation(ctrlMatrixWorld);
-            // this.raycaster.ray.origin.setFromMatrixPosition(ctrlMatrixWorld);
-            // this.raycaster.ray.direction.set(0, -35, -1).applyMatrix4(rotationMatrix);
-            /* 
-            let rotation = this.xrCtlRight.controller.rotation
-            let origin = this.xrCtlRight.controller.position
-            
-            let direction = new Vector3( rotation._x, rotation._y, rotation._z ) //.normalize()
-            this.raycaster.set( origin, rotation )
-            this.raycaster.name = 'controller'
-
-            // calculate objects intersecting the picking ray
-            const intersects = this.raycaster.intersectObjects( this.scene.children );
-            console.log(intersects.slice(2))
-            
-            for ( let i = 0; i < intersects.length; i ++ ) {
-                if(intersects[i].object.name && (intersects[i].object.name == 'xrControllerRaycastBeam' || intersects[i].object.name == 'controller' || intersects[i].object.name == 'thumbstick' || intersects[i].object.name == 'trigger')){
-                    // ignore the raycast beam
-                } else if(intersects[i].object.name.split('_')[0] === 'cable'){
-                    // intersected with a cable. leaving this here in case we want to use this at some point...
-                    console.log('cable intersected')
-                } else {
-                    console.log('unhandled raycast intersection. see Loop.js:', intersects[i])
-                    
-                    if(this.scene.children.some(element => element.name === 'Palette')){
-                        // update the picking ray with the controller this.raycaster position and rotation
-                        this.hoveredPaletteOp = intersects[i]
-                        intersects[ i ].object.material.color.set( 0xff0000 );
-                        
-                    }
-              
-                }
-
-
-            }
-            
-            */ 
 
             this.gpuPanel.startQuery();       
             this.renderer.render(this.scene, this.camera);
