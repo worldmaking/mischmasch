@@ -125,28 +125,19 @@ class World {
                                 let ob = selection.object
                                 
                                 // // for now, just get the cable from inlet to controller
-                                // let from = newAbs.meshes.jackOut.name
-                                // let to = newDiv.meshes.inputJacks[0].name
-                                
-                                // // console.log(abs, div)
-                                // let fromObj = scene.getObjectByName(from)
-                                // let toObj = scene.getObjectByName(to)
-                                // // console.log(fromObj, toObj)
-                                
-                                // let fromPos = newAbs.localToWorld(fromObj.position)
-                                // let toPos = newDiv.localToWorld(toObj.position)
+                                let from = selection.object
+
+                                // the 'from' is an inlet, meaning its position is local to its parent op. so, need to get its localToWorld position:
+                                let parentOp = from.object.parent
+                                let fromPos = parentOp.localToWorld(from.object.position)
+                                let toPos = xrCtlRight.model.position               
                 
-                                // // add a cable
-                                // // const cable = new Cable(fromPos, toPos);
-                                // // scene.add(cable.line)
+                                var path = new LineCurve3(fromPos, toPos);
+                                var tubegeometry = new TubeGeometry(path, 2, .02, 8, false);
+                                var material = new MeshBasicMaterial({ color: 0x0000ff });
+                                var line = new Mesh(tubegeometry, material);
                 
-                
-                                // var path = new LineCurve3(fromPos, toPos);
-                                // var tubegeometry = new TubeGeometry(path, 2, .02, 8, false);
-                                // var material = new MeshBasicMaterial({ color: 0x0000ff });
-                                // var line = new Mesh(tubegeometry, material);
-                
-                                // scene.add(line)
+                                scene.add(line)
                             break
 
                             case "outlet":
