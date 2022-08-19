@@ -284,7 +284,6 @@ class World {
                         loop.updatables.push(thisOp);
                         scene.remove(palette);
                         scene.add(thisOp);
-                        loop.raycastObjects.push(thisOp)
                         updateMischmaschState()
                         newAbs = thisOp // this is used by 'c' key to get the id of the object that is the outlet
 
@@ -310,7 +309,6 @@ class World {
                         loop.updatables.push(op);
                         scene.remove(palette);
                         scene.add(op);
-                        loop.raycastObjects.push(op)
 
                         updateMischmaschState()
                         newDiv = op // this is used by spacebar to get the id of the object that is the inlet
