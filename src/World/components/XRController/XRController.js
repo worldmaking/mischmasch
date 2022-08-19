@@ -7,7 +7,7 @@ class XRController{
         // import model
         const controllerModelFactory = new XRControllerModelFactory()
 
-        // create raycast beam
+        // create controller pointer beam
         const geometry = new BufferGeometry().setFromPoints([
             new Vector3(0, 0, 0),
             new Vector3(0, 0, -1)
@@ -19,7 +19,7 @@ class XRController{
             linejoin:  'round' //ignored by WebGLRenderer
         } );
         const line = new Line(geometry, material);
-        line.scale.z = 10;
+        line.scale.z = 5;
         line.name = 'xrControllerRaycastBeam'
 
         // setup controller
@@ -51,7 +51,8 @@ class XRController{
         this.model = controllerGrip
         this.model.matrixAutoUpdate = true;
         // add raycast beam
-        this.model.add(line)
+        //! commented this out while we are using HMD as raycast picker source (to avoid confusion)
+        //! this.model.add(line)
 
         // this will be from a custom event emitter in loop.js       
         this.controller.thumbstickAxes = []

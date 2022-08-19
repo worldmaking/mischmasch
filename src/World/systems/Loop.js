@@ -1,4 +1,4 @@
-import { Clock, Vector3, Matrix4, Raycaster, Color } from 'three';
+import { Clock, Vector3, Matrix4, Raycaster, Color, ArrowHelper } from 'three';
 const clock = new Clock();
 
 const objectUnselectedColor = new Color(0x5853e6);
@@ -10,20 +10,27 @@ class Loop {
         this.renderer = renderer;
         this.updatables = [] // list to hold animated objects //! this might need to reference the automerge document eventually?
         this.pointer = pointer;
-        // this.raycaster = new Raycaster;
+        this.raycaster = new Raycaster();
+        this.arrow = new ArrowHelper( this.raycaster.ray.direction, this.raycaster.ray.origin, 100, Math.random() * 0xffffff ) // for the hmd raycaster
+        this.arrow.name = 'arrowHelper'
         this.hoveredPaletteOp;
         this.xrCtlRight = xrCtlRight;
         this.xrCtlLeft = xrCtlLeft;
         this.stats = stats;
         this.gpuPanel = gpuPanel;
-        this.raycastObjects = [];
+        this.raycastObjects = [{ignore: 'foo'}];
+
+        this.tempMatrix = new Matrix4();
+        this.controllerToObjectMap = new Map();
+        this.objectToColorMap = new Map();
         
+        this.scene.add( this.arrow )
     }
 
     start() {
         // create event emitter for the controller thumbsticks, which aren't available natively in threejs
         // right controller
-        this.xrCtlRight.controller.matrixWorldNeedsUpdate = true;
+        // this.xrCtlRight.controller.matrixWorldNeedsUpdate = true;
         let rightThumbstickAxes = new CustomEvent('rightThumbstickAxes', {
             bubbles: true, // allow parent script(s) like World.js to listen
             detail: {axes: 'touched'}
@@ -119,7 +126,62 @@ class Loop {
                 }
             }
             
+            let raycaster = new Raycaster();
+            let pickedObject = null;
+            // cast a ray through the frustrum
+            raycaster.setFromCamera(this.pointer, this.camera)
+            // update the position of arrow
+            this.arrow.setDirection(raycaster.ray.direction);
+            let intersects = raycaster.intersectObjects(this.scene.children)
+            if(intersects.length){
+
+                for(let i = 0; i <intersects.length; i++){
+                    
+                    if(intersects[i].object.name && intersects[i].object.name !== 'arrowHelper' ){
+                        // console.log(intersects[i].object.name, intersects[i])
+                        // this.arrow.length = intersects[i].distance;
+                        // this.selectedObject = intersects[i].object;
+                        // this.selectedObject.material.color = 0xff0000;
+                        // this.selectedObjectDistance = this.selectedObject.position.distanceTo(this.arrow.distance);
+                        // stage this op to be added to the scene
+                        this.hoveredPaletteOp = intersects[i]
+                    }
+                }
+            }
+
+            // use HMD for picking ray
+            // update the position of arrow
+            // this.arrow.setDirection(this.raycaster.ray.direction);
             
+            // // update the raycaster
+            // this.raycaster.set(this.camera.getWorldPosition(), this.camera.getWorldDirection());
+            
+            // // intersect with all scene meshes.
+            // let intersects = this.raycaster.intersectObjects(this.scene.children);
+            // let intersectedObject = intersects;
+
+            // if (intersects.length > 0) {
+            //     console.log(intersects)
+            // }
+            // try another way to detect collisions
+            /* //!
+            console.log(this.scene.children, this.raycaster)
+            // cast a ray from the controller
+            this.tempMatrix.identity().extractRotation( this.xrCtlRight.controller.matrixWorld );
+            this.raycaster.ray.origin.setFromMatrixPosition( this.xrCtlRight.controller.matrixWorld );
+            this.raycaster.ray.direction.set( 0, 0, -1 ).applyMatrix4( this.tempMatrix )
+
+            const intersections = this.raycaster.intersectObjects( this.scene.children );
+            if( intersections.length ){
+                for( let i=0; i<intersections.length; i++ ){
+                    if(intersections[i].object.name !== 'xrControllerRaycastBeam' && intersections[i].object.name !== 'thumbstick' && intersections[i].object.name !== 'controller'){
+                        console.log(intersections[i])
+                    }
+                }
+                // console.log( 'intersections', intersections )
+
+            } */ //!
+            /* //!
             const rotationMatrix = new Matrix4();
             rotationMatrix.extractRotation(this.xrCtlRight.controller.matrixWorld);
             const raycaster = new Raycaster();
@@ -151,7 +213,7 @@ class Loop {
               
             }
           
-            
+            */ //!
 
             
             // const rotationMatrix = new Matrix4();

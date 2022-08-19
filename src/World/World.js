@@ -75,7 +75,7 @@ class World {
         // place palette in front of camera
         camera.add(palette);
         console.log(palette)
-        palette.position.set(-25,0,-50);
+        palette.position.set(-25,0,-30);
         palette.position.copy( camera.position );
         palette.rotation.copy( camera.rotation );
         palette.updateMatrix();
@@ -136,6 +136,7 @@ class World {
                 palette.updateMatrix();
                 palette.translateZ( - 10 );
                 scene.add(palette);
+                loop.raycastObjects.push(palette)
             });
 
             // squeeze unpress
@@ -145,7 +146,7 @@ class World {
                 ctlr.controller.userData.selectPressed = true;
                 // make Palette invisible & unclickable
                 scene.remove(palette);
-                
+                loop.raycastObjects.splice(loop.raycastObjects.indexOf(palette), 1)
             });
            
         })
