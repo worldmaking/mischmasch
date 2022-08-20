@@ -1,4 +1,4 @@
-import { Clock, Vector3, Matrix4, Raycaster, Color, ArrowHelper } from 'three';
+import { Clock, Vector3, Matrix4, Raycaster, Color, ArrowHelper, BufferAttribute } from 'three';
 const clock = new Clock();
 
 const objectUnselectedColor = new Color(0x5853e6);
@@ -22,6 +22,7 @@ class Loop {
         this.gpuPanel = gpuPanel;
         this.palette = palette;    
         
+        this.cables = []
         // userActivity
         this.hover = {
             paletteOp: false,
@@ -138,62 +139,71 @@ class Loop {
                 }
             }
             
+
             // use HMD for picking ray
             let raycaster = new Raycaster();
             // cast a ray through the frustrum
             raycaster.setFromCamera(this.pointer, this.camera)
             // update the position of arrow
             this.arrow.setDirection(raycaster.ray.direction);
+
+            // console.log(this.arrow, this.arrow.length)
             let intersects = raycaster.intersectObjects(this.scene.children, true)
             if(intersects.length){
 
                 // for(let i = 0; i <intersects.length; i++){
                     
-                    if(intersects[0].object.name && intersects[0].object.name !== 'arrowHelper' ){
-                        // set arrow ray length to distance of object
-                        this.arrow.setLength(intersects[0].distance)
-                        // if the palette is open, do palette stuff
-                        if (this.palette.userData.active){
-                            // stage this op to be added to the scene 
-                            this.hover.paletteOp = intersects[0]
+                if(intersects[0].object.name && intersects[0].object.name !== 'arrowHelper' ){
+                    // set arrow ray length to distance of object
+                    // console.log(intersects[0].distance)
+                    this.arrow.setLength(intersects[0].distance)
+                    // if the palette is open, do palette stuff
+                    if (this.palette.userData.active){
+                        // stage this op to be added to the scene 
+                        this.hover.paletteOp = intersects[0]
 
-                            // highlight the op 
-                           
-                            setHoverColour(intersects[0])
-                        } else {
-                            // palette isn't open
-                            this.hover.paletteOp = false
-                            // allow manipulation of scene objects
-                            let worldObjectName = intersects[0].object.name;
-                            let worldObjectKind = worldObjectName.split('_')[0]
-                            
-                            switch (worldObjectKind){
-                                case "panel":
-                                    this.hover.ui.element = 'panel'
-                                    this.hover.ui.object = intersects[0]
-                                    this.hover.ui.name = intersects[0].object.name
-                                    setHoverColour(intersects[0])
-                                break;
+                        // highlight the op 
+                        
+                        setHoverColour(intersects[0])
+                    } else {
+                        // palette isn't open
+                        this.hover.paletteOp = false
+                        // allow manipulation of scene objects
+                        let worldObjectName = intersects[0].object.name;
+                        let worldObjectKind = worldObjectName.split('_')[0]
+                        
+                        switch (worldObjectKind){
+                            case "panel":
+                                this.hover.ui.element = 'panel'
+                                this.hover.ui.object = intersects[0]
+                                this.hover.ui.name = intersects[0].object.name
+                                setHoverColour(intersects[0])
+                            break;
 
-                                case "inlet":
-                                    this.hover.ui.element = 'inlet'
-                                    this.hover.ui.object = intersects[0]    
-                                    this.hover.ui.name = worldObjectName                      
-                                    setHoverColour(intersects[0])
-                                break;
+                            case "inlet":
+                                this.hover.ui.element = 'inlet'
+                                this.hover.ui.object = intersects[0]    
+                                this.hover.ui.name = worldObjectName                      
+                                setHoverColour(intersects[0])
+                            break;
 
-                                case "outlet":
-                                    this.hover.ui.element = 'outlet'
-                                    this.hover.ui.object = intersects[0] 
-                                    this.hover.ui.name = intersects[0].object.name                             
-                                    setHoverColour(intersects[0])
-                                break;
+                            case "outlet":
+                                this.hover.ui.element = 'outlet'
+                                this.hover.ui.object = intersects[0] 
+                                this.hover.ui.name = intersects[0].object.name                             
+                                setHoverColour(intersects[0])
+                            break;
 
-                                default: console.log('no switch case for selected object in loop', worldObjectName)
-                            }
+                            case 'opLabel':
+                            case 'outLabel':
+                            case 'inputLabel':
+                                // probably nothing to do with these... maybe make them editable eventually?
+                            break
+                            default: console.log('no switch case for selected object in loop', worldObjectName)
                         }
-            
                     }
+        
+                }
                 // }
             }else {
                 // palette isn't open
@@ -202,7 +212,7 @@ class Loop {
                 }
                 // reset the picking arrow length
                 // TODO: this is commented out because the calibration of the arrow is off. possibly related to https://stackoverflow.com/questions/49009873/why-is-raycast-direction-calculated-incorrectly-in-webxr
-                //! this.arrow.setLength(100)
+                ! this.arrow.setLength(100)
 
                 
             }
@@ -262,6 +272,42 @@ class Loop {
             this.renderer.render(this.scene, this.camera);
             this.gpuPanel.endQuery();
 
+            // update cable positioning, if any
+            if(this.cables.length > 0){
+                for(let i = 0; i < this.cables.length; i++){
+                    let cable = this.cables[i]
+                    // is the cable connected to one or two jacks?
+                    if(cable.userData.status = 'oneJack'){
+                        // the 'to' position of the line (aka 2nd position) needs to be updated to the controller's position
+                        // can you get the controller given the handedness?
+                        let ctlr = cable.userData.controller
+                        switch(ctlr){
+                            case 'controller_0': // xrCtlRight
+                            let controllerPosition = this.xrCtlRight.controller.position
+
+                            // let posAttribute = new BufferAttribute(new Float32Array(controllerPosition), 2);
+
+                            // only update the 2nd point in the cable (1st is the cable origin jack)
+                            cable.geometry.attributes.position.array[3] = controllerPosition.x
+                            cable.geometry.attributes.position.array[4] = controllerPosition.y
+                            cable.geometry.attributes.position.array[5] = controllerPosition.z
+
+                            
+                            // cable.geometry.setAttribute('position', posAttribute);
+                            
+                            cable.geometry.attributes.position.needsUpdate = true;
+
+                                // cable.geometry.attributes.position.array = this.xrCtlRight.model.position
+                            break
+
+                            case 'controller_1': // xrCtlLeft
+                                cable.geometry.attributes.position.array = this.xrCtlLeft.model.position
+                            break;
+                        }
+                        //! 
+                    }
+                }
+            }
             function setHoverColour(nextObject){
                 // first check if another element is previously hovered, if so get previous element, get its original colour, reset it to that
                 if(hoverColour.length > 0){

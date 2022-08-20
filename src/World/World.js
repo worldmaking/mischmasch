@@ -18,7 +18,7 @@ import { stateChange } from './systems/state.js'
 import { Audio } from './systems/Audio.js'
 // webXR
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
-import { Vector2, ObjectLoader, SetSceneCommand, AddObjectCommand,TubeGeometry, MeshBasicMaterial, LineCurve3, Mesh } from 'three'
+import { Vector2, ObjectLoader, SetSceneCommand, AddObjectCommand,TubeGeometry, MeshBasicMaterial, LineCurve3, Mesh, LineBasicMaterial, Line, CatmullRomCurve3, BufferGeometry } from 'three'
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GPUStatsPanel } from 'three/examples/jsm/utils/GPUStatsPanel.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
@@ -132,12 +132,36 @@ class World {
                                 let fromPos = parentOp.localToWorld(from.object.position)
                                 let toPos = xrCtlRight.model.position               
                 
-                                var path = new LineCurve3(fromPos, toPos);
-                                var tubegeometry = new TubeGeometry(path, 2, .02, 8, false);
-                                var material = new MeshBasicMaterial({ color: 0x0000ff });
-                                var line = new Mesh(tubegeometry, material);
+                                // var path = new LineCurve3(fromPos, toPos);
+                                // var tubegeometry = new TubeGeometry(path, 2, .02, 8, false);
+                                // var material = new MeshBasicMaterial({ color: 0x0000ff });
+                                // var line = new Mesh(tubegeometry, material);
                 
-                                scene.add(line)
+                                /*!//Create a closed wavey loop
+                                const curve = new CatmullRomCurve3( [
+                                    fromPos, toPos
+                                ] );
+
+                                const points = curve.getPoints( 50 );
+                                const geometry = new BufferGeometry().setFromPoints( points );
+
+                                const material = new LineBasicMaterial( { color: 0xff0000 } );
+
+                                // Create the final object to add to the scene
+                                const cable = new Line( geometry, material );
+                                */
+                                //! following this https://sbcode.net/threejs/geometry-to-buffergeometry/ 
+                                const cablePoints = []
+                                cablePoints.push(fromPos)
+                                cablePoints.push(toPos)
+                                let geometry = new BufferGeometry().setFromPoints( cablePoints )
+                                let cable = new Line(geometry, new LineBasicMaterial({ color: 0x888888 }))
+
+                                cable.userData.status = 'oneJack'
+                                cable.userData.controller = ctlr.name
+
+                                scene.add(cable)
+                                loop.cables.push(cable)
                             break
 
                             case "outlet":

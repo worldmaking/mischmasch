@@ -40,6 +40,7 @@ function createMeshes(opProps) {
       inputLabel.anchorX = 'center'
       inputLabel.position.set(posX, 1.8, 0.2);
       inputLabel.rotation.set(0, 0, 0)
+      inputLabel.name = 'inputLabel'
 
       inputLabels.push(inputLabel)
     })
@@ -62,7 +63,7 @@ function createMeshes(opProps) {
   jackOut.position.set(0, 1.2, 0.2);
   jackOut.rotation.set(1.55, 1, 0)
   jackOut.name = `outlet_${opProps.op}_${jackOut.uuid}`
-
+  
   let outputLabel = new Text();
   if(opProps.outputs[0]){
 
@@ -87,7 +88,7 @@ function createMeshes(opProps) {
   outputLabel.anchorX = 'left'
   outputLabel.position.set(-0.3, 1, 0.2);
   outputLabel.rotation.set(0, 0, 0)
-  
+  outputLabel.name = 'outLabel'
 
   const opLabel = new Text();
 
@@ -97,7 +98,7 @@ function createMeshes(opProps) {
   opLabel.anchorX = 'center'
   opLabel.position.set(0, 2.5, 0.2);
   opLabel.rotation.set(0, 0, 0)
-
+  opLabel.name = 'opLabel'
   return {
     panel,
     inputJacks,
