@@ -123,8 +123,6 @@ class World {
                                 //todo decide how to pass this to genish?
                                 //todo let nm = selection.name
                                 let ob = selection.object
-                                
-                                // // for now, just get the cable from inlet to controller
                                 let from = selection.object
 
                                 // the 'from' is an inlet, meaning its position is local to its parent op. so, need to get its localToWorld position:
@@ -132,25 +130,6 @@ class World {
                                 let fromPos = parentOp.localToWorld(from.object.position)
                                 let toPos = xrCtlRight.model.position               
                 
-                                // var path = new LineCurve3(fromPos, toPos);
-                                // var tubegeometry = new TubeGeometry(path, 2, .02, 8, false);
-                                // var material = new MeshBasicMaterial({ color: 0x0000ff });
-                                // var line = new Mesh(tubegeometry, material);
-                
-                                /*!//Create a closed wavey loop
-                                const curve = new CatmullRomCurve3( [
-                                    fromPos, toPos
-                                ] );
-
-                                const points = curve.getPoints( 50 );
-                                const geometry = new BufferGeometry().setFromPoints( points );
-
-                                const material = new LineBasicMaterial( { color: 0xff0000 } );
-
-                                // Create the final object to add to the scene
-                                const cable = new Line( geometry, material );
-                                */
-                                //! following this https://sbcode.net/threejs/geometry-to-buffergeometry/ 
                                 const cablePoints = []
                                 cablePoints.push(fromPos)
                                 cablePoints.push(toPos)
