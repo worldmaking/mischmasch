@@ -18,7 +18,7 @@ import { stateChange } from './systems/state.js'
 import { Audio } from './systems/Audio.js'
 // webXR
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
-import { Vector2, ObjectLoader, SetSceneCommand, AddObjectCommand,TubeGeometry, MeshBasicMaterial, LineCurve3, Mesh, LineBasicMaterial, Line, CatmullRomCurve3, BufferGeometry } from 'three'
+import { Vector2, ObjectLoader, SetSceneCommand, AddObjectCommand,TubeGeometry, MeshBasicMaterial, LineCurve3, Mesh, LineBasicMaterial, Line, CatmullRomCurve3, BufferGeometry, Vector3 } from 'three'
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GPUStatsPanel } from 'three/examples/jsm/utils/GPUStatsPanel.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
@@ -116,11 +116,11 @@ class World {
                 // check if a partial cable exists, and that it is not intersecting with an inlet, outlet, or (later) knob
                 if (loop.editorState.partialCable != false && loop.hover.ui.element != 'inlet' && loop.hover.ui.element != 'outlet' && loop.hover.ui.element != 'knob'){
                     // this partial cable needs to be deleted
-                    console.log('remove')
-                    scene.remove(loop.editorState.partialCable)
-                    let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
-                    loop.cables.splice(cableIndex, 1)
-                    loop.editorState.partialCable = false
+                    // console.log('remove')
+                    // scene.remove(loop.editorState.partialCable)
+                    // let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
+                    // loop.cables.splice(cableIndex, 1)
+                    // loop.editorState.partialCable = false
                 } else if (loop.hover.ui.element != false) {
                     // user is interacting with an op UI element
                     // check controller hover
@@ -137,11 +137,13 @@ class World {
                                     //todo decide how to pass this to genish?
                                     //todo let nm = selection.name
                                     let ob = selection.object
-                                    let from = selection.object
+                                    let fromSrc = selection.object
 
+                                    // set cable position 0.2 in front of jack. 
+                                    // let fromPos = new Vector3(fromSrc.object.position.x, fromSrc.object.position.y, (fromSrc.object.position.z + 5))
                                     // the 'from' is an jack, meaning its position is local to its parent op. so, need to get its localToWorld position:
-                                    let parentOp = from.object.parent;
-                                    let fromPos = parentOp.localToWorld(from.object.position);
+                                    let parentOp = fromSrc.object.parent;
+                                    let fromPos = parentOp.localToWorld(new Vector3(fromSrc.object.position.x, fromSrc.object.position.y, (fromSrc.object.position.z + 0.2)));
                                     let toPos = xrCtlRight.model.position ;              
                     
                                     const cablePoints = [];
@@ -235,6 +237,11 @@ class World {
             // get 'B'' button presses
             window.addEventListener('rightBPress', (e)=>{
                 // do something with the press event
+                console.log('remove')
+                scene.remove(loop.editorState.partialCable)
+                let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
+                loop.cables.splice(cableIndex, 1)
+                loop.editorState.partialCable = false
             })
 
             // get 'B' button presses
