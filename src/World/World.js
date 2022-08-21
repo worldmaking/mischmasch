@@ -120,12 +120,13 @@ class World {
                     if(selection.element){
                         switch(selection.element){
                             case "inlet":
+                            case "outlet":
                                 //todo decide how to pass this to genish?
                                 //todo let nm = selection.name
                                 let ob = selection.object
                                 let from = selection.object
 
-                                // the 'from' is an inlet, meaning its position is local to its parent op. so, need to get its localToWorld position:
+                                // the 'from' is an jack, meaning its position is local to its parent op. so, need to get its localToWorld position:
                                 let parentOp = from.object.parent
                                 let fromPos = parentOp.localToWorld(from.object.position)
                                 let toPos = xrCtlRight.model.position               
@@ -141,10 +142,6 @@ class World {
 
                                 scene.add(cable)
                                 loop.cables.push(cable)
-                            break
-
-                            case "outlet":
-
                             break
 
                             case "panel":
