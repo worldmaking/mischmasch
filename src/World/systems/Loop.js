@@ -165,7 +165,7 @@ class Loop {
                 
                 // for(let i = 0; i <intersects.length; i++){
                     
-                if(intersects[0].object.name && intersects[0].object.name !== 'arrowHelper' && intersects[0].object.name != 'controller' ){
+                if(intersects[0].object.name && intersects[0].object.name !== 'arrowHelper' && intersects[0].object.name != 'controller' && !intersects[0].object.name.includes('partial_cable') ){
                     // set arrow ray length to distance of object
                     // console.log(intersects[0].distance)
                     this.arrow.setLength(intersects[0].distance)
@@ -178,6 +178,7 @@ class Loop {
                         
                         setHoverColour(intersects[0])
                     } else {
+                        console.log(intersects)
                         // palette isn't open
                         this.hover.paletteOp = false
                         // allow manipulation of scene objects
@@ -370,6 +371,14 @@ class Loop {
                 hoverColour[1] = originalColour
                 // set next object's colour to highlighted colour
                 nextObject.object.material.color.set(objectSelectedColor)
+            }
+
+            function unsetHoverColour(){
+                // this is for when a cable connection is deleted, if the select button was released when the raycast isn't pointing at anything, it doesn't remove the hover 
+                // get previous object
+
+                // reset its colour
+
             }
         });   
     }

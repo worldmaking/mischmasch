@@ -152,6 +152,7 @@ class World {
                                     let geometry = new BufferGeometry().setFromPoints( cablePoints );
                                     let cable = new Line(geometry, new LineBasicMaterial({ color: 0x888888 }));
 
+                                    cable.name = `partial_cable___src:_${parentOp.name}`
                                     cable.userData.status = 'oneJack';
                                     cable.userData.controller = ctlr.name;
 
@@ -183,11 +184,7 @@ class World {
             ctlr.controller.addEventListener('selectend', function(){
                 // this refers to the controller
                 // ctlr.controller.children[0].scale.z = 10;
-                ctlr.controller.userData.selectPressed = false;
-                scene.remove(loop.editorState.partialCable)
-                let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
-                loop.cables.splice(cableIndex, 1)
-                loop.editorState.partialCable = false
+            
 
             });
             // squeeze press
@@ -241,6 +238,10 @@ class World {
             // get 'B'' button presses
             window.addEventListener('rightBPress', (e)=>{
                 // do something with the press event
+                scene.remove(loop.editorState.partialCable)
+                let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
+                loop.cables.splice(cableIndex, 1)
+                loop.editorState.partialCable = false
 
             })
 
