@@ -22,7 +22,19 @@ class Loop {
         this.gpuPanel = gpuPanel;
         this.palette = palette;    
         
-        this.cables = []
+        this.editorState = {
+            partialCable: false,
+            controllerState: {
+                squeeze: false,
+                select: false,
+                a: false,
+                b: false,
+                thumbstick: [0, 0, 0, 0],
+                thumbstickButton: false
+            }
+
+        }
+        this.cables = [];
         // userActivity
         this.hover = {
             paletteOp: false,
@@ -31,13 +43,13 @@ class Loop {
                 object: false,
                 name: false
             } // element can be inlet, outlet, panel, knob, etc. object is the threeJS object. if nothing is hovered over, set both to false 
-        }
+        };
         
         // this.tempMatrix = new Matrix4();
         // this.controllerToObjectMap = new Map();
         // this.objectToColorMap = new Map();
         
-        this.scene.add( this.arrow )
+        this.scene.add( this.arrow );
     }
 
     start() {
@@ -150,10 +162,11 @@ class Loop {
             // console.log(this.arrow, this.arrow.length)
             let intersects = raycaster.intersectObjects(this.scene.children, true)
             if(intersects.length){
-
+                
                 // for(let i = 0; i <intersects.length; i++){
                     
-                if(intersects[0].object.name && intersects[0].object.name !== 'arrowHelper' ){
+                if(intersects[0].object.name && intersects[0].object.name !== 'arrowHelper' && intersects[0].object.name != 'controller' ){
+
                     // set arrow ray length to distance of object
                     // console.log(intersects[0].distance)
                     this.arrow.setLength(intersects[0].distance)
@@ -181,17 +194,38 @@ class Loop {
                             break;
 
                             case "inlet":
-                                this.hover.ui.element = 'inlet'
-                                this.hover.ui.object = intersects[0]    
-                                this.hover.ui.name = worldObjectName                      
-                                setHoverColour(intersects[0])
+
+                                // if a partial cable isn't in the hands of the controller, then create one. if one does exist, get the 2nd jack, highlight it, and stage it for completing the connection.
+                                if(this.editorState.partialCable == false){
+                                    // create a partial cable
+                                    this.hover.ui.element = 'inlet'
+                                    this.hover.ui.object = intersects[0]    
+                                    this.hover.ui.name = worldObjectName                      
+                                    setHoverColour(intersects[0])
+                                }else {
+                                    // partial cable exists, set this jack as the 2nd end and highlight it
+                                    this.hover.ui.element = 'inlet'
+                                    this.hover.ui.object = intersects[1]    
+                                    this.hover.ui.name = worldObjectName                      
+                                    setHoverColour(intersects[1])
+                                }
+
                             break;
 
                             case "outlet":
-                                this.hover.ui.element = 'outlet'
-                                this.hover.ui.object = intersects[0] 
-                                this.hover.ui.name = intersects[0].object.name                             
-                                setHoverColour(intersects[0])
+                                // if a partial cable isn't in the hands of the controller, then create one. if one does exist, get the 2nd jack and complete the connection.
+                                if(this.editorState.partialCable == false){
+                                    this.hover.ui.element = 'outlet'
+                                    this.hover.ui.object = intersects[0] 
+                                    this.hover.ui.name = intersects[0].object.name                             
+                                    setHoverColour(intersects[0])
+                                }else {
+                                    this.hover.ui.element = 'outlet'
+                                    this.hover.ui.object = intersects[1] 
+                                    this.hover.ui.name = intersects[1].object.name                             
+                                    setHoverColour(intersects[1])
+                                }
+
                             break;
 
                             case 'opLabel':
@@ -200,15 +234,31 @@ class Loop {
                                 // probably nothing to do with these... maybe make them editable eventually?
                             break
                             default: console.log('no switch case for selected object in loop', worldObjectName)
+                                // reset hover attributes
+                                this.hover = {
+                                    paletteOp: false,
+                                    ui: {
+                                        element: false,
+                                        object: false,
+                                        name: false
+                                    }
+                               }
                         }
                     }
         
                 }
                 // }
-            }else {
-                // palette isn't open
-                if (this.hover.paletteOp){
-                    this.hover.paletteOp = false;
+            } else {
+                // reset all hover attributes
+                // if (this.hover.paletteOp){
+                    this.hover = {
+                        paletteOp: false,
+                        ui: {
+                            element: false,
+                            object: false,
+                            name: false
+                        }
+                    // }
                 }
                 // reset the picking arrow length
                 // TODO: this is commented out because the calibration of the arrow is off. possibly related to https://stackoverflow.com/questions/49009873/why-is-raycast-direction-calculated-incorrectly-in-webxr
@@ -331,6 +381,7 @@ class Loop {
     }
 
     userSelect(){
+        // user selected the 
         return this.hover;
     }
 

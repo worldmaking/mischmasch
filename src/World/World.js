@@ -47,7 +47,7 @@ let opIDMap = {}
 
 // temp vars for keyboard scaffolding
 let newAbs, newDiv;
-
+let count = 0
 class World {
     // 1. Create an instance of the World app
     constructor(container) {
@@ -78,7 +78,7 @@ class World {
         palette.position.copy( camera.position );
         palette.rotation.copy( camera.rotation );
         palette.updateMatrix();
-        palette.translateZ( - 10 );
+        // palette.translateZ( - 10 );
 
         // XR controllers
         const xrCtlRight = new XRController(renderer, 0)
@@ -112,36 +112,59 @@ class World {
                     //     doc.scene.nodes[stateChange[2]] = stateChange[1]
                     // })
                     // updateMischmaschState(doc1)
-                } else {
-                    // palette isn't open
+                } 
+                // check if a partial cable exists, and that it is not intersecting with an inlet, outlet, or (later) knob
+                if (loop.editorState.partialCable != false && loop.hover.ui.element != 'inlet' && loop.hover.ui.element != 'outlet' && loop.hover.ui.element != 'knob'){
+                    // this partial cable needs to be deleted
+                    console.log('remove')
+                    scene.remove(loop.editorState.partialCable)
+                    let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
+                    loop.cables.splice(cableIndex, 1)
+                    loop.editorState.partialCable = false
+                } else if (loop.hover.ui.element != false) {
+                    // user is interacting with an op UI element
                     // check controller hover
-                    let selection = loop.userSelect().ui
+                    let selection = loop.hover.ui
                     
                     if(selection.element){
                         switch(selection.element){
+                            // cable creation:
                             case "inlet":
                             case "outlet":
-                                //todo decide how to pass this to genish?
-                                //todo let nm = selection.name
-                                let ob = selection.object
-                                let from = selection.object
+                                // is this a new cable, or a partial cable?
+                                if(loop.editorState.partialCable == false){
+                                    // start a cable between jack and a controller
+                                    //todo decide how to pass this to genish?
+                                    //todo let nm = selection.name
+                                    let ob = selection.object
+                                    let from = selection.object
 
-                                // the 'from' is an jack, meaning its position is local to its parent op. so, need to get its localToWorld position:
-                                let parentOp = from.object.parent
-                                let fromPos = parentOp.localToWorld(from.object.position)
-                                let toPos = xrCtlRight.model.position               
-                
-                                const cablePoints = []
-                                cablePoints.push(fromPos)
-                                cablePoints.push(toPos)
-                                let geometry = new BufferGeometry().setFromPoints( cablePoints )
-                                let cable = new Line(geometry, new LineBasicMaterial({ color: 0x888888 }))
+                                    // the 'from' is an jack, meaning its position is local to its parent op. so, need to get its localToWorld position:
+                                    let parentOp = from.object.parent;
+                                    let fromPos = parentOp.localToWorld(from.object.position);
+                                    let toPos = xrCtlRight.model.position ;              
+                    
+                                    const cablePoints = [];
+                                    cablePoints.push(fromPos);
+                                    cablePoints.push(toPos);
+                                    let geometry = new BufferGeometry().setFromPoints( cablePoints );
+                                    let cable = new Line(geometry, new LineBasicMaterial({ color: 0x888888 }));
 
-                                cable.userData.status = 'oneJack'
-                                cable.userData.controller = ctlr.name
+                                    cable.userData.status = 'oneJack';
+                                    cable.userData.controller = ctlr.name;
 
-                                scene.add(cable)
-                                loop.cables.push(cable)
+                                    scene.add(cable);
+                                    loop.cables.push(cable);
+                                    loop.editorState.partialCable = cable;
+                                   
+                                } else {
+                                    // it is a partial cable
+                                    // connect cable to 2nd jack, remember to disconnect it from the controller
+                                    console.log('complete cable:', selection)
+                                    // reset activeCable status
+                                    loop.editorState.partialCable = false
+                                }
+                                
                             break
 
                             case "panel":
@@ -149,23 +172,23 @@ class World {
                             break
                         }
                     }
-                    
+                } 
 
-                }  
             });
 
             // trigger unpress
             ctlr.controller.addEventListener('selectend', function(){
                 // this refers to the controller
                 // ctlr.controller.children[0].scale.z = 10;
-                ctlr.controller.userData.selectPressed = true;
-                console.log('select unpressed', )
+                ctlr.controller.userData.selectPressed = false;
+                console.log(count++, loop.hover.ui)
+
             });
             // squeeze press
             ctlr.controller.addEventListener('squeezestart', function(){
                 // this refers to the controller
                 // ctlr.controller.children[0].scale.z = 10;
-                ctlr.controller.userData.selectPressed = true;
+                ctlr.controller.userData.squeezePressed = true;
                 // set palette position in front of player
                 // make Palette visible & clickable
                 palette.position.copy( camera.position );
@@ -181,7 +204,7 @@ class World {
             ctlr.controller.addEventListener('squeezeend', function(){
                 // this refers to the controller
                 // ctlr.controller.children[0].scale.z = 10;
-                ctlr.controller.userData.selectPressed = true;
+                ctlr.controller.userData.squeezePressed = false;
                 // make Palette invisible & unclickable
                 scene.remove(palette);
                 palette.userData.active = false;
