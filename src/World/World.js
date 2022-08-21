@@ -161,6 +161,7 @@ class World {
                                    
                                 } else {
                                     // it is a partial cable
+                                    // check 
                                     // connect cable to 2nd jack, remember to disconnect it from the controller
                                     console.log('complete cable:', selection)
                                     // reset activeCable status
@@ -183,7 +184,10 @@ class World {
                 // this refers to the controller
                 // ctlr.controller.children[0].scale.z = 10;
                 ctlr.controller.userData.selectPressed = false;
-                console.log(count++, loop.hover.ui)
+                scene.remove(loop.editorState.partialCable)
+                let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
+                loop.cables.splice(cableIndex, 1)
+                loop.editorState.partialCable = false
 
             });
             // squeeze press
@@ -237,11 +241,7 @@ class World {
             // get 'B'' button presses
             window.addEventListener('rightBPress', (e)=>{
                 // do something with the press event
-                console.log('remove')
-                scene.remove(loop.editorState.partialCable)
-                let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
-                loop.cables.splice(cableIndex, 1)
-                loop.editorState.partialCable = false
+
             })
 
             // get 'B' button presses

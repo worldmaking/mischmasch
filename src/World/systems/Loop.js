@@ -166,7 +166,6 @@ class Loop {
                 // for(let i = 0; i <intersects.length; i++){
                     
                 if(intersects[0].object.name && intersects[0].object.name !== 'arrowHelper' && intersects[0].object.name != 'controller' ){
-
                     // set arrow ray length to distance of object
                     // console.log(intersects[0].distance)
                     this.arrow.setLength(intersects[0].distance)
