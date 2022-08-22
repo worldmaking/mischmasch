@@ -1,5 +1,6 @@
 import { Clock, Vector3, Matrix4, Raycaster, Color, ArrowHelper, BufferAttribute } from 'three';
 const clock = new Clock();
+import { Collisions } from './Collisions.js'
 
 const objectUnselectedColor = new Color(0x5853e6);
 const objectSelectedColor = new Color(0xf0520a);
@@ -11,11 +12,8 @@ class Loop {
         this.renderer = renderer;
         this.updatables = [] // list to hold animated objects //! this might need to reference the automerge document eventually?
         this.pointer = pointer;
-        this.raycaster = new Raycaster();
-        this.arrow = new ArrowHelper( this.raycaster.ray.direction, this.raycaster.ray.origin, 100, Math.random() * 0xffffff, 0.05, 0.05 ) // for the hmd raycaster
-        this.arrow.name = 'arrowHelper'
-        this.arrow.cone.visible = false;
-        this.hoveredPaletteOp;
+        
+        
         this.xrCtlRight = xrCtlRight;
         this.xrCtlLeft = xrCtlLeft;
         this.stats = stats;
@@ -36,6 +34,7 @@ class Loop {
         }
         this.cables = [];
         // userActivity
+        /* //!
         this.hover = {
             paletteOp: false,
             ui: {
@@ -44,12 +43,13 @@ class Loop {
                 name: false
             } // element can be inlet, outlet, panel, knob, etc. object is the threeJS object. if nothing is hovered over, set both to false 
         };
-        
+        */
+        this.collisions = new Collisions(this.editorState, this.scene, this.pointer, this.camera, this.palette);
         // this.tempMatrix = new Matrix4();
         // this.controllerToObjectMap = new Map();
         // this.objectToColorMap = new Map();
+        this.hover = this.collisions.hover
         
-        this.scene.add( this.arrow );
     }
 
     start() {
@@ -152,154 +152,9 @@ class Loop {
             }
             
 
-            // use HMD for picking ray
-            let raycaster = new Raycaster();
-            // cast a ray through the frustrum
-            raycaster.setFromCamera(this.pointer, this.camera)
-            // update the position of arrow
-            this.arrow.setDirection(raycaster.ray.direction);
-
-            let intersects = raycaster.intersectObjects(this.scene.children, true)
-            if(intersects.length){
-                // loop through the intersections, stopping at the first object that isn't meant to be ignored
-                for(let i = 0; i <intersects.length; i++){
-                    if(this.editorState.partialCable && intersects[i] == this.editorState.partialCable.userData.src ){
-                        // if a partial cable exists, ignore any new intersections with its source jack until the cable is either completed or deleted.
-                        // nothing to be done here, leave comments as is
-                    } else if(intersects[i].object.name && intersects[i].object.name !== 'arrowHelper' && intersects[i].object.name != 'controller' && !intersects[i].object.name.includes('partial_cable')){
-                        // do the things
-                        // set arrow ray length to distance of object
-                        this.arrow.setLength(intersects[i].distance)
-                        // if the palette is open, do palette stuff
-                        if (this.palette.userData.active){
-                            // stage this op to be added to the scene 
-                            this.hover.paletteOp = intersects[i]
-                            // highlight the op 
-                            setHoverColour(intersects[i])
-                        } else {
-                            // palette isn't open
-                            this.hover.paletteOp = false
-                            // allow manipulation of scene objects
-                            let worldObjectName = intersects[i].object.name;
-                            let worldObjectKind = worldObjectName.split('_')[0]
-                            
-                            switch (worldObjectKind){
-                                case "panel":
-                                    this.hover.ui.element = 'panel'
-                                    this.hover.ui.object = intersects[i]
-                                    this.hover.ui.name = intersects[i].object.name
-                                    setHoverColour(intersects[i])
-                                break;
-
-                                case "inlet":
-                                    // if a partial cable isn't in the hands of the controller, then create one. if one does exist, get the 2nd jack, highlight it, and stage it for completing the connection.
-                                    // create a partial cable
-                                    this.hover.ui.element = 'inlet'
-                                    this.hover.ui.object = intersects[i]    
-                                    this.hover.ui.name = worldObjectName                      
-                                    setHoverColour(intersects[i])
-                                break;
-
-                                case "outlet":
-                                    // if a partial cable isn't in the hands of the controller, then create one. if one does exist, get the 2nd jack and complete the connection.                                   
-                                    this.hover.ui.element = 'outlet'
-                                    this.hover.ui.object = intersects[i] 
-                                    this.hover.ui.name = intersects[i].object.name                             
-                                    setHoverColour(intersects[i])                                   
-                                break;
-
-                                case 'opLabel':
-                                case 'outLabel':
-                                case 'inputLabel':
-                                    // probably nothing to do with these... maybe make them editable eventually?
-                                break
-                                default: { 
-                                    console.log('no switch case for selected object in loop', worldObjectName)
-                                    // reset hover attributes
-                                    this.hover = {
-                                        paletteOp: false,
-                                        ui: {
-                                            element: false,
-                                            object: false,
-                                            name: false
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        break // stop the loop after finding the first match
-                    }                
-                } 
-            } else {
-                // reset all hover attributes
-                unsetHoverColour()
-                // if (this.hover.paletteOp){
-                    this.hover = {
-                        paletteOp: false,
-                        ui: {
-                            element: false,
-                            object: false,
-                            name: false
-                        }
-                    // }
-                }
-                // reset the picking arrow length
-                // TODO: this is commented out because the calibration of the arrow is off. possibly related to https://stackoverflow.com/questions/49009873/why-is-raycast-direction-calculated-incorrectly-in-webxr
-                this.arrow.setLength(100)
-
-                
-            }
-
-            /* //! one way to pick from touch controller (not working yet)
-            console.log(this.scene.children, this.raycaster)
-            // cast a ray from the controller
-            this.tempMatrix.identity().extractRotation( this.xrCtlRight.controller.matrixWorld );
-            this.raycaster.ray.origin.setFromMatrixPosition( this.xrCtlRight.controller.matrixWorld );
-            this.raycaster.ray.direction.set( 0, 0, -1 ).applyMatrix4( this.tempMatrix )
-
-            const intersections = this.raycaster.intersectObjects( this.scene.children );
-            if( intersections.length ){
-                for( let i=0; i<intersections.length; i++ ){
-                    if(intersections[i].object.name !== 'xrControllerRaycastBeam' && intersections[i].object.name !== 'thumbstick' && intersections[i].object.name !== 'controller'){
-                        console.log(intersections[i])
-                    }
-                }
-                // console.log( 'intersections', intersections )
-
-            } */ //!
-            /* //! way #2 to pick from touch controller (not working yet)
-            const rotationMatrix = new Matrix4();
-            rotationMatrix.extractRotation(this.xrCtlRight.controller.matrixWorld);
-            const raycaster = new Raycaster();
-            // only intersect with world elements that aren't the controllers
-            // raycaster.layers.set( 1 )
-            raycaster.ray.origin.setFromMatrixPosition(this.xrCtlRight.controller.matrixWorld);
-            raycaster.ray.direction.set(0, 0, -1).applyMatrix4(rotationMatrix);
-            // the lighting and xr controller need to be ignored. 
-            // todo make a more elegant solution, as eventually more than 2 objects will be added, like a second controller, like other players' controllers, etc. 
-            // let userObjects = this.scene.children.slice(2)
-            const intersects = raycaster.intersectObjects(this.raycastObjects, true);
-            // console.log(this.raycastObjects)
-            if (intersects.length > 0){
-                console.log('intersections:', intersects)
-
-                for(let i = 0; i <intersects.length; i++){
-                    
-                    if(intersects[i].object.name && intersects[i].object.name !== 'xrControllerRaycastBeam' && intersects[i].object.name !== 'controller' && intersects[i].object.name !== 'thumbstick'){
-                        console.log(intersects[i].object.name, intersects[i])
-                        this.xrCtlRight.model.children[1].scale.z = intersects[i].distance;
-                        this.selectedObject = intersects[i].object;
-                        this.selectedObject.material.color = 0xff0000;
-                        this.selectedObjectDistance = this.selectedObject.position.distanceTo(this.xrCtlRight.controller.position);
-                        // stage this op to be added to the scene
-                        this.hoveredPaletteOp = intersects[i]
-                    }
-                }
-                
-              
-            }
-          
-            */ //!
+            // check for object collisions
+            this.hover = this.collisions.detect()
+            
 
             this.gpuPanel.startQuery();       
             this.renderer.render(this.scene, this.camera);
@@ -376,7 +231,7 @@ class Loop {
 
     userSelect(){
         // user selected the 
-        return this.hover;
+        return this.collisions.hover;
     }
 
 
