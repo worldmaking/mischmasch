@@ -184,8 +184,13 @@ class World {
             // trigger unpress
             ctlr.controller.addEventListener('selectend', function(){
                 // this refers to the controller
+                ctlr.controller.userData.selectPressed = false;
+
                 // ctlr.controller.children[0].scale.z = 10;
-            
+                scene.remove(loop.editorState.partialCable)
+                let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
+                loop.cables.splice(cableIndex, 1)
+                loop.editorState.partialCable = false
 
             });
             // squeeze press
@@ -239,10 +244,7 @@ class World {
             // get 'B'' button presses
             window.addEventListener('rightBPress', (e)=>{
                 // do something with the press event
-                scene.remove(loop.editorState.partialCable)
-                let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
-                loop.cables.splice(cableIndex, 1)
-                loop.editorState.partialCable = false
+
 
             })
 

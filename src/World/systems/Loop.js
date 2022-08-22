@@ -159,32 +159,24 @@ class Loop {
             // update the position of arrow
             this.arrow.setDirection(raycaster.ray.direction);
 
-            // console.log(this.arrow, this.arrow.length)
             let intersects = raycaster.intersectObjects(this.scene.children, true)
             if(intersects.length){
-                console.log('start')
                 // loop through the intersections, stopping at the first object that isn't meant to be ignored
                 for(let i = 0; i <intersects.length; i++){
                     if(this.editorState.partialCable && intersects[i] == this.editorState.partialCable.userData.src ){
                         // if a partial cable exists, ignore any new intersections with its source jack until the cable is either completed or deleted.
-                        console.log('partial cable src', this.editorState.partialCable.userData.src)
                         // nothing to be done here, leave comments as is
                     } else if(intersects[i].object.name && intersects[i].object.name !== 'arrowHelper' && intersects[i].object.name != 'controller' && !intersects[i].object.name.includes('partial_cable')){
-                            // do the things
-                            // set arrow ray length to distance of object
-                        // console.log(intersects[i].distance)
+                        // do the things
+                        // set arrow ray length to distance of object
                         this.arrow.setLength(intersects[i].distance)
                         // if the palette is open, do palette stuff
                         if (this.palette.userData.active){
                             // stage this op to be added to the scene 
                             this.hover.paletteOp = intersects[i]
-
                             // highlight the op 
-                            
                             setHoverColour(intersects[i])
                         } else {
-                            console.log('new intersection:', intersects[i])
-
                             // palette isn't open
                             this.hover.paletteOp = false
                             // allow manipulation of scene objects
@@ -200,38 +192,20 @@ class Loop {
                                 break;
 
                                 case "inlet":
-
                                     // if a partial cable isn't in the hands of the controller, then create one. if one does exist, get the 2nd jack, highlight it, and stage it for completing the connection.
-                                    
-                                        // create a partial cable
-                                        this.hover.ui.element = 'inlet'
-                                        this.hover.ui.object = intersects[i]    
-                                        this.hover.ui.name = worldObjectName                      
-                                        setHoverColour(intersects[i])
-                                    
-                                        // // partial cable exists, set this jack as the 2nd end and highlight it
-                                        // this.hover.ui.element = 'inlet'
-                                        // this.hover.ui.object = intersects[1]    
-                                        // this.hover.ui.name = worldObjectName                      
-                                        // setHoverColour(intersects[1])
-                                    
-
+                                    // create a partial cable
+                                    this.hover.ui.element = 'inlet'
+                                    this.hover.ui.object = intersects[i]    
+                                    this.hover.ui.name = worldObjectName                      
+                                    setHoverColour(intersects[i])
                                 break;
 
                                 case "outlet":
-                                    // if a partial cable isn't in the hands of the controller, then create one. if one does exist, get the 2nd jack and complete the connection.
-                                    
-                                        this.hover.ui.element = 'outlet'
-                                        this.hover.ui.object = intersects[i] 
-                                        this.hover.ui.name = intersects[i].object.name                             
-                                        setHoverColour(intersects[i])
-                                    
-                                        // this.hover.ui.element = 'outlet'
-                                        // this.hover.ui.object = intersects[1] 
-                                        // this.hover.ui.name = intersects[1].object.name                             
-                                        // setHoverColour(intersects[1])
-                                    
-
+                                    // if a partial cable isn't in the hands of the controller, then create one. if one does exist, get the 2nd jack and complete the connection.                                   
+                                    this.hover.ui.element = 'outlet'
+                                    this.hover.ui.object = intersects[i] 
+                                    this.hover.ui.name = intersects[i].object.name                             
+                                    setHoverColour(intersects[i])                                   
                                 break;
 
                                 case 'opLabel':
@@ -239,7 +213,8 @@ class Loop {
                                 case 'inputLabel':
                                     // probably nothing to do with these... maybe make them editable eventually?
                                 break
-                                default: console.log('no switch case for selected object in loop', worldObjectName)
+                                default: { 
+                                    console.log('no switch case for selected object in loop', worldObjectName)
                                     // reset hover attributes
                                     this.hover = {
                                         paletteOp: false,
@@ -248,102 +223,13 @@ class Loop {
                                             object: false,
                                             name: false
                                         }
+                                    }
                                 }
                             }
                         }
-
-
-
                         break // stop the loop after finding the first match
-                    }
-                
-                
+                    }                
                 } 
-                /* //!   
-                if(intersects[0].object.name && intersects[0].object.name !== 'arrowHelper' && intersects[0].object.name != 'controller' && !intersects[0].object.name.includes('partial_cable') ){
-                    // set arrow ray length to distance of object
-                    // console.log(intersects[0].distance)
-                    this.arrow.setLength(intersects[0].distance)
-                    // if the palette is open, do palette stuff
-                    if (this.palette.userData.active){
-                        // stage this op to be added to the scene 
-                        this.hover.paletteOp = intersects[0]
-
-                        // highlight the op 
-                        
-                        setHoverColour(intersects[0])
-                    } else {
-                        console.log(intersects)
-                        // palette isn't open
-                        this.hover.paletteOp = false
-                        // allow manipulation of scene objects
-                        let worldObjectName = intersects[0].object.name;
-                        let worldObjectKind = worldObjectName.split('_')[0]
-                        
-                        switch (worldObjectKind){
-                            case "panel":
-                                this.hover.ui.element = 'panel'
-                                this.hover.ui.object = intersects[0]
-                                this.hover.ui.name = intersects[0].object.name
-                                setHoverColour(intersects[0])
-                            break;
-
-                            case "inlet":
-
-                                // if a partial cable isn't in the hands of the controller, then create one. if one does exist, get the 2nd jack, highlight it, and stage it for completing the connection.
-                                if(this.editorState.partialCable == false){
-                                    // create a partial cable
-                                    this.hover.ui.element = 'inlet'
-                                    this.hover.ui.object = intersects[0]    
-                                    this.hover.ui.name = worldObjectName                      
-                                    setHoverColour(intersects[0])
-                                }else {
-                                    // partial cable exists, set this jack as the 2nd end and highlight it
-                                    this.hover.ui.element = 'inlet'
-                                    this.hover.ui.object = intersects[1]    
-                                    this.hover.ui.name = worldObjectName                      
-                                    setHoverColour(intersects[1])
-                                }
-
-                            break;
-
-                            case "outlet":
-                                // if a partial cable isn't in the hands of the controller, then create one. if one does exist, get the 2nd jack and complete the connection.
-                                if(this.editorState.partialCable == false){
-                                    this.hover.ui.element = 'outlet'
-                                    this.hover.ui.object = intersects[0] 
-                                    this.hover.ui.name = intersects[0].object.name                             
-                                    setHoverColour(intersects[0])
-                                }else {
-                                    this.hover.ui.element = 'outlet'
-                                    this.hover.ui.object = intersects[1] 
-                                    this.hover.ui.name = intersects[1].object.name                             
-                                    setHoverColour(intersects[1])
-                                }
-
-                            break;
-
-                            case 'opLabel':
-                            case 'outLabel':
-                            case 'inputLabel':
-                                // probably nothing to do with these... maybe make them editable eventually?
-                            break
-                            default: console.log('no switch case for selected object in loop', worldObjectName)
-                                // reset hover attributes
-                                this.hover = {
-                                    paletteOp: false,
-                                    ui: {
-                                        element: false,
-                                        object: false,
-                                        name: false
-                                    }
-                               }
-                        }
-                    }
-        
-                } 
-                */ //!
-                // }
             } else {
                 // reset all hover attributes
                 unsetHoverColour()
