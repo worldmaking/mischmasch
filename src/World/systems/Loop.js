@@ -1,10 +1,7 @@
-import { Clock, Vector3, Matrix4, Raycaster, Color, ArrowHelper, BufferAttribute } from 'three';
+import { Clock } from 'three';
 const clock = new Clock();
 import { Collisions } from './Collisions.js'
 
-const objectUnselectedColor = new Color(0x5853e6);
-const objectSelectedColor = new Color(0xf0520a);
-let hoverColour = new Array(); // element 0 = the object, element 1 is its original colour
 class Loop {
     constructor(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette) {
         this.camera = camera;
@@ -33,21 +30,9 @@ class Loop {
 
         }
         this.cables = [];
-        // userActivity
-        /* //!
-        this.hover = {
-            paletteOp: false,
-            ui: {
-                element: false,
-                object: false,
-                name: false
-            } // element can be inlet, outlet, panel, knob, etc. object is the threeJS object. if nothing is hovered over, set both to false 
-        };
-        */
+ 
         this.collisions = new Collisions(this.editorState, this.scene, this.pointer, this.camera, this.palette);
-        // this.tempMatrix = new Matrix4();
-        // this.controllerToObjectMap = new Map();
-        // this.objectToColorMap = new Map();
+
         this.hover = this.collisions.hover
         
     }
@@ -149,13 +134,10 @@ class Loop {
                         window.dispatchEvent(leftAPress)
                     }
                 }
-            }
-            
-
+            }          
             // check for object collisions
             this.hover = this.collisions.detect()
-            
-
+           
             this.gpuPanel.startQuery();       
             this.renderer.render(this.scene, this.camera);
             this.gpuPanel.endQuery();
@@ -191,50 +173,20 @@ class Loop {
                             case 'controller_1': // xrCtlLeft
                                 cable.geometry.attributes.position.array = this.xrCtlLeft.model.position
                             break;
-                        }
-                        //! 
+                        }                    
                     }
-                }
-            }
-            function setHoverColour(nextObject){
-                // first check if another element is previously hovered, if so get previous element, get its original colour, reset it to that
-                if(hoverColour.length > 0){
-                    let previous = hoverColour[0]
-                    previous.object.material.color.set(hoverColour[1]);
-                }
-                // get the object's original colour
-                let originalColour = nextObject.object.material.color.getHex();
-                // store the object, and its original colour in the hoverColour object
-                hoverColour[0] = nextObject
-                hoverColour[1] = originalColour
-                // set next object's colour to highlighted colour
-                nextObject.object.material.color.set(objectSelectedColor)
-            }
-
-            function unsetHoverColour(){
-                // this is for when a cable connection is deleted, if the select button was released when the raycast isn't pointing at anything, it doesn't remove the hover 
-                if(hoverColour.length>0){  
-                    // get previous object
-                    let previous = hoverColour[0]
-                    // reset its colour
-                    previous.object.material.color.set(hoverColour[1]);
-                    
                 }
             }
         });   
     }
-
     stop() {
         // sending null to setAnimationLoop stops it
         this.renderer.setAnimationLoop(null);
     }
-
     userSelect(){
         // user selected the 
-        return this.collisions.hover;
+        return this.collisions.hover.state;
     }
-
-
     tick() {
         // only call the getDelta function once per frame!
         const delta = clock.getDelta();

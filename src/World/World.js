@@ -114,6 +114,7 @@ class World {
                     // updateMischmaschState(doc1)
                 } 
                 // check if a partial cable exists, and that it is not intersecting with an inlet, outlet, or (later) knob
+                //todo: this might not be necessary...
                 if (loop.editorState.partialCable != false && loop.hover.ui.element != 'inlet' && loop.hover.ui.element != 'outlet' && loop.hover.ui.element != 'knob'){
                     // this partial cable needs to be deleted
                     // console.log('remove')
