@@ -35,7 +35,7 @@ class Collisions {
             if(this.editorState.partialCable && intersects[i] == this.editorState.partialCable.userData.src ){
                 // if a partial cable exists, ignore any new intersections with its source jack until the cable is either completed or deleted.
                 // nothing to be done here, leave comments as is
-            } else if(intersects[i].object.name && intersects[i].object.name !== 'arrowHelper' && intersects[i].object.name != 'controller' && !intersects[i].object.name.includes('partial_cable') && !intersects[i].object.name.includes('thumbstick')){
+            } else if(intersects[i].object.name && intersects[i].object.name !== 'arrowHelper' && intersects[i].object.name != 'controller' && !intersects[i].object.name.includes('cable') && !intersects[i].object.name.includes('thumbstick')){
                 // do the things
                 // set arrow ray length to distance of object
                 this.arrow.setLength(intersects[i].distance)
@@ -62,19 +62,36 @@ class Collisions {
 
                         case "inlet":
                             // if a partial cable isn't in the hands of the controller, then create one. if one does exist, get the 2nd jack, highlight it, and stage it for completing the connection.
-                            // create a partial cable
-                            this.hover.state.ui.element = 'inlet'
-                            this.hover.state.ui.object = intersects[i]    
-                            this.hover.state.ui.name = worldObjectName                      
-                            this.hover.setHoverColour(intersects[i])
+                            
+                            // first check if user is attempting to connect an inlet to an inlet, in which case, prevent the hover
+                            if(this.editorState.partialCable && this.editorState.partialCable.userData.src && this.editorState.partialCable.userData.src.object.name.split('_')[0] == 'inlet'){
+                                // ignore this interaction
+                            } else {
+                                // if there's a partial cable, then it is coming from an outlet, so make the full connection possible
+                                // if no partial cable then, then make the partial cable possible
+                                this.hover.state.ui.element = 'inlet'
+                                this.hover.state.ui.object = intersects[i]    
+                                this.hover.state.ui.name = worldObjectName                      
+                                this.hover.setHoverColour(intersects[i])
+                            }
+                            
                         break;
 
                         case "outlet":
-                            // if a partial cable isn't in the hands of the controller, then create one. if one does exist, get the 2nd jack and complete the connection.                                   
-                            this.hover.state.ui.element = 'outlet'
-                            this.hover.state.ui.object = intersects[i] 
-                            this.hover.state.ui.name = intersects[i].object.name                             
-                            this.hover.setHoverColour(intersects[i])                                   
+                            // if a partial cable isn't in the hands of the controller, then create one. if one does exist, get the 2nd jack, highlight it, and stage it for completing the connection.
+                            
+                            // first check if user is attempting to connect an outlet to an outlet, in which case, prevent the hover
+                            if(this.editorState.partialCable && this.editorState.partialCable.userData.src && this.editorState.partialCable.userData.src.object.name.split('_')[0] == 'outlet'){
+                                // ignore this interaction
+                            } else {
+                                // if there's a partial cable, then it is coming from an inlet, so make the full connection possible
+                                // if no partial cable then, then make the partial cable possible
+                                this.hover.state.ui.element = 'outlet'
+                                this.hover.state.ui.object = intersects[i] 
+                                this.hover.state.ui.name = intersects[i].object.name                             
+                                this.hover.setHoverColour(intersects[i])      
+                            }                                 
+                                                         
                         break;
 
                         case 'opLabel':
