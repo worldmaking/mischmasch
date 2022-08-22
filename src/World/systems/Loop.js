@@ -162,9 +162,104 @@ class Loop {
             // console.log(this.arrow, this.arrow.length)
             let intersects = raycaster.intersectObjects(this.scene.children, true)
             if(intersects.length){
+                console.log('start')
+                // loop through the intersections, stopping at the first object that isn't meant to be ignored
+                for(let i = 0; i <intersects.length; i++){
+                    if(this.editorState.partialCable && intersects[i] == this.editorState.partialCable.userData.src ){
+                        // if a partial cable exists, ignore any new intersections with its source jack until the cable is either completed or deleted.
+                        console.log('partial cable src', this.editorState.partialCable.userData.src)
+                        // nothing to be done here, leave comments as is
+                    } else if(intersects[i].object.name && intersects[i].object.name !== 'arrowHelper' && intersects[i].object.name != 'controller' && !intersects[i].object.name.includes('partial_cable')){
+                            // do the things
+                            // set arrow ray length to distance of object
+                        // console.log(intersects[i].distance)
+                        this.arrow.setLength(intersects[i].distance)
+                        // if the palette is open, do palette stuff
+                        if (this.palette.userData.active){
+                            // stage this op to be added to the scene 
+                            this.hover.paletteOp = intersects[i]
+
+                            // highlight the op 
+                            
+                            setHoverColour(intersects[i])
+                        } else {
+                            console.log('new intersection:', intersects[i])
+
+                            // palette isn't open
+                            this.hover.paletteOp = false
+                            // allow manipulation of scene objects
+                            let worldObjectName = intersects[i].object.name;
+                            let worldObjectKind = worldObjectName.split('_')[0]
+                            
+                            switch (worldObjectKind){
+                                case "panel":
+                                    this.hover.ui.element = 'panel'
+                                    this.hover.ui.object = intersects[i]
+                                    this.hover.ui.name = intersects[i].object.name
+                                    setHoverColour(intersects[i])
+                                break;
+
+                                case "inlet":
+
+                                    // if a partial cable isn't in the hands of the controller, then create one. if one does exist, get the 2nd jack, highlight it, and stage it for completing the connection.
+                                    
+                                        // create a partial cable
+                                        this.hover.ui.element = 'inlet'
+                                        this.hover.ui.object = intersects[i]    
+                                        this.hover.ui.name = worldObjectName                      
+                                        setHoverColour(intersects[i])
+                                    
+                                        // // partial cable exists, set this jack as the 2nd end and highlight it
+                                        // this.hover.ui.element = 'inlet'
+                                        // this.hover.ui.object = intersects[1]    
+                                        // this.hover.ui.name = worldObjectName                      
+                                        // setHoverColour(intersects[1])
+                                    
+
+                                break;
+
+                                case "outlet":
+                                    // if a partial cable isn't in the hands of the controller, then create one. if one does exist, get the 2nd jack and complete the connection.
+                                    
+                                        this.hover.ui.element = 'outlet'
+                                        this.hover.ui.object = intersects[i] 
+                                        this.hover.ui.name = intersects[i].object.name                             
+                                        setHoverColour(intersects[i])
+                                    
+                                        // this.hover.ui.element = 'outlet'
+                                        // this.hover.ui.object = intersects[1] 
+                                        // this.hover.ui.name = intersects[1].object.name                             
+                                        // setHoverColour(intersects[1])
+                                    
+
+                                break;
+
+                                case 'opLabel':
+                                case 'outLabel':
+                                case 'inputLabel':
+                                    // probably nothing to do with these... maybe make them editable eventually?
+                                break
+                                default: console.log('no switch case for selected object in loop', worldObjectName)
+                                    // reset hover attributes
+                                    this.hover = {
+                                        paletteOp: false,
+                                        ui: {
+                                            element: false,
+                                            object: false,
+                                            name: false
+                                        }
+                                }
+                            }
+                        }
+
+
+
+                        break // stop the loop after finding the first match
+                    }
                 
-                // for(let i = 0; i <intersects.length; i++){
-                    
+                
+                } 
+                /* //!   
                 if(intersects[0].object.name && intersects[0].object.name !== 'arrowHelper' && intersects[0].object.name != 'controller' && !intersects[0].object.name.includes('partial_cable') ){
                     // set arrow ray length to distance of object
                     // console.log(intersects[0].distance)
@@ -246,10 +341,12 @@ class Loop {
                         }
                     }
         
-                }
+                } 
+                */ //!
                 // }
             } else {
                 // reset all hover attributes
+                unsetHoverColour()
                 // if (this.hover.paletteOp){
                     this.hover = {
                         paletteOp: false,
@@ -262,7 +359,7 @@ class Loop {
                 }
                 // reset the picking arrow length
                 // TODO: this is commented out because the calibration of the arrow is off. possibly related to https://stackoverflow.com/questions/49009873/why-is-raycast-direction-calculated-incorrectly-in-webxr
-                ! this.arrow.setLength(100)
+                this.arrow.setLength(100)
 
                 
             }
@@ -375,10 +472,13 @@ class Loop {
 
             function unsetHoverColour(){
                 // this is for when a cable connection is deleted, if the select button was released when the raycast isn't pointing at anything, it doesn't remove the hover 
-                // get previous object
-
-                // reset its colour
-
+                if(hoverColour.length>0){  
+                    // get previous object
+                    let previous = hoverColour[0]
+                    // reset its colour
+                    previous.object.material.color.set(hoverColour[1]);
+                    
+                }
             }
         });   
     }

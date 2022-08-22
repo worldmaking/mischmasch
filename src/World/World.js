@@ -154,6 +154,7 @@ class World {
 
                                     cable.name = `partial_cable___src:_${parentOp.name}`
                                     cable.userData.status = 'oneJack';
+                                    cable.userData.src = fromSrc
                                     cable.userData.controller = ctlr.name;
 
                                     scene.add(cable);
