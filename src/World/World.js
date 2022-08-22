@@ -187,11 +187,136 @@ class World {
                 // this refers to the controller
                 ctlr.controller.userData.selectPressed = false;
 
-                // ctlr.controller.children[0].scale.z = 10;
-                scene.remove(loop.editorState.partialCable)
-                let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
-                loop.cables.splice(cableIndex, 1)
-                loop.editorState.partialCable = false
+                // is there a partial cable?
+                if(loop.editorState.partialCable != false){
+                    // is the partial cable's 2nd end intersecting a jack?
+                    // console.log('ui element', loop.hover.ui)
+                    // if it is, complete the cable
+                    if(loop.hover.ui.element != false && loop.hover.ui.element == 'inlet' || loop.hover.ui.element == 'outlet'){
+
+                        let plugOne = loop.editorState.partialCable.userData.src
+                        let plugTwo = loop.hover.ui.object
+                        let plugs = [plugOne, plugTwo]
+                        let src, dest;
+                        for (let i = 0; i < 2; i++){
+                            if(plugs[i].object.name.split('_')[0] === 'outlet'){
+                                src = plugs[i]
+                            } else if (plugs[i].object.name.split('_')[0] === 'inlet'){
+                                dest = plugs[i]
+                            } else {
+                                console.log('error in cable connection, incorrect UI selected: ', plugs[i])
+                            }
+                        }
+                        console.log(src.object.name, dest.object.name)
+                        
+                        // get parent ops of src and dest jacks
+                        let srcParentOp = src.object.parent
+                        let destParentOp = dest.object.parent
+                        // get world positioning of jacks relative to their parents
+                        let srcPos = srcParentOp.localToWorld(new Vector3(src.object.position.x, src.object.position.y, (src.object.position.z + 0.2)))
+                        let destPos = destParentOp.localToWorld(new Vector3(dest.object.position.x, dest.object.position.y, (dest.object.position.z + 0.2)))          
+        
+                        const cablePoints = [];
+                        cablePoints.push(srcPos);
+                        cablePoints.push(destPos);
+                        let geometry = new BufferGeometry().setFromPoints( cablePoints );
+                        let cable = new Line(geometry, new LineBasicMaterial({ color: 0x888888 }));
+
+                        cable.name = `cable___src:_${src.object.name}___dest:${dest.object.name}`
+                        cable.userData.status = 'full_cable';
+                        cable.userData.src = src
+                        cable.userData.dest = dest
+                        
+                        scene.add(cable);
+                        loop.cables.push(cable);
+
+                        // remove partial cable
+                        scene.remove(loop.editorState.partialCable)
+                        let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
+                        loop.cables.splice(cableIndex, 1)
+                        loop.editorState.partialCable = false
+                    }
+                    // if it isn't, delete the cable
+                    else {
+                        // ctlr.controller.children[0].scale.z = 10;
+                        scene.remove(loop.editorState.partialCable)
+                        let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
+                        loop.cables.splice(cableIndex, 1)
+                        loop.editorState.partialCable = false
+                    }
+                } else {
+
+                }
+
+                //  // check if a partial cable exists, and that it is not intersecting with an inlet, outlet, or (later) knob
+                // //todo: this might not be necessary...
+                // if (loop.editorState.partialCable != false && loop.hover.ui.element != 'inlet' && loop.hover.ui.element != 'outlet' && loop.hover.ui.element != 'knob'){
+                //     // this partial cable needs to be deleted
+                //     // console.log('remove')
+                //     // scene.remove(loop.editorState.partialCable)
+                //     // let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
+                //     // loop.cables.splice(cableIndex, 1)
+                //     // loop.editorState.partialCable = false
+                // } else if (loop.hover.ui.element != false) {
+                //     // user is interacting with an op UI element
+                //     // check controller hover
+                //     let selection = loop.hover.ui
+                    
+                //     if(selection.element){
+                //         switch(selection.element){
+                //             // cable creation:
+                //             case "inlet":
+                //             case "outlet":
+                                
+                //                 // is this a new cable, or a partial cable?
+                //                 if(loop.editorState.partialCable == false){
+                //                     // start a cable between jack and a controller
+                //                     //todo decide how to pass this to genish?
+                //                     //todo let nm = selection.name
+                //                     let ob = selection.object
+                //                     let fromSrc = selection.object
+
+                //                     // set cable position 0.2 in front of jack. 
+                //                     // let fromPos = new Vector3(fromSrc.object.position.x, fromSrc.object.position.y, (fromSrc.object.position.z + 5))
+                //                     // the 'from' is an jack, meaning its position is local to its parent op. so, need to get its localToWorld position:
+                //                     let parentOp = fromSrc.object.parent;
+                //                     let fromPos = parentOp.localToWorld(new Vector3(fromSrc.object.position.x, fromSrc.object.position.y, (fromSrc.object.position.z + 0.2)));
+                //                     let toPos = xrCtlRight.model.position ;              
+                    
+                //                     const cablePoints = [];
+                //                     cablePoints.push(fromPos);
+                //                     cablePoints.push(toPos);
+                //                     let geometry = new BufferGeometry().setFromPoints( cablePoints );
+                //                     let cable = new Line(geometry, new LineBasicMaterial({ color: 0x888888 }));
+
+                //                     cable.name = `partial_cable___src:_${parentOp.name}`
+                //                     cable.userData.status = 'oneJack';
+                //                     cable.userData.src = fromSrc
+                //                     cable.userData.controller = ctlr.name;
+
+                //                     scene.add(cable);
+                //                     loop.cables.push(cable);
+                //                     loop.editorState.partialCable = cable;
+                                   
+                //                 } else {
+                //                     // it is a partial cable
+                //                     // check 
+                //                     // connect cable to 2nd jack, remember to disconnect it from the controller
+                //                     console.log('complete cable:', selection)
+                //                     // reset activeCable status
+                //                     loop.editorState.partialCable = false
+                //                 }
+                                
+                //             break
+
+                //             case "panel":
+
+                //             break
+                //         }
+                //     }
+                // } 
+
+
 
             });
             // squeeze press

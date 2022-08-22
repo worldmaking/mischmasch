@@ -35,7 +35,7 @@ class Collisions {
             if(this.editorState.partialCable && intersects[i] == this.editorState.partialCable.userData.src ){
                 // if a partial cable exists, ignore any new intersections with its source jack until the cable is either completed or deleted.
                 // nothing to be done here, leave comments as is
-            } else if(intersects[i].object.name && intersects[i].object.name !== 'arrowHelper' && intersects[i].object.name != 'controller' && !intersects[i].object.name.includes('partial_cable')){
+            } else if(intersects[i].object.name && intersects[i].object.name !== 'arrowHelper' && intersects[i].object.name != 'controller' && !intersects[i].object.name.includes('partial_cable') && !intersects[i].object.name.includes('thumbstick')){
                 // do the things
                 // set arrow ray length to distance of object
                 this.arrow.setLength(intersects[i].distance)
