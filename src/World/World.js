@@ -207,7 +207,6 @@ class World {
                                 console.log('error in cable connection, incorrect UI selected: ', plugs[i])
                             }
                         }
-                        console.log(src.object.name, dest.object.name)
                         
                         // get parent ops of src and dest jacks
                         let srcParentOp = src.object.parent
