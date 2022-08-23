@@ -70,13 +70,11 @@ class Collisions {
                                 // then prevent the hover (aka, prevent duplicate connections)
                                 let duplicate = false;
                                 for(let j = 0; j < this.patching.cables.length; j++){
+                                    // prevent duplicate connection from outlet to inlet
                                     if(this.editorState.partialCable && this.patching.cables[j].userData.status == 'complete' && this.editorState.partialCable.userData.src.object.name == this.patching.cables[j].userData.src.object.name && this.patching.cables[j].userData.dest.object.name == intersects[i].object.name){
-                                        // console.log('partialCable', this.editorState.partialCable.userData.src.object.name, 'completeCable', this.patching.cables[j].userData.src.object.name)
-                                        console.log('prevent hover for duplicate cable')
                                         duplicate = true
                                     }
-                                }
-                                
+                                }                          
                                 console.log('duplicate cable?', duplicate)
                                 if(duplicate == false ){
                                     // no cable conflicts, so:
@@ -103,12 +101,25 @@ class Collisions {
                             if(this.editorState.partialCable && this.editorState.partialCable.userData.src && this.editorState.partialCable.userData.src.object.name.split('_')[0] == 'outlet'){
                                 // ignore this interaction
                             } else {
-                                // if there's a partial cable, then it is coming from an inlet, so make the full connection possible
-                                // if no partial cable then, then make the partial cable possible
-                                this.hover.state.ui.element = 'outlet'
-                                this.hover.state.ui.object = intersects[i] 
-                                this.hover.state.ui.name = intersects[i].object.name                             
-                                this.hover.setHoverColour(intersects[i])      
+                                // if complete cable already exists between partial cable source jack and user selected jack
+                                // then prevent the hover (aka, prevent duplicate connections)
+                                let duplicate = false;
+                                for(let j = 0; j < this.patching.cables.length; j++){
+                                    // prevent duplicate connection from inlet to outlet
+                                    if(this.editorState.partialCable && this.patching.cables[j].userData.status == 'complete' && this.editorState.partialCable.userData.src.object.name == this.patching.cables[j].userData.dest.object.name && this.patching.cables[j].userData.src.object.name == intersects[i].object.name){
+                                        duplicate = true
+                                    }
+                                }                          
+                                if(duplicate == false ){
+                                    // no cable conflicts, so:
+                                    // if there's a partial cable, then it is coming from an inlet, so make the full connection possible
+                                    // if no partial cable then, then make the partial cable possible
+                                    this.hover.state.ui.element = 'outlet'
+                                    this.hover.state.ui.object = intersects[i] 
+                                    this.hover.state.ui.name = intersects[i].object.name                             
+                                    this.hover.setHoverColour(intersects[i])      
+                                }
+
                             }                                 
                                                          
                         break;
