@@ -52,7 +52,7 @@ class XRController{
         this.model.matrixAutoUpdate = true;
         // add raycast beam
         //! commented this out while we are using HMD as raycast picker source (to avoid confusion)
-        //! this.model.add(line)
+        this.model.add(line)
 
         // this will be from a custom event emitter in loop.js       
         this.controller.thumbstickAxes = []

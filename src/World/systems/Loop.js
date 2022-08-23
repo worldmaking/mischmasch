@@ -20,9 +20,23 @@ class Loop {
         
         this.editorState = {
             partialCable: false,
-            controllerState: {
+            rightControllerState: {
                 squeeze: false,
-                select: false,
+                select: {
+                    element: false,
+                    object: false
+                },
+                a: false,
+                b: false,
+                thumbstick: [0, 0, 0, 0],
+                thumbstickButton: false
+            },
+            leftControllerState: {
+                squeeze: false,
+                select: {
+                    element: false,
+                    object: false
+                },
                 a: false,
                 b: false,
                 thumbstick: [0, 0, 0, 0],
@@ -31,8 +45,9 @@ class Loop {
 
         }
         this.cables = [];
-        this.patching = new Patching(this.cables, this.xrCtlRight, this.xrCtlLeft)
+        this.patching = new Patching(this.cables, this.xrCtlRight, this.xrCtlLeft, this.editorState)
         this.collisions = new Collisions(this.editorState, this.scene, this.pointer, this.camera, this.palette, this.patching);
+        this.patching.arrow = this.collisions.arrow // pass the arrowhelper into patching for module movement
 
         this.hover = this.collisions.hover
         
@@ -145,6 +160,9 @@ class Loop {
 
             // update cable positioning, if any
             this.patching.cablePosition(this.cables)
+
+            // update op positioning, if needed
+            this.patching.opPosition()
         });   
     }
     stop() {

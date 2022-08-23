@@ -1,8 +1,12 @@
+import { Vector3 } from 'three'
+
 class Patching {
-  constructor ( cables, xrCtlRight, xrCtlLeft ){
+  constructor ( cables, xrCtlRight, xrCtlLeft, editorState ){
     this.cables = cables;
     this.xrCtlRight = xrCtlRight;
     this.xrCtlLeft = xrCtlLeft;
+    this.editorState = editorState;
+    this.arrow 
   }
 
   cablePosition(){
@@ -41,6 +45,29 @@ class Patching {
         }
       }
     }
+  }
+
+  opPosition(){
+    // todo: repeat this for left controller
+    if(this.editorState.rightControllerState.select.element == 'panel'){
+      let panel = this.editorState.rightControllerState.select.object
+      // update the parent 
+      // console.log()
+      //! this isn't working ideally the way we need it to. But I left this as it is just be able to move on with other items in issue #136
+      let rayEndPointLocalX = this.xrCtlRight.model.children[1].geometry.attributes.position.array[3]
+      let rayEndPointLocalY = this.xrCtlRight.model.children[1].geometry.attributes.position.array[4]
+      let rayEndPointLocalZ = this.xrCtlRight.model.children[1].geometry.attributes.position.array[5]
+      
+      let rayEndPointWorld = this.xrCtlRight.model.localToWorld(new Vector3(rayEndPointLocalX, rayEndPointLocalY, rayEndPointLocalZ))
+
+      console.log(rayEndPointLocalX, rayEndPointWorld.x)
+      panel.object.parent.position.x = rayEndPointWorld.x
+      panel.object.parent.position.y = rayEndPointWorld.y
+
+      
+    } 
+    
+   
   }
 }
 

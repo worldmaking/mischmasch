@@ -83,12 +83,15 @@ class World {
         // XR controllers
         const xrCtlRight = new XRController(renderer, 0)
         const xrCtlLeft = new XRController(renderer, 1)
+        console.log(xrCtlRight)
         scene.add(xrCtlRight.model, xrCtlLeft.model)
         // xrCtlRight.controller.rayCastBeam, xrCtlLeft.controller.rayCastBeam
         let xrControllers = [xrCtlLeft, xrCtlRight]
+        
         xrControllers.forEach(ctrl => {
             // trigger press
             ctrl.controller.addEventListener('selectstart', function(){
+                
                 // this refers to the controller
                 // ctrl.controller.children[0].scale.z = 10;
                 ctrl.controller.userData.selectPressed = true;
@@ -150,7 +153,16 @@ class World {
                             break
 
                             case "panel":
-
+                                // manipulate the op's position in space
+                                if(ctrl.name == 'controller_0'){
+                                    loop.editorState.rightControllerState.select.element = 'panel'
+                                    loop.editorState.rightControllerState.select.object = loop.hover.ui.object
+                                    console.log(loop.hover.ui.object)
+                                } else if (ctrl.name = 'controller_1'){
+                                    loop.editorState.leftControllerState.select.element = 'panel'
+                                    loop.editorState.leftControllerState.select.object = loop.hover.ui.object
+                                }
+                                
                             break
                         }
                     }
@@ -195,76 +207,6 @@ class World {
                 } else {
 
                 }
-
-                //  // check if a partial cable exists, and that it is not intersecting with an inlet, outlet, or (later) knob
-                // //todo: this might not be necessary...
-                // if (loop.editorState.partialCable != false && loop.hover.ui.element != 'inlet' && loop.hover.ui.element != 'outlet' && loop.hover.ui.element != 'knob'){
-                //     // this partial cable needs to be deleted
-                //     // console.log('remove')
-                //     // scene.remove(loop.editorState.partialCable)
-                //     // let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
-                //     // loop.cables.splice(cableIndex, 1)
-                //     // loop.editorState.partialCable = false
-                // } else if (loop.hover.ui.element != false) {
-                //     // user is interacting with an op UI element
-                //     // check controller hover
-                //     let selection = loop.hover.ui
-                    
-                //     if(selection.element){
-                //         switch(selection.element){
-                //             // cable creation:
-                //             case "inlet":
-                //             case "outlet":
-                                
-                //                 // is this a new cable, or a partial cable?
-                //                 if(loop.editorState.partialCable == false){
-                //                     // start a cable between jack and a controller
-                //                     //todo decide how to pass this to genish?
-                //                     //todo let nm = selection.name
-                //                     let ob = selection.object
-                //                     let fromSrc = selection.object
-
-                //                     // set cable position 0.2 in front of jack. 
-                //                     // let fromPos = new Vector3(fromSrc.object.position.x, fromSrc.object.position.y, (fromSrc.object.position.z + 5))
-                //                     // the 'from' is an jack, meaning its position is local to its parent op. so, need to get its localToWorld position:
-                //                     let parentOp = fromSrc.object.parent;
-                //                     let fromPos = parentOp.localToWorld(new Vector3(fromSrc.object.position.x, fromSrc.object.position.y, (fromSrc.object.position.z + 0.2)));
-                //                     let toPos = xrCtlRight.model.position ;              
-                    
-                //                     const cablePoints = [];
-                //                     cablePoints.push(fromPos);
-                //                     cablePoints.push(toPos);
-                //                     let geometry = new BufferGeometry().setFromPoints( cablePoints );
-                //                     let cable = new Line(geometry, new LineBasicMaterial({ color: 0x888888 }));
-
-                //                     cable.name = `partial_cable___src:_${parentOp.name}`
-                //                     cable.userData.status = 'oneJack';
-                //                     cable.userData.src = fromSrc
-                //                     cable.userData.controller = ctrl.name;
-
-                //                     scene.add(cable);
-                //                     loop.cables.push(cable);
-                //                     loop.editorState.partialCable = cable;
-                                   
-                //                 } else {
-                //                     // it is a partial cable
-                //                     // check 
-                //                     // connect cable to 2nd jack, remember to disconnect it from the controller
-                //                     console.log('complete cable:', selection)
-                //                     // reset activeCable status
-                //                     loop.editorState.partialCable = false
-                //                 }
-                                
-                //             break
-
-                //             case "panel":
-
-                //             break
-                //         }
-                //     }
-                // } 
-
-
 
             });
             // squeeze press
