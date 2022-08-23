@@ -2,30 +2,50 @@ import { BufferGeometry, Line, LineBasicMaterial, Vector3 } from 'three'
 
 
 class Cable{
-    constructor ( type, source, destination, controllerName ){
-        this.source = source;
-        this.destination = destination;
+    constructor ( type, jackOne, jackTwo, controllerName ){
+        this.jackOne = jackOne;
+        this.jackTwo = jackTwo;
         
         switch( type ){
             case 'partial':
-                let parentOp = this.source.object.parent;
-                let fromPos = parentOp.localToWorld(new Vector3(this.source.object.position.x, this.source.object.position.y, (this.source.object.position.z + 0.2)));
-                
-                const cablePoints = [];
-                cablePoints.push(fromPos);
-                cablePoints.push(this.destination);
+                let parentOp = this.jackOne.object.parent;
+                let fromPos = parentOp.localToWorld(new Vector3(this.jackOne.object.position.x, this.jackOne.object.position.y, (this.jackOne.object.position.z + 0.2)));
             
-                let geometry = new BufferGeometry().setFromPoints( cablePoints );
-                this.cable = new Line(geometry, new LineBasicMaterial({ color: 0x888888 }));
+                let partialGeometry = new BufferGeometry().setFromPoints( [ fromPos, this.jackTwo ] );
+                this.cable = new Line(partialGeometry, new LineBasicMaterial({ color: 0x888888 }));
 
                 this.cable.name = `partial_cable___src:_${parentOp.name}`
                 this.cable.userData.status = 'oneJack';
-                this.cable.userData.src = source
+                this.cable.userData.src = jackOne
                 this.cable.userData.controller = controllerName;
             break;
 
-            case 'full':
+            case 'complete':
+                let jacks = [jackOne, jackTwo]
+                let src, dest;
+                for (let i = 0; i < 2; i++){
+                    if(jacks[i].object.name.split('_')[0] === 'outlet'){
+                        src = jacks[i]
+                    } else if (jacks[i].object.name.split('_')[0] === 'inlet'){
+                        dest = jacks[i]
+                    } else {
+                        console.log('error in cable connection, incorrect UI selected: ', jacks[i])
+                    }
+                }
 
+                // get parent ops of src and dest jacks
+                let srcParentOp = src.object.parent
+                let destParentOp = dest.object.parent
+                // get world positioning of jacks relative to their parents
+                let srcPos = srcParentOp.localToWorld( new Vector3( src.object.position.x, src.object.position.y, ( src.object.position.z + 0.2 ) ) )
+                let destPos = destParentOp.localToWorld (new Vector3( dest.object.position.x, dest.object.position.y, ( dest.object.position.z + 0.2 ) ) )    
+
+                let completeGeometry = new BufferGeometry().setFromPoints( [ srcPos, destPos ] );
+                this.cable = new Line( completeGeometry, new LineBasicMaterial( { color: 0x888888 } ) );
+                this.cable.name = `cable___src:_${src.object.name}___dest:${dest.object.name}`
+                this.cable.userData.status = 'full_cable';
+                this.cable.userData.src = src
+                this.cable.userData.dest = dest
             break;
         }
 
