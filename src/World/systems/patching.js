@@ -11,7 +11,7 @@ class Patching {
       for(let i = 0; i < this.cables.length; i++){
         let cable = this.cables[i]
         // is the cable connected to one or two jacks?
-        if(cable.userData.status = 'oneJack'){
+        if(cable.userData.status == 'partial'){
           // the 'to' position of the line (aka 2nd position) needs to be updated to the controller's position
           // can you get the controller given the handedness?
           let ctlr = cable.userData.controller

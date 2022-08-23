@@ -1,11 +1,10 @@
 import { Raycaster, Color, ArrowHelper } from 'three';
 import { Hover } from './Hover.js'
-
 const objectSelectedColor = new Color(0xf0520a);
 let hoverColour = new Array(); // element 0 = the object, element 1 is its original colour
 
 class Collisions {
-    constructor( editorState, scene, pointer, camera, palette ){
+    constructor( editorState, scene, pointer, camera, palette, patching ){
         this.scene = scene;
         this.editorState = editorState;
         this.pointer = pointer;
@@ -17,7 +16,7 @@ class Collisions {
         this.arrow.cone.visible = false;
         this.scene.add( this.arrow );
         this.hover = new Hover();
-        
+        this.patching = patching;
     }
 
     detect(){
@@ -61,18 +60,38 @@ class Collisions {
                         break;
 
                         case "inlet":
+                            
                             // if a partial cable isn't in the hands of the controller, then create one. if one does exist, get the 2nd jack, highlight it, and stage it for completing the connection.
                             
-                            // first check if user is attempting to connect an inlet to an inlet, in which case, prevent the hover
                             if(this.editorState.partialCable && this.editorState.partialCable.userData.src && this.editorState.partialCable.userData.src.object.name.split('_')[0] == 'inlet'){
-                                // ignore this interaction
+                                // if user is attempting to connect an inlet to an inlet, in which case, prevent the hover
                             } else {
-                                // if there's a partial cable, then it is coming from an outlet, so make the full connection possible
-                                // if no partial cable then, then make the partial cable possible
-                                this.hover.state.ui.element = 'inlet'
-                                this.hover.state.ui.object = intersects[i]    
-                                this.hover.state.ui.name = worldObjectName                      
-                                this.hover.setHoverColour(intersects[i])
+                                // if complete cable already exists between partial cable source jack and user selected jack
+                                // then prevent the hover (aka, prevent duplicate connections)
+                                let duplicate = false;
+                                for(let j = 0; j < this.patching.cables.length; j++){
+                                    if(this.editorState.partialCable && this.patching.cables[j].userData.status == 'complete' && this.editorState.partialCable.userData.src.object.name == this.patching.cables[j].userData.src.object.name && this.patching.cables[j].userData.dest.object.name == intersects[i].object.name){
+                                        // console.log('partialCable', this.editorState.partialCable.userData.src.object.name, 'completeCable', this.patching.cables[j].userData.src.object.name)
+                                        console.log('prevent hover for duplicate cable')
+                                        duplicate = true
+                                    }
+                                }
+                                
+                                console.log('duplicate cable?', duplicate)
+                                if(duplicate == false ){
+                                    // no cable conflicts, so:
+                                    // if there's a partial cable, then it is coming from an outlet, so make the full connection possible
+                                    // if no partial cable then, then make the partial cable possible
+                                    this.hover.state.ui.element = 'inlet'
+                                    this.hover.state.ui.object = intersects[i]    
+                                    this.hover.state.ui.name = worldObjectName                      
+                                    this.hover.setHoverColour(intersects[i])
+                                }
+
+                               
+                                    
+                                
+
                             }
                             
                         break;

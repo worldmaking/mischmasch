@@ -15,7 +15,7 @@ class Cable{
                 this.cable = new Line(partialGeometry, new LineBasicMaterial({ color: 0x888888 }));
 
                 this.cable.name = `partial_cable___src:_${parentOp.name}`
-                this.cable.userData.status = 'oneJack';
+                this.cable.userData.status = 'partial';
                 this.cable.userData.src = jackOne
                 this.cable.userData.controller = controllerName;
             break;
@@ -43,7 +43,7 @@ class Cable{
                 let completeGeometry = new BufferGeometry().setFromPoints( [ srcPos, destPos ] );
                 this.cable = new Line( completeGeometry, new LineBasicMaterial( { color: 0x888888 } ) );
                 this.cable.name = `cable___src:_${src.object.name}___dest:${dest.object.name}`
-                this.cable.userData.status = 'full_cable';
+                this.cable.userData.status = 'complete';
                 this.cable.userData.src = src
                 this.cable.userData.dest = dest
             break;

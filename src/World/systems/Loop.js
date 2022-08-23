@@ -32,7 +32,7 @@ class Loop {
         }
         this.cables = [];
         this.patching = new Patching(this.cables, this.xrCtlRight, this.xrCtlLeft)
-        this.collisions = new Collisions(this.editorState, this.scene, this.pointer, this.camera, this.palette);
+        this.collisions = new Collisions(this.editorState, this.scene, this.pointer, this.camera, this.palette, this.patching);
 
         this.hover = this.collisions.hover
         
