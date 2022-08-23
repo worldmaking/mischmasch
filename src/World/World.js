@@ -86,12 +86,12 @@ class World {
         scene.add(xrCtlRight.model, xrCtlLeft.model)
         // xrCtlRight.controller.rayCastBeam, xrCtlLeft.controller.rayCastBeam
         let xrControllers = [xrCtlLeft, xrCtlRight]
-        xrControllers.forEach(ctlr => {
+        xrControllers.forEach(ctrl => {
             // trigger press
-            ctlr.controller.addEventListener('selectstart', function(){
+            ctrl.controller.addEventListener('selectstart', function(){
                 // this refers to the controller
-                // ctlr.controller.children[0].scale.z = 10;
-                ctlr.controller.userData.selectPressed = true;
+                // ctrl.controller.children[0].scale.z = 10;
+                ctrl.controller.userData.selectPressed = true;
                 // first check if palette is open. if not, block this action
                 if(scene.children.some(element => element.name === 'Palette')){
                     let paletteOp = loop.userSelect().paletteOp;
@@ -137,30 +137,31 @@ class World {
                                     // start a cable between jack and a controller
                                     //todo decide how to pass this to genish?
                                     //todo let nm = selection.name
-                                    let ob = selection.object
-                                    let fromSrc = selection.object
+                                    let partialCable = new Cable('partial', selection.object, xrCtlRight.model.position, ctrl.name) 
+                                    // let fromSrc = selection.object
 
                                     // set cable position 0.2 in front of jack. 
                                     // let fromPos = new Vector3(fromSrc.object.position.x, fromSrc.object.position.y, (fromSrc.object.position.z + 5))
                                     // the 'from' is an jack, meaning its position is local to its parent op. so, need to get its localToWorld position:
-                                    let parentOp = fromSrc.object.parent;
-                                    let fromPos = parentOp.localToWorld(new Vector3(fromSrc.object.position.x, fromSrc.object.position.y, (fromSrc.object.position.z + 0.2)));
-                                    let toPos = xrCtlRight.model.position ;              
-                    
-                                    const cablePoints = [];
-                                    cablePoints.push(fromPos);
-                                    cablePoints.push(toPos);
-                                    let geometry = new BufferGeometry().setFromPoints( cablePoints );
-                                    let cable = new Line(geometry, new LineBasicMaterial({ color: 0x888888 }));
+                                    // let parentOp = fromSrc.object.parent;
+                                    // let fromPos = parentOp.localToWorld(new Vector3(fromSrc.object.position.x, fromSrc.object.position.y, (fromSrc.object.position.z + 0.2)));
+                                    // let toPos = xrCtlRight.model.position ;              
+                                    
+                                    // const cablePoints = [];
+                                    // cablePoints.push(fromPos);
+                                    // cablePoints.push(toPos);
+                                
+                                    // let geometry = new BufferGeometry().setFromPoints( cablePoints );
+                                    // let cable = new Line(geometry, new LineBasicMaterial({ color: 0x888888 }));
 
-                                    cable.name = `partial_cable___src:_${parentOp.name}`
-                                    cable.userData.status = 'oneJack';
-                                    cable.userData.src = fromSrc
-                                    cable.userData.controller = ctlr.name;
+                                    // cable.name = `partial_cable___src:_${parentOp.name}`
+                                    // cable.userData.status = 'oneJack';
+                                    // cable.userData.src = fromSrc
+                                    // cable.userData.controller = ctrl.name;
 
-                                    scene.add(cable);
-                                    loop.cables.push(cable);
-                                    loop.editorState.partialCable = cable;
+                                    scene.add(partialCable.cable);
+                                    loop.cables.push(partialCable.cable);
+                                    loop.editorState.partialCable = partialCable.cable;
                                    
                                 } else {
                                     // it is a partial cable
@@ -183,9 +184,9 @@ class World {
             });
 
             // trigger unpress
-            ctlr.controller.addEventListener('selectend', function(){
+            ctrl.controller.addEventListener('selectend', function(){
                 // this refers to the controller
-                ctlr.controller.userData.selectPressed = false;
+                ctrl.controller.userData.selectPressed = false;
 
                 // is there a partial cable?
                 if(loop.editorState.partialCable != false){
@@ -237,7 +238,7 @@ class World {
                     }
                     // if it isn't, delete the cable
                     else {
-                        // ctlr.controller.children[0].scale.z = 10;
+                        // ctrl.controller.children[0].scale.z = 10;
                         scene.remove(loop.editorState.partialCable)
                         let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
                         loop.cables.splice(cableIndex, 1)
@@ -291,7 +292,7 @@ class World {
                 //                     cable.name = `partial_cable___src:_${parentOp.name}`
                 //                     cable.userData.status = 'oneJack';
                 //                     cable.userData.src = fromSrc
-                //                     cable.userData.controller = ctlr.name;
+                //                     cable.userData.controller = ctrl.name;
 
                 //                     scene.add(cable);
                 //                     loop.cables.push(cable);
@@ -319,10 +320,10 @@ class World {
 
             });
             // squeeze press
-            ctlr.controller.addEventListener('squeezestart', function(){
+            ctrl.controller.addEventListener('squeezestart', function(){
                 // this refers to the controller
-                // ctlr.controller.children[0].scale.z = 10;
-                ctlr.controller.userData.squeezePressed = true;
+                // ctrl.controller.children[0].scale.z = 10;
+                ctrl.controller.userData.squeezePressed = true;
                 // set palette position in front of player
                 // make Palette visible & clickable
                 palette.position.copy( camera.position );
@@ -335,10 +336,10 @@ class World {
             });
 
             // squeeze unpress
-            ctlr.controller.addEventListener('squeezeend', function(){
+            ctrl.controller.addEventListener('squeezeend', function(){
                 // this refers to the controller
-                // ctlr.controller.children[0].scale.z = 10;
-                ctlr.controller.userData.squeezePressed = false;
+                // ctrl.controller.children[0].scale.z = 10;
+                ctrl.controller.userData.squeezePressed = false;
                 // make Palette invisible & unclickable
                 scene.remove(palette);
                 palette.userData.active = false;
