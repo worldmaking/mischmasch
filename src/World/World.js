@@ -7,7 +7,7 @@ import { createLights } from './components/Lights/lights.js'
 import { XRController } from './components/XRController/XRController.js'
 import { Cable } from './components/Cable/Cable.js'
 import { Curve } from './components/Cable/Curve.js'
-import { Carpet } from './components/Carpet/Carpet'
+import { Floor } from './components/Floor/Floor'
 // modules from the systems folder
 import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
@@ -73,9 +73,8 @@ class World {
         renderer.xr.enabled = true;
 
         // carpet (floor)
-        carpet = new Carpet()
-        console.log(carpet)
-        scene.add(carpet.carpet)
+        floor = new Floor()
+        scene.add(floor.floor)
         
         // create the Palette of available Ops
         palette = new Palette(camera.position)
