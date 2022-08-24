@@ -15,7 +15,8 @@ class UserSettings{
         'Controller Vibration': true,
         'GPU Stats Window': false,
         'Module Rotation-X Speed': 0.05,
-        'Module Distancer Speed': 0.2
+        'Module Distancer Speed': 0.2,
+        'Floor Colour': 0xffffff,
         // 'dash scale': 1,
         // 'dash / gap': 1
     };
@@ -60,6 +61,9 @@ class UserSettings{
         console.log('Module Distancer Speed', val)
     } );
 
+    this.gui.addColor( this.parameters, 'Floor Colour' ).onChange( function ( val ) {
+        console.log('beam colour', val)
+    } );
 
     // this.gui.add( this.parameters, 'line type', { 'LineGeometry': 0, 'gl.LINE': 1 } ).onChange( function ( val ) {
 
