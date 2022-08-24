@@ -251,15 +251,16 @@ class World {
         })
          // CUSTOM EVENTS:
             // get thumbstick axes
-            window.addEventListener('rightThumbstickAxes', (e) => {
-                //! the axes data is found below. commented out just for now:  
-                //! xrCtlRight.thumbstickAxes
+            //! commented out because this data is available in loop.editorState.rightController.thumbstick, and this is being accessed in patching.js, so can be accessed in other places. perhaps commenting this out will help optimization
+            // window.addEventListener('rightThumbstickAxes', (e) => {
+            //     // the axes data is found below. commented out just for now:  
+            //     // xrCtlRight.thumbstickAxes
                 
-            })
-            window.addEventListener('leftThumbstickAxes', (e) => {
-                //! the axes data is found below. commented out just for now:  
-                //! xrCtlLeft.thumbstickAxes
-            })
+            // })
+            // window.addEventListener('leftThumbstickAxes', (e) => {
+            //     // the axes data is found below. commented out just for now:  
+            //     // xrCtlLeft.thumbstickAxes
+            // })
 
             // get thumbstick button presses
             window.addEventListener('rightThumbstickPress', (e)=>{
