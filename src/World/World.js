@@ -7,6 +7,7 @@ import { createLights } from './components/Lights/lights.js'
 import { XRController } from './components/XRController/XRController.js'
 import { Cable } from './components/Cable/Cable.js'
 import { Curve } from './components/Cable/Curve.js'
+import { Carpet } from './components/Carpet/Carpet'
 // modules from the systems folder
 import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
@@ -43,6 +44,7 @@ let stats, gpuPanel;
 let userSettings;
 let audio;
 let mischmaschState;
+let carpet;
 const pointer = new Vector2();
 let opIDMap = {}
 
@@ -70,6 +72,10 @@ class World {
         document.body.appendChild( VRButton.createButton( renderer ) );
         renderer.xr.enabled = true;
 
+        // carpet (floor)
+        carpet = new Carpet()
+        console.log(carpet)
+        scene.add(carpet.carpet)
         
         // create the Palette of available Ops
         palette = new Palette(camera.position)
@@ -158,8 +164,7 @@ class World {
                                 // manipulate the op's position in space
                                 if(ctrl.name == 'controller_0'){
                                     loop.editorState.rightControllerState.select.element = 'panel'
-                                    loop.editorState.rightControllerState.select.object = loop.hover.ui.object
-                                    console.log(loop.hover.ui.object)
+                                    loop.editorState.rightControllerState.select.object = loop.hover.ui.object                                   
                                 } else if (ctrl.name = 'controller_1'){
                                     loop.editorState.leftControllerState.select.element = 'panel'
                                     loop.editorState.leftControllerState.select.object = loop.hover.ui.object
@@ -207,7 +212,14 @@ class World {
                         loop.editorState.partialCable = false
                     }
                 } else {
-
+                    // manipulate the op's position in space
+                    if(ctrl.name == 'controller_0'){
+                        loop.editorState.rightControllerState.select.element = false
+                        loop.editorState.rightControllerState.select.object = false                                   
+                    } else if (ctrl.name = 'controller_1'){
+                        loop.editorState.leftControllerState.select.element = false
+                        loop.editorState.leftControllerState.select.object = false
+                    }
                 }
 
             });

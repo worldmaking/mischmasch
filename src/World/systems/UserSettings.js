@@ -15,7 +15,7 @@ class UserSettings{
         'Controller Vibration': true,
         'GPU Stats Window': false,
         'Module Rotation-X Speed': 0.05,
-        'Module Distancer Speed': 0.1
+        'Module Distancer Speed': 0.2
         // 'dash scale': 1,
         // 'dash / gap': 1
     };
@@ -56,7 +56,7 @@ class UserSettings{
         console.log('Module Rotation-X Speed', val)
     } );
 
-    this.gui.add( this.parameters, 'Module Distancer Speed', 0.02, 0.2 ).onChange( function ( val ) {
+    this.gui.add( this.parameters, 'Module Distancer Speed', 0.05, 0.4 ).onChange( function ( val ) {
         console.log('Module Distancer Speed', val)
     } );
 

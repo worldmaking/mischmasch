@@ -77,6 +77,8 @@ class Patching {
 
       panel.object.parent.position.x = rayEndPointWorld.x
       panel.object.parent.position.y = rayEndPointWorld.y
+
+      // handle thumbstick when panel selected
       if(this.editorState.rightControllerState.thumbstick.some(item => item !== 0)){
         // thumbstick has changed
         let thumbX = this.editorState.rightControllerState.thumbstick[2] * this.userSettings.parameters['Module Rotation-X Speed']
