@@ -83,9 +83,9 @@ class Patching {
         // use thumbstick X to rotate op on its Y Axis
         panel.object.parent.rotateY(thumbX)
 
-        let thumbY = this.editorState.rightControllerState.thumbstick[3] * this.userSettings.parameters['Module Rotation-Y Speed']
+        let thumbY = this.editorState.rightControllerState.thumbstick[3] * this.userSettings.parameters['Module Distancer Speed']
         // use thumbstick X to rotate op on its Y Axis
-        panel.object.parent.rotateX(thumbY)
+        panel.object.parent.translateZ(thumbY)
         
       }
       
