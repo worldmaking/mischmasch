@@ -4,13 +4,13 @@ import { Collisions } from './Collisions.js'
 import { Patching } from './Patching.js'
 
 class Loop {
-    constructor(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette) {
+    constructor(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings) {
         this.camera = camera;
         this.scene = scene;
         this.renderer = renderer;
         this.updatables = [] // list to hold animated objects //! this might need to reference the automerge document eventually?
         this.pointer = pointer;
-        
+        this.userSettings = userSettings;
         
         this.xrCtlRight = xrCtlRight;
         this.xrCtlLeft = xrCtlLeft;
@@ -45,7 +45,7 @@ class Loop {
 
         }
         this.cables = [];
-        this.patching = new Patching(this.cables, this.xrCtlRight, this.xrCtlLeft, this.editorState)
+        this.patching = new Patching(this.cables, this.xrCtlRight, this.xrCtlLeft, this.editorState, this.userSettings)
         this.collisions = new Collisions(this.editorState, this.scene, this.pointer, this.camera, this.palette, this.patching);
         this.patching.arrow = this.collisions.arrow // pass the arrowhelper into patching for module movement
 
@@ -104,8 +104,9 @@ class Loop {
                 // thumbstick axes
                 if(this.xrCtlRight.controller.gamepad){
                     // thumbstick axes
-                    this.xrCtlRight.thumbstickAxes = this.xrCtlRight.controller.gamepad.axes
+                    // this.xrCtlRight.thumbstickAxes = this.xrCtlRight.controller.gamepad.axes
                     window.dispatchEvent(rightThumbstickAxes)
+                    this.editorState.rightControllerState.thumbstick = this.xrCtlRight.controller.gamepad.axes
 
                     // thumbstick button press
                     if(this.xrCtlRight.controller.gamepad.buttons[3].pressed === true){
@@ -131,8 +132,11 @@ class Loop {
                 
                 if(this.xrCtlLeft.controller.gamepad){
                     // thumbstick axes
-                    this.xrCtlLeft.thumbstickAxes = this.xrCtlLeft.controller.gamepad.axes
+                    this.editorState.leftControllerState.thumbstick = this.xrCtlLeft.controller.gamepad.axes
+
+                    // this.xrCtlLeft.thumbstickAxes = this.xrCtlLeft.controller.gamepad.axes
                     window.dispatchEvent(leftThumbstickAxes)
+
 
                     // thumbstick button press
                     if(this.xrCtlLeft.controller.gamepad.buttons[3].pressed === true){

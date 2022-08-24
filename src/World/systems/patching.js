@@ -1,12 +1,13 @@
 import { Vector3 } from 'three'
 
 class Patching {
-  constructor ( cables, xrCtlRight, xrCtlLeft, editorState ){
+  constructor ( cables, xrCtlRight, xrCtlLeft, editorState, userSettings ){
     this.cables = cables;
     this.xrCtlRight = xrCtlRight;
     this.xrCtlLeft = xrCtlLeft;
     this.editorState = editorState;
     this.arrow 
+    this.userSettings = userSettings
   }
 
   cablePosition(){
@@ -42,6 +43,20 @@ class Patching {
                 cable.geometry.attributes.position.array = this.xrCtlLeft.model.position
             break;
           }                    
+        }else if (cable.userData.status == 'complete'){
+          let srcJack = cable.userData.src
+          let destJack = cable.userData.dest
+
+          let srcPos = srcJack.object.parent.localToWorld( new Vector3( srcJack.object.position.x, srcJack.object.position.y, ( srcJack.object.position.z + 0.2 ) ) )
+          let destPos = destJack.object.parent.localToWorld( new Vector3( destJack.object.position.x, destJack.object.position.y, ( destJack.object.position.z + 0.2 ) ) )
+          cable.geometry.attributes.position.array[0] = srcPos.x
+          cable.geometry.attributes.position.array[1] = srcPos.y
+          cable.geometry.attributes.position.array[2] = srcPos.z          
+          cable.geometry.attributes.position.array[3] = destPos.x
+          cable.geometry.attributes.position.array[4] = destPos.y
+          cable.geometry.attributes.position.array[5] = destPos.z
+          cable.geometry.attributes.position.needsUpdate = true;
+
         }
       }
     }
@@ -60,10 +75,19 @@ class Patching {
       
       let rayEndPointWorld = this.xrCtlRight.model.localToWorld(new Vector3(rayEndPointLocalX, rayEndPointLocalY, rayEndPointLocalZ))
 
-      console.log(rayEndPointLocalX, rayEndPointWorld.x)
       panel.object.parent.position.x = rayEndPointWorld.x
       panel.object.parent.position.y = rayEndPointWorld.y
+      if(this.editorState.rightControllerState.thumbstick.some(item => item !== 0)){
+        // thumbstick has changed
+        let thumbX = this.editorState.rightControllerState.thumbstick[2] * this.userSettings.parameters['Module Rotation-X Speed']
+        // use thumbstick X to rotate op on its Y Axis
+        panel.object.parent.rotateY(thumbX)
 
+        let thumbY = this.editorState.rightControllerState.thumbstick[3] * this.userSettings.parameters['Module Rotation-Y Speed']
+        // use thumbstick X to rotate op on its Y Axis
+        panel.object.parent.rotateX(thumbY)
+        
+      }
       
     } 
     
