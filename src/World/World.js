@@ -44,7 +44,7 @@ let stats, gpuPanel;
 let userSettings;
 let audio;
 let mischmaschState;
-let carpet;
+let floor;
 const pointer = new Vector2();
 let opIDMap = {}
 
@@ -74,7 +74,9 @@ class World {
 
         // carpet (floor)
         floor = new Floor()
+        floor.floor.position.y = -10
         scene.add(floor.floor)
+        console.log(floor)
         
         // create the Palette of available Ops
         palette = new Palette(camera.position)
