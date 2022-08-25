@@ -511,27 +511,13 @@ class World {
                             controller.userData.selected = object.parent;
                             loop.editorState.rightControllerState.select.element = 'panel'
                             loop.editorState.rightControllerState.select.object = object.parent
-                            // this.hover.state.ui.element = 'panel'
-                            // this.hover.state.ui.object = intersects[i]
-                            // this.hover.state.ui.name = intersects[i].object.name
-                            // this.hover.setHoverColour(intersects[i])
                         break;
 
                         case 'inlet':
                         case 'outlet':
-                            loop.patching.partialCable()
                             if(loop.editorState.partialCable == false){
-                                // start a cable between jack and a controller
-                                //todo decide how to pass this to genish?
-                                //todo let nm = selection.name
-                                let partialCable = new Cable('partial', object, controller1.position, controller1.name) 
-
-                                synth.add(partialCable.cable);
-                                loop.cables.push(partialCable.cable);
-                                loop.editorState.partialCable = partialCable.cable;
-                               
-                            } else {
-                               
+                                loop.patching.makePartialCable(object, controller1)
+                            } else {        
                             }
                         break
 
@@ -551,6 +537,34 @@ class World {
 
 
                 const object = controller.userData.selected;
+                // check if there's a partial cable
+                if(loop.editorState.partialCable != false){
+                    // check if 2nd end of partial cable is intersecting the correct jack type (opposite of 1st end)
+                    if(loop.editorState.partialCable.userData.src.userData.kind != object.userData.kind && (object.userData.kind == 'inlet' || object.userData.kind == 'outlet')){
+                        // get both jacks for the new cable to attach to
+                        let jackOne = loop.editorState.partialCable.userData.src
+                        let jackTwo = object
+
+                        // add complete cable                        
+                        let completeCable = new Cable( 'complete', jackOne, jackTwo )
+                        synth.add(completeCable.cable);
+                        loop.cables.push(completeCable.cable);
+
+                        // remove partial cable
+                        synth.remove(loop.editorState.partialCable)
+                        let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
+                        loop.cables.splice(cableIndex, 1)
+                        loop.editorState.partialCable = false
+                    } else {
+                        // not intersecting a valid jack, so remove the jack
+                        synth.remove(loop.editorState.partialCable)
+                        let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
+                        loop.cables.splice(cableIndex, 1)
+                        loop.editorState.partialCable = false
+                    }
+
+                }
+
 
                 switch (object.userData.kind){
                     case 'op':
@@ -572,22 +586,7 @@ class World {
 
                     case 'inlet':
                     case 'outlet':
-                        if(loop.editorState.partialCable != false){
-                            // get both jacks for the new cable to attach to
-                            let jackOne = loop.editorState.partialCable.userData.src
-                            let jackTwo = object
 
-                            // add complete cable                        
-                            let completeCable = new Cable( 'complete', jackOne, jackTwo )
-                            synth.add(completeCable.cable);
-                            loop.cables.push(completeCable.cable);
-
-                            // remove partial cable
-                            synth.remove(loop.editorState.partialCable)
-                            let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
-                            loop.cables.splice(cableIndex, 1)
-                            loop.editorState.partialCable = false
-                        }
                     break
 
 

@@ -1,5 +1,5 @@
 import { Vector3 } from 'three'
-
+import { Cable } from '../components/Cable/Cable'
 class Patching {
   constructor ( cables, xrCtlRight, xrCtlLeft, editorState, userSettings, synth, controller1, controller2 ){
     this.cables = cables;
@@ -9,6 +9,7 @@ class Patching {
     this.arrow 
     this.userSettings = userSettings
     this.controller1 = controller1
+    this.synth = synth;
   }
 
   cablePosition(){
@@ -84,8 +85,16 @@ class Patching {
     }
   }
 
-  partialCable(){
-    console.log('cable')
+  makePartialCable(object, controller){
+    // console.log('cable')
+    // start a cable between jack and a controller
+    //todo decide how to pass this to genish?
+    //todo let nm = selection.name
+    let partialCable = new Cable('partial', object, controller.position, controller.name) 
+
+    this.synth.add(partialCable.cable);
+    this.cables.push(partialCable.cable);
+    this.editorState.partialCable = partialCable.cable;
   }
 }
 
