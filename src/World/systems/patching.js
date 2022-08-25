@@ -1,13 +1,14 @@
 import { Vector3 } from 'three'
 
 class Patching {
-  constructor ( cables, xrCtlRight, xrCtlLeft, editorState, userSettings, synth ){
+  constructor ( cables, xrCtlRight, xrCtlLeft, editorState, userSettings, synth, controller1, controller2 ){
     this.cables = cables;
     this.xrCtlRight = xrCtlRight;
     this.xrCtlLeft = xrCtlLeft;
     this.editorState = editorState;
     this.arrow 
     this.userSettings = userSettings
+    this.controller1 = controller1
   }
 
   cablePosition(){
@@ -22,7 +23,7 @@ class Patching {
           let ctlr = cable.userData.controller
           switch(ctlr){
             case 'controller_0': // xrCtlRight
-            let controllerPosition = this.xrCtlRight.controller.position
+            let controllerPosition = this.controller1.position
 
             // let posAttribute = new BufferAttribute(new Float32Array(controllerPosition), 2);
 
@@ -81,6 +82,10 @@ class Patching {
         // console.log(thumbX, thumbY)
       }
     }
+  }
+
+  partialCable(){
+    console.log('cable')
   }
 }
 

@@ -52,7 +52,7 @@ class Loop {
 
         }
         this.cables = [];
-        this.patching = new Patching(this.cables, this.xrCtlRight, this.xrCtlLeft, this.editorState, this.userSettings, this.synth,)
+        this.patching = new Patching(this.cables, this.xrCtlRight, this.xrCtlLeft, this.editorState, this.userSettings, this.synth, this.controller1)
         this.collisions = new Collisions(this.editorState, this.scene, this.pointer, this.camera, this.palette, this.patching, this.xrCtlRight, this.xrCtlLeft, this.synth);
         this.patching.arrow = this.collisions.arrow // pass the arrowhelper into patching for module movement
 
@@ -105,7 +105,7 @@ class Loop {
             this.tick();
 
             // controller intersections
-            this.cleanIntersected
+            this.cleanIntersected()
             // this.getIntersections
             this.intersectObjects(this.controller1)
             

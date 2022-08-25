@@ -48,6 +48,7 @@ let userSettings;
 let controller1, controller2;
 let controllerGrip1, controllerGrip2;
 const intersected = [];
+let currentIntersection;
 const tempMatrix = new Matrix4();
 //!
 
@@ -148,9 +149,8 @@ class World {
         controller1.addEventListener( 'connected', (e) => {
             controller1.gamepad = e.data.gamepad 
             controller1.userData.handedness = e.data.handedness 
-            console.log(controller1) 
         });
-        console.log(controller1)
+        controller1.name = 'controller_0'
         // this will be from a custom event emitter in loop.js       
         controller1.thumbstickAxes = []
         scene.add( controller1 );
@@ -182,204 +182,8 @@ class World {
         raycaster = new Raycaster();
         //! aadfadfadfaf
 
-        function onSelectStart( event ) {
-
-            const controller = event.target;
-
-            const intersections = getIntersections( controller );
-
-            if ( intersections.length > 0 ) {
-
-                const intersection = intersections[ 0 ];
-
-                const object = intersection.object;
-                if(palette.userData.active){
-                   
-                    
-                    // object.parent.meshes.panel.material.emissive
-                    // object.material.emissive.b = 1;
-                    controller.attach( object.parent );
-
-                    controller.userData.selected = object.parent;
-
-                    synth.remove(palette)
-                    palette.userData.active = false;
-
-                    // rebuild the palette so the selected op is replaced
-                    camera.remove(palette)
-                    palette = new Palette(camera.position)
-                    // place palette in front of camera
-                    camera.add(palette);
-                    palette.position.set(-25,0,20);
-                    palette.position.copy( camera.position );
-                    palette.rotation.copy( camera.rotation );
-                    palette.updateMatrix();
-
-                    // let paletteOp = object
-                    // let opName = paletteOp.object.name
-                    
-                    // const op = new Op(opName);
-                    // // get current position of op from within the palette
-                    // let inPalettePos = paletteOp.point
-                    // op.position.x = inPalettePos.x
-                    // op.position.y = inPalettePos.y
-                    // op.position.z = inPalettePos.z
-                    // loop.updatables.push(op);
-                    // synth.remove(palette);
-                    // palette.userData.active = false;
-                    // synth.add(op);
-                    // console.log(op)
-
-
-
-                    // let stateChange = stateChange('addNode', [opName, op])
-                    // doc1 = Automerge.change(doc1, stateChange[3], doc => {
-                    //     doc.scene.nodes[stateChange[2]] = stateChange[1]
-                    // })
-                    // updateMischmaschState(doc1)
-                }else {
-                    //palette isn't open
-                    console.log(object)
-                    let objectName = object.name;
-                    let objectKind = objectName.split('_')[0]
-
-                    switch (objectKind){
-                        case "panel":
-                            // manipulate the op's position in world space
-                            controller.attach( object.parent );
-
-                            controller.userData.selected = object.parent;
-                            loop.editorState.rightControllerState.select.element = 'panel'
-                            loop.editorState.rightControllerState.select.object = object.parent
-                            // this.hover.state.ui.element = 'panel'
-                            // this.hover.state.ui.object = intersects[i]
-                            // this.hover.state.ui.name = intersects[i].object.name
-                            // this.hover.setHoverColour(intersects[i])
-                        break;
-
-                    }
-                }
-
-            }
-
-        }
-
-        function onSelectEnd( event ) {
-
-            const controller = event.target;
-
-            if ( controller.userData.selected !== undefined ) {
-
-
-
-                const object = controller.userData.selected;
-                if(object.userData.kind = 'op'){
-                    let op = object
-                    op.meshes.panel.material.emissive.b = 0;
-                    // synth.attach( object );
-                    // if op is below floor, delete it
-                    if(op.position.y < floor.floor.position.y){
-                        // remove it
-                        controller.remove( op )
-                        synth.remove( op )
-                    }else {
-                        console.log(op, floor)
-                        synth.attach(op)
-                        controller.remove( op );
-                        // loop.updatables.push(op);
-                    }
-
-                    
-    
-                    controller.userData.selected = undefined;
-                }
-
-
-            }
-
-
-        }
-
-        function onSqueezeStart(){
-            // this refers to the controller
-            // if (palette.userData.active == true ){
-            //     synth.remove(palette);
-            //     palette.userData.active = false;
-            // }else {
-                // ctrl.controller.children[0].scale.z = 10;
-                // ctrl.controller.userData.squeezePressed = true;
-                // set palette position in front of player
-                // make Palette visible & clickable
-                palette.position.copy( camera.position );
-                palette.rotation.copy( camera.rotation );
-                palette.position.x -= 25
-                palette.position.z =+ 5
-                palette.updateMatrix();
-                // palette.translateZ( - 10 );
-                synth.add(palette);
-                palette.userData.active = true;
-            // }
-
-        };
-
-        // squeeze unpress
-        function onSqueezeEnd(){
-            // this refers to the controller
-            // ctrl.controller.children[0].scale.z = 10;
-            // ctrl.controller.userData.squeezePressed = false;
-            // make Palette invisible & unclickable
-            synth.remove(palette);
-            palette.userData.active = false;
-        };
         
-        function getIntersections( controller ) {
 
-            tempMatrix.identity().extractRotation( controller.matrixWorld );
-
-            raycaster.ray.origin.setFromMatrixPosition( controller.matrixWorld );
-            raycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( tempMatrix );
-
-            return raycaster.intersectObjects( synth.children, true );
-
-        }
-
-        function intersectObjects( controller ) {
-
-            // Do not highlight when already selected
-
-            if ( controller.userData.selected !== undefined ) return;
-
-            const line = controller.getObjectByName( 'line' );
-            const intersections = getIntersections( controller );
-
-            if ( intersections.length > 0 ) {
-
-                const intersection = intersections[ 0 ];
-
-                const object = intersection.object;
-                object.parent.meshes.panel.material.emissive.r = 1;
-                intersected.push( object );
-
-                line.scale.z = intersection.distance;
-
-            } else {
-
-                line.scale.z = 25;
-
-            }
-
-        }
-
-        function cleanIntersected() {
-
-            while ( intersected.length ) {
-
-                const object = intersected.pop();
-                object.parent.meshes.panel.material.emissive.r = 0;
-
-            }
-
-        }
         //
         // function animate() {
 
@@ -625,6 +429,8 @@ class World {
         loop = new Loop(camera, scene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller1, synth, floor);
         loop.updatables.push(controls);
 
+        
+
         // add the three canvas to the html container
         container.append(renderer.domElement); 
 
@@ -634,6 +440,322 @@ class World {
 
         // resizer. See discoverthreejs for how/why this is useful
         const resizer = new Resizer(container, camera, renderer);
+
+        // controller functions
+        function onSelectStart( event ) {
+
+            const controller = event.target;
+
+            const intersections = getIntersections( controller );
+
+            if ( intersections.length > 0 ) {
+
+                const intersection = intersections[ 0 ];
+
+                const object = intersection.object;
+                if(palette.userData.active){
+                   
+                    
+                    // object.parent.meshes.panel.material.emissive
+                    // object.material.emissive.b = 1;
+                    controller.attach( object.parent );
+
+                    controller.userData.selected = object.parent;
+
+                    synth.remove(palette)
+                    palette.userData.active = false;
+
+                    // rebuild the palette so the selected op is replaced
+                    camera.remove(palette)
+                    palette = new Palette(camera.position)
+                    // place palette in front of camera
+                    camera.add(palette);
+                    palette.position.set(-25,0,20);
+                    palette.position.copy( camera.position );
+                    palette.rotation.copy( camera.rotation );
+                    palette.updateMatrix();
+
+                    // let paletteOp = object
+                    // let opName = paletteOp.object.name
+                    
+                    // const op = new Op(opName);
+                    // // get current position of op from within the palette
+                    // let inPalettePos = paletteOp.point
+                    // op.position.x = inPalettePos.x
+                    // op.position.y = inPalettePos.y
+                    // op.position.z = inPalettePos.z
+                    // loop.updatables.push(op);
+                    // synth.remove(palette);
+                    // palette.userData.active = false;
+                    // synth.add(op);
+                    // console.log(op)
+
+
+
+                    // let stateChange = stateChange('addNode', [opName, op])
+                    // doc1 = Automerge.change(doc1, stateChange[3], doc => {
+                    //     doc.scene.nodes[stateChange[2]] = stateChange[1]
+                    // })
+                    // updateMischmaschState(doc1)
+                }else {
+                    //palette isn't open
+                    let objectName = object.name;
+                    let objectKind = objectName.split('_')[0]
+
+                    switch (objectKind){
+                        case "panel":
+                            // manipulate the op's position in world space
+                            controller.attach( object.parent );
+
+                            controller.userData.selected = object.parent;
+                            loop.editorState.rightControllerState.select.element = 'panel'
+                            loop.editorState.rightControllerState.select.object = object.parent
+                            // this.hover.state.ui.element = 'panel'
+                            // this.hover.state.ui.object = intersects[i]
+                            // this.hover.state.ui.name = intersects[i].object.name
+                            // this.hover.setHoverColour(intersects[i])
+                        break;
+
+                        case 'inlet':
+                            loop.patching.partialCable()
+                            if(loop.editorState.partialCable == false){
+                                // start a cable between jack and a controller
+                                //todo decide how to pass this to genish?
+                                //todo let nm = selection.name
+                                let partialCable = new Cable('partial', object, controller1.position, controller1.name) 
+
+                                synth.add(partialCable.cable);
+                                loop.cables.push(partialCable.cable);
+                                loop.editorState.partialCable = partialCable.cable;
+                               
+                            } else {
+                               
+                            }
+                        break
+
+                    }
+                }
+
+            }
+
+        }
+
+        function onSelectEnd( event ) {
+
+            const controller = event.target;
+
+            if ( controller.userData.selected !== undefined ) {
+
+
+
+                const object = controller.userData.selected;
+
+                switch (object.userData.kind){
+                    case 'op':
+                        let op = object
+                        op.meshes.panel.material.emissive.b = 0;
+                        // synth.attach( object );
+                        // if op is below floor, delete it
+                        if(op.position.y < floor.floor.position.y){
+                            // remove it
+                            controller.remove( op )
+                            synth.remove( op )
+                        }else {
+                            console.log(op, floor)
+                            synth.attach(op)
+                            controller.remove( op );
+                            // loop.updatables.push(op);
+                        }
+                    break
+
+                    case 'inlet':
+                    case 'outlet':
+                        if(loop.editorState.partialCable != false){
+                            // get both jacks for the new cable to attach to
+                            let jackOne = loop.editorState.partialCable.userData.src
+                            let jackTwo = object
+
+                            // add complete cable                        
+                            let completeCable = new Cable( 'complete', jackOne, jackTwo )
+                            synth.add(completeCable.cable);
+                            loop.cables.push(completeCable.cable);
+
+                            // remove partial cable
+                            synth.remove(loop.editorState.partialCable)
+                            let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
+                            loop.cables.splice(cableIndex, 1)
+                            loop.editorState.partialCable = false
+                        }
+                    break
+
+
+                }
+
+
+                controller.userData.selected = undefined;
+
+
+
+            }
+
+
+        }
+        /* //!
+        if(loop.hover.ui.element != false && loop.hover.ui.element == 'inlet' || loop.hover.ui.element == 'outlet'){
+            // get both jacks for the new cable to attach to
+            let jackOne = loop.editorState.partialCable.userData.src
+            let jackTwo = loop.hover.ui.object
+
+            // add complete cable                        
+            let completeCable = new Cable( 'complete', jackOne, jackTwo )
+            scene.add(completeCable.cable);
+            loop.cables.push(completeCable.cable);
+
+            // remove partial cable
+            scene.remove(loop.editorState.partialCable)
+            let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
+            loop.cables.splice(cableIndex, 1)
+            loop.editorState.partialCable = false
+        }
+        // if it isn't, delete the cable
+        else {
+            // ctrl.controller.children[0].scale.z = 10;
+            scene.remove(loop.editorState.partialCable)
+            let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
+            loop.cables.splice(cableIndex, 1)
+            loop.editorState.partialCable = false
+        }
+        */ //!
+        function onSqueezeStart(){
+            // this refers to the controller
+            // if (palette.userData.active == true ){
+            //     synth.remove(palette);
+            //     palette.userData.active = false;
+            // }else {
+                // ctrl.controller.children[0].scale.z = 10;
+                // ctrl.controller.userData.squeezePressed = true;
+                // set palette position in front of player
+                // make Palette visible & clickable
+                palette.position.copy( camera.position );
+                palette.rotation.copy( camera.rotation );
+                palette.position.x -= 25
+                palette.position.z =+ 5
+                palette.updateMatrix();
+                // palette.translateZ( - 10 );
+                synth.add(palette);
+                palette.userData.active = true;
+            // }
+
+        };
+
+        // squeeze unpress
+        function onSqueezeEnd(){
+            // this refers to the controller
+            // ctrl.controller.children[0].scale.z = 10;
+            // ctrl.controller.userData.squeezePressed = false;
+            // make Palette invisible & unclickable
+            synth.remove(palette);
+            palette.userData.active = false;
+        };
+        
+        function getIntersections( controller ) {
+
+            tempMatrix.identity().extractRotation( controller.matrixWorld );
+
+            raycaster.ray.origin.setFromMatrixPosition( controller.matrixWorld );
+            raycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( tempMatrix );
+
+            return raycaster.intersectObjects( synth.children, true );
+
+        }
+
+        function intersectObjects( controller ) {
+
+            // Do not highlight when already selected
+
+            if ( controller.userData.selected !== undefined ) return;
+
+            const line = controller.getObjectByName( 'line' );
+            const intersections = getIntersections( controller );
+
+            if ( intersections.length > 0 ) {
+
+                const intersection = intersections[ 0 ];
+
+                const object = intersection.object;
+                if(palette.userData.active){
+                    object.parent.meshes.panel.material.emissive.b = 1;
+                    object.parent.meshes.panel.material.emissiveIntensity = 10;
+                    intersected.push( object.parent.meshes.panel );
+                }else {
+                    intersected.push( object );
+                    // op element type:
+                    // console.log(object)
+                    switch(object.userData.kind){
+                        case 'panel':
+                            object.material.emissive.g = 1
+                            object.material.emissiveIntensity = 10
+                        break
+                        case 'inlet':
+                            console.log('inlet', object)
+                            object.material.emissive.r = 1
+                            object.material.emissiveIntensity = 10
+                        break
+                        case 'outlet':
+                            object.material.emissive.r = 1
+                            object.material.emissiveIntensity = 10
+                        break
+
+                    }
+                }
+
+                
+                
+
+                line.scale.z = intersection.distance;
+
+            } else {
+
+                line.scale.z = 25;
+
+            }
+
+        }
+
+        function cleanIntersected() {
+
+            while ( intersected.length ) {
+                
+                if(palette.userData.active){
+                    intersected[0].material.emissive.g = 0;
+                    // object.parent.meshes.panel.material.emissiveIntensity = 10;
+                }else {
+                    // op element type:
+                    // console.log(object)
+                    switch(intersected[0].userData.kind){
+                        case 'panel':
+                            intersected[0].material.emissive.b = 0
+                            // object.material.emissiveIntensity = 10
+                        break
+                        case 'inlet':
+                            
+                            intersected[0].material.emissive.r = 0
+                            // object.material.emissiveIntensity = 10
+                        break
+                        case 'outlet':
+                            intersected[0].material.emissive.r = 0
+                            // object.material.emissiveIntensity = 10
+                        break
+
+                    }
+                }
+
+                const object = intersected.pop();
+                // object.parent.meshes.panel.material.emissive.g = 0;
+
+            }
+
+        }
 
         // versioning
         doc1 = Automerge.init()

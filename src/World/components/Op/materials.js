@@ -35,20 +35,24 @@ function createMaterials(opCategory) {
     
   // }
   const panel = new MeshStandardMaterial({
-    color: 'white',
+    color: '#9efffd',
     flatShading: true,
     transparent: true,
     opacity: 0.2
   });
 
   const jackIn = new MeshStandardMaterial({
-    color: 'skyblue',
+    color: '#ffc800',
     flatShading: true,
+    transparent: true,
+    opacity: 0.4
   });
 
   const jackOut = new MeshStandardMaterial({
     color: 'darkslategray',
     flatShading: true,
+    transparent: true,
+    opacity: 0.4
   });
 
   const cableConnector = new MeshStandardMaterial({

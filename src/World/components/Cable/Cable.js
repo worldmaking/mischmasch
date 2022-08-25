@@ -8,8 +8,8 @@ class Cable{
         
         switch( type ){
             case 'partial':
-                let parentOp = this.jackOne.object.parent;
-                let fromPos = parentOp.localToWorld(new Vector3(this.jackOne.object.position.x, this.jackOne.object.position.y, (this.jackOne.object.position.z + 0.2)));
+                let parentOp = this.jackOne.parent;
+                let fromPos = parentOp.localToWorld(new Vector3(this.jackOne.position.x, this.jackOne.position.y, (this.jackOne.position.z + 0.2)));
             
                 let partialGeometry = new BufferGeometry().setFromPoints( [ fromPos, this.jackTwo ] );
                 this.cable = new Line(partialGeometry, new LineBasicMaterial({ color: 0x888888 }));

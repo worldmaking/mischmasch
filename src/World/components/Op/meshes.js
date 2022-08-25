@@ -18,7 +18,7 @@ function createMeshes(opProps) {
     let numInputs = inputNames.length
     // loop through inputs and create the inlets aand labels for this op
     // //
-
+    let inletIndex = 0
     inputNames.forEach(inputName => {
       // jacks
       let jackIn = new Mesh(geometries.jack, materials.jackIn);
@@ -26,6 +26,11 @@ function createMeshes(opProps) {
       jackIn.position.set(posX, 2, 0.2);
       jackIn.rotation.set(1.55, 1, 0)
       jackIn.name = `inlet_${inputName}_${jackIn.uuid}`
+      jackIn.userData.name = inputName;
+      jackIn.userData.uuid = jackIn.uuid
+      jackIn.userData.kind = 'inlet'
+      jackIn.userData.index = inletIndex
+      inletIndex++
       inputJacks.push(jackIn)
 
       // labels
@@ -41,6 +46,9 @@ function createMeshes(opProps) {
       inputLabel.position.set(posX, 1.8, 0.2);
       inputLabel.rotation.set(0, 0, 0)
       inputLabel.name = 'inputLabel'
+      inputLabel.userData.name = inputLabel;
+      inputLabel.userData.uuid = inputLabel.uuid
+      inputLabel.userData.kind = 'inputLabel'
 
       inputLabels.push(inputLabel)
     })
@@ -57,12 +65,18 @@ function createMeshes(opProps) {
   panel.position.set(0, 1.6, 0);
   panel.rotation.set(0, 0, 0)
   panel.name = `panel_${opProps.op}_${panel.uuid}`
+  panel.userData.name = opProps.op;
+  panel.userData.uuid = panel.uuid
+  panel.userData.kind = 'panel'
 
 
   const jackOut = new Mesh(geometries.jack, materials.jackOut);
   jackOut.position.set(0, 1.2, 0.2);
   jackOut.rotation.set(1.55, 1, 0)
   jackOut.name = `outlet_${opProps.op}_${jackOut.uuid}`
+  jackOut.userData.name = opProps.op;
+  jackOut.userData.uuid = jackOut.uuid
+  jackOut.userData.kind = 'outlet'
   
   let outputLabel = new Text();
   if(opProps.outputs[0]){
@@ -89,6 +103,9 @@ function createMeshes(opProps) {
   outputLabel.position.set(-0.3, 1, 0.2);
   outputLabel.rotation.set(0, 0, 0)
   outputLabel.name = 'outLabel'
+  outputLabel.userData.name = opProps.op;
+  outputLabel.userData.uuid = outputLabel.uuid
+  outputLabel.userData.kind = 'outputlabel'
 
   const opLabel = new Text();
 
@@ -99,6 +116,9 @@ function createMeshes(opProps) {
   opLabel.position.set(0, 2.5, 0.2);
   opLabel.rotation.set(0, 0, 0)
   opLabel.name = 'opLabel'
+  opLabel.userData.name = opProps.op;
+  opLabel.userData.uuid = opLabel.uuid
+  opLabel.userData.kind = 'oplabel'
   return {
     panel,
     inputJacks,
