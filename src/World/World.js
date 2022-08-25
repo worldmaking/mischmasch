@@ -85,7 +85,7 @@ class World {
         
         // carpet (floor)
         floor = new Floor()
-        floor.floor.position.y = -10
+        floor.floor.position.y = -2
         scene.add(floor.floor)
         
         // create the Palette of available Ops
@@ -145,6 +145,14 @@ class World {
         controller1.addEventListener( 'selectend', onSelectEnd );
         controller1.addEventListener( 'squeezestart', onSqueezeStart);
         controller1.addEventListener( 'squeezeend', onSqueezeEnd)
+        controller1.addEventListener( 'connected', (e) => {
+            controller1.gamepad = e.data.gamepad 
+            controller1.userData.handedness = e.data.handedness 
+            console.log(controller1) 
+        });
+        console.log(controller1)
+        // this will be from a custom event emitter in loop.js       
+        controller1.thumbstickAxes = []
         scene.add( controller1 );
 
         controller2 = renderer.xr.getController( 1 );
@@ -241,6 +249,8 @@ class World {
                             controller.attach( object.parent );
 
                             controller.userData.selected = object.parent;
+                            loop.editorState.rightControllerState.select.element = 'panel'
+                            loop.editorState.rightControllerState.select.object = object.parent
                             // this.hover.state.ui.element = 'panel'
                             // this.hover.state.ui.object = intersects[i]
                             // this.hover.state.ui.name = intersects[i].object.name
@@ -267,9 +277,18 @@ class World {
                     let op = object
                     op.meshes.panel.material.emissive.b = 0;
                     // synth.attach( object );
-                    synth.attach(op)
-                    controller.remove( op );
-                    loop.updatables.push(op);
+                    // if op is below floor, delete it
+                    if(op.position.y < floor.floor.position.y){
+                        // remove it
+                        controller.remove( op )
+                        synth.remove( op )
+                    }else {
+                        console.log(op, floor)
+                        synth.attach(op)
+                        controller.remove( op );
+                        // loop.updatables.push(op);
+                    }
+
                     
     
                     controller.userData.selected = undefined;
@@ -603,7 +622,7 @@ class World {
         
         // rendering loop
         // loop = new Loop(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings);
-        loop = new Loop(camera, scene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller1, synth);
+        loop = new Loop(camera, scene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller1, synth, floor);
         loop.updatables.push(controls);
 
         // add the three canvas to the html container

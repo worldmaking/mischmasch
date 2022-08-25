@@ -52,7 +52,7 @@ class Loop {
 
         }
         this.cables = [];
-        this.patching = new Patching(this.cables, this.xrCtlRight, this.xrCtlLeft, this.editorState, this.userSettings, this.synth)
+        this.patching = new Patching(this.cables, this.xrCtlRight, this.xrCtlLeft, this.editorState, this.userSettings, this.synth,)
         this.collisions = new Collisions(this.editorState, this.scene, this.pointer, this.camera, this.palette, this.patching, this.xrCtlRight, this.xrCtlLeft, this.synth);
         this.patching.arrow = this.collisions.arrow // pass the arrowhelper into patching for module movement
 
@@ -111,74 +111,84 @@ class Loop {
             
             this.stats.update();
             // XR controller custom events
-            // right controller
-            if(this.xrCtlRight){
-                // thumbstick axes
-                if(this.xrCtlRight.controller.gamepad){
-                    // thumbstick axes
-                    // this.xrCtlRight.thumbstickAxes = this.xrCtlRight.controller.gamepad.axes
-                    window.dispatchEvent(rightThumbstickAxes)
-                    this.editorState.rightControllerState.thumbstick = this.xrCtlRight.controller.gamepad.axes
-
-                    // thumbstick button press
-                    if(this.xrCtlRight.controller.gamepad.buttons[3].pressed === true){
-                        // this.xrCtlRight.thumbstickPress = true
-                        window.dispatchEvent(rightThumbstickPress)
-                    }
-
-                    // B button press
-                    if(this.xrCtlRight.controller.gamepad.buttons[5].pressed === true){
-                        window.dispatchEvent(rightBPress)
-                    }
-
-                    // A button press
-                    if(this.xrCtlRight.controller.gamepad.buttons[4].pressed === true){
-                        window.dispatchEvent(rightAPress)
-                    }
-
-                }
-                
-            } 
-            //  left controller
-            else if(this.xrCtlLeft){
-                
-                if(this.xrCtlLeft.controller.gamepad){
-                    // thumbstick axes
-                    this.editorState.leftControllerState.thumbstick = this.xrCtlLeft.controller.gamepad.axes
-
-                    // this.xrCtlLeft.thumbstickAxes = this.xrCtlLeft.controller.gamepad.axes
-                    window.dispatchEvent(leftThumbstickAxes)
-
-
-                    // thumbstick button press
-                    if(this.xrCtlLeft.controller.gamepad.buttons[3].pressed === true){
-                        // this.xrCtlLeft.thumbstickPress = true
-                        window.dispatchEvent(leftThumbstickPress)
-                    }
-
-                    // B button press
-                    if(this.xrCtlLeft.controller.gamepad.buttons[5].pressed === true){
-                        window.dispatchEvent(leftBPress)
-                    }
-
-                    // A button press
-                    if(this.xrCtlLeft.controller.gamepad.buttons[4].pressed === true){
-                        window.dispatchEvent(leftAPress)
-                    }
-                }
-            }          
-            // check for object collisions
-            this.hover = this.collisions.detect()
-           
-            this.gpuPanel.startQuery();       
-            this.renderer.render(this.scene, this.camera);
-            this.gpuPanel.endQuery();
+            if(this.controller1.gamepad){
+                this.editorState.rightControllerState.thumbstick = this.controller1.gamepad.axes
+             
+            }
 
             // update cable positioning, if any
             this.patching.cablePosition(this.cables)
 
             // update op positioning, if needed
             this.patching.opPosition()
+
+            // check for object collisions
+            // this.hover = this.collisions.detect()
+            // right controller
+
+
+            // if(this.xrCtlRight){
+            //     // thumbstick axes
+            //     if(this.xrCtlRight.controller.gamepad){
+            //         // thumbstick axes
+            //         // this.xrCtlRight.thumbstickAxes = this.xrCtlRight.controller.gamepad.axes
+            //         window.dispatchEvent(rightThumbstickAxes)
+            //         this.editorState.rightControllerState.thumbstick = this.xrCtlRight.controller.gamepad.axes
+
+            //         // thumbstick button press
+            //         if(this.xrCtlRight.controller.gamepad.buttons[3].pressed === true){
+            //             // this.xrCtlRight.thumbstickPress = true
+            //             window.dispatchEvent(rightThumbstickPress)
+            //         }
+
+            //         // B button press
+            //         if(this.xrCtlRight.controller.gamepad.buttons[5].pressed === true){
+            //             window.dispatchEvent(rightBPress)
+            //         }
+
+            //         // A button press
+            //         if(this.xrCtlRight.controller.gamepad.buttons[4].pressed === true){
+            //             window.dispatchEvent(rightAPress)
+            //         }
+
+            //     }
+                
+            // } 
+            //  left controller
+            // else if(this.xrCtlLeft){
+                
+            //     if(this.xrCtlLeft.controller.gamepad){
+            //         // thumbstick axes
+            //         this.editorState.leftControllerState.thumbstick = this.xrCtlLeft.controller.gamepad.axes
+
+            //         // this.xrCtlLeft.thumbstickAxes = this.xrCtlLeft.controller.gamepad.axes
+            //         window.dispatchEvent(leftThumbstickAxes)
+
+
+            //         // thumbstick button press
+            //         if(this.xrCtlLeft.controller.gamepad.buttons[3].pressed === true){
+            //             // this.xrCtlLeft.thumbstickPress = true
+            //             window.dispatchEvent(leftThumbstickPress)
+            //         }
+
+            //         // B button press
+            //         if(this.xrCtlLeft.controller.gamepad.buttons[5].pressed === true){
+            //             window.dispatchEvent(leftBPress)
+            //         }
+
+            //         // A button press
+            //         if(this.xrCtlLeft.controller.gamepad.buttons[4].pressed === true){
+            //             window.dispatchEvent(leftAPress)
+            //         }
+            //     }
+            // }          
+
+           
+            this.gpuPanel.startQuery();       
+            this.renderer.render(this.scene, this.camera);
+            this.gpuPanel.endQuery();
+
+
         });   
     }
     stop() {
