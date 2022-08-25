@@ -1,8 +1,8 @@
-import { Raycaster, Color, ArrowHelper } from 'three';
+import { Raycaster, Color, ArrowHelper, Matrix4 } from 'three';
 import { Hover } from './Hover.js'
 
 class Collisions {
-    constructor( editorState, scene, pointer, camera, palette, patching ){
+    constructor( editorState, scene, pointer, camera, palette, patching, xrCtlRight, xrCtlLeft){
         this.scene = scene;
         this.editorState = editorState;
         this.pointer = pointer;
@@ -15,9 +15,35 @@ class Collisions {
         this.scene.add( this.arrow );
         this.hover = new Hover();
         this.patching = patching;
+        this.xrCtlRight = xrCtlRight;
+        this.xrCtlLeft = xrCtlLeft;
+        this.tempMatrix = new Matrix4();
+        
     }
 
     detect(){
+        // check for collisions with controller_0
+        let colls = this.getIntersections(this.xrCtlRight)
+        if(colls.length){
+            // loop through the intersections, stopping at the first object that isn't meant to be ignored
+            for(let i = 0; i <colls.length; i++){
+                if(this.editorState.partialCable && colls[i] == this.editorState.partialCable.userData.src ){
+                    // if a partial cable exists, ignore any new intersections with its source jack until the cable is either completed or deleted.
+                    // nothing to be done here, leave comments as is
+                } else if(colls[i].object.name && colls[i].object.name !== 'arrowHelper' && colls[i].object.name != 'controller' && !colls[i].object.name.includes('cable') && !colls[i].object.name.includes('thumbstick') && !colls[i].object.name.includes('xrControllerRaycastBeam')){
+                    const intersection = colls[ 0 ];
+
+					const object = intersection.object;
+					object.material.emissive.b = 1;
+					this.xrCtlRight.controller.attach( object );
+
+					this.xrCtlRight.controller.userData.selected = object;
+                    console.log(object)
+                }
+            }
+        }
+
+
         // use HMD for picking ray
         let raycaster = new Raycaster();
         // cast a ray through the frustrum
@@ -139,6 +165,16 @@ class Collisions {
             this.arrow.setLength(100)
         }
         return this.hover.state
+    }
+    getIntersections( controller ) {
+        let newRaycaster = new Raycaster();
+        this.tempMatrix.identity().extractRotation( controller.controller.matrixWorld );
+
+        newRaycaster.ray.origin.setFromMatrixPosition( controller.controller.matrixWorld );
+        newRaycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( this.tempMatrix );
+
+        return newRaycaster.intersectObjects( this.scene.children, false );
+
     }
 }
 

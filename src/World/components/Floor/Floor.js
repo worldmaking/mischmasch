@@ -12,9 +12,7 @@ class Floor{
     this.floor.wireframe = true;
     
   }
-  setColour(){
 
-  }
 }
 
 export { Floor }

@@ -19,11 +19,12 @@ import { stateChange } from './systems/state.js'
 import { Audio } from './systems/Audio.js'
 // webXR
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
-import { Vector2, ObjectLoader, SetSceneCommand, AddObjectCommand,TubeGeometry, MeshBasicMaterial, LineCurve3, Mesh, LineBasicMaterial, Line, CatmullRomCurve3, BufferGeometry, Vector3 } from 'three'
+import { Vector2, ObjectLoader, SetSceneCommand, AddObjectCommand,TubeGeometry, MeshBasicMaterial, LineCurve3, Mesh, LineBasicMaterial, Line, CatmullRomCurve3, BufferGeometry, Vector3, Matrix4, Group,BoxGeometry, ConeGeometry, CylinderGeometry, IcosahedronGeometry, TorusGeometry, MeshStandardMaterial, Raycaster, } from 'three'
 
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GPUStatsPanel } from 'three/examples/jsm/utils/GPUStatsPanel.js';
 
+import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
 
 
 // versioning
@@ -42,6 +43,15 @@ let palette;
 let doc1;
 let stats, gpuPanel;
 let userSettings;
+//!
+let controller1, controller2;
+let controllerGrip1, controllerGrip2;
+const intersected = [];
+const tempMatrix = new Matrix4();
+
+//!
+
+let raycaster;
 let audio;
 let mischmaschState;
 let floor;
@@ -76,7 +86,6 @@ class World {
         floor = new Floor()
         floor.floor.position.y = -10
         scene.add(floor.floor)
-        console.log(floor)
         
         // create the Palette of available Ops
         palette = new Palette(camera.position)
@@ -88,10 +97,189 @@ class World {
         palette.updateMatrix();
         // palette.translateZ( - 10 );
 
+        //! alternate xr controller attempt
+
+        let synth = new Group();
+        scene.add( synth );
+
+        const geometries = [
+            new BoxGeometry( 0.2, 0.2, 0.2 ),
+            new ConeGeometry( 0.2, 0.2, 64 ),
+            new CylinderGeometry( 0.2, 0.2, 0.2, 64 ),
+            new IcosahedronGeometry( 0.2, 8 ),
+            new TorusGeometry( 0.2, 0.04, 64, 32 )
+        ];
+
+        for ( let i = 0; i < 50; i ++ ) {
+
+            const geometry = geometries[ Math.floor( Math.random() * geometries.length ) ];
+            const material = new MeshStandardMaterial( {
+                color: Math.random() * 0xffffff,
+                roughness: 0.7,
+                metalness: 0.0
+            } );
+
+            const object = new Mesh( geometry, material );
+
+            object.position.x = Math.random() * 4 - 2;
+            object.position.y = Math.random() * 2;
+            object.position.z = Math.random() * 4 - 2;
+
+            object.rotation.x = Math.random() * 2 * Math.PI;
+            object.rotation.y = Math.random() * 2 * Math.PI;
+            object.rotation.z = Math.random() * 2 * Math.PI;
+
+            object.scale.setScalar( Math.random() + 0.5 );
+
+            object.castShadow = true;
+            object.receiveShadow = true;
+
+            synth.add( object );
+
+        }
+        
+        controller1 = renderer.xr.getController( 0 );
+        controller1.addEventListener( 'selectstart', onSelectStart );
+        controller1.addEventListener( 'selectend', onSelectEnd );
+        scene.add( controller1 );
+
+        controller2 = renderer.xr.getController( 1 );
+        controller2.addEventListener( 'selectstart', onSelectStart );
+        controller2.addEventListener( 'selectend', onSelectEnd );
+        scene.add( controller2 );
+
+        const controllerModelFactory = new XRControllerModelFactory();
+
+        controllerGrip1 = renderer.xr.getControllerGrip( 0 );
+        controllerGrip1.add( controllerModelFactory.createControllerModel( controllerGrip1 ) );
+        scene.add( controllerGrip1 );
+
+        controllerGrip2 = renderer.xr.getControllerGrip( 1 );
+        controllerGrip2.add( controllerModelFactory.createControllerModel( controllerGrip2 ) );
+        scene.add( controllerGrip2 );
+
+        const geometry = new BufferGeometry().setFromPoints( [ new Vector3( 0, 0, 0 ), new Vector3( 0, 0, - 1 ) ] );
+
+        const line = new Line( geometry );
+        line.name = 'line';
+        line.scale.z = 5;
+
+        controller1.add( line.clone() );
+        controller2.add( line.clone() );
+
+        raycaster = new Raycaster();
+        //! aadfadfadfaf
+
+        function onSelectStart( event ) {
+
+            const controller = event.target;
+
+            const intersections = getIntersections( controller );
+
+            if ( intersections.length > 0 ) {
+
+                const intersection = intersections[ 0 ];
+
+                const object = intersection.object;
+                object.material.emissive.b = 1;
+                controller.attach( object );
+
+                controller.userData.selected = object;
+
+            }
+
+        }
+
+        function onSelectEnd( event ) {
+
+            const controller = event.target;
+
+            if ( controller.userData.selected !== undefined ) {
+
+                const object = controller.userData.selected;
+                object.material.emissive.b = 0;
+                synth.attach( object );
+
+                controller.userData.selected = undefined;
+
+            }
+
+
+        }
+
+        function getIntersections( controller ) {
+
+            tempMatrix.identity().extractRotation( controller.matrixWorld );
+
+            raycaster.ray.origin.setFromMatrixPosition( controller.matrixWorld );
+            raycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( tempMatrix );
+
+            return raycaster.intersectObjects( synth.children, false );
+
+        }
+
+        function intersectObjects( controller ) {
+
+            // Do not highlight when already selected
+
+            if ( controller.userData.selected !== undefined ) return;
+
+            const line = controller.getObjectByName( 'line' );
+            const intersections = getIntersections( controller );
+
+            if ( intersections.length > 0 ) {
+
+                const intersection = intersections[ 0 ];
+
+                const object = intersection.object;
+                object.material.emissive.r = 1;
+                intersected.push( object );
+
+                line.scale.z = intersection.distance;
+
+            } else {
+
+                line.scale.z = 5;
+
+            }
+
+        }
+
+        function cleanIntersected() {
+
+            while ( intersected.length ) {
+
+                const object = intersected.pop();
+                object.material.emissive.r = 0;
+
+            }
+
+        }
+        //
+        // function animate() {
+
+        //     renderer.setAnimationLoop( render );
+
+        // }
+
+        function render() {
+
+            cleanIntersected();
+
+            intersectObjects( controller1 );
+            intersectObjects( controller2 );
+
+            renderer.render( scene, camera );
+
+        }
+
+        renderer.setAnimationLoop( render );
+
+        /*
+        //!
         // XR controllers
         const xrCtlRight = new XRController(renderer, 0)
         const xrCtlLeft = new XRController(renderer, 1)
-        console.log(xrCtlRight)
         scene.add(xrCtlRight.model, xrCtlLeft.model)
         // xrCtlRight.controller.rayCastBeam, xrCtlLeft.controller.rayCastBeam
         let xrControllers = [xrCtlLeft, xrCtlRight]
@@ -251,6 +439,8 @@ class World {
             });
            
         })
+
+        
          // CUSTOM EVENTS:
             // get thumbstick axes
             //! commented out because this data is available in loop.editorState.rightController.thumbstick, and this is being accessed in patching.js, so can be accessed in other places. perhaps commenting this out will help optimization
@@ -295,7 +485,8 @@ class World {
             window.addEventListener('leftAPress', (e)=>{
                 // do something with the press event
             })
-
+        */
+       //!
         // mouse controls 
         const controls = createControls(camera, renderer.domElement);
         window.addEventListener( 'pointermove', function(event){
@@ -303,9 +494,12 @@ class World {
             pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
         } );
 
-
+        const { ambientLight, mainLight } = createLights();
+        scene.add(ambientLight, mainLight);
+        /*
         // rendering loop
-        loop = new Loop(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings);
+        // loop = new Loop(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings);
+        loop = new Loop(camera, scene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings);
         loop.updatables.push(controls);
 
         // add the three canvas to the html container
@@ -325,7 +519,7 @@ class World {
             doc.genish = {}
         })
         // updateMischmaschState()
-
+        */
         // audio
         // audio = new Audio()
 
@@ -346,7 +540,7 @@ class World {
 
     //  animation methods
     start() {
-        loop.start();
+        // loop.start();
     }
       
     stop() {
