@@ -13,6 +13,7 @@ import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
 import { Resizer } from './systems/Resizer.js'
 import { UserSettings } from './systems/UserSettings.js';
+import { Collisions } from './systems/Collisions'
 // import { Resizer } from './systems/Resizer.js';
 import { Loop } from './systems/Loop.js';
 import { stateChange } from './systems/state.js'
@@ -48,7 +49,6 @@ let controller1, controller2;
 let controllerGrip1, controllerGrip2;
 const intersected = [];
 const tempMatrix = new Matrix4();
-
 //!
 
 let raycaster;
@@ -82,6 +82,8 @@ class World {
         document.body.appendChild( VRButton.createButton( renderer ) );
         renderer.xr.enabled = true;
 
+        // collision detecting
+        
         // carpet (floor)
         floor = new Floor()
         floor.floor.position.y = -10

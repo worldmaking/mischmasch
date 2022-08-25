@@ -21,28 +21,20 @@ class Collisions {
         
     }
 
+    // getIntersections(controller){
+    //     console.log('collisions', controller)
+
+    //     this.tempMatrix.identity().extractRotation( controller.matrixWorld );
+
+    //     this.raycaster.ray.origin.setFromMatrixPosition( controller.matrixWorld );
+    //     this.raycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( this.tempMatrix );
+
+    //     return  this.raycaster.intersectObjects( synth.children, false );
+    // }
+    
     detect(){
         // check for collisions with controller_0
-        let colls = this.getIntersections(this.xrCtlRight)
-        if(colls.length){
-            // loop through the intersections, stopping at the first object that isn't meant to be ignored
-            for(let i = 0; i <colls.length; i++){
-                if(this.editorState.partialCable && colls[i] == this.editorState.partialCable.userData.src ){
-                    // if a partial cable exists, ignore any new intersections with its source jack until the cable is either completed or deleted.
-                    // nothing to be done here, leave comments as is
-                } else if(colls[i].object.name && colls[i].object.name !== 'arrowHelper' && colls[i].object.name != 'controller' && !colls[i].object.name.includes('cable') && !colls[i].object.name.includes('thumbstick') && !colls[i].object.name.includes('xrControllerRaycastBeam')){
-                    const intersection = colls[ 0 ];
-
-					const object = intersection.object;
-					object.material.emissive.b = 1;
-					this.xrCtlRight.controller.attach( object );
-
-					this.xrCtlRight.controller.userData.selected = object;
-                    console.log(object)
-                }
-            }
-        }
-
+        
 
         // use HMD for picking ray
         let raycaster = new Raycaster();
