@@ -28,14 +28,8 @@ class Palette extends Group {
             op.position.x = opPosX
             op.position.y = opPosY
             op.position.z = cameraPosition.z - 50
-
-            // in this mesh object, name this op, then walk through its child meshes and name them the same as well -- will use this for raycasting to instance a new op on selection
-            op.name = opName
-            for(let j=0; j<op.children.length; j++){
-                op.children[j].name = opName
-            }
                 
-
+            op.userData.kind = 'op'
             this.add(op)       
         }
 

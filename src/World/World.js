@@ -13,7 +13,7 @@ import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
 import { Resizer } from './systems/Resizer.js'
 import { UserSettings } from './systems/UserSettings.js';
-import { Collisions } from './systems/Collisions'
+import { Collisions } from './systems/Collisions';
 // import { Resizer } from './systems/Resizer.js';
 import { Loop } from './systems/Loop.js';
 import { stateChange } from './systems/state.js'
@@ -101,6 +101,7 @@ class World {
         //! alternate xr controller attempt
 
         let synth = new Group();
+        synth.name = 'sceneSynth'
         scene.add( synth );
 
         const geometries = [
@@ -182,12 +183,72 @@ class World {
             if ( intersections.length > 0 ) {
 
                 const intersection = intersections[ 0 ];
-                console.log(intersection)
-                const object = intersection.object;
-                object.material.emissive.b = 1;
-                controller.attach( object );
 
-                controller.userData.selected = object;
+                const object = intersection.object;
+                if(palette.userData.active){
+                   
+                    
+                    // object.parent.meshes.panel.material.emissive
+                    // object.material.emissive.b = 1;
+                    controller.attach( object.parent );
+
+                    controller.userData.selected = object.parent;
+
+                    synth.remove(palette)
+                    palette.userData.active = false;
+
+                    // rebuild the palette so the selected op is replaced
+                    camera.remove(palette)
+                    palette = new Palette(camera.position)
+                    // place palette in front of camera
+                    camera.add(palette);
+                    palette.position.set(-25,0,20);
+                    palette.position.copy( camera.position );
+                    palette.rotation.copy( camera.rotation );
+                    palette.updateMatrix();
+
+                    // let paletteOp = object
+                    // let opName = paletteOp.object.name
+                    
+                    // const op = new Op(opName);
+                    // // get current position of op from within the palette
+                    // let inPalettePos = paletteOp.point
+                    // op.position.x = inPalettePos.x
+                    // op.position.y = inPalettePos.y
+                    // op.position.z = inPalettePos.z
+                    // loop.updatables.push(op);
+                    // synth.remove(palette);
+                    // palette.userData.active = false;
+                    // synth.add(op);
+                    // console.log(op)
+
+
+
+                    // let stateChange = stateChange('addNode', [opName, op])
+                    // doc1 = Automerge.change(doc1, stateChange[3], doc => {
+                    //     doc.scene.nodes[stateChange[2]] = stateChange[1]
+                    // })
+                    // updateMischmaschState(doc1)
+                }else {
+                    //palette isn't open
+                    console.log(object)
+                    let objectName = object.name;
+                    let objectKind = objectName.split('_')[0]
+
+                    switch (objectKind){
+                        case "panel":
+                            // manipulate the op's position in world space
+                            controller.attach( object.parent );
+
+                            controller.userData.selected = object.parent;
+                            // this.hover.state.ui.element = 'panel'
+                            // this.hover.state.ui.object = intersects[i]
+                            // this.hover.state.ui.name = intersects[i].object.name
+                            // this.hover.setHoverColour(intersects[i])
+                        break;
+
+                    }
+                }
 
             }
 
@@ -199,11 +260,21 @@ class World {
 
             if ( controller.userData.selected !== undefined ) {
 
-                const object = controller.userData.selected;
-                object.material.emissive.b = 0;
-                synth.attach( object );
 
-                controller.userData.selected = undefined;
+
+                const object = controller.userData.selected;
+                if(object.userData.kind = 'op'){
+                    let op = object
+                    op.meshes.panel.material.emissive.b = 0;
+                    // synth.attach( object );
+                    synth.add(op)
+                    controller.remove( op );
+                    loop.updatables.push(op);
+                    
+    
+                    controller.userData.selected = undefined;
+                }
+
 
             }
 
@@ -212,10 +283,10 @@ class World {
 
         function onSqueezeStart(){
             // this refers to the controller
-            if (palette.userData.active == true ){
-                synth.remove(palette);
-                palette.userData.active = false;
-            }else {
+            // if (palette.userData.active == true ){
+            //     synth.remove(palette);
+            //     palette.userData.active = false;
+            // }else {
                 // ctrl.controller.children[0].scale.z = 10;
                 // ctrl.controller.userData.squeezePressed = true;
                 // set palette position in front of player
@@ -228,7 +299,7 @@ class World {
                 // palette.translateZ( - 10 );
                 synth.add(palette);
                 palette.userData.active = true;
-            }
+            // }
 
         };
 
@@ -238,8 +309,8 @@ class World {
             // ctrl.controller.children[0].scale.z = 10;
             // ctrl.controller.userData.squeezePressed = false;
             // make Palette invisible & unclickable
-            // synth.remove(palette);
-            // palette.userData.active = false;
+            synth.remove(palette);
+            palette.userData.active = false;
         };
         
         function getIntersections( controller ) {
@@ -267,14 +338,14 @@ class World {
                 const intersection = intersections[ 0 ];
 
                 const object = intersection.object;
-                object.material.emissive.r = 1;
+                object.parent.meshes.panel.material.emissive.r = 1;
                 intersected.push( object );
 
                 line.scale.z = intersection.distance;
 
             } else {
 
-                line.scale.z = 5;
+                line.scale.z = 25;
 
             }
 
@@ -285,7 +356,7 @@ class World {
             while ( intersected.length ) {
 
                 const object = intersected.pop();
-                object.material.emissive.r = 0;
+                object.parent.meshes.panel.material.emissive.r = 0;
 
             }
 

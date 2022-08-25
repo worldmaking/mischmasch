@@ -57,9 +57,9 @@ class Collisions {
                 // if the palette is open, do palette stuff
                 if (this.palette.userData.active){
                     // stage this op to be added to the scene 
-                    this.hover.state.paletteOp = intersects[i]
-                    // highlight the op 
-                    this.hover.setHoverColour(intersects[i])
+                    // this.hover.state.paletteOp = intersects[i]
+                    // // highlight the op 
+                    // this.hover.setHoverColour(intersects[i])
                 } else {
                     // palette isn't open
                     this.hover.state.paletteOp = false
