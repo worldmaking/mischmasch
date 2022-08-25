@@ -473,6 +473,7 @@ class World {
                     palette.position.set(-25,0,20);
                     palette.position.copy( camera.position );
                     palette.rotation.copy( camera.rotation );
+                    palette.translateZ( - 10 );
                     palette.updateMatrix();
 
                     // let paletteOp = object
@@ -517,6 +518,7 @@ class World {
                         break;
 
                         case 'inlet':
+                        case 'outlet':
                             loop.patching.partialCable()
                             if(loop.editorState.partialCable == false){
                                 // start a cable between jack and a controller
