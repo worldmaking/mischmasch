@@ -235,7 +235,6 @@ class World {
                     scene.remove(palette);
                     palette.userData.active = false;
                     scene.add(op);
-                    console.log(op)
                     // let stateChange = stateChange('addNode', [opName, op])
                     // doc1 = Automerge.change(doc1, stateChange[3], doc => {
                     //     doc.scene.nodes[stateChange[2]] = stateChange[1]
@@ -246,7 +245,6 @@ class World {
                 //todo: this might not be necessary...
                 if (loop.editorState.partialCable != false && loop.hover.ui.element != 'inlet' && loop.hover.ui.element != 'outlet' && loop.hover.ui.element != 'knob'){
                     // this partial cable needs to be deleted
-                    // console.log('remove')
                     // scene.remove(loop.editorState.partialCable)
                     // let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
                     // loop.cables.splice(cableIndex, 1)
@@ -303,7 +301,6 @@ class World {
                 // is there a partial cable?
                 if(loop.editorState.partialCable != false){
                     // is the partial cable's 2nd end intersecting a jack?
-                    // console.log('ui element', loop.hover.ui)
                     // if it is, complete the cable
                     if(loop.hover.ui.element != false && loop.hover.ui.element == 'inlet' || loop.hover.ui.element == 'outlet'){
                         // get both jacks for the new cable to attach to
@@ -489,7 +486,6 @@ class World {
                     // synth.remove(palette);
                     // palette.userData.active = false;
                     // synth.add(op);
-                    // console.log(op)
 
 
 
@@ -531,7 +527,7 @@ class World {
         function onSelectEnd( event ) {
 
             const controller = event.target;
-
+            console.log('530', controller.userData.selected)
             if ( controller.userData.selected !== undefined ) {
 
 
@@ -541,6 +537,7 @@ class World {
                 if(loop.editorState.partialCable != false){
                     // check if 2nd end of partial cable is intersecting the correct jack type (opposite of 1st end)
                     if(loop.editorState.partialCable.userData.src.userData.kind != object.userData.kind && (object.userData.kind == 'inlet' || object.userData.kind == 'outlet')){
+                        console.log('540', loop.editorState.partialCable.userData.src.userData.kind, object.userData.kind)
                         // get both jacks for the new cable to attach to
                         let jackOne = loop.editorState.partialCable.userData.src
                         let jackTwo = object
@@ -557,10 +554,7 @@ class World {
                         loop.editorState.partialCable = false
                     } else {
                         // not intersecting a valid jack, so remove the jack
-                        synth.remove(loop.editorState.partialCable)
-                        let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
-                        loop.cables.splice(cableIndex, 1)
-                        loop.editorState.partialCable = false
+                        loop.patching.removePartialCable()
                     }
 
                 }
@@ -577,7 +571,6 @@ class World {
                             controller.remove( op )
                             synth.remove( op )
                         }else {
-                            console.log(op, floor)
                             synth.attach(op)
                             controller.remove( op );
                             // loop.updatables.push(op);
@@ -597,6 +590,11 @@ class World {
 
 
 
+            } else {
+                if(loop.editorState.partialCable != false){
+                    // not intersecting a valid jack, so remove the jack
+                    loop.patching.removePartialCable()
+                }
             }
 
 
@@ -691,14 +689,12 @@ class World {
                 }else {
                     intersected.push( object );
                     // op element type:
-                    // console.log(object)
                     switch(object.userData.kind){
                         case 'panel':
                             object.material.emissive.g = 1
                             object.material.emissiveIntensity = 10
                         break
                         case 'inlet':
-                            console.log('inlet', object)
                             object.material.emissive.r = 1
                             object.material.emissiveIntensity = 10
                         break
@@ -732,7 +728,6 @@ class World {
                     // object.parent.meshes.panel.material.emissiveIntensity = 10;
                 }else {
                     // op element type:
-                    // console.log(object)
                     switch(intersected[0].userData.kind){
                         case 'panel':
                             intersected[0].material.emissive.b = 0
@@ -774,9 +769,7 @@ class World {
         /*
         const loader = new ObjectLoader()
         loader.parse(tempScene, (theObj) => {
-            console.log(theObj)
             scene.add(theObj)
-            console.log(scene)
         })
         */
 
@@ -837,7 +830,6 @@ class World {
                         doc1 = Automerge.change(doc1, s[3], doc => {
                             doc.scene.nodes[s[2]] = s[1]
                         })
-                        console.log('abs', thisOp)
                         
                         */
                         
@@ -860,7 +852,6 @@ class World {
 
                         /*
                         let newState = stateChange('addNode', [opName, op])
-                        console.log(newState)
                         doc1 = Automerge.change(doc1, newState[3], doc => {
                             doc.scene.nodes[newState[2]] = newState[1]
                         })
@@ -875,10 +866,8 @@ class World {
                 let from = newAbs.meshes.jackOut.name
                 let to = newDiv.meshes.inputJacks[0].name
                 
-                // console.log(abs, div)
                 let fromObj = scene.getObjectByName(from)
                 let toObj = scene.getObjectByName(to)
-                // console.log(fromObj, toObj)
                 
                 let fromPos = newAbs.localToWorld(fromObj.position)
                 let toPos = newDiv.localToWorld(toObj.position)
@@ -895,7 +884,6 @@ class World {
 
                 scene.add(line)
                 // const curve = new Curve(fromPos, toPos)
-                // console.log(curve)
                 // scene.add(curve.line)
                 // 
                 // let msg = `connect ${from} to ${to}`
@@ -929,14 +917,12 @@ function updateMischmaschState() {
     // update matrix world before exporting it to json
     //! scene.updateMatrixWorld()
     //! let sceneJSON = scene.toJSON()
-    //! console.log(sceneJSON)
     //! doc1 = Automerge.change(doc1, 'update state', doc => {
     //!     doc.three = sceneJSON
     //! })
     // mischmaschState = doc1
     // let jsonScene = scene.toJSON()
     // scene.fromObj
-    // console.log('jsonScene', jsonScene)
     // genish.js will read from mischmaschState
     
     // update audio graph

@@ -96,6 +96,13 @@ class Patching {
     this.cables.push(partialCable.cable);
     this.editorState.partialCable = partialCable.cable;
   }
+
+  removePartialCable(){
+    this.synth.remove(this.editorState.partialCable)
+    let cableIndex = this.cables.indexOf(this.editorState.partialCable)
+    this.cables.splice(cableIndex, 1)
+    this.editorState.partialCable = false
+  }
 }
 
 export { Patching }
