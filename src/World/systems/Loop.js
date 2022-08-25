@@ -4,9 +4,10 @@ import { Collisions } from './Collisions.js'
 import { Patching } from './Patching.js'
 
 class Loop {
-    constructor(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings) {
+    constructor(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller1, synth) {
         this.camera = camera;
         this.scene = scene;
+        this.synth = synth;
         this.renderer = renderer;
         this.updatables = [] // list to hold animated objects //! this might need to reference the automerge document eventually?
         this.pointer = pointer;
@@ -18,6 +19,12 @@ class Loop {
         this.gpuPanel = gpuPanel;
         this.palette = palette;    
         
+        //controller intersection functions from world.js
+        this.getIntersections = getIntersections
+        this.intersectObjects = intersectObjects
+        this.cleanIntersected = cleanIntersected
+        this.controller1 = controller1
+
         this.editorState = {
             partialCable: false,
             rightControllerState: {
@@ -45,8 +52,8 @@ class Loop {
 
         }
         this.cables = [];
-        this.patching = new Patching(this.cables, this.xrCtlRight, this.xrCtlLeft, this.editorState, this.userSettings)
-        this.collisions = new Collisions(this.editorState, this.scene, this.pointer, this.camera, this.palette, this.patching, this.xrCtlRight, this.xrCtlLeft);
+        this.patching = new Patching(this.cables, this.xrCtlRight, this.xrCtlLeft, this.editorState, this.userSettings, this.synth)
+        this.collisions = new Collisions(this.editorState, this.scene, this.pointer, this.camera, this.palette, this.patching, this.xrCtlRight, this.xrCtlLeft, this.synth);
         this.patching.arrow = this.collisions.arrow // pass the arrowhelper into patching for module movement
 
         this.hover = this.collisions.hover
@@ -97,6 +104,11 @@ class Loop {
             // tell every animated object to tick forward one frame
             this.tick();
 
+            // controller intersections
+            this.cleanIntersected
+            // this.getIntersections
+            this.intersectObjects(this.controller1)
+            
             this.stats.update();
             // XR controller custom events
             // right controller

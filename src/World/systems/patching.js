@@ -1,7 +1,7 @@
 import { Vector3 } from 'three'
 
 class Patching {
-  constructor ( cables, xrCtlRight, xrCtlLeft, editorState, userSettings ){
+  constructor ( cables, xrCtlRight, xrCtlLeft, editorState, userSettings, synth ){
     this.cables = cables;
     this.xrCtlRight = xrCtlRight;
     this.xrCtlLeft = xrCtlLeft;

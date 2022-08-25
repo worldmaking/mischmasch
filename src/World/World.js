@@ -67,7 +67,6 @@ class World {
         camera = createCamera();
         scene = createScene();
         renderer = createRenderer();
-        container.append(renderer.domElement);
         
         // gpu stats panel
         stats = new Stats();
@@ -93,7 +92,7 @@ class World {
         palette = new Palette(camera.position)
         // place palette in front of camera
         camera.add(palette);
-        palette.position.set(-25,0,-30);
+        palette.position.set(-25,0,20);
         palette.position.copy( camera.position );
         palette.rotation.copy( camera.rotation );
         palette.updateMatrix();
@@ -136,13 +135,15 @@ class World {
             object.castShadow = true;
             object.receiveShadow = true;
 
-            synth.add( object );
+            // synth.add( object );
 
         }
         
         controller1 = renderer.xr.getController( 0 );
         controller1.addEventListener( 'selectstart', onSelectStart );
         controller1.addEventListener( 'selectend', onSelectEnd );
+        controller1.addEventListener( 'squeezestart', onSqueezeStart);
+        controller1.addEventListener( 'squeezeend', onSqueezeEnd)
         scene.add( controller1 );
 
         controller2 = renderer.xr.getController( 1 );
@@ -165,7 +166,7 @@ class World {
         const line = new Line( geometry );
         line.name = 'line';
         line.scale.z = 5;
-
+        line.updateMatrix()
         controller1.add( line.clone() );
         controller2.add( line.clone() );
 
@@ -181,7 +182,7 @@ class World {
             if ( intersections.length > 0 ) {
 
                 const intersection = intersections[ 0 ];
-
+                console.log(intersection)
                 const object = intersection.object;
                 object.material.emissive.b = 1;
                 controller.attach( object );
@@ -209,6 +210,38 @@ class World {
 
         }
 
+        function onSqueezeStart(){
+            // this refers to the controller
+            if (palette.userData.active == true ){
+                synth.remove(palette);
+                palette.userData.active = false;
+            }else {
+                // ctrl.controller.children[0].scale.z = 10;
+                // ctrl.controller.userData.squeezePressed = true;
+                // set palette position in front of player
+                // make Palette visible & clickable
+                palette.position.copy( camera.position );
+                palette.rotation.copy( camera.rotation );
+                palette.position.x -= 25
+                palette.position.z =+ 5
+                palette.updateMatrix();
+                // palette.translateZ( - 10 );
+                synth.add(palette);
+                palette.userData.active = true;
+            }
+
+        };
+
+        // squeeze unpress
+        function onSqueezeEnd(){
+            // this refers to the controller
+            // ctrl.controller.children[0].scale.z = 10;
+            // ctrl.controller.userData.squeezePressed = false;
+            // make Palette invisible & unclickable
+            // synth.remove(palette);
+            // palette.userData.active = false;
+        };
+        
         function getIntersections( controller ) {
 
             tempMatrix.identity().extractRotation( controller.matrixWorld );
@@ -216,7 +249,7 @@ class World {
             raycaster.ray.origin.setFromMatrixPosition( controller.matrixWorld );
             raycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( tempMatrix );
 
-            return raycaster.intersectObjects( synth.children, false );
+            return raycaster.intersectObjects( synth.children, true );
 
         }
 
@@ -264,18 +297,18 @@ class World {
 
         // }
 
-        function render() {
+        // function render() {
 
-            cleanIntersected();
+        //     cleanIntersected();
 
-            intersectObjects( controller1 );
-            intersectObjects( controller2 );
+        //     intersectObjects( controller1 );
+        //     intersectObjects( controller2 );
 
-            renderer.render( scene, camera );
+        //     // renderer.render( scene, camera );
 
-        }
+        // }
 
-        renderer.setAnimationLoop( render );
+        // renderer.setAnimationLoop( render );
 
         /*
         //!
@@ -496,12 +529,10 @@ class World {
             pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
         } );
 
-        const { ambientLight, mainLight } = createLights();
-        scene.add(ambientLight, mainLight);
-        /*
+        
         // rendering loop
         // loop = new Loop(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings);
-        loop = new Loop(camera, scene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings);
+        loop = new Loop(camera, scene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller1, synth);
         loop.updatables.push(controls);
 
         // add the three canvas to the html container
@@ -521,7 +552,7 @@ class World {
             doc.genish = {}
         })
         // updateMischmaschState()
-        */
+        
         // audio
         // audio = new Audio()
 
@@ -542,7 +573,7 @@ class World {
 
     //  animation methods
     start() {
-        // loop.start();
+        loop.start();
     }
       
     stop() {
