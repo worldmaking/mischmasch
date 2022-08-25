@@ -267,7 +267,7 @@ class World {
                     let op = object
                     op.meshes.panel.material.emissive.b = 0;
                     // synth.attach( object );
-                    synth.add(op)
+                    synth.attach(op)
                     controller.remove( op );
                     loop.updatables.push(op);
                     
