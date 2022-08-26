@@ -30,23 +30,47 @@ class Patching {
             // can we just move the plug?
 
             // let posAttribute = new BufferAttribute(new Float32Array(controllerPosition), 2);
-            console.log(cable)
             let cord = cable.children[0]
             let plugOne = cable.children[1]
             let plugTwo = cable.children[2]
             // cable.geometry.setAttribute('position', posAttribute);
 
-            // update plugTwo position based on controller position
-            plugTwo.position.x = controllerPosition.x
-            plugTwo.position.y = controllerPosition.y
-            plugTwo.position.z = controllerPosition.z
+
+
+            // if controller is intersecting a jack, snap plugTwo to that jack
+            if(this.editorState.rightControllerState.secondaryIntersection != false){
+              let secondary = this.editorState.rightControllerState.secondaryIntersection
+              console.log('secondary', secondary)
+              if(secondary.object.userData.kind == 'outlet'){
+                const local2WorldPos = secondary.object.parent.localToWorld(secondary.object.position)
+                plugTwo.position.x = local2WorldPos.x
+                plugTwo.position.y = local2WorldPos.y
+                plugTwo.position.z = local2WorldPos.z + 0.2
+              }
+            }
+            // handle thumbstick
+            else if(this.editorState.rightControllerState.thumbstick.some(item => item !== 0)){
+              // update plugTwo position based on controller position
+              plugTwo.position.x = controllerPosition.x
+              plugTwo.position.y = controllerPosition.y
+              plugTwo.position.z = controllerPosition.z
+              
+              let thumbY = this.editorState.rightControllerState.thumbstick[3] * 10
+              // use thumbstick Y reposition plugTwo along controller z axis
+              plugTwo.translateZ(thumbY)
+            } else {
+              // update plugTwo position based on controller position
+              plugTwo.position.x = controllerPosition.x
+              plugTwo.position.y = controllerPosition.y
+              plugTwo.position.z = controllerPosition.z
+            }
             plugTwo.position.needsUpdate = true;
 
     
             // update the cord position to where plugTwo is
-            cord.geometry.attributes.position.array[3] = controllerPosition.x
-            cord.geometry.attributes.position.array[4] = controllerPosition.y
-            cord.geometry.attributes.position.array[5] = controllerPosition.z
+            cord.geometry.attributes.position.array[3] = plugTwo.position.x
+            cord.geometry.attributes.position.array[4] = plugTwo.position.y
+            cord.geometry.attributes.position.array[5] = plugTwo.position.z
             cord.geometry.attributes.position.needsUpdate = true;
 
             
@@ -116,6 +140,10 @@ class Patching {
     this.synth.add(partialCable.cable);
     this.cables.push(partialCable.cable);
     this.editorState.partialCable = partialCable.cable;
+  }
+
+  makeCompleteCable(){
+    
   }
 
   removePartialCable(){

@@ -681,29 +681,54 @@ class World {
 
                 const intersection = intersections[ 0 ];
 
+
+
                 const object = intersection.object;
                 if(palette.userData.active){
                     object.parent.meshes.panel.material.emissive.b = 1;
                     object.parent.meshes.panel.material.emissiveIntensity = 10;
                     intersected.push( object.parent.meshes.panel );
                 }else {
-                    intersected.push( object );
-                    // op element type:
-                    switch(object.userData.kind){
-                        case 'panel':
-                            object.material.emissive.g = 1
-                            object.material.emissiveIntensity = 10
-                        break
-                        case 'inlet':
-                            object.material.emissive.r = 1
-                            object.material.emissiveIntensity = 10
-                        break
-                        case 'outlet':
-                            object.material.emissive.r = 1
-                            object.material.emissiveIntensity = 10
-                        break
+                    // if partial cable is active, we want the next available intersection
+                    if(loop.editorState.partialCable != false && intersections[1]){
+                        const secondary = intersections[1].object
+                            
+                        // for cable manipulation, we need to know if there are objects behind the cable that the controller can access
+                        loop.editorState.rightControllerState.secondaryIntersection = intersections[1]
+                
+                        switch(secondary.userData.kind){
+                            case 'inlet':
+                                secondary.material.emissive.r = 1
+                                secondary.material.emissiveIntensity = 10
+                            break
+                            case 'outlet':
+                                secondary.material.emissive.r = 1
+                                secondary.material.emissiveIntensity = 10
+                            break
 
+                        }
+                    } else{
+                        // ignore any secondary intersections
+                        loop.editorState.rightControllerState.secondaryIntersection = false
+                        intersected.push( object );
+                        // op element type:
+                        switch(object.userData.kind){
+                            case 'panel':
+                                object.material.emissive.g = 1
+                                object.material.emissiveIntensity = 10
+                            break
+                            case 'inlet':
+                                object.material.emissive.r = 1
+                                object.material.emissiveIntensity = 10
+                            break
+                            case 'outlet':
+                                object.material.emissive.r = 1
+                                object.material.emissiveIntensity = 10
+                            break
+
+                        }
                     }
+                    
                 }
 
                 
@@ -742,8 +767,24 @@ class World {
                             intersected[0].material.emissive.r = 0
                             // object.material.emissiveIntensity = 10
                         break
-
+                    
                     }
+                    // secondary intersections
+                    if(intersected[1]){
+                        let secondary = intersected[1].object
+                        switch(secondary.userData.kind){
+                            case 'inlet':
+                                secondary.material.emissive.r = 0
+                                // object.material.emissiveIntensity = 10
+                            break
+                            case 'outlet':
+                                secondary.material.emissive.r = 0
+                                // object.material.emissiveIntensity = 10
+                            break
+                        
+                        }
+                    }
+
                 }
 
                 const object = intersected.pop();

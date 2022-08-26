@@ -36,7 +36,8 @@ class Loop {
                 a: false,
                 b: false,
                 thumbstick: [0, 0, 0, 0],
-                thumbstickButton: false
+                thumbstickButton: false,
+                secondaryIntersection: false
             },
             leftControllerState: {
                 squeeze: false,
@@ -47,7 +48,8 @@ class Loop {
                 a: false,
                 b: false,
                 thumbstick: [0, 0, 0, 0],
-                thumbstickButton: false
+                thumbstickButton: false,
+                secondaryIntersection: false
             }
 
         }

@@ -60,6 +60,7 @@ class UserSettings{
     this.gui.add( this.parameters, 'Module Distancer Speed', 0.05, 0.4 ).onChange( function ( val ) {
         console.log('Module Distancer Speed', val)
     } );
+    
 
     this.gui.addColor( this.parameters, 'Floor Colour' ).onChange( function ( val ) {
         console.log('beam colour', val)
