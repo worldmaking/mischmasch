@@ -26,17 +26,38 @@ class Patching {
             case 'controller_0': // xrCtlRight
             let controllerPosition = this.controller1.position
 
+            // previously, the cord followed the controller position. 
+            // can we just move the plug?
+
             // let posAttribute = new BufferAttribute(new Float32Array(controllerPosition), 2);
             console.log(cable)
-            // only update the 2nd point in the cable (1st is the cable origin jack)
-            //! cable.geometry.attributes.position.array[3] = controllerPosition.x
-            //! cable.geometry.attributes.position.array[4] = controllerPosition.y
-            //! cable.geometry.attributes.position.array[5] = controllerPosition.z
+            let cord = cable.children[0]
+            let plugOne = cable.children[1]
+            let plugTwo = cable.children[2]
+            // cable.geometry.setAttribute('position', posAttribute);
+
+            // update plugTwo position based on controller position
+            plugTwo.position.x = controllerPosition.x
+            plugTwo.position.y = controllerPosition.y
+            plugTwo.position.z = controllerPosition.z
+            plugTwo.position.needsUpdate = true;
+
+    
+            // update the cord position to where plugTwo is
+            cord.geometry.attributes.position.array[3] = controllerPosition.x
+            cord.geometry.attributes.position.array[4] = controllerPosition.y
+            cord.geometry.attributes.position.array[5] = controllerPosition.z
+            cord.geometry.attributes.position.needsUpdate = true;
 
             
-            // // cable.geometry.setAttribute('position', posAttribute);
+
+                
+                // cable.geometry.setAttribute('position', posAttribute);
+                
+              
             
-            //! cable.geometry.attributes.position.needsUpdate = true;
+            // only update the 2nd point in the cable (1st is the cable origin jack)
+
 
                 // cable.geometry.attributes.position.array = this.xrCtlRight.model.position
             break
