@@ -28,11 +28,13 @@ import { GPUStatsPanel } from 'three/examples/jsm/utils/GPUStatsPanel.js';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
 
 
+
 // versioning
 import * as Automerge from 'automerge'
 
 // scaffolding
 import { abs, div } from "./scaffolding.js"
+import { NewCable } from './components/Cable/NewCable'
 
 // These variables are module-scoped: we cannot access them
 // from outside the module
@@ -419,8 +421,8 @@ class World {
             pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
             pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
         } );
-
-        
+        let newCable = new NewCable(new Vector3(0,0,0), new Vector3(2,0,0))
+        scene.add(newCable)
         // rendering loop
         // loop = new Loop(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings);
         loop = new Loop(camera, scene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller1, synth, floor);
@@ -527,7 +529,6 @@ class World {
         function onSelectEnd( event ) {
 
             const controller = event.target;
-            console.log('530', controller.userData.selected)
             if ( controller.userData.selected !== undefined ) {
 
 
@@ -537,7 +538,6 @@ class World {
                 if(loop.editorState.partialCable != false){
                     // check if 2nd end of partial cable is intersecting the correct jack type (opposite of 1st end)
                     if(loop.editorState.partialCable.userData.src.userData.kind != object.userData.kind && (object.userData.kind == 'inlet' || object.userData.kind == 'outlet')){
-                        console.log('540', loop.editorState.partialCable.userData.src.userData.kind, object.userData.kind)
                         // get both jacks for the new cable to attach to
                         let jackOne = loop.editorState.partialCable.userData.src
                         let jackTwo = object

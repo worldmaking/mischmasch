@@ -1,18 +1,20 @@
 import { BufferGeometry, Line, LineBasicMaterial, Vector3 } from 'three'
-
+import { NewCable } from './NewCable.js'
 
 class Cable{
     constructor ( type, jackOne, jackTwo, controllerName ){
         this.jackOne = jackOne;
         this.jackTwo = jackTwo;
-        
         switch( type ){
             case 'partial':
                 let parentOp = this.jackOne.parent;
                 let fromPos = parentOp.localToWorld(new Vector3(this.jackOne.position.x, this.jackOne.position.y, (this.jackOne.position.z + 0.2)));
             
-                let partialGeometry = new BufferGeometry().setFromPoints( [ fromPos, this.jackTwo ] );
-                this.cable = new Line(partialGeometry, new LineBasicMaterial({ color: 0x888888 }));
+                // let partialGeometry = new BufferGeometry().setFromPoints( [ fromPos, this.jackTwo ] );
+                this.cable = new NewCable(fromPos, this.jackTwo)
+                // let cordGeometry = this.geometry.makeCord(fromPos, this.jackTwo)
+                // let plugGeometry = this.geometry.makePlug()
+                // this.cable = new Line(cordGeometry, new LineBasicMaterial({ color: 0x888888 }));
 
                 this.cable.name = `partial_cable___src:_${parentOp.name}`
                 this.cable.userData.status = 'partial';

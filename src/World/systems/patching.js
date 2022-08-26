@@ -27,16 +27,16 @@ class Patching {
             let controllerPosition = this.controller1.position
 
             // let posAttribute = new BufferAttribute(new Float32Array(controllerPosition), 2);
-
+            console.log(cable)
             // only update the 2nd point in the cable (1st is the cable origin jack)
-            cable.geometry.attributes.position.array[3] = controllerPosition.x
-            cable.geometry.attributes.position.array[4] = controllerPosition.y
-            cable.geometry.attributes.position.array[5] = controllerPosition.z
+            //! cable.geometry.attributes.position.array[3] = controllerPosition.x
+            //! cable.geometry.attributes.position.array[4] = controllerPosition.y
+            //! cable.geometry.attributes.position.array[5] = controllerPosition.z
 
             
-            // cable.geometry.setAttribute('position', posAttribute);
+            // // cable.geometry.setAttribute('position', posAttribute);
             
-            cable.geometry.attributes.position.needsUpdate = true;
+            //! cable.geometry.attributes.position.needsUpdate = true;
 
                 // cable.geometry.attributes.position.array = this.xrCtlRight.model.position
             break
