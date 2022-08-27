@@ -95,7 +95,7 @@ class World {
         palette = new Palette(camera.position)
         // place palette in front of camera
         camera.add(palette);
-        palette.position.set(-25,0,20);
+        // palette.position.set(-25,0,20);
         palette.position.copy( camera.position );
         palette.rotation.copy( camera.rotation );
         palette.updateMatrix();
@@ -107,41 +107,41 @@ class World {
         synth.name = 'sceneSynth'
         scene.add( synth );
 
-        const geometries = [
-            new BoxGeometry( 0.2, 0.2, 0.2 ),
-            new ConeGeometry( 0.2, 0.2, 64 ),
-            new CylinderGeometry( 0.2, 0.2, 0.2, 64 ),
-            new IcosahedronGeometry( 0.2, 8 ),
-            new TorusGeometry( 0.2, 0.04, 64, 32 )
-        ];
+        // const geometries = [
+        //     new BoxGeometry( 0.2, 0.2, 0.2 ),
+        //     new ConeGeometry( 0.2, 0.2, 64 ),
+        //     new CylinderGeometry( 0.2, 0.2, 0.2, 64 ),
+        //     new IcosahedronGeometry( 0.2, 8 ),
+        //     new TorusGeometry( 0.2, 0.04, 64, 32 )
+        // ];
 
-        for ( let i = 0; i < 50; i ++ ) {
+        // for ( let i = 0; i < 50; i ++ ) {
 
-            const geometry = geometries[ Math.floor( Math.random() * geometries.length ) ];
-            const material = new MeshStandardMaterial( {
-                color: Math.random() * 0xffffff,
-                roughness: 0.7,
-                metalness: 0.0
-            } );
+        //     const geometry = geometries[ Math.floor( Math.random() * geometries.length ) ];
+        //     const material = new MeshStandardMaterial( {
+        //         color: Math.random() * 0xffffff,
+        //         roughness: 0.7,
+        //         metalness: 0.0
+        //     } );
 
-            const object = new Mesh( geometry, material );
+        //     const object = new Mesh( geometry, material );
 
-            object.position.x = Math.random() * 4 - 2;
-            object.position.y = Math.random() * 2;
-            object.position.z = Math.random() * 4 - 2;
+        //     object.position.x = Math.random() * 4 - 2;
+        //     object.position.y = Math.random() * 2;
+        //     object.position.z = Math.random() * 4 - 2;
 
-            object.rotation.x = Math.random() * 2 * Math.PI;
-            object.rotation.y = Math.random() * 2 * Math.PI;
-            object.rotation.z = Math.random() * 2 * Math.PI;
+        //     object.rotation.x = Math.random() * 2 * Math.PI;
+        //     object.rotation.y = Math.random() * 2 * Math.PI;
+        //     object.rotation.z = Math.random() * 2 * Math.PI;
 
-            object.scale.setScalar( Math.random() + 0.5 );
+        //     object.scale.setScalar( Math.random() + 0.5 );
 
-            object.castShadow = true;
-            object.receiveShadow = true;
+        //     object.castShadow = true;
+        //     object.receiveShadow = true;
 
-            // synth.add( object );
+        //     // synth.add( object );
 
-        }
+        // }
         
         controller1 = renderer.xr.getController( 0 );
         controller1.addEventListener( 'selectstart', onSelectStart );
@@ -626,6 +626,7 @@ class World {
         }
         */ //!
         function onSqueezeStart(){
+            showPalette()
             // this refers to the controller
             // if (palette.userData.active == true ){
             //     synth.remove(palette);
@@ -635,14 +636,15 @@ class World {
                 // ctrl.controller.userData.squeezePressed = true;
                 // set palette position in front of player
                 // make Palette visible & clickable
-                palette.position.copy( camera.position );
-                palette.rotation.copy( camera.rotation );
-                palette.position.x -= 25
-                palette.position.z =+ 5
-                palette.updateMatrix();
-                // palette.translateZ( - 10 );
-                synth.add(palette);
-                palette.userData.active = true;
+
+                // palette.rotation.copy( camera.rotation );
+                // palette.translateX(camera.position.x - 12)
+                // palette.translateZ( camera.position.z + 35 )
+                // palette.translateY(floor.floor.position.y + 10);
+                // palette.updateMatrix();
+
+                // palette.position.copy( camera.position );
+
             // }
 
         };
@@ -653,8 +655,7 @@ class World {
             // ctrl.controller.children[0].scale.z = 10;
             // ctrl.controller.userData.squeezePressed = false;
             // make Palette invisible & unclickable
-            synth.remove(palette);
-            palette.userData.active = false;
+            hidePalette()
         };
         
         function getIntersections( controller ) {
@@ -794,6 +795,31 @@ class World {
 
         }
 
+        function showPalette(){
+
+            palette = new Palette(camera.position)
+            // place palette in front of camera
+            camera.add(palette);
+            // palette.position.set(-25,0,20);
+            palette.position.copy( camera.position );
+            palette.rotation.copy( camera.rotation );
+            palette.updateMatrix();
+
+            // palette.rotation.copy( camera.rotation );
+            palette.translateX(-12)
+            palette.translateY(floor.floor.position.y + 10);
+
+            // palette.updateMatrix();
+            palette.translateZ( + 35 );
+            synth.add(palette);
+            palette.userData.active = true;
+        }
+
+        function hidePalette(){
+            synth.remove(palette);
+            palette.userData.active = false;
+        }
+
         // versioning
         doc1 = Automerge.init()
         doc1 = Automerge.change(doc1, 'create blank scene', doc => {
@@ -849,107 +875,107 @@ class World {
         }        
     }
     
-    keyboardScaffolding(command, payload){
-        switch(command){
-            case 'addNode':
-                switch(payload){
-                    case 'abs':
+    // keyboardScaffolding(command, payload){
+    //     switch(command){
+    //         case 'addNode':
+    //             switch(payload){
+    //                 case 'abs':
                         
             
-                        const thisOp = new Op('abs');
-                        thisOp.position.x = abs.point.x
-                        thisOp.position.y = abs.point.y
-                        thisOp.position.z = abs.point.z
-                        loop.updatables.push(thisOp);
-                        scene.remove(palette);
-                        scene.add(thisOp);
-                        updateMischmaschState()
-                        newAbs = thisOp // this is used by 'c' key to get the id of the object that is the outlet
+    //                     const thisOp = new Op('abs');
+    //                     thisOp.position.x = abs.point.x
+    //                     thisOp.position.y = abs.point.y
+    //                     thisOp.position.z = abs.point.z
+    //                     loop.updatables.push(thisOp);
+    //                     scene.remove(palette);
+    //                     scene.add(thisOp);
+    //                     updateMischmaschState()
+    //                     newAbs = thisOp // this is used by 'c' key to get the id of the object that is the outlet
 
-                        /*
-                        let s = stateChange('addNode', ['abs', thisOp])
-                        doc1 = Automerge.change(doc1, s[3], doc => {
-                            doc.scene.nodes[s[2]] = s[1]
-                        })
+    //                     /*
+    //                     let s = stateChange('addNode', ['abs', thisOp])
+    //                     doc1 = Automerge.change(doc1, s[3], doc => {
+    //                         doc.scene.nodes[s[2]] = s[1]
+    //                     })
                         
-                        */
+    //                     */
                         
-                    break
-                    case 'div':
-                        let opName = 'div'
+    //                 break
+    //                 case 'div':
+    //                     let opName = 'div'
             
-                        const op = new Op(opName);
-                        // get current position of op from within the palette
-                        let inPalettePos = div.point
-                        op.position.x = inPalettePos.x
-                        op.position.y = inPalettePos.y
-                        op.position.z = inPalettePos.z
-                        loop.updatables.push(op);
-                        scene.remove(palette);
-                        scene.add(op);
+    //                     const op = new Op(opName);
+    //                     // get current position of op from within the palette
+    //                     let inPalettePos = div.point
+    //                     op.position.x = inPalettePos.x
+    //                     op.position.y = inPalettePos.y
+    //                     op.position.z = inPalettePos.z
+    //                     loop.updatables.push(op);
+    //                     scene.remove(palette);
+    //                     scene.add(op);
 
-                        updateMischmaschState()
-                        newDiv = op // this is used by spacebar to get the id of the object that is the inlet
+    //                     updateMischmaschState()
+    //                     newDiv = op // this is used by spacebar to get the id of the object that is the inlet
 
-                        /*
-                        let newState = stateChange('addNode', [opName, op])
-                        doc1 = Automerge.change(doc1, newState[3], doc => {
-                            doc.scene.nodes[newState[2]] = newState[1]
-                        })
-                        */
-                    break
-                }
+    //                     /*
+    //                     let newState = stateChange('addNode', [opName, op])
+    //                     doc1 = Automerge.change(doc1, newState[3], doc => {
+    //                         doc.scene.nodes[newState[2]] = newState[1]
+    //                     })
+    //                     */
+    //                 break
+    //             }
                 
-            break
-            case 'addConnection':
-                // audio.updateGraph()
+    //         break
+    //         case 'addConnection':
+    //             // audio.updateGraph()
                 
-                let from = newAbs.meshes.jackOut.name
-                let to = newDiv.meshes.inputJacks[0].name
+    //             let from = newAbs.meshes.jackOut.name
+    //             let to = newDiv.meshes.inputJacks[0].name
                 
-                let fromObj = scene.getObjectByName(from)
-                let toObj = scene.getObjectByName(to)
+    //             let fromObj = scene.getObjectByName(from)
+    //             let toObj = scene.getObjectByName(to)
                 
-                let fromPos = newAbs.localToWorld(fromObj.position)
-                let toPos = newDiv.localToWorld(toObj.position)
+    //             let fromPos = newAbs.localToWorld(fromObj.position)
+    //             let toPos = newDiv.localToWorld(toObj.position)
 
-                // add a cable
-                // const cable = new Cable(fromPos, toPos);
-                // scene.add(cable.line)
+    //             // add a cable
+    //             // const cable = new Cable(fromPos, toPos);
+    //             // scene.add(cable.line)
 
 
-                var path = new LineCurve3(fromPos, toPos);
-                var tubegeometry = new TubeGeometry(path, 2, .02, 8, false);
-                var material = new MeshBasicMaterial({ color: 0x0000ff });
-                var line = new Mesh(tubegeometry, material);
+    //             var path = new LineCurve3(fromPos, toPos);
+    //             var tubegeometry = new TubeGeometry(path, 2, .02, 8, false);
+    //             var material = new MeshBasicMaterial({ color: 0x0000ff });
+    //             var line = new Mesh(tubegeometry, material);
 
-                scene.add(line)
-                // const curve = new Curve(fromPos, toPos)
-                // scene.add(curve.line)
-                // 
-                // let msg = `connect ${from} to ${to}`
-                // let newState = stateChange('addConnection', [from, to])
-                // doc1 = Automerge.change(doc1, msg, doc => {
-                //     doc.scene.arcs.push([from, to])
-                // })
+    //             scene.add(line)
+    //             // const curve = new Curve(fromPos, toPos)
+    //             // scene.add(curve.line)
+    //             // 
+    //             // let msg = `connect ${from} to ${to}`
+    //             // let newState = stateChange('addConnection', [from, to])
+    //             // doc1 = Automerge.change(doc1, msg, doc => {
+    //             //     doc.scene.arcs.push([from, to])
+    //             // })
                 
                 
 
 
-            break
+    //         break
             
 
-        }
-    }
-    displayPalette(){
-        // make Palette visible & clickable
-        scene.add(palette);
-    }
+    //     }
+    // }
+    // displayPalette(){
+    //     // make Palette visible & clickable
+    //     scene.add(palette);
+    // }
 
-    hidePalette(){
-        // make Palette invisible & unclickable
-        scene.remove(palette);
-    }
+    // hidePalette(){
+    //     // make Palette invisible & unclickable
+    //     scene.remove(palette);
+    // }
 }
     
 function updateMischmaschState() {
