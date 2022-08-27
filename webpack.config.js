@@ -2,7 +2,7 @@ const path = require('path');
 // const NodemonPlugin = require('nodemon-webpack-plugin')
 
 module.exports = {
-  mode: "development", // this enables source maps, making it easier to debug apps. remember you can switch to 'production' for the live app
+  mode: "production", // this enables source maps, making it easier to debug apps. remember you can switch to 'production' for the live app
   entry: './src/main.js',
   output: {
     filename: 'bundle.js',
