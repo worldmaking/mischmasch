@@ -1,4 +1,4 @@
-import { BufferGeometry, Line, LineBasicMaterial, CylinderGeometry, Vector3, Mesh,  MeshStandardMaterial, Group } from 'three'
+import { BufferGeometry, Line, LineBasicMaterial, SphereGeometry, Vector3, Mesh,  MeshStandardMaterial, Group } from 'three'
 
 class NewCable extends Group {
   constructor(fromPos, toPos){
@@ -15,7 +15,7 @@ class NewCable extends Group {
     this.userData.controller = 'controller_0'
 
     // create cable plugs
-    const plugGeometry = new CylinderGeometry( 0.1, 0.1, 0.6, 64 )
+    const plugGeometry = new SphereGeometry( 0.1, 32, 32 )
     const plugMaterial = new MeshStandardMaterial( { color: cableColour, roughness: 0.7, metalness: 0.0 } )
     const plugOne = new Mesh(plugGeometry, plugMaterial)
     plugOne.position.set(fromPos.x, fromPos.y, fromPos.z)
