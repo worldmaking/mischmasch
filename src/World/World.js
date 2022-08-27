@@ -686,8 +686,9 @@ class World {
 
                 const object = intersection.object;
                 if(palette.userData.active){
+                    object.parent.meshes.panel.material.opacity = 0.4
                     object.parent.meshes.panel.material.emissive.b = 1;
-                    object.parent.meshes.panel.material.emissiveIntensity = 10;
+                    object.parent.meshes.panel.material.emissiveIntensity = 1;
                     intersected.push( object.parent.meshes.panel );
                 }else {
                     // if partial cable is active, we want the next available intersection
@@ -715,6 +716,7 @@ class World {
                         // op element type:
                         switch(object.userData.kind){
                             case 'panel':
+                                object.material.opacity = 0.3
                                 object.material.emissive.g = 1
                                 object.material.emissiveIntensity = 10
                             break
@@ -750,12 +752,14 @@ class World {
             while ( intersected.length ) {
                 
                 if(palette.userData.active){
-                    intersected[0].material.emissive.g = 0;
+                    intersected[0].material.opacity = 0.2
+                    intersected[0].material.emissive.b = 0;
                     // object.parent.meshes.panel.material.emissiveIntensity = 10;
                 }else {
                     // op element type:
                     switch(intersected[0].userData.kind){
                         case 'panel':
+                            intersected[0].material.opacity = 0.2
                             intersected[0].material.emissive.b = 0
                             // object.material.emissiveIntensity = 10
                         break
