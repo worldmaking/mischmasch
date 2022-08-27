@@ -421,8 +421,7 @@ class World {
             pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
             pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
         } );
-        let newCable = new NewCable(new Vector3(0,0,0), new Vector3(2,0,0))
-        scene.add(newCable)
+        
         // rendering loop
         // loop = new Loop(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings);
         loop = new Loop(camera, scene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller1, synth, floor);
