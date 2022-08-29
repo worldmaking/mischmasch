@@ -24,7 +24,9 @@ function createMeshes(opProps) {
       let jackIn = new Mesh(geometries.jack, materials.jackIn);
       let posX = inputNames.indexOf(inputName)
       jackIn.position.set(posX, 2, 0.2);
-      jackIn.rotation.set(1.55, 1, 0)
+      // jackIn.rotation.set(1.55, 1, 0);
+      jackIn.rotation.set(0, 0, 0)
+
       jackIn.name = `inlet_${inputName}_${jackIn.uuid}`
       jackIn.userData.name = inputName;
       jackIn.userData.uuid = jackIn.uuid
@@ -72,7 +74,7 @@ function createMeshes(opProps) {
 
   const jackOut = new Mesh(geometries.jack, materials.jackOut);
   jackOut.position.set(0, 1.2, 0.2);
-  jackOut.rotation.set(1.55, 1, 0)
+  jackOut.rotation.set(0, 0, 0)
   jackOut.name = `outlet_${opProps.op}_${jackOut.uuid}`
   jackOut.userData.name = opProps.op;
   jackOut.userData.uuid = jackOut.uuid
