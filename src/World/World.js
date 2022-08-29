@@ -565,7 +565,11 @@ class World {
                         op.meshes.panel.material.emissive.b = 0;
                         // synth.attach( object );
                         // if op is below floor, delete it
-                        if(op.position.y < floor.floor.position.y){
+                        // console.log('op y', op.position.y, 'floor', floor.floor.position, 'op', op.position)
+                        // synth.updateMatrixWorld()
+                        
+                        // if the op's Y position in world space is lower than the floor
+                        if(synth.localToWorld(op.position).y < -2){
                             // remove it
                             controller.remove( op )
                             synth.remove( op )
@@ -715,9 +719,18 @@ class World {
                         // op element type:
                         switch(object.userData.kind){
                             case 'panel':
-                                object.material.opacity = 0.3
-                                object.material.emissive.g = 1
-                                object.material.emissiveIntensity = 10
+                                // detect if below floor (stage for deletion)
+                                if(synth.localToWorld( object.parent.position ).y < -2){
+                                    // highlight it red?
+                                    object.material.opacity = 0.1
+                                    
+                                    
+                                }else {
+                                    object.material.opacity = 0.3
+                                    object.material.emissive.g = 1
+                                    object.material.emissiveIntensity = 10
+                                }
+                                
                             break
                             case 'inlet':
                                 object.material.emissive.r = 1
