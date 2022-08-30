@@ -20,7 +20,7 @@ import { stateChange } from './systems/state.js'
 import { Audio } from './systems/Audio.js'
 // webXR
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
-import { Vector2, ObjectLoader, SetSceneCommand, AddObjectCommand,TubeGeometry, MeshBasicMaterial, LineCurve3, Mesh, LineBasicMaterial, Line, CatmullRomCurve3, BufferGeometry, Vector3, Matrix4, Group,BoxGeometry, ConeGeometry, CylinderGeometry, IcosahedronGeometry, TorusGeometry, MeshStandardMaterial, Raycaster, } from 'three'
+import { Vector2, BufferGeometry, Vector3, Matrix4, Group, Raycaster, Line} from 'three'
 
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GPUStatsPanel } from 'three/examples/jsm/utils/GPUStatsPanel.js';
@@ -32,15 +32,15 @@ import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerM
 // versioning
 import * as Automerge from 'automerge'
 
-// scaffolding
-import { abs, div } from "./scaffolding.js"
-import { NewCable } from './components/Cable/NewCable'
 
 // These variables are module-scoped: we cannot access them
 // from outside the module
 let camera;
 let renderer;
-let scene;
+
+// scenes
+let worldScene, editorScene, patchScene;
+
 let loop;
 let palette;
 let doc1;
@@ -68,7 +68,7 @@ class World {
     // 1. Create an instance of the World app
     constructor(container) {
         camera = createCamera();
-        scene = createScene();
+        worldScene = createScene('world');
         renderer = createRenderer();
         
         // gpu stats panel
@@ -89,7 +89,7 @@ class World {
         // carpet (floor)
         floor = new Floor()
         floor.floor.position.y = -2
-        scene.add(floor.floor)
+        worldScene.add(floor.floor)
         
         // create the Palette of available Ops
         palette = new Palette(camera.position)
@@ -103,9 +103,9 @@ class World {
 
         //! alternate xr controller attempt
 
-        let synth = new Group();
+        let synth = createScene('editor');
         synth.name = 'sceneSynth'
-        scene.add( synth );
+        worldScene.add( synth );
 
         // const geometries = [
         //     new BoxGeometry( 0.2, 0.2, 0.2 ),
@@ -155,22 +155,22 @@ class World {
         controller1.name = 'controller_0'
         // this will be from a custom event emitter in loop.js       
         controller1.thumbstickAxes = []
-        scene.add( controller1 );
+        worldScene.add( controller1 );
 
         controller2 = renderer.xr.getController( 1 );
         controller2.addEventListener( 'selectstart', onSelectStart );
         controller2.addEventListener( 'selectend', onSelectEnd );
-        scene.add( controller2 );
+        worldScene.add( controller2 );
 
         const controllerModelFactory = new XRControllerModelFactory();
 
         controllerGrip1 = renderer.xr.getControllerGrip( 0 );
         controllerGrip1.add( controllerModelFactory.createControllerModel( controllerGrip1 ) );
-        scene.add( controllerGrip1 );
+        worldScene.add( controllerGrip1 );
 
         controllerGrip2 = renderer.xr.getControllerGrip( 1 );
         controllerGrip2.add( controllerModelFactory.createControllerModel( controllerGrip2 ) );
-        scene.add( controllerGrip2 );
+        worldScene.add( controllerGrip2 );
 
         const geometry = new BufferGeometry().setFromPoints( [ new Vector3( 0, 0, 0 ), new Vector3( 0, 0, - 1 ) ] );
 
@@ -200,7 +200,7 @@ class World {
         //     intersectObjects( controller1 );
         //     intersectObjects( controller2 );
 
-        //     // renderer.render( scene, camera );
+        //     // renderer.render( worldScene, camera );
 
         // }
 
@@ -211,7 +211,7 @@ class World {
         // XR controllers
         const xrCtlRight = new XRController(renderer, 0)
         const xrCtlLeft = new XRController(renderer, 1)
-        scene.add(xrCtlRight.model, xrCtlLeft.model)
+        worldScene.add(xrCtlRight.model, xrCtlLeft.model)
         // xrCtlRight.controller.rayCastBeam, xrCtlLeft.controller.rayCastBeam
         let xrControllers = [xrCtlLeft, xrCtlRight]
         
@@ -223,7 +223,7 @@ class World {
                 // ctrl.controller.children[0].scale.z = 10;
                 ctrl.controller.userData.selectPressed = true;
                 // first check if palette is open. if not, block this action
-                if(scene.children.some(element => element.name === 'Palette')){
+                if(worldScene.children.some(element => element.name === 'Palette')){
                     let paletteOp = loop.userSelect().paletteOp;
                     let opName = paletteOp.object.name
                     
@@ -234,12 +234,12 @@ class World {
                     op.position.y = inPalettePos.y
                     op.position.z = inPalettePos.z
                     loop.updatables.push(op);
-                    scene.remove(palette);
+                    worldScene.remove(palette);
                     palette.userData.active = false;
-                    scene.add(op);
+                    worldScene.add(op);
                     // let stateChange = stateChange('addNode', [opName, op])
                     // doc1 = Automerge.change(doc1, stateChange[3], doc => {
-                    //     doc.scene.nodes[stateChange[2]] = stateChange[1]
+                    //     doc.worldScene.nodes[stateChange[2]] = stateChange[1]
                     // })
                     // updateMischmaschState(doc1)
                 } 
@@ -247,7 +247,7 @@ class World {
                 //todo: this might not be necessary...
                 if (loop.editorState.partialCable != false && loop.hover.ui.element != 'inlet' && loop.hover.ui.element != 'outlet' && loop.hover.ui.element != 'knob'){
                     // this partial cable needs to be deleted
-                    // scene.remove(loop.editorState.partialCable)
+                    // worldScene.remove(loop.editorState.partialCable)
                     // let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
                     // loop.cables.splice(cableIndex, 1)
                     // loop.editorState.partialCable = false
@@ -268,7 +268,7 @@ class World {
                                     //todo let nm = selection.name
                                     let partialCable = new Cable('partial', selection.object, xrCtlRight.model.position, ctrl.name) 
 
-                                    scene.add(partialCable.cable);
+                                    worldScene.add(partialCable.cable);
                                     loop.cables.push(partialCable.cable);
                                     loop.editorState.partialCable = partialCable.cable;
                                    
@@ -311,11 +311,11 @@ class World {
 
                         // add complete cable                        
                         let completeCable = new Cable( 'complete', jackOne, jackTwo )
-                        scene.add(completeCable.cable);
+                        worldScene.add(completeCable.cable);
                         loop.cables.push(completeCable.cable);
 
                         // remove partial cable
-                        scene.remove(loop.editorState.partialCable)
+                        worldScene.remove(loop.editorState.partialCable)
                         let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
                         loop.cables.splice(cableIndex, 1)
                         loop.editorState.partialCable = false
@@ -323,7 +323,7 @@ class World {
                     // if it isn't, delete the cable
                     else {
                         // ctrl.controller.children[0].scale.z = 10;
-                        scene.remove(loop.editorState.partialCable)
+                        worldScene.remove(loop.editorState.partialCable)
                         let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
                         loop.cables.splice(cableIndex, 1)
                         loop.editorState.partialCable = false
@@ -352,7 +352,7 @@ class World {
                 palette.position.x -= 25
                 palette.updateMatrix();
                 palette.translateZ( - 10 );
-                scene.add(palette);
+                worldScene.add(palette);
                 palette.userData.active = true;
             });
 
@@ -362,7 +362,7 @@ class World {
                 // ctrl.controller.children[0].scale.z = 10;
                 ctrl.controller.userData.squeezePressed = false;
                 // make Palette invisible & unclickable
-                scene.remove(palette);
+                worldScene.remove(palette);
                 palette.userData.active = false;
             });
            
@@ -423,8 +423,8 @@ class World {
         } );
         
         // rendering loop
-        // loop = new Loop(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings);
-        loop = new Loop(camera, scene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller1, synth, floor);
+        // loop = new Loop(camera, worldScene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings);
+        loop = new Loop(camera, worldScene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller1, synth, floor);
         loop.updatables.push(controls);
 
         
@@ -434,7 +434,7 @@ class World {
 
         // ligthing
         const { ambientLight, mainLight } = createLights();
-        scene.add(ambientLight, mainLight);
+        worldScene.add(ambientLight, mainLight);
 
         // resizer. See discoverthreejs for how/why this is useful
         const resizer = new Resizer(container, camera, renderer);
@@ -492,7 +492,7 @@ class World {
 
                     // let stateChange = stateChange('addNode', [opName, op])
                     // doc1 = Automerge.change(doc1, stateChange[3], doc => {
-                    //     doc.scene.nodes[stateChange[2]] = stateChange[1]
+                    //     doc.worldScene.nodes[stateChange[2]] = stateChange[1]
                     // })
                     // updateMischmaschState(doc1)
                 }else {
@@ -610,11 +610,11 @@ class World {
 
             // add complete cable                        
             let completeCable = new Cable( 'complete', jackOne, jackTwo )
-            scene.add(completeCable.cable);
+            worldScene.add(completeCable.cable);
             loop.cables.push(completeCable.cable);
 
             // remove partial cable
-            scene.remove(loop.editorState.partialCable)
+            worldScene.remove(loop.editorState.partialCable)
             let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
             loop.cables.splice(cableIndex, 1)
             loop.editorState.partialCable = false
@@ -622,7 +622,7 @@ class World {
         // if it isn't, delete the cable
         else {
             // ctrl.controller.children[0].scale.z = 10;
-            scene.remove(loop.editorState.partialCable)
+            worldScene.remove(loop.editorState.partialCable)
             let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
             loop.cables.splice(cableIndex, 1)
             loop.editorState.partialCable = false
@@ -852,7 +852,7 @@ class World {
         /*
         const loader = new ObjectLoader()
         loader.parse(tempScene, (theObj) => {
-            scene.add(theObj)
+            worldScene.add(theObj)
         })
         */
 
@@ -868,144 +868,20 @@ class World {
     stop() {
         loop.stop();
     }
-
-    addOp(){
-        // first check if palette is open. if not, block this action
-        if(scene.children.some(element => element.name === 'Palette')){
-            let opName = loop.paletteHover().object.name
-            
-            const op = new Op(opName);
-            // get current position of op from within the palette
-            let inPalettePos = loop.paletteHover().point
-            op.position.x = inPalettePos.x
-            op.position.y = inPalettePos.y
-            op.position.z = inPalettePos.z
-            loop.updatables.push(op);
-            scene.remove(palette);
-            scene.add(op);
-            // let stateChange = stateChange('addNode', [opName, op])
-            // doc1 = Automerge.change(doc1, stateChange[3], doc => {
-            //     doc.scene.nodes[stateChange[2]] = stateChange[1]
-            // })
-            updateMischmaschState()
-        }        
-    }
-    
-    // keyboardScaffolding(command, payload){
-    //     switch(command){
-    //         case 'addNode':
-    //             switch(payload){
-    //                 case 'abs':
-                        
-            
-    //                     const thisOp = new Op('abs');
-    //                     thisOp.position.x = abs.point.x
-    //                     thisOp.position.y = abs.point.y
-    //                     thisOp.position.z = abs.point.z
-    //                     loop.updatables.push(thisOp);
-    //                     scene.remove(palette);
-    //                     scene.add(thisOp);
-    //                     updateMischmaschState()
-    //                     newAbs = thisOp // this is used by 'c' key to get the id of the object that is the outlet
-
-    //                     /*
-    //                     let s = stateChange('addNode', ['abs', thisOp])
-    //                     doc1 = Automerge.change(doc1, s[3], doc => {
-    //                         doc.scene.nodes[s[2]] = s[1]
-    //                     })
-                        
-    //                     */
-                        
-    //                 break
-    //                 case 'div':
-    //                     let opName = 'div'
-            
-    //                     const op = new Op(opName);
-    //                     // get current position of op from within the palette
-    //                     let inPalettePos = div.point
-    //                     op.position.x = inPalettePos.x
-    //                     op.position.y = inPalettePos.y
-    //                     op.position.z = inPalettePos.z
-    //                     loop.updatables.push(op);
-    //                     scene.remove(palette);
-    //                     scene.add(op);
-
-    //                     updateMischmaschState()
-    //                     newDiv = op // this is used by spacebar to get the id of the object that is the inlet
-
-    //                     /*
-    //                     let newState = stateChange('addNode', [opName, op])
-    //                     doc1 = Automerge.change(doc1, newState[3], doc => {
-    //                         doc.scene.nodes[newState[2]] = newState[1]
-    //                     })
-    //                     */
-    //                 break
-    //             }
-                
-    //         break
-    //         case 'addConnection':
-    //             // audio.updateGraph()
-                
-    //             let from = newAbs.meshes.jackOut.name
-    //             let to = newDiv.meshes.inputJacks[0].name
-                
-    //             let fromObj = scene.getObjectByName(from)
-    //             let toObj = scene.getObjectByName(to)
-                
-    //             let fromPos = newAbs.localToWorld(fromObj.position)
-    //             let toPos = newDiv.localToWorld(toObj.position)
-
-    //             // add a cable
-    //             // const cable = new Cable(fromPos, toPos);
-    //             // scene.add(cable.line)
-
-
-    //             var path = new LineCurve3(fromPos, toPos);
-    //             var tubegeometry = new TubeGeometry(path, 2, .02, 8, false);
-    //             var material = new MeshBasicMaterial({ color: 0x0000ff });
-    //             var line = new Mesh(tubegeometry, material);
-
-    //             scene.add(line)
-    //             // const curve = new Curve(fromPos, toPos)
-    //             // scene.add(curve.line)
-    //             // 
-    //             // let msg = `connect ${from} to ${to}`
-    //             // let newState = stateChange('addConnection', [from, to])
-    //             // doc1 = Automerge.change(doc1, msg, doc => {
-    //             //     doc.scene.arcs.push([from, to])
-    //             // })
-                
-                
-
-
-    //         break
-            
-
-    //     }
-    // }
-    // displayPalette(){
-    //     // make Palette visible & clickable
-    //     scene.add(palette);
-    // }
-
-    // hidePalette(){
-    //     // make Palette invisible & unclickable
-    //     scene.remove(palette);
-    // }
 }
     
 function updateMischmaschState() {
     // apply new scene to automerge doc
     //todo automerge breaks when trying to apply the scene.toJSON(). posted this in their github issues: https://github.com/automerge/automerge/issues/504 --- so for now, I'm stringifying the resulting JSON and passing it into automerge, which does not seem to have a problem. 
     // update matrix world before exporting it to json
-    //! scene.updateMatrixWorld()
-    //! let sceneJSON = scene.toJSON()
+    //! worldScene.updateMatrixWorld()
+    //! let sceneJSON = worldScene.toJSON()
     //! doc1 = Automerge.change(doc1, 'update state', doc => {
     //!     doc.three = sceneJSON
     //! })
     // mischmaschState = doc1
-    // let jsonScene = scene.toJSON()
-    // scene.fromObj
+    // let jsonworldScene = worldScene.toJSON()
+    // worldScene.fromObj
     // genish.js will read from mischmaschState
     
     // update audio graph
