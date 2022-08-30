@@ -7,7 +7,7 @@ class Editor {
 
     this.state = {
       partialCable: false,
-      rightControllerState: {
+      controller_0: {
           squeeze: false,
           select: {
               element: false,

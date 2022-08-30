@@ -38,8 +38,8 @@ class Patching {
 
 
             // if controller is intersecting a jack, snap plugTwo to that jack
-            if(this.editor.state.rightControllerState.secondaryIntersection != false){
-              let secondary = this.editor.state.rightControllerState.secondaryIntersection
+            if(this.editor.state.controller_0.secondaryIntersection != false){
+              let secondary = this.editor.state.controller_0.secondaryIntersection
               console.log('secondary', secondary)
               if(secondary.object.userData.kind == 'outlet'){
                 const local2WorldPos = secondary.object.parent.localToWorld(secondary.object.position)
@@ -49,13 +49,13 @@ class Patching {
               }
             }
             // handle thumbstick
-            else if(this.editor.state.rightControllerState.thumbstick.some(item => item !== 0)){
+            else if(this.editor.state.controller_0.thumbstick.some(item => item !== 0)){
               // update plugTwo position based on controller position
               plugTwo.position.x = controllerPosition.x
               plugTwo.position.y = controllerPosition.y
               plugTwo.position.z = controllerPosition.z
               
-              let thumbY = this.editor.state.rightControllerState.thumbstick[3] * 10
+              let thumbY = this.editor.state.controller_0.thumbstick[3] * 10
               // use thumbstick Y reposition plugTwo along controller z axis
               plugTwo.translateZ(thumbY)
             } else {
@@ -111,18 +111,18 @@ class Patching {
 
   opPosition(){
     // todo: repeat this for left controller
-    if(this.editor.state.rightControllerState.select.element == 'panel'){
-      let op = this.editor.state.rightControllerState.select.object
+    if(this.editor.state.controller_0.select.element == 'panel'){
+      let op = this.editor.state.controller_0.select.object
 
       
       // handle thumbstick when panel selected
-      if(this.editor.state.rightControllerState.thumbstick.some(item => item !== 0)){
+      if(this.editor.state.controller_0.thumbstick.some(item => item !== 0)){
         // thumbstick has changed
-        let thumbX = this.editor.state.rightControllerState.thumbstick[2] * this.userSettings.parameters['Module Rotation-X Speed']
+        let thumbX = this.editor.state.controller_0.thumbstick[2] * this.userSettings.parameters['Module Rotation-X Speed']
         // use thumbstick X to rotate op on its Y Axis
         op.rotateY(thumbX)
 
-        let thumbY = this.editor.state.rightControllerState.thumbstick[3] * this.userSettings.parameters['Module Distancer Speed']
+        let thumbY = this.editor.state.controller_0.thumbstick[3] * this.userSettings.parameters['Module Distancer Speed']
         // use thumbstick X to rotate op on its Y Axis
         op.translateZ(thumbY)
         // console.log(thumbX, thumbY)

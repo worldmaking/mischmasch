@@ -87,7 +87,7 @@ class Loop {
             this.stats.update();
             // XR controller custom events
             if(this.controller1.gamepad){
-                this.editor.state.rightControllerState.thumbstick = this.controller1.gamepad.axes
+                this.editor.state.controller_0.thumbstick = this.controller1.gamepad.axes
              
             }
 
@@ -108,7 +108,7 @@ class Loop {
             //         // thumbstick axes
             //         // this.xrCtlRight.thumbstickAxes = this.xrCtlRight.controller.gamepad.axes
             //         window.dispatchEvent(rightThumbstickAxes)
-            //         this.editor.state.rightControllerState.thumbstick = this.xrCtlRight.controller.gamepad.axes
+            //         this.editor.state.controller_0.thumbstick = this.xrCtlRight.controller.gamepad.axes
 
             //         // thumbstick button press
             //         if(this.xrCtlRight.controller.gamepad.buttons[3].pressed === true){

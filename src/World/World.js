@@ -234,8 +234,8 @@ class World {
                             case "panel":
                                 // manipulate the op's position in space
                                 if(ctrl.name == 'controller_0'){
-                                    loop.editorState.rightControllerState.select.element = 'panel'
-                                    loop.editorState.rightControllerState.select.object = loop.hover.ui.object                                   
+                                    loop.editorState.controller_0.select.element = 'panel'
+                                    loop.editorState.controller_0.select.object = loop.hover.ui.object                                   
                                 } else if (ctrl.name = 'controller_1'){
                                     loop.editorState.leftControllerState.select.element = 'panel'
                                     loop.editorState.leftControllerState.select.object = loop.hover.ui.object
@@ -284,8 +284,8 @@ class World {
                 } else {
                     // manipulate the op's position in space
                     if(ctrl.name == 'controller_0'){
-                        loop.editorState.rightControllerState.select.element = false
-                        loop.editorState.rightControllerState.select.object = false                                   
+                        loop.editorState.controller_0.select.element = false
+                        loop.editorState.controller_0.select.object = false                                   
                     } else if (ctrl.name = 'controller_1'){
                         loop.editorState.leftControllerState.select.element = false
                         loop.editorState.leftControllerState.select.object = false
@@ -460,8 +460,8 @@ class World {
                             controller.attach( object.parent );
 
                             controller.userData.selected = object.parent;
-                            editor.state.rightControllerState.select.element = 'panel'
-                            editor.state.rightControllerState.select.object = object.parent
+                            editor.state.controller_0.select.element = 'panel'
+                            editor.state.controller_0.select.object = object.parent
                         break;
 
                         case 'inlet':
@@ -658,7 +658,7 @@ class World {
                         const secondary = intersections[1].object
                             
                         // for cable manipulation, we need to know if there are objects behind the cable that the controller can access
-                        editor.state.rightControllerState.secondaryIntersection = intersections[1]
+                        editor.state.controller_0.secondaryIntersection = intersections[1]
                 
                         switch(secondary.userData.kind){
                             case 'inlet':
@@ -673,7 +673,7 @@ class World {
                         }
                     } else{
                         // ignore any secondary intersections
-                        editor.state.rightControllerState.secondaryIntersection = false
+                        editor.state.controller_0.secondaryIntersection = false
                         intersected.push( object );
                         // op element type:
                         switch(object.userData.kind){
