@@ -27,7 +27,7 @@ class Loop {
 
         this.editor = editor;
         this.cables = [];
-        this.patching = new Patching(this.cables, this.xrCtlRight, this.xrCtlLeft, this.editor.state, this.userSettings, this.synth, this.controller1)
+        this.patching = new Patching(this.cables, this.xrCtlRight, this.xrCtlLeft, this.editor, this.userSettings, this.synth, this.controller1)
         this.collisions = new Collisions(this.editor.state, this.scene, this.pointer, this.camera, this.palette, this.patching, this.xrCtlRight, this.xrCtlLeft, this.synth);
         this.patching.arrow = this.collisions.arrow // pass the arrowhelper into patching for module movement
 

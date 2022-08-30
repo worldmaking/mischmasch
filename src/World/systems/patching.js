@@ -1,11 +1,11 @@
 import { Vector3 } from 'three'
 import { Cable } from '../components/Cable/Cable'
 class Patching {
-  constructor ( cables, xrCtlRight, xrCtlLeft, editorState, userSettings, synth, controller1, controller2 ){
+  constructor ( cables, xrCtlRight, xrCtlLeft, editor, userSettings, synth, controller1, controller2 ){
     this.cables = cables;
     this.xrCtlRight = xrCtlRight;
     this.xrCtlLeft = xrCtlLeft;
-    this.editorState = editorState;
+    this.editor = editor;
     this.arrow 
     this.userSettings = userSettings
     this.controller1 = controller1
@@ -38,8 +38,8 @@ class Patching {
 
 
             // if controller is intersecting a jack, snap plugTwo to that jack
-            if(this.editorState.rightControllerState.secondaryIntersection != false){
-              let secondary = this.editorState.rightControllerState.secondaryIntersection
+            if(this.editor.state.rightControllerState.secondaryIntersection != false){
+              let secondary = this.editor.state.rightControllerState.secondaryIntersection
               console.log('secondary', secondary)
               if(secondary.object.userData.kind == 'outlet'){
                 const local2WorldPos = secondary.object.parent.localToWorld(secondary.object.position)
@@ -49,13 +49,13 @@ class Patching {
               }
             }
             // handle thumbstick
-            else if(this.editorState.rightControllerState.thumbstick.some(item => item !== 0)){
+            else if(this.editor.state.rightControllerState.thumbstick.some(item => item !== 0)){
               // update plugTwo position based on controller position
               plugTwo.position.x = controllerPosition.x
               plugTwo.position.y = controllerPosition.y
               plugTwo.position.z = controllerPosition.z
               
-              let thumbY = this.editorState.rightControllerState.thumbstick[3] * 10
+              let thumbY = this.editor.state.rightControllerState.thumbstick[3] * 10
               // use thumbstick Y reposition plugTwo along controller z axis
               plugTwo.translateZ(thumbY)
             } else {
@@ -111,18 +111,18 @@ class Patching {
 
   opPosition(){
     // todo: repeat this for left controller
-    if(this.editorState.rightControllerState.select.element == 'panel'){
-      let op = this.editorState.rightControllerState.select.object
+    if(this.editor.state.rightControllerState.select.element == 'panel'){
+      let op = this.editor.state.rightControllerState.select.object
 
       
       // handle thumbstick when panel selected
-      if(this.editorState.rightControllerState.thumbstick.some(item => item !== 0)){
+      if(this.editor.state.rightControllerState.thumbstick.some(item => item !== 0)){
         // thumbstick has changed
-        let thumbX = this.editorState.rightControllerState.thumbstick[2] * this.userSettings.parameters['Module Rotation-X Speed']
+        let thumbX = this.editor.state.rightControllerState.thumbstick[2] * this.userSettings.parameters['Module Rotation-X Speed']
         // use thumbstick X to rotate op on its Y Axis
         op.rotateY(thumbX)
 
-        let thumbY = this.editorState.rightControllerState.thumbstick[3] * this.userSettings.parameters['Module Distancer Speed']
+        let thumbY = this.editor.state.rightControllerState.thumbstick[3] * this.userSettings.parameters['Module Distancer Speed']
         // use thumbstick X to rotate op on its Y Axis
         op.translateZ(thumbY)
         // console.log(thumbX, thumbY)
@@ -139,7 +139,7 @@ class Patching {
 
     this.synth.add(partialCable.cable);
     this.cables.push(partialCable.cable);
-    this.editorState.partialCable = partialCable.cable;
+    this.editor.state.partialCable = partialCable.cable;
   }
 
   makeCompleteCable(){
@@ -147,10 +147,10 @@ class Patching {
   }
 
   removePartialCable(){
-    this.synth.remove(this.editorState.partialCable)
-    let cableIndex = this.cables.indexOf(this.editorState.partialCable)
+    this.synth.remove(this.editor.state.partialCable)
+    let cableIndex = this.cables.indexOf(this.editor.state.partialCable)
     this.cables.splice(cableIndex, 1)
-    this.editorState.partialCable = false
+    this.editor.state.partialCable = false
   }
 }
 
