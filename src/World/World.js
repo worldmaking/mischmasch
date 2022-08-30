@@ -8,6 +8,7 @@ import { XRController } from './components/XRController/XRController.js'
 import { Cable } from './components/Cable/Cable.js'
 import { Curve } from './components/Cable/Curve.js'
 import { Floor } from './components/Floor/Floor'
+import { Editor } from './components/Editor/Editor'
 // modules from the systems folder
 import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
@@ -39,7 +40,7 @@ let camera;
 let renderer;
 
 // scenes
-let worldScene, editorScene, patchScene;
+let worldScene, editor, patchScene;
 
 let loop;
 let palette;
@@ -73,11 +74,12 @@ class World {
 
         // scenes
         worldScene = createScene('world');
-        editorScene = createScene('editor');
-        worldScene.add(editorScene)
+        editor = new Editor();
+        
+        worldScene.add(editor.scene)
         patchScene = createScene('patch');
         patchScene.name = 'patchScene'
-        editorScene.add( patchScene );
+        editor.scene.add( patchScene );
 
         // renderer
         renderer = createRenderer();
@@ -125,22 +127,22 @@ class World {
         controller1.name = 'controller_0'
         // this will be from a custom event emitter in loop.js       
         controller1.thumbstickAxes = []
-        editorScene.add( controller1 );
+        editor.scene.add( controller1 );
 
         controller2 = renderer.xr.getController( 1 );
         controller2.addEventListener( 'selectstart', onSelectStart );
         controller2.addEventListener( 'selectend', onSelectEnd );
-        editorScene.add( controller2 );
+        editor.scene.add( controller2 );
 
         const controllerModelFactory = new XRControllerModelFactory();
 
         controllerGrip1 = renderer.xr.getControllerGrip( 0 );
         controllerGrip1.add( controllerModelFactory.createControllerModel( controllerGrip1 ) );
-        editorScene.add( controllerGrip1 );
+        editor.scene.add( controllerGrip1 );
 
         controllerGrip2 = renderer.xr.getControllerGrip( 1 );
         controllerGrip2.add( controllerModelFactory.createControllerModel( controllerGrip2 ) );
-        editorScene.add( controllerGrip2 );
+        editor.scene.add( controllerGrip2 );
 
         const geometry = new BufferGeometry().setFromPoints( [ new Vector3( 0, 0, 0 ), new Vector3( 0, 0, - 1 ) ] );
 
@@ -375,7 +377,7 @@ class World {
         
         // rendering loop
         // loop = new Loop(camera, worldScene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings);
-        loop = new Loop(camera, worldScene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller1, patchScene, floor);
+        loop = new Loop(camera, worldScene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller1, patchScene, floor, editor);
         loop.updatables.push(controls);
 
         
@@ -411,7 +413,7 @@ class World {
 
                     controller.userData.selected = object.parent;
 
-                    editorScene.remove(palette)
+                    editor.scene.remove(palette)
                     palette.userData.active = false;
 
                     // rebuild the palette so the selected op is replaced
@@ -458,13 +460,13 @@ class World {
                             controller.attach( object.parent );
 
                             controller.userData.selected = object.parent;
-                            loop.editorState.rightControllerState.select.element = 'panel'
-                            loop.editorState.rightControllerState.select.object = object.parent
+                            editor.state.rightControllerState.select.element = 'panel'
+                            editor.state.rightControllerState.select.object = object.parent
                         break;
 
                         case 'inlet':
                         case 'outlet':
-                            if(loop.editorState.partialCable == false){
+                            if(editor.state.partialCable == false){
                                 loop.patching.makePartialCable(object, controller1)
                             } else {        
                             }
@@ -486,11 +488,11 @@ class World {
 
                 const object = controller.userData.selected;
                 // check if there's a partial cable
-                if(loop.editorState.partialCable != false){
+                if(editor.state.partialCable != false){
                     // check if 2nd end of partial cable is intersecting the correct jack type (opposite of 1st end)
-                    if(loop.editorState.partialCable.userData.src.userData.kind != object.userData.kind && (object.userData.kind == 'inlet' || object.userData.kind == 'outlet')){
+                    if(editor.state.partialCable.userData.src.userData.kind != object.userData.kind && (object.userData.kind == 'inlet' || object.userData.kind == 'outlet')){
                         // get both jacks for the new cable to attach to
-                        let jackOne = loop.editorState.partialCable.userData.src
+                        let jackOne = editor.state.partialCable.userData.src
                         let jackTwo = object
 
                         // add complete cable                        
@@ -499,10 +501,10 @@ class World {
                         loop.cables.push(completeCable.cable);
 
                         // remove partial cable
-                        patchScene.remove(loop.editorState.partialCable)
-                        let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
+                        patchScene.remove(editor.state.partialCable)
+                        let cableIndex = loop.cables.indexOf(editor.state.partialCable)
                         loop.cables.splice(cableIndex, 1)
-                        loop.editorState.partialCable = false
+                        editor.state.partialCable = false
                     } else {
                         // not intersecting a valid jack, so remove the jack
                         loop.patching.removePartialCable()
@@ -546,7 +548,7 @@ class World {
                 
         
             } else {
-                if(loop.editorState.partialCable != false){
+                if(editor.state.partialCable != false){
                     // not intersecting a valid jack, so remove the jack
                     loop.patching.removePartialCable()
                 }
@@ -652,11 +654,11 @@ class World {
                     intersected.push( object.parent.meshes.panel );
                 }else {
                     // if partial cable is active, we want the next available intersection
-                    if(loop.editorState.partialCable != false && intersections[1]){
+                    if(editor.state.partialCable != false && intersections[1]){
                         const secondary = intersections[1].object
                             
                         // for cable manipulation, we need to know if there are objects behind the cable that the controller can access
-                        loop.editorState.rightControllerState.secondaryIntersection = intersections[1]
+                        editor.state.rightControllerState.secondaryIntersection = intersections[1]
                 
                         switch(secondary.userData.kind){
                             case 'inlet':
@@ -671,7 +673,7 @@ class World {
                         }
                     } else{
                         // ignore any secondary intersections
-                        loop.editorState.rightControllerState.secondaryIntersection = false
+                        editor.state.rightControllerState.secondaryIntersection = false
                         intersected.push( object );
                         // op element type:
                         switch(object.userData.kind){
@@ -784,14 +786,13 @@ class World {
 
             // palette.updateMatrix();
             palette.translateZ( + 35 );
-            editorScene.add(palette);
+            editor.scene.add(palette);
             palette.userData.active = true;
         }
 
         function hidePalette(){
-            console.log('hide')
             camera.remove(palette)
-            editorScene.remove(palette);
+            editor.scene.remove(palette);
             palette.userData.active = false;
         }
 

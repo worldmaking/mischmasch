@@ -4,7 +4,7 @@ import { Collisions } from './Collisions.js'
 import { Patching } from './Patching.js'
 
 class Loop {
-    constructor(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller1, synth) {
+    constructor(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller1, synth, floor, editor) {
         this.camera = camera;
         this.scene = scene;
         this.synth = synth;
@@ -25,37 +25,10 @@ class Loop {
         this.cleanIntersected = cleanIntersected
         this.controller1 = controller1
 
-        this.editorState = {
-            partialCable: false,
-            rightControllerState: {
-                squeeze: false,
-                select: {
-                    element: false,
-                    object: false
-                },
-                a: false,
-                b: false,
-                thumbstick: [0, 0, 0, 0],
-                thumbstickButton: false,
-                secondaryIntersection: false
-            },
-            leftControllerState: {
-                squeeze: false,
-                select: {
-                    element: false,
-                    object: false
-                },
-                a: false,
-                b: false,
-                thumbstick: [0, 0, 0, 0],
-                thumbstickButton: false,
-                secondaryIntersection: false
-            }
-
-        }
+        this.editor = editor;
         this.cables = [];
-        this.patching = new Patching(this.cables, this.xrCtlRight, this.xrCtlLeft, this.editorState, this.userSettings, this.synth, this.controller1)
-        this.collisions = new Collisions(this.editorState, this.scene, this.pointer, this.camera, this.palette, this.patching, this.xrCtlRight, this.xrCtlLeft, this.synth);
+        this.patching = new Patching(this.cables, this.xrCtlRight, this.xrCtlLeft, this.editor.state, this.userSettings, this.synth, this.controller1)
+        this.collisions = new Collisions(this.editor.state, this.scene, this.pointer, this.camera, this.palette, this.patching, this.xrCtlRight, this.xrCtlLeft, this.synth);
         this.patching.arrow = this.collisions.arrow // pass the arrowhelper into patching for module movement
 
         this.hover = this.collisions.hover
@@ -114,7 +87,7 @@ class Loop {
             this.stats.update();
             // XR controller custom events
             if(this.controller1.gamepad){
-                this.editorState.rightControllerState.thumbstick = this.controller1.gamepad.axes
+                this.editor.state.rightControllerState.thumbstick = this.controller1.gamepad.axes
              
             }
 
@@ -135,7 +108,7 @@ class Loop {
             //         // thumbstick axes
             //         // this.xrCtlRight.thumbstickAxes = this.xrCtlRight.controller.gamepad.axes
             //         window.dispatchEvent(rightThumbstickAxes)
-            //         this.editorState.rightControllerState.thumbstick = this.xrCtlRight.controller.gamepad.axes
+            //         this.editor.state.rightControllerState.thumbstick = this.xrCtlRight.controller.gamepad.axes
 
             //         // thumbstick button press
             //         if(this.xrCtlRight.controller.gamepad.buttons[3].pressed === true){
@@ -161,7 +134,7 @@ class Loop {
                 
             //     if(this.xrCtlLeft.controller.gamepad){
             //         // thumbstick axes
-            //         this.editorState.leftControllerState.thumbstick = this.xrCtlLeft.controller.gamepad.axes
+            //         this.editor.state.leftControllerState.thumbstick = this.xrCtlLeft.controller.gamepad.axes
 
             //         // this.xrCtlLeft.thumbstickAxes = this.xrCtlLeft.controller.gamepad.axes
             //         window.dispatchEvent(leftThumbstickAxes)

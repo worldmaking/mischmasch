@@ -7,7 +7,6 @@ function createScene(sceneType) {
     case 'world':
       scene.background = new Color('black');
     break
-    case 'editor':
     case 'patch':
     break;
   }
