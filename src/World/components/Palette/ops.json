@@ -1,4 +1,3 @@
-let opsList = 
 [
   {
     "op": "mstosamps",
@@ -622,5 +621,3 @@ let opsList =
     }
   }
 ]
-
-export { opsList }

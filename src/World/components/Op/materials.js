@@ -1,41 +1,50 @@
 import { MeshStandardMaterial } from 'three';
 
 function createMaterials(opCategory) {
-  // switch(opCategory){
-  //   // my grouping of these categories is hamfisted
-  //   // math-related
-  //   case "math":
-  //   case "trigonometry":
-  //   case "powers":
-  //   case "integrator":
+  let panelColour = '#9efffd'
+  switch(opCategory){
+    // my grouping of these categories is hamfisted
+    // math-related
+    case "mathemagical":
+      panelColour = '#9efffd'
+    break;
 
-  //   break;
-  //   // routing/logic stuff
-  //   case "route":
-  //   case "comparison":
-  //   case "logic":
-  //   case "route":
-  //   case "range":
-  //   case "convert":      
+    case "scaling":
+      panelColour = '#b19eff'
+    break;
 
-  //   break;
-  //   //  lookups
-  //   case "buffer":
-  //   case "waveform":
+    case "switching":
+      panelColour = '#ff9ef7'
+    break;
 
-  //   break;
+    case "filtering":
+      panelColour = '#f74545'
+    break;
 
-  //   // numbers
-  //   case "numeric":
-  //   case "constant":
-  //   case "declare":
-  //   case "global":
-  //   case "range":
-  //   case "convert": 
-    
-  // }
+    case "conversion":
+      panelColour = '#4563f7'
+    break;
+
+    case "throughput":
+      panelColour = '#5af745'
+    break;
+
+    case "parameter":
+      panelColour = '#f7f145'
+    break;
+
+    case "source":
+      panelColour = '#f7a445'
+    break;
+
+    case "delay":
+      panelColour = '#5a45f7'
+    break;
+
+
+  }
   const panel = new MeshStandardMaterial({
-    color: '#9efffd',
+    color: panelColour,
     flatShading: true,
     transparent: true,
     opacity: 0.2

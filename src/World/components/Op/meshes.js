@@ -11,6 +11,8 @@ function createMeshes(opProps) {
   let panelGeometry;
   let inputJacks = []
   let inputLabels = []
+  let outputJacks = []
+  let outputLabels = []
   // does it have inputs?
   if(opProps.inputs && Object.keys(opProps.inputs).length > 0){
     let inputs = opProps.inputs
@@ -62,8 +64,38 @@ function createMeshes(opProps) {
   
 
   // panel width depends on number of UI elements. for now it's only inlets
-  
   const panel = new Mesh(panelGeometry.panel, materials.panel);
+  let panelColour;
+  switch(opProps.classification){
+    case "mathemagical":
+      panelColour = '#006664'
+    break;
+    case "scaling":
+      panelColour = '#2e00e6'
+    break;
+    case "switching":
+      panelColour = '#a8009a'
+    break;
+    case "filtering":
+      panelColour = '#ff0000'
+    break;
+    case "conversion":
+      panelColour = '#4563f7'
+    break;
+    case "throughput":
+      panelColour = '#5af745'
+    break;
+    case "parameter":
+      panelColour = '#f7f145'
+    break;
+    case "source":
+      panelColour = '#f7a445'
+    break;
+    case "delay":
+      panelColour = '#5a45f7'
+    break;
+  }
+  panel.material.color.set(panelColour)
   panel.position.set(0, 1.6, 0);
   panel.rotation.set(0, 0, 0)
   panel.name = `panel_${opProps.op}_${panel.uuid}`
@@ -72,42 +104,68 @@ function createMeshes(opProps) {
   panel.userData.kind = 'panel'
 
 
-  const jackOut = new Mesh(geometries.jack, materials.jackOut);
-  jackOut.position.set(0, 1.2, 0.2);
-  jackOut.rotation.set(0, 0, 0)
-  jackOut.name = `outlet_${opProps.op}_${jackOut.uuid}`
-  jackOut.userData.name = opProps.op;
-  jackOut.userData.uuid = jackOut.uuid
-  jackOut.userData.kind = 'outlet'
-  
-  let outputLabel = new Text();
-  if(opProps.outputs[0]){
 
-    let label = opProps.outputs[0].label
-    // some labels have long text using () for explanation, so remove those
-    if(opProps.outputs[0].label.includes('(')){
-      label = label.slice(0, label.indexOf('('))
-    }
-    if(/\s/.test(label)){
-      // if label has more than one word, split label into two lines at first space
-      outputLabel.text = label.replace(' ', '\n')
-    } else {
-      outputLabel.text = label
-    }
+  // does it have outputs?
+  if(opProps.outputs && Object.keys(opProps.outputs).length > 0){
+    console.log(opProps.outputs)
+    let outputs = opProps.outputs
+    let outputNames = Object.keys(outputs)
+    let outputLabelNames = Object.values(outputs)
+    let numoutputs = outputNames.length
+    // loop through outputs and create the inlets aand labels for this op
+    // //
+    let outletIndex = 0
+    
+    outputNames.forEach(outputName => {
+      // jacks
+      let jackOut = new Mesh(geometries.jack, materials.jackOut);
+      let posX = outputNames.indexOf(outputName)
+      jackOut.position.set(posX, 1.2, 0.2);
+      // jackOut.rotation.set(1.55, 1, 0);
+      jackOut.rotation.set(0, 0, 0)
+
+      jackOut.name = `outlet_${outputName}_${jackOut.uuid}`
+      jackOut.userData.name = outputName;
+      jackOut.userData.uuid = jackOut.uuid
+      jackOut.userData.kind = 'outlet'
+      jackOut.userData.index = outletIndex
+
+      outputJacks.push(jackOut)
+
+      // labels
+      let label = outputLabelNames[outletIndex]
+      let outputLabel = new Text();
+      
+      if(label.includes('(')){
+        label = label.slice(0, label.indexOf('('))
+      }
+      if(/\s/.test(label)){
+        // if label has more than one word, split label into two lines at first space
+        outputLabel.text = label.replace(' ', '\n')
+      } else {
+        outputLabel.text = label
+      }
+
+      outputLabel.fontSize = 0.2
+      outputLabel.color = 'white'
+      outputLabel.anchorX = 'center'
+      outputLabel.position.set(posX, 1, 0.2);
+      outputLabel.rotation.set(0, 0, 0)
+      outputLabel.name = 'outputLabel'
+      outputLabel.userData.name = label;
+      outputLabel.userData.uuid = outputLabel.uuid
+      outputLabel.userData.kind = 'outputLabel'
+
+      outputLabels.push(outputLabel)
+
+      outletIndex++
+    })
+    panelGeometry = createGeometries(numoutputs);
   } else {
-    // todo: if this is the case, then there shouldn't be an output or a label on the op, right?
-    outputLabel.text = opProps.op + '_out'
-
+    // op has no inputs, set panel width to 1
+    panelGeometry = createGeometries(1);
   }
-  outputLabel.fontSize = 0.2
-  outputLabel.color = 'white'
-  outputLabel.anchorX = 'left'
-  outputLabel.position.set(-0.3, 1, 0.2);
-  outputLabel.rotation.set(0, 0, 0)
-  outputLabel.name = 'outLabel'
-  outputLabel.userData.name = opProps.op;
-  outputLabel.userData.uuid = outputLabel.uuid
-  outputLabel.userData.kind = 'outputlabel'
+
 
   const opLabel = new Text();
 
@@ -125,8 +183,8 @@ function createMeshes(opProps) {
     panel,
     inputJacks,
     inputLabels,
-    jackOut,
-    outputLabel,
+    outputJacks,
+    outputLabels,
     opLabel
   };
 }
