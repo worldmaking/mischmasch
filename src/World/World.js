@@ -2,13 +2,15 @@
 import { createCamera } from './systems/camera.js';
 import { Op } from './components/Op/Op.js';
 import { Palette } from './components/Palette/Palette.js';
-import { createScene } from './components/scene.js';
 import { createLights } from './components/Lights/lights.js'
 import { XRController } from './components/XRController/XRController.js'
 import { Cable } from './components/Cable/Cable.js'
 import { Curve } from './components/Cable/Curve.js'
 import { Floor } from './components/Floor/Floor'
+import { createScene } from './components/scene.js';
 import { Editor } from './components/Editor/Editor'
+import { Patch } from './components/Patch/Patch'
+
 // modules from the systems folder
 import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
@@ -40,7 +42,7 @@ let camera;
 let renderer;
 
 // scenes
-let worldScene, editor, patchScene;
+let worldScene, editor, patch;
 
 let loop;
 let palette;
@@ -74,12 +76,13 @@ class World {
 
         // scenes
         worldScene = createScene('world');
+        worldScene.name = 'world'
         editor = new Editor();
-        
+        editor.scene.name = 'editor'
         worldScene.add(editor.scene)
-        patchScene = createScene('patch');
-        patchScene.name = 'patchScene'
-        editor.scene.add( patchScene );
+        patch = new Patch();
+        patch.scene.name = 'synth'
+        editor.scene.add( patch.scene );
 
         // renderer
         renderer = createRenderer();
@@ -378,7 +381,7 @@ class World {
         
         // rendering loop
         // loop = new Loop(camera, worldScene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings);
-        loop = new Loop(camera, worldScene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller_0, patchScene, floor, editor);
+        loop = new Loop(camera, worldScene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller_0, patch, floor, editor);
         loop.updatables.push(controls);
 
         
@@ -439,9 +442,9 @@ class World {
                     // op.position.y = inPalettePos.y
                     // op.position.z = inPalettePos.z
                     // loop.updatables.push(op);
-                    // patchScene.remove(palette);
+                    // patch.scene.remove(palette);
                     // palette.userData.active = false;
-                    // patchScene.add(op);
+                    // patch.scene.add(op);
 
 
 
@@ -498,11 +501,11 @@ class World {
 
                         // add complete cable                        
                         let completeCable = new Cable( 'complete', jackOne, jackTwo )
-                        patchScene.add(completeCable.cable);
+                        patch.scene.add(completeCable.cable);
                         loop.cables.push(completeCable.cable);
 
                         // remove partial cable
-                        patchScene.remove(editor.state.partialCable)
+                        patch.scene.remove(editor.state.partialCable)
                         let cableIndex = loop.cables.indexOf(editor.state.partialCable)
                         loop.cables.splice(cableIndex, 1)
                         editor.state.partialCable = false
@@ -518,18 +521,22 @@ class World {
                     case 'op':
                         let op = object
                         op.meshes.panel.material.emissive.b = 0;
-                        // patchScene.attach( object );
+
+               
+
+                        // patch.scene.attach( object );
                         // if op is below floor, delete it
                         // console.log('op y', op.position.y, 'floor', floor.floor.position, 'op', op.position)
-                        // patchScene.updateMatrixWorld()
+                        // patch.scene.updateMatrixWorld()
                         
                         // if the op's Y position in world space is lower than the floor
-                        if(patchScene.localToWorld(op.position).y < -2){
+                        // console.log(patch, op.position)
+                        if(patch.scene.localToWorld(op.position).y < -2){
                             // remove it
                             controller.remove( op )
-                            patchScene.remove( op )
+                            patch.scene.remove( op )
                         }else {
-                            patchScene.attach(op)
+                            patch.scene.attach(op)
                             controller.remove( op );
                             // loop.updatables.push(op);
                         }
@@ -586,7 +593,7 @@ class World {
             showPalette()
             // this refers to the controller
             // if (palette.userData.active == true ){
-            //     patchScene.remove(palette);
+            //     patch.scene.remove(palette);
             //     palette.userData.active = false;
             // }else {
                 // ctrl.controller.children[0].scale.z = 10;
@@ -626,7 +633,7 @@ class World {
             if(palette.userData.active == true){
                 intersections = raycaster.intersectObjects( palette.children, true );
             } else {
-                intersections = raycaster.intersectObjects( patchScene.children, true );
+                intersections = raycaster.intersectObjects( patch.scene.children, true );
             }
             return intersections
 
@@ -680,7 +687,7 @@ class World {
                         switch(object.userData.kind){
                             case 'panel':
                                 // detect if below floor (stage for deletion)
-                                if(patchScene.localToWorld( object.parent.position ).y < -2){
+                                if(patch.scene.localToWorld( object.parent.position ).y < -2){
                                     // highlight it red?
                                     object.material.opacity = 0.1
                                     
