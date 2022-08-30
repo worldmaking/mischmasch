@@ -107,7 +107,6 @@ function createMeshes(opProps) {
 
   // does it have outputs?
   if(opProps.outputs && Object.keys(opProps.outputs).length > 0){
-    console.log(opProps.outputs)
     let outputs = opProps.outputs
     let outputNames = Object.keys(outputs)
     let outputLabelNames = Object.values(outputs)

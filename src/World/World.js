@@ -67,22 +67,31 @@ let count = 0
 class World {
     // 1. Create an instance of the World app
     constructor(container) {
+
+
         camera = createCamera();
+
+        // scenes
         worldScene = createScene('world');
+        editorScene = createScene('editor');
+        worldScene.add(editorScene)
+        patchScene = createScene('patch');
+        patchScene.name = 'patchScene'
+        editorScene.add( patchScene );
+
+        // renderer
         renderer = createRenderer();
-        
-        // gpu stats panel
-        stats = new Stats();
-        
-        gpuPanel = new GPUStatsPanel( renderer.getContext() );
-        stats.addPanel( gpuPanel );
-
-        // user settings
-        userSettings = new UserSettings(stats);
-
         // XR rendering
         document.body.appendChild( VRButton.createButton( renderer ) );
         renderer.xr.enabled = true;
+        
+        // page UI: gpu stats panel
+        stats = new Stats();
+        gpuPanel = new GPUStatsPanel( renderer.getContext() );
+        stats.addPanel( gpuPanel );
+        // page UI: userSettings
+        userSettings = new UserSettings(stats);
+
 
         // collision detecting
         
@@ -99,49 +108,10 @@ class World {
         palette.position.copy( camera.position );
         palette.rotation.copy( camera.rotation );
         palette.updateMatrix();
-        // palette.translateZ( - 10 );
 
         //! alternate xr controller attempt
 
-        let synth = createScene('editor');
-        synth.name = 'sceneSynth'
-        worldScene.add( synth );
 
-        // const geometries = [
-        //     new BoxGeometry( 0.2, 0.2, 0.2 ),
-        //     new ConeGeometry( 0.2, 0.2, 64 ),
-        //     new CylinderGeometry( 0.2, 0.2, 0.2, 64 ),
-        //     new IcosahedronGeometry( 0.2, 8 ),
-        //     new TorusGeometry( 0.2, 0.04, 64, 32 )
-        // ];
-
-        // for ( let i = 0; i < 50; i ++ ) {
-
-        //     const geometry = geometries[ Math.floor( Math.random() * geometries.length ) ];
-        //     const material = new MeshStandardMaterial( {
-        //         color: Math.random() * 0xffffff,
-        //         roughness: 0.7,
-        //         metalness: 0.0
-        //     } );
-
-        //     const object = new Mesh( geometry, material );
-
-        //     object.position.x = Math.random() * 4 - 2;
-        //     object.position.y = Math.random() * 2;
-        //     object.position.z = Math.random() * 4 - 2;
-
-        //     object.rotation.x = Math.random() * 2 * Math.PI;
-        //     object.rotation.y = Math.random() * 2 * Math.PI;
-        //     object.rotation.z = Math.random() * 2 * Math.PI;
-
-        //     object.scale.setScalar( Math.random() + 0.5 );
-
-        //     object.castShadow = true;
-        //     object.receiveShadow = true;
-
-        //     // synth.add( object );
-
-        // }
         
         controller1 = renderer.xr.getController( 0 );
         controller1.addEventListener( 'selectstart', onSelectStart );
@@ -155,22 +125,22 @@ class World {
         controller1.name = 'controller_0'
         // this will be from a custom event emitter in loop.js       
         controller1.thumbstickAxes = []
-        worldScene.add( controller1 );
+        editorScene.add( controller1 );
 
         controller2 = renderer.xr.getController( 1 );
         controller2.addEventListener( 'selectstart', onSelectStart );
         controller2.addEventListener( 'selectend', onSelectEnd );
-        worldScene.add( controller2 );
+        editorScene.add( controller2 );
 
         const controllerModelFactory = new XRControllerModelFactory();
 
         controllerGrip1 = renderer.xr.getControllerGrip( 0 );
         controllerGrip1.add( controllerModelFactory.createControllerModel( controllerGrip1 ) );
-        worldScene.add( controllerGrip1 );
+        editorScene.add( controllerGrip1 );
 
         controllerGrip2 = renderer.xr.getControllerGrip( 1 );
         controllerGrip2.add( controllerModelFactory.createControllerModel( controllerGrip2 ) );
-        worldScene.add( controllerGrip2 );
+        editorScene.add( controllerGrip2 );
 
         const geometry = new BufferGeometry().setFromPoints( [ new Vector3( 0, 0, 0 ), new Vector3( 0, 0, - 1 ) ] );
 
@@ -186,26 +156,7 @@ class World {
 
         
 
-        //
-        // function animate() {
-
-        //     renderer.setAnimationLoop( render );
-
-        // }
-
-        // function render() {
-
-        //     cleanIntersected();
-
-        //     intersectObjects( controller1 );
-        //     intersectObjects( controller2 );
-
-        //     // renderer.render( worldScene, camera );
-
-        // }
-
-        // renderer.setAnimationLoop( render );
-
+        
         /*
         //!
         // XR controllers
@@ -424,7 +375,7 @@ class World {
         
         // rendering loop
         // loop = new Loop(camera, worldScene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings);
-        loop = new Loop(camera, worldScene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller1, synth, floor);
+        loop = new Loop(camera, worldScene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller1, patchScene, floor);
         loop.updatables.push(controls);
 
         
@@ -460,7 +411,7 @@ class World {
 
                     controller.userData.selected = object.parent;
 
-                    synth.remove(palette)
+                    editorScene.remove(palette)
                     palette.userData.active = false;
 
                     // rebuild the palette so the selected op is replaced
@@ -474,6 +425,7 @@ class World {
                     palette.translateZ( - 10 );
                     palette.updateMatrix();
 
+
                     // let paletteOp = object
                     // let opName = paletteOp.object.name
                     
@@ -484,9 +436,9 @@ class World {
                     // op.position.y = inPalettePos.y
                     // op.position.z = inPalettePos.z
                     // loop.updatables.push(op);
-                    // synth.remove(palette);
+                    // patchScene.remove(palette);
                     // palette.userData.active = false;
-                    // synth.add(op);
+                    // patchScene.add(op);
 
 
 
@@ -543,11 +495,11 @@ class World {
 
                         // add complete cable                        
                         let completeCable = new Cable( 'complete', jackOne, jackTwo )
-                        synth.add(completeCable.cable);
+                        patchScene.add(completeCable.cable);
                         loop.cables.push(completeCable.cable);
 
                         // remove partial cable
-                        synth.remove(loop.editorState.partialCable)
+                        patchScene.remove(loop.editorState.partialCable)
                         let cableIndex = loop.cables.indexOf(loop.editorState.partialCable)
                         loop.cables.splice(cableIndex, 1)
                         loop.editorState.partialCable = false
@@ -563,18 +515,18 @@ class World {
                     case 'op':
                         let op = object
                         op.meshes.panel.material.emissive.b = 0;
-                        // synth.attach( object );
+                        // patchScene.attach( object );
                         // if op is below floor, delete it
                         // console.log('op y', op.position.y, 'floor', floor.floor.position, 'op', op.position)
-                        // synth.updateMatrixWorld()
+                        // patchScene.updateMatrixWorld()
                         
                         // if the op's Y position in world space is lower than the floor
-                        if(synth.localToWorld(op.position).y < -2){
+                        if(patchScene.localToWorld(op.position).y < -2){
                             // remove it
                             controller.remove( op )
-                            synth.remove( op )
+                            patchScene.remove( op )
                         }else {
-                            synth.attach(op)
+                            patchScene.attach(op)
                             controller.remove( op );
                             // loop.updatables.push(op);
                         }
@@ -591,15 +543,14 @@ class World {
 
                 controller.userData.selected = undefined;
 
-
-
+                
+        
             } else {
                 if(loop.editorState.partialCable != false){
                     // not intersecting a valid jack, so remove the jack
                     loop.patching.removePartialCable()
                 }
             }
-
 
         }
         /* //!
@@ -632,7 +583,7 @@ class World {
             showPalette()
             // this refers to the controller
             // if (palette.userData.active == true ){
-            //     synth.remove(palette);
+            //     patchScene.remove(palette);
             //     palette.userData.active = false;
             // }else {
                 // ctrl.controller.children[0].scale.z = 10;
@@ -668,7 +619,13 @@ class World {
             raycaster.ray.origin.setFromMatrixPosition( controller.matrixWorld );
             raycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( tempMatrix );
 
-            return raycaster.intersectObjects( synth.children, true );
+            let intersections;
+            if(palette.userData.active == true){
+                intersections = raycaster.intersectObjects( palette.children, true );
+            } else {
+                intersections = raycaster.intersectObjects( patchScene.children, true );
+            }
+            return intersections
 
         }
 
@@ -720,7 +677,7 @@ class World {
                         switch(object.userData.kind){
                             case 'panel':
                                 // detect if below floor (stage for deletion)
-                                if(synth.localToWorld( object.parent.position ).y < -2){
+                                if(patchScene.localToWorld( object.parent.position ).y < -2){
                                     // highlight it red?
                                     object.material.opacity = 0.1
                                     
@@ -827,12 +784,14 @@ class World {
 
             // palette.updateMatrix();
             palette.translateZ( + 35 );
-            synth.add(palette);
+            editorScene.add(palette);
             palette.userData.active = true;
         }
 
         function hidePalette(){
-            synth.remove(palette);
+            console.log('hide')
+            camera.remove(palette)
+            editorScene.remove(palette);
             palette.userData.active = false;
         }
 
