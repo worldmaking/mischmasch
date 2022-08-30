@@ -4,7 +4,7 @@ import { Collisions } from './Collisions.js'
 import { Patching } from './Patching.js'
 
 class Loop {
-    constructor(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller1, synth, floor, editor) {
+    constructor(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller_0, synth, floor, editor) {
         this.camera = camera;
         this.scene = scene;
         this.synth = synth;
@@ -23,11 +23,11 @@ class Loop {
         this.getIntersections = getIntersections
         this.intersectObjects = intersectObjects
         this.cleanIntersected = cleanIntersected
-        this.controller1 = controller1
+        this.controller_0 = controller_0
 
         this.editor = editor;
         this.cables = [];
-        this.patching = new Patching(this.cables, this.xrCtlRight, this.xrCtlLeft, this.editor, this.userSettings, this.synth, this.controller1)
+        this.patching = new Patching(this.cables, this.xrCtlRight, this.xrCtlLeft, this.editor, this.userSettings, this.synth, this.controller_0)
         this.collisions = new Collisions(this.editor.state, this.scene, this.pointer, this.camera, this.palette, this.patching, this.xrCtlRight, this.xrCtlLeft, this.synth);
         this.patching.arrow = this.collisions.arrow // pass the arrowhelper into patching for module movement
 
@@ -82,12 +82,12 @@ class Loop {
             // controller intersections
             this.cleanIntersected()
             // this.getIntersections
-            this.intersectObjects(this.controller1)
+            this.intersectObjects(this.controller_0)
             
             this.stats.update();
             // XR controller custom events
-            if(this.controller1.gamepad){
-                this.editor.state.controller_0.thumbstick = this.controller1.gamepad.axes
+            if(this.controller_0.userData.gamepad){
+                this.editor.state.controller_0.thumbstick = this.controller_0.userData.gamepad.axes
              
             }
 
@@ -104,25 +104,25 @@ class Loop {
 
             // if(this.xrCtlRight){
             //     // thumbstick axes
-            //     if(this.xrCtlRight.controller.gamepad){
+            //     if(this.xrCtlRight.controller.userData.gamepad){
             //         // thumbstick axes
-            //         // this.xrCtlRight.thumbstickAxes = this.xrCtlRight.controller.gamepad.axes
+            //         // this.xrCtlRight.thumbstickAxes = this.xrCtlRight.controller.userData.gamepad.axes
             //         window.dispatchEvent(rightThumbstickAxes)
-            //         this.editor.state.controller_0.thumbstick = this.xrCtlRight.controller.gamepad.axes
+            //         this.editor.state.controller_0.thumbstick = this.xrCtlRight.controller.userData.gamepad.axes
 
             //         // thumbstick button press
-            //         if(this.xrCtlRight.controller.gamepad.buttons[3].pressed === true){
+            //         if(this.xrCtlRight.controller.userData.gamepad.buttons[3].pressed === true){
             //             // this.xrCtlRight.thumbstickPress = true
             //             window.dispatchEvent(rightThumbstickPress)
             //         }
 
             //         // B button press
-            //         if(this.xrCtlRight.controller.gamepad.buttons[5].pressed === true){
+            //         if(this.xrCtlRight.controller.userData.gamepad.buttons[5].pressed === true){
             //             window.dispatchEvent(rightBPress)
             //         }
 
             //         // A button press
-            //         if(this.xrCtlRight.controller.gamepad.buttons[4].pressed === true){
+            //         if(this.xrCtlRight.controller.userData.gamepad.buttons[4].pressed === true){
             //             window.dispatchEvent(rightAPress)
             //         }
 
@@ -132,27 +132,27 @@ class Loop {
             //  left controller
             // else if(this.xrCtlLeft){
                 
-            //     if(this.xrCtlLeft.controller.gamepad){
+            //     if(this.xrCtlLeft.controller.userData.gamepad){
             //         // thumbstick axes
-            //         this.editor.state.leftControllerState.thumbstick = this.xrCtlLeft.controller.gamepad.axes
+            //         this.editor.state.leftControllerState.thumbstick = this.xrCtlLeft.controller.userData.gamepad.axes
 
-            //         // this.xrCtlLeft.thumbstickAxes = this.xrCtlLeft.controller.gamepad.axes
+            //         // this.xrCtlLeft.thumbstickAxes = this.xrCtlLeft.controller.userData.gamepad.axes
             //         window.dispatchEvent(leftThumbstickAxes)
 
 
             //         // thumbstick button press
-            //         if(this.xrCtlLeft.controller.gamepad.buttons[3].pressed === true){
+            //         if(this.xrCtlLeft.controller.userData.gamepad.buttons[3].pressed === true){
             //             // this.xrCtlLeft.thumbstickPress = true
             //             window.dispatchEvent(leftThumbstickPress)
             //         }
 
             //         // B button press
-            //         if(this.xrCtlLeft.controller.gamepad.buttons[5].pressed === true){
+            //         if(this.xrCtlLeft.controller.userData.gamepad.buttons[5].pressed === true){
             //             window.dispatchEvent(leftBPress)
             //         }
 
             //         // A button press
-            //         if(this.xrCtlLeft.controller.gamepad.buttons[4].pressed === true){
+            //         if(this.xrCtlLeft.controller.userData.gamepad.buttons[4].pressed === true){
             //             window.dispatchEvent(leftAPress)
             //         }
             //     }

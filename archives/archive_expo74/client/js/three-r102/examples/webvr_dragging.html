@@ -28,7 +28,7 @@
 
 			var container;
 			var camera, scene, renderer;
-			var controller1, controller2;
+			var controller1, controller_1;
 
 			var raycaster, intersected = [];
 			var tempMatrix = new THREE.Matrix4();
@@ -138,10 +138,10 @@
 				controller1.addEventListener( 'selectend', onSelectEnd );
 				scene.add( controller1 );
 
-				controller2 = renderer.vr.getController( 1 );
-				controller2.addEventListener( 'selectstart', onSelectStart );
-				controller2.addEventListener( 'selectend', onSelectEnd );
-				scene.add( controller2 );
+				controller_1 = renderer.vr.getController( 1 );
+				controller_1.addEventListener( 'selectstart', onSelectStart );
+				controller_1.addEventListener( 'selectend', onSelectEnd );
+				scene.add( controller_1 );
 
 				//
 
@@ -152,7 +152,7 @@
 				line.scale.z = 5;
 
 				controller1.add( line.clone() );
-				controller2.add( line.clone() );
+				controller_1.add( line.clone() );
 
 				raycaster = new THREE.Raycaster();
 
@@ -276,7 +276,7 @@
 				cleanIntersected();
 
 				intersectObjects( controller1 );
-				intersectObjects( controller2 );
+				intersectObjects( controller_1 );
 
 				renderer.render( scene, camera );
 

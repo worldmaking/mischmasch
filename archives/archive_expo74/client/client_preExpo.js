@@ -203,9 +203,9 @@ let ghostCables = new THREE.Group();
 let ghostLabels = new THREE.Group();
 let ghost = new THREE.Group();
 
-let controller1, controller2;
+let controller1, controller_1;
 let ghostController1 = new THREE.Object3D();
-let ghostController2 = new THREE.Object3D();
+let ghostcontroller_1 = new THREE.Object3D();
 let controllerMesh;
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -298,7 +298,7 @@ function createUserPose(id=0) {
             pos: new THREE.Vector3(),
             orient: new THREE.Quaternion()
         },
-        controller2: {
+        controller_1: {
             pos: new THREE.Vector3(),
             orient: new THREE.Quaternion()
         },
@@ -516,24 +516,24 @@ async function init() {
     
     // VR controllers
     controller1 = new THREE.ViveController(0);
-    controller2 = new THREE.ViveController(1);
+    controller_1 = new THREE.ViveController(1);
     controller1.standingMatrix = renderer.vr.getStandingMatrix();
-    controller2.standingMatrix = renderer.vr.getStandingMatrix();
+    controller_1.standingMatrix = renderer.vr.getStandingMatrix();
     controller1.addEventListener("triggerdown", onSelectStart);
     controller1.addEventListener("triggerup", onSelectEnd);
-    controller2.addEventListener("triggerdown", onSelectStart);
-    controller2.addEventListener("triggerup", onSelectEnd);
+    controller_1.addEventListener("triggerdown", onSelectStart);
+    controller_1.addEventListener("triggerup", onSelectEnd);
     controller1.addEventListener("gripsdown", onGrips);
-    controller2.addEventListener("gripsdown", onGrips);
+    controller_1.addEventListener("gripsdown", onGrips);
     controller1.addEventListener("thumbpadup", onSpawn);
-    controller2.addEventListener("thumbpaddown", onMenuSpawn);
+    controller_1.addEventListener("thumbpaddown", onMenuSpawn);
     controller1.addEventListener("thumbpaddown", onMenuSpawn);
-    controller2.addEventListener("thumbpadup", onSpawn);
+    controller_1.addEventListener("thumbpadup", onSpawn);
     //document.addEventListener("keydown", onKeypress, false);
     //document.addEventListener( 'mousemove', onDocumentMouseMove, false );
    // document.addEventListener( 'mousedown', onDocumentMouseDown, false );
     scene.add(controller1);
-    scene.add(controller2);
+    scene.add(controller_1);
 
     {
         
@@ -564,12 +564,12 @@ async function init() {
         pivot.rotation.x = Math.PI / 5.5;
         controllerMesh.add(pivot);
         controller1.add(controllerMesh.clone());
-        controller2.add(controllerMesh.clone());
+        controller_1.add(controllerMesh.clone());
         // pivot.material = pivot.material.clone();
     }
 
     ghost.add(ghostController1);
-    ghost.add(ghostController2);
+    ghost.add(ghostcontroller_1);
     ghost.add(ghostMeshes);
     world.add(ghost);
     testCube.position.set(0,1,0);
@@ -587,7 +587,7 @@ async function init() {
     line.name = "line";
     line.scale.z = 1;
     controller1.add(line.clone());
-    controller2.add(line.clone());
+    controller_1.add(line.clone());
 
     let lineGeom = new THREE.Geometry();
     lineGeom.vertices.push(new THREE.Vector3());
@@ -912,16 +912,16 @@ function render() {
     try {
 
         controller1.update();
-        controller2.update();
+        controller_1.update();
     } catch(e) {
         //console.warn(e)
     }
 
     controllerGamepadControls(controller1);
-    controllerGamepadControls(controller2);
+    controllerGamepadControls(controller_1);
 
     highlightNlet(controller1);
-    highlightNlet(controller2);
+    highlightNlet(controller_1);
 
     if (sock && sock.socket && sock.socket.readyState === 1) {
 
@@ -960,15 +960,15 @@ function render() {
         }
         
         // send VR poses to the server:
-        if (controller1 && controller2) {
+        if (controller1 && controller_1) {
 
             // TODO: camera is probably not the right point to grab -- maybe there's somethign in the vive handling that is head position
             camera.getWorldPosition(userPose.head.pos);
             camera.getWorldQuaternion(userPose.head.orient);
             controller1.getWorldPosition(userPose.controller1.pos);
             controller1.getWorldQuaternion(userPose.controller1.orient);
-            controller2.getWorldPosition(userPose.controller2.pos);
-            controller2.getWorldQuaternion(userPose.controller2.orient);
+            controller_1.getWorldPosition(userPose.controller_1.pos);
+            controller_1.getWorldQuaternion(userPose.controller_1.orient);
 
             sock.send({
                 cmd: "user_pose",
@@ -979,7 +979,7 @@ function render() {
     }
 
     intersectObjects(controller1);
-    intersectObjects(controller2);
+    intersectObjects(controller_1);
     
     var time = performance.now();
     let delta = ( time - lastTime ) / 5000;
@@ -1201,8 +1201,8 @@ function handlemessage(msg, sock) {
                 otherUsers[id] = other;
                 other.controller1 = controllerMesh.clone();
                 scene.add(other.controller1);
-                other.controller2 = controllerMesh.clone();
-                scene.add(other.controller2);
+                other.controller_1 = controllerMesh.clone();
+                scene.add(other.controller_1);
                 other.head = headsetMesh.clone();
                 scene.add(other.head);
                 
@@ -1223,12 +1223,12 @@ function handlemessage(msg, sock) {
             other.controller1.quaternion._w = msg.pose.controller1.orient._w;
             other.controller1.matrixWorldNeedsUpdate = true;
             
-            other.controller2.position.copy(msg.pose.controller2.pos);
-            other.controller2.quaternion._x = msg.pose.controller2.orient._x;
-            other.controller2.quaternion._y = msg.pose.controller2.orient._y;
-            other.controller2.quaternion._z = msg.pose.controller2.orient._z;
-            other.controller2.quaternion._w = msg.pose.controller2.orient._w;
-            other.controller2.matrixWorldNeedsUpdate = true;
+            other.controller_1.position.copy(msg.pose.controller_1.pos);
+            other.controller_1.quaternion._x = msg.pose.controller_1.orient._x;
+            other.controller_1.quaternion._y = msg.pose.controller_1.orient._y;
+            other.controller_1.quaternion._z = msg.pose.controller_1.orient._z;
+            other.controller_1.quaternion._w = msg.pose.controller_1.orient._w;
+            other.controller_1.matrixWorldNeedsUpdate = true;
             
             other.head.position.copy(msg.pose.head.pos);
             other.head.quaternion._x = msg.pose.head.orient._x;

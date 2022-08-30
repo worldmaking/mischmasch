@@ -33,7 +33,7 @@
 
 			var container;
 			var camera, scene, renderer;
-			var controller1, controller2;
+			var controller1, controller_1;
 
 			var line;
 			var shapes = {};
@@ -138,11 +138,11 @@
 				controller1.userData.matrices = [ new THREE.Matrix4(), new THREE.Matrix4() ];
 				scene.add( controller1 );
 
-				controller2 = new THREE.PaintViveController( 1 );
-				controller2.standingMatrix = renderer.vr.getStandingMatrix();
-				controller2.userData.points = [ new THREE.Vector3(), new THREE.Vector3() ];
-				controller2.userData.matrices = [ new THREE.Matrix4(), new THREE.Matrix4() ];
-				scene.add( controller2 );
+				controller_1 = new THREE.PaintViveController( 1 );
+				controller_1.standingMatrix = renderer.vr.getStandingMatrix();
+				controller_1.userData.points = [ new THREE.Vector3(), new THREE.Vector3() ];
+				controller_1.userData.matrices = [ new THREE.Matrix4(), new THREE.Matrix4() ];
+				scene.add( controller_1 );
 
 				var loader = new THREE.OBJLoader();
 				loader.setPath( 'models/obj/vive-controller/' );
@@ -169,7 +169,7 @@
 					controller1.add( controller.clone() );
 
 					pivot.material = pivot.material.clone();
-					controller2.add( controller.clone() );
+					controller_1.add( controller.clone() );
 
 				} );
 
@@ -420,7 +420,7 @@
 				var count = line.geometry.drawRange.count;
 
 				handleController( controller1 );
-				handleController( controller2 );
+				handleController( controller_1 );
 
 				updateGeometry( count, line.geometry.drawRange.count );
 

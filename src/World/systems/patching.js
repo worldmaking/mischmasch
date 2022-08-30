@@ -1,14 +1,14 @@
 import { Vector3 } from 'three'
 import { Cable } from '../components/Cable/Cable'
 class Patching {
-  constructor ( cables, xrCtlRight, xrCtlLeft, editor, userSettings, synth, controller1, controller2 ){
+  constructor ( cables, xrCtlRight, xrCtlLeft, editor, userSettings, synth, controller_0, controller_1 ){
     this.cables = cables;
     this.xrCtlRight = xrCtlRight;
     this.xrCtlLeft = xrCtlLeft;
     this.editor = editor;
     this.arrow 
     this.userSettings = userSettings
-    this.controller1 = controller1
+    this.controller_0 = controller_0
     this.synth = synth;
   }
 
@@ -24,7 +24,7 @@ class Patching {
           let ctlr = cable.userData.controller
           switch(ctlr){
             case 'controller_0': // xrCtlRight
-            let controllerPosition = this.controller1.position
+            let controllerPosition = this.controller_0.position
 
             // previously, the cord followed the controller position. 
             // can we just move the plug?

@@ -48,7 +48,7 @@ let doc1;
 let stats, gpuPanel;
 let userSettings;
 //!
-let controller1, controller2;
+let controller_0, controller_1;
 let controllerGrip1, controllerGrip2;
 const intersected = [];
 let currentIntersection;
@@ -115,24 +115,25 @@ class World {
 
 
         
-        controller1 = renderer.xr.getController( 0 );
-        controller1.addEventListener( 'selectstart', onSelectStart );
-        controller1.addEventListener( 'selectend', onSelectEnd );
-        controller1.addEventListener( 'squeezestart', onSqueezeStart);
-        controller1.addEventListener( 'squeezeend', onSqueezeEnd)
-        controller1.addEventListener( 'connected', (e) => {
-            controller1.gamepad = e.data.gamepad 
-            controller1.userData.handedness = e.data.handedness 
+        controller_0 = renderer.xr.getController( 0 );
+        controller_0.addEventListener( 'selectstart', onSelectStart );
+        controller_0.addEventListener( 'selectend', onSelectEnd );
+        controller_0.addEventListener( 'squeezestart', onSqueezeStart);
+        controller_0.addEventListener( 'squeezeend', onSqueezeEnd)
+        controller_0.addEventListener( 'connected', (e) => {
+            console.log(e.data.gamepad)
+            controller_0.userData.gamepad = e.data.gamepad 
+            controller_0.userData.handedness = e.data.handedness 
         });
-        controller1.name = 'controller_0'
+        controller_0.name = 'controller_0'
         // this will be from a custom event emitter in loop.js       
-        controller1.thumbstickAxes = []
-        editor.scene.add( controller1 );
+        controller_0.thumbstickAxes = []
+        editor.scene.add( controller_0 );
 
-        controller2 = renderer.xr.getController( 1 );
-        controller2.addEventListener( 'selectstart', onSelectStart );
-        controller2.addEventListener( 'selectend', onSelectEnd );
-        editor.scene.add( controller2 );
+        controller_1 = renderer.xr.getController( 1 );
+        controller_1.addEventListener( 'selectstart', onSelectStart );
+        controller_1.addEventListener( 'selectend', onSelectEnd );
+        editor.scene.add( controller_1 );
 
         const controllerModelFactory = new XRControllerModelFactory();
 
@@ -150,8 +151,8 @@ class World {
         line.name = 'line';
         line.scale.z = 5;
         line.updateMatrix()
-        controller1.add( line.clone() );
-        controller2.add( line.clone() );
+        controller_0.add( line.clone() );
+        controller_1.add( line.clone() );
 
         raycaster = new Raycaster();
         //! aadfadfadfaf
@@ -377,7 +378,7 @@ class World {
         
         // rendering loop
         // loop = new Loop(camera, worldScene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings);
-        loop = new Loop(camera, worldScene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller1, patchScene, floor, editor);
+        loop = new Loop(camera, worldScene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller_0, patchScene, floor, editor);
         loop.updatables.push(controls);
 
         
@@ -467,7 +468,7 @@ class World {
                         case 'inlet':
                         case 'outlet':
                             if(editor.state.partialCable == false){
-                                loop.patching.makePartialCable(object, controller1)
+                                loop.patching.makePartialCable(object, controller_0)
                             } else {        
                             }
                         break

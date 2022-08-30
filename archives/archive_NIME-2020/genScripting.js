@@ -316,7 +316,7 @@ var handleDelta = function(delta) {
 								case "outlet":
 								// poke all outlets to buffer for visual feedback:
 								// first make sure that the outlet has an index, and is not an inlet (sometimes this occurs...)
-								if (index && kind !== 'inlet' && kind !== 'controller1' && kind !== 'controller2' && kind !== 'headset'){
+								if (index && kind !== 'inlet' && kind !== 'controller1' && kind !== 'controller_1' && kind !== 'headset'){
 									
 									if(audiovizLookup[pathName]){
 										audiovizLookup[pathName].paths[delta.path] = {audiovizIndex: audiovizIndex, deltaIndex: delta.index, value: null}

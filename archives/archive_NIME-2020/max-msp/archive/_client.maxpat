@@ -1663,7 +1663,7 @@
 													"numoutlets" : 1,
 													"outlettype" : [ "" ],
 													"patching_rect" : [ 50.0, 100.0, 273.0, 223.0 ],
-													"text" : "deltas lfo_1__rate lfo_1__index lfo_1__pulse_width lfo_1__onset lfo_2__rate lfo_2__pulse_width lfo_2__onset lfo_2__index ffmvco_1__vco_1_waveform ffmvco_1__vco_2_waveform ffmvco_1__feedback ffmvco_1__vco_2_rate vca_1__cv_amount vca_1__bias outs_1__volume ffmvco_1__vco_1_rate controller1__pos_x controller1__pos_y controller1__pos_z controller1__orient_x controller1__orient_y controller1__orient_z controller1__orient_w controller2__pos_x controller2__pos_y controller2__pos_z controller2__orient_x controller2__orient_y controller2__orient_z controller2__orient_w user_pose"
+													"text" : "deltas lfo_1__rate lfo_1__index lfo_1__pulse_width lfo_1__onset lfo_2__rate lfo_2__pulse_width lfo_2__onset lfo_2__index ffmvco_1__vco_1_waveform ffmvco_1__vco_2_waveform ffmvco_1__feedback ffmvco_1__vco_2_rate vca_1__cv_amount vca_1__bias outs_1__volume ffmvco_1__vco_1_rate controller1__pos_x controller1__pos_y controller1__pos_z controller1__orient_x controller1__orient_y controller1__orient_z controller1__orient_w controller_1__pos_x controller_1__pos_y controller_1__pos_z controller_1__orient_x controller_1__orient_y controller_1__orient_z controller_1__orient_w user_pose"
 												}
 
 											}
@@ -2251,7 +2251,7 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-119",
-					"items" : [ "deltas", ",", "lfo_1__rate", ",", "lfo_1__index", ",", "lfo_1__pulse_width", ",", "lfo_1__onset", ",", "lfo_2__rate", ",", "lfo_2__pulse_width", ",", "lfo_2__onset", ",", "lfo_2__index", ",", "ffmvco_1__vco_1_waveform", ",", "ffmvco_1__vco_2_waveform", ",", "ffmvco_1__feedback", ",", "ffmvco_1__vco_2_rate", ",", "vca_1__cv_amount", ",", "vca_1__bias", ",", "outs_1__volume", ",", "ffmvco_1__vco_1_rate", ",", "controller1__pos_x", ",", "controller1__pos_y", ",", "controller1__pos_z", ",", "controller1__orient_x", ",", "controller1__orient_y", ",", "controller1__orient_z", ",", "controller1__orient_w", ",", "controller2__pos_x", ",", "controller2__pos_y", ",", "controller2__pos_z", ",", "controller2__orient_x", ",", "controller2__orient_y", ",", "controller2__orient_z", ",", "controller2__orient_w", ",", "user_pose" ],
+					"items" : [ "deltas", ",", "lfo_1__rate", ",", "lfo_1__index", ",", "lfo_1__pulse_width", ",", "lfo_1__onset", ",", "lfo_2__rate", ",", "lfo_2__pulse_width", ",", "lfo_2__onset", ",", "lfo_2__index", ",", "ffmvco_1__vco_1_waveform", ",", "ffmvco_1__vco_2_waveform", ",", "ffmvco_1__feedback", ",", "ffmvco_1__vco_2_rate", ",", "vca_1__cv_amount", ",", "vca_1__bias", ",", "outs_1__volume", ",", "ffmvco_1__vco_1_rate", ",", "controller1__pos_x", ",", "controller1__pos_y", ",", "controller1__pos_z", ",", "controller1__orient_x", ",", "controller1__orient_y", ",", "controller1__orient_z", ",", "controller1__orient_w", ",", "controller_1__pos_x", ",", "controller_1__pos_y", ",", "controller_1__pos_z", ",", "controller_1__orient_x", ",", "controller_1__orient_y", ",", "controller_1__orient_z", ",", "controller_1__orient_w", ",", "user_pose" ],
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
