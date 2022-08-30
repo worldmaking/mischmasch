@@ -1,3 +1,4 @@
+let opsList = 
 [
   {
     "op": "mstosamps",
@@ -621,3 +622,16 @@
     }
   }
 ]
+
+let ops = {}
+for(let i = 0; i< opsList.length; i++){
+  let op = opsList[i]
+  ops[op.op] = {
+    classification: op.classification,
+    inputs: op.inputs,
+    outputs: op.outputs
+  }
+}
+const fs = require('fs')
+console.log(ops)
+fs.writeFileSync('opsObj.json', JSON.stringify(ops, null, 2))

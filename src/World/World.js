@@ -124,7 +124,6 @@ class World {
         controller_0.addEventListener( 'squeezestart', onSqueezeStart);
         controller_0.addEventListener( 'squeezeend', onSqueezeEnd)
         controller_0.addEventListener( 'connected', (e) => {
-            console.log(e.data.gamepad)
             controller_0.userData.gamepad = e.data.gamepad 
             controller_0.userData.handedness = e.data.handedness 
         });
@@ -148,7 +147,7 @@ class World {
         controllerGrip2.add( controllerModelFactory.createControllerModel( controllerGrip2 ) );
         editor.scene.add( controllerGrip2 );
 
-        const geometry = new BufferGeometry().setFromPoints( [ new Vector3( 0, 0, 0 ), new Vector3( 0, 0, - 1 ) ] );
+        const geometry = new BufferGeometry().setFromPoints( [ new Vector3( 0, 0, 0 ), new Vector3( 0, 0, -1 ) ] );
 
         const line = new Line( geometry );
         line.name = 'line';
@@ -381,7 +380,7 @@ class World {
         
         // rendering loop
         // loop = new Loop(camera, worldScene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings);
-        loop = new Loop(camera, worldScene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller_0, patch, floor, editor);
+        loop = new Loop(camera, worldScene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller_0, patch, floor, editor, patch);
         loop.updatables.push(controls);
 
         
@@ -538,6 +537,9 @@ class World {
                         }else {
                             patch.scene.attach(op)
                             controller.remove( op );
+
+                            editor.add('op', op)
+                            console.log(op)
                             // loop.updatables.push(op);
                         }
                     break
