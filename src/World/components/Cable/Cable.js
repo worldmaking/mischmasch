@@ -24,18 +24,21 @@ class Cable{
 
             case 'complete':
                 // get parent ops of src and dest jacks
-                let srcParentOp = src.object.parent
-                let destParentOp = dest.object.parent
+                let srcParentOp = jackOne.parent
+                let destParentOp = jackTwo.parent
                 // get world positioning of jacks relative to their parents
-                let srcPos = srcParentOp.localToWorld( new Vector3( src.object.position.x, src.object.position.y, ( src.object.position.z + 0.2 ) ) )
-                let destPos = destParentOp.localToWorld (new Vector3( dest.object.position.x, dest.object.position.y, ( dest.object.position.z + 0.2 ) ) )    
+                let srcPos = srcParentOp.localToWorld( new Vector3( jackOne.position.x, jackOne.position.y, ( jackOne.position.z + 0.2 ) ) )
+                let destPos = destParentOp.localToWorld (new Vector3( jackTwo.position.x, jackTwo.position.y, ( jackTwo.position.z + 0.2 ) ) )    
 
-                let completeGeometry = new BufferGeometry().setFromPoints( [ srcPos, destPos ] );
-                this.cable = new Line( completeGeometry, new LineBasicMaterial( { color: 0x888888 } ) );
-                this.cable.name = `cable___src:_${src.object.name}___dest:${dest.object.name}`
+                // let completeGeometry = new BufferGeometry().setFromPoints( [ srcPos, destPos ] );
+                // this.cable = new Line( completeGeometry, new LineBasicMaterial( { color: 0x888888 } ) );
+
+                this.cable = new NewCable(srcPos, destPos)
+                this.cable.name = `cable___src:_${jackOne.name}___dest:${jackTwo.name}`
+
                 this.cable.userData.status = 'complete';
-                this.cable.userData.src = src
-                this.cable.userData.dest = dest
+                this.cable.userData.src = jackOne
+                this.cable.userData.dest = jackTwo
             break;
         }
 

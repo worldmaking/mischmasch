@@ -29,7 +29,7 @@ function createMeshes(opProps) {
       // jackIn.rotation.set(1.55, 1, 0);
       jackIn.rotation.set(0, 0, 0)
 
-      jackIn.name = `inlet_${inputName}_${jackIn.uuid}`
+      jackIn.name = `inlet_${inputName}`
       jackIn.userData.name = inputName;
       jackIn.userData.uuid = jackIn.uuid
       jackIn.userData.kind = 'inlet'
@@ -123,7 +123,7 @@ function createMeshes(opProps) {
       // jackOut.rotation.set(1.55, 1, 0);
       jackOut.rotation.set(0, 0, 0)
 
-      jackOut.name = `outlet_${outputName}_${jackOut.uuid}`
+      jackOut.name = `outlet_${outputName}`
       jackOut.userData.name = outputName;
       jackOut.userData.uuid = jackOut.uuid
       jackOut.userData.kind = 'outlet'

@@ -5,13 +5,15 @@ import { v4 as uuidv4 } from 'uuid';
 import * as Automerge from 'automerge'
 import { Cable } from '../Cable/Cable'
 class Patch {
-  constructor (){
+  constructor (loop){
     this.scene = new Scene();
 
     // versioning     
     this.document = Automerge.init()
 
     this.dirty = false
+
+    this.cables = []
   }
   add(item, payload){
     switch(item){
@@ -99,20 +101,19 @@ class Patch {
     let ops =  Object.keys(this.document)
     for(let i = 0; i < ops.length; i++){
       let target = this.document[ops[i]]
-      let op = new Op(target.name)
+      let op = new Op(target.name, target.uuid)
       op.position.set(target.position.x, target.position.y, target.position.z)
       // op.quaternion = target.quaternion
       // keep the uuid consistent between mischmasch document and threejs!
       op.uuid = target.uuid
       this.scene.add(op)
-      console.log('op',op)
       // loop through connection(s)
       if(target.outputs && target.outputs.length > 0){
         for(let j = 0; j < target.outputs.length; j++){
           Object.keys(target.outputs[j].connections).forEach((connection)=>{
-            console.log('connection found:', connection)
-            let src = 
-            cables.push(connection)
+            let dest = `inlet_${connection.split("_")[2]}_${connection.split("_")[1]}`
+            let src = `outlet_${target.outputs[j].name}_${target.uuid}`
+            cables.push([src, dest])
           })
         }
       }
@@ -124,9 +125,19 @@ class Patch {
     // once all of the ops have been added, add any cables found in the document next
     if( cables.length > 0 ){
       // do the thing
-      // let completeCable = new Cable( 'complete', jackOne, jackTwo )
-      // patch.scene.add(completeCable.cable);
-      // loop.cables.push(completeCable.cable);
+      for(let i = 0; i<cables.length; i++){
+        let src = cables[i][0]
+        let dest = cables[i][1]
+        // let destJackName = `inlet_${dest.split("_")[2]}_${dest.split("_")[1]}`
+        let destJack = this.scene.getObjectByName( dest) 
+        let srcJack = this.scene.getObjectByName( src) 
+        let completeCable = new Cable( 'complete', srcJack, destJack )
+        this.scene.add(completeCable.cable);
+        this.cables.push(completeCable.cable);
+      }
+      
+            
+
     }
   }
 }

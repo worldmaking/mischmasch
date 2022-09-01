@@ -80,7 +80,7 @@ class World {
         editor = new Editor();
         editor.scene.name = 'editor'
         worldScene.add(editor.scene)
-        patch = new Patch();
+        patch = new Patch(loop);
         patch.scene.name = 'synth'
         editor.scene.add( patch.scene );
 

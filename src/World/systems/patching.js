@@ -1,8 +1,8 @@
 import { Vector3 } from 'three'
 import { Cable } from '../components/Cable/Cable'
 class Patching {
-  constructor ( cables, xrCtlRight, xrCtlLeft, editor, userSettings, patch, controller_0, controller_1 ){
-    this.cables = cables;
+  constructor ( xrCtlRight, xrCtlLeft, editor, userSettings, patch, controller_0, controller_1 ){
+
     this.xrCtlRight = xrCtlRight;
     this.xrCtlLeft = xrCtlLeft;
     this.editor = editor;
@@ -88,23 +88,23 @@ class Patching {
           }
     }
     // update cable positioning, if any
-    if(this.cables.length > 0){
-      for(let i = 0; i < this.cables.length; i++){
-        let cable = this.cables[i]
+    if(this.patch.cables.length > 0){
+      for(let i = 0; i < this.patch.cables.length; i++){
+        let cable = this.patch.cables[i]
         // is the cable connected to one or two jacks?
         if (cable.userData.status == 'complete'){
           let srcJack = cable.userData.src
           let destJack = cable.userData.dest
 
-          let srcPos = srcJack.object.parent.localToWorld( new Vector3( srcJack.object.position.x, srcJack.object.position.y, ( srcJack.object.position.z + 0.2 ) ) )
-          let destPos = destJack.object.parent.localToWorld( new Vector3( destJack.object.position.x, destJack.object.position.y, ( destJack.object.position.z + 0.2 ) ) )
-          cable.geometry.attributes.position.array[0] = srcPos.x
-          cable.geometry.attributes.position.array[1] = srcPos.y
-          cable.geometry.attributes.position.array[2] = srcPos.z          
-          cable.geometry.attributes.position.array[3] = destPos.x
-          cable.geometry.attributes.position.array[4] = destPos.y
-          cable.geometry.attributes.position.array[5] = destPos.z
-          cable.geometry.attributes.position.needsUpdate = true;
+          let srcPos = srcJack.parent.localToWorld( new Vector3( srcJack.position.x, srcJack.position.y, ( srcJack.position.z + 0.2 ) ) )
+          let destPos = destJack.parent.localToWorld( new Vector3( destJack.position.x, destJack.position.y, ( destJack.position.z + 0.2 ) ) )
+          cable.children[0].geometry.attributes.position.array[0] = srcPos.x
+          cable.children[0].geometry.attributes.position.array[1] = srcPos.y
+          cable.children[0].geometry.attributes.position.array[2] = srcPos.z          
+          cable.children[0].geometry.attributes.position.array[3] = destPos.x
+          cable.children[0].geometry.attributes.position.array[4] = destPos.y
+          cable.children[0].geometry.attributes.position.array[5] = destPos.z
+          cable.children[0].geometry.attributes.position.needsUpdate = true;
 
         }
       }
@@ -132,11 +132,6 @@ class Patching {
     }
   }
 
-
-
-  makeCompleteCable(){
-    
-  }
 
 }
 
