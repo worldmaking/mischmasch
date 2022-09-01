@@ -23,18 +23,6 @@ class Cable{
             break;
 
             case 'complete':
-                let jacks = [jackOne, jackTwo]
-                let src, dest;
-                for (let i = 0; i < 2; i++){
-                    if(jacks[i].object.name.split('_')[0] === 'outlet'){
-                        src = jacks[i]
-                    } else if (jacks[i].object.name.split('_')[0] === 'inlet'){
-                        dest = jacks[i]
-                    } else {
-                        console.log('error in cable connection, incorrect UI selected: ', jacks[i])
-                    }
-                }
-
                 // get parent ops of src and dest jacks
                 let srcParentOp = src.object.parent
                 let destParentOp = dest.object.parent

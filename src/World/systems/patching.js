@@ -1,7 +1,7 @@
 import { Vector3 } from 'three'
 import { Cable } from '../components/Cable/Cable'
 class Patching {
-  constructor ( cables, xrCtlRight, xrCtlLeft, editor, userSettings, synth, controller_0, controller_1 ){
+  constructor ( cables, xrCtlRight, xrCtlLeft, editor, userSettings, patch, controller_0, controller_1 ){
     this.cables = cables;
     this.xrCtlRight = xrCtlRight;
     this.xrCtlLeft = xrCtlLeft;
@@ -9,19 +9,15 @@ class Patching {
     this.arrow 
     this.userSettings = userSettings
     this.controller_0 = controller_0
-    this.synth = synth;
+    this.patch = patch;
   }
 
   cablePosition(){
-    // update cable positioning, if any
-    if(this.cables.length > 0){
-      for(let i = 0; i < this.cables.length; i++){
-        let cable = this.cables[i]
-        // is the cable connected to one or two jacks?
-        if(cable.userData.status == 'partial'){
-          // the 'to' position of the line (aka 2nd position) needs to be updated to the controller's position
+    // check if a partial cable is active
+    if(this.editor.state.partialCable != false){
+      // the 'to' position of the line (aka 2nd position) needs to be updated to the controller's position
           // can you get the controller given the handedness?
-          let ctlr = cable.userData.controller
+          let ctlr = this.editor.state.partialCable.userData.controller
           switch(ctlr){
             case 'controller_0': // xrCtlRight
             let controllerPosition = this.controller_0.position
@@ -30,9 +26,9 @@ class Patching {
             // can we just move the plug?
 
             // let posAttribute = new BufferAttribute(new Float32Array(controllerPosition), 2);
-            let cord = cable.children[0]
-            let plugOne = cable.children[1]
-            let plugTwo = cable.children[2]
+            let cord = this.editor.state.partialCable.children[0]
+            let plugOne = this.editor.state.partialCable.children[1]
+            let plugTwo = this.editor.state.partialCable.children[2]
             // cable.geometry.setAttribute('position', posAttribute);
 
 
@@ -40,7 +36,7 @@ class Patching {
             // if controller is intersecting a jack, snap plugTwo to that jack
             if(this.editor.state.controller_0.secondaryIntersection != false){
               let secondary = this.editor.state.controller_0.secondaryIntersection
-              console.log('secondary', secondary)
+              // console.log('secondary', secondary)
               if(secondary.object.userData.kind == 'outlet'){
                 const local2WorldPos = secondary.object.parent.localToWorld(secondary.object.position)
                 plugTwo.position.x = local2WorldPos.x
@@ -87,10 +83,16 @@ class Patching {
             break
 
             case 'controller_1': // xrCtlLeft
-                cable.geometry.attributes.position.array = this.xrCtlLeft.model.position
+              this.editor.state.partialCable.geometry.attributes.position.array = this.xrCtlLeft.model.position
             break;
-          }                    
-        }else if (cable.userData.status == 'complete'){
+          }
+    }
+    // update cable positioning, if any
+    if(this.cables.length > 0){
+      for(let i = 0; i < this.cables.length; i++){
+        let cable = this.cables[i]
+        // is the cable connected to one or two jacks?
+        if (cable.userData.status == 'complete'){
           let srcJack = cable.userData.src
           let destJack = cable.userData.dest
 
@@ -130,28 +132,12 @@ class Patching {
     }
   }
 
-  makePartialCable(object, controller){
-    // console.log('cable')
-    // start a cable between jack and a controller
-    //todo decide how to pass this to genish?
-    //todo let nm = selection.name
-    let partialCable = new Cable('partial', object, controller.position, controller.name) 
 
-    this.synth.add(partialCable.cable);
-    this.cables.push(partialCable.cable);
-    this.editor.state.partialCable = partialCable.cable;
-  }
 
   makeCompleteCable(){
     
   }
 
-  removePartialCable(){
-    this.synth.remove(this.editor.state.partialCable)
-    let cableIndex = this.cables.indexOf(this.editor.state.partialCable)
-    this.cables.splice(cableIndex, 1)
-    this.editor.state.partialCable = false
-  }
 }
 
 export { Patching }

@@ -400,7 +400,6 @@ class World {
 
         // controller functions
         function onSelectStart( event ) {
-
             const controller = event.target;
 
             const intersections = getIntersections( controller );
@@ -433,9 +432,9 @@ class World {
                     switch (objectKind){
                         case "panel":
                             // manipulate the op's position in world space
-                            controller.attach( object.parent );
-
-                            controller.userData.selected = object.parent;
+                            // controller.attach( object.parent );
+                            editor.state.controller_0.selected = object.parent
+                            
                             editor.state.controller_0.select.element = 'panel'
                             editor.state.controller_0.select.object = object.parent
                         break;
@@ -443,7 +442,7 @@ class World {
                         case 'inlet':
                         case 'outlet':
                             if(editor.state.partialCable == false){
-                                loop.patching.makePartialCable(object, controller_0)
+                                editor.makePartialCable(object, controller_0)
                             } else {        
                             }
                         break
@@ -457,36 +456,46 @@ class World {
 
         function onSelectEnd( event ) {
 
-            const controller = event.target;
+            // handle partial cables
+            if(editor.state.partialCable != false){
+                // is the controller ray hovering a jack?
+                if(editor.state.controller_0.jackTwoHover != false){
+                    let jackTwo = editor.state.controller_0.jackTwoHover
+                    // check if 2nd end of partial cable is intersecting the correct jack type (opposite of 1st end)
+                    if(editor.state.partialCable.userData.src.userData.kind != jackTwo.userData.kind && (jackTwo.userData.kind == 'inlet' || jackTwo.userData.kind == 'outlet')){
+                        // get both jacks for the new cable to attach to
+                        let jackOne = editor.state.partialCable.userData.src
+                        // add complete cable to document
+                        patch.add('cable', [jackOne, jackTwo])                     
+                        // remove partial cable
+                        editor.removePartialCable(editor.state.partialCable)
+                    } else {
+                        // not intersecting a valid jack, so remove the partial cable
+                        
+                        editor.removePartialCable()
+                    }
+                }
+                
+
+            }else if(editor.state.partialCable != false){
+                // not intersecting a valid jack, so remove the jack
+                editor.removePartialCable()
+            }
+            
+
+
+            const controller = event.target
+
+
+
+
+
             if ( controller.userData.selected !== undefined ) {
 
 
-
-                const object = controller.userData.selected;
+                const object = event.target.userData.selected;
                 // check if there's a partial cable
-                if(editor.state.partialCable != false){
-                    // check if 2nd end of partial cable is intersecting the correct jack type (opposite of 1st end)
-                    if(editor.state.partialCable.userData.src.userData.kind != object.userData.kind && (object.userData.kind == 'inlet' || object.userData.kind == 'outlet')){
-                        // get both jacks for the new cable to attach to
-                        let jackOne = editor.state.partialCable.userData.src
-                        let jackTwo = object
-
-                        // add complete cable                        
-                        let completeCable = new Cable( 'complete', jackOne, jackTwo )
-                        patch.scene.add(completeCable.cable);
-                        loop.cables.push(completeCable.cable);
-
-                        // remove partial cable
-                        patch.scene.remove(editor.state.partialCable)
-                        let cableIndex = loop.cables.indexOf(editor.state.partialCable)
-                        loop.cables.splice(cableIndex, 1)
-                        editor.state.partialCable = false
-                    } else {
-                        // not intersecting a valid jack, so remove the jack
-                        loop.patching.removePartialCable()
-                    }
-
-                }
+                
 
 
                 switch (object.userData.kind){
@@ -509,10 +518,7 @@ class World {
                             controller.remove( op )
                             patch.scene.remove( op )
                         }else {
-                            // controller.remove( op );
 
-                            
-                            // loop.updatables.push(op);
                         }
                     break
 
@@ -525,16 +531,11 @@ class World {
                 }
 
 
-                controller.userData.selected = undefined;
+                event.target.userData.selected = undefined;
 
                 
         
-            } else {
-                if(editor.state.partialCable != false){
-                    // not intersecting a valid jack, so remove the jack
-                    loop.patching.removePartialCable()
-                }
-            }
+            } 
 
         }
         /* //!
@@ -565,34 +566,10 @@ class World {
         */ //!
         function onSqueezeStart(){
             showPalette()
-            // this refers to the controller
-            // if (palette.userData.active == true ){
-            //     patch.scene.remove(palette);
-            //     palette.userData.active = false;
-            // }else {
-                // ctrl.controller.children[0].scale.z = 10;
-                // ctrl.controller.userData.squeezePressed = true;
-                // set palette position in front of player
-                // make Palette visible & clickable
-
-                // palette.rotation.copy( camera.rotation );
-                // palette.translateX(camera.position.x - 12)
-                // palette.translateZ( camera.position.z + 35 )
-                // palette.translateY(floor.floor.position.y + 10);
-                // palette.updateMatrix();
-
-                // palette.position.copy( camera.position );
-
-            // }
 
         };
 
-        // squeeze unpress
         function onSqueezeEnd(){
-            // this refers to the controller
-            // ctrl.controller.children[0].scale.z = 10;
-            // ctrl.controller.userData.squeezePressed = false;
-            // make Palette invisible & unclickable
             hidePalette()
         };
         
@@ -616,46 +593,47 @@ class World {
         function intersectObjects( controller ) {
 
             // Do not highlight when already selected
-
             if ( controller.userData.selected !== undefined ) return;
 
             const line = controller.getObjectByName( 'line' );
             const intersections = getIntersections( controller );
 
             if ( intersections.length > 0 ) {
-
+                
                 const intersection = intersections[ 0 ];
-
-
-
                 const object = intersection.object;
                 if(palette.userData.active){
+                    // palette is active, so highlight an op if hovered
                     object.parent.meshes.panel.material.opacity = 0.4
                     object.parent.meshes.panel.material.emissive.b = 1;
                     object.parent.meshes.panel.material.emissiveIntensity = 1;
+                    // add hovered to intersected array
                     intersected.push( object.parent.meshes.panel );
                 }else {
-                    // if partial cable is active, we want the next available intersection
-                    if(editor.state.partialCable != false && intersections[1]){
-                        const secondary = intersections[1].object
-                            
-                        // for cable manipulation, we need to know if there are objects behind the cable that the controller can access
-                        editor.state.controller_0.secondaryIntersection = intersections[1]
-                
-                        switch(secondary.userData.kind){
-                            case 'inlet':
-                                secondary.material.emissive.r = 1
-                                secondary.material.emissiveIntensity = 10
-                            break
-                            case 'outlet':
-                                secondary.material.emissive.r = 1
-                                secondary.material.emissiveIntensity = 10
-                            break
-
+                    // if partial cable is active, get inlet/outlet intersections for the 2nd plug
+                    if(editor.state.partialCable != false){                        
+                        // don't allow inlet to inlet, or outlet to outlet, for now
+                        if(editor.state.partialCable.userData.src.userData.kind != object.userData.kind){
+                            editor.state.controller_0.jackTwoHover = object
+                            switch(object.userData.kind){
+                                case 'inlet':
+               
+                                    object.material.emissive.r = 1
+                                    object.material.emissiveIntensity = 10
+                                break
+                                case 'outlet':
+                                    object.material.emissive.r = 1
+                                    object.material.emissiveIntensity = 10
+                                break
+    
+                            }
+                            intersected.push(object)             
+                        }else {
+                            editor.state.controller_0.jackTwoHover = false
                         }
+ 
                     } else{
-                        // ignore any secondary intersections
-                        editor.state.controller_0.secondaryIntersection = false
+
                         intersected.push( object );
                         // op element type:
                         switch(object.userData.kind){
@@ -674,10 +652,12 @@ class World {
                                 
                             break
                             case 'inlet':
+                                object.material.opacity = 0.3
                                 object.material.emissive.r = 1
                                 object.material.emissiveIntensity = 10
                             break
                             case 'outlet':
+                                object.material.opacity = 0.3
                                 object.material.emissive.r = 1
                                 object.material.emissiveIntensity = 10
                             break
@@ -719,34 +699,19 @@ class World {
                         case 'inlet':
                             
                             intersected[0].material.emissive.r = 0
-                            // object.material.emissiveIntensity = 10
+                            intersected[0].material.emissiveIntensity = 1
                         break
                         case 'outlet':
                             intersected[0].material.emissive.r = 0
-                            // object.material.emissiveIntensity = 10
+                            intersected[0].material.emissiveIntensity = 1
                         break
                     
                     }
-                    // secondary intersections
-                    if(intersected[1]){
-                        let secondary = intersected[1].object
-                        switch(secondary.userData.kind){
-                            case 'inlet':
-                                secondary.material.emissive.r = 0
-                                // object.material.emissiveIntensity = 10
-                            break
-                            case 'outlet':
-                                secondary.material.emissive.r = 0
-                                // object.material.emissiveIntensity = 10
-                            break
-                        
-                        }
-                    }
+
 
                 }
-
+                // clear intersected array
                 const object = intersected.pop();
-                // object.parent.meshes.panel.material.emissive.g = 0;
 
             }
 

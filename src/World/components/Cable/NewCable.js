@@ -15,7 +15,7 @@ class NewCable extends Group {
     this.userData.controller = 'controller_0'
 
     // create cable plugs
-    const plugGeometry = new SphereGeometry( 0.1, 32, 32 )
+    const plugGeometry = new SphereGeometry( 0.08, 32, 32 )
     const plugMaterial = new MeshStandardMaterial( { color: cableColour, roughness: 0.7, metalness: 0.0 } )
     const plugOne = new Mesh(plugGeometry, plugMaterial)
     plugOne.position.set(fromPos.x, fromPos.y, fromPos.z)
