@@ -1,7 +1,7 @@
 {
   "name": "mischmasch",
   "version": "0.4.0",
-  "engines":{
+  "engines": {
     "node": "14.16"
   },
   "description": "vr-based modular synthesizer and editor in the browser",
@@ -36,7 +36,8 @@
     "express": "^4.18.1",
     "genish.js": "^1.0.2",
     "three": "^0.143.0",
-    "troika-three-text": "^0.46.4"
+    "troika-three-text": "^0.46.4",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "css-loader": "^6.7.1",

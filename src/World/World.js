@@ -113,6 +113,9 @@ class World {
         palette.position.copy( camera.position );
         palette.rotation.copy( camera.rotation );
         palette.updateMatrix();
+        editor.scene.add(palette)
+        palette.visible = false
+
 
         //! alternate xr controller attempt
 
@@ -412,23 +415,32 @@ class World {
                     
                     // object.parent.meshes.panel.material.emissive
                     // object.material.emissive.b = 1;
-                    controller.attach( object.parent );
 
-                    controller.userData.selected = object.parent;
+                    // get position of palette op relative to patch scene
+                    let palettePos = palette.localToWorld(object.parent.position)
+                    let pos = patch.scene.localToWorld(object.parent.position)
+                    
 
-                    editor.scene.remove(palette)
+                    let payload = [object.parent.name, pos]
+                    // console.log(object.parent.clone())
+                    // controller.attach( object.parent );
+                    patch.add('op', payload)
+                    // console.log('palette op', object.parent)
+
+                    // editor.scene.remove(palette)
                     palette.userData.active = false;
+                    hidePalette()
 
                     // rebuild the palette so the selected op is replaced
-                    camera.remove(palette)
-                    palette = new Palette(camera.position)
-                    // place palette in front of camera
-                    camera.add(palette);
-                    palette.position.set(-25,0,20);
-                    palette.position.copy( camera.position );
-                    palette.rotation.copy( camera.rotation );
-                    palette.translateZ( - 10 );
-                    palette.updateMatrix();
+                    // camera.remove(palette)
+                    // palette = new Palette(camera.position)
+                    // // place palette in front of camera
+                    // camera.add(palette);
+                    // palette.position.set(-25,0,20);
+                    // palette.position.copy( camera.position );
+                    // palette.rotation.copy( camera.rotation );
+                    // palette.translateZ( - 10 );
+                    // palette.updateMatrix();
 
 
                     // let paletteOp = object
@@ -531,13 +543,14 @@ class World {
                         // if the op's Y position in world space is lower than the floor
                         // console.log(patch, op.position)
                         if(patch.scene.localToWorld(op.position).y < -2){
+
                             // remove it
                             controller.remove( op )
                             patch.scene.remove( op )
                         }else {
-                            controller.remove( op );
+                            // controller.remove( op );
 
-                            patch.add('op', op)
+                            
                             // loop.updatables.push(op);
                         }
                     break
@@ -780,9 +793,9 @@ class World {
 
         function showPalette(){
 
-            palette = new Palette(camera.position)
+            // palette = new Palette(camera.position)
             // place palette in front of camera
-            camera.add(palette);
+            // camera.add(palette);
             // palette.position.set(-25,0,20);
             palette.position.copy( camera.position );
             palette.rotation.copy( camera.rotation );
@@ -794,13 +807,13 @@ class World {
 
             // palette.updateMatrix();
             palette.translateZ( + 35 );
-            editor.scene.add(palette);
+            // editor.scene.add(palette);
+            palette.visible = true
             palette.userData.active = true;
         }
 
         function hidePalette(){
-            camera.remove(palette)
-            editor.scene.remove(palette);
+            palette.visible = false
             palette.userData.active = false;
         }
 

@@ -1,6 +1,8 @@
 import { Scene } from "three";
 import { Op } from '../Op/Op'
 import { ops } from '../Palette/genishOperators.js'
+import { v4 as uuidv4 } from 'uuid';
+
 class Patch {
   constructor (){
     this.scene = new Scene();
@@ -15,7 +17,7 @@ class Patch {
     switch(item){
       case 'op':
         // get genish op
-        let gOp = ops[payload.name] 
+        let gOp = ops[payload[0]] 
         // get ouputs/inputs
         let gOutputs = []
         let gInputs = []
@@ -34,17 +36,16 @@ class Patch {
           gInputs.push(input)
         })
         let op = {
-          position: this.scene.getWorldPosition(payload.position),
-          quaternion: this.scene.getWorldQuaternion(payload.quaternion),
-          name: payload.name,
-          uuid: payload.uuid,
+          position: payload[1],
+          // quaternion: this.scene.getWorldQuaternion(payload[0].quaternion),
+          name: payload[0],
+          uuid: uuidv4(),
           inputs: gInputs,
           outputs: gOutputs,          
         }
         
-        let opName = `${payload.name}_${payload.uuid}`
+        let opName = `${op.name}_${op.uuid}`
         this.document[opName] = op
-        console.log('document', this.document)
         this.dirty = true
       break
     }
@@ -60,11 +61,9 @@ class Patch {
   }
   rebuild(){
     let cables = []
-    console.log()
     let ops =  Object.keys(this.document)
     for(let i = 0; i < ops.length; i++){
       let target = this.document[ops[i]]
-      console.log(target)
       let op = new Op(target.name)
       op.position.set(target.position.x, target.position.y, target.position.z)
       // op.quaternion = target.quaternion
@@ -73,7 +72,7 @@ class Patch {
       // loop through connection(s)
       if(target.outputs && target.outputs.length > 0){
         for(let j = 0; j < target.outputs.length; j++){
-          Object.keys(target.outputs[j]).forEach((connection)=>{
+          Object.keys(target.outputs[j].connections).forEach((connection)=>{
             console.log('connection found:', connection)
             cables.push(connection)
           })
