@@ -2,15 +2,15 @@ import { Scene } from "three";
 import { Op } from '../Op/Op'
 import { ops } from '../Palette/genishOperators.js'
 import { v4 as uuidv4 } from 'uuid';
+import * as Automerge from 'automerge'
 
 class Patch {
   constructor (){
     this.scene = new Scene();
 
-    this.document = {
-      
+    // versioning     
+    this.document = Automerge.init()
 
-    }
     this.dirty = false
   }
   add(item, payload){
@@ -45,8 +45,12 @@ class Patch {
         }
         
         let opName = `${op.name}_${op.uuid}`
-        this.document[opName] = op
-        this.dirty = true
+        // update document in automerge
+        this.document = Automerge.change(this.document, 'add op', doc => {
+          doc[opName] = op
+      })
+      // set patch dirty flag for Loop
+      this.dirty = true
       break
     }
   }

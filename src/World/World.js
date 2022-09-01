@@ -33,7 +33,7 @@ import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerM
 
 
 // versioning
-import * as Automerge from 'automerge'
+
 
 
 // These variables are module-scoped: we cannot access them
@@ -411,16 +411,10 @@ class World {
 
                 const object = intersection.object;
                 if(palette.userData.active){
-                   
-                    
-                    // object.parent.meshes.panel.material.emissive
-                    // object.material.emissive.b = 1;
-
                     // get position of palette op relative to patch scene
-                    let palettePos = palette.localToWorld(object.parent.position)
+                    let palettePos = palette.localToWorld(object.parent.position) //keep this here
                     let pos = patch.scene.localToWorld(object.parent.position)
                     
-
                     let payload = [object.parent.name, pos]
                     // console.log(object.parent.clone())
                     // controller.attach( object.parent );
@@ -431,39 +425,6 @@ class World {
                     palette.userData.active = false;
                     hidePalette()
 
-                    // rebuild the palette so the selected op is replaced
-                    // camera.remove(palette)
-                    // palette = new Palette(camera.position)
-                    // // place palette in front of camera
-                    // camera.add(palette);
-                    // palette.position.set(-25,0,20);
-                    // palette.position.copy( camera.position );
-                    // palette.rotation.copy( camera.rotation );
-                    // palette.translateZ( - 10 );
-                    // palette.updateMatrix();
-
-
-                    // let paletteOp = object
-                    // let opName = paletteOp.object.name
-                    
-                    // const op = new Op(opName);
-                    // // get current position of op from within the palette
-                    // let inPalettePos = paletteOp.point
-                    // op.position.x = inPalettePos.x
-                    // op.position.y = inPalettePos.y
-                    // op.position.z = inPalettePos.z
-                    // loop.updatables.push(op);
-                    // patch.scene.remove(palette);
-                    // palette.userData.active = false;
-                    // patch.scene.add(op);
-
-
-
-                    // let stateChange = stateChange('addNode', [opName, op])
-                    // doc1 = Automerge.change(doc1, stateChange[3], doc => {
-                    //     doc.worldScene.nodes[stateChange[2]] = stateChange[1]
-                    // })
-                    // updateMischmaschState(doc1)
                 }else {
                     //palette isn't open
                     let objectName = object.name;
@@ -817,12 +778,7 @@ class World {
             palette.userData.active = false;
         }
 
-        // versioning
-        doc1 = Automerge.init()
-        doc1 = Automerge.change(doc1, 'create blank scene', doc => {
-            doc.three = {}
-            doc.genish = {}
-        })
+
         // updateMischmaschState()
         
         // audio

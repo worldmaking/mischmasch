@@ -33,9 +33,6 @@ class Editor {
       }
     }
   }
-  rebuildScene(){
-    
-  }
 }
 
 export { Editor }
