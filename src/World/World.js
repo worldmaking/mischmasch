@@ -535,11 +535,9 @@ class World {
                             controller.remove( op )
                             patch.scene.remove( op )
                         }else {
-                            patch.scene.attach(op)
                             controller.remove( op );
 
-                            editor.add('op', op)
-                            console.log(op)
+                            patch.add('op', op)
                             // loop.updatables.push(op);
                         }
                     break

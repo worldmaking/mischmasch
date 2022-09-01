@@ -1,4 +1,5 @@
 import { Scene } from "three";
+import { Op } from '../Op/Op'
 import { ops } from '../Palette/genishOperators.js'
 class Patch {
   constructor (){
@@ -15,7 +16,6 @@ class Patch {
       case 'op':
         // get genish op
         let gOp = ops[payload.name] 
-      console.log('gop', gOp)
         // get ouputs/inputs
         let gOutputs = []
         let gInputs = []
@@ -37,6 +37,7 @@ class Patch {
           position: this.scene.getWorldPosition(payload.position),
           quaternion: this.scene.getWorldQuaternion(payload.quaternion),
           name: payload.name,
+          uuid: payload.uuid,
           inputs: gInputs,
           outputs: gOutputs,          
         }
@@ -44,15 +45,49 @@ class Patch {
         let opName = `${payload.name}_${payload.uuid}`
         this.document[opName] = op
         console.log('document', this.document)
+        this.dirty = true
       break
     }
-    this.dirty = true
   }
   remove(){
 
+
+    this.dirty = true
   }
   update(){
+    // update an object's position. should we set dirty to true?
+    // should we set dirty = true? 
+  }
+  rebuild(){
+    let cables = []
+    console.log()
+    let ops =  Object.keys(this.document)
+    for(let i = 0; i < ops.length; i++){
+      let target = this.document[ops[i]]
+      console.log(target)
+      let op = new Op(target.name)
+      op.position.set(target.position.x, target.position.y, target.position.z)
+      // op.quaternion = target.quaternion
+      op.uuid = target.uuid
+      this.scene.add(op)
+      // loop through connection(s)
+      if(target.outputs && target.outputs.length > 0){
+        for(let j = 0; j < target.outputs.length; j++){
+          Object.keys(target.outputs[j]).forEach((connection)=>{
+            console.log('connection found:', connection)
+            cables.push(connection)
+          })
+        }
+      }
+    }
 
+      
+      
+  
+    // once all of the ops have been added, add any cables found in the document next
+    if( cables.length > 0 ){
+      // do the thing
+    }
   }
 }
 

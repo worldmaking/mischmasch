@@ -104,6 +104,9 @@ class Loop {
             // check patch.dirty. if true, clear patch.scene and rebuild here from patch.state
             if (this.patch.dirty == true){
                 this.patch.scene.clear()
+                // rebuild from patch.document
+                this.patch.rebuild()
+                this.patch.dirty = false;
             }
 
         });   
