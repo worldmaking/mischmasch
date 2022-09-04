@@ -18,6 +18,7 @@ class Editor {
           thumbstick: [0, 0, 0, 0],
           thumbstickButton: false,
           selected: false,
+          hovered: false,
           jackTwoHover: false,
           secondaryIntersection: false
       },
@@ -31,6 +32,7 @@ class Editor {
           b: false,
           thumbstick: [0, 0, 0, 0],
           thumbstickButton: false,
+          hovered: false,
           selected: false,
           jackTwoHover: false,
           secondaryIntersection: false

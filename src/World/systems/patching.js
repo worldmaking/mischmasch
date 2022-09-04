@@ -1,4 +1,4 @@
-import { Vector3 } from 'three'
+import { Vector3, Quaternion, Matrix4, Matrix3 } from 'three'
 import { Cable } from '../components/Cable/Cable'
 class Patching {
   constructor ( xrCtlRight, xrCtlLeft, editor, userSettings, patch, controller_0, controller_1 ){
@@ -10,6 +10,10 @@ class Patching {
     this.userSettings = userSettings
     this.controller_0 = controller_0
     this.patch = patch;
+    this.oldPos = new Vector3();
+    this.oldQuat = new Quaternion();
+    this.UI_scrollSpeed = 1;
+    this.UI_rotateSpeed = 180
   }
 
   cablePosition(){
@@ -113,23 +117,37 @@ class Patching {
 
   opPosition(){
     // todo: repeat this for left controller
-    if(this.editor.state.controller_0.select.element == 'panel'){
-      let op = this.editor.state.controller_0.select.object
+    for(let i = 0; i < 1; i++){
+      let controllerName = `controller_${i}`
+      let controller = this.editor.state[controllerName]
+      if(controller.hovered != false && controller.select.element == 'panel'){
+        console.log('hovered', controller.hovered)
+        // get object, temp store its pos and quat
+        let op = controller.hovered.parent
+        let oldPos = this.oldPos.copy([], op.position )
+        let oldQuat = this.oldQuat.copy( [], op.quaternion)
 
-      console.log(op)
-      // handle thumbstick when panel selected
-      if(this.editor.state.controller_0.thumbstick.some(item => item !== 0)){
-        // thumbstick has changed
-        let thumbX = this.editor.state.controller_0.thumbstick[2] * this.userSettings.parameters['Module Rotation-X Speed']
-        // use thumbstick X to rotate op on its Y Axis
-        op.rotateY(thumbX)
-
-        let thumbY = this.editor.state.controller_0.thumbstick[3] * this.userSettings.parameters['Module Distancer Speed']
-        // use thumbstick X to rotate op on its Y Axis
-        op.translateZ(thumbY)
-        // console.log(thumbX, thumbY)
+        // use thumbstick to modify the op's reel and rotate
+        //TODO see line 548-559 in v3's client.js for how to do this. 
       }
     }
+    // if(this.editor.state.controller_0.select.element == 'panel'){
+    //   let op = this.editor.state.controller_0.select.object
+
+    //   console.log(op)
+    //   // handle thumbstick when panel selected
+    //   if(this.editor.state.controller_0.thumbstick.some(item => item !== 0)){
+    //     // thumbstick has changed
+    //     let thumbX = this.editor.state.controller_0.thumbstick[2] * this.userSettings.parameters['Module Rotation-X Speed']
+    //     // use thumbstick X to rotate op on its Y Axis
+    //     op.rotateY(thumbX)
+
+    //     let thumbY = this.editor.state.controller_0.thumbstick[3] * this.userSettings.parameters['Module Distancer Speed']
+    //     // use thumbstick X to rotate op on its Y Axis
+    //     op.translateZ(thumbY)
+    //     // console.log(thumbX, thumbY)
+    //   }
+    // }
   }
 
 

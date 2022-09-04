@@ -436,7 +436,7 @@ class World {
                                     object.material.opacity = 0.3
                                     object.material.emissive.g = 1
                                     object.material.emissiveIntensity = 10
-                                    console.log(object, controller)
+                                    editor.state[controller.name].hovered = object
                                 }
                                 
                             break
@@ -483,6 +483,7 @@ class World {
                         case 'panel':
                             intersected[0].material.opacity = 0.2
                             intersected[0].material.emissive.b = 0
+                            editor.state['controller_0'].hovered = false
                             // object.material.emissiveIntensity = 10
                         break
                         case 'inlet':
