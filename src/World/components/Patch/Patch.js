@@ -94,6 +94,7 @@ class Patch {
   }
   update(){
     // update an object's position. should we set dirty to true?
+    
     // should we set dirty = true? 
   }
   rebuild(){

@@ -116,7 +116,7 @@ class Patching {
     if(this.editor.state.controller_0.select.element == 'panel'){
       let op = this.editor.state.controller_0.select.object
 
-      
+      console.log(op)
       // handle thumbstick when panel selected
       if(this.editor.state.controller_0.thumbstick.some(item => item !== 0)){
         // thumbstick has changed
