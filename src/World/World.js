@@ -162,17 +162,17 @@ class World {
         raycaster = new Raycaster();
         //! aadfadfadfaf
         
-        // mouse controls 
-        const controls = createControls(camera, renderer.domElement);
-        window.addEventListener( 'pointermove', function(event){
-            pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-            pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-        } );
+        // // mouse controls 
+        // const controls = createControls(camera, renderer.domElement);
+        // window.addEventListener( 'pointermove', function(event){
+        //     pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        //     pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+        // } );
         
         // rendering loop
         // loop = new Loop(camera, worldScene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings);
         loop = new Loop(camera, worldScene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller_0, patch, floor, editor, patch);
-        loop.updatables.push(controls);
+        // loop.updatables.push(controls);
 
         
 
@@ -522,7 +522,8 @@ class World {
             palette.translateY(floor.floor.position.y + 10);
 
             // palette.updateMatrix();
-            palette.translateZ( + 35 );
+            let zTranslation = editor.userSettings.parameters['Palette Distance']
+            palette.translateZ( + zTranslation );
             // editor.scene.add(palette);
             palette.visible = true
             palette.userData.active = true;

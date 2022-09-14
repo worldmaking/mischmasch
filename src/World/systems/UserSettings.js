@@ -8,6 +8,7 @@ class UserSettings{
     this.parameters = {
         // 'line type': 0,
         // 'world units': false,
+        'Palette Distance': 40,
         'Cable Width': 5,
         'Controller Beam Colour': 0xffffff,
         'Controller Beam Width': 20,
@@ -22,6 +23,10 @@ class UserSettings{
     };
     this.stats = stats;
    
+    this.gui.add( this.parameters, 'Palette Distance', 25, 50 ).onChange( function ( val ) {
+        console.log('Palette Distance', val);
+    } );
+
     this.gui.add( this.parameters, 'Cable Width', 1, 10 ).onChange( function ( val ) {
         console.log('Cable Width', val);
     } );
