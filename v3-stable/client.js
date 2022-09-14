@@ -144,6 +144,7 @@ function angle2value(a) {
 const NEAR_CLIP = 0.01;
 const FAR_CLIP = 20;
 
+
 let mainScene = null
 let menuScene = null
 let currentScene = null
