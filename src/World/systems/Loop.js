@@ -11,7 +11,6 @@ class Loop {
         this.renderer = renderer;
         this.updatables = [] // list to hold animated objects //! this might need to reference the automerge document eventually?
         this.pointer = pointer;
-        this.userSettings = userSettings;
         
         this.xrCtlRight = xrCtlRight;
         this.xrCtlLeft = xrCtlLeft;
@@ -26,7 +25,8 @@ class Loop {
         this.controller_0 = controller_0
 
         this.editor = editor;
-        this.patching = new Patching(this.xrCtlRight, this.xrCtlLeft, this.editor, this.userSettings, this.synth, this.controller_0)
+        this.editor.userSettings = userSettings
+        this.patching = new Patching(this.xrCtlRight, this.xrCtlLeft, this.editor, this.synth, this.controller_0)
         this.collisions = new Collisions(this.editor.state, this.scene, this.pointer, this.camera, this.palette, this.patching, this.xrCtlRight, this.xrCtlLeft, this.synth);
         this.patching.arrow = this.collisions.arrow // pass the arrowhelper into patching for module movement
         this.patch = patch;

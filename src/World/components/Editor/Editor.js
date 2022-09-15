@@ -6,6 +6,7 @@ class Editor {
     this.scene = new Scene();
 
     this.state = {
+      userSettings: {},
       partialCable: false,
       controller_0: {
           squeeze: false,

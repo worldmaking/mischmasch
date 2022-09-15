@@ -1,13 +1,12 @@
 import { Vector3, Quaternion, Matrix4, Matrix3 } from 'three'
 import { Cable } from '../components/Cable/Cable'
 class Patching {
-  constructor ( xrCtlRight, xrCtlLeft, editor, userSettings, patch, controller_0, controller_1 ){
+  constructor ( xrCtlRight, xrCtlLeft, editor, patch, controller_0, controller_1 ){
 
     this.xrCtlRight = xrCtlRight;
     this.xrCtlLeft = xrCtlLeft;
     this.editor = editor;
     this.arrow 
-    this.userSettings = userSettings
     this.controller_0 = controller_0
     this.patch = patch;
     this.oldPos = new Vector3();
@@ -138,11 +137,11 @@ class Patching {
     //   // handle thumbstick when panel selected
     //   if(this.editor.state.controller_0.thumbstick.some(item => item !== 0)){
     //     // thumbstick has changed
-    //     let thumbX = this.editor.state.controller_0.thumbstick[2] * this.userSettings.parameters['Module Rotation-X Speed']
+    //     let thumbX = this.editor.state.controller_0.thumbstick[2] * this.editor.userSettings.parameters['Module Rotation-X Speed']
     //     // use thumbstick X to rotate op on its Y Axis
     //     op.rotateY(thumbX)
 
-    //     let thumbY = this.editor.state.controller_0.thumbstick[3] * this.userSettings.parameters['Module Distancer Speed']
+    //     let thumbY = this.editor.state.controller_0.thumbstick[3] * this.editor.userSettings.parameters['Module Distancer Speed']
     //     // use thumbstick X to rotate op on its Y Axis
     //     op.translateZ(thumbY)
     //     // console.log(thumbX, thumbY)

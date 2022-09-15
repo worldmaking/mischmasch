@@ -18,7 +18,7 @@
   For now just do this default world.
 
   // Q: does it make sense to use websockets for this?
-  // is there a more natural framework for such networks? e.g. the BUS pattern from nanomsg?
+  // is theretexte a more natural framework for such networks? e.g. the BUS pattern from nanomsg?
 
 */
 

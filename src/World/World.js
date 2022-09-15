@@ -162,17 +162,17 @@ class World {
         raycaster = new Raycaster();
         //! aadfadfadfaf
         
-        // mouse controls 
-        const controls = createControls(camera, renderer.domElement);
-        window.addEventListener( 'pointermove', function(event){
-            pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-            pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-        } );
+        // // mouse controls 
+        // const controls = createControls(camera, renderer.domElement);
+        // window.addEventListener( 'pointermove', function(event){
+        //     pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        //     pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+        // } );
         
         // rendering loop
         // loop = new Loop(camera, worldScene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings);
         loop = new Loop(camera, worldScene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller_0, patch, floor, editor, patch);
-        loop.updatables.push(controls);
+        // loop.updatables.push(controls);
 
         
 
@@ -406,11 +406,11 @@ class World {
                             switch(object.userData.kind){
                                 case 'inlet':
                
-                                    object.material.emissive.r = 1
+                                    object.material.emissive.b = 1
                                     object.material.emissiveIntensity = 10
                                 break
                                 case 'outlet':
-                                    object.material.emissive.r = 1
+                                    object.material.emissive.g = 1
                                     object.material.emissiveIntensity = 10
                                 break
     
@@ -422,10 +422,11 @@ class World {
  
                     } else{
 
-                        intersected.push( object );
+                        
                         // op element type:
                         switch(object.userData.kind){
                             case 'panel':
+                                intersected.push( object );
                                 // detect if below floor (stage for deletion)
                                 if(patch.scene.localToWorld( object.parent.position ).y < -2){
                                     // highlight it red?
@@ -441,14 +442,21 @@ class World {
                                 
                             break
                             case 'inlet':
+                                intersected.push( object );
                                 object.material.opacity = 0.3
-                                object.material.emissive.r = 1
+                                object.material.emissive.b = 1
                                 object.material.emissiveIntensity = 10
                             break
                             case 'outlet':
+                                intersected.push( object );
                                 object.material.opacity = 0.3
-                                object.material.emissive.r = 1
+                                object.material.emissive.g = 1
                                 object.material.emissiveIntensity = 10
+                            break
+                            case 'plug':
+                                intersected.push( object );
+                                
+                                // highlight cable plug
                             break
 
                         }
@@ -482,22 +490,21 @@ class World {
                     switch(intersected[0].userData.kind){
                         case 'panel':
                             intersected[0].material.opacity = 0.2
-                            intersected[0].material.emissive.b = 0
+                            intersected[0].material.emissive.g = 0
                             editor.state['controller_0'].hovered = false
                             // object.material.emissiveIntensity = 10
                         break
                         case 'inlet':
                             
-                            intersected[0].material.emissive.r = 0
+                            intersected[0].material.emissive.b = 0
                             intersected[0].material.emissiveIntensity = 1
                         break
                         case 'outlet':
-                            intersected[0].material.emissive.r = 0
+                            intersected[0].material.emissive.g = 0
                             intersected[0].material.emissiveIntensity = 1
                         break
                     
                     }
-
 
                 }
                 // clear intersected array
@@ -522,7 +529,8 @@ class World {
             palette.translateY(floor.floor.position.y + 10);
 
             // palette.updateMatrix();
-            palette.translateZ( + 35 );
+            let zTranslation = editor.userSettings.parameters['Palette Distance']
+            palette.translateZ( + zTranslation );
             // editor.scene.add(palette);
             palette.visible = true
             palette.userData.active = true;

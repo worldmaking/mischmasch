@@ -456,7 +456,7 @@ let opsList =
     "classification": "source",
     "inputs": {
       "freq": "wave frequency",
-      "phase": "wave phase (0..1)"
+      "reset": "non-zero input"
     },
     "outputs": {
       "out1": "interpolated waveform",
