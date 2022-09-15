@@ -10,7 +10,7 @@ const filename = path.basename(__filename)
 
 const chroma = require("chroma-js")
 const {argv} = require('yargs')
-const nodeglpath = "../../node-gles3"
+const nodeglpath = "../node-gles3"
 const rws = require('reconnecting-websocket');
 
 
