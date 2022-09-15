@@ -1,7 +1,7 @@
 {
   "name": "mischmasch",
   "version": "0.4.0",
-  "engines":{
+  "engines": {
     "node": "14.16"
   },
   "description": "vr-based modular synthesizer and editor in the browser",
