@@ -1,5 +1,5 @@
 function onSelectStart(event) {
-    let controller = (event.target==controller1) ? ghostController1 : ghostController2;
+    let controller = (event.target==controller1) ? ghostController1 : ghostcontroller_1;
     let intersections = getIntersections(controller, 0, 0, -1);
     //ghostMeshes.remove(menu);
     //console.log(intersections)
@@ -87,7 +87,7 @@ function onSelectStart(event) {
 }
 
 function onSelectEnd(event) {
-    let controller = (event.target==controller1) ? ghostController1 : ghostController2;
+    let controller = (event.target==controller1) ? ghostController1 : ghostcontroller_1;
 
     if (controller.userData.selected !== undefined) {
         let object = controller.userData.selected;
@@ -520,7 +520,7 @@ function controllerGamepadControls(controller){
     if(controller == controller1){
         controller = ghostController1;
     }else{
-        controller = ghostController2;
+        controller = ghostcontroller_1;
     }
 
     if (controller.userData.selected) {

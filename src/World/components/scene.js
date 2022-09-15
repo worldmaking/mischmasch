@@ -1,9 +1,15 @@
 import { Color, Scene } from "three";
 
-function createScene() {
+function createScene(sceneType) {
   const scene = new Scene();
 
-  scene.background = new Color('black');
+  switch (sceneType){
+    case 'world':
+      scene.background = new Color('black');
+    break
+    case 'patch':
+    break;
+  }
 
   return scene;
 }

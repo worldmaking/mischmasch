@@ -38,14 +38,6 @@ class Palette extends Group {
     // loop.updatables.push(op);
 
     }
-    // animation tick
-    tick(delta) {
-        // todo: LED animation here?
-        // this.meshes.bigWheel.rotation.y += wheelSpeed * delta;
-        // this.meshes.smallWheelRear.rotation.y += wheelSpeed * delta;
-        // this.meshes.smallWheelCenter.rotation.y += wheelSpeed * delta;
-        // this.meshes.smallWheelFront.rotation.y += wheelSpeed * delta;
-    }
 }
 
 export { Palette }

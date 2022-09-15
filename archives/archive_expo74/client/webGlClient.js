@@ -249,7 +249,7 @@ function createUserPose(id=0) {
             pos: new THREE.Vector3(),
             orient: new THREE.Quaternion()
         },
-        controller2: {
+        controller_1: {
             pos: new THREE.Vector3(),
             orient: new THREE.Quaternion()
         },
@@ -2101,8 +2101,8 @@ function animate() {
             camera.getWorldQuaternion(userPose.head.orient);
             VRcontrollers[0].getWorldPosition(userPose.controller1.pos);
             VRcontrollers[0].getWorldQuaternion(userPose.controller1.orient);
-            VRcontrollers[1].getWorldPosition(userPose.controller2.pos);
-            VRcontrollers[1].getWorldQuaternion(userPose.controller2.orient);
+            VRcontrollers[1].getWorldPosition(userPose.controller_1.pos);
+            VRcontrollers[1].getWorldQuaternion(userPose.controller_1.orient);
 
             sock.send({
                 cmd: "user_pose",

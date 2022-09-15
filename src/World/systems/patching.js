@@ -1,46 +1,46 @@
-import { Vector3 } from 'three'
+import { Vector3, Quaternion, Matrix4, Matrix3 } from 'three'
 import { Cable } from '../components/Cable/Cable'
 class Patching {
-  constructor ( cables, xrCtlRight, xrCtlLeft, editorState, userSettings, synth, controller1, controller2 ){
-    this.cables = cables;
+  constructor ( xrCtlRight, xrCtlLeft, editor, userSettings, patch, controller_0, controller_1 ){
+
     this.xrCtlRight = xrCtlRight;
     this.xrCtlLeft = xrCtlLeft;
-    this.editorState = editorState;
+    this.editor = editor;
     this.arrow 
     this.userSettings = userSettings
-    this.controller1 = controller1
-    this.synth = synth;
+    this.controller_0 = controller_0
+    this.patch = patch;
+    this.oldPos = new Vector3();
+    this.oldQuat = new Quaternion();
+    this.UI_scrollSpeed = 1;
+    this.UI_rotateSpeed = 180
   }
 
   cablePosition(){
-    // update cable positioning, if any
-    if(this.cables.length > 0){
-      for(let i = 0; i < this.cables.length; i++){
-        let cable = this.cables[i]
-        // is the cable connected to one or two jacks?
-        if(cable.userData.status == 'partial'){
-          // the 'to' position of the line (aka 2nd position) needs to be updated to the controller's position
+    // check if a partial cable is active
+    if(this.editor.state.partialCable != false){
+      // the 'to' position of the line (aka 2nd position) needs to be updated to the controller's position
           // can you get the controller given the handedness?
-          let ctlr = cable.userData.controller
+          let ctlr = this.editor.state.partialCable.userData.controller
           switch(ctlr){
             case 'controller_0': // xrCtlRight
-            let controllerPosition = this.controller1.position
+            let controllerPosition = this.controller_0.position
 
             // previously, the cord followed the controller position. 
             // can we just move the plug?
 
             // let posAttribute = new BufferAttribute(new Float32Array(controllerPosition), 2);
-            let cord = cable.children[0]
-            let plugOne = cable.children[1]
-            let plugTwo = cable.children[2]
+            let cord = this.editor.state.partialCable.children[0]
+            let plugOne = this.editor.state.partialCable.children[1]
+            let plugTwo = this.editor.state.partialCable.children[2]
             // cable.geometry.setAttribute('position', posAttribute);
 
 
 
             // if controller is intersecting a jack, snap plugTwo to that jack
-            if(this.editorState.rightControllerState.secondaryIntersection != false){
-              let secondary = this.editorState.rightControllerState.secondaryIntersection
-              console.log('secondary', secondary)
+            if(this.editor.state.controller_0.secondaryIntersection != false){
+              let secondary = this.editor.state.controller_0.secondaryIntersection
+              // console.log('secondary', secondary)
               if(secondary.object.userData.kind == 'outlet'){
                 const local2WorldPos = secondary.object.parent.localToWorld(secondary.object.position)
                 plugTwo.position.x = local2WorldPos.x
@@ -49,13 +49,13 @@ class Patching {
               }
             }
             // handle thumbstick
-            else if(this.editorState.rightControllerState.thumbstick.some(item => item !== 0)){
+            else if(this.editor.state.controller_0.thumbstick.some(item => item !== 0)){
               // update plugTwo position based on controller position
               plugTwo.position.x = controllerPosition.x
               plugTwo.position.y = controllerPosition.y
               plugTwo.position.z = controllerPosition.z
               
-              let thumbY = this.editorState.rightControllerState.thumbstick[3] * 10
+              let thumbY = this.editor.state.controller_0.thumbstick[3] * 10
               // use thumbstick Y reposition plugTwo along controller z axis
               plugTwo.translateZ(thumbY)
             } else {
@@ -87,22 +87,28 @@ class Patching {
             break
 
             case 'controller_1': // xrCtlLeft
-                cable.geometry.attributes.position.array = this.xrCtlLeft.model.position
+              this.editor.state.partialCable.geometry.attributes.position.array = this.xrCtlLeft.model.position
             break;
-          }                    
-        }else if (cable.userData.status == 'complete'){
+          }
+    }
+    // update cable positioning, if any
+    if(this.patch.cables.length > 0){
+      for(let i = 0; i < this.patch.cables.length; i++){
+        let cable = this.patch.cables[i]
+        // is the cable connected to one or two jacks?
+        if (cable.userData.status == 'complete'){
           let srcJack = cable.userData.src
           let destJack = cable.userData.dest
 
-          let srcPos = srcJack.object.parent.localToWorld( new Vector3( srcJack.object.position.x, srcJack.object.position.y, ( srcJack.object.position.z + 0.2 ) ) )
-          let destPos = destJack.object.parent.localToWorld( new Vector3( destJack.object.position.x, destJack.object.position.y, ( destJack.object.position.z + 0.2 ) ) )
-          cable.geometry.attributes.position.array[0] = srcPos.x
-          cable.geometry.attributes.position.array[1] = srcPos.y
-          cable.geometry.attributes.position.array[2] = srcPos.z          
-          cable.geometry.attributes.position.array[3] = destPos.x
-          cable.geometry.attributes.position.array[4] = destPos.y
-          cable.geometry.attributes.position.array[5] = destPos.z
-          cable.geometry.attributes.position.needsUpdate = true;
+          let srcPos = srcJack.parent.localToWorld( new Vector3( srcJack.position.x, srcJack.position.y, ( srcJack.position.z + 0.2 ) ) )
+          let destPos = destJack.parent.localToWorld( new Vector3( destJack.position.x, destJack.position.y, ( destJack.position.z + 0.2 ) ) )
+          cable.children[0].geometry.attributes.position.array[0] = srcPos.x
+          cable.children[0].geometry.attributes.position.array[1] = srcPos.y
+          cable.children[0].geometry.attributes.position.array[2] = srcPos.z          
+          cable.children[0].geometry.attributes.position.array[3] = destPos.x
+          cable.children[0].geometry.attributes.position.array[4] = destPos.y
+          cable.children[0].geometry.attributes.position.array[5] = destPos.z
+          cable.children[0].geometry.attributes.position.needsUpdate = true;
 
         }
       }
@@ -111,47 +117,40 @@ class Patching {
 
   opPosition(){
     // todo: repeat this for left controller
-    if(this.editorState.rightControllerState.select.element == 'panel'){
-      let op = this.editorState.rightControllerState.select.object
+    for(let i = 0; i < 1; i++){
+      let controllerName = `controller_${i}`
+      let controller = this.editor.state[controllerName]
+      if(controller.hovered != false && controller.select.element == 'panel'){
+        console.log('hovered', controller.hovered)
+        // get object, temp store its pos and quat
+        let op = controller.hovered.parent
+        let oldPos = this.oldPos.copy([], op.position )
+        let oldQuat = this.oldQuat.copy( [], op.quaternion)
 
-      
-      // handle thumbstick when panel selected
-      if(this.editorState.rightControllerState.thumbstick.some(item => item !== 0)){
-        // thumbstick has changed
-        let thumbX = this.editorState.rightControllerState.thumbstick[2] * this.userSettings.parameters['Module Rotation-X Speed']
-        // use thumbstick X to rotate op on its Y Axis
-        op.rotateY(thumbX)
-
-        let thumbY = this.editorState.rightControllerState.thumbstick[3] * this.userSettings.parameters['Module Distancer Speed']
-        // use thumbstick X to rotate op on its Y Axis
-        op.translateZ(thumbY)
-        // console.log(thumbX, thumbY)
+        // use thumbstick to modify the op's reel and rotate
+        //TODO see line 548-559 in v3's client.js for how to do this. 
       }
     }
+    // if(this.editor.state.controller_0.select.element == 'panel'){
+    //   let op = this.editor.state.controller_0.select.object
+
+    //   console.log(op)
+    //   // handle thumbstick when panel selected
+    //   if(this.editor.state.controller_0.thumbstick.some(item => item !== 0)){
+    //     // thumbstick has changed
+    //     let thumbX = this.editor.state.controller_0.thumbstick[2] * this.userSettings.parameters['Module Rotation-X Speed']
+    //     // use thumbstick X to rotate op on its Y Axis
+    //     op.rotateY(thumbX)
+
+    //     let thumbY = this.editor.state.controller_0.thumbstick[3] * this.userSettings.parameters['Module Distancer Speed']
+    //     // use thumbstick X to rotate op on its Y Axis
+    //     op.translateZ(thumbY)
+    //     // console.log(thumbX, thumbY)
+    //   }
+    // }
   }
 
-  makePartialCable(object, controller){
-    // console.log('cable')
-    // start a cable between jack and a controller
-    //todo decide how to pass this to genish?
-    //todo let nm = selection.name
-    let partialCable = new Cable('partial', object, controller.position, controller.name) 
 
-    this.synth.add(partialCable.cable);
-    this.cables.push(partialCable.cable);
-    this.editorState.partialCable = partialCable.cable;
-  }
-
-  makeCompleteCable(){
-    
-  }
-
-  removePartialCable(){
-    this.synth.remove(this.editorState.partialCable)
-    let cableIndex = this.cables.indexOf(this.editorState.partialCable)
-    this.cables.splice(cableIndex, 1)
-    this.editorState.partialCable = false
-  }
 }
 
 export { Patching }

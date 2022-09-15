@@ -4,7 +4,7 @@ import { Collisions } from './Collisions.js'
 import { Patching } from './Patching.js'
 
 class Loop {
-    constructor(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller1, synth) {
+    constructor(camera, scene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller_0, synth, floor, editor, patch) {
         this.camera = camera;
         this.scene = scene;
         this.synth = synth;
@@ -23,41 +23,13 @@ class Loop {
         this.getIntersections = getIntersections
         this.intersectObjects = intersectObjects
         this.cleanIntersected = cleanIntersected
-        this.controller1 = controller1
+        this.controller_0 = controller_0
 
-        this.editorState = {
-            partialCable: false,
-            rightControllerState: {
-                squeeze: false,
-                select: {
-                    element: false,
-                    object: false
-                },
-                a: false,
-                b: false,
-                thumbstick: [0, 0, 0, 0],
-                thumbstickButton: false,
-                secondaryIntersection: false
-            },
-            leftControllerState: {
-                squeeze: false,
-                select: {
-                    element: false,
-                    object: false
-                },
-                a: false,
-                b: false,
-                thumbstick: [0, 0, 0, 0],
-                thumbstickButton: false,
-                secondaryIntersection: false
-            }
-
-        }
-        this.cables = [];
-        this.patching = new Patching(this.cables, this.xrCtlRight, this.xrCtlLeft, this.editorState, this.userSettings, this.synth, this.controller1)
-        this.collisions = new Collisions(this.editorState, this.scene, this.pointer, this.camera, this.palette, this.patching, this.xrCtlRight, this.xrCtlLeft, this.synth);
+        this.editor = editor;
+        this.patching = new Patching(this.xrCtlRight, this.xrCtlLeft, this.editor, this.userSettings, this.synth, this.controller_0)
+        this.collisions = new Collisions(this.editor.state, this.scene, this.pointer, this.camera, this.palette, this.patching, this.xrCtlRight, this.xrCtlLeft, this.synth);
         this.patching.arrow = this.collisions.arrow // pass the arrowhelper into patching for module movement
-
+        this.patch = patch;
         this.hover = this.collisions.hover
         
     }
@@ -109,87 +81,32 @@ class Loop {
             // controller intersections
             this.cleanIntersected()
             // this.getIntersections
-            this.intersectObjects(this.controller1)
+            this.intersectObjects(this.controller_0)
             
             this.stats.update();
             // XR controller custom events
-            if(this.controller1.gamepad){
-                this.editorState.rightControllerState.thumbstick = this.controller1.gamepad.axes
+            if(this.controller_0.userData.gamepad){
+                this.editor.state.controller_0.thumbstick = this.controller_0.userData.gamepad.axes
              
             }
 
             // update cable positioning, if any
-            this.patching.cablePosition(this.cables)
+            this.patching.cablePosition()
 
             // update op positioning, if needed
-            this.patching.opPosition()
-
-            // check for object collisions
-            // this.hover = this.collisions.detect()
-            // right controller
-
-
-            // if(this.xrCtlRight){
-            //     // thumbstick axes
-            //     if(this.xrCtlRight.controller.gamepad){
-            //         // thumbstick axes
-            //         // this.xrCtlRight.thumbstickAxes = this.xrCtlRight.controller.gamepad.axes
-            //         window.dispatchEvent(rightThumbstickAxes)
-            //         this.editorState.rightControllerState.thumbstick = this.xrCtlRight.controller.gamepad.axes
-
-            //         // thumbstick button press
-            //         if(this.xrCtlRight.controller.gamepad.buttons[3].pressed === true){
-            //             // this.xrCtlRight.thumbstickPress = true
-            //             window.dispatchEvent(rightThumbstickPress)
-            //         }
-
-            //         // B button press
-            //         if(this.xrCtlRight.controller.gamepad.buttons[5].pressed === true){
-            //             window.dispatchEvent(rightBPress)
-            //         }
-
-            //         // A button press
-            //         if(this.xrCtlRight.controller.gamepad.buttons[4].pressed === true){
-            //             window.dispatchEvent(rightAPress)
-            //         }
-
-            //     }
-                
-            // } 
-            //  left controller
-            // else if(this.xrCtlLeft){
-                
-            //     if(this.xrCtlLeft.controller.gamepad){
-            //         // thumbstick axes
-            //         this.editorState.leftControllerState.thumbstick = this.xrCtlLeft.controller.gamepad.axes
-
-            //         // this.xrCtlLeft.thumbstickAxes = this.xrCtlLeft.controller.gamepad.axes
-            //         window.dispatchEvent(leftThumbstickAxes)
-
-
-            //         // thumbstick button press
-            //         if(this.xrCtlLeft.controller.gamepad.buttons[3].pressed === true){
-            //             // this.xrCtlLeft.thumbstickPress = true
-            //             window.dispatchEvent(leftThumbstickPress)
-            //         }
-
-            //         // B button press
-            //         if(this.xrCtlLeft.controller.gamepad.buttons[5].pressed === true){
-            //             window.dispatchEvent(leftBPress)
-            //         }
-
-            //         // A button press
-            //         if(this.xrCtlLeft.controller.gamepad.buttons[4].pressed === true){
-            //             window.dispatchEvent(leftAPress)
-            //         }
-            //     }
-            // }          
-
+            this.patching.opPosition()   
            
             this.gpuPanel.startQuery();       
             this.renderer.render(this.scene, this.camera);
             this.gpuPanel.endQuery();
 
+            // check patch.dirty. if true, clear patch.scene and rebuild here from patch.state
+            if (this.patch.dirty == true){
+                this.patch.scene.clear()
+                // rebuild from patch.document
+                this.patch.rebuild()
+                this.patch.dirty = false;
+            }
 
         });   
     }

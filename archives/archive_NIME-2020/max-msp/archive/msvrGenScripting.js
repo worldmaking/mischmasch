@@ -437,7 +437,7 @@ function toScripting(msg){
 
         if (kind === "param"){
 			// ignore gen operator-based param modules in the next section
-			} else if(kind === "controller1" || kind === "controller2" || kind === "headset"){
+			} else if(kind === "controller1" || kind === "controller_1" || kind === "headset"){
 					paramX = paramCounter * 150
 					// generate the subparam which the param will bind to
 					var setparam = genPatcher.newdefault([(pos[0] + counter) * 100 + paramX, (pos[1] + counter) * 50 - 25, "setparam", key])
@@ -552,16 +552,16 @@ function toScripting(msg){
 				outlet(1, "controller1__orient_z", data.pose.controller1.orient.z)
 				outlet(1, "controller1__orient_w", data.pose.controller1.orient.w)
 					
-			var controller2 = data.pose.controller2
+			var controller_1 = data.pose.controller_1
 							// c1 pos data
-				outlet(1, "controller2__pos_x", data.pose.controller2.pos.x)
-				outlet(1, "controller2__pos_y", data.pose.controller2.pos.y)
-				outlet(1, "controller2__pos_z", data.pose.controller2.pos.z)
+				outlet(1, "controller_1__pos_x", data.pose.controller_1.pos.x)
+				outlet(1, "controller_1__pos_y", data.pose.controller_1.pos.y)
+				outlet(1, "controller_1__pos_z", data.pose.controller_1.pos.z)
 				// c1 orient data
-				outlet(1, "controller2__orient_x", data.pose.controller2.orient.x)
-				outlet(1, "controller2__orient_y", data.pose.controller2.orient.y)
-				outlet(1, "controller2__orient_z", data.pose.controller2.orient.z)
-				outlet(1, "controller2__orient_w", data.pose.controller2.orient.w)
+				outlet(1, "controller_1__orient_x", data.pose.controller_1.orient.x)
+				outlet(1, "controller_1__orient_y", data.pose.controller_1.orient.y)
+				outlet(1, "controller_1__orient_z", data.pose.controller_1.orient.z)
+				outlet(1, "controller_1__orient_w", data.pose.controller_1.orient.w)
 
 
 		break;

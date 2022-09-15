@@ -3324,7 +3324,7 @@ function maxMSPScripting(delta){
 								case "outlet":
 								// poke all outlets to buffer for visual feedback:
 								// first make sure that the outlet has an index, and is not an inlet (sometimes this occurs...)
-								if (index && kind !== 'inlet' && kind !== 'controller2' && kind !== 'headset'){
+								if (index && kind !== 'inlet' && kind !== 'controller_1' && kind !== 'headset'){
 									// add outlet to the audioViz js object for reference 
 									max.outlet('toOutletVisualization', "setAudioViz", pathName, delta.path, delta.index, audiovizIndex)
 									// pass along to scripting for visualizing each gen object's audio state

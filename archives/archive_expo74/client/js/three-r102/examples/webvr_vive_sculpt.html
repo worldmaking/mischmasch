@@ -33,7 +33,7 @@
 
 			var container;
 			var camera, scene, renderer;
-			var controller1, controller2;
+			var controller1, controller_1;
 
 			var blob;
 
@@ -122,9 +122,9 @@
 				controller1.standingMatrix = renderer.vr.getStandingMatrix();
 				scene.add( controller1 );
 
-				controller2 = new THREE.ViveController( 1 );
-				controller2.standingMatrix = renderer.vr.getStandingMatrix();
-				scene.add( controller2 );
+				controller_1 = new THREE.ViveController( 1 );
+				controller_1.standingMatrix = renderer.vr.getStandingMatrix();
+				scene.add( controller_1 );
 
 				var loader = new THREE.OBJLoader();
 				loader.setPath( 'models/obj/vive-controller/' );
@@ -151,7 +151,7 @@
 					pivot.add( range );
 
 					controller1.add( controller.clone() );
-					controller2.add( controller.clone() );
+					controller_1.add( controller.clone() );
 
 				} );
 
@@ -305,7 +305,7 @@
 			function render() {
 
 				handleController( controller1, 0 );
-				handleController( controller2, 1 );
+				handleController( controller_1, 1 );
 
 				updateBlob();
 
