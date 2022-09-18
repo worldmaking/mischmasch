@@ -18,6 +18,13 @@ const gl = require(path.join(nodeglpath, "gles3.js")),
 glfw = require(path.join(nodeglpath, "glfw3.js")),
 glutils = require(path.join(nodeglpath, "glutils.js"))
 
+
+const componentPath = path.join(__dirname, 'Components')
+// components
+const Patch = require(path.join(componentPath, 'Patch/Patch.js'))
+
+let patch = new Patch()
+
 // let p2pID; // set by coven signalling server
 let name;
 if (argv.name){
@@ -50,7 +57,8 @@ let gensym = (function() {
     return function (prefix="node") {
         //return `${prefix}_${nodeid++}_${userPose.id}`
 		//return `${prefix}_${nodeid++}`
-		return `${prefix}_${Date.now()}`
+			console.log(prefix)
+		return `${prefix}_${Date.now()}`	
     }
 })();
 
@@ -409,6 +417,7 @@ const UI = {
 				to: to,
 				// any other state?
 			}
+			// console.log('arc', arc)
 			this.arcs.push(arc);
 			return arc;
 		},
@@ -514,16 +523,12 @@ const UI = {
 					let module = object;
 					while (module && !module.isModule) module = module.parent;
 					if (module && module.isModule) {
-						// derive delta from module.node:
-						let path = module.kind;
-						path = gensym(path);
-						console.log('lets get the props!', module.pos, module.quat, module.node._props.pos, module.node._props.orient)
-						// send delta to spawn it:
-						//let deltas = got.nodesToDeltas([module.node], [], path)
+						// add the module to patch.document
+						let op = patch.add('op', module)
+						let path = `${op.name}_${op.uuid}`
 						let nodes = {}
 						nodes[path] = module.node
 						let deltas = got.nodesToDeltas(nodes, [], "")
-						console.log(deltas[0][0].pos)
 						outgoingDeltas.push(deltas)
 						//console.log("creating new node at", path, JSON.stringify(deltas))
 						// exit menu:
@@ -727,6 +732,7 @@ const UI = {
 							assert(type, "nlet has no .cablingKind")
 							let from = (type == "from") ? target : hand.wand;
 							let to = (type == "to") ? target : hand.wand;
+							console.log(patch.add('cable', [from, to]))
 							let arc = this.cables.makeArc(from, to);
 							// cache cabling state
 							hand.state = "cabling"
@@ -2166,7 +2172,18 @@ function animate() {
 	} else {
 		setImmediate(animate)
 	}
+	if(patch.dirty == true){
+		console.log(patch.document)
+		patch.dirty = false
+		console.log('update state needed')
 
+		// let's make sure all graph changes we can do using got we can do using Patch.js. 
+
+		// then derive localGraph from patch.document
+
+		// then derive genish graph from patch.document
+	}
+	// TODO: replace the following with the patch.dirty code above!
 	// handle scene changes from server:
     if (incomingDeltas.length > 0) {
 		// handle incoming deltas:
@@ -2176,6 +2193,8 @@ function animate() {
             try {
 				//console.log('incomingDelta', delta)
 				got.applyDeltasToGraph(localGraph, delta);
+
+				// console.log(localGraph)
 
 				// fs.writeFileSync("_debugCurrentGraph.json", JSON.stringify(localGraph, null, "\t"), "utf8");
 			} catch (e) {
@@ -2307,6 +2326,7 @@ function animate() {
 	// send outgoing deltas:
 
 	if (USEWS == true && socket && socket.readyState === 1) {
+		console.log('1')
 		// send any edits to the server:
 		if (outgoingDeltas.length > 0) {
 			let message = JSON.stringify({
@@ -2375,95 +2395,95 @@ function draw(eye=0) {
 // BOOT SEQUENCE
 //////////////////////////////////////////////////////////////////////////////////////////
 
-function serverConnect() {
-	const url = 'ws://localhost:8080'
-	socket = new ws(url)
-	socket.binaryType = 'arraybuffer';
-	socket.onopen = () => {
-		console.log("websocket connected to localWebsocket on "+url);
-		// reset our local scene:
-		localGraph = {
-			nodes: {},
-			arcs: []
-		};
-		mainScene.rebuild(localGraph)
+// function serverConnect() {
+// 	const url = 'ws://localhost:8080'
+// 	socket = new ws(url)
+// 	socket.binaryType = 'arraybuffer';
+// 	socket.onopen = () => {
+// 		console.log("websocket connected to localWebsocket on "+url);
+// 		// reset our local scene:
+// 		localGraph = {
+// 			nodes: {},
+// 			arcs: []
+// 		};
+// 		mainScene.rebuild(localGraph)
 
-		sendToAppJS(JSON.stringify({ cmd:"get_scene"})) 
+// 		sendToAppJS(JSON.stringify({ cmd:"get_scene"})) 
 
-		// let the localWebsocket server assign our connection with an id
-		sendToAppJS(JSON.stringify({ cmd:"vrClientStatus"})) 
+// 		// let the localWebsocket server assign our connection with an id
+// 		sendToAppJS(JSON.stringify({ cmd:"vrClientStatus"})) 
 
-	}
-	socket.onerror = (error) => {
-	  console.error(`ws error: ${error}`)
-	  socket = null;
-	  localGraph = { nodes: {}, arcs: [] }
-	}
-	socket.onclose = function(e) {
-		socket = null;
-		console.log("websocket disconnected from "+url);
-		localGraph = {
-			nodes: {}, arcs: []
-		}
-		mainScene.rebuild(localGraph)
-		setTimeout(function(){
-			console.log("websocket reconnecting");
-			serverConnect();
-		}, 2000);		
-	}
-	socket.onmessage = (e) => {
-		if (e.data instanceof ArrayBuffer) {
-			console.log("ws received arraybuffer of " + e.data.byteLength + " bytes")
-		} else {
-			let msg = e.data;
-			try {
-				msg = JSON.parse(msg);
-			} catch(e) {}
-			onServerMessage(msg, socket);
-		} 
-	}
-}
+// 	}
+// 	socket.onerror = (error) => {
+// 	  console.error(`ws error: ${error}`)
+// 	  socket = null;
+// 	  localGraph = { nodes: {}, arcs: [] }
+// 	}
+// 	socket.onclose = function(e) {
+// 		socket = null;
+// 		console.log("websocket disconnected from "+url);
+// 		localGraph = {
+// 			nodes: {}, arcs: []
+// 		}
+// 		mainScene.rebuild(localGraph)
+// 		setTimeout(function(){
+// 			console.log("websocket reconnecting");
+// 			serverConnect();
+// 		}, 2000);		
+// 	}
+// 	socket.onmessage = (e) => {
+// 		if (e.data instanceof ArrayBuffer) {
+// 			console.log("ws received arraybuffer of " + e.data.byteLength + " bytes")
+// 		} else {
+// 			let msg = e.data;
+// 			try {
+// 				msg = JSON.parse(msg);
+// 			} catch(e) {}
+// 			onServerMessage(msg, socket);
+// 		} 
+// 	}
+// }
 
-function onServerMessage(msg, sock) {
-	switch (msg.cmd) {
-        case "deltas": {
-			// insert into our TODO list:
-            incomingDeltas.push.apply(incomingDeltas, msg.data);
-		} break;
+// function onServerMessage(msg, sock) {
+// 	switch (msg.cmd) {
+//         case "deltas": {
+// 			// insert into our TODO list:
+//             incomingDeltas.push.apply(incomingDeltas, msg.data);
+// 		} break;
 		
-		case "audiovizLookup":
-			console.log(msg.data)
-			// this is where we get the state of a node's output, sent from the gen patcher!
-		break
+// 		case "audiovizLookup":
+// 			// console.log(msg.data)
+// 			// this is where we get the state of a node's output, sent from the gen patcher!
+// 		break
 
-		case "nuke":
-			// either app.js or host.js detected that this client has sent one or more malformed deltas. so, clear the localscene here, wipe delta history and all buffers, then request the current scene from app.js
-			// find out what the malformed delta was. one day this will be very useful for debugging whilst in VR!
-			console.log(msg.data)
+// 		case "nuke":
+// 			// either app.js or host.js detected that this client has sent one or more malformed deltas. so, clear the localscene here, wipe delta history and all buffers, then request the current scene from app.js
+// 			// find out what the malformed delta was. one day this will be very useful for debugging whilst in VR!
+// 			// console.log(msg.data)
 		
-			// disable sending deltas
-			socket.close()
-			// wipe the scene
-			localGraph = {
-				nodes: {}, arcs: []
-			}
-			mainScene.rebuild(localGraph)
+// 			// disable sending deltas
+// 			socket.close()
+// 			// wipe the scene
+// 			localGraph = {
+// 				nodes: {}, arcs: []
+// 			}
+// 			mainScene.rebuild(localGraph)
 			
-			// reconnect to app.js thereby receiving current state of scene
-			serverConnect()
-		break
+// 			// reconnect to app.js thereby receiving current state of scene
+// 			serverConnect()
+// 		break
 
-        default:
-           console.log("received JSON", msg, typeof msg);
-    }
-}
+//         default:
+//           //  console.log("received JSON", msg, typeof msg);
+//     }
+// }
 
 // we use this to prevent attempting a ws.send if the socket becomes closed
-function sendToAppJS(outgoingMessage){
-	if(socket.readyState == 1){
-		socket.send(outgoingMessage)
-	}
-}
+// function sendToAppJS(outgoingMessage){
+// 	if(socket.readyState == 1){
+// 		socket.send(outgoingMessage)
+// 	}
+// }
 
 async function init() {
 	// init opengl 
@@ -2477,14 +2497,14 @@ async function init() {
 	menuScene.init(gl)
 	menuScene.rebuild(menuGraph)
 
-	console.log(menuScene)
+	// console.log(menuScene)
 
 	// default graph until server connects:
 	// localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
 	// server connect
-	if (USEWS) {
-		serverConnect();
-	} 
+	// if (USEWS) {
+	// 	serverConnect();
+	// } 
 	mainScene = makeSceneGraph(renderer, gl);
 	mainScene.init(gl);
 	mainScene.rebuild(localGraph)
@@ -2501,7 +2521,7 @@ function shutdown() {
 	if (USEVR) vr.connect(false)
 	glfw.destroyWindow(window);
 	glfw.terminate();
-	if (socket) socket.terminate();
+	// if (socket) socket.terminate();
 	process.exit(0)
 }
 

@@ -1,0 +1,73 @@
+{
+  "3e303eed-e710-4c64-8d8f-46dc594040e2": {
+      "inputs": [
+          {
+              "name": "value1"
+          },
+          {
+              "name": "value2"
+          }
+      ],
+      "name": "lte",
+      "outputs": [
+          {
+              "connections": {},
+              "name": "out1"
+          }
+      ],
+      "position": {
+          "x": -5.698103439877908,
+          "y": 2.2188259354182556,
+          "z": -8.50552286058356
+      },
+      "uuid": "3e303eed-e710-4c64-8d8f-46dc594040e2"
+  },
+  "e9c499cf-3317-430c-9dae-1b19c2955936": {
+      "inputs": [
+          {
+              "name": "value1"
+          },
+          {
+              "name": "value2"
+          }
+      ],
+      "name": "ltp",
+      "outputs": [
+          {
+              "connections": {},
+              "name": "out1"
+          }
+      ],
+      "position": {
+          "x": -3.0127538727151286,
+          "y": 2.580167080381594,
+          "z": -9.916341090730107
+      },
+      "uuid": "e9c499cf-3317-430c-9dae-1b19c2955936"
+  },
+  "10fca9c6-fd07-4381-92bd-a5ba497b12e3": {
+      "inputs": [
+          {
+              "name": "value1"
+          },
+          {
+              "name": "value2"
+          }
+      ],
+      "name": "sub",
+      "outputs": [
+          {
+              "connections": {
+                  "lte_3e303eed-e710-4c64-8d8f-46dc594040e2_value2": "cable"
+              },
+              "name": "difference"
+          }
+      ],
+      "position": {
+          "x": -1.9724981113852333,
+          "y": -0.1389295058942288,
+          "z": -9.825018093220308
+      },
+      "uuid": "10fca9c6-fd07-4381-92bd-a5ba497b12e3"
+  }
+}

@@ -410,6 +410,7 @@ const UI = {
 				to: to,
 				// any other state?
 			}
+			console.log('arc', arc)
 			this.arcs.push(arc);
 			return arc;
 		},
