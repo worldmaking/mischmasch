@@ -1,19 +1,19 @@
 {
   "nodes": {
-    "rectifier_71fbfe03-941a-49a5-8b0b-df9932e6d345": {
+    "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46": {
       "_props": {
         "kind": "rectifier",
         "category": "abstraction",
         "pos": [
-          -0.4065825641155243,
-          1.690924048423767,
-          -1.274743676185608
+          -0.6604127287864685,
+          1.6991742849349976,
+          -1.4528534412384033
         ],
         "orient": [
-          0.22860566902784288,
-          0.3269001813979199,
-          -0.08344535573975495,
-          0.9131882034270593
+          0.12482109513818501,
+          0.40525231528899575,
+          0.04005567523164892,
+          0.9047573238361459
         ]
       },
       "acdc": {
@@ -24,14 +24,13 @@
             1
           ],
           "type": "float",
-          "value": 0.7608713025119505
+          "value": "0"
         }
       },
       "in0": {
         "_props": {
           "index": 0,
-          "kind": "inlet",
-          "value": 0.7608713025119505
+          "kind": "inlet"
         }
       },
       "fullrect": {
@@ -55,7 +54,338 @@
           "kind": "outlet"
         }
       }
+    },
+    "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc": {
+      "_props": {
+        "kind": "s+h",
+        "category": "abstraction",
+        "pos": [
+          -0.25716084241867065,
+          1.7832895517349243,
+          -1.712906002998352
+        ],
+        "orient": [
+          -0.06470077552758394,
+          0.1579521778507442,
+          0.0036992691237958597,
+          0.9853178457681604
+        ]
+      },
+      "input": {
+        "_props": {
+          "index": 0,
+          "kind": "inlet"
+        }
+      },
+      "clock": {
+        "_props": {
+          "index": 1,
+          "kind": "inlet"
+        }
+      },
+      "gate": {
+        "_props": {
+          "index": 2,
+          "kind": "inlet"
+        }
+      },
+      "held": {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        }
+      }
     }
   },
-  "arcs": []
+  "arcs": [
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.input"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.halfrect",
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.in0"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ],
+    [
+      "s+h_2fdf73fd-7743-4d6a-a094-0af7a38609cc.held",
+      "rectifier_a87a2465-3ad1-4b0d-ac73-79f2e107ce46.undefined"
+    ]
+  ]
 }

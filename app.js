@@ -165,6 +165,7 @@ let localGraph = {
 }
 
 
+
 let USEWS = false;
 let userDataChannel
 // use this to represent others' movements/presence in the world
@@ -641,16 +642,9 @@ const UI = {
 						let newval = range[0] + i_value*(range[1]-range[0]);
 						// post-processing:
 						if (props.type == "int") newval = Math.max(range[0], Math.floor(newval))
-						let objectName = object.name.split('_')[1]
+
 						patch.update('param', [object, newval])
-						// send propchange oldval->newval
-						outgoingDeltas.push({ 
-							op:"propchange", 
-							path: object.path, 
-							name:"value", 
-							from: oldval, 
-							to: newval 
-						});
+
 
 						// immediate update for rendering:
 						object.i_value[0] = i_value;
@@ -2167,7 +2161,7 @@ function animate() {
 
 	// rebuild VR localGraph
 	if(patch.dirty.vr == true){
-		fs.writeFileSync('doc.json', JSON.stringify(patch.document, null, 2))
+		fs.writeFileSync('document.json', JSON.stringify(patch.document, null, 2))
 		
 		localGraph = patch.rebuild()
 		fs.writeFileSync('graph.json', JSON.stringify(localGraph, null, 2))
@@ -2188,7 +2182,6 @@ function animate() {
 
 		patch.dirty.audio.param = false;
 	}
-	// TODO: replace the following with the patch.dirty code above!
 	// handle scene changes from server:
 	// if (incomingDeltas.length > 0) {
 	// // handle incoming deltas:
