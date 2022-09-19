@@ -582,8 +582,8 @@ const UI = {
 					hand.state = "default";
 				} else {
 					// send propchange data to patch
-					patch.paramChange('pos', [object.path, object.pos])
-					patch.paramChange('quat', [object.path, object.quat])
+					patch.update('pos', [object.path, object.pos])
+					patch.update('quat', [object.path, object.quat])
 					// propchange!
 					// outgoingDeltas.push(
 					// // 	{ 
@@ -641,7 +641,8 @@ const UI = {
 						let newval = range[0] + i_value*(range[1]-range[0]);
 						// post-processing:
 						if (props.type == "int") newval = Math.max(range[0], Math.floor(newval))
-
+						let objectName = object.name.split('_')[1]
+						patch.update('param', [object, newval])
 						// send propchange oldval->newval
 						outgoingDeltas.push({ 
 							op:"propchange", 
@@ -654,9 +655,6 @@ const UI = {
 						// immediate update for rendering:
 						object.i_value[0] = i_value;
 						object.value = newval;
-
-
-						
 					}
 
 				} else {

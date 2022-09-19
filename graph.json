@@ -1,4 +1,61 @@
 {
-  "nodes": {},
+  "nodes": {
+    "rectifier_71fbfe03-941a-49a5-8b0b-df9932e6d345": {
+      "_props": {
+        "kind": "rectifier",
+        "category": "abstraction",
+        "pos": [
+          -0.4065825641155243,
+          1.690924048423767,
+          -1.274743676185608
+        ],
+        "orient": [
+          0.22860566902784288,
+          0.3269001813979199,
+          -0.08344535573975495,
+          0.9131882034270593
+        ]
+      },
+      "acdc": {
+        "_props": {
+          "kind": "knob",
+          "range": [
+            0,
+            1
+          ],
+          "type": "float",
+          "value": 0.7608713025119505
+        }
+      },
+      "in0": {
+        "_props": {
+          "index": 0,
+          "kind": "inlet",
+          "value": 0.7608713025119505
+        }
+      },
+      "fullrect": {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        }
+      },
+      "halfrect": {
+        "_props": {
+          "history": false,
+          "index": 1,
+          "kind": "outlet"
+        }
+      },
+      "inverted": {
+        "_props": {
+          "history": false,
+          "index": 2,
+          "kind": "outlet"
+        }
+      }
+    }
+  },
   "arcs": []
 }

@@ -155,8 +155,8 @@ module.exports = class Patch{
     }
   }
 
-  paramChange(item, payload){
-    prettyPrint(payload)
+  update(item, payload){
+    
     switch(item){
       case 'pos':
         let posID = payload[0].split('_')[1]
@@ -174,6 +174,28 @@ module.exports = class Patch{
         }) 
         this.dirty.vr = true
       break;
+
+      case 'param':
+        
+        console.log(payload[1])
+        let opID = payload[0].path.split('_')[1].split('.')[0]
+
+        let paramName = payload[0].name
+        // get the param index
+        for(let i = 0; i < this.document[opID].inputs.length; i++){
+          console.log(this.document[opID].inputs[i].name, paramName)
+          if(this.document[opID].inputs[i].name, paramName){
+            console.log(this.document[opID].inputs[i]._props.value)
+            this.document = Automerge.change(this.document, `update param value`, doc => {
+              doc[opID].inputs[i]._props.value = payload[1]
+            }) 
+          }
+        }
+
+        this.dirty.vr = true
+        this.dirty.audio.param = true
+
+      break 
     }
   }
   rebuild(){

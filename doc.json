@@ -1,1 +1,69 @@
-{}
+{
+  "71fbfe03-941a-49a5-8b0b-df9932e6d345": {
+    "category": "abstraction",
+    "inputs": [
+      {
+        "_props": {
+          "kind": "knob",
+          "range": [
+            0,
+            1
+          ],
+          "type": "float",
+          "value": 0.7608713025119505
+        },
+        "name": "acdc"
+      },
+      {
+        "_props": {
+          "index": 0,
+          "kind": "inlet",
+          "value": 0.7608713025119505
+        },
+        "name": "in0"
+      }
+    ],
+    "name": "rectifier",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {},
+        "name": "fullrect"
+      },
+      {
+        "_props": {
+          "history": false,
+          "index": 1,
+          "kind": "outlet"
+        },
+        "connections": {},
+        "name": "halfrect"
+      },
+      {
+        "_props": {
+          "history": false,
+          "index": 2,
+          "kind": "outlet"
+        },
+        "connections": {},
+        "name": "inverted"
+      }
+    ],
+    "position": [
+      -0.4065825641155243,
+      1.690924048423767,
+      -1.274743676185608
+    ],
+    "quaternion": [
+      0.22860566902784288,
+      0.3269001813979199,
+      -0.08344535573975495,
+      0.9131882034270593
+    ],
+    "uuid": "71fbfe03-941a-49a5-8b0b-df9932e6d345"
+  }
+}
