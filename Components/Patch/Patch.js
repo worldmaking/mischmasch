@@ -42,7 +42,6 @@ module.exports = class Patch{
       break;
   
       case 'op':
-        prettyPrint(payload.node)
         // get all nodes from this op
         let outputs = []
         let inputs = []
@@ -138,6 +137,25 @@ module.exports = class Patch{
           graph.nodes[opName][output.name] = {}
         }
         graph.nodes[opName][output.name]._props = output._props
+
+        // get arcs
+        let connections = Object.keys(output.connections)
+        if(connections.length > 0){
+          // build the arc, noah
+          for(let k = 0; k < connections.length; k++ ){
+            let destID = connections[k]
+            // getting the src is easy
+            let src = `${opName}.${output.name}`
+            // getting dest a bit trickier
+            
+            let destOp = this.document[destID].name
+            let destJack = Object.keys(output.connections[destID])[0]
+            let dest = `${destOp}_${destID}.${destJack}`
+
+            graph.arcs.push([src, dest])
+          }
+
+        }
       }
     }
 

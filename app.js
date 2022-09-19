@@ -527,7 +527,7 @@ const UI = {
 					while (module && !module.isModule) module = module.parent;
 					if (module && module.isModule) {
 						// add the module to patch.document
-						let op = patch.add('op', module)
+						patch.add('op', module)
 
 						/* //!
 						let path = `${op.name}_${op.uuid}`
@@ -700,7 +700,7 @@ const UI = {
 								arc.to.path
 						]};
 						//console.log("CONNECT", delta);
-						outgoingDeltas.push(delta);
+						// !outgoingDeltas.push(delta);
 
 						patch.add('cable', [arc.from.path, arc.to.path])
 					}
@@ -1670,6 +1670,7 @@ function makeSceneGraph(renderer, gl) {
 				// now loop over arcs:
 				this.line_instances.allocate(graph.arcs.length);
 				for (const arc of graph.arcs) {
+					console.log(arc)
 					let line = this.line_instances.instances[this.line_instances.count];
 					line.from = this.paths[ arc[0] ];
 					line.to = this.paths[ arc[1] ];
@@ -2183,19 +2184,14 @@ function animate() {
 		setImmediate(animate)
 	}
 	if(patch.dirty == true){
-		console.log('\ndocument\n\n')
-		prettyPrint(patch.document)
-
-
-
 		fs.writeFileSync('doc.json', JSON.stringify(patch.document, null, 2))
-		patch.dirty = false
+		
 		localGraph = patch.rebuild()
-		console.log('\nlocalGraph\n\n')
-		prettyPrint(localGraph)
+		fs.writeFileSync('graph.json', JSON.stringify(localGraph, null, 2))
+
 
 		mainScene.rebuild(localGraph)
-
+		patch.dirty = false
 		// let's make sure all graph changes we can do using got we can do using Patch.js. 
 
 		// then derive localGraph from patch.document

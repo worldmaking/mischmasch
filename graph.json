@@ -1,0 +1,152 @@
+{
+  "nodes": {
+    "lpg_e2d9eb89-53cc-4ab7-91d4-83bb2b2f1243": {
+      "_props": {
+        "kind": "lpg",
+        "category": "abstraction",
+        "pos": [
+          0.38705727458000183,
+          1.6995751857757568,
+          -1.8766664266586304
+        ],
+        "orient": [
+          0.04449480836212476,
+          -0.27139204210218154,
+          0.024889830401557775,
+          0.9611176119204422
+        ]
+      },
+      "rise": {
+        "_props": {
+          "kind": "knob",
+          "range": [
+            0.01,
+            1
+          ],
+          "type": "float",
+          "value": "0.1"
+        }
+      },
+      "fall": {
+        "_props": {
+          "kind": "knob",
+          "range": [
+            0.01,
+            1
+          ],
+          "type": "float",
+          "value": "0.25"
+        }
+      },
+      "audio": {
+        "_props": {
+          "index": 0,
+          "kind": "inlet"
+        }
+      },
+      "gate": {
+        "_props": {
+          "index": 1,
+          "kind": "inlet"
+        }
+      },
+      "lpg": {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        }
+      },
+      "slewed": {
+        "_props": {
+          "history": false,
+          "index": 1,
+          "kind": "outlet"
+        }
+      }
+    },
+    "lfo_51a3aefc-e5ff-4464-bbe6-03ae688df809": {
+      "_props": {
+        "kind": "lfo",
+        "category": "abstraction",
+        "pos": [
+          -0.22380729019641876,
+          1.744413137435913,
+          -2.1881091594696045
+        ],
+        "orient": [
+          0.009875428272866258,
+          0.06395207388990669,
+          -0.07674543488234176,
+          0.9949486098527699
+        ]
+      },
+      "seconds": {
+        "_props": {
+          "kind": "knob",
+          "range": [
+            0.01,
+            10
+          ],
+          "type": "float",
+          "value": "1"
+        }
+      },
+      "pulsewidth": {
+        "_props": {
+          "kind": "knob",
+          "range": [
+            -1,
+            1
+          ],
+          "type": "float",
+          "value": "0"
+        }
+      },
+      "sync": {
+        "_props": {
+          "index": 1,
+          "kind": "inlet"
+        }
+      },
+      "ramp": {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        }
+      },
+      "tri": {
+        "_props": {
+          "history": false,
+          "index": 1,
+          "kind": "outlet"
+        }
+      },
+      "pulse": {
+        "_props": {
+          "history": false,
+          "index": 2,
+          "kind": "outlet"
+        }
+      },
+      "sine": {
+        "_props": {
+          "history": false,
+          "index": 3,
+          "kind": "outlet"
+        }
+      }
+    }
+  },
+  "arcs": [
+    [
+      "lpg_e2d9eb89-53cc-4ab7-91d4-83bb2b2f1243.lpg",
+      "lfo_51a3aefc-e5ff-4464-bbe6-03ae688df809.sync"
+    ],
+    [
+      "lfo_51a3aefc-e5ff-4464-bbe6-03ae688df809.sine",
+      "lpg_e2d9eb89-53cc-4ab7-91d4-83bb2b2f1243.audio"
+    ]
+  ]
+}
