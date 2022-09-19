@@ -420,7 +420,6 @@ const UI = {
 				to: to,
 				// any other state?
 			}
-			// console.log('arc', arc)
 			this.arcs.push(arc);
 			return arc;
 		},
@@ -506,9 +505,6 @@ const UI = {
 
 		let hits = rayTestModules(mainScene.module_instances, hand.pos, hand.dir)
 
-
-		//console.log(hand.dir, hand.pos, hits.length && hits[0][0].name)
-
 		hand.target = hits[0]
 		hand.line.i_len[0] = hand.target ? hand.target[1] : 1
 		
@@ -530,16 +526,6 @@ const UI = {
 					if (module && module.isModule) {
 						// add the module to patch.document
 						patch.add('op', module)
-
-						/* //!
-						let path = `${op.name}_${op.uuid}`
-						let nodes = {}
-						nodes[path] = module.node
-						let deltas = got.nodesToDeltas(nodes, [], "")
-						outgoingDeltas.push(deltas)
-						//console.log("creating new node at", path, JSON.stringify(deltas))
-
-						*/
 						// exit menu:
 						hand.state = "default";
 					}
@@ -575,38 +561,45 @@ const UI = {
 				if (!hand.trigger_pressed) {
 					// delete?
 					if (object.i_pos[1] < 0) {
+						let objectName = object.name.split('_')[1]
+						patch.remove('op', objectName)
+						
 						// send delete delta
-						let deltas = []
-						// first we need to check for arcs that reference this node:
-						let pat = new RegExp(`^${object.path}(\\..*)?$`)
-						for (let arc of localGraph.arcs) {
-							if (pat.test(arc[0]) || pat.test(arc[1])) {
-								deltas.push({op:"disconnect", paths:arc })
-							}
-						}
-						// then remove modules; children first
-						makeDelNodeDelta(deltas, object.node, object.path)
-						// now send them:
-						outgoingDeltas.push(deltas)
+						// let deltas = []
+						// // first we need to check for arcs that reference this node:
+						// let pat = new RegExp(`^${object.path}(\\..*)?$`)
+						// for (let arc of localGraph.arcs) {
+						// 	if (pat.test(arc[0]) || pat.test(arc[1])) {
+						// 		deltas.push({op:"disconnect", paths:arc })
+						// 	}
+						// }
+						// // then remove modules; children first
+						// makeDelNodeDelta(deltas, object.node, object.path)
+						// // now send them:
+						// outgoingDeltas.push(deltas)
 					} 
 					// release dragging:
 					hand.state = "default";
 				} else {
+					// send propchange data to patch
+					patch.paramChange('pos', [object.path, object.pos])
+					patch.paramChange('quat', [object.path, object.quat])
 					// propchange!
-					outgoingDeltas.push({ 
-						op:"propchange", 
-						path: object.path, 
-						name: "pos", 
-						from: (oldPos), 
-						to: object.pos  
-					},
-					{ 
-						op:"propchange", 
-						path: object.path, 
-						name: "orient", 
-						from: (oldQuat), 
-						to: object.quat  
-					})
+					// outgoingDeltas.push(
+					// // 	{ 
+					// // 	op:"propchange", 
+					// // 	path: object.path, 
+					// // 	name: "pos", 
+					// // 	from: (oldPos), 
+					// // 	to: object.pos  
+					// // },
+					// { 
+					// 	op:"propchange", 
+					// 	path: object.path, 
+					// 	name: "orient", 
+					// 	from: (oldQuat), 
+					// 	to: object.quat  
+					// })
 				}
 			} break;
 			case "buttoning": 
@@ -662,8 +655,7 @@ const UI = {
 						object.i_value[0] = i_value;
 						object.value = newval;
 
-						
-						//console.log("send propchange", object.node._props.value, oldval, newval)
+
 						
 					}
 
@@ -691,18 +683,9 @@ const UI = {
 				}
 
 				if (!hand.trigger_pressed) {
-					//console.log("end_cabling1", this.cables.arcs)
 					this.cables.destroyArc(arc)
-					//console.log("end_cabling2", this.cables.arcs)
 					// releasing jack now:
 					if (ok) {
-						//send "connect" delta.
-						let delta = { op:"connect", paths: [
-								arc.from.path,
-								arc.to.path
-						]};
-						//console.log("CONNECT", delta);
-						// !outgoingDeltas.push(delta);
 
 						patch.add('cable', [arc.from.path, arc.to.path])
 					}
@@ -743,7 +726,6 @@ const UI = {
 							assert(type, "nlet has no .cablingKind")
 							let from = (type == "from") ? target : hand.wand;
 							let to = (type == "to") ? target : hand.wand;
-							// console.log(patch.add('cable', [from, to]))
 							let arc = this.cables.makeArc(from, to);
 							
 							// cache cabling state
@@ -2025,12 +2007,10 @@ function makeSceneGraph(renderer, gl) {
 				let parent = obj.parent;
 				mat4.copy(obj.i_modelmatrix, parent.mat)
 			}
-			// console.log(this.line_instances.count)
 			for (let i=0; i<this.line_instances.count; i++) {
 				let obj = this.line_instances.instances[i];
 				
 				let {from, to} = obj;
-				// console.log('\n\nfrom', from, '\n\nto', to)
 				if(from && to){
 					assert(from, `line ${obj.name} from is missing`)
 					assert(to, `line ${obj.name} to is missing`)
@@ -2117,7 +2097,6 @@ function rayTestModules(instances, ray_origin, ray_dir) {
 function initUI(window) {
 
 	glfw.setMouseButtonCallback(window, function(win, button, down, mods) {
-		//console.log("mouse button", button, down, mods);
 		if (!vr) {
 			// fake hand:
 			let hand = UI.hands[0];
@@ -2154,7 +2133,6 @@ function initUI(window) {
 /*
 for key events:
 glfw.setKeyCallback(window, function(...args) {
-    console.log("key event", args);
 })
 for mouse position:
 glfw.setCursorPosCallback(window, (window, px, py) => {
@@ -2188,44 +2166,53 @@ function animate() {
 	} else {
 		setImmediate(animate)
 	}
-	if(patch.dirty == true){
+
+	// rebuild VR localGraph
+	if(patch.dirty.vr == true){
 		fs.writeFileSync('doc.json', JSON.stringify(patch.document, null, 2))
 		
 		localGraph = patch.rebuild()
 		fs.writeFileSync('graph.json', JSON.stringify(localGraph, null, 2))
 
-
 		mainScene.rebuild(localGraph)
-		patch.dirty = false
-		// let's make sure all graph changes we can do using got we can do using Patch.js. 
+		patch.dirty.vr = false
+	}
 
-		// then derive localGraph from patch.document
+	// rebuild audio graph
+	if(patch.dirty.audio.graph == true){
+		// rebuild genish graph
 
-		// then derive genish graph from patch.document
+		patch.dirty.audio.graph = false;
+	}
+	// update param(s) in audio graph
+	if(patch.dirty.audio.param == true){
+		// do the thing
+
+		patch.dirty.audio.param = false;
 	}
 	// TODO: replace the following with the patch.dirty code above!
 	// handle scene changes from server:
-	if (incomingDeltas.length > 0) {
-	// handle incoming deltas:
-		while (incomingDeltas.length > 0) {
-			let delta = incomingDeltas.shift();
-			// TODO: derive which world to add to:
-			try {
-				//console.log('incomingDelta', delta)
-				got.applyDeltasToGraph(localGraph, delta);
+	// if (incomingDeltas.length > 0) {
+	// // handle incoming deltas:
+	// 	while (incomingDeltas.length > 0) {
+	// 		let delta = incomingDeltas.shift();
+	// 		// TODO: derive which world to add to:
+	// 		try {
+	// 			//console.log('incomingDelta', delta)
+	// 			got.applyDeltasToGraph(localGraph, delta);
 
-				// console.log(localGraph)
+	// 			// console.log(localGraph)
 
-				// fs.writeFileSync("_debugCurrentGraph.json", JSON.stringify(localGraph, null, "\t"), "utf8");
-			} catch (e) {
-				console.warn(e);
-			}
-		}
-		//console.log("updated localGraph", JSON.stringify(localGraph, null, "  "))
+	// 			// fs.writeFileSync("_debugCurrentGraph.json", JSON.stringify(localGraph, null, "\t"), "utf8");
+	// 		} catch (e) {
+	// 			console.warn(e);
+	// 		}
+	// 	}
+	// 	//console.log("updated localGraph", JSON.stringify(localGraph, null, "  "))
 
-		// // re-layout:
-		mainScene.rebuild(localGraph)
-	}
+	// 	// // re-layout:
+	// 	mainScene.rebuild(localGraph)
+	// }
 
 
 	currentScene = (UI.hands[0].state == "menu" || UI.hands[1].state == "menu") ? menuScene : mainScene;
@@ -2270,7 +2257,6 @@ function animate() {
 					mat4.getTranslation(p, mat);
 					vec3.sub(hand.dpos, p, hand.pos)
 					vec3.scale(hand.dpos, hand.dpos, 1/dt)
-					//console.log(hand.dpos)
 					vec3.copy(hand.pos, p)
 					mat4.getRotation(hand.orient, mat);
 					vec3.negate(hand.dir, mat.slice(8, 11))
@@ -2345,49 +2331,49 @@ function animate() {
 
 	// send outgoing deltas:
 
-	if (USEWS == true && socket && socket.readyState === 1) {
-		console.log('1')
-		// send any edits to the server:
-		if (outgoingDeltas.length > 0) {
-			let message = JSON.stringify({
-				cmd: "deltas",
-				date: Date.now(),
-				data: outgoingDeltas
-			});
-			socket.send(message);
-			//console.log('outgoing message',message)
-			outgoingDeltas.length = 0;
-		}
-		// HMD pos
-		if(UI.hmd){
-			let hmdMessage = JSON.stringify({
-				cmd: "HMD",
-				date: Date.now(),
-				data: UI.hmd
-			});
-			sendToAppJS(hmdMessage);
-		}
+	// if (USEWS == true && socket && socket.readyState === 1) {
+	// 	console.log('1')
+	// 	// send any edits to the server:
+	// 	if (outgoingDeltas.length > 0) {
+	// 		let message = JSON.stringify({
+	// 			cmd: "deltas",
+	// 			date: Date.now(),
+	// 			data: outgoingDeltas
+	// 		});
+	// 		socket.send(message);
+	// 		//console.log('outgoing message',message)
+	// 		outgoingDeltas.length = 0;
+	// 	}
+	// 	// HMD pos
+	// 	if(UI.hmd){
+	// 		let hmdMessage = JSON.stringify({
+	// 			cmd: "HMD",
+	// 			date: Date.now(),
+	// 			data: UI.hmd
+	// 		});
+	// 		sendToAppJS(hmdMessage);
+	// 	}
 
 
-		// right hand pos
-		if(UI.hands[1]){
-			let wandsMessage = JSON.stringify({
-				cmd: "rightWandPos",
-				date: Date.now(),
-				data: {pos: UI.hands[1].pos}
-			});
-			sendToAppJS(wandsMessage);
-		}
+	// 	// right hand pos
+	// 	if(UI.hands[1]){
+	// 		let wandsMessage = JSON.stringify({
+	// 			cmd: "rightWandPos",
+	// 			date: Date.now(),
+	// 			data: {pos: UI.hands[1].pos}
+	// 		});
+	// 		sendToAppJS(wandsMessage);
+	// 	}
 
-	} else if (!USEWS) {
-		// otherwise, just move them to our incoming list, 
-		// so we can work without a server:
-		//console.log('\n\nogds',outgoingDeltas)
-		for (let delta of outgoingDeltas) {
-			incomingDeltas.push(delta);
-		}
-		outgoingDeltas.length = 0;
-	}
+	// } else if (!USEWS) {
+	// 	// otherwise, just move them to our incoming list, 
+	// 	// so we can work without a server:
+	// 	//console.log('\n\nogds',outgoingDeltas)
+	// 	for (let delta of outgoingDeltas) {
+	// 		incomingDeltas.push(delta);
+	// 	}
+	// 	outgoingDeltas.length = 0;
+	// }
 }
 
 function draw(eye=0) {
@@ -2517,7 +2503,6 @@ async function init() {
 	menuScene.init(gl)
 	menuScene.rebuild(menuGraph)
 
-	// console.log(menuScene)
 
 	// default graph until server connects:
 	// localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));

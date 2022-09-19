@@ -5,8 +5,13 @@ module.exports = class Patch{
   constructor(){
     // versioning     
     this.document = Automerge.init()
-
-    this.dirty = false
+    this.dirty = {
+      vr: false,
+      audio:{
+        graph: false,
+        param: false
+      }
+    }
 
     this.cables = []
   }
@@ -38,7 +43,8 @@ module.exports = class Patch{
             }
           }     
         })
-        this.dirty = true
+        this.dirty.vr = true
+        this.dirty.audio.graph = true
       break;
   
       case 'op':
@@ -92,7 +98,8 @@ module.exports = class Patch{
           doc[op.uuid] = op
         })
         // set patch dirty flag for animation Loop
-        this.dirty = true
+        this.dirty.vr = true
+        this.dirty.audio.graph = true
  
         return op
       break
@@ -112,40 +119,61 @@ module.exports = class Patch{
         let destJack = to.split('.')[1]
 
         
-        // update document in automerge
-        this.document = Automerge.change(this.document, 'remove cable', doc => {
-          
-          for(let i=0; i<doc[srcID].outputs.length; i++){
-            let connections = Object.keys(doc[srcID].outputs[i].connections)
-            console.log('connections', connections)
-            // does this output only have one connection?
-            if(connections.length = 1){
-              // delete the entire dest reference
-              delete doc[srcID].outputs[i].connections[destID]
-            } else {
-              // delete just this connection
-              // loop through connections to find this arc
-              for(let j= 0; j<connections.length; j++){
-                if(connections[j] == destID){
-                  console.log(connections[j])
-                  
-                }
-              }
-            }
+        let outputs = this.document[srcID].outputs 
+        for(let i=0; i< outputs.length; i++){
+          if(outputs[i].connections[destID]){
 
-            // // find the output in the doc matching the cable's src
-            // if(doc[srcID].outputs[i].connections[destID] == srcJack){
-            //   // does this output only have 1 connection?
-              
-            //   // delete the connection
-            //   delete doc[srcID].outputs[i].connections[destID][destJack]
+            // update document in automerge
+            this.document = Automerge.change(this.document, 'remove cable', doc => {
+              delete doc[srcID].outputs[i].connections[destID][destJack]
+            }) 
 
-              
+            // check if destination op has no more connections, if so, delete its reference in ouput[i].connections
+            if(Object.keys(this.document[srcID].outputs[i].connections[destID]).length == 0){
+              // update document in automerge
+              this.document = Automerge.change(this.document, 'remove connection ref', doc => {
+                delete doc[srcID].outputs[i].connections[destID]
+              }) 
             }
-          })     
-        
-        this.dirty = true
+            
+            
+          }
+        }
+     
+        this.dirty.vr = true
+        this.dirty.audio.graph = true
       break
+
+      case 'op':
+        // update document in automerge
+        this.document = Automerge.change(this.document, 'remove op', doc => {
+          delete doc[payload]
+        }) 
+        this.dirty.vr = true;
+        this.dirty.audio.graph = true;
+      break
+    }
+  }
+
+  paramChange(item, payload){
+    prettyPrint(payload)
+    switch(item){
+      case 'pos':
+        let posID = payload[0].split('_')[1]
+        // prevent updates if op was recently deleted
+        this.document = Automerge.change(this.document, 'update position', doc => {
+          doc[posID].position = payload[1]
+        }) 
+        this.dirty.vr = true
+      break;
+
+      case 'quat':
+        let quatID = payload[0].split('_')[1]
+        this.document = Automerge.change(this.document, 'update quaternion', doc => {
+          doc[quatID].quaternion = payload[1]
+        }) 
+        this.dirty.vr = true
+      break;
     }
   }
   rebuild(){
@@ -168,7 +196,7 @@ module.exports = class Patch{
           orient: op.quaternion,
         }
       }
-      // loop over inlets
+      // loop over inputs
       for(let j = 0; j<op.inputs.length; j++){
         let input = op.inputs[j];
         if(!graph.nodes[opName][input.name]){
@@ -176,6 +204,7 @@ module.exports = class Patch{
         }
         graph.nodes[opName][input.name]._props = input._props
       }
+      // loop over outputs
       for(let j = 0; j<op.outputs.length; j++){
         let output = op.outputs[j];
         if(!graph.nodes[opName][output.name]){
@@ -183,7 +212,7 @@ module.exports = class Patch{
         }
         graph.nodes[opName][output.name]._props = output._props
 
-        // get arcs
+        // get connections for each output
         let connections = Object.keys(output.connections)
         if(connections.length > 0){
           // build the arc
@@ -202,17 +231,11 @@ module.exports = class Patch{
 
               graph.arcs.push([src, dest])
             }
-          
-            
-            
-            
           }
-
         }
       }
     }
-
-    return graph
+    return graph // this is the localGraph that mischmasch's vr uses (mainscene(localGraph))
   }
 }
 
