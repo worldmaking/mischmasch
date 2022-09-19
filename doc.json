@@ -1,0 +1,133 @@
+{
+  "65d6fd00-d6b7-4053-94d4-2b543a7cb40f": {
+    "category": "abstraction",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "inlet"
+        },
+        "name": "trig"
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "inlet"
+        },
+        "name": "reset"
+      }
+    ],
+    "name": "flipflop",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {},
+        "name": "gate"
+      },
+      {
+        "_props": {
+          "history": false,
+          "index": 1,
+          "kind": "outlet"
+        },
+        "connections": {},
+        "name": "opentrig"
+      },
+      {
+        "_props": {
+          "history": false,
+          "index": 2,
+          "kind": "outlet"
+        },
+        "connections": {},
+        "name": "closetrig"
+      }
+    ],
+    "position": [
+      -0.8178969621658325,
+      1.925401210784912,
+      -1.234729528427124
+    ],
+    "quaternion": [
+      -0.0788066076531999,
+      0.48635150261675225,
+      0.1353851344909452,
+      0.8596060083344158
+    ],
+    "uuid": "65d6fd00-d6b7-4053-94d4-2b543a7cb40f"
+  },
+  "7124eda7-2b89-4290-bbac-013e55d92fdd": {
+    "category": "abstraction",
+    "inputs": [
+      {
+        "_props": {
+          "kind": "knob",
+          "range": [
+            0,
+            1
+          ],
+          "type": "float",
+          "value": "0"
+        },
+        "name": "acdc"
+      },
+      {
+        "_props": {
+          "index": 0,
+          "kind": "inlet"
+        },
+        "name": "in0"
+      }
+    ],
+    "name": "rectifier",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {},
+        "name": "fullrect"
+      },
+      {
+        "_props": {
+          "history": false,
+          "index": 1,
+          "kind": "outlet"
+        },
+        "connections": {
+          "65d6fd00-d6b7-4053-94d4-2b543a7cb40f": {
+            "reset": "cable"
+          }
+        },
+        "name": "halfrect"
+      },
+      {
+        "_props": {
+          "history": false,
+          "index": 2,
+          "kind": "outlet"
+        },
+        "connections": {},
+        "name": "inverted"
+      }
+    ],
+    "position": [
+      -0.5025169849395752,
+      1.6413493156433105,
+      -1.6066534519195557
+    ],
+    "quaternion": [
+      -0.052470928669835736,
+      0.22116845553595457,
+      -0.21109281701812274,
+      0.9506688037911564
+    ],
+    "uuid": "7124eda7-2b89-4290-bbac-013e55d92fdd"
+  }
+}

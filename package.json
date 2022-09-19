@@ -27,6 +27,7 @@
     "gl-matrix": "^3.3.0",
     "gotlib": "file:gotlib",
     "http": "0.0.1-security",
+    "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "png-js": "^1.0.0",
     "progress": "^2.0.3",

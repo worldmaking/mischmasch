@@ -44,6 +44,9 @@ const rwsOptions = {
 	//debug:true, 
   }
 
+function prettyPrint(object){
+	console.log(JSON.stringify(object, null, 4))
+}
 let USEVR = (process.platform === "win32") && !(argv.vr === 'false');
 // usevr if its specified on CLI & skip VR if on OSX:
 console.log('using VR?', USEVR)
@@ -71,7 +74,7 @@ function hashCode(str) { // java String#hashCode
 } 
 
 function colorFromString(str) {
-	return chroma.hsl(Math.abs(hashCode(str)) % 360, 0.35, 0.5).gl()
+	return chroma.hsl(360, 0.35, 0.5).gl()
 }
 
 function scale(t, ilo, ihi, olo, ohi) {
@@ -222,8 +225,8 @@ if(USEWS || argv.w){
 	// })
 } else {
 	// no ws used
-	demoScene = path.join(__dirname, "gotlib/scenes", "simple.json")
-	localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
+	// demoScene = path.join(__dirname, "gotlib/scenes", "simple.json")
+	// localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
 
 }
 
@@ -525,12 +528,16 @@ const UI = {
 					if (module && module.isModule) {
 						// add the module to patch.document
 						let op = patch.add('op', module)
+
+						/* //!
 						let path = `${op.name}_${op.uuid}`
 						let nodes = {}
 						nodes[path] = module.node
 						let deltas = got.nodesToDeltas(nodes, [], "")
 						outgoingDeltas.push(deltas)
 						//console.log("creating new node at", path, JSON.stringify(deltas))
+
+						*/
 						// exit menu:
 						hand.state = "default";
 					}
@@ -689,11 +696,13 @@ const UI = {
 					if (ok) {
 						//send "connect" delta.
 						let delta = { op:"connect", paths: [
-                            arc.from.path,
-                            arc.to.path
-                        ]};
-                        //console.log("CONNECT", delta);
-                        outgoingDeltas.push(delta);
+								arc.from.path,
+								arc.to.path
+						]};
+						//console.log("CONNECT", delta);
+						outgoingDeltas.push(delta);
+
+						patch.add('cable', [arc.from.path, arc.to.path])
 					}
 					// now delete temporary local cable
 					hand.state = "default";
@@ -732,8 +741,9 @@ const UI = {
 							assert(type, "nlet has no .cablingKind")
 							let from = (type == "from") ? target : hand.wand;
 							let to = (type == "to") ? target : hand.wand;
-							console.log(patch.add('cable', [from, to]))
+							// console.log(patch.add('cable', [from, to]))
 							let arc = this.cables.makeArc(from, to);
+							
 							// cache cabling state
 							hand.state = "cabling"
 							hand.stateData.arc = arc;
@@ -2173,9 +2183,18 @@ function animate() {
 		setImmediate(animate)
 	}
 	if(patch.dirty == true){
-		console.log(patch.document)
+		console.log('\ndocument\n\n')
+		prettyPrint(patch.document)
+
+
+
+		fs.writeFileSync('doc.json', JSON.stringify(patch.document, null, 2))
 		patch.dirty = false
-		console.log('update state needed')
+		localGraph = patch.rebuild()
+		console.log('\nlocalGraph\n\n')
+		prettyPrint(localGraph)
+
+		mainScene.rebuild(localGraph)
 
 		// let's make sure all graph changes we can do using got we can do using Patch.js. 
 
@@ -2185,12 +2204,12 @@ function animate() {
 	}
 	// TODO: replace the following with the patch.dirty code above!
 	// handle scene changes from server:
-    if (incomingDeltas.length > 0) {
-		// handle incoming deltas:
-        while (incomingDeltas.length > 0) {
+	if (incomingDeltas.length > 0) {
+	// handle incoming deltas:
+		while (incomingDeltas.length > 0) {
 			let delta = incomingDeltas.shift();
-            // TODO: derive which world to add to:
-            try {
+			// TODO: derive which world to add to:
+			try {
 				//console.log('incomingDelta', delta)
 				got.applyDeltasToGraph(localGraph, delta);
 
@@ -2200,9 +2219,9 @@ function animate() {
 			} catch (e) {
 				console.warn(e);
 			}
-        }
+		}
 		//console.log("updated localGraph", JSON.stringify(localGraph, null, "  "))
-		
+
 		// // re-layout:
 		mainScene.rebuild(localGraph)
 	}
