@@ -1,47 +1,28 @@
 {
-  "e2d9eb89-53cc-4ab7-91d4-83bb2b2f1243": {
+  "09196dc0-7b7a-4376-8396-2ae856686aa9": {
     "category": "abstraction",
     "inputs": [
       {
         "_props": {
           "kind": "knob",
           "range": [
-            0.01,
+            0,
             1
           ],
           "type": "float",
-          "value": "0.1"
+          "value": "0"
         },
-        "name": "rise"
-      },
-      {
-        "_props": {
-          "kind": "knob",
-          "range": [
-            0.01,
-            1
-          ],
-          "type": "float",
-          "value": "0.25"
-        },
-        "name": "fall"
+        "name": "acdc"
       },
       {
         "_props": {
           "index": 0,
           "kind": "inlet"
         },
-        "name": "audio"
-      },
-      {
-        "_props": {
-          "index": 1,
-          "kind": "inlet"
-        },
-        "name": "gate"
+        "name": "in0"
       }
     ],
-    "name": "lpg",
+    "name": "rectifier",
     "outputs": [
       {
         "_props": {
@@ -50,11 +31,11 @@
           "kind": "outlet"
         },
         "connections": {
-          "51a3aefc-e5ff-4464-bbe6-03ae688df809": {
-            "sync": "cable"
+          "d7bcc4fa-28a1-4530-8f44-f82089914a0e": {
+            "trig": "cable"
           }
         },
-        "name": "lpg"
+        "name": "fullrect"
       },
       {
         "_props": {
@@ -62,59 +43,60 @@
           "index": 1,
           "kind": "outlet"
         },
-        "connections": {},
-        "name": "slewed"
+        "connections": {
+          "d7bcc4fa-28a1-4530-8f44-f82089914a0e": {
+            "reset": "cable"
+          }
+        },
+        "name": "halfrect"
+      },
+      {
+        "_props": {
+          "history": false,
+          "index": 2,
+          "kind": "outlet"
+        },
+        "connections": {
+          "d7bcc4fa-28a1-4530-8f44-f82089914a0e": {
+            "reset": "cable",
+            "trig": "cable"
+          }
+        },
+        "name": "inverted"
       }
     ],
     "position": [
-      0.38705727458000183,
-      1.6995751857757568,
-      -1.8766664266586304
+      -0.8214960098266602,
+      1.6421693563461304,
+      -1.3406745195388794
     ],
     "quaternion": [
-      0.04449480836212476,
-      -0.27139204210218154,
-      0.024889830401557775,
-      0.9611176119204422
+      0.04653758325166744,
+      0.2449272327426179,
+      0.029463122410037915,
+      0.967975631839749
     ],
-    "uuid": "e2d9eb89-53cc-4ab7-91d4-83bb2b2f1243"
+    "uuid": "09196dc0-7b7a-4376-8396-2ae856686aa9"
   },
-  "51a3aefc-e5ff-4464-bbe6-03ae688df809": {
+  "d7bcc4fa-28a1-4530-8f44-f82089914a0e": {
     "category": "abstraction",
     "inputs": [
       {
         "_props": {
-          "kind": "knob",
-          "range": [
-            0.01,
-            10
-          ],
-          "type": "float",
-          "value": "1"
+          "index": 0,
+          "kind": "inlet"
         },
-        "name": "seconds"
-      },
-      {
-        "_props": {
-          "kind": "knob",
-          "range": [
-            -1,
-            1
-          ],
-          "type": "float",
-          "value": "0"
-        },
-        "name": "pulsewidth"
+        "name": "trig"
       },
       {
         "_props": {
           "index": 1,
           "kind": "inlet"
         },
-        "name": "sync"
+        "name": "reset"
       }
     ],
-    "name": "lfo",
+    "name": "flipflop",
     "outputs": [
       {
         "_props": {
@@ -123,7 +105,7 @@
           "kind": "outlet"
         },
         "connections": {},
-        "name": "ramp"
+        "name": "gate"
       },
       {
         "_props": {
@@ -132,7 +114,7 @@
           "kind": "outlet"
         },
         "connections": {},
-        "name": "tri"
+        "name": "opentrig"
       },
       {
         "_props": {
@@ -141,33 +123,20 @@
           "kind": "outlet"
         },
         "connections": {},
-        "name": "pulse"
-      },
-      {
-        "_props": {
-          "history": false,
-          "index": 3,
-          "kind": "outlet"
-        },
-        "connections": {
-          "e2d9eb89-53cc-4ab7-91d4-83bb2b2f1243": {
-            "audio": "cable"
-          }
-        },
-        "name": "sine"
+        "name": "closetrig"
       }
     ],
     "position": [
-      -0.22380729019641876,
-      1.744413137435913,
-      -2.1881091594696045
+      -0.4734339118003845,
+      1.694546103477478,
+      -1.587592363357544
     ],
     "quaternion": [
-      0.009875428272866258,
-      0.06395207388990669,
-      -0.07674543488234176,
-      0.9949486098527699
+      -0.015842164950879548,
+      0.24102212904340325,
+      -0.007539051645986777,
+      0.9703610235433969
     ],
-    "uuid": "51a3aefc-e5ff-4464-bbe6-03ae688df809"
+    "uuid": "d7bcc4fa-28a1-4530-8f44-f82089914a0e"
   }
 }

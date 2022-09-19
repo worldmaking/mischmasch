@@ -428,6 +428,8 @@ const UI = {
 		destroyArc(arc) {
 			const index = this.arcs.indexOf(arc);
 			assert(index >= 0, "attempt to destroy arc that wasn't in the list");
+
+			
 			this.arcs.splice(index, 1)
 			
 			return this;
@@ -751,12 +753,16 @@ const UI = {
 							hand.stateData.cablingKind = (type == "to") ? "from" : "to";
 						} break;
 						case "jack": {
-							// if the jack's cable was fully connected, send a 'disconnect' delta
+							// if the jack's cable was fully connected, remove it from document
 							let {line, parent} = object
 							if (line && line.name) {
-								let paths = line.name.split(">")
-								let delta = { op:"disconnect", paths: paths };
-								outgoingDeltas.push(delta)
+
+								let arc = line.name.split(">")
+								
+								// remove cable from document
+								patch.remove('cable', arc)
+								// let delta = { op:"disconnect", paths: paths };
+								// outgoingDeltas.push(delta)
 
 								// get widgets this line was connected to
 								let {from, to} = line;
@@ -1670,7 +1676,6 @@ function makeSceneGraph(renderer, gl) {
 				// now loop over arcs:
 				this.line_instances.allocate(graph.arcs.length);
 				for (const arc of graph.arcs) {
-					console.log(arc)
 					let line = this.line_instances.instances[this.line_instances.count];
 					line.from = this.paths[ arc[0] ];
 					line.to = this.paths[ arc[1] ];

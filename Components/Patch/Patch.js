@@ -100,8 +100,53 @@ module.exports = class Patch{
     }
   }
 
-  remove(item){
+  remove(item, payload){
+    switch(item){
+      case 'cable':
+        let from = payload[0].split('_')[1]
+        let to = payload[1].split('_')[1]
 
+        let srcID = from.split('.')[0]
+        let srcJack = from.split('.')[1]
+        let destID = to.split('.')[0]
+        let destJack = to.split('.')[1]
+
+        
+        // update document in automerge
+        this.document = Automerge.change(this.document, 'remove cable', doc => {
+          
+          for(let i=0; i<doc[srcID].outputs.length; i++){
+            let connections = Object.keys(doc[srcID].outputs[i].connections)
+            console.log('connections', connections)
+            // does this output only have one connection?
+            if(connections.length = 1){
+              // delete the entire dest reference
+              delete doc[srcID].outputs[i].connections[destID]
+            } else {
+              // delete just this connection
+              // loop through connections to find this arc
+              for(let j= 0; j<connections.length; j++){
+                if(connections[j] == destID){
+                  console.log(connections[j])
+                  
+                }
+              }
+            }
+
+            // // find the output in the doc matching the cable's src
+            // if(doc[srcID].outputs[i].connections[destID] == srcJack){
+            //   // does this output only have 1 connection?
+              
+            //   // delete the connection
+            //   delete doc[srcID].outputs[i].connections[destID][destJack]
+
+              
+            }
+          })     
+        
+        this.dirty = true
+      break
+    }
   }
   rebuild(){
     let graph = {
@@ -141,18 +186,26 @@ module.exports = class Patch{
         // get arcs
         let connections = Object.keys(output.connections)
         if(connections.length > 0){
-          // build the arc, noah
+          // build the arc
           for(let k = 0; k < connections.length; k++ ){
-            let destID = connections[k]
             // getting the src is easy
             let src = `${opName}.${output.name}`
-            // getting dest a bit trickier
-            
+            // destination op id
+            let destID = connections[k]
             let destOp = this.document[destID].name
-            let destJack = Object.keys(output.connections[destID])[0]
-            let dest = `${destOp}_${destID}.${destJack}`
+            
+            // loop through connections in case there are one-to-many 
+            let inputJacks = Object.keys(connections[k])
+            for(let l = 0; l < inputJacks.length; l++){
+              let destJack = Object.keys(output.connections[destID])[l]
+              let dest = `${destOp}_${destID}.${destJack}`
 
-            graph.arcs.push([src, dest])
+              graph.arcs.push([src, dest])
+            }
+          
+            
+            
+            
           }
 
         }
