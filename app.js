@@ -786,7 +786,7 @@ const UI = {
 			{ name:"i_dir", components:3 },
 		]);
 		this.ray_instances.attachTo(this.ray_vao).allocate(16);
-
+		console.log(renderer.wand_program.id)
 		this.wand_vao = glutils.createVao(gl, renderer.wand_geom, renderer.wand_program.id)
 		this.wand_instances = glutils.createInstances(gl, [
 			{ name:"i_quat", components:4 },
@@ -979,8 +979,12 @@ function initRenderer(renderer) {
 	// 	max:[ 0.03, 0.03, 0.1], 
 	// 	div: [13, 13, 1] 
 	// });
-	renderer.wand_geom = glutils.geomFromOBJ(fs.readFileSync(path.join(__dirname, "objs", "vr_controller_vive_1_5.obj"), "utf-8"))
+	// renderer.wand_geom = glutils.geomFromOBJ(fs.readFileSync(path.join(__dirname, "objs", "vr_controller_vive_1_5.obj"), "utf-8"))
+	// right controller
+	
+	renderer.wand_geom = glutils.geomFromOBJ(fs.readFileSync(path.join(__dirname, "objs/touch_right", "oculus_cv1_controller_right.obj"), "utf-8"))
 
+	console.log(renderer.wand_geom)
 	renderer.line_geom = glutils.makeLine({ min:0, max:1, div: 24 });
 	const floor_m = 6;
 	renderer.floor_geom = glutils.makeQuad({ min: -floor_m, max: floor_m, div:8 })

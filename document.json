@@ -1,28 +1,23 @@
 {
-  "a87a2465-3ad1-4b0d-ac73-79f2e107ce46": {
+  "24f55818-eb18-4b50-9cdc-65e14f66c1d6": {
     "category": "abstraction",
     "inputs": [
-      {
-        "_props": {
-          "kind": "knob",
-          "range": [
-            0,
-            1
-          ],
-          "type": "float",
-          "value": "0"
-        },
-        "name": "acdc"
-      },
       {
         "_props": {
           "index": 0,
           "kind": "inlet"
         },
-        "name": "in0"
+        "name": "trig"
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "inlet"
+        },
+        "name": "reset"
       }
     ],
-    "name": "rectifier",
+    "name": "flipflop",
     "outputs": [
       {
         "_props": {
@@ -31,96 +26,38 @@
           "kind": "outlet"
         },
         "connections": {},
-        "name": "fullrect"
-      },
-      {
-        "_props": {
-          "history": false,
-          "index": 1,
-          "kind": "outlet"
-        },
-        "connections": {
-          "2fdf73fd-7743-4d6a-a094-0af7a38609cc": {
-            "input": "cable"
-          }
-        },
-        "name": "halfrect"
-      },
-      {
-        "_props": {
-          "history": false,
-          "index": 2,
-          "kind": "outlet"
-        },
-        "connections": {},
-        "name": "inverted"
-      }
-    ],
-    "position": [
-      -0.6604127287864685,
-      1.6991742849349976,
-      -1.4528534412384033
-    ],
-    "quaternion": [
-      0.12482109513818501,
-      0.40525231528899575,
-      0.04005567523164892,
-      0.9047573238361459
-    ],
-    "uuid": "a87a2465-3ad1-4b0d-ac73-79f2e107ce46"
-  },
-  "2fdf73fd-7743-4d6a-a094-0af7a38609cc": {
-    "category": "abstraction",
-    "inputs": [
-      {
-        "_props": {
-          "index": 0,
-          "kind": "inlet"
-        },
-        "name": "input"
-      },
-      {
-        "_props": {
-          "index": 1,
-          "kind": "inlet"
-        },
-        "name": "clock"
-      },
-      {
-        "_props": {
-          "index": 2,
-          "kind": "inlet"
-        },
         "name": "gate"
-      }
-    ],
-    "name": "s+h",
-    "outputs": [
+      },
       {
         "_props": {
           "history": false,
-          "index": 0,
+          "index": 1,
           "kind": "outlet"
         },
-        "connections": {
-          "a87a2465-3ad1-4b0d-ac73-79f2e107ce46": {
-            "in0": "cable"
-          }
+        "connections": {},
+        "name": "opentrig"
+      },
+      {
+        "_props": {
+          "history": false,
+          "index": 2,
+          "kind": "outlet"
         },
-        "name": "held"
+        "connections": {},
+        "name": "closetrig"
       }
     ],
     "position": [
-      -0.25716084241867065,
-      1.7832895517349243,
-      -1.712906002998352
+      -0.48233428597450256,
+      1.66484797000885,
+      -1.5136367082595825
     ],
     "quaternion": [
-      -0.06470077552758394,
-      0.1579521778507442,
-      0.0036992691237958597,
-      0.9853178457681604
+      -0.18342265401262195,
+      0.27511625856317273,
+      0.19365036002043526,
+      0.9236702160701946
     ],
-    "uuid": "2fdf73fd-7743-4d6a-a094-0af7a38609cc"
+    "uuid": "24f55818-eb18-4b50-9cdc-65e14f66c1d6"
   }
 }
