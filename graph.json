@@ -1,19 +1,19 @@
 {
   "nodes": {
-    "flipflop_24f55818-eb18-4b50-9cdc-65e14f66c1d6": {
+    "flipflop_9acadc91-8769-400b-8bd6-379f93ea430c": {
       "_props": {
         "kind": "flipflop",
         "category": "abstraction",
         "pos": [
-          -0.48233428597450256,
-          1.66484797000885,
-          -1.5136367082595825
+          -0.4343537986278534,
+          1.7106701135635376,
+          -1.518218994140625
         ],
         "orient": [
-          -0.18342265401262195,
-          0.27511625856317273,
-          0.19365036002043526,
-          0.9236702160701946
+          0.11277195964137726,
+          0.4021943581062124,
+          0.029994985609048626,
+          0.9080872686077949
         ]
       },
       "trig": {
@@ -43,6 +43,78 @@
         }
       },
       "closetrig": {
+        "_props": {
+          "history": false,
+          "index": 2,
+          "kind": "outlet"
+        }
+      }
+    },
+    "pulse_91586637-36c0-43c1-ace0-cf7db8b39299": {
+      "_props": {
+        "kind": "pulse",
+        "category": "abstraction",
+        "pos": [
+          -0.13200025260448456,
+          1.854505181312561,
+          -1.887259602546692
+        ],
+        "orient": [
+          -0.016135284266226024,
+          0.06223384268440456,
+          0.008119606174424124,
+          0.9978981293392152
+        ]
+      },
+      "pitch": {
+        "_props": {
+          "kind": "knob",
+          "range": [
+            -3,
+            7
+          ],
+          "type": "float",
+          "value": "0"
+        }
+      },
+      "pulsewidth": {
+        "_props": {
+          "kind": "knob",
+          "range": [
+            0,
+            1
+          ],
+          "type": "float",
+          "value": "0.5"
+        }
+      },
+      "pitch_v": {
+        "_props": {
+          "index": 0,
+          "kind": "inlet"
+        }
+      },
+      "hardsync": {
+        "_props": {
+          "index": 1,
+          "kind": "inlet"
+        }
+      },
+      "pulse": {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        }
+      },
+      "impulse": {
+        "_props": {
+          "history": false,
+          "index": 1,
+          "kind": "outlet"
+        }
+      },
+      "clock": {
         "_props": {
           "history": false,
           "index": 2,

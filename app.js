@@ -515,7 +515,7 @@ const UI = {
 			object.i_highlight[0] = 1
 		}
 
-		let pad_tap = (hand.pad_pressed == 1); // rising edge only
+		let grip_squeeze = (hand.grip_pressed == 1); // rising edge only
 
 		
 		switch(hand.state) {
@@ -530,7 +530,7 @@ const UI = {
 						// exit menu:
 						hand.state = "default";
 					}
-				} else if (pad_tap) {
+				} else if (grip_squeeze) {
 					// exit menu for all controllers:
 					this.hands.forEach(hand=>{
 						if (hand.state == "menu") hand.state = "default";
@@ -765,7 +765,7 @@ const UI = {
 							}
 						} break;
 					}
-				} else if (pad_tap) {
+				} else if (grip_squeeze) {
 					// call up the menu:
 					hand.state = "menu";
 				}
@@ -786,7 +786,6 @@ const UI = {
 			{ name:"i_dir", components:3 },
 		]);
 		this.ray_instances.attachTo(this.ray_vao).allocate(16);
-		console.log(renderer.wand_program.id)
 		this.wand_vao = glutils.createVao(gl, renderer.wand_geom, renderer.wand_program.id)
 		this.wand_instances = glutils.createInstances(gl, [
 			{ name:"i_quat", components:4 },
