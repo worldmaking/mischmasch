@@ -1,23 +1,16 @@
 {
-  "9acadc91-8769-400b-8bd6-379f93ea430c": {
-    "category": "abstraction",
+  "e29ee31f-3d54-423e-8d3e-8daebff134ed": {
+    "category": "mathemagical",
     "inputs": [
       {
         "_props": {
           "index": 0,
           "kind": "inlet"
         },
-        "name": "trig"
-      },
-      {
-        "_props": {
-          "index": 1,
-          "kind": "inlet"
-        },
-        "name": "reset"
+        "name": "value"
       }
     ],
-    "name": "flipflop",
+    "name": "acos",
     "outputs": [
       {
         "_props": {
@@ -25,84 +18,46 @@
           "index": 0,
           "kind": "outlet"
         },
-        "connections": {},
-        "name": "gate"
-      },
-      {
-        "_props": {
-          "history": false,
-          "index": 1,
-          "kind": "outlet"
+        "connections": {
+          "e3a80fee-f9ed-4e94-9232-7df262b99762": {
+            "value2": "cable"
+          }
         },
-        "connections": {},
-        "name": "opentrig"
-      },
-      {
-        "_props": {
-          "history": false,
-          "index": 2,
-          "kind": "outlet"
-        },
-        "connections": {},
-        "name": "closetrig"
+        "name": "out1"
       }
     ],
     "position": [
-      -0.4343537986278534,
-      1.7106701135635376,
-      -1.518218994140625
+      0.12443452328443527,
+      1.7702628374099731,
+      -1.058059811592102
     ],
     "quaternion": [
-      0.11277195964137726,
-      0.4021943581062124,
-      0.029994985609048626,
-      0.9080872686077949
+      0.00759126430672531,
+      -0.05869198314459151,
+      0.0073832971260988966,
+      0.9982199702519414
     ],
-    "uuid": "9acadc91-8769-400b-8bd6-379f93ea430c"
+    "uuid": "e29ee31f-3d54-423e-8d3e-8daebff134ed"
   },
-  "91586637-36c0-43c1-ace0-cf7db8b39299": {
-    "category": "abstraction",
+  "848ccb4d-5ac3-4c87-8a84-8638e1094e70": {
+    "category": "mathemagical",
     "inputs": [
-      {
-        "_props": {
-          "kind": "knob",
-          "range": [
-            -3,
-            7
-          ],
-          "type": "float",
-          "value": "0"
-        },
-        "name": "pitch"
-      },
-      {
-        "_props": {
-          "kind": "knob",
-          "range": [
-            0,
-            1
-          ],
-          "type": "float",
-          "value": "0.5"
-        },
-        "name": "pulsewidth"
-      },
       {
         "_props": {
           "index": 0,
           "kind": "inlet"
         },
-        "name": "pitch_v"
+        "name": "value1"
       },
       {
         "_props": {
           "index": 1,
           "kind": "inlet"
         },
-        "name": "hardsync"
+        "name": "value2"
       }
     ],
-    "name": "pulse",
+    "name": "lt",
     "outputs": [
       {
         "_props": {
@@ -111,38 +66,67 @@
           "kind": "outlet"
         },
         "connections": {},
-        "name": "pulse"
-      },
-      {
-        "_props": {
-          "history": false,
-          "index": 1,
-          "kind": "outlet"
-        },
-        "connections": {},
-        "name": "impulse"
-      },
-      {
-        "_props": {
-          "history": false,
-          "index": 2,
-          "kind": "outlet"
-        },
-        "connections": {},
-        "name": "clock"
+        "name": "out1"
       }
     ],
     "position": [
-      -0.13200025260448456,
-      1.854505181312561,
-      -1.887259602546692
+      -0.14669188857078552,
+      1.7574297189712524,
+      -1.0151482820510864
     ],
     "quaternion": [
-      -0.016135284266226024,
-      0.06223384268440456,
-      0.008119606174424124,
-      0.9978981293392152
+      0.27445995106619286,
+      0.042690008327500126,
+      0.00619414617805604,
+      0.9606304898795726
     ],
-    "uuid": "91586637-36c0-43c1-ace0-cf7db8b39299"
+    "uuid": "848ccb4d-5ac3-4c87-8a84-8638e1094e70"
+  },
+  "e3a80fee-f9ed-4e94-9232-7df262b99762": {
+    "category": "mathemagical",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "inlet"
+        },
+        "name": "value1"
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "inlet"
+        },
+        "name": "value2"
+      }
+    ],
+    "name": "min",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {
+          "e29ee31f-3d54-423e-8d3e-8daebff134ed": {
+            "value": "cable"
+          }
+        },
+        "name": "out1"
+      }
+    ],
+    "position": [
+      0.43574386835098267,
+      1.6941659450531006,
+      -1.031434416770935
+    ],
+    "quaternion": [
+      0.2518241730228007,
+      -0.08253115197355723,
+      0.08995820768159894,
+      0.9600420390747652
+    ],
+    "uuid": "e3a80fee-f9ed-4e94-9232-7df262b99762"
   }
 }

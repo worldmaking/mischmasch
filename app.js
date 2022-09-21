@@ -22,7 +22,7 @@ glutils = require(path.join(nodeglpath, "glutils.js"))
 const componentPath = path.join(__dirname, 'Components')
 // components
 const Patch = require(path.join(componentPath, 'Patch/Patch.js'))
-
+const Palette = require(path.join(componentPath, 'Palette/Palette.js'))
 let patch = new Patch()
 
 // let p2pID; // set by coven signalling server
@@ -858,8 +858,8 @@ const UI = {
 let vrdim = [4096, 4096];
 
 
-
-const menuModules = JSON.parse(fs.readFileSync(path.join("useful_for_2022","menu.json"), "utf-8"))
+const menu = new Palette()
+// const menuModules = JSON.parse(fs.readFileSync(path.join("useful_for_2022","menu.json"), "utf-8"))
 
 
 
@@ -978,12 +978,10 @@ function initRenderer(renderer) {
 	// 	max:[ 0.03, 0.03, 0.1], 
 	// 	div: [13, 13, 1] 
 	// });
-	// renderer.wand_geom = glutils.geomFromOBJ(fs.readFileSync(path.join(__dirname, "objs", "vr_controller_vive_1_5.obj"), "utf-8"))
-	// right controller
 	
+	// right controller
 	renderer.wand_geom = glutils.geomFromOBJ(fs.readFileSync(path.join(__dirname, "objs/touch_right", "oculus_cv1_controller_right.obj"), "utf-8"))
 
-	console.log(renderer.wand_geom)
 	renderer.line_geom = glutils.makeLine({ min:0, max:1, div: 24 });
 	const floor_m = 6;
 	renderer.floor_geom = glutils.makeQuad({ min: -floor_m, max: floor_m, div:8 })
@@ -2492,12 +2490,13 @@ async function init() {
 
 	UI.init(renderer, gl)
 
-	menuGraph.nodes = menuModules;
+	menuGraph.nodes = menu.graph;
+	// prettyPrint(menu.graph)
 	menuScene = makeSceneGraph(renderer, gl)
 	menuScene.init(gl)
 	menuScene.rebuild(menuGraph)
 
-
+	// prettyPrint(menuGraph)
 	// default graph until server connects:
 	// localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
 	// server connect
