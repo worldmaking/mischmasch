@@ -74,7 +74,12 @@ function hashCode(str) { // java String#hashCode
 } 
 
 function colorFromString(str) {
-	return chroma.hsl(360, 0.35, 0.5).gl()
+	return chroma.hsl(Math.abs(hashCode(str)) % 360, 0.35, 0.5).gl()
+}
+
+function opMenuColour(opCategory){
+	let num = hashCode(opCategory)
+	return chroma.hsl(Math.abs(num) % 360, 0.35, 0.5).gl()
 }
 
 function scale(t, ilo, ihi, olo, ohi) {
@@ -1792,7 +1797,7 @@ function makeSceneGraph(renderer, gl) {
 					this.addLabel(obj, label_text, text_pos, text_scale);
 				} break;
 				default: {
-					vec4.copy(obj.i_color, colorFromString(props.kind));
+					vec4.copy(obj.i_color, opMenuColour(props.category));
 					obj.isModule = true;
 					obj.nodes = [];
 
@@ -2496,7 +2501,6 @@ async function init() {
 	menuScene.init(gl)
 	menuScene.rebuild(menuGraph)
 
-	// prettyPrint(menuGraph)
 	// default graph until server connects:
 	// localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
 	// server connect

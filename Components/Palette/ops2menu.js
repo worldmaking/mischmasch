@@ -1,3 +1,6 @@
+// this is from the NIME version (v0.3.x)
+// it was used to generate modules from .gendsp patchers, which might still be useful for us...
+
 const fs = require("fs"),
 	path = require("path"),
 	assert = require("assert")
