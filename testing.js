@@ -44,8 +44,10 @@ fs.readdirSync(dirname).forEach((filename, i) => {
 	let filePath = path.join(dirname, filename)
 
 	// create the abstraction obj
+	// as we go through the gendsp, if there's an object that is not in the genish ops list, push it to Array.incompatible and then check that array's length at the end (and print it so we see what's not compatible)
 	modules[name] = {
-		compatible: true,
+		incompatible: [],
+		compatible: [],
 		inputs: [],
 		outputs: []
 	}
@@ -67,12 +69,14 @@ fs.readdirSync(dirname).forEach((filename, i) => {
 			return
 		}
 		let boxText = box.box.text.split(' ')
-		let kind = box.box.text.split(' ')[0]
+		let kind = boxText[0]
 		// console.log(box.box)
 		if(menu.opsList.includes(kind)){
+
+			modules[name].compatible.push(box.box.text)
 			switch(kind){
+
 				case 'param':
-					console.log(boxText[1])
 					modules[name][boxText[1]] = {
 						_props: {
 							kind: 'knob',
@@ -94,7 +98,6 @@ fs.readdirSync(dirname).forEach((filename, i) => {
 				break
 
 				case 'in':
-					console.log(boxText[2])
 
 					modules[name][boxText[2]] = {
 						_props: {
@@ -106,8 +109,34 @@ fs.readdirSync(dirname).forEach((filename, i) => {
 
 				break
 
+
+			}
+		}else {
+			switch(kind){
+				// some gen objects are spelled differently in genish
+				case '/': // div
+				case '+': // add
+				case '*': // mul
+				case '-': // sub
+				case '>': // gt
+				case '<': // lt
+				case '==': // eq
+				case '>=p': // gtp
+				case "%": // mod
+				case "clip": // clamp
+				
+					modules[name].compatible.push(box.box.text)
+
+				break
+
+				case 'trig':
+					// this is a gen abstraction, note that it contains [change] which is not available in genish
+				break
+				case 'schmitt':
+					// this is a gen abstraction. note that it contains [scale] which is not available in genish
+				break
+
 				case 'out':
-					console.log(boxText[2])
 
 					modules[name][boxText[2]] = {
 						_props: {
@@ -117,10 +146,13 @@ fs.readdirSync(dirname).forEach((filename, i) => {
 					}
 					outCount++
 				break
-			}
-		}else {
 
-			modules[name].compatible = false
+
+				default:
+					modules[name].incompatible.push(box.box.text)
+					console.log(boxText)
+				break
+			}
 			return false
 			//TODO if opsList !includes this kind of op, then remove this abstraction from the list of abstractions
 

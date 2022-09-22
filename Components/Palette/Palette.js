@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const operators = JSON.parse(fs.readFileSync(path.join(__dirname, '../Op/genishOperators.json')))
+const operators = JSON.parse(fs.readFileSync(path.join(__dirname, '../Op/mischmaschOps.json')))
 const Op = require('../Op/Op.js')
 
 const { vec3, quat} = require("gl-matrix")
@@ -24,55 +24,63 @@ module.exports = class Palette{
           orient: [0,0,0,0]
         }
       }
-      let inputs = Object.keys(op.inputs)
+      // does the op have inputs?
+      if(op.inputs){
+        let inputs = Object.keys(op.inputs)
 
-      // loop over inputs
-      for(let j = 0; j<inputs.length; j++){
-        let input = inputs[j];
-
-        if(!this.graph[opName][input]){
-          this.graph[opName][input] = {}
-        }
-        this.graph[opName][input]._props = {
-          kind: 'inlet',
-          index: j
+        // loop over inputs
+        for(let j = 0; j<inputs.length; j++){
+          let input = inputs[j];
+  
+          if(!this.graph[opName][input]){
+            this.graph[opName][input] = {}
+          }
+          this.graph[opName][input]._props = {
+            kind: 'inlet',
+            index: j
+          }
         }
       }
-      // loop over outputs
-      let outputs = Object.keys(op.outputs)
-      for(let j = 0; j < outputs.length; j++){
-        let output = outputs[j];
-        if(!this.graph[opName][output]){
-          this.graph[opName][output] = {}
-        }
-        this.graph[opName][output]._props = {
-          kind: "outlet",
-          index: j,
-          history: false
-        }
 
-        // // get connections for each output
-        // let connections = Object.keys(output.connections)
-        // if(connections.length > 0){
-        //   // build the arc
-        //   for(let k = 0; k < connections.length; k++ ){
-        //     // getting the src is easy
-        //     let src = `${opName}.${output.name}`
-        //     // destination op id
-        //     let destID = connections[k]
-        //     let destOp = this.document[destID].name
-            
-        //     // loop through connections in case there are one-to-many 
-        //     let inputJacks = Object.keys(connections[k])
-        //     for(let l = 0; l < inputJacks.length; l++){
-        //       let destJack = Object.keys(output.connections[destID])[l]
-        //       let dest = `${destOp}_${destID}.${destJack}`
+      // does the op have outputs?
+      if(op.outputs){
+        // loop over outputs
+        let outputs = Object.keys(op.outputs)
+        for(let j = 0; j < outputs.length; j++){
+          let output = outputs[j];
+          if(!this.graph[opName][output]){
+            this.graph[opName][output] = {}
+          }
+          this.graph[opName][output]._props = {
+            kind: "outlet",
+            index: j,
+            history: false
+          }
 
-        //       graph.arcs.push([src, dest])
-        //     }
-        //   }
-        // }
+          // // get connections for each output
+          // let connections = Object.keys(output.connections)
+          // if(connections.length > 0){
+          //   // build the arc
+          //   for(let k = 0; k < connections.length; k++ ){
+          //     // getting the src is easy
+          //     let src = `${opName}.${output.name}`
+          //     // destination op id
+          //     let destID = connections[k]
+          //     let destOp = this.document[destID].name
+              
+          //     // loop through connections in case there are one-to-many 
+          //     let inputJacks = Object.keys(connections[k])
+          //     for(let l = 0; l < inputJacks.length; l++){
+          //       let destJack = Object.keys(output.connections[destID])[l]
+          //       let dest = `${destOp}_${destID}.${destJack}`
+
+          //       graph.arcs.push([src, dest])
+          //     }
+          //   }
+          // }
+        }
       }
+      
     }
     // loop over ops and create position and quaternion for the palette
     // setup palette rows and columns

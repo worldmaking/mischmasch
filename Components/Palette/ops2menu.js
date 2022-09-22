@@ -87,7 +87,7 @@ let operators = []
 
 // now add some of the gen operators:
 // let categories = ["buffer", "waveform", "filter", "integrator", "route", "range", "logic", "comparison", "numeric", "math", "trigonometry"]
-// let ops = JSON.parse(fs.readFileSync(path.join(__dirname, "../Op/genishOperators.json"), "utf-8")).sort((a,b)=>categories.indexOf(a.category)-categories.indexOf(b.category)).filter(op=>{
+// let ops = JSON.parse(fs.readFileSync(path.join(__dirname, "../Op/mischmaschOps.json"), "utf-8")).sort((a,b)=>categories.indexOf(a.category)-categories.indexOf(b.category)).filter(op=>{
 // 	let default_ctor = op.constructors[op.constructors.length-1]
 // 	return !(
 // 		(op.box_expr && ["constant", "illegal", "revop"].indexOf(op.box_expr) >= 0) 
@@ -106,7 +106,7 @@ let operators = []
 // 	)
 // })
 
-let ops = JSON.parse(fs.readFileSync(path.join(__dirname, "../Op/genishOperators.json"), "utf-8"))
+let ops = JSON.parse(fs.readFileSync(path.join(__dirname, "../Op/mischmaschOps.json"), "utf-8"))
 
 ops.forEach(op=>{
 	console.log("---", op.op)
