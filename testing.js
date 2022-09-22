@@ -124,6 +124,7 @@ fs.readdirSync(dirname).forEach((filename, i) => {
 				case '>=p': // gtp
 				case "%": // mod
 				case "clip": // clamp
+				case "buffer": // data
 				
 					modules[name].compatible.push(box.box.text)
 

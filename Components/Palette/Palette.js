@@ -93,7 +93,7 @@ module.exports = class Palette{
         let r = 1;
         let x = r * Math.sin(theta);
         let z = r * Math.cos(theta);
-        let y = 2-((i / this.opsList.length)*2)//1 - 0.4 * (row - (nrows/2));
+        let y = 2-((i / this.opsList.length)*2)+0.5//1 - 0.4 * (row - (nrows/2));
         
         quat.fromEuler(this.graph[this.opsList[i]]._props.orient, 0, 180 + theta*180/Math.PI, 0)
         vec3.set(this.graph[this.opsList[i]]._props.pos, x, y, z);
@@ -105,5 +105,32 @@ module.exports = class Palette{
   } 
   getInfo(opName){
     console.log(this.operators[opName])
+  }
+
+  updatePosition(hmd){
+    // loop over ops and create position and quaternion for the palette
+    // setup palette rows and columns
+    let ncols = 16
+    let nrows = Math.min(6, Math.ceil(this.opsList.length / ncols));
+    let i = 0;
+    for (let row = 0; row < nrows; row++) {
+      for(let col = 0; col < ncols && i < this.opsList.length; col++, i++){
+        let theta = col * (-2 * Math.PI) / ncols;
+        let r = 1;
+        let x = r * Math.sin(theta) + hmd.pos[0];
+        let z = r * Math.cos(theta) + hmd.pos[2];
+        let y = 2-((i / this.opsList.length)*2)+0.5//1 - 0.4 * (row - (nrows/2));
+        vec3.set(this.graph[this.opsList[i]]._props.pos, x, y, z);
+      }
+    }
+
+    // // loop through menu and update all op positions relative to HMD
+    // for(let i = 0; i < this.opsList.length; i++){
+    //   // console.log(this.graph[this.opsList[i]])
+    //   let newPos =[0,0,0]
+      
+    //   vec3.add(newPos,  this.graph[this.opsList[i]]._props.pos, hmdPos )
+    //   console.log('\nmew', newPos, '\nold', this.graph[this.opsList[i]]._props.pos, '\nhmd', hmdPos)
+    // }
   }
 }

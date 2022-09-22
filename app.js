@@ -241,6 +241,10 @@ let menuGraph = {
 	arcs: []
 }
 
+let menu;
+
+
+
 let viewmatrix = mat4.create();
 let projmatrix = mat4.create();
 let viewmatrix_inverse = mat4.create();
@@ -367,7 +371,7 @@ const UI = {
 			// UI:
 			trigger: 0, trigger_pressed: 0,
 			pad_x: 0, pad_y: 0, pad_dx: 0, pad_dy: 0, pad_pressed: 0, 
-			grip_pressed:0, menu_pressed: 0,
+		grip_pressed:0, menu_pressed: 0,
 			// state machine:
 			state: "default",
 			stateData: {},
@@ -776,6 +780,12 @@ const UI = {
 						} break;
 					}
 				} else if (grip_squeeze) {
+					// update menu positioning relative to user
+					menu.updatePosition(UI.hmd)
+					// prettyPrint(UI.hmd)
+					// prettyPrint(menu)
+					menuScene.rebuild(menuGraph)
+
 					// call up the menu:
 					hand.state = "menu";
 				}
@@ -868,7 +878,7 @@ const UI = {
 let vrdim = [4096, 4096];
 
 
-const menu = new Palette()
+
 // const menuModules = JSON.parse(fs.readFileSync(path.join("useful_for_2022","menu.json"), "utf-8"))
 
 
@@ -2500,7 +2510,11 @@ async function init() {
 
 	UI.init(renderer, gl)
 
+	menu = new Palette()
 	menuGraph.nodes = menu.graph;
+
+	
+	fs.writeFileSync('palette.json', JSON.stringify(menuGraph, null, 2))
 	// prettyPrint(menu.graph)
 	menuScene = makeSceneGraph(renderer, gl)
 	menuScene.init(gl)

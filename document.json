@@ -1,28 +1,143 @@
 {
-  "61541452-7250-4316-9f9c-4d6dbf982ec1": {
-    "category": "speaker",
+  "81320c7c-337d-4065-a6a9-45b7a9437a0f": {
+    "category": "mathemagical",
     "inputs": [
       {
         "_props": {
           "index": 0,
           "kind": "inlet"
         },
-        "name": "audio"
+        "name": "value1"
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "inlet"
+        },
+        "name": "value2"
       }
     ],
-    "name": "speaker",
-    "outputs": [],
+    "name": "gtp",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {
+          "505396e8-e4e9-4b7d-98d6-6f0d7631fc7c": {
+            "value1": "cable"
+          }
+        },
+        "name": "out1"
+      }
+    ],
     "position": [
-      -0.1080164760351181,
-      1.6151177883148193,
-      -1.354716181755066
+      0.05062388628721237,
+      1.7336530685424805,
+      -1.804127812385559
     ],
     "quaternion": [
-      0.18918956262814546,
-      0.08352729134368296,
-      0.011514640911590955,
-      0.9783138027382259
+      0.03319483212880885,
+      0.05027139229429596,
+      -0.0013798986178249167,
+      0.9981828368977117
     ],
-    "uuid": "61541452-7250-4316-9f9c-4d6dbf982ec1"
+    "uuid": "81320c7c-337d-4065-a6a9-45b7a9437a0f"
+  },
+  "af02dbf8-28a7-4bed-8c62-be6d6aaa6621": {
+    "category": "mathemagical",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "inlet"
+        },
+        "name": "value1"
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "inlet"
+        },
+        "name": "value2"
+      }
+    ],
+    "name": "gte",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {
+          "81320c7c-337d-4065-a6a9-45b7a9437a0f": {
+            "value2": "cable"
+          }
+        },
+        "name": "out1"
+      }
+    ],
+    "position": [
+      -0.25156527757644653,
+      1.7305843830108643,
+      -1.702075481414795
+    ],
+    "quaternion": [
+      0.030637172013973396,
+      0.18827418652139505,
+      0.017251254197200316,
+      0.9814869292360232
+    ],
+    "uuid": "af02dbf8-28a7-4bed-8c62-be6d6aaa6621"
+  },
+  "505396e8-e4e9-4b7d-98d6-6f0d7631fc7c": {
+    "category": "mathemagical",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "inlet"
+        },
+        "name": "value1"
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "inlet"
+        },
+        "name": "value2"
+      }
+    ],
+    "name": "lt",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {
+          "81320c7c-337d-4065-a6a9-45b7a9437a0f": {
+            "value1": "cable"
+          }
+        },
+        "name": "out1"
+      }
+    ],
+    "position": [
+      0.35546767711639404,
+      1.735776662826538,
+      -1.7361159324645996
+    ],
+    "quaternion": [
+      0.08828993851120737,
+      -0.13805815327150586,
+      0.01258988034816594,
+      0.9864006835379527
+    ],
+    "uuid": "505396e8-e4e9-4b7d-98d6-6f0d7631fc7c"
   }
 }
