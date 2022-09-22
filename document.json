@@ -1,63 +1,23 @@
 {
-  "518c721d-c077-409b-af4c-85befd970e62": {
-    "category": "filtering",
+  "49ec5a15-c77f-4989-9191-7dce117ed00f": {
+    "category": "mathemagical",
     "inputs": [
       {
         "_props": {
           "index": 0,
           "kind": "inlet"
         },
-        "name": "input"
-      }
-    ],
-    "name": "delta",
-    "outputs": [
-      {
-        "_props": {
-          "history": false,
-          "index": 0,
-          "kind": "outlet"
-        },
-        "connections": {
-          "473605e9-18a6-4394-9faa-bcb82b995b14": {
-            "note": "cable"
-          }
-        },
-        "name": "out1"
-      }
-    ],
-    "position": [
-      -0.3918488025665283,
-      1.6721782684326172,
-      -1.2256048917770386
-    ],
-    "quaternion": [
-      0.18385514523349297,
-      0.2710531387997659,
-      -0.00742372545019352,
-      0.9448134197907407
-    ],
-    "uuid": "518c721d-c077-409b-af4c-85befd970e62"
-  },
-  "473605e9-18a6-4394-9faa-bcb82b995b14": {
-    "category": "conversion",
-    "inputs": [
-      {
-        "_props": {
-          "index": 0,
-          "kind": "inlet"
-        },
-        "name": "note"
+        "name": "value1"
       },
       {
         "_props": {
           "index": 1,
           "kind": "inlet"
         },
-        "name": "tuning"
+        "name": "value2"
       }
     ],
-    "name": "mtof",
+    "name": "lt",
     "outputs": [
       {
         "_props": {
@@ -70,16 +30,109 @@
       }
     ],
     "position": [
-      -0.13854123651981354,
-      1.7336814403533936,
-      -1.3663926124572754
+      -0.5259479284286499,
+      1.8787345886230469,
+      -1.1262266635894775
     ],
     "quaternion": [
-      0.26219879565473203,
-      0.10811433233114114,
-      -0.02159628691203122,
-      0.9586952965052383
+      0.052782151335960974,
+      0.4949180852810611,
+      0.034953358488983566,
+      0.8666305119439378
     ],
-    "uuid": "473605e9-18a6-4394-9faa-bcb82b995b14"
+    "uuid": "49ec5a15-c77f-4989-9191-7dce117ed00f"
+  },
+  "35f5ff12-2235-4b23-8ee0-e62cc938236c": {
+    "category": "filtering",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "inlet"
+        },
+        "name": "input"
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "inlet"
+        },
+        "name": "up"
+      },
+      {
+        "_props": {
+          "index": 2,
+          "kind": "inlet"
+        },
+        "name": "down"
+      }
+    ],
+    "name": "slide",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {},
+        "name": "out1"
+      }
+    ],
+    "position": [
+      -0.6599631905555725,
+      1.7880123853683472,
+      -0.8436834812164307
+    ],
+    "quaternion": [
+      0.05880878630526809,
+      0.5555920852419518,
+      0.07085312272132091,
+      0.8263406544771145
+    ],
+    "uuid": "35f5ff12-2235-4b23-8ee0-e62cc938236c"
+  },
+  "5fb3d005-b00c-48b8-acc8-000a6ad3859d": {
+    "category": "mathemagical",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "inlet"
+        },
+        "name": "value1"
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "inlet"
+        },
+        "name": "value2"
+      }
+    ],
+    "name": "gtp",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {},
+        "name": "out1"
+      }
+    ],
+    "position": [
+      -0.255005806684494,
+      1.8702201843261719,
+      -1.3455570936203003
+    ],
+    "quaternion": [
+      0.040994743940541825,
+      0.21546994110794332,
+      0.04156162273637038,
+      0.9747639603085734
+    ],
+    "uuid": "5fb3d005-b00c-48b8-acc8-000a6ad3859d"
   }
 }

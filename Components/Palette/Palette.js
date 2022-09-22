@@ -81,9 +81,6 @@ module.exports = class Palette{
     let i = 0;
     for (let row = 0; row < nrows; row++) {
       for(let col = 0; col < ncols && i < this.opsList.length; col++, i++){
-    
-        let module = this.graph[this.opsList[i]]
-        console.log(module)
         let theta = col * (-2 * Math.PI) / ncols;
         let r = 1;
         let x = r * Math.sin(theta);
@@ -98,5 +95,7 @@ module.exports = class Palette{
     
     
   } 
-
+  getInfo(opName){
+    console.log(this.operators[opName])
+  }
 }

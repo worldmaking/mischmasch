@@ -518,6 +518,11 @@ const UI = {
 		if (hand.target) {
 			[object, distance] = hand.target
 			object.i_highlight[0] = 1
+
+			if(hand.state == "menu"){
+				// TODO use this to display a tooltip above the hovered op, see issue #173
+				// menu.getInfo(object.name)		
+			}
 		}
 
 		let grip_squeeze = (hand.grip_pressed == 1); // rising edge only
