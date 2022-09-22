@@ -782,10 +782,8 @@ const UI = {
 				} else if (grip_squeeze) {
 					// update menu positioning relative to user
 					menu.updatePosition(UI.hmd)
-					// prettyPrint(UI.hmd)
-					// prettyPrint(menu)
+					// rebuild the menu scene
 					menuScene.rebuild(menuGraph)
-
 					// call up the menu:
 					hand.state = "menu";
 				}

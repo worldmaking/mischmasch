@@ -1,23 +1,23 @@
 {
-  "81320c7c-337d-4065-a6a9-45b7a9437a0f": {
-    "category": "mathemagical",
+  "71624ca3-1465-42a2-ba7b-73bff030086e": {
+    "category": "source",
     "inputs": [
       {
         "_props": {
           "index": 0,
           "kind": "inlet"
         },
-        "name": "value1"
+        "name": "freq"
       },
       {
         "_props": {
           "index": 1,
           "kind": "inlet"
         },
-        "name": "value2"
+        "name": "phase"
       }
     ],
-    "name": "gtp",
+    "name": "cycle",
     "outputs": [
       {
         "_props": {
@@ -26,45 +26,54 @@
           "kind": "outlet"
         },
         "connections": {
-          "505396e8-e4e9-4b7d-98d6-6f0d7631fc7c": {
-            "value1": "cable"
+          "48a3c67a-1f82-4c7c-a54e-944f62f4567d": {
+            "freq": "cable"
           }
         },
         "name": "out1"
+      },
+      {
+        "_props": {
+          "history": false,
+          "index": 1,
+          "kind": "outlet"
+        },
+        "connections": {},
+        "name": "out2"
       }
     ],
     "position": [
-      0.05062388628721237,
-      1.7336530685424805,
-      -1.804127812385559
+      0.3747916519641876,
+      1.6486183404922485,
+      -1.412360668182373
     ],
     "quaternion": [
-      0.03319483212880885,
-      0.05027139229429596,
-      -0.0013798986178249167,
-      0.9981828368977117
+      0.07021407425411384,
+      -0.27171729228014174,
+      0.005961854776044823,
+      0.9597937969259097
     ],
-    "uuid": "81320c7c-337d-4065-a6a9-45b7a9437a0f"
+    "uuid": "71624ca3-1465-42a2-ba7b-73bff030086e"
   },
-  "af02dbf8-28a7-4bed-8c62-be6d6aaa6621": {
-    "category": "mathemagical",
+  "48a3c67a-1f82-4c7c-a54e-944f62f4567d": {
+    "category": "source",
     "inputs": [
       {
         "_props": {
           "index": 0,
           "kind": "inlet"
         },
-        "name": "value1"
+        "name": "freq"
       },
       {
         "_props": {
           "index": 1,
           "kind": "inlet"
         },
-        "name": "value2"
+        "name": "phase"
       }
     ],
-    "name": "gte",
+    "name": "cycle",
     "outputs": [
       {
         "_props": {
@@ -72,72 +81,30 @@
           "index": 0,
           "kind": "outlet"
         },
-        "connections": {
-          "81320c7c-337d-4065-a6a9-45b7a9437a0f": {
-            "value2": "cable"
-          }
-        },
+        "connections": {},
         "name": "out1"
-      }
-    ],
-    "position": [
-      -0.25156527757644653,
-      1.7305843830108643,
-      -1.702075481414795
-    ],
-    "quaternion": [
-      0.030637172013973396,
-      0.18827418652139505,
-      0.017251254197200316,
-      0.9814869292360232
-    ],
-    "uuid": "af02dbf8-28a7-4bed-8c62-be6d6aaa6621"
-  },
-  "505396e8-e4e9-4b7d-98d6-6f0d7631fc7c": {
-    "category": "mathemagical",
-    "inputs": [
-      {
-        "_props": {
-          "index": 0,
-          "kind": "inlet"
-        },
-        "name": "value1"
       },
       {
         "_props": {
-          "index": 1,
-          "kind": "inlet"
-        },
-        "name": "value2"
-      }
-    ],
-    "name": "lt",
-    "outputs": [
-      {
-        "_props": {
           "history": false,
-          "index": 0,
+          "index": 1,
           "kind": "outlet"
         },
-        "connections": {
-          "81320c7c-337d-4065-a6a9-45b7a9437a0f": {
-            "value1": "cable"
-          }
-        },
-        "name": "out1"
+        "connections": {},
+        "name": "out2"
       }
     ],
     "position": [
-      0.35546767711639404,
-      1.735776662826538,
-      -1.7361159324645996
+      0.6051448583602905,
+      1.6397514343261719,
+      -1.2468757629394531
     ],
     "quaternion": [
-      0.08828993851120737,
-      -0.13805815327150586,
-      0.01258988034816594,
-      0.9864006835379527
+      0.05902307659135185,
+      -0.39606825426548437,
+      -0.0058165816976738895,
+      0.9163036426121353
     ],
-    "uuid": "505396e8-e4e9-4b7d-98d6-6f0d7631fc7c"
+    "uuid": "48a3c67a-1f82-4c7c-a54e-944f62f4567d"
   }
 }
