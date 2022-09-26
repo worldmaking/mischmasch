@@ -50,11 +50,7 @@
             "audio": "cable"
           }
         },
-<<<<<<< HEAD
         "name": "product"
-=======
-        "name": "sinusoid"
->>>>>>> 80b1e57c7ce7505dedb826cb81eac3de9a42696f
       }
     ],
     "position": [
@@ -121,11 +117,7 @@
             "value2": "cable"
           }
         },
-<<<<<<< HEAD
-        "name": "out1"
-=======
         "name": "sinusoid"
->>>>>>> 80b1e57c7ce7505dedb826cb81eac3de9a42696f
       }
     ],
     "position": [
