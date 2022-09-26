@@ -1,8 +1,9 @@
 const { v4: uuidv4 } = require('uuid');
 const Automerge = require('automerge')
 const _ = require('lodash');
+
 module.exports = class Patch{
-  constructor(){
+  constructor(load){
     // versioning     
     this.document = Automerge.init()
     this.dirty = {
@@ -14,6 +15,7 @@ module.exports = class Patch{
     }
 
     this.cables = []
+
   }
 
   add(item, payload){
@@ -215,11 +217,17 @@ module.exports = class Patch{
           orient: op.quaternion,
         }
       }
+      let controlName = null; // used if there is a control (param) op
+      
       // loop over inputs
       for(let j = 0; j<op.inputs.length; j++){
         let input = op.inputs[j];
         if(!graph.nodes[opName][input.name]){
           graph.nodes[opName][input.name] = {}
+        }
+        if(op.name == 'control'){
+          // get this op's connection(s)
+
         }
         graph.nodes[opName][input.name]._props = input._props
       }
@@ -255,6 +263,20 @@ module.exports = class Patch{
       }
     }
     return graph // this is the localGraph that mischmasch's vr uses (mainscene(localGraph))
+  }
+  load(file){
+    let ops = Object.keys(file)
+    for(let i = 0; i< ops.length; i++){
+      this.document = Automerge.change(this.document, `load patch from file`, doc => {
+        doc[ops[i]]= file[ops[i]]
+      }) 
+    }
+
+    // set patch dirty flag for animation Loop
+    this.dirty.vr = true
+    this.dirty.audio.graph = true
+    console.log(this.document, file)
+
   }
 }
 

@@ -33,6 +33,7 @@ if (argv.name){
   name = username.sync()
 }
 
+
 let peerHandle = name + '_' + filename
 const got = require("./gotlib/got.js")
 
@@ -2533,6 +2534,12 @@ async function init() {
 
 	
 	animate()
+
+	// load a scene on start?
+	if(process.argv[2]){
+		let startPatch = JSON.parse(fs.readFileSync(path.join(__dirname, process.argv[2])))
+		patch.load(startPatch)
+	}
 }
 
 function shutdown() {

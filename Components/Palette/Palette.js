@@ -24,6 +24,7 @@ module.exports = class Palette{
           orient: [0,0,0,0]
         }
       }
+
       // does the op have inputs?
       if(op.inputs){
         let inputs = Object.keys(op.inputs)
@@ -35,10 +36,18 @@ module.exports = class Palette{
           if(!this.graph[opName][input]){
             this.graph[opName][input] = {}
           }
-          this.graph[opName][input]._props = {
-            kind: 'inlet',
-            index: j
+          if(op.classification == 'parameter'){
+            this.graph[opName][input]._props = {
+              kind: 'knob',
+              range: [0., 1.]
+            }
+          }else {
+            this.graph[opName][input]._props = {
+              kind: 'inlet',
+              index: j
+            }
           }
+
         }
       }
 

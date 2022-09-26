@@ -401,6 +401,15 @@
       "value": "parameter value"
     }
   },
+  "control": {
+    "classification": "parameter",
+    "inputs": {
+      "knob": "control value"
+    },
+    "outputs": {
+      "value": "value output"
+    }
+  },
   "clamp": {
     "classification": "scaling",
     "inputs": {
