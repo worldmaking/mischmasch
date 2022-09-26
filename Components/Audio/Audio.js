@@ -161,6 +161,12 @@ module.exports = {
 	updateGraph(doc) {
 		try {
 			console.log("audio got new doc", JSON.stringify(doc, null, "  "))
+
+			let operations = doc2operations(doc)
+
+			worker.postMessage({ cmd: "doc", operations })
+
+			// send them to the worker:
 		} catch (e) {
 			console.error(e)
 		}
