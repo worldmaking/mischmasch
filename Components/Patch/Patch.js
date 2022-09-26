@@ -59,7 +59,11 @@ module.exports = class Patch{
             case 'knob':
               let knob = {
                 name: node.name,
-                _props: node.node._props
+                kind: 'knob',
+                index: i,
+                value: node.node._props.value || 0.,
+                _props: node.node._props,
+                range: node.node._props.range || [0., 1.],
               }
               inputs.push(knob)
             break
@@ -67,6 +71,8 @@ module.exports = class Patch{
             case 'inlet':
               let input = {
                 name: node.name,
+                kind: 'jack',
+                index: i,
                 _props: node.node._props
               }
               inputs.push(input)
@@ -187,6 +193,7 @@ module.exports = class Patch{
           if(this.document[opID].inputs[i].name, paramName){
             this.document = Automerge.change(this.document, `update param value`, doc => {
               doc[opID].inputs[i]._props.value = payload[1]
+              doc[opID].inputs[i].value = payload[1]
             }) 
           }
         }
@@ -264,19 +271,17 @@ module.exports = class Patch{
     }
     return graph // this is the localGraph that mischmasch's vr uses (mainscene(localGraph))
   }
-  load(file){
+  // load an patch from file ( use process.argv[2] = nameOfPatch.json )
+  load(file){ 
     let ops = Object.keys(file)
     for(let i = 0; i< ops.length; i++){
       this.document = Automerge.change(this.document, `load patch from file`, doc => {
         doc[ops[i]]= file[ops[i]]
       }) 
     }
-
     // set patch dirty flag for animation Loop
     this.dirty.vr = true
     this.dirty.audio.graph = true
-    console.log(this.document, file)
-
   }
 }
 

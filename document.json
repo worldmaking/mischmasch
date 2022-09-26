@@ -187,5 +187,84 @@
       0.9724166033935765
     ],
     "uuid": "b37da237-f1b9-4be0-a3e7-6300ef229274"
+  },
+  "d9310f53-b121-45c8-b550-64452ba3878d": {
+    "category": "parameter",
+    "inputs": [
+      {
+        "_props": {
+          "kind": "knob",
+          "range": [
+            0,
+            1
+          ],
+          "value": 0.4885528470849619
+        },
+        "index": 0,
+        "kind": "knob",
+        "name": "knob",
+        "range": [
+          0,
+          1
+        ],
+        "value": 0.4885528470849619
+      }
+    ],
+    "name": "control",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {
+          "3ab1085a-e339-4bc5-859f-9e5b8fbd1549": {
+            "phase": "cable"
+          }
+        },
+        "name": "value"
+      }
+    ],
+    "position": [
+      -0.3643074333667755,
+      1.9084584712982178,
+      -1.3819048404693604
+    ],
+    "quaternion": [
+      0.27548071607517155,
+      0.22901977175725294,
+      0.11140449026171845,
+      0.9269570886625889
+    ],
+    "uuid": "d9310f53-b121-45c8-b550-64452ba3878d"
+  },
+  "1f95c00c-0e8d-4b73-b15a-4ee8d3393c47": {
+    "category": "throughput",
+    "inputs": [],
+    "name": "in",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {},
+        "name": "value"
+      }
+    ],
+    "position": [
+      0.14928480982780457,
+      2.331885814666748,
+      -1.1533164978027344
+    ],
+    "quaternion": [
+      0.38385209894627714,
+      -0.07508794590725743,
+      0.1404344912240593,
+      0.9095589706658466
+    ],
+    "uuid": "1f95c00c-0e8d-4b73-b15a-4ee8d3393c47"
   }
 }

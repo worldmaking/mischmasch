@@ -144,6 +144,64 @@
           "kind": "inlet"
         }
       }
+    },
+    "control_d9310f53-b121-45c8-b550-64452ba3878d": {
+      "_props": {
+        "kind": "control",
+        "category": "parameter",
+        "pos": [
+          -0.3643074333667755,
+          1.9084584712982178,
+          -1.3819048404693604
+        ],
+        "orient": [
+          0.27548071607517155,
+          0.22901977175725294,
+          0.11140449026171845,
+          0.9269570886625889
+        ]
+      },
+      "knob": {
+        "_props": {
+          "kind": "knob",
+          "range": [
+            0,
+            1
+          ],
+          "value": 0.4885528470849619
+        }
+      },
+      "value": {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        }
+      }
+    },
+    "in_1f95c00c-0e8d-4b73-b15a-4ee8d3393c47": {
+      "_props": {
+        "kind": "in",
+        "category": "throughput",
+        "pos": [
+          0.14928480982780457,
+          2.331885814666748,
+          -1.1533164978027344
+        ],
+        "orient": [
+          0.38385209894627714,
+          -0.07508794590725743,
+          0.1404344912240593,
+          0.9095589706658466
+        ]
+      },
+      "value": {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        }
+      }
     }
   },
   "arcs": [
@@ -722,6 +780,150 @@
     [
       "add_13d9e835-d1d4-4c98-ada8-9f3b93c0dce0.sum",
       "speaker_b37da237-f1b9-4be0-a3e7-6300ef229274.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.phase"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
+    ],
+    [
+      "control_d9310f53-b121-45c8-b550-64452ba3878d.value",
+      "cycle_3ab1085a-e339-4bc5-859f-9e5b8fbd1549.undefined"
     ]
   ]
 }
