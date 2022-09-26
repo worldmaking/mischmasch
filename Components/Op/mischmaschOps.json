@@ -61,10 +61,10 @@
         "range": [0.1, 1000],
         "kind": "knob"
       },
-      "phase":{
-        "info": "wave phase (0..1)",
+      "reset":{
+        "info": "hard sync",
         "value": 0,
-        "range": [0, 2],
+        "range": [0, 1],
         "kind": "inlet"
       }
     },
