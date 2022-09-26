@@ -447,7 +447,7 @@
     "classification": "source",
     "inputs": {
       "freq": "wave frequency",
-      "phase": "wave phase (0..1)"
+      "reset": "nonzero sync"
     },
     "outputs": {
       "out1": "interpolated waveform"
@@ -493,7 +493,7 @@
     "classification": "source",
     "inputs": {
       "freq": "frequency",
-      "reset": "a non-zero value will reset the phase to the initial value"
+      "reset": "nonzero sync"
     },
     "outputs": {
       "out1": "phase (0..1)"
