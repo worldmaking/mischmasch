@@ -450,8 +450,7 @@
       "phase": "wave phase (0..1)"
     },
     "outputs": {
-      "out1": "interpolated waveform",
-      "out2": "index (in samples)"
+      "out1": "interpolated waveform"
     }
   },
   "data": {
