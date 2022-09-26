@@ -1,139 +1,43 @@
 {
-  "3ab1085a-e339-4bc5-859f-9e5b8fbd1549": {
-    "category": "source",
-    "inputs": [
-      {
-        "_props": {
-          "index": 0,
-          "kind": "inlet"
-        },
-        "name": "freq"
-      },
-      {
-        "_props": {
-          "index": 1,
-          "kind": "inlet"
-        },
-        "name": "phase"
-      }
-    ],
-    "name": "cycle",
-    "outputs": [
-      {
-        "_props": {
-          "history": false,
-          "index": 0,
-          "kind": "outlet"
-        },
-        "connections": {
-          "13d9e835-d1d4-4c98-ada8-9f3b93c0dce0": {
-            "value1": "cable"
-          }
-        },
-        "name": "out1"
-      },
-      {
-        "_props": {
-          "history": false,
-          "index": 1,
-          "kind": "outlet"
-        },
-        "connections": {},
-        "name": "out2"
-      }
-    ],
-    "position": [
-      -0.13546040654182434,
-      2.037825107574463,
-      -1.376718521118164
-    ],
-    "quaternion": [
-      0.41735925516416306,
-      0.06582010742448852,
-      0.1689514906561136,
-      0.8904686240496161
-    ],
-    "uuid": "3ab1085a-e339-4bc5-859f-9e5b8fbd1549"
-  },
-  "9482c5ed-50b7-4fb5-83f1-e936a964a094": {
-    "category": "source",
-    "inputs": [
-      {
-        "_props": {
-          "index": 0,
-          "kind": "inlet"
-        },
-        "name": "freq"
-      },
-      {
-        "_props": {
-          "index": 1,
-          "kind": "inlet"
-        },
-        "name": "phase"
-      }
-    ],
-    "name": "cycle",
-    "outputs": [
-      {
-        "_props": {
-          "history": false,
-          "index": 0,
-          "kind": "outlet"
-        },
-        "connections": {
-          "13d9e835-d1d4-4c98-ada8-9f3b93c0dce0": {
-            "value2": "cable"
-          }
-        },
-        "name": "out1"
-      },
-      {
-        "_props": {
-          "history": false,
-          "index": 1,
-          "kind": "outlet"
-        },
-        "connections": {
-          "3ab1085a-e339-4bc5-859f-9e5b8fbd1549": {
-            "freq": "cable"
-          }
-        },
-        "name": "out2"
-      }
-    ],
-    "position": [
-      0.4357875883579254,
-      2.0909435749053955,
-      -1.2472026348114014
-    ],
-    "quaternion": [
-      0.42755600245853154,
-      -0.10346061124249509,
-      0.014808334041557888,
-      0.8979267857877418
-    ],
-    "uuid": "9482c5ed-50b7-4fb5-83f1-e936a964a094"
-  },
-  "13d9e835-d1d4-4c98-ada8-9f3b93c0dce0": {
+  "f5235d3d-c3d0-4b49-a3b0-aeeb8155a76d": {
     "category": "mathemagical",
     "inputs": [
       {
         "_props": {
           "index": 0,
-          "kind": "inlet"
+          "kind": "inlet",
+          "range": [
+            -1,
+            1
+          ],
+          "value": 1
         },
-        "name": "value1"
+        "index": 0,
+        "kind": "jack",
+        "name": "value1",
+        "value": 1
       },
       {
         "_props": {
           "index": 1,
-          "kind": "inlet"
+          "kind": "knob",
+          "range": [
+            0,
+            1
+          ],
+          "value": 1
         },
-        "name": "value2"
+        "index": 1,
+        "kind": "knob",
+        "name": "value2",
+        "range": [
+          0,
+          1
+        ],
+        "value": 1
       }
     ],
-    "name": "add",
+    "name": "mul",
     "outputs": [
       {
         "_props": {
@@ -142,50 +46,191 @@
           "kind": "outlet"
         },
         "connections": {
-          "b37da237-f1b9-4be0-a3e7-6300ef229274": {
+          "ba986cc1-61d4-47df-9281-19b29079cd4b": {
             "audio": "cable"
           }
         },
-        "name": "sum"
+        "name": "product"
       }
     ],
     "position": [
-      0.15343239903450012,
-      2.072671413421631,
-      -1.423710823059082
+      -0.6776635050773621,
+      1.5457736253738403,
+      -0.6315111517906189
     ],
     "quaternion": [
-      0.21825295610659928,
-      -0.014722684009029829,
-      0.07312206664571913,
-      0.9730375425760476
+      0.028932603017495586,
+      0.874679583637862,
+      -0.021262667941010532,
+      0.4833698720341202
     ],
-    "uuid": "13d9e835-d1d4-4c98-ada8-9f3b93c0dce0"
+    "uuid": "f5235d3d-c3d0-4b49-a3b0-aeeb8155a76d"
   },
-  "b37da237-f1b9-4be0-a3e7-6300ef229274": {
+  "7a3d7b4d-c574-4f0d-a37c-8d08db75a0a4": {
+    "category": "source",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "knob",
+          "range": [
+            0.1,
+            1000
+          ],
+          "value": 49.746613984581344
+        },
+        "index": 0,
+        "kind": "knob",
+        "name": "freq",
+        "range": [
+          0.1,
+          1000
+        ],
+        "value": 49.746613984581344
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "inlet",
+          "range": [
+            0,
+            2
+          ],
+          "value": 49.746613984581344
+        },
+        "index": 1,
+        "kind": "jack",
+        "name": "phase",
+        "value": 49.746613984581344
+      }
+    ],
+    "name": "cycle",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {
+          "f5235d3d-c3d0-4b49-a3b0-aeeb8155a76d": {
+            "value2": "cable"
+          }
+        },
+        "name": "out1"
+      }
+    ],
+    "position": [
+      -0.6849560141563416,
+      1.914778470993042,
+      -0.8208637237548828
+    ],
+    "quaternion": [
+      0.19709647916561793,
+      0.7665802955723933,
+      -0.27363183985536244,
+      0.5464742201462711
+    ],
+    "uuid": "7a3d7b4d-c574-4f0d-a37c-8d08db75a0a4"
+  },
+  "be8bd313-50ee-4a25-aeb7-c8d883c5822a": {
+    "category": "source",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "knob",
+          "range": [
+            0.1,
+            1000
+          ],
+          "value": 589.8731676435463
+        },
+        "index": 0,
+        "kind": "knob",
+        "name": "freq",
+        "range": [
+          0.1,
+          1000
+        ],
+        "value": 589.8731676435463
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "inlet",
+          "range": [
+            0,
+            2
+          ],
+          "value": 589.8731676435463
+        },
+        "index": 1,
+        "kind": "jack",
+        "name": "phase",
+        "value": 589.8731676435463
+      }
+    ],
+    "name": "cycle",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {
+          "f5235d3d-c3d0-4b49-a3b0-aeeb8155a76d": {
+            "value1": "cable"
+          }
+        },
+        "name": "out1"
+      }
+    ],
+    "position": [
+      -0.5241548418998718,
+      1.8588511943817139,
+      -0.526749849319458
+    ],
+    "quaternion": [
+      0.19770330462972563,
+      0.8452109573783186,
+      -0.29663300631941836,
+      0.3981717369734786
+    ],
+    "uuid": "be8bd313-50ee-4a25-aeb7-c8d883c5822a"
+  },
+  "ba986cc1-61d4-47df-9281-19b29079cd4b": {
     "category": "speaker",
     "inputs": [
       {
         "_props": {
           "index": 0,
-          "kind": "inlet"
+          "kind": "inlet",
+          "range": [
+            -1,
+            1
+          ],
+          "value": 0
         },
+        "index": 0,
+        "kind": "jack",
         "name": "audio"
       }
     ],
     "name": "speaker",
     "outputs": [],
     "position": [
-      0.21776947379112244,
-      1.7727099657058716,
-      -1.5448007583618164
+      -0.8124987483024597,
+      1.4730645418167114,
+      -1.0267239809036255
     ],
     "quaternion": [
-      0.22251975370534807,
-      0.02639659287117875,
-      0.0647620430573486,
-      0.9724166033935765
+      0.04588808118409689,
+      0.6699639926195489,
+      -0.07339067904804884,
+      0.7373305106657235
     ],
-    "uuid": "b37da237-f1b9-4be0-a3e7-6300ef229274"
+    "uuid": "ba986cc1-61d4-47df-9281-19b29079cd4b"
   }
 }

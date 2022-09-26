@@ -1,6 +1,8 @@
 const { v4: uuidv4 } = require('uuid');
 const Automerge = require('automerge')
 const _ = require('lodash');
+const replaceAll = require("replaceall");
+
 
 module.exports = class Patch{
   constructor(load){
@@ -90,7 +92,7 @@ module.exports = class Patch{
         }
         // get each output for this op
         
-        const id = uuidv4()
+        const id = replaceAll('-', '', uuidv4())
         let op = {
           position: payload.node._props.pos,
           quaternion: payload.node._props.orient,

@@ -1,7 +1,6 @@
 const fs = require('fs')
 const path = require('path')
 const operators = JSON.parse(fs.readFileSync(path.join(__dirname, '../Op/mischmaschOps.json')))
-const Op = require('../Op/Op.js')
 
 const { vec3, quat} = require("gl-matrix")
 
@@ -10,7 +9,6 @@ module.exports = class Palette{
     this.opsList = Object.keys(operators)
     this.operators = operators
     this.graph = {}
-
     // loop through ops and get graph
     for(let i=0; i<this.opsList.length; i++){
       let opName =  this.opsList[i]
@@ -28,28 +26,25 @@ module.exports = class Palette{
       // does the op have inputs?
       if(op.inputs){
         let inputs = Object.keys(op.inputs)
-
         // loop over inputs
         for(let j = 0; j<inputs.length; j++){
           let input = inputs[j];
-  
           if(!this.graph[opName][input]){
             this.graph[opName][input] = {}
+          }          
+          
+          this.graph[opName][input]._props = {
+            kind: op.inputs[input].kind,
+            index: j,
+            range: op.inputs[input].range,
+            value: op.inputs[input].value
           }
-          if(op.classification == 'parameter'){
-            this.graph[opName][input]._props = {
-              kind: 'knob',
-              range: [0., 1.]
-            }
-          }else {
-            this.graph[opName][input]._props = {
-              kind: 'inlet',
-              index: j
-            }
-          }
+          
 
         }
+
       }
+      
 
       // does the op have outputs?
       if(op.outputs){
@@ -142,4 +137,8 @@ module.exports = class Palette{
     //   console.log('\nmew', newPos, '\nold', this.graph[this.opsList[i]]._props.pos, '\nhmd', hmdPos)
     // }
   }
+}
+
+function prettyPrint(object){
+	console.log(JSON.stringify(object, null, 4))
 }

@@ -171,73 +171,6 @@ let localGraph = {
 	arcs: []
 }
 
-
-
-let USEWS = false;
-let userDataChannel
-// use this to represent others' movements/presence in the world
-let pals = {}
-
-if(USEWS || argv.w){
-	USEWS = true
-	console.log('using websockets')
-
-	// // userDataChannel = new ws('ws://mischmasch-userdata.herokuapp.com/8082');
-	// userDataChannel = new rws('ws://mischmasch-userdata.herokuapp.com/8082', [], rwsOptions);
-
-	// // teapartyWebsocket.addEventListener('message', (data) => {
-	// // 	let msg = JSON.parse(data.data);
-
-	// userDataChannel.addEventListener('open', (data) => {
-	// 	userDataChannel.send(JSON.stringify({
-	// 		cmd: 'handshake',
-	// 		source: peerHandle,
-	// 		data: 'highFive'
-	// 	}));
-	// });
-	
-	// userDataChannel.addEventListener('message', (data) => {
-	// 	let msg = JSON.parse(data.data)
-			
-	// 		switch(msg.cmd){
-
-	// 			case 'handshake':
-	// 				console.log('peer ' + msg.source + ' CONNECTED')
-	// 				pals[msg.source] = {
-	// 					hands: {},
-	// 					hmd: {}
-	// 				}
-	// 			break
-
-
-	// 			case "hands":
-	// 				// Graham, you can use this object elsewhere to access where in the world to place a pal's hand controllers
-	// 				pals[msg.source].hands = msg.data
-	// 			break
-
-	// 			case "hmd":
-	// 				// Graham, you can use this object elsewhere to access where in the world to place a pal's hand controllers
-	// 				pals[msg.source].hmd = msg.data
-	// 			break
-
-	// 			case 'cursorPosition':
-	// 				console.log('cursor position from client ' + msg.source + ': ', msg.data)
-	// 			break
-
-	// 			default: console.log('unhandled msg: ', msg)
-	// 		}
-	// })
-
-	// userDataChannel.addEventListener('error', (err) => {
-	// 	console.log(err)
-	// })
-} else {
-	// no ws used
-	// demoScene = path.join(__dirname, "gotlib/scenes", "simple.json")
-	// localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
-
-}
-
 let menuGraph = {
 	nodes: {},
 	arcs: []
@@ -529,11 +462,16 @@ const UI = {
 				// TODO use this to display a tooltip above the hovered op, see issue #173
 				// menu.getInfo(object.name)		
 			}
+
+			if(hand.B_pressed == true){
+				console.log('selected op for module:', object.name)
+			}
+
 		}
 
 		let grip_squeeze = (hand.grip_pressed == 1); // rising edge only
+		// let pad_press = (hand.pad_press = 1)
 
-		
 		switch(hand.state) {
 			case "menu": {
 				if (object && hand.trigger_pressed) {
@@ -778,6 +716,7 @@ const UI = {
 								let invHandMat = mat4.invert(mat4.create(), hand.mat)
 								// get pose of object relative to hand:
 								hand.stateData.objectRelativeMat = mat4.multiply(mat4.create(), invHandMat, object.mat)
+
 							}
 						} break;
 					}
@@ -788,6 +727,8 @@ const UI = {
 					menuScene.rebuild(menuGraph)
 					// call up the menu:
 					hand.state = "menu";
+				} else if(hand.pad_pressed){
+
 				}
 			}
 		}
@@ -1723,6 +1664,7 @@ function makeSceneGraph(renderer, gl) {
 		},
 
 		rebuildNode(name, node, parent, parent_path) {
+			// console.log('name', name, 'node', node, '\n\nparent', parent)
 			const props = node._props || {}
 
 			let obj = this.getNextModule(parent);
@@ -1813,6 +1755,7 @@ function makeSceneGraph(renderer, gl) {
 				} break;
 				default: {
 					vec4.copy(obj.i_color, opMenuColour(props.category));
+
 					obj.isModule = true;
 					obj.nodes = [];
 
@@ -2143,25 +2086,6 @@ function initUI(window) {
 		UI.keynav.handleKeys(key, down, mod);
 	})
 }
-/*
-for key events:
-glfw.setKeyCallback(window, function(...args) {
-})
-for mouse position:
-glfw.setCursorPosCallback(window, (window, px, py) => {
-    // convert px,py to normalized 0..1 coordinates:
-    const pix_dim = vec2.div([1, 1], 
-        glfw.getWindowContentScale(window), 
-        glfw.getFramebufferSize(window)  
-    );
-    // -1..1 in each axis:
-    let ndcPoint = [+2pxpix_dim[0] - 1, -2pypix_dim[1] + 1 ];
-});
-
-vec3.transformQuat(up, [0, 1, 0], nav.quat) - UP vector
-vec3.transformQuat(forward, [0, 0, -1], nav.quat) - FORWARD vector
-*/
-
 
 let t = glfw.getTime();
 let fps = 60;
@@ -2182,10 +2106,10 @@ function animate() {
 
 	// rebuild VR localGraph
 	if(patch.dirty.vr == true){
-		fs.writeFileSync('document.json', JSON.stringify(patch.document, null, 2))
+		fs.writeFileSync('userData/document.json', JSON.stringify(patch.document, null, 2))
 		
 		localGraph = patch.rebuild()
-		fs.writeFileSync('graph.json', JSON.stringify(localGraph, null, 2))
+		fs.writeFileSync('userData/graph.json', JSON.stringify(localGraph, null, 2))
 
 		mainScene.rebuild(localGraph)
 		patch.dirty.vr = false
@@ -2203,29 +2127,6 @@ function animate() {
 		Audio.updateParams(patch.document)
 		patch.dirty.audio.param = false;
 	}
-	// handle scene changes from server:
-	// if (incomingDeltas.length > 0) {
-	// // handle incoming deltas:
-	// 	while (incomingDeltas.length > 0) {
-	// 		let delta = incomingDeltas.shift();
-	// 		// TODO: derive which world to add to:
-	// 		try {
-	// 			//console.log('incomingDelta', delta)
-	// 			got.applyDeltasToGraph(localGraph, delta);
-
-	// 			// console.log(localGraph)
-
-	// 			// fs.writeFileSync("_debugCurrentGraph.json", JSON.stringify(localGraph, null, "\t"), "utf8");
-	// 		} catch (e) {
-	// 			console.warn(e);
-	// 		}
-	// 	}
-	// 	//console.log("updated localGraph", JSON.stringify(localGraph, null, "  "))
-
-	// 	// // re-layout:
-	// 	mainScene.rebuild(localGraph)
-	// }
-
 
 	currentScene = (UI.hands[0].state == "menu" || UI.hands[1].state == "menu") ? menuScene : mainScene;
 	for (let i=0; i<currentScene.module_instances.count; i++) {
@@ -2259,7 +2160,7 @@ function animate() {
 				hand.pad_y = axes[1]
 				hand.pad_pressed = (buttons[2].pressed) ? hand.pad_pressed+1 : 0;
 				hand.grip_pressed = (buttons[1].pressed) ? hand.grip_pressed+1 : 0;
-				hand.menu_pressed = (buttons[3].pressed) ? hand.menu_pressed+1 : 0;
+				hand.B_pressed = buttons[3].pressed;
 
 				let mat = input.targetRaySpace;
 				if (mat) {
@@ -2340,52 +2241,6 @@ function animate() {
 
 	// Swap buffers
 	glfw.swapBuffers(window);
-
-	// send outgoing deltas:
-
-	// if (USEWS == true && socket && socket.readyState === 1) {
-	// 	console.log('1')
-	// 	// send any edits to the server:
-	// 	if (outgoingDeltas.length > 0) {
-	// 		let message = JSON.stringify({
-	// 			cmd: "deltas",
-	// 			date: Date.now(),
-	// 			data: outgoingDeltas
-	// 		});
-	// 		socket.send(message);
-	// 		//console.log('outgoing message',message)
-	// 		outgoingDeltas.length = 0;
-	// 	}
-	// 	// HMD pos
-	// 	if(UI.hmd){
-	// 		let hmdMessage = JSON.stringify({
-	// 			cmd: "HMD",
-	// 			date: Date.now(),
-	// 			data: UI.hmd
-	// 		});
-	// 		sendToAppJS(hmdMessage);
-	// 	}
-
-
-	// 	// right hand pos
-	// 	if(UI.hands[1]){
-	// 		let wandsMessage = JSON.stringify({
-	// 			cmd: "rightWandPos",
-	// 			date: Date.now(),
-	// 			data: {pos: UI.hands[1].pos}
-	// 		});
-	// 		sendToAppJS(wandsMessage);
-	// 	}
-
-	// } else if (!USEWS) {
-	// 	// otherwise, just move them to our incoming list, 
-	// 	// so we can work without a server:
-	// 	//console.log('\n\nogds',outgoingDeltas)
-	// 	for (let delta of outgoingDeltas) {
-	// 		incomingDeltas.push(delta);
-	// 	}
-	// 	outgoingDeltas.length = 0;
-	// }
 }
 
 function draw(eye=0) {
@@ -2413,96 +2268,6 @@ function draw(eye=0) {
 // BOOT SEQUENCE
 //////////////////////////////////////////////////////////////////////////////////////////
 
-// function serverConnect() {
-// 	const url = 'ws://localhost:8080'
-// 	socket = new ws(url)
-// 	socket.binaryType = 'arraybuffer';
-// 	socket.onopen = () => {
-// 		console.log("websocket connected to localWebsocket on "+url);
-// 		// reset our local scene:
-// 		localGraph = {
-// 			nodes: {},
-// 			arcs: []
-// 		};
-// 		mainScene.rebuild(localGraph)
-
-// 		sendToAppJS(JSON.stringify({ cmd:"get_scene"})) 
-
-// 		// let the localWebsocket server assign our connection with an id
-// 		sendToAppJS(JSON.stringify({ cmd:"vrClientStatus"})) 
-
-// 	}
-// 	socket.onerror = (error) => {
-// 	  console.error(`ws error: ${error}`)
-// 	  socket = null;
-// 	  localGraph = { nodes: {}, arcs: [] }
-// 	}
-// 	socket.onclose = function(e) {
-// 		socket = null;
-// 		console.log("websocket disconnected from "+url);
-// 		localGraph = {
-// 			nodes: {}, arcs: []
-// 		}
-// 		mainScene.rebuild(localGraph)
-// 		setTimeout(function(){
-// 			console.log("websocket reconnecting");
-// 			serverConnect();
-// 		}, 2000);		
-// 	}
-// 	socket.onmessage = (e) => {
-// 		if (e.data instanceof ArrayBuffer) {
-// 			console.log("ws received arraybuffer of " + e.data.byteLength + " bytes")
-// 		} else {
-// 			let msg = e.data;
-// 			try {
-// 				msg = JSON.parse(msg);
-// 			} catch(e) {}
-// 			onServerMessage(msg, socket);
-// 		} 
-// 	}
-// }
-
-// function onServerMessage(msg, sock) {
-// 	switch (msg.cmd) {
-//         case "deltas": {
-// 			// insert into our TODO list:
-//             incomingDeltas.push.apply(incomingDeltas, msg.data);
-// 		} break;
-		
-// 		case "audiovizLookup":
-// 			// console.log(msg.data)
-// 			// this is where we get the state of a node's output, sent from the gen patcher!
-// 		break
-
-// 		case "nuke":
-// 			// either app.js or host.js detected that this client has sent one or more malformed deltas. so, clear the localscene here, wipe delta history and all buffers, then request the current scene from app.js
-// 			// find out what the malformed delta was. one day this will be very useful for debugging whilst in VR!
-// 			// console.log(msg.data)
-		
-// 			// disable sending deltas
-// 			socket.close()
-// 			// wipe the scene
-// 			localGraph = {
-// 				nodes: {}, arcs: []
-// 			}
-// 			mainScene.rebuild(localGraph)
-			
-// 			// reconnect to app.js thereby receiving current state of scene
-// 			serverConnect()
-// 		break
-
-//         default:
-//           //  console.log("received JSON", msg, typeof msg);
-//     }
-// }
-
-// we use this to prevent attempting a ws.send if the socket becomes closed
-// function sendToAppJS(outgoingMessage){
-// 	if(socket.readyState == 1){
-// 		socket.send(outgoingMessage)
-// 	}
-// }
-
 async function init() {
 	// init opengl 
 	window = initWindow();
@@ -2513,19 +2278,11 @@ async function init() {
 	menu = new Palette()
 	menuGraph.nodes = menu.graph;
 
-	
-	fs.writeFileSync('palette.json', JSON.stringify(menuGraph, null, 2))
 	// prettyPrint(menu.graph)
 	menuScene = makeSceneGraph(renderer, gl)
 	menuScene.init(gl)
 	menuScene.rebuild(menuGraph)
 
-	// default graph until server connects:
-	// localGraph = JSON.parse(fs.readFileSync(demoScene, "utf8"));
-	// server connect
-	// if (USEWS) {
-	// 	serverConnect();
-	// } 
 	mainScene = makeSceneGraph(renderer, gl);
 	mainScene.init(gl);
 	mainScene.rebuild(localGraph)

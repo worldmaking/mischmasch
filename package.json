@@ -31,6 +31,7 @@
     "progress": "^2.0.3",
     "public-ip": "^4.0.4",
     "reconnecting-websocket": "^4.4.0",
+    "replaceall": "^0.1.6",
     "tiny-queue": "^0.2.1",
     "url": "^0.11.0",
     "username": "^5.1.0",
