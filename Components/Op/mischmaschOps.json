@@ -450,7 +450,7 @@
       "reset": "nonzero sync"
     },
     "outputs": {
-      "out1": "interpolated waveform"
+      "sinusoid": "interpolated waveform"
     }
   },
   "data": {
@@ -496,7 +496,7 @@
       "reset": "nonzero sync"
     },
     "outputs": {
-      "out1": "phase (0..1)"
+      "phase": "phase (0..1)"
     }
   },
   "poke": {
@@ -518,7 +518,7 @@
       "phase": "phase to be scaled (0 to 1)"
     },
     "outputs": {
-      "out1": "ramp cycle (0 to 1)"
+      "ramp": "ramp cycle (0 to 1)"
     }
   },
   "train": {
