@@ -17,6 +17,9 @@ audio.start()
 
 console.log("got audio", audio)
 
+// Now setup genish.js
+const genish = require("./genish.js")
+genish.samplerate = audio.samplerate
 
 // Now start the main loop of this audio worker thread:
 let frameIdx = 0;
