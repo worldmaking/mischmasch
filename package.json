@@ -4,9 +4,7 @@
   "description": "Modular Synthesis in VR",
   "main": "server.js",
   "scripts": {
-    "start": "node mischmasch.js",
-    "preinstall": "node preinstall.js",
-    "postinstall": "node postinstall.js"
+    "start": "node mischmasch.js"
   },
   "repository": {
     "type": "git",
