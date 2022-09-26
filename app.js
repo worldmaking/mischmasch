@@ -23,6 +23,7 @@ const componentPath = path.join(__dirname, 'Components')
 // components
 const Patch = require(path.join(componentPath, 'Patch/Patch.js'))
 const Palette = require(path.join(componentPath, 'Palette/Palette.js'))
+const Audio = require(path.join(componentPath, 'Audio/Audio.js'))
 let patch = new Patch()
 
 // let p2pID; // set by coven signalling server
@@ -2193,13 +2194,13 @@ function animate() {
 	// rebuild audio graph
 	if(patch.dirty.audio.graph == true){
 		// rebuild genish graph
-
+		Audio.updateGraph(patch.document)
 		patch.dirty.audio.graph = false;
 	}
 	// update param(s) in audio graph
 	if(patch.dirty.audio.param == true){
 		// do the thing
-
+		Audio.updateParams(patch.document)
 		patch.dirty.audio.param = false;
 	}
 	// handle scene changes from server:
