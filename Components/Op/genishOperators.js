@@ -456,11 +456,10 @@ let opsList =
     "classification": "source",
     "inputs": {
       "freq": "wave frequency",
-      "reset": "non-zero input"
+      "reset": "non-zero sync"
     },
     "outputs": {
-      "out1": "interpolated waveform",
-      "out2": "index (in samples)"
+      "sinusoid": "interpolated waveform"
     }
   },
   {
@@ -507,10 +506,10 @@ let opsList =
     "classification": "source",
     "inputs": {
       "freq": "frequency",
-      "reset": "a non-zero value will reset the phase to the initial value"
+      "reset": "non-zero sync"
     },
     "outputs": {
-      "out1": "phase (0..1)"
+      "phase": "phase (0..1)"
     }
   },
   {

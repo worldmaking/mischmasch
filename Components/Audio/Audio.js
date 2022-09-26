@@ -87,7 +87,7 @@ function doc2operations(doc) {
 			let inputs = conns.filter(conn => conn.input == input.name).map(conn => {
 				// for any op that we used, add it to the chain:
 				if (memo[conn.src]) {
-					// if we have already visited this object, this must be a history connection
+					// if we have already generated this object, this must be a history connection
 					// TODO
 				}
 				else {
@@ -161,6 +161,12 @@ module.exports = {
 	updateGraph(doc) {
 		try {
 			console.log("audio got new doc", JSON.stringify(doc, null, "  "))
+
+			let operations = doc2operations(doc)
+
+			worker.postMessage({ cmd: "doc", operations })
+
+			// send them to the worker:
 		} catch (e) {
 			console.error(e)
 		}
