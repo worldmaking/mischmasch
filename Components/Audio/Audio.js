@@ -117,11 +117,7 @@ function doc2operations(doc) {
 
 	// this will have built them in reverse order (by pulling from the outputs)
 	// we want to reverse this to generate code
-	operations.reverse();
-
-	console.log("operations = ", JSON.stringify(operations, null, "  "))
-	
-	return operations
+	return operations.reverse();
 	// the final stage will be to iterate over a list of statements, looking a bit like this:
 	/*
 
@@ -160,9 +156,9 @@ module.exports = {
 
 	updateGraph(doc) {
 		try {
-			console.log("audio got new doc", JSON.stringify(doc, null, "  "))
-
 			let operations = doc2operations(doc)
+
+			console.log("operations = ", JSON.stringify(operations, null, "  "))
 
 			worker.postMessage({ cmd: "doc", operations })
 
