@@ -77,7 +77,7 @@
             0.1,
             1000
           ],
-          "value": 49.746613984581344
+          "value": 4
         },
         "index": 0,
         "kind": "knob",
@@ -86,7 +86,7 @@
           0.1,
           1000
         ],
-        "value": 49.746613984581344
+        "value": 4
       },
       {
         "_props": {
@@ -94,14 +94,14 @@
           "kind": "inlet",
           "range": [
             0,
-            2
+            1
           ],
-          "value": 49.746613984581344
+          "value": 0
         },
         "index": 1,
         "kind": "jack",
-        "name": "phase",
-        "value": 49.746613984581344
+        "name": "reset",
+        "value": 0
       }
     ],
     "name": "cycle",
@@ -144,7 +144,7 @@
             0.1,
             1000
           ],
-          "value": 589.8731676435463
+          "value": 250
         },
         "index": 0,
         "kind": "knob",
@@ -153,7 +153,7 @@
           0.1,
           1000
         ],
-        "value": 589.8731676435463
+        "value": 250
       },
       {
         "_props": {
@@ -161,14 +161,14 @@
           "kind": "inlet",
           "range": [
             0,
-            2
+            1
           ],
-          "value": 589.8731676435463
+          "value": 0
         },
         "index": 1,
         "kind": "jack",
-        "name": "phase",
-        "value": 589.8731676435463
+        "name": "reset",
+        "value": 0
       }
     ],
     "name": "cycle",
@@ -184,7 +184,7 @@
             "value1": "cable"
           }
         },
-        "name": "out1"
+        "name": "sinusoid"
       }
     ],
     "position": [
@@ -201,6 +201,8 @@
     "uuid": "be8bd313_50ee_4a25_aeb7_c8d883c5822a"
   },
   "ba986cc1_61d4_47df_9281_19b29079cd4b": {
+    "uuid": "ba986cc1_61d4_47df_9281_19b29079cd4b",
+    "name": "speaker",
     "category": "speaker",
     "inputs": [
       {
@@ -218,7 +220,6 @@
         "name": "audio"
       }
     ],
-    "name": "speaker",
     "outputs": [],
     "position": [
       -0.8124987483024597,
@@ -230,7 +231,6 @@
       0.6699639926195489,
       -0.07339067904804884,
       0.7373305106657235
-    ],
-    "uuid": "ba986cc1_61d4_47df_9281_19b29079cd4b"
+    ]
   }
 }
