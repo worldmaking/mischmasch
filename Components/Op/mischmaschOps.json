@@ -71,5 +71,25 @@
     "outputs": {
       "sinusoid": "interpolated waveform"
     }
+  },
+  "delay": {
+    "classification": "delay",
+    "inputs":{
+      "in": {
+        "info": "the signal to be delayed",
+        "value": 0,
+        "range": [0, 1],
+        "kind": "knob"
+      },
+      "reset":{
+        "info": "The amount of time to delay the incoming signal.",
+        "value": 512,
+        "range": [1, 44100],
+        "kind": "inlet"
+      }
+    },
+    "outputs": {
+      "out1": "signal output"
+    }
   }
 }
