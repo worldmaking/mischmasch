@@ -8,6 +8,9 @@ const { Worker, MessageChannel, MessagePort, isMainThread, parentPort, workerDat
 const operators = JSON.parse(fs.readFileSync(path.join(__dirname, '../Op/mischmaschOps.json')))
 const Op = require('../Op/Op.js')
 
+const doc1 = JSON.parse(fs.readFileSync(path.join(__dirname,"../../minimum_patch.json")))
+const doc2 = JSON.parse(fs.readFileSync(path.join(__dirname,"../../testPatch.json")))
+
 // load a js file as a new Worker thread:
 const worker = new Worker(path.join(__dirname, "genish_worker.js"), {
 	// argv: becomes process.argv in worker
@@ -133,6 +136,13 @@ module.exports = {
 			let operations = doc2operations(doc)
 			console.log(operations, JSON.stringify(operations, null, "  "))
 			worker.postMessage({ cmd: "graph", operations })
+
+			// setTimeout(()=>{
+			// 	worker.postMessage({ cmd: "graph", operations:doc2operations(doc1) })
+			// 	setTimeout(()=>{
+			// 		worker.postMessage({ cmd: "graph", operations:doc2operations(doc2) })
+			// 	}, 2000)
+			// }, 2000)
 
 			// send them to the worker:
 		} catch (e) {
