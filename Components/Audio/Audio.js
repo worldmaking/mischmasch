@@ -65,7 +65,6 @@ function doc2operations(doc) {
 			chain.push(obj)
 		}
 	})
-	if (chain.length < 1) chain.push(lastobj)
 
 	let operations = []
 	let memo = []

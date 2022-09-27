@@ -115,32 +115,36 @@ parentPort.on("message", (msg) => {
 					let stash = kernel ? getstash(kernel) : {}
 					oldkernel = kernel
 					mixerXfade = 1
-					// 2nd argument here is a memory allocation
-					// TODO we need to figure out how to assign this more sensibly
-					kernel = genish.gen.createCallback(graph, memsize)
-					kernel.graph = graph
-					// after compiling, build up the index map for stashing:
-					kernel.memorymap = getMemoryMap(graph);
-					applystash(kernel, stash);
+					if (graph) {
+						// 2nd argument here is a memory allocation
+						// TODO we need to figure out how to assign this more sensibly
+						kernel = genish.gen.createCallback(graph, memsize)
+						kernel.graph = graph
+						// after compiling, build up the index map for stashing:
+						kernel.memorymap = getMemoryMap(graph);
+						applystash(kernel, stash);
 
-					//console.log(JSON.stringify(stash, null, "  "))
+						//console.log(JSON.stringify(stash, null, "  "))
 
-					console.log("map", kernel.memorymap);
-					// this is our list of parameters:
-					//console.log("params", graph.params);
-					// this is how to update a param:
-					//graph.params["knob_2_voltage"].value = 200;
+						console.log("map", kernel.memorymap);
+						// this is our list of parameters:
+						//console.log("params", graph.params);
+						// this is how to update a param:
+						//graph.params["knob_2_voltage"].value = 200;
 
-					// if we had any external audio inputs:
-					//console.log("number of inputs", kernel.inputs.size);
-					//console.log("input objects", graph.kernel.inputs);
-					// this is our outputs:
-					//console.log("number of outputs", kernel.out.length);
-					//console.log("output values", kernel.out);
-					// for external buffers:
-					//console.log("data objects", graph.kernel.data);
-					// I'm not sure what this is for:
-					//console.log("members", graph.kernel.members);
+						// if we had any external audio inputs:
+						//console.log("number of inputs", kernel.inputs.size);
+						//console.log("input objects", graph.kernel.inputs);
+						// this is our outputs:
+						//console.log("number of outputs", kernel.out.length);
+						//console.log("output values", kernel.out);
+						// for external buffers:
+						//console.log("data objects", graph.kernel.data);
+						// I'm not sure what this is for:
+						//console.log("members", graph.kernel.members);
+					} else {
+						kernel = null
+					}
 
 					break;
 				}
