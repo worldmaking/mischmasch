@@ -18,7 +18,6 @@ module.exports = class Palette{
       }
       
       let op = this.operators[opName]
-      console.log(opName)
 
       if(op.classification == 'generic'){
         //TODO these ops exist in the mischmaschOps.json, but have not been defined yet. missing info from genish

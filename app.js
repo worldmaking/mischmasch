@@ -728,8 +728,6 @@ const UI = {
 					menuScene.rebuild(menuGraph)
 					// call up the menu:
 					hand.state = "menu";
-
-					console.log(menu.graph)
 					// when menu is loaded, check if the current scene does not have a speaker, if so add it now. reason is that at first I was adding a speaker on load, but most of the time the hmd was pointed down at load (off my head), and the speaker's orientation was funky. this way the speaker loads for the first time correctly
 					patch.ensureSpeaker(UI.hmd)
 
