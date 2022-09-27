@@ -13,7 +13,8 @@ module.exports = class Patch{
       audio:{
         graph: false,
         param: false
-      }
+      },
+      speaker: false
     }
 
     this.cables = []
@@ -155,6 +156,10 @@ module.exports = class Patch{
       break
 
       case 'op':
+        let opKind = this.document[payload].name
+        if(opKind == 'speaker'){
+          this.dirty.speaker = true
+        }
         // update document in automerge
         this.document = Automerge.change(this.document, 'remove op', doc => {
           delete doc[payload]
@@ -285,14 +290,15 @@ module.exports = class Patch{
     this.dirty.vr = true
     this.dirty.audio.graph = true
   }
-  checkSpeaker(hmd){
-    let ops = Object.keys(this.document)
-    if(!ops.includes('speaker')){
-      let pos = [hmd.pos[0], hmd.pos[1], hmd.pos[2]-3]
+  ensureSpeaker(hmd){
+    // let ops = Object.keys(this.document)
+    // if(!ops.includes('speaker')){
+      let pos = [hmd.pos[0], hmd.pos[1], hmd.pos[2]-2]
+      let quat = [ hmd.orient[0], hmd.orient[1],  hmd.orient[2],  hmd.orient[3] ]
       const id = replaceAll('-', '', uuidv4())
       let op = {
         position: pos,
-        quaternion: hmd.orient,
+        quaternion: quat,
         category: 'speaker',
         name: 'speaker',
         uuid: id,
@@ -317,8 +323,8 @@ module.exports = class Patch{
       // set patch dirty flag for animation Loop
       this.dirty.vr = true
       this.dirty.audio.graph = true
-      console.log(op)
-    }
+      this.dirty.speaker = false
+    // }
 
   }
 }

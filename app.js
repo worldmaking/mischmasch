@@ -2127,6 +2127,11 @@ function animate() {
 		patch.dirty.audio.param = false;
 	}
 
+	// check if speaker is needed in document
+	if(patch.dirty.speaker == true){
+		patch.ensureSpeaker(UI.hmd)
+	}
+
 	currentScene = (UI.hands[0].state == "menu" || UI.hands[1].state == "menu") ? menuScene : mainScene;
 	for (let i=0; i<currentScene.module_instances.count; i++) {
 		currentScene.module_instances.instances[i].i_highlight[0] = 0;
@@ -2289,11 +2294,12 @@ async function init() {
 	
 	initUI(window);
 
-	// check if patch has a speaker
-	patch.checkSpeaker(UI.hmd)
+	
 
 	animate()
 
+	// ensure patch has a speaker
+	patch.dirty.speaker = true
 	// load a scene on start?
 	if(process.argv[2]){
 		let startPatch = JSON.parse(fs.readFileSync(path.join(__dirname, process.argv[2])))
