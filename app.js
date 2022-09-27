@@ -1664,7 +1664,6 @@ function makeSceneGraph(renderer, gl) {
 		},
 
 		rebuildNode(name, node, parent, parent_path) {
-			// console.log('name', name, 'node', node, '\n\nparent', parent)
 			const props = node._props || {}
 
 			let obj = this.getNextModule(parent);
@@ -2290,7 +2289,9 @@ async function init() {
 	
 	initUI(window);
 
-	
+	// check if patch has a speaker
+	patch.checkSpeaker(UI.hmd)
+
 	animate()
 
 	// load a scene on start?
