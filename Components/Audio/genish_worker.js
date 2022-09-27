@@ -109,9 +109,6 @@ parentPort.on("message", (msg) => {
 									values[o] = i==0 ? outputs : 0
 								})
 							}
-
-
-							console.log("values", values)
 						}
 					})
 
@@ -126,7 +123,7 @@ parentPort.on("message", (msg) => {
 					kernel.memorymap = getMemoryMap(graph);
 					applystash(kernel, stash);
 
-					console.log(JSON.stringify(stash, null, "  "))
+					//console.log(JSON.stringify(stash, null, "  "))
 
 					console.log("map", kernel.memorymap);
 					// this is our list of parameters:
@@ -147,7 +144,7 @@ parentPort.on("message", (msg) => {
 
 					break;
 				}
-				case "end": {
+				case "shutdown": {
 					audio.end()
 					process.exit()
 					break;

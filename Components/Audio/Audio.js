@@ -1,6 +1,7 @@
 const assert = require('assert'), 
 fs = require("fs"), 
-path = require("path")
+path = require("path");
+const { exit } = require('process');
 const { fileURLToPath } = require('url');
 const { Worker, MessageChannel, MessagePort, isMainThread, parentPort, workerData, SHARE_ENV } = require('worker_threads');
 
@@ -121,38 +122,6 @@ function doc2operations(doc) {
 	// this will have built them in reverse order (by pulling from the outputs)
 	// we want to reverse this to generate code
 	return operations.reverse();
-	// the final stage will be to iterate over a list of statements, looking a bit like this:
-	/*
-
-	{
-		outputs: ["mdltr_sine"]
-		op: "cycle",
-		args: [200, 0]
-	},
-	{
-		outputs: ["carrier_phasor"]
-		op: "phasor",
-		args: ["modltr_sine", 0]
-	},
-	{
-		outputs: ["spkr_output"]
-		op: "speaker",
-		args: ["carrier_phasor"]
-	},
-	
-
-		makeUID("modltr")
-		nodes["modltr_sine"] = genish["cycle"](200, 0)
-
-		makeUID("carrier")
-		nodes["carrier_phasor"] = genish["phasor"](nodes["modltr_sine"], 0)
-
-		makeUID("spkr")
-		nodes["spkr_output"] = nodes["carrier_phasor"]
-
-		let graph = nodes["spkr_output"]
-	*/
-
 }
 
 module.exports = {
@@ -162,6 +131,7 @@ module.exports = {
 			if (FAIL) return;
 			
 			let operations = doc2operations(doc)
+			console.log(operations, JSON.stringify(operations, null, "  "))
 			worker.postMessage({ cmd: "graph", operations })
 
 			// send them to the worker:
@@ -176,6 +146,11 @@ module.exports = {
 		} catch (e) {
 			console.error(e)
 		}
+	},
+
+	shutdown() {
+		if (FAIL) return;
+		worker.postMessage({ cmd: "shutdown" })
 	}
 
 }
