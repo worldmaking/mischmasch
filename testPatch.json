@@ -1,5 +1,5 @@
 {
-  "f5235d3d-c3d0-4b49-a3b0-aeeb8155a76d": {
+  "f5235d3d_c3d0_4b49_a3b0_aeeb8155a76d": {
     "category": "mathemagical",
     "inputs": [
       {
@@ -46,7 +46,7 @@
           "kind": "outlet"
         },
         "connections": {
-          "ba986cc1-61d4-47df-9281-19b29079cd4b": {
+          "ba986cc1_61d4_47df_9281_19b29079cd4b": {
             "audio": "cable"
           }
         },
@@ -64,9 +64,9 @@
       -0.021262667941010532,
       0.4833698720341202
     ],
-    "uuid": "f5235d3d-c3d0-4b49-a3b0-aeeb8155a76d"
+    "uuid": "f5235d3d_c3d0_4b49_a3b0_aeeb8155a76d"
   },
-  "7a3d7b4d-c574-4f0d-a37c-8d08db75a0a4": {
+  "7a3d7b4d_c574_4f0d_a37c_8d08db75a0a4": {
     "category": "source",
     "inputs": [
       {
@@ -113,7 +113,7 @@
           "kind": "outlet"
         },
         "connections": {
-          "f5235d3d-c3d0-4b49-a3b0-aeeb8155a76d": {
+          "f5235d3d_c3d0_4b49_a3b0_aeeb8155a76d": {
             "value2": "cable"
           }
         },
@@ -131,9 +131,9 @@
       -0.27363183985536244,
       0.5464742201462711
     ],
-    "uuid": "7a3d7b4d-c574-4f0d-a37c-8d08db75a0a4"
+    "uuid": "7a3d7b4d_c574_4f0d_a37c_8d08db75a0a4"
   },
-  "be8bd313-50ee-4a25-aeb7-c8d883c5822a": {
+  "be8bd313_50ee_4a25_aeb7_c8d883c5822a": {
     "category": "source",
     "inputs": [
       {
@@ -180,7 +180,7 @@
           "kind": "outlet"
         },
         "connections": {
-          "f5235d3d-c3d0-4b49-a3b0-aeeb8155a76d": {
+          "f5235d3d_c3d0_4b49_a3b0_aeeb8155a76d": {
             "value1": "cable"
           }
         },
@@ -198,9 +198,9 @@
       -0.29663300631941836,
       0.3981717369734786
     ],
-    "uuid": "be8bd313-50ee-4a25-aeb7-c8d883c5822a"
+    "uuid": "be8bd313_50ee_4a25_aeb7_c8d883c5822a"
   },
-  "ba986cc1-61d4-47df-9281-19b29079cd4b": {
+  "ba986cc1_61d4_47df_9281_19b29079cd4b": {
     "category": "speaker",
     "inputs": [
       {
@@ -231,6 +231,6 @@
       -0.07339067904804884,
       0.7373305106657235
     ],
-    "uuid": "ba986cc1-61d4-47df-9281-19b29079cd4b"
+    "uuid": "ba986cc1_61d4_47df_9281_19b29079cd4b"
   }
 }
