@@ -1,6 +1,6 @@
 {	
-	"be8bd313_50ee_4a25_aeb7_c8d883c5822a": {
-		"uuid": "be8bd313_50ee_4a25_aeb7_c8d883c5822a",
+	"be8bd31350ee4a25aeb7c8d883c5822a": {
+		"uuid": "be8bd31350ee4a25aeb7c8d883c5822a",
 		"name": "cycle",
 		"category": "source",
 	  "inputs": [
@@ -48,7 +48,7 @@
 		  },
 		  "name": "sinusoid",
 		  "connections": {
-			"ba986cc1_61d4_47df_9281_19b29079cd4b": {
+			"ba986cc161d447df928119b29079cd4b": {
 			  "audio": "cable"
 			}
 		  }
@@ -66,8 +66,8 @@
 		0.3981717369734786
 	  ]
 	},
-	"ba986cc1_61d4_47df_9281_19b29079cd4b": {
-		"uuid": "ba986cc1_61d4_47df_9281_19b29079cd4b",
+	"ba986cc161d447df928119b29079cd4b": {
+		"uuid": "ba986cc161d447df928119b29079cd4b",
 		"name": "speaker",
 		"category": "speaker",
 	  "inputs": [

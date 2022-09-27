@@ -461,6 +461,7 @@ const UI = {
 			if(hand.state == "menu"){
 				// TODO use this to display a tooltip above the hovered op, see issue #173
 				// menu.getInfo(object.name)		
+
 			}
 
 			if(hand.B_pressed == true){
@@ -727,6 +728,10 @@ const UI = {
 					menuScene.rebuild(menuGraph)
 					// call up the menu:
 					hand.state = "menu";
+
+					// when menu is loaded, check if the current scene does not have a speaker, if so add it now. reason is that at first I was adding a speaker on load, but most of the time the hmd was pointed down at load (off my head), and the speaker's orientation was funky. this way the speaker loads for the first time correctly
+					patch.ensureSpeaker(UI.hmd)
+
 				} else if(hand.pad_pressed){
 
 				}
@@ -1664,7 +1669,6 @@ function makeSceneGraph(renderer, gl) {
 		},
 
 		rebuildNode(name, node, parent, parent_path) {
-			// console.log('name', name, 'node', node, '\n\nparent', parent)
 			const props = node._props || {}
 
 			let obj = this.getNextModule(parent);
@@ -2128,6 +2132,11 @@ function animate() {
 		patch.dirty.audio.param = false;
 	}
 
+	// check if speaker is needed in document
+	if(patch.dirty.speaker == true){
+		patch.ensureSpeaker(UI.hmd)
+	}
+
 	currentScene = (UI.hands[0].state == "menu" || UI.hands[1].state == "menu") ? menuScene : mainScene;
 	for (let i=0; i<currentScene.module_instances.count; i++) {
 		currentScene.module_instances.instances[i].i_highlight[0] = 0;
@@ -2291,7 +2300,9 @@ async function init() {
 	initUI(window);
 
 	
+
 	animate()
+
 
 	// load a scene on start?
 	if(process.argv[2]){

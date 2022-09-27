@@ -12,6 +12,10 @@ module.exports = class Palette{
     // loop through ops and get graph
     for(let i=0; i<this.opsList.length; i++){
       let opName =  this.opsList[i]
+      if(opName == 'speaker'){
+        //! for now, ignore adding a speaker to the palette. in genish, more than one speaker will result in multichannel audio, which we are not ready for
+        continue
+      }
       let op = this.operators[opName]
 
       this.graph[opName] = {
@@ -93,6 +97,10 @@ module.exports = class Palette{
     let i = 0;
     for (let row = 0; row < nrows; row++) {
       for(let col = 0; col < ncols && i < this.opsList.length; col++, i++){
+        if(this.opsList[i] == 'speaker'){
+          //! for now, ignore adding a speaker to the palette. in genish, more than one speaker will result in multichannel audio, which we are not ready for
+          continue
+        }
         let theta = col * (-2 * Math.PI) / ncols;
         let r = 1;
         let x = r * Math.sin(theta);
@@ -119,6 +127,10 @@ module.exports = class Palette{
     let i = 0;
     for (let row = 0; row < nrows; row++) {
       for(let col = 0; col < ncols && i < this.opsList.length; col++, i++){
+        if(this.opsList[i] == 'speaker'){
+          //! for now, ignore adding a speaker to the palette. in genish, more than one speaker will result in multichannel audio, which we are not ready for
+          continue
+        }
         let theta = col * (-2 * Math.PI) / ncols;
         let r = 1;
         let x = r * Math.sin(theta) + hmd.pos[0];
