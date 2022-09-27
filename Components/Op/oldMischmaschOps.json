@@ -1,30 +1,5 @@
 {
-  "speaker":{
-    "classification": "speaker",
-    "inputs":{
-      "audio": "audio input to play out of headphones/speakers"
-    }
-  },
-  "delay":{
-    "classification": "delay",
-    "inputs":{
-      "in": "the signal to be delayed",
-      "delayTime": "The amount of time to delay the incoming signal."
-    },
-    "outputs":{
-      "out1": "signal output"
-    }
-  },
-  "accum":{
-    "classification": "integrator",
-    "inputs":{
-      "increment": "The amount to increase the accumulator’s internal value by on each sample",
-      "reset": "When reset has a value of 1, the accumulator will reset its internal value to 0."
-    },
-    "outputs":{
-      "out1": "accum() is used to increment a stored value between a provided range that defaults to {0,1}. If the accumulator values passes its maximum, it wraps. accum() is very similar to the counter ugen, but is slightly more efficient. Additionally, the min and max properties of accum are fixed values, while they can be specified with signals in counter."
-    }
-  },
+
   "mstosamps": {
     "classification": "conversion",
     "inputs": {

@@ -16,11 +16,22 @@ module.exports = class Palette{
         //! for now, ignore adding a speaker to the palette. in genish, more than one speaker will result in multichannel audio, which we are not ready for
         continue
       }
+      
       let op = this.operators[opName]
 
+      if(op.classification == 'generic'){
+        //TODO these ops exist in the mischmaschOps.json, but have not been defined yet. missing info from genish
+        this.opsList.splice(this.opsList.indexOf(opName), 1)
+        console.log(this.opsList)
+        continue
+      }
+      let kind = opName
+      if(op.sign){
+        kind = op.sign
+      }
       this.graph[opName] = {
         _props: {
-          kind: opName,
+          kind: kind,
           category: op.classification,
           pos: [0,0,0],
           orient: [0,0,0,0]
@@ -36,7 +47,6 @@ module.exports = class Palette{
           if(!this.graph[opName][input]){
             this.graph[opName][input] = {}
           }          
-          
           this.graph[opName][input]._props = {
             kind: op.inputs[input].kind,
             index: j,
@@ -94,8 +104,6 @@ module.exports = class Palette{
     // setup palette rows and columns
     let ncols = 16
     let nrows = Math.min(6, Math.ceil(this.opsList.length / ncols));
-
-    console.log('nrows', nrows, this.opsList.length)
     let i = 0;
     for (let row = 0; row < nrows; row++) {
       for(let col = 0; col < ncols && i < this.opsList.length; col++, i++){
@@ -103,12 +111,15 @@ module.exports = class Palette{
           //! for now, ignore adding a speaker to the palette. in genish, more than one speaker will result in multichannel audio, which we are not ready for
           continue
         }
+        if(!this.graph[this.opsList[i]]){
+          continue
+        }
         let theta = col * (-2 * Math.PI) / ncols;
         let r = 1;
         let x = r * Math.sin(theta);
         let z = r * Math.cos(theta);
         let y = (2-((i / this.opsList.length)*2))+0.5 //1 - 0.4 * (row - (nrows/2));
-        console.log(y, i)
+        
         
         
         quat.fromEuler(this.graph[this.opsList[i]]._props.orient, 0, 180 + theta*180/Math.PI, 0)
@@ -133,6 +144,9 @@ module.exports = class Palette{
       for(let col = 0; col < ncols && i < this.opsList.length; col++, i++){
         if(this.opsList[i] == 'speaker'){
           //! for now, ignore adding a speaker to the palette. in genish, more than one speaker will result in multichannel audio, which we are not ready for
+          continue
+        }
+        if(!this.graph[this.opsList[i]]){
           continue
         }
         let theta = col * (-2 * Math.PI) / ncols;

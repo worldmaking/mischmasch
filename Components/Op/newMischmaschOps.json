@@ -6,7 +6,7 @@
                 "info": "input value",
                 "value": 0,
                 "range": [
-                    -1,
+                    0,
                     1
                 ],
                 "kind": "inlet"
@@ -33,9 +33,9 @@
                 "value": 0,
                 "range": [
                     0,
-                    100
+                    1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
@@ -73,8 +73,7 @@
         },
         "outputs": {
             "sum": "in1 + in2"
-        },
-        "sign": "+"
+        }
     },
     "sub": {
         "classification": "mathemagical",
@@ -83,7 +82,7 @@
                 "info": "input value 1",
                 "value": 0,
                 "range": [
-                    -1,
+                    0,
                     1
                 ],
                 "kind": "inlet"
@@ -95,13 +94,12 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
             "difference": "in1 - in2"
-        },
-        "sign": "subtract"
+        }
     },
     "mul": {
         "classification": "mathemagical",
@@ -127,8 +125,7 @@
         },
         "outputs": {
             "product": "in1 * in2"
-        },
-        "sign": "multiply"
+        }
     },
     "div": {
         "classification": "mathemagical",
@@ -137,7 +134,7 @@
                 "info": "input value 1",
                 "value": 0,
                 "range": [
-                    -1,
+                    0,
                     1
                 ],
                 "kind": "inlet"
@@ -147,15 +144,14 @@
                 "value": 0,
                 "range": [
                     0,
-                    100
+                    1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
             "quotient": "in1 / in2"
-        },
-        "sign": "divide"
+        }
     },
     "accum": {
         "classification": "integrator",
@@ -211,7 +207,7 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
@@ -227,7 +223,7 @@
                 "info": "input value",
                 "value": 0,
                 "range": [
-                    -1,
+                    0,
                     1
                 ],
                 "kind": "inlet"
@@ -244,7 +240,7 @@
                 "info": "input value",
                 "value": 0,
                 "range": [
-                    -1,
+                    0,
                     1
                 ],
                 "kind": "inlet"
@@ -261,7 +257,7 @@
                 "info": "input value",
                 "value": 0,
                 "range": [
-                    -1,
+                    0,
                     1
                 ],
                 "kind": "inlet"
@@ -278,7 +274,7 @@
                 "info": "input value",
                 "value": 0,
                 "range": [
-                    -1,
+                    0,
                     1
                 ],
                 "kind": "inlet"
@@ -295,7 +291,7 @@
                 "info": "input value",
                 "value": 0,
                 "range": [
-                    -1,
+                    0,
                     1
                 ],
                 "kind": "inlet"
@@ -312,7 +308,7 @@
                 "info": "input value",
                 "value": 0,
                 "range": [
-                    -1,
+                    0,
                     1
                 ],
                 "kind": "inlet"
@@ -329,7 +325,7 @@
                 "info": "input value",
                 "value": 0,
                 "range": [
-                    -1,
+                    0,
                     1
                 ],
                 "kind": "inlet"
@@ -344,12 +340,12 @@
         "inputs": {
             "freq": {
                 "info": "frequency",
-                "value": 1,
+                "value": 0,
                 "range": [
                     0,
-                    1000
+                    1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             },
             "reset": {
                 "info": "a non-zero value will reset the phase to the initial value",
@@ -365,31 +361,26 @@
             "out1": "phase (0..1)"
         }
     },
-    "phasorN": {
-        "classification": "generic",
-        "inputs": {},
-        "outputs": {}
-    },
     "data": {
         "classification": "source",
         "inputs": {
             "channels": {
                 "info": "number of data buffer channels",
-                "value": 1,
+                "value": 0,
                 "range": [
-                    1,
-                    2
+                    0,
+                    1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             },
             "dim": {
                 "info": "size of data buffer",
                 "value": 0,
                 "range": [
                     0,
-                    44100
+                    1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             },
             "name": {
                 "info": "name of data buffer",
@@ -398,7 +389,7 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
@@ -432,24 +423,24 @@
                 "value": 0,
                 "range": [
                     0,
-                    44100
+                    1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             },
             "index": {
                 "info": "sample index to read",
                 "value": 0,
                 "range": [
                     0,
-                    44100
+                    1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             },
             "signal": {
                 "info": "value to lookup (between -1 and 1)",
                 "value": 0,
                 "range": [
-                    -1,
+                    0,
                     1
                 ],
                 "kind": "inlet"
@@ -477,7 +468,7 @@
                 "value": 0,
                 "range": [
                     0,
-                    44100
+                    1
                 ],
                 "kind": "inlet"
             }
@@ -487,17 +478,12 @@
             "out2": "index (in samples)"
         }
     },
-    "peekDyn": {
-        "classification": "generic",
-        "inputs": {},
-        "outputs": {}
-    },
     "cycle": {
         "classification": "source",
         "inputs": {
             "freq": {
                 "info": "wave frequency",
-                "value": 440,
+                "value": 0,
                 "range": [
                     0.1,
                     1000
@@ -518,11 +504,6 @@
             "sinusoid": "interpolated waveform"
         }
     },
-    "cycleN": {
-        "classification": "generic",
-        "inputs": {},
-        "outputs": {}
-    },
     "history": {
         "classification": "delay",
         "inputs": {
@@ -531,16 +512,16 @@
                 "value": 0,
                 "range": [
                     0,
-                    100
+                    1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             },
             "value": {
                 "info": "set the next value (for feedback circuits)",
-                "value": 1,
+                "value": 0,
                 "range": [
-                    1,
-                    2
+                    0,
+                    1
                 ],
                 "kind": "inlet"
             }
@@ -619,7 +600,7 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
@@ -645,7 +626,7 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
@@ -686,11 +667,6 @@
             "out1": "filtered output"
         }
     },
-    "memo": {
-        "classification": "generic",
-        "inputs": {},
-        "outputs": {}
-    },
     "rate": {
         "classification": "source",
         "inputs": {
@@ -701,7 +677,7 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             },
             "phase": {
                 "info": "phase to be scaled (0 to 1)",
@@ -736,7 +712,7 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             },
             "max": {
                 "info": "upper bound",
@@ -745,7 +721,7 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
@@ -780,7 +756,7 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
@@ -806,7 +782,7 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             },
             "max": {
                 "info": "upper bound",
@@ -815,7 +791,7 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
@@ -841,7 +817,7 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             },
             "value": {
                 "info": "value to write",
@@ -859,7 +835,7 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             },
             "name": {
                 "info": "name of buffer",
@@ -892,16 +868,16 @@
                     0,
                     1
                 ],
-                "kind": "inlet"
+                "kind": "knob"
             },
             "reset": {
                 "info": "The amount of time to delay the incoming signal.",
-                "value": 22050,
+                "value": 512,
                 "range": [
                     1,
                     44100
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
@@ -927,7 +903,7 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             },
             "max": {
                 "info": "upper bound",
@@ -936,7 +912,7 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
@@ -997,7 +973,7 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
@@ -1047,13 +1023,12 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
             "out1": "boolean (0 or 1)"
-        },
-        "sign": ">"
+        }
     },
     "gte": {
         "classification": "mathemagical",
@@ -1074,13 +1049,12 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
             "out1": "boolean (0 or 1)"
-        },
-        "sign": ">="
+        }
     },
     "lt": {
         "classification": "mathemagical",
@@ -1101,13 +1075,12 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
             "out1": "boolean (0 or 1)"
-        },
-        "sign": "<"
+        }
     },
     "lte": {
         "classification": "mathemagical",
@@ -1128,13 +1101,12 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
             "out1": "boolean (0 or 1)"
-        },
-        "sign": "<="
+        }
     },
     "bool": {
         "classification": "switching",
@@ -1151,8 +1123,7 @@
         },
         "outputs": {
             "bool": "boolean (0 or 1)"
-        },
-        "sign": "boolean"
+        }
     },
     "gate": {
         "classification": "switching",
@@ -1199,16 +1170,16 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             },
             "period": {
                 "info": "period (samples)",
                 "value": 0,
                 "range": [
                     0,
-                    44100
+                    1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
@@ -1232,18 +1203,18 @@
                 "value": 0,
                 "range": [
                     0,
-                    44100
+                    1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             },
             "down": {
                 "info": "slide down value (samples)",
                 "value": 0,
                 "range": [
                     0,
-                    44100
+                    1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
@@ -1291,9 +1262,9 @@
                 "value": 0,
                 "range": [
                     0,
-                    1000
+                    1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
@@ -1319,13 +1290,12 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
             "out1": "in1 or 0"
-        },
-        "sign": "< pass"
+        }
     },
     "gtp": {
         "classification": "mathemagical",
@@ -1346,13 +1316,12 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
             "out1": "in1 or 0"
-        },
-        "sign": "> pass"
+        }
     },
     "switch": {
         "classification": "switching",
@@ -1406,11 +1375,6 @@
             "out1": "period in samples"
         }
     },
-    "selector": {
-        "classification": "generic",
-        "inputs": {},
-        "outputs": {}
-    },
     "pow": {
         "classification": "mathemagical",
         "inputs": {
@@ -1437,42 +1401,6 @@
             "out1": "sign of input"
         }
     },
-    "attack": {
-        "classification": "generic",
-        "inputs": {},
-        "outputs": {}
-    },
-    "decay": {
-        "classification": "generic",
-        "inputs": {},
-        "outputs": {}
-    },
-    "env": {
-        "classification": "generic",
-        "inputs": {},
-        "outputs": {}
-    },
-    "ad": {
-        "classification": "generic",
-        "inputs": {},
-        "outputs": {},
-        "sign": "attack/decay"
-    },
-    "adsr": {
-        "classification": "generic",
-        "inputs": {},
-        "outputs": {}
-    },
-    "ifelse": {
-        "classification": "generic",
-        "inputs": {},
-        "outputs": {}
-    },
-    "bang": {
-        "classification": "generic",
-        "inputs": {},
-        "outputs": {}
-    },
     "and": {
         "classification": "switching",
         "inputs": {
@@ -1490,19 +1418,14 @@
                 "value": 0,
                 "range": [
                     0,
-                    100
+                    1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
             "out1": "boolean (0 or 1)"
         }
-    },
-    "pan": {
-        "classification": "generic",
-        "inputs": {},
-        "outputs": {}
     },
     "eq": {
         "classification": "mathemagical",
@@ -1523,13 +1446,12 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
             "out1": "boolean (0 or 1)"
-        },
-        "sign": "=="
+        }
     },
     "neq": {
         "classification": "mathemagical",
@@ -1550,13 +1472,12 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "inlet"
             }
         },
         "outputs": {
             "out1": "boolean (0 or 1)"
-        },
-        "sign": "!="
+        }
     },
     "exp": {
         "classification": "mathemagical",
@@ -1574,15 +1495,5 @@
         "outputs": {
             "out1": "exp(in1)"
         }
-    },
-    "process": {
-        "classification": "generic",
-        "inputs": {},
-        "outputs": {}
-    },
-    "seq": {
-        "classification": "generic",
-        "inputs": {},
-        "outputs": {}
     }
 }
