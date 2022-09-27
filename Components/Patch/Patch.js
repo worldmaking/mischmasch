@@ -291,14 +291,13 @@ module.exports = class Patch{
     this.dirty.audio.graph = true
   }
   ensureSpeaker(hmd){
-    // let ops = Object.keys(this.document)
-    // if(!ops.includes('speaker')){
-      let pos = [hmd.pos[0], hmd.pos[1], hmd.pos[2]-2]
-      let quat = [ hmd.orient[0], hmd.orient[1],  hmd.orient[2],  hmd.orient[3] ]
+    console.log(!Object.keys(this.document).includes('speaker'))
+    if(!Object.keys(this.document).includes('speaker')){
+      let pos = [hmd.pos[0], hmd.pos[1], hmd.pos[2]-0.5]
       const id = replaceAll('-', '', uuidv4())
       let op = {
         position: pos,
-        quaternion: quat,
+        quaternion: hmd.orient,
         category: 'speaker',
         name: 'speaker',
         uuid: id,
@@ -313,7 +312,6 @@ module.exports = class Patch{
           }
         }],
         outputs:[ ]
-        
       }
       
       // update document in automerge
@@ -324,8 +322,8 @@ module.exports = class Patch{
       this.dirty.vr = true
       this.dirty.audio.graph = true
       this.dirty.speaker = false
-    // }
-
+    }
+    
   }
 }
 
