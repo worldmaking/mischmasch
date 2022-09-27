@@ -157,10 +157,7 @@ module.exports = {
 	updateGraph(doc) {
 		try {
 			let operations = doc2operations(doc)
-
-			console.log("operations = ", JSON.stringify(operations, null, "  "))
-
-			worker.postMessage({ cmd: "doc", operations })
+			worker.postMessage({ cmd: "graph", operations })
 
 			// send them to the worker:
 		} catch (e) {
