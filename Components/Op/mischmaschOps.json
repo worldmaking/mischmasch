@@ -1,0 +1,75 @@
+{
+  "speaker":{
+    "classification": "speaker",
+    "inputs":{
+      "audio": {
+        "info": "audio input to play out of headphones/speakers",
+        "value": 0,
+        "range": [-1, 1],
+        "kind": "inlet"
+      }
+    
+    }
+  },
+  "add": {
+    "classification": "mathemagical",
+    "inputs":{
+      "value1": {
+        "info": "input value 1",
+        "value": 0,
+        "range": [-1, 1],
+        "kind": "inlet"
+      },
+      "value2":{
+        "info": "input value 2",
+        "value": 0,
+        "range": [0, 100],
+        "kind": "knob"
+      }
+    },
+    "outputs": {
+      "sum": "in1 + in2"
+    }
+  },
+  
+  "mul": {
+    "classification": "mathemagical",
+    "inputs":{
+      "value1": {
+        "info": "input value 1",
+        "value": 0,
+        "range": [-1, 1],
+        "kind": "inlet"
+      },
+      "value2":{
+        "info": "input value 2",
+        "value": 1,
+        "range": [0, 1],
+        "kind": "knob"
+      }
+    },
+    "outputs": {
+      "product": "in1 * in2"
+    }
+  },
+  "cycle": {
+    "classification": "source",
+    "inputs":{
+      "freq": {
+        "info": "wave frequency",
+        "value": 0,
+        "range": [0.1, 1000],
+        "kind": "knob"
+      },
+      "reset":{
+        "info": "hard sync",
+        "value": 0,
+        "range": [0, 1],
+        "kind": "inlet"
+      }
+    },
+    "outputs": {
+      "sinusoid": "interpolated waveform"
+    }
+  }
+}

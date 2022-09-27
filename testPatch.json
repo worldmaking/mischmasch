@@ -1,0 +1,236 @@
+{
+  "f5235d3d_c3d0_4b49_a3b0_aeeb8155a76d": {
+    "category": "mathemagical",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "inlet",
+          "range": [
+            -1,
+            1
+          ],
+          "value": 1
+        },
+        "index": 0,
+        "kind": "jack",
+        "name": "value1",
+        "value": 1
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "knob",
+          "range": [
+            0,
+            1
+          ],
+          "value": 1
+        },
+        "index": 1,
+        "kind": "knob",
+        "name": "value2",
+        "range": [
+          0,
+          1
+        ],
+        "value": 1
+      }
+    ],
+    "name": "mul",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {
+          "ba986cc1_61d4_47df_9281_19b29079cd4b": {
+            "audio": "cable"
+          }
+        },
+        "name": "product"
+      }
+    ],
+    "position": [
+      -0.6776635050773621,
+      1.5457736253738403,
+      -0.6315111517906189
+    ],
+    "quaternion": [
+      0.028932603017495586,
+      0.874679583637862,
+      -0.021262667941010532,
+      0.4833698720341202
+    ],
+    "uuid": "f5235d3d_c3d0_4b49_a3b0_aeeb8155a76d"
+  },
+  "7a3d7b4d_c574_4f0d_a37c_8d08db75a0a4": {
+    "category": "source",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "knob",
+          "range": [
+            0.1,
+            1000
+          ],
+          "value": 49.746613984581344
+        },
+        "index": 0,
+        "kind": "knob",
+        "name": "freq",
+        "range": [
+          0.1,
+          1000
+        ],
+        "value": 49.746613984581344
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "inlet",
+          "range": [
+            0,
+            2
+          ],
+          "value": 49.746613984581344
+        },
+        "index": 1,
+        "kind": "jack",
+        "name": "phase",
+        "value": 49.746613984581344
+      }
+    ],
+    "name": "cycle",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {
+          "f5235d3d_c3d0_4b49_a3b0_aeeb8155a76d": {
+            "value2": "cable"
+          }
+        },
+        "name": "sinusoid"
+      }
+    ],
+    "position": [
+      -0.6849560141563416,
+      1.914778470993042,
+      -0.8208637237548828
+    ],
+    "quaternion": [
+      0.19709647916561793,
+      0.7665802955723933,
+      -0.27363183985536244,
+      0.5464742201462711
+    ],
+    "uuid": "7a3d7b4d_c574_4f0d_a37c_8d08db75a0a4"
+  },
+  "be8bd313_50ee_4a25_aeb7_c8d883c5822a": {
+    "category": "source",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "knob",
+          "range": [
+            0.1,
+            1000
+          ],
+          "value": 589.8731676435463
+        },
+        "index": 0,
+        "kind": "knob",
+        "name": "freq",
+        "range": [
+          0.1,
+          1000
+        ],
+        "value": 589.8731676435463
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "inlet",
+          "range": [
+            0,
+            2
+          ],
+          "value": 589.8731676435463
+        },
+        "index": 1,
+        "kind": "jack",
+        "name": "phase",
+        "value": 589.8731676435463
+      }
+    ],
+    "name": "cycle",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {
+          "f5235d3d_c3d0_4b49_a3b0_aeeb8155a76d": {
+            "value1": "cable"
+          }
+        },
+        "name": "out1"
+      }
+    ],
+    "position": [
+      -0.5241548418998718,
+      1.8588511943817139,
+      -0.526749849319458
+    ],
+    "quaternion": [
+      0.19770330462972563,
+      0.8452109573783186,
+      -0.29663300631941836,
+      0.3981717369734786
+    ],
+    "uuid": "be8bd313_50ee_4a25_aeb7_c8d883c5822a"
+  },
+  "ba986cc1_61d4_47df_9281_19b29079cd4b": {
+    "category": "speaker",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "inlet",
+          "range": [
+            -1,
+            1
+          ],
+          "value": 0
+        },
+        "index": 0,
+        "kind": "jack",
+        "name": "audio"
+      }
+    ],
+    "name": "speaker",
+    "outputs": [],
+    "position": [
+      -0.8124987483024597,
+      1.4730645418167114,
+      -1.0267239809036255
+    ],
+    "quaternion": [
+      0.04588808118409689,
+      0.6699639926195489,
+      -0.07339067904804884,
+      0.7373305106657235
+    ],
+    "uuid": "ba986cc1_61d4_47df_9281_19b29079cd4b"
+  }
+}

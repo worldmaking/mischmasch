@@ -1,0 +1,102 @@
+{	
+	"be8bd313_50ee_4a25_aeb7_c8d883c5822a": {
+		"uuid": "be8bd313_50ee_4a25_aeb7_c8d883c5822a",
+		"name": "cycle",
+		"category": "source",
+	  "inputs": [
+		{
+		  "_props": {
+			"index": 0,
+			"kind": "knob",
+			"range": [
+			  0.1,
+			  1000
+			],
+			"value": 400
+		  },
+		  "index": 0,
+		  "kind": "knob",
+		  "name": "freq",
+		  "range": [
+			0.1,
+			1000
+		  ],
+		  "value": 400
+		},
+		{
+		  "_props": {
+			"index": 1,
+			"kind": "inlet",
+			"range": [
+			  0,
+			  2
+			],
+			"value": 0
+		  },
+		  "index": 1,
+		  "kind": "jack",
+		  "name": "reset",
+		  "value": 0
+		}
+	  ],
+	  "outputs": [
+		{
+		  "_props": {
+			"history": false,
+			"index": 0,
+			"kind": "outlet"
+		  },
+		  "name": "sinusoid",
+		  "connections": {
+			"ba986cc1_61d4_47df_9281_19b29079cd4b": {
+			  "audio": "cable"
+			}
+		  }
+		}
+	  ],
+	  "position": [
+		-0.5241548418998718,
+		1.8588511943817139,
+		-0.526749849319458
+	  ],
+	  "quaternion": [
+		0.19770330462972563,
+		0.8452109573783186,
+		-0.29663300631941836,
+		0.3981717369734786
+	  ]
+	},
+	"ba986cc1_61d4_47df_9281_19b29079cd4b": {
+		"uuid": "ba986cc1_61d4_47df_9281_19b29079cd4b",
+		"name": "speaker",
+		"category": "speaker",
+	  "inputs": [
+		{
+		  "_props": {
+			"index": 0,
+			"kind": "inlet",
+			"range": [
+			  -1,
+			  1
+			],
+			"value": 0
+		  },
+		  "index": 0,
+		  "name": "audio",
+		  "kind": "jack"
+		}
+	  ],
+	  "outputs": [],
+	  "position": [
+		-0.8124987483024597,
+		1.4730645418167114,
+		-1.0267239809036255
+	  ],
+	  "quaternion": [
+		0.04588808118409689,
+		0.6699639926195489,
+		-0.07339067904804884,
+		0.7373305106657235
+	  ]
+	}
+  }
