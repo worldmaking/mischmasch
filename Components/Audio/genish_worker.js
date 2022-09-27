@@ -78,82 +78,87 @@ function makeUID(name) { let id=0; genish.gen.getUID = () => name+(id++) }
 
 // handle messages from main thread:
 parentPort.on("message", (msg) => {
-	if (typeof msg == "object") {
-		switch(msg.cmd) {
-			case "graph": {
+	try {
+		if (typeof msg == "object") {
+			switch(msg.cmd) {
+				case "graph": {
 
-				//console.log("operations = ", JSON.stringify(msg.operations, null, "  "))
+					//console.log("operations = ", JSON.stringify(msg.operations, null, "  "))
 
-				let values = {}
-				let graph = null
+					let values = {}
+					let graph = null
 
-				msg.operations.forEach(op => {
-					let inputs = op.inputs.map(name => typeof name == "number" ? name : values[name] != undefined ? values[name] : name)
-					//console.log("op", op, inputs)
-					if (op.name == "speaker") {
+					msg.operations.forEach(op => {
+						let inputs = op.inputs.map(name => typeof name == "number" ? name : values[name] != undefined ? values[name] : name)
+						//console.log("op", op, inputs)
+						if (op.name == "speaker") {
 
-						graph = inputs[0]
+							graph = inputs[0]
 
-					} else if (genish[op.name]) {
-						makeUID(op.uuid)
+						} else if (genish[op.name]) {
+							makeUID(op.uuid)
 
-						let outputs = genish[op.name].apply(genish, inputs)
-						// store outputs:
-						if (Array.isArray(outputs)) {
-							op.outputs.forEach((o, i) => {
-								values[o] = outputs[i] || 0
-							})
-						} else {
-							op.outputs.forEach((o, i) => {
-								values[o] = i==0 ? outputs : 0
-							})
+							let outputs = genish[op.name].apply(genish, inputs)
+							// store outputs:
+							if (Array.isArray(outputs)) {
+								op.outputs.forEach((o, i) => {
+									values[o] = outputs[i] || 0
+								})
+							} else {
+								op.outputs.forEach((o, i) => {
+									values[o] = i==0 ? outputs : 0
+								})
+							}
+
+
+							console.log("values", values)
 						}
+					})
 
+					let stash = kernel ? getstash(kernel) : {}
+					oldkernel = kernel
+					mixerXfade = 1
+					// 2nd argument here is a memory allocation
+					// TODO we need to figure out how to assign this more sensibly
+					kernel = genish.gen.createCallback(graph, memsize)
+					kernel.graph = graph
+					// after compiling, build up the index map for stashing:
+					kernel.memorymap = getMemoryMap(graph);
+					applystash(kernel, stash);
 
-						console.log("values", values)
-					}
-				})
+					console.log(JSON.stringify(stash, null, "  "))
 
-				let stash = kernel ? getstash(kernel) : {}
-				oldkernel = kernel
-				mixerXfade = 1
-				// 2nd argument here is a memory allocation
-				// TODO we need to figure out how to assign this more sensibly
-				kernel = genish.gen.createCallback(graph, memsize)
-				kernel.graph = graph
-				// after compiling, build up the index map for stashing:
-				kernel.memorymap = getMemoryMap(graph);
-				applystash(kernel, stash);
+					console.log("map", kernel.memorymap);
+					// this is our list of parameters:
+					//console.log("params", graph.params);
+					// this is how to update a param:
+					//graph.params["knob_2_voltage"].value = 200;
 
-				console.log(JSON.stringify(stash, null, "  "))
+					// if we had any external audio inputs:
+					//console.log("number of inputs", kernel.inputs.size);
+					//console.log("input objects", graph.kernel.inputs);
+					// this is our outputs:
+					//console.log("number of outputs", kernel.out.length);
+					//console.log("output values", kernel.out);
+					// for external buffers:
+					//console.log("data objects", graph.kernel.data);
+					// I'm not sure what this is for:
+					//console.log("members", graph.kernel.members);
 
-				console.log("map", kernel.memorymap);
-				// this is our list of parameters:
-				//console.log("params", graph.params);
-				// this is how to update a param:
-				//graph.params["knob_2_voltage"].value = 200;
-
-				// if we had any external audio inputs:
-				//console.log("number of inputs", kernel.inputs.size);
-				//console.log("input objects", graph.kernel.inputs);
-				// this is our outputs:
-				//console.log("number of outputs", kernel.out.length);
-				//console.log("output values", kernel.out);
-				// for external buffers:
-				//console.log("data objects", graph.kernel.data);
-				// I'm not sure what this is for:
-				//console.log("members", graph.kernel.members);
-
-				break;
+					break;
+				}
+				case "end": {
+					audio.end()
+					process.exit()
+					break;
+				}
+				default:
+					console.log("got message object from parent", msg);
 			}
-			case "end": {
-				audio.end()
-				process.exit()
-				break;
-			}
-			default:
-				console.log("got message object from parent", msg);
 		}
+	} catch(e) {
+		console.error(e)
+		kernel = null
 	}
 })
 

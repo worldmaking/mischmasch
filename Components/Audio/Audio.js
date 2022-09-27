@@ -20,11 +20,14 @@ const worker = new Worker(path.join(__dirname, "genish_worker.js"), {
 worker.on('message', function (msg) {
 	console.log("main received message from audio:", msg)
 });
+
+const FAIL = 0
 //worker.on('error', ...);
 //worker.on('online', ...)
 worker.on('exit', (code) => {
 	console.error(`Worker stopped with exit code ${code}`)
 	//process.exit(code)
+	FAIL = 1
 })
 
 function doc2operations(doc) {
@@ -156,6 +159,8 @@ module.exports = {
 
 	updateGraph(doc) {
 		try {
+			if (FAIL) return;
+			
 			let operations = doc2operations(doc)
 			worker.postMessage({ cmd: "graph", operations })
 
