@@ -151,7 +151,7 @@ module.exports = {
 
 	updateParams(doc) {
 		try {
-
+			
 		} catch (e) {
 			console.error(e)
 		}
