@@ -34,7 +34,7 @@
 			"value": 0
 		  },
 		  "index": 1,
-		  "kind": "jack",
+		  "kind": "inlet",
 		  "name": "reset",
 		  "value": 0
 		}
@@ -83,7 +83,7 @@
 		  },
 		  "index": 0,
 		  "name": "audio",
-		  "kind": "jack"
+		  "kind": "inlet"
 		}
 	  ],
 	  "outputs": [],

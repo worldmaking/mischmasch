@@ -13,7 +13,7 @@
           "value": 1
         },
         "index": 0,
-        "kind": "jack",
+        "kind": "inlet",
         "name": "value1",
         "value": 1
       },
@@ -99,7 +99,7 @@
           "value": 0
         },
         "index": 1,
-        "kind": "jack",
+        "kind": "inlet",
         "name": "reset",
         "value": 0
       }
@@ -166,7 +166,7 @@
           "value": 0
         },
         "index": 1,
-        "kind": "jack",
+        "kind": "inlet",
         "name": "reset",
         "value": 0
       }
@@ -216,7 +216,7 @@
           "value": 0
         },
         "index": 0,
-        "kind": "jack",
+        "kind": "inlet",
         "name": "audio"
       }
     ],

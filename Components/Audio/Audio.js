@@ -115,7 +115,7 @@ function doc2operations(doc) {
 			}
 
 			// if kind is knob, multiply by value
-			// if kind is jack, ignore value
+			// if kind is inlet, ignore value
 
 			if (inputs.length) op.inputs[i] = inputs[0]
 		})
@@ -131,8 +131,6 @@ module.exports = {
 	updateGraph(doc) {
 		try {
 			if (FAIL) return;
-
-
 			//console.log("doc", JSON.stringify(doc, null, "  "))
 			
 			let operations = doc2operations(doc)
