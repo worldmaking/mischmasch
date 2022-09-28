@@ -54,6 +54,11 @@ module.exports = class Palette{
         this.opsList.splice(this.opsList.indexOf(opName), 0)
         continue
       }
+      if(opName == 'mtof'){
+        //TODO these ops exist in the mischmaschOps.json, but not relevant for nuit blanche scope
+        this.opsList.splice(this.opsList.indexOf(opName), 0)
+        continue
+      }
       let kind = opName
       if(op.sign){
         kind = op.sign
