@@ -122,7 +122,7 @@ parentPort.on("message", (msg) => {
 						// TODO we need to figure out how to assign this more sensibly
 						kernel = genish.gen.createCallback(graph, memsize)
 
-						console.log(kernel.toString())
+						//console.log(kernel.toString())
 
 						//console.log(kernel)
 
@@ -141,11 +141,11 @@ parentPort.on("message", (msg) => {
 						
 						kernel.args = []
 						for (const param of kernel.params) {
-							console.log(JSON.stringify(param, null, "  "));
+							//console.log(JSON.stringify(param, null, "  "));
 							kernel.args.push(kernel.memory[param.memory.value.idx])
 						}
 						//console.log(kernel.memory)
-						console.log(kernel.args)
+						//console.log(kernel.args)
 
 						// this is how to update a param:
 						//kernel.graph["parambe8bd31350ee4a25aeb7c8d883c5822a_freq"].value = 400;

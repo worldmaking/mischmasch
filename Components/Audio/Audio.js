@@ -180,7 +180,7 @@ module.exports = {
 	updateGraph(doc) {
 		try {
 			if (FAIL) return;
-			console.log("doc", JSON.stringify(doc, null, "  "))
+			//console.log("doc", JSON.stringify(doc, null, "  "))
 			
 			let operations = doc2operations(doc)
 			//console.log("operations", JSON.stringify(operations, null, "  "))
