@@ -27,15 +27,6 @@
                     1
                 ],
                 "kind": "inlet"
-            },
-            "base": {
-                "info": "round to a multiple of",
-                "value": 0,
-                "range": [
-                    0,
-                    100
-                ],
-                "kind": "knob"
             }
         },
         "outputs": {
@@ -68,7 +59,8 @@
                     0,
                     100
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             }
         },
         "outputs": {
@@ -95,7 +87,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             }
         },
         "outputs": {
@@ -122,7 +115,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "mul"
             }
         },
         "outputs": {
@@ -149,7 +143,8 @@
                     0,
                     100
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "mul"
             }
         },
         "outputs": {
@@ -211,7 +206,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "mul"
             }
         },
         "outputs": {
@@ -348,7 +344,8 @@
                 "range": [
                     -10, 10
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             },
             "reset": {
                 "info": "a non-zero value will reset the phase to the initial value",
@@ -501,7 +498,8 @@
                     -10,
                     10
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             },
             "reset": {
                 "info": "hard sync",
@@ -618,7 +616,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             }
         },
         "outputs": {
@@ -644,7 +643,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             }
         },
         "outputs": {
@@ -700,7 +700,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "mul"
             },
             "phase": {
                 "info": "phase to be scaled (0 to 1)",
@@ -735,7 +736,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             },
             "max": {
                 "info": "upper bound",
@@ -744,7 +746,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             }
         },
         "outputs": {
@@ -779,7 +782,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             }
         },
         "outputs": {
@@ -805,7 +809,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             },
             "max": {
                 "info": "upper bound",
@@ -814,7 +819,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             }
         },
         "outputs": {
@@ -893,7 +899,7 @@
                 ],
                 "kind": "inlet"
             },
-            "reset": {
+            "time": {
                 "info": "The amount of time to delay the incoming signal.",
                 "value": 22050,
                 "range": [
@@ -926,7 +932,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             },
             "max": {
                 "info": "upper bound",
@@ -935,7 +942,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             }
         },
         "outputs": {
@@ -996,7 +1004,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             }
         },
         "outputs": {
@@ -1046,7 +1055,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             }
         },
         "outputs": {
@@ -1073,7 +1083,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             }
         },
         "outputs": {
@@ -1100,7 +1111,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             }
         },
         "outputs": {
@@ -1127,7 +1139,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             }
         },
         "outputs": {
@@ -1189,7 +1202,8 @@
                     -10,
                     10
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             },
             "width": {
                 "info": "pulse width",
@@ -1198,7 +1212,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             }
         },
         "outputs": {
@@ -1309,7 +1324,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             }
         },
         "outputs": {
@@ -1336,7 +1352,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             }
         },
         "outputs": {
@@ -1420,7 +1437,8 @@
                     0,
                     1
                 ],
-                "kind": "inlet"
+                "kind": "knob",
+                "trim": "add"
             }
         },
         "outputs": {
@@ -1482,7 +1500,8 @@
                     0,
                     100
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "add"
             }
         },
         "outputs": {
@@ -1513,7 +1532,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "mul"
             }
         },
         "outputs": {
@@ -1540,7 +1560,8 @@
                     0,
                     1
                 ],
-                "kind": "knob"
+                "kind": "knob",
+                "trim": "mul"
             }
         },
         "outputs": {

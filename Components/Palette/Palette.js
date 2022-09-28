@@ -49,6 +49,11 @@ module.exports = class Palette{
         this.opsList.splice(this.opsList.indexOf(opName), 0)
         continue
       }
+      if(opName == 'delay' || opName == 'slide'){
+        //TODO these ops exist in the mischmaschOps.json, but we don't want to handle the use of samplerate as a param for now
+        this.opsList.splice(this.opsList.indexOf(opName), 0)
+        continue
+      }
       let kind = opName
       if(op.sign){
         kind = op.sign
