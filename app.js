@@ -34,18 +34,6 @@ if (argv.name){
   name = username.sync()
 }
 
-
-let peerHandle = name + '_' + filename
-const got = require("./gotlib/got.js")
-
-const rwsOptions = {
-	// make rws use the webSocket module implementation
-	WebSocket: ws, 
-	// ms to try reconnecting:
-	connectionTimeout: 1000,
-	//debug:true, 
-  }
-
 function prettyPrint(object){
 	console.log(JSON.stringify(object, null, 4))
 }
