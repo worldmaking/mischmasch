@@ -122,7 +122,7 @@ parentPort.on("message", (msg) => {
 						// TODO we need to figure out how to assign this more sensibly
 						kernel = genish.gen.createCallback(graph, memsize)
 
-						console.log(kernel.toString())
+						//console.log(kernel.toString())
 
 						//console.log(kernel)
 
@@ -134,29 +134,21 @@ parentPort.on("message", (msg) => {
 						//console.log("stash", JSON.stringify(stash, null, "  "))
 
 						//console.log("map");
-						Object.entries(kernel.memorymap).forEach(([k, v]) =>  {
-							//console.log(k, v, kernel.memory[v])
-						})
-						
+						// Object.entries(kernel.memorymap).forEach(([k, v]) =>  {
+						// 	//console.log(k, v, kernel.memory[v])
+						// })
 						
 						kernel.args = []
 						for (const param of kernel.params) {
-							console.log(JSON.stringify(param, null, "  "));
+							//console.log(JSON.stringify(param, null, "  "));
 							kernel.args.push(kernel.memory[param.memory.value.idx])
 						}
 						//console.log(kernel.memory)
-						console.log(kernel.args)
+						//console.log(kernel.args)
 
 						// this is how to update a param:
 						//kernel.graph["parambe8bd31350ee4a25aeb7c8d883c5822a_freq"].value = 400;
 
-						// get all inputs and create appropriate audioparam initializers
-    // const parameterDescriptors = this.createParameterDescriptors( cb )
-    // const parameterDereferences = this.createParameterDereferences( cb )
-    // const paramList = this.createParameterArguments( cb )
-    // const inputDereferences = this.createInputDereferences( cb )
-    // const inputList = this.createInputArguments( cb )   
-    // const memberString = this.createFunctionDereferences( cb )
 
 						// if we had any external audio inputs:
 						//console.log("number of inputs", kernel.inputs.size);

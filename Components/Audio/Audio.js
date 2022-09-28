@@ -155,6 +155,28 @@ function doc2operations(doc) {
 			if (input.name == "freq") {
 				// convert v/oct to Hz
 				// var hz = 55*Math.pow(2, oct - 21/12);
+				let sub_id = makeUID("octsub_")
+				inoperations.push({
+					name: "sub",
+					uuid: id,
+					inputs: [result, 21/12],
+					outputs: [sub_id]
+				})
+				let pow_id = makeUID("octpow")
+				inoperations.push({
+					name: "sub",
+					uuid: id,
+					inputs: [2, subid],
+					outputs: [pow_id]
+				})
+				let mul_id = makeUID("hz")
+				inoperations.push({
+					name: "mul",
+					uuid: id,
+					inputs: [55, pow_id],
+					outputs: [mul_id]
+				})
+				result = mul_id
 			}
 
 			op.inputs[i] = result
@@ -180,7 +202,7 @@ module.exports = {
 	updateGraph(doc) {
 		try {
 			if (FAIL) return;
-			console.log("doc", JSON.stringify(doc, null, "  "))
+			//console.log("doc", JSON.stringify(doc, null, "  "))
 			
 			let operations = doc2operations(doc)
 			//console.log("operations", JSON.stringify(operations, null, "  "))
