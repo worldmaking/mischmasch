@@ -741,10 +741,10 @@
             },
             "max": {
                 "info": "upper bound",
-                "value": 0,
+                "value": 1,
                 "range": [
-                    0,
-                    1
+                    -10,
+                    10
                 ],
                 "kind": "knob",
                 "trim": "add"
@@ -775,8 +775,8 @@
                 ],
                 "kind": "inlet"
             },
-            "interp": {
-                "info": "interpolation factor between inputs",
+            "crossfade": {
+                "info": "crossfade between inputs",
                 "value": 0,
                 "range": [
                     0,
@@ -804,9 +804,9 @@
             },
             "min": {
                 "info": "lower bound",
-                "value": 0,
+                "value": -1,
                 "range": [
-                    0,
+                    -1,
                     1
                 ],
                 "kind": "knob",
@@ -814,9 +814,9 @@
             },
             "max": {
                 "info": "upper bound",
-                "value": 0,
+                "value": 1,
                 "range": [
-                    0,
+                    -1,
                     1
                 ],
                 "kind": "knob",
@@ -937,7 +937,7 @@
             },
             "max": {
                 "info": "upper bound",
-                "value": 0,
+                "value": 1,
                 "range": [
                     0,
                     1
@@ -1016,7 +1016,7 @@
         "classification": "source",
         "inputs": {},
         "outputs": {
-            "random-stream": "random numbers"
+            "random": "random numbers"
         }
     },
     "not": {
@@ -1178,8 +1178,8 @@
                 ],
                 "kind": "inlet"
             },
-            "choose": {
-                "info": "choose which output to forward to",
+            "boolean": {
+                "info": "0 blocks, 1 passes",
                 "value": 0,
                 "range": [
                     0,
@@ -1207,7 +1207,7 @@
             },
             "width": {
                 "info": "pulse width",
-                "value": 0,
+                "value": 0.5,
                 "range": [
                     0,
                     1
@@ -1364,7 +1364,7 @@
     "switch": {
         "classification": "switching",
         "inputs": {
-            "iffalse": {
+            "zero": {
                 "info": "value if false",
                 "value": 0,
                 "range": [
@@ -1373,9 +1373,9 @@
                 ],
                 "kind": "inlet"
             },
-            "iftrue": {
+            "nonzero": {
                 "info": "value if true",
-                "value": 0,
+                "value": 1,
                 "range": [
                     0,
                     1
@@ -1585,11 +1585,6 @@
         "outputs": {
             "out1": "exp(in1)"
         }
-    },
-    "process": {
-        "classification": "generic",
-        "inputs": {},
-        "outputs": {}
     },
     "seq": {
         "classification": "generic",
