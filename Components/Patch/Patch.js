@@ -67,6 +67,7 @@ module.exports = class Patch{
                 value: node.node._props.value || 0.,
                 _props: node.node._props,
                 range: node.node._props.range || [0., 1.],
+                trim: node.node._props.trim || 'add'
               }
               inputs.push(knob)
             break
