@@ -115,6 +115,9 @@
         "connections": {
           "f5235d3d_c3d0_4b49_a3b0_aeeb8155a76d": {
             "value2": "cable"
+          },
+          "ba986cc1_61d4_47df_9281_19b29079cd4b": {
+            "audio": "cable"
           }
         },
         "name": "sinusoid"

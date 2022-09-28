@@ -3317,16 +3317,20 @@
 	  Object.defineProperty(ugen, 'value', {
 		get: function get() {
 		  if (this.memory.value.idx !== null) {
+			console.log("value get heap")
 			return _gen.memory.heap[this.memory.value.idx];
 		  } else {
+			console.log("value get initial")
 			return this.initialValue;
 		  }
 		},
 		set: function set(v) {
 		  if (this.memory.value.idx !== null) {
 			if (this.isWorklet && this.waapi !== null) {
+				console.log("value set waaapi")
 			  this.waapi[propName].value = v;
 			} else {
+				console.log("value set heap")
 			  _gen.memory.heap[this.memory.value.idx] = v;
 			}
 		  }
@@ -3533,7 +3537,7 @@
 	  var props = Object.assign({}, defaults, _props);
 	
 	  var range = props.max - props.min;
-	
+
 	  var ugen = typeof frequency === 'number' ? accum(frequency * range / gen.samplerate, reset, props) : accum(div(mul(frequency, range), gen.samplerate), reset, props);
 	
 	  ugen.name = proto.basename + gen.getUID();

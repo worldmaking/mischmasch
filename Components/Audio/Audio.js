@@ -84,13 +84,15 @@ function doc2operations(doc) {
 		operations.push(op)
 
 		// now refine the operation to fill in the inputs according to the patch cables
+		let inoperations = []
 
 		// first, get the cables that connect to this object
 		let conns = cables.filter(conn => conn.dst == obj.uuid)
 		// for each input 
 		if (obj.inputs) obj.inputs.forEach((input, i) => {
+
 			// get the cables that connect to this input
-			let inputs = conns.filter(conn => conn.input == input.name).map(conn => {
+			let incables = conns.filter(conn => conn.input == input.name).map(conn => {
 				// for any op that we used, add it to the chain:
 				if (memo[conn.src]) {
 					// if we have already generated this object, this must be a history connection
@@ -102,22 +104,63 @@ function doc2operations(doc) {
 				return `${conn.output}_${conn.src}`
 			})
 
-			while (inputs.length > 1) {
+			while (incables.length > 1) {
 				// combine into an add operation:
 				let id = makeUID("add_")
-				operations.push({
+				inoperations.push({
 					name: "add",
 					uuid: id,
-					inputs: [inputs.pop(), inputs.pop()],
+					inputs: [incables.pop(), incables.pop()],
 					outputs: [id]
 				})
-				inputs.push(id)
+				incables.push(id)
 			}
 
-			// if kind is knob, multiply by value
-			// if kind is inlet, ignore value
+			// now our cables is either length 0 or 1
+			let result
 
-			if (inputs.length) op.inputs[i] = inputs[0]
+			// if input.kind == "knob" we need to add a Param here
+			// and (add or multiply?) the incoming value by this param
+			// TODO must clamp result to knob range
+			if (input.kind == "knob") {
+				let param_id = `param${obj.uuid}_${input.name}`
+				let param_name = `${obj.name}_${obj.uuid}_${input.name}`
+				// input has: index, name, value || 0, (range??)
+				inoperations.push({
+					name: "param",
+					uuid: param_id,
+					inputs: [param_name, input.value || 0, -20000, 20000], // also min & max
+					outputs: [param_id]
+				})
+
+				if (incables.length) {
+					// combine cable with knob
+					let combine_id = `combine${obj.uuid}_${input.name}`
+					inoperations.push({
+						name: input.trim || "mul",
+						uuid: combine_id,
+						inputs: [incables[0], param_id], // also min & max
+						outputs: [combine_id]
+					})
+					result = combine_id
+				} else {
+					result = param_id
+				}
+
+			} else {
+				result = (incables.length) ? incables[0] : op.inputs[i]
+			}
+
+			// TODO: if input is type "frequency"
+			if (input.name == "freq") {
+				// convert v/oct to Hz
+				// var hz = 55*Math.pow(2, oct - 21/12);
+			}
+
+			op.inputs[i] = result
+
+			// now combine inoperations to operations
+			operations = operations.concat(inoperations.reverse())
 		})
 	}
 
@@ -126,25 +169,24 @@ function doc2operations(doc) {
 	return operations.reverse();
 }
 
+function operations2string(ops) {
+	return ops.map(op => {
+		return `${op.outputs.join(", ")}${op.outputs.length ? " = " : ""}${op.name}(${op.inputs.join(", ")});`
+	}).join("\n")
+}
+
 module.exports = {
 
 	updateGraph(doc) {
 		try {
 			if (FAIL) return;
-			//console.log("doc", JSON.stringify(doc, null, "  "))
+			console.log("doc", JSON.stringify(doc, null, "  "))
 			
 			let operations = doc2operations(doc)
-			console.log("operations", JSON.stringify(operations, null, "  "))
+			//console.log("operations", JSON.stringify(operations, null, "  "))
+			//console.log(operations2string(operations))
 			worker.postMessage({ cmd: "graph", operations })
 
-			// setTimeout(()=>{
-			// 	worker.postMessage({ cmd: "graph", operations:doc2operations(doc1) })
-			// 	setTimeout(()=>{
-			// 		worker.postMessage({ cmd: "graph", operations:doc2operations(doc2) })
-			// 	}, 2000)
-			// }, 2000)
-
-			// send them to the worker:
 		} catch (e) {
 			console.error(e)
 		}
@@ -152,6 +194,16 @@ module.exports = {
 
 	updateParams(doc) {
 		try {
+			let params = {}
+			Object.entries(doc).forEach(([uuid, obj]) => {
+				obj.inputs.forEach(input => {
+					if (input.value !== undefined) {
+						let param_name = `${obj.name}_${obj.uuid}_${input.name}`
+						params[param_name] = input.value
+					}
+				})
+			})
+			worker.postMessage({ cmd: "params", params })
 
 		} catch (e) {
 			console.error(e)

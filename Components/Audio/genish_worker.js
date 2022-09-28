@@ -90,7 +90,6 @@ parentPort.on("message", (msg) => {
 
 					msg.operations.forEach(op => {
 						let inputs = op.inputs.map(name => typeof name == "number" ? name : values[name] != undefined ? values[name] : name)
-						//console.log("op", op, inputs)
 						if (op.name == "speaker") {
 
 							graph = inputs[0]
@@ -99,6 +98,9 @@ parentPort.on("message", (msg) => {
 							makeUID(op.uuid)
 
 							let outputs = genish[op.name].apply(genish, inputs)
+
+							//console.log("op", outputs)
+
 							// store outputs:
 							if (Array.isArray(outputs)) {
 								op.outputs.forEach((o, i) => {
@@ -119,18 +121,42 @@ parentPort.on("message", (msg) => {
 						// 2nd argument here is a memory allocation
 						// TODO we need to figure out how to assign this more sensibly
 						kernel = genish.gen.createCallback(graph, memsize)
+
+						console.log(kernel.toString())
+
+						//console.log(kernel)
+
 						kernel.graph = graph
 						// after compiling, build up the index map for stashing:
 						kernel.memorymap = getMemoryMap(graph);
 						applystash(kernel, stash);
 
-						//console.log(JSON.stringify(stash, null, "  "))
+						//console.log("stash", JSON.stringify(stash, null, "  "))
 
-						console.log("map", kernel.memorymap);
-						// this is our list of parameters:
-						//console.log("params", graph.params);
+						//console.log("map");
+						Object.entries(kernel.memorymap).forEach(([k, v]) =>  {
+							//console.log(k, v, kernel.memory[v])
+						})
+						
+						
+						kernel.args = []
+						for (const param of kernel.params) {
+							console.log(JSON.stringify(param, null, "  "));
+							kernel.args.push(kernel.memory[param.memory.value.idx])
+						}
+						//console.log(kernel.memory)
+						console.log(kernel.args)
+
 						// this is how to update a param:
-						//graph.params["knob_2_voltage"].value = 200;
+						//kernel.graph["parambe8bd31350ee4a25aeb7c8d883c5822a_freq"].value = 400;
+
+						// get all inputs and create appropriate audioparam initializers
+    // const parameterDescriptors = this.createParameterDescriptors( cb )
+    // const parameterDereferences = this.createParameterDereferences( cb )
+    // const paramList = this.createParameterArguments( cb )
+    // const inputDereferences = this.createInputDereferences( cb )
+    // const inputList = this.createInputArguments( cb )   
+    // const memberString = this.createFunctionDereferences( cb )
 
 						// if we had any external audio inputs:
 						//console.log("number of inputs", kernel.inputs.size);
@@ -146,6 +172,18 @@ parentPort.on("message", (msg) => {
 						kernel = null
 					}
 
+					break;
+				}
+				case "params": {
+					if (kernel) {
+						for (const param of kernel.params) {
+							if (msg.params.hasOwnProperty(param.name)) {
+								kernel.memory[param.memory.value.idx] = msg.params[param.name]
+								//console.log("updated", param.name, msg.params[param.name])
+								// would be nice to update kernel args here too
+							}
+						}
+					}
 					break;
 				}
 				case "shutdown": {
@@ -186,15 +224,28 @@ function runAudioProcess() {
 	let ouch = audio.outchannels
 	let inch = audio.inchannels
 	let secondsPerFrame = 1/audio.samplerate
+
+
+	// this is our list of parameters:
+	//console.log("params"); // Set()
+	let parameters = []
+	if (kernel) {
+		kernel.args.length = 0
+		for (const param of kernel.params) {
+			kernel.args.push(kernel.memory[param.memory.value.idx])
+		}
+	}
+
 	//console.log(at, time)
 	// continue filling ringbuffer until we catch up to that point:
 	while (frameIdx != at) {
 		let inframe = audio.inbuffer.subarray(frameIdx*inch)
 		let outframe = audio.outbuffer.subarray(frameIdx*ouch)
 		// compute next output:
-		let L0 = oldkernel && mixerXfade > 0 ? oldkernel.call(oldkernel)*mixerXfade : 0
+		let L0 = oldkernel && mixerXfade > 0 ? oldkernel.apply(oldkernel, oldkernel.args)*mixerXfade : 0
 		let R0 = L0
-		let L = kernel ? kernel.call(kernel)*(1-mixerXfade) : 0
+		let params = [400]
+		let L = kernel ? kernel.apply(kernel, kernel.args)*(1-mixerXfade) : 0
 		let R = L 
 		mixerXfade = Math.max(0, mixerXfade - mixerXfadeStep)
 		// write to output:
