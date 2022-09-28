@@ -11,8 +11,6 @@ if (isMainThread) {
 
 // Set up audio driver
 const audio = require('../../../node-gles3/audio.js');
-
-// const gen = require("./genish.js")
 audio.start()
 
 //console.log("got audio", audio)
@@ -20,6 +18,8 @@ audio.start()
 // Now setup genish.js
 const genish = require("./genish.js")
 genish.samplerate = audio.samplerate
+
+//console.log(genish)
 
 // this will hold our generated audio code
 // left undefined for now:
@@ -83,8 +83,6 @@ parentPort.on("message", (msg) => {
 			switch(msg.cmd) {
 				case "graph": {
 
-					//console.log("operations = ", JSON.stringify(msg.operations, null, "  "))
-
 					let values = {}
 					let graph = null
 
@@ -97,9 +95,9 @@ parentPort.on("message", (msg) => {
 						} else if (genish[op.name]) {
 							makeUID(op.uuid)
 
-							let outputs = genish[op.name].apply(genish, inputs)
+							console.log("op", op.name)
 
-							//console.log("op", outputs)
+							let outputs = genish[op.name].apply(genish, inputs)
 
 							// store outputs:
 							if (Array.isArray(outputs)) {
@@ -118,48 +116,40 @@ parentPort.on("message", (msg) => {
 					oldkernel = kernel
 					mixerXfade = 1
 					if (graph) {
+
 						// 2nd argument here is a memory allocation
 						// TODO we need to figure out how to assign this more sensibly
-						kernel = genish.gen.createCallback(graph, memsize)
+						let newkernel = genish.gen.createCallback(graph, memsize)
 
-						//console.log(kernel.toString())
+						// add the required closures:
+						// for (const item of newkernel.members.entries()) {
+						// 	console.log(item)
+						// }
+						newkernel.pow = Math.pow
+						
 
-						//console.log(kernel)
-
-						kernel.graph = graph
-						// after compiling, build up the index map for stashing:
-						kernel.memorymap = getMemoryMap(graph);
-						applystash(kernel, stash);
+						// 	after compiling, build up the index map for stashing:
+					 	newkernel.memorymap = getMemoryMap(graph);
+					 	applystash(newkernel, stash);
 
 						//console.log("stash", JSON.stringify(stash, null, "  "))
 
-						//console.log("map");
-						// Object.entries(kernel.memorymap).forEach(([k, v]) =>  {
-						// 	//console.log(k, v, kernel.memory[v])
+						// console.log("map");
+						// Object.entries(newkernel.memorymap).forEach(([k, v]) =>  {
+						// 	console.log(k, v, newkernel.memory[v])
 						// })
 						
-						kernel.args = []
-						for (const param of kernel.params) {
+						newkernel.args = []
+						for (const param of newkernel.params) {
 							//console.log(JSON.stringify(param, null, "  "));
-							kernel.args.push(kernel.memory[param.memory.value.idx])
+							newkernel.args.push(newkernel.memory[param.memory.value.idx])
 						}
-						//console.log(kernel.memory)
-						//console.log(kernel.args)
+						//console.log(newkernel.args)
 
-						// this is how to update a param:
-						//kernel.graph["parambe8bd31350ee4a25aeb7c8d883c5822a_freq"].value = 400;
+						console.log(newkernel)
+						console.log(newkernel.toString())
 
-
-						// if we had any external audio inputs:
-						//console.log("number of inputs", kernel.inputs.size);
-						//console.log("input objects", graph.kernel.inputs);
-						// this is our outputs:
-						//console.log("number of outputs", kernel.out.length);
-						//console.log("output values", kernel.out);
-						// for external buffers:
-						//console.log("data objects", graph.kernel.data);
-						// I'm not sure what this is for:
-						//console.log("members", graph.kernel.members);
+						kernel = newkernel
 					} else {
 						kernel = null
 					}
@@ -236,7 +226,7 @@ function runAudioProcess() {
 		// compute next output:
 		let L0 = oldkernel && mixerXfade > 0 ? oldkernel.apply(oldkernel, oldkernel.args)*mixerXfade : 0
 		let R0 = L0
-		let params = [400]
+		
 		let L = kernel ? kernel.apply(kernel, kernel.args)*(1-mixerXfade) : 0
 		let R = L 
 		mixerXfade = Math.max(0, mixerXfade - mixerXfadeStep)

@@ -1,7 +1,7 @@
 {	
 	"be8bd31350ee4a25aeb7c8d883c5822a": {
 		"uuid": "be8bd31350ee4a25aeb7c8d883c5822a",
-		"name": "cycle",
+		"name": "phasor",
 		"category": "source",
 	  "inputs": [
 		{
@@ -12,7 +12,7 @@
 			  0.1,
 			  1000
 			],
-			"value": 400
+			"value": 4
 		  },
 		  "index": 0,
 		  "kind": "knob",
@@ -21,7 +21,7 @@
 			0.1,
 			1000
 		  ],
-		  "value": 400
+		  "value": 4
 		},
 		{
 		  "_props": {
@@ -46,7 +46,7 @@
 			"index": 0,
 			"kind": "outlet"
 		  },
-		  "name": "sinusoid",
+		  "name": "phase",
 		  "connections": {
 			"ba986cc161d447df928119b29079cd4b": {
 			  "audio": "cable"
