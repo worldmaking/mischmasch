@@ -1183,13 +1183,13 @@
         "classification": "source",
         "inputs": {
             "freq": {
-                "info": "onset phase",
+                "info": "frequency in volt per octave",
                 "value": 3,
                 "range": [
                     -10,
                     10
                 ],
-                "kind": "inlet"
+                "kind": "knob"
             },
             "width": {
                 "info": "pulse width",
