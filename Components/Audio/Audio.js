@@ -84,12 +84,13 @@ function doc2operations(doc) {
 		operations.push(op)
 
 		// now refine the operation to fill in the inputs according to the patch cables
-		let inoperations = []
+		
 
 		// first, get the cables that connect to this object
 		let conns = cables.filter(conn => conn.dst == obj.uuid)
 		// for each input 
 		if (obj.inputs) obj.inputs.forEach((input, i) => {
+			let inoperations = []
 
 			// get the cables that connect to this input
 			let incables = conns.filter(conn => conn.input == input.name).map(conn => {
@@ -164,9 +165,9 @@ function doc2operations(doc) {
 				})
 				let pow_id = makeUID("octpow")
 				inoperations.push({
-					name: "sub",
+					name: "add",
 					uuid: id,
-					inputs: [2, subid],
+					inputs: [2, sub_id],
 					outputs: [pow_id]
 				})
 				let mul_id = makeUID("hz")
@@ -182,7 +183,9 @@ function doc2operations(doc) {
 			op.inputs[i] = result
 
 			// now combine inoperations to operations
-			operations = operations.concat(inoperations.reverse())
+			inoperations.reverse().forEach(op => {
+				operations.push(op)
+			})
 		})
 	}
 
@@ -206,7 +209,8 @@ module.exports = {
 			
 			let operations = doc2operations(doc)
 			//console.log("operations", JSON.stringify(operations, null, "  "))
-			//console.log(operations2string(operations))
+			console.log("operations\n", operations2string(operations))
+
 			worker.postMessage({ cmd: "graph", operations })
 
 		} catch (e) {
