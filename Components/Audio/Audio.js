@@ -41,12 +41,10 @@ function doc2operations(doc) {
 	// first, convert the graph to a format that is more useful for us here:
 	let chain = []
 	let cables = []
-	let lastobj
 
 	// loop over the objects in the doc:
 	Object.keys(doc).forEach(uuid => {
 		let obj = doc[uuid]
-		lastobj = obj
 		// // add a "connections" field to all the object's inputs:
 		// if (obj.inputs) obj.inputs.forEach(input => {
 		// 	input.connections = []
@@ -61,10 +59,12 @@ function doc2operations(doc) {
 		})
 
 		// for any end-of-chain items:
-		if (obj.op == "speaker") {
+		if (obj.name == "speaker") {
 			chain.push(obj)
 		}
 	})
+
+	//console.log("chain", chain)
 
 	let operations = []
 	let memo = []
@@ -131,9 +131,12 @@ module.exports = {
 	updateGraph(doc) {
 		try {
 			if (FAIL) return;
+
+
+			//console.log("doc", JSON.stringify(doc, null, "  "))
 			
 			let operations = doc2operations(doc)
-			console.log(operations, JSON.stringify(operations, null, "  "))
+			console.log("operations", JSON.stringify(operations, null, "  "))
 			worker.postMessage({ cmd: "graph", operations })
 
 			// setTimeout(()=>{
@@ -151,7 +154,7 @@ module.exports = {
 
 	updateParams(doc) {
 		try {
-			
+
 		} catch (e) {
 			console.error(e)
 		}
