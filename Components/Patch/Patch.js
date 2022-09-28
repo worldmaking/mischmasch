@@ -74,7 +74,7 @@ module.exports = class Patch{
             case 'inlet':
               let input = {
                 name: node.name,
-                kind: 'jack',
+                kind: 'inlet',
                 index: i,
                 _props: node.node._props
               }
@@ -303,7 +303,7 @@ module.exports = class Patch{
         uuid: id,
         inputs: [{
           name: 'audio',
-          kind: 'jack',
+          kind: 'inlet',
           index: 0,
           _props: {
             kind: 'inlet',
