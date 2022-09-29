@@ -342,7 +342,7 @@
                 "info": "frequency",
                 "value": 3,
                 "range": [
-                    -10, 10
+                    0.005, 10 
                 ],
                 "kind": "knob",
                 "trim": "add"
@@ -495,8 +495,7 @@
                 "info": "wave frequency",
                 "value": 3,
                 "range": [
-                    -10,
-                    10
+                    0.1, 10 
                 ],
                 "kind": "knob",
                 "trim": "add"
@@ -736,8 +735,7 @@
                     0,
                     1
                 ],
-                "kind": "knob",
-                "trim": "add"
+                "kind": "inlet"            
             },
             "max": {
                 "info": "upper bound",
@@ -809,9 +807,7 @@
                     -1,
                     1
                 ],
-                "kind": "knob",
-                "trim": "add"
-            },
+                "kind": "inlet"            },
             "max": {
                 "info": "upper bound",
                 "value": 1,
@@ -932,8 +928,7 @@
                     0,
                     1
                 ],
-                "kind": "knob",
-                "trim": "add"
+                "kind": "inlet"
             },
             "max": {
                 "info": "upper bound",
@@ -1199,8 +1194,7 @@
                 "info": "frequency in volt per octave",
                 "value": 3,
                 "range": [
-                    -10,
-                    10
+                    0.005, 10 
                 ],
                 "kind": "knob",
                 "trim": "add"
@@ -1212,8 +1206,7 @@
                     0,
                     1
                 ],
-                "kind": "knob",
-                "trim": "add"
+                "kind": "inlet"
             }
         },
         "outputs": {

@@ -592,6 +592,7 @@ const UI = {
 						// immediate update for rendering:
 						object.i_value[0] = i_value;
 						object.value = newval;
+
 					}
 
 				} else {
@@ -2310,3 +2311,4 @@ function shutdown() {
 
 init();
 
+ 
