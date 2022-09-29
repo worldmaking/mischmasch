@@ -264,20 +264,19 @@ module.exports = class Patch{
             // destination op id
             let destID = connections[k]
             let destOp = this.document[destID]
-            
+
+            // when user deletes an op, sometimes it gets deleted from patch.document before its connections, which will throw an error. so, ignore any connection attempts to non-existent ops
+            if(!destOp){
+              console.log(`no connect exists for ID ${destID} in patch.rebuild(), skipping`)
+              continue
+            }
+                      
             // these are inputs specified by output.connections[k]
             let destOpPatchedInputs = Object.keys(output.connections[destID])
-
-            console.log('\n\ndestOpPatchedInputs', destOpPatchedInputs)
             // loop through connections in case there are one-to-many 
-            
-            // let inputJacks = Object.keys(output.connections[k])
-            // console.log('inputJacks', inputJacks)
-
             for(let l = 0; l < destOpPatchedInputs.length; l++){
               let destJack = destOpPatchedInputs[l]
               let dest = `${destOp.name}_${destID}.${destJack}`
-              console.log('dest', dest)
               graph.arcs.push([src, dest])
             }
           }
