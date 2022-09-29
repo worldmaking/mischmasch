@@ -263,20 +263,28 @@ module.exports = class Patch{
             let src = `${opName}.${output.name}`
             // destination op id
             let destID = connections[k]
-            let destOp = this.document[destID].name
+            let destOp = this.document[destID]
             
-            // loop through connections in case there are one-to-many 
-            let inputJacks = Object.keys(connections[k])
-            for(let l = 0; l < inputJacks.length; l++){
-              let destJack = Object.keys(output.connections[destID])[l]
-              let dest = `${destOp}_${destID}.${destJack}`
+            // these are inputs specified by output.connections[k]
+            let destOpPatchedInputs = Object.keys(output.connections[destID])
 
+            console.log('\n\ndestOpPatchedInputs', destOpPatchedInputs)
+            // loop through connections in case there are one-to-many 
+            
+            // let inputJacks = Object.keys(output.connections[k])
+            // console.log('inputJacks', inputJacks)
+
+            for(let l = 0; l < destOpPatchedInputs.length; l++){
+              let destJack = destOpPatchedInputs[l]
+              let dest = `${destOp.name}_${destID}.${destJack}`
+              console.log('dest', dest)
               graph.arcs.push([src, dest])
             }
           }
         }
       }
     }
+    console.log('\n', graph.arcs, '\n')
     return graph // this is the localGraph that mischmasch's vr uses (mainscene(localGraph))
   }
   // load an patch from file ( use process.argv[2] = nameOfPatch.json )
