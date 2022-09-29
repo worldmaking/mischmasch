@@ -134,7 +134,7 @@ module.exports = class Patch{
         let outputs = this.document[srcID].outputs 
         for(let i=0; i< outputs.length; i++){
           if(outputs[i].connections[destID]){
-
+            console.log('connections', outputs[i].connections[destID])
             // update document in automerge
             this.document = Automerge.change(this.document, 'remove cable', doc => {
               delete doc[srcID].outputs[i].connections[destID][destJack]
@@ -161,12 +161,48 @@ module.exports = class Patch{
         if(opKind == 'speaker'){
           this.dirty.speaker = true
         }
+        
+        // try removing cables connected TO this op
+        // to do that, search entire document for ops that contain the soon-to-be-deleted op in their connections obj, when matched, remove that obj
+        let matchingConnections = []
+        let ops = Object.keys(this.document)
+
+        // rescursively remove all instances of this op's uuid matching output connections in other ops across the patch.document
+
+
+
+        // all ops in doc
+        // for(let i = 0; i < ops.length; i++){
+        //   // get all outputs from current op[i]
+        //   let outputs = ops.outputs
+        //   // seach through outputs
+        //   for(let j = 0; j<outputs[j]; j++){
+        //     // per each output, get all connections
+        //     let connections = Object.keys(outputs[j].connections)
+        //     for(let k = 0; k < connections[j].length; k++){
+              
+        //     }
+        //   }
+        // }
+        
+        //! this is close
+        // if(Object.keys(this.document[payload].outputs.connections).length > 0){
+        //   // update document in automerge
+        //   this.document = Automerge.change(this.document, 'remove op', doc => {
+        //     doc[payload].outputs.connections = {}
+        //   }) 
+        // } 
         // update document in automerge
         this.document = Automerge.change(this.document, 'remove op', doc => {
           delete doc[payload]
         }) 
+
+
         this.dirty.vr = true;
         this.dirty.audio.graph = true;
+      break
+      case 'steve':
+        console.log('hooosa')
       break
     }
   }
@@ -283,7 +319,6 @@ module.exports = class Patch{
         }
       }
     }
-    console.log('\n', graph.arcs, '\n')
     return graph // this is the localGraph that mischmasch's vr uses (mainscene(localGraph))
   }
   // load an patch from file ( use process.argv[2] = nameOfPatch.json )
