@@ -17,6 +17,7 @@ audio.start()
 
 // Now setup genish.js
 const genish = require("./genish.js")
+genish.gen.mode = "" // prevent worklet mode, because it breaks node.js
 genish.samplerate = audio.samplerate
 
 //console.log(genish)
@@ -125,7 +126,7 @@ parentPort.on("message", (msg) => {
 						// for (const item of newkernel.members.entries()) {
 						// 	console.log(item)
 						// }
-						newkernel.pow = Math.pow
+						//newkernel.pow = Math.pow
 						
 
 						// 	after compiling, build up the index map for stashing:
