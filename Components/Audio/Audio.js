@@ -128,7 +128,8 @@ function doc2operations(doc) {
 			if (input.kind == "knob") {
 				let param_id = `param${obj.uuid}_${input.name}`
 				let param_name = `${obj.name}_${obj.uuid}_${input.name}`
-				// input has: index, name, value || 0, (range??)
+				// input has: index, name, value || 0, (range??), trim
+				console.log(input)
 				inoperations.push({
 					name: "param",
 					uuid: param_id,

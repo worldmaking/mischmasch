@@ -16,6 +16,7 @@
 		  "index": 0,
 		  "kind": "knob",
 		  "name": "freq",
+		  "trim": "add",
 		  "range": [
 			-10, 10
 		  ],
