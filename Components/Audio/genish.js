@@ -2042,7 +2042,7 @@ var gen = {
 
     if (this.debug || debug) console.log(buildString);
 
-	callback = new Function(buildString)();
+    callback = new Function(buildString)();
 
     // assign properties to named function
     var _iteratorNormalCompletion3 = true;
@@ -2127,8 +2127,6 @@ var gen = {
 
     this.histories.clear();
 
-	console.log(this.closures)
-    
     return callback;
   },
 
