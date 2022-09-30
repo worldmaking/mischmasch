@@ -83,6 +83,8 @@ function doc2operations(doc) {
 		}
 		operations.push(op)
 
+		//console.log(op)
+
 		// now refine the operation to fill in the inputs according to the patch cables
 		
 
@@ -165,7 +167,7 @@ function doc2operations(doc) {
 				})
 				let pow_id = makeUID("octpow")
 				inoperations.push({
-					name: "add",
+					name: "pow",
 					uuid: id,
 					inputs: [2, sub_id],
 					outputs: [pow_id]
