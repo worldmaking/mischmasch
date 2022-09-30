@@ -2292,10 +2292,15 @@ async function init() {
 
 	animate()
 
-
 	// load a scene on start?
-	if(process.argv[2]){
+ 	if(process.argv[2] == 'new'){
+		let startPatch = {}
+	}
+	else if(process.argv[2]){
 		let startPatch = JSON.parse(fs.readFileSync(path.join(__dirname, process.argv[2])))
+		patch.load(startPatch)
+	} else {
+		let startPatch = JSON.parse(fs.readFileSync(path.join(__dirname, 'userData/document.json')))
 		patch.load(startPatch)
 	}
 }

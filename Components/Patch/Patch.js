@@ -171,7 +171,7 @@ module.exports = class Patch{
               if(Object.keys(outputs[i].connections)[j] == payload){
                 // delete the connection
                 this.document = Automerge.change(this.document, 'remove cable', doc => {
-                  delete doc[Object.keys(doc)[counter]].outputs[i].connections[Object.keys(outputs[i].connections)[j]]
+                  delete doc[Object.keys(doc)[m]].outputs[i].connections[Object.keys(outputs[i].connections)[j]]
                 }) 
               }
             }
@@ -220,7 +220,7 @@ module.exports = class Patch{
         let paramName = payload[0].name
         // get the param index
         for(let i = 0; i < this.document[opID].inputs.length; i++){
-          if(this.document[opID].inputs[i].name, paramName){
+          if(this.document[opID].inputs[i].name == paramName){
             this.document = Automerge.change(this.document, `update param value`, doc => {
               doc[opID].inputs[i]._props.value = payload[1]
               doc[opID].inputs[i].value = payload[1]

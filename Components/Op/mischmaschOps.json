@@ -340,9 +340,9 @@
         "inputs": {
             "freq": {
                 "info": "frequency",
-                "value": 3,
+                "value": 0,
                 "range": [
-                    -10, 10
+                    -10, 7
                 ],
                 "kind": "knob",
                 "trim": "add"
@@ -493,9 +493,9 @@
         "inputs": {
             "freq": {
                 "info": "wave frequency",
-                "value": 3,
+                "value": 0,
                 "range": [
-                    -10, 10
+                    -10, 7
                 ],
                 "kind": "knob",
                 "trim": "add"
@@ -732,10 +732,11 @@
                 "info": "lower bound",
                 "value": 0,
                 "range": [
-                    0,
-                    1
+                    -10,
+                    10
                 ],
-                "kind": "inlet"            
+                "kind": "knob",
+                "trim": "add"            
             },
             "max": {
                 "info": "upper bound",
@@ -807,7 +808,9 @@
                     -1,
                     1
                 ],
-                "kind": "inlet"            },
+                "kind": "inlet",
+                "trim": "add"
+            },
             "max": {
                 "info": "upper bound",
                 "value": 1,
@@ -928,7 +931,9 @@
                     0,
                     1
                 ],
-                "kind": "inlet"
+                "kind": "knob",
+                "trim": "add"
+
             },
             "max": {
                 "info": "upper bound",
@@ -1192,9 +1197,9 @@
         "inputs": {
             "freq": {
                 "info": "frequency in volt per octave",
-                "value": 3,
+                "value": 0,
                 "range": [
-                    -10, 10
+                    -10, 7
                 ],
                 "kind": "knob",
                 "trim": "add"
@@ -1206,7 +1211,9 @@
                     0,
                     1
                 ],
-                "kind": "inlet"
+                "kind": "knob",
+                "trim": "mul"
+
             }
         },
         "outputs": {
