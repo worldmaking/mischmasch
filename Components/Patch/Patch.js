@@ -162,37 +162,23 @@ module.exports = class Patch{
           this.dirty.speaker = true
         }
         
-        // try removing cables connected TO this op
-        // to do that, search entire document for ops that contain the soon-to-be-deleted op in their connections obj, when matched, remove that obj
-        let matchingConnections = []
-        let ops = Object.keys(this.document)
-
         // rescursively remove all instances of this op's uuid matching output connections in other ops across the patch.document
+        for(let m = 0; m < Object.keys(this.document).length; m++){
+          let op = this.document[Object.keys(this.document)[m]]
+          let outputs = op.outputs
+          for(let i = 0; i< outputs.length; i++){
+            for(let j = 0; j< Object.keys(outputs[i].connections).length; j++){
+              if(Object.keys(outputs[i].connections)[j] == payload){
+                // delete the connection
+                this.document = Automerge.change(this.document, 'remove cable', doc => {
+                  delete doc[Object.keys(doc)[counter]].outputs[i].connections[Object.keys(outputs[i].connections)[j]]
+                }) 
+              }
+            }
+          }
+        }
 
-
-
-        // all ops in doc
-        // for(let i = 0; i < ops.length; i++){
-        //   // get all outputs from current op[i]
-        //   let outputs = ops.outputs
-        //   // seach through outputs
-        //   for(let j = 0; j<outputs[j]; j++){
-        //     // per each output, get all connections
-        //     let connections = Object.keys(outputs[j].connections)
-        //     for(let k = 0; k < connections[j].length; k++){
-              
-        //     }
-        //   }
-        // }
-        
-        //! this is close
-        // if(Object.keys(this.document[payload].outputs.connections).length > 0){
-        //   // update document in automerge
-        //   this.document = Automerge.change(this.document, 'remove op', doc => {
-        //     doc[payload].outputs.connections = {}
-        //   }) 
-        // } 
-        // update document in automerge
+        // remove the op from the document in automerge
         this.document = Automerge.change(this.document, 'remove op', doc => {
           delete doc[payload]
         }) 
