@@ -342,7 +342,7 @@
                 "info": "frequency",
                 "value": 3,
                 "range": [
-                    0.005, 10 
+                    -10, 10
                 ],
                 "kind": "knob",
                 "trim": "add"
@@ -495,7 +495,7 @@
                 "info": "wave frequency",
                 "value": 3,
                 "range": [
-                    0.1, 10 
+                    -10, 10
                 ],
                 "kind": "knob",
                 "trim": "add"
@@ -1194,7 +1194,7 @@
                 "info": "frequency in volt per octave",
                 "value": 3,
                 "range": [
-                    0.005, 10 
+                    -10, 10
                 ],
                 "kind": "knob",
                 "trim": "add"
