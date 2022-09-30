@@ -96,7 +96,7 @@ parentPort.on("message", (msg) => {
 						} else if (genish[op.name]) {
 							makeUID(op.uuid)
 
-							console.log("op", op.name)
+							//console.log("op", op.name)
 
 							let outputs = genish[op.name].apply(genish, inputs)
 
@@ -147,8 +147,8 @@ parentPort.on("message", (msg) => {
 						}
 						//console.log(newkernel.args)
 
-						console.log(newkernel)
-						console.log(newkernel.toString())
+						// console.log(newkernel)
+						// console.log(newkernel.toString())
 
 						kernel = newkernel
 					} else {
