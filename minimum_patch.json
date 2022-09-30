@@ -11,7 +11,7 @@
 			"range": [
 			  -10, 10
 			],
-			"value": 4
+			"value": 1
 		  },
 		  "index": 0,
 		  "kind": "knob",
@@ -19,7 +19,7 @@
 		  "range": [
 			-10, 10
 		  ],
-		  "value": 4
+		  "value": 1
 		},
 		{
 		  "_props": {
