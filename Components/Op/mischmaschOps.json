@@ -340,9 +340,9 @@
         "inputs": {
             "freq": {
                 "info": "frequency",
-                "value": 3,
+                "value": 0,
                 "range": [
-                    -10, 10
+                    -10, 7
                 ],
                 "kind": "knob",
                 "trim": "add"
@@ -493,9 +493,9 @@
         "inputs": {
             "freq": {
                 "info": "wave frequency",
-                "value": 3,
+                "value": 0,
                 "range": [
-                    -10, 10
+                    -10, 7
                 ],
                 "kind": "knob",
                 "trim": "add"
@@ -1192,9 +1192,9 @@
         "inputs": {
             "freq": {
                 "info": "frequency in volt per octave",
-                "value": 3,
+                "value": 0,
                 "range": [
-                    -10, 10
+                    -10, 7
                 ],
                 "kind": "knob",
                 "trim": "add"
