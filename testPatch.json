@@ -74,19 +74,19 @@
           "index": 0,
           "kind": "knob",
           "range": [
-            -10,
-            10
+            0,
+            10000
           ],
-          "value": -1
+          "value": 1
         },
         "index": 0,
         "kind": "knob",
         "name": "freq",
         "range": [
-          -10,
-          10
+          0,
+          10000
         ],
-        "value": -1
+        "value": 1
       },
       {
         "_props": {
@@ -144,19 +144,19 @@
           "index": 0,
           "kind": "knob",
           "range": [
-            -10,
-            10
+            0,
+            10000
           ],
-          "value": 5
+          "value": 500
         },
         "index": 0,
         "kind": "knob",
         "name": "freq",
         "range": [
-          -10,
-          10
+          0,
+          10000
         ],
-        "value": 5
+        "value": 500
       },
       {
         "_props": {
