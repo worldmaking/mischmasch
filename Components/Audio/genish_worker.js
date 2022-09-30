@@ -20,8 +20,6 @@ const genish = require("./genish.js")
 genish.gen.mode = "" // prevent worklet mode, because it breaks node.js
 genish.samplerate = audio.samplerate
 
-//console.log(genish)
-
 // this will hold our generated audio code
 // left undefined for now:
 let memsize = 1024*1024*1024
@@ -88,17 +86,24 @@ parentPort.on("message", (msg) => {
 					let graph = null
 
 					msg.operations.forEach(op => {
+
+						//console.log("op", op.name)
+
 						let inputs = op.inputs.map(name => typeof name == "number" ? name : values[name] != undefined ? values[name] : name)
 						if (op.name == "speaker") {
-
 							graph = inputs[0]
+
+						// } else if (op.name == "history") {
+						// 	console.log("history", op)
 
 						} else if (genish[op.name]) {
 							makeUID(op.uuid)
 
-							//console.log("op", op.name)
 
 							let outputs = genish[op.name].apply(genish, inputs)
+
+
+							//if (op.name == "history") console.log("op", op.name, op, outputs)
 
 							// store outputs:
 							if (Array.isArray(outputs)) {
@@ -107,9 +112,12 @@ parentPort.on("message", (msg) => {
 								})
 							} else {
 								op.outputs.forEach((o, i) => {
+									//if (op.name == "history") console.log(o, i)
 									values[o] = i==0 ? outputs : 0
 								})
 							}
+						} else {
+							console.error("op", op.name, "not found in genish")
 						}
 					})
 
@@ -145,10 +153,10 @@ parentPort.on("message", (msg) => {
 							//console.log(JSON.stringify(param, null, "  "));
 							newkernel.args.push(newkernel.memory[param.memory.value.idx])
 						}
-						//console.log(newkernel.args)
+						// console.log(newkernel.args)
 
 						// console.log(newkernel)
-						// console.log(newkernel.toString())
+						//console.log(newkernel.toString())
 
 						kernel = newkernel
 					} else {
