@@ -157,12 +157,14 @@ function doc2operations(doc) {
 			// TODO: if input is type "frequency"
 			if (input.name == "freq") {
 				// convert v/oct to Hz
-				// var hz = 55*Math.pow(2, oct - 21/12);
+				// using oct=0 => C3 
+				// which is oct=-1.25 => A1 => 55hz
+				// var hz = 55*Math.pow(2, oct + 1.25);
 				let sub_id = makeUID("octsub_")
 				inoperations.push({
-					name: "sub",
+					name: "add",
 					uuid: id,
-					inputs: [result, 21/12],
+					inputs: [result, 1.25],
 					outputs: [sub_id]
 				})
 				let pow_id = makeUID("octpow")
