@@ -1,0 +1,308 @@
+{
+  "4614e4e247cb428397f39a6c11c015ae": {
+    "category": "speaker",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "inlet",
+          "range": [
+            -1,
+            1
+          ]
+        },
+        "index": 0,
+        "kind": "inlet",
+        "name": "audio"
+      }
+    ],
+    "name": "speaker",
+    "outputs": [],
+    "position": [
+      0.08213473111391068,
+      1.8520748615264893,
+      -1.6910520792007446
+    ],
+    "quaternion": [
+      -0.10712142464436335,
+      -0.09972969896705483,
+      -0.056583475865547,
+      0.9876119005913994
+    ],
+    "uuid": "4614e4e247cb428397f39a6c11c015ae"
+  },
+  "dbecd44fdada4c1aa3d06a6ea950862d": {
+    "category": "mathemagical",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "inlet",
+          "range": [
+            0,
+            1
+          ],
+          "value": 0
+        },
+        "index": 0,
+        "kind": "inlet",
+        "name": "value1"
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "knob",
+          "range": [
+            0,
+            1
+          ],
+          "value": 0.7568950326522194
+        },
+        "index": 1,
+        "kind": "knob",
+        "name": "value2",
+        "range": [
+          0,
+          1
+        ],
+        "trim": "add",
+        "value": 0.7568950326522194
+      }
+    ],
+    "name": "ltp",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {
+          "4614e4e247cb428397f39a6c11c015ae": {
+            "audio": "cable"
+          }
+        },
+        "name": "out1"
+      }
+    ],
+    "position": [
+      -0.4852215647697449,
+      1.7769837379455566,
+      -1.6040396690368652
+    ],
+    "quaternion": [
+      -0.012698564707526824,
+      0.2819276360004908,
+      -0.00473410450201659,
+      0.9593399546215522
+    ],
+    "uuid": "dbecd44fdada4c1aa3d06a6ea950862d"
+  },
+  "51f5429f419a400cad84354afb5035d4": {
+    "category": "source",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "knob",
+          "range": [
+            -10,
+            7
+          ],
+          "value": 2.687383034535003
+        },
+        "index": 0,
+        "kind": "knob",
+        "name": "freq",
+        "range": [
+          -10,
+          7
+        ],
+        "trim": "add",
+        "value": 2.687383034535003
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "inlet",
+          "range": [
+            0,
+            1
+          ],
+          "value": 0
+        },
+        "index": 1,
+        "kind": "inlet",
+        "name": "reset"
+      }
+    ],
+    "name": "cycle",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {
+          "dbecd44fdada4c1aa3d06a6ea950862d": {
+            "value1": "cable"
+          }
+        },
+        "name": "sinusoid"
+      }
+    ],
+    "position": [
+      -0.7854243516921997,
+      1.6639071702957153,
+      -1.2559192180633545
+    ],
+    "quaternion": [
+      0.06040368147378267,
+      0.6200829960728675,
+      0.17280458565118936,
+      0.7628808506362909
+    ],
+    "uuid": "51f5429f419a400cad84354afb5035d4"
+  },
+  "29eb8c722de94e0394f06219bad6647b": {
+    "category": "source",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "knob",
+          "range": [
+            -10,
+            7
+          ],
+          "value": -3.8110686097568722
+        },
+        "index": 0,
+        "kind": "knob",
+        "name": "freq",
+        "range": [
+          -10,
+          7
+        ],
+        "trim": "add",
+        "value": -3.8110686097568722
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "knob",
+          "range": [
+            0,
+            1
+          ],
+          "value": 0.624535306523808
+        },
+        "index": 1,
+        "kind": "knob",
+        "name": "width",
+        "range": [
+          0,
+          1
+        ],
+        "trim": "add",
+        "value": 0.624535306523808
+      }
+    ],
+    "name": "train",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {
+          "dbecd44fdada4c1aa3d06a6ea950862d": {
+            "value2": "cable"
+          }
+        },
+        "name": "out1"
+      }
+    ],
+    "position": [
+      -0.7277241349220276,
+      2.012265920639038,
+      -1.3239035606384277
+    ],
+    "quaternion": [
+      0.29967467682203996,
+      0.5129759180112797,
+      0.026796713665228702,
+      0.8039483201472203
+    ],
+    "uuid": "29eb8c722de94e0394f06219bad6647b"
+  },
+  "de824969ed9540f2915d80bb0b924923": {
+    "category": "source",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "knob",
+          "range": [
+            -10,
+            7
+          ],
+          "value": -6.8319438572621
+        },
+        "index": 0,
+        "kind": "knob",
+        "name": "freq",
+        "range": [
+          -10,
+          7
+        ],
+        "trim": "add",
+        "value": -6.8319438572621
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "inlet",
+          "range": [
+            0,
+            1
+          ],
+          "value": 0
+        },
+        "index": 1,
+        "kind": "inlet",
+        "name": "reset"
+      }
+    ],
+    "name": "phasor",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {
+          "29eb8c722de94e0394f06219bad6647b": {
+            "freq": "cable"
+          }
+        },
+        "name": "phase"
+      }
+    ],
+    "position": [
+      -0.7321805357933044,
+      1.9057972431182861,
+      -0.9517267346382141
+    ],
+    "quaternion": [
+      0.24675238592961118,
+      0.6670601709693372,
+      0.06549848697956369,
+      0.6998957354739106
+    ],
+    "uuid": "de824969ed9540f2915d80bb0b924923"
+  }
+}

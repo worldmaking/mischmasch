@@ -68,9 +68,12 @@ module.exports = class Palette{
           kind: kind,
           category: op.classification,
           pos: [0,0,0],
-          orient: [0,0,0,0]
+          orient: [0,0,0,0],
         }
       }
+      // if(op.sign){
+      //   this.graph[opName].sign = op.sign
+      // }
 
       // does the op have inputs?
       if(op.inputs){

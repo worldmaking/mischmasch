@@ -105,6 +105,9 @@ module.exports = class Patch{
           outputs: outputs
           
         }
+        if(op.sign){
+          payload.node.sign = sign
+        }
         // update document in automerge
         this.document = Automerge.change(this.document, 'add op', doc => {
           doc[op.uuid] = op

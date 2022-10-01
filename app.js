@@ -1692,7 +1692,68 @@ function makeSceneGraph(renderer, gl) {
 			obj.i_highlight[0] = 0;
 
 			// default label:
+			// represent genish names with easier-to-read labels:
+
 			let label_text = name;
+			// if op has a mathematical sign, provide it in the opsList so that VR can display it instead of the genish name (for better UX)
+      switch(name){
+        case 'add':
+          label_text = '+'
+        break
+        case 'sub':
+          label_text = 'subtract'
+        break
+        case 'mul':
+          label_text = 'multiply'
+        break
+        case 'div':
+          label_text = 'divide'
+        break
+        case 'gt':
+          label_text = '>'
+        break
+        case 'gte':
+          label_text = '>='
+        break
+        case 'lt':
+          label_text = '<'
+        break
+        case 'lte':
+          label_text = '<='
+        break
+        case 'bool':
+          label_text = 'boolean'
+        break
+        case 'gtp':
+          label_text = '> pass'
+        break
+        case 'ltp':
+          label_text = '< pass'
+        break
+        case 'ad':
+          label_text = 'attack/decay'
+        break
+        case 'eq':
+          label_text = 'equals'
+        break
+        case 'neq':
+          label_text = '!='
+        break
+        case 'ad':
+          label_text = 'attack/decay'
+        break
+        case 'eq':
+          label_text = '=='
+        break
+        case 'neq':
+          label_text = '!='
+        break
+        case 'seq':
+          //TODO what does this one do?
+        break
+
+
+      }
 			let scale = UI_DEFAULT_SCALE;
 			let text_scale = Math.min(1/(label_text.length+1), 1/font.charheight);
 			let text_pos = [ 0, 0.4 ];
@@ -1850,6 +1911,65 @@ function makeSceneGraph(renderer, gl) {
 
 					// add module label:
 					label_text = obj.kind.toUpperCase();
+
+					// if op has a mathematical sign, provide it in the opsList so that VR can display it instead of the genish name (for better UX)
+					switch(obj.kind){
+						case 'add':
+							label_text = '+'
+						break
+						case 'sub':
+							label_text = 'subtract'
+						break
+						case 'mul':
+							label_text = 'multiply'
+						break
+						case 'div':
+							label_text = 'divide'
+						break
+						case 'gt':
+							label_text = '>'
+						break
+						case 'gte':
+							label_text = '>='
+						break
+						case 'lt':
+							label_text = '<'
+						break
+						case 'lte':
+							label_text = '<='
+						break
+						case 'bool':
+							label_text = 'boolean'
+						break
+						case 'gtp':
+							label_text = '> pass'
+						break
+						case 'ltp':
+							label_text = '< pass'
+						break
+						case 'ad':
+							label_text = 'attack/decay'
+						break
+						case 'eq':
+							label_text = 'equals'
+						break
+						case 'neq':
+							label_text = '!='
+						break
+						case 'ad':
+							label_text = 'attack/decay'
+						break
+						case 'eq':
+							label_text = '=='
+						break
+						case 'neq':
+							label_text = '!='
+						break
+						case 'seq':
+							//TODO what does this one do?
+						break
+					}
+						label_text.toUpperCase()
 					let w = font.charwidth * label_text.length;
 					// scale to fit
 					text_scale = Math.min(
@@ -2295,13 +2415,17 @@ async function init() {
 	// load a scene on start?
  	if(process.argv[2] == 'new'){
 		let startPatch = {}
+		patch.load(startPatch)
 	}
 	else if(process.argv[2]){
-		let startPatch = JSON.parse(fs.readFileSync(path.join(__dirname, process.argv[2])))
+		let file = `userData/${process.argv[2]}.json`
+		let startPatch = JSON.parse(fs.readFileSync(path.join(__dirname, file)))
 		patch.load(startPatch)
-	} else {
+	} else if(process.argv[2] == 'restart'){
 		let startPatch = JSON.parse(fs.readFileSync(path.join(__dirname, 'userData/document.json')))
 		patch.load(startPatch)
+	} else {
+		patch.load({})
 	}
 }
 
