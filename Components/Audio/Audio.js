@@ -32,6 +32,59 @@ worker.on('exit', (code) => {
 	FAIL = 1
 })
 
+function docHasFeedback(doc) {
+	let hasFeedback = false
+
+	// first, convert the graph to a format that is more useful for us here:
+	let chain = []
+	let cables = []
+	// loop over the objects in the doc:
+	Object.keys(doc).forEach(uuid => {
+		let obj = doc[uuid]
+		// find all the cable connections:
+		if (obj.outputs) obj.outputs.forEach(output => {
+			if (output.connections) Object.entries(output.connections).forEach(([dst, conn]) => {
+				Object.entries(conn).forEach(([input, type]) => {
+					cables.push({ src: uuid, output: output.name, dst, input, type })
+				})
+			})
+		})
+		// for any end-of-chain items:
+		if (obj.name == "speaker") {
+			chain.push(obj)
+		}
+	})
+
+	let memo = []
+	for (let i = 0; i < chain.length; i++) {
+		let obj = chain[i]
+		// ensure we only process each object once:
+		if (memo[obj.uuid]) continue;
+		memo[obj.uuid] = 1
+
+		// first, get the cables that connect to this object
+		let conns = cables.filter(conn => conn.dst == obj.uuid)
+		// for each input 
+		if (obj.inputs) obj.inputs.forEach((input, i) => {
+			// get the cables that connect to this input
+			let incables = conns.filter(conn => conn.input == input.name).map(conn => {
+				// for any op that we used, add it to the chain:
+				if (memo[conn.src]) {
+					// if we have already generated this object, this must be a history connection
+					console.log("feedback loop", conn)
+
+					hasFeedback = true
+					
+				}
+				else {
+					chain.push(doc[conn.src])
+				}
+			})
+		})
+	}
+	return hasFeedback
+}
+
 function doc2operations(doc) {
 	let id = 0;
 	function makeUID(name) { return name + (id++) }
@@ -64,10 +117,15 @@ function doc2operations(doc) {
 
 	//console.log("chain", chain)
 
+	let preops = []
+	let postops = []
 	let operations = []
 	let memo = []
 	for (let i = 0; i < chain.length; i++) {
 		let obj = chain[i]
+
+		//console.log("visit", obj.uuid, obj.name)
+
 		// ensure we only process each object once:
 		if (memo[obj.uuid]) continue;
 		memo[obj.uuid] = 1
@@ -97,7 +155,19 @@ function doc2operations(doc) {
 				// for any op that we used, add it to the chain:
 				if (memo[conn.src]) {
 					// if we have already generated this object, this must be a history connection
-					// TODO
+					console.log("feedback loop", conn)
+
+					// // at this point, we need to add a history object
+					// // and replace this cable with two cables
+
+					// // create a new op to allocate an history:
+					// let history_id = makeUID(`${conn.src}_history_`)
+					// preops.push({
+					// 	name: "history", uuid: history_id, inputs:[74], outputs:[`${conn.output}_${history_id}`]
+					// })
+
+					// // replace cable source with this:
+					// conn.src = `${history_id}.out`
 				}
 				else {
 					chain.push(doc[conn.src])
@@ -126,7 +196,8 @@ function doc2operations(doc) {
 			if (input.kind == "knob") {
 				let param_id = `param${obj.uuid}_${input.name}`
 				let param_name = `${obj.name}_${obj.uuid}_${input.name}`
-				// input has: index, name, value || 0, (range??)
+				// input has: index, name, value || 0, (range??), trim
+				//console.log(input)
 				inoperations.push({
 					name: "param",
 					uuid: param_id,
@@ -152,7 +223,7 @@ function doc2operations(doc) {
 				result = (incables.length) ? incables[0] : op.inputs[i]
 			}
 
-			// TODO: if input is type "frequency"
+			// if input is type "frequency"
 			if (input.name == "freq") {
 				// convert v/oct to Hz
 				// using oct=0 => C3 
@@ -193,7 +264,7 @@ function doc2operations(doc) {
 
 	// this will have built them in reverse order (by pulling from the outputs)
 	// we want to reverse this to generate code
-	return operations.reverse();
+	return preops.concat(operations.reverse(), postops)
 }
 
 function operations2string(ops) {
@@ -204,10 +275,17 @@ function operations2string(ops) {
 
 module.exports = {
 
+	docHasFeedback,
+
 	updateGraph(doc) {
 		try {
 			if (FAIL) return;
 			//console.log("doc", JSON.stringify(doc, null, "  "))
+
+			if (docHasFeedback(doc)) {
+				console.error("doc has feedback")
+				return
+			}
 			
 			let operations = doc2operations(doc)
 			//console.log("operations", JSON.stringify(operations, null, "  "))
