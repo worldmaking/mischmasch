@@ -59,6 +59,11 @@ module.exports = class Palette{
         this.opsList.splice(this.opsList.indexOf(opName), 0)
         continue
       }
+      if(opName == 'fold'){
+        //TODO these ops exist in the mischmaschOps.json, but genish is having problems with them
+        this.opsList.splice(this.opsList.indexOf(opName), 0)
+        continue
+      }
       let kind = opName
       if(op.sign){
         kind = op.sign

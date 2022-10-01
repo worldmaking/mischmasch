@@ -57,10 +57,10 @@
                 "value": 0,
                 "range": [
                     0,
-                    100
+                    1
                 ],
-                "kind": "knob",
-                "trim": "add"
+                "kind": "inlet"
+                
             }
         },
         "outputs": {
