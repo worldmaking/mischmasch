@@ -11,6 +11,12 @@ function createRenderer() {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
 
+    // from nodegles version:
+    // const floor_m = 6;
+	// renderer.floor_geom = glutils.makeQuad({ min: -floor_m, max: floor_m, div:8 })
+
+
+
     return renderer;
 }
 

@@ -1,5 +1,4 @@
-// modules from the components folder
-import { createCamera } from './systems/camera.js';
+// components
 import { Op } from './components/Op/Op.js';
 import { Palette } from './components/Palette/Palette.js';
 import { createLights } from './components/Lights/lights.js'
@@ -11,7 +10,8 @@ import { createScene } from './components/scene.js';
 import { Editor } from './components/Editor/Editor'
 import { Patch } from './components/Patch/Patch'
 
-// modules from the systems folder
+// systems
+import { createCamera } from './systems/camera.js';
 import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
 import { Resizer } from './systems/Resizer.js'
@@ -79,20 +79,19 @@ class World {
         worldScene = createScene('world');
         worldScene.name = 'world'
 
-        //! start
         editor = new Editor();
         editor.scene.name = 'editor'
         worldScene.add(editor.scene)
         patch = new Patch(loop);
         patch.scene.name = 'synth'
         editor.scene.add( patch.scene );
-        //! end
+       
         // renderer
         renderer = createRenderer();
         // XR rendering
         document.body.appendChild( VRButton.createButton( renderer ) );
         renderer.xr.enabled = true;
-        //! start
+     
         // page UI: gpu stats panel
         stats = new Stats();
         gpuPanel = new GPUStatsPanel( renderer.getContext() );
@@ -174,7 +173,7 @@ class World {
         
         // rendering loop
         // loop = new Loop(camera, worldScene, renderer, pointer, xrCtlRight, xrCtlLeft, stats, gpuPanel, palette, userSettings);
-        //! end
+    
         loop = new Loop(camera, worldScene, renderer, pointer, null, null, stats, gpuPanel, palette, userSettings, getIntersections, intersectObjects, cleanIntersected, controller_0, patch, floor, editor, patch);
         // loop.updatables.push(controls);
 
