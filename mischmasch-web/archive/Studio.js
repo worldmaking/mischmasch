@@ -4,6 +4,8 @@ import { createScene } from './components/scene.js';
 // systems
 import { createCamera } from './systems/camera.js';
 import { createRenderer } from './systems/renderer.js';
+import { Loop } from './archive/systems/Loop.js.js';
+
 // webXR
 import { Color, Scene } from "three";
 
@@ -45,8 +47,10 @@ class Studio {
     // XR rendering
     document.body.appendChild( VRButton.createButton( renderer ) );
     renderer.xr.enabled = true;
-    return scene;
 
+    //! look at start/end comments for more to add here
+
+    loop = new Loop(camera, studioScene, renderer)
   }
 
   

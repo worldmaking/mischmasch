@@ -12,6 +12,7 @@
     "vite": "^4.2.0"
   },
   "dependencies": {
-    "three": "^0.150.1"
+    "three": "^0.150.1",
+    "troika-three-text": "^0.47.1"
   }
 }

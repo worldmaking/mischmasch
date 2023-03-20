@@ -4,7 +4,7 @@ function createScene(sceneType) {
   const scene = new Scene();
 
   switch (sceneType){
-    case 'world':
+    case 'studio':
       scene.background = new Color('black');
     break
     case 'patch':

@@ -1,0 +1,297 @@
+{
+	"patcher" : 	{
+		"fileversion" : 1,
+		"appversion" : 		{
+			"major" : 8,
+			"minor" : 0,
+			"revision" : 3,
+			"architecture" : "x64",
+			"modernui" : 1
+		}
+,
+		"classnamespace" : "dsp.gen",
+		"rect" : [ 186.0, 83.0, 963.0, 940.0 ],
+		"bglocked" : 0,
+		"openinpresentation" : 0,
+		"default_fontsize" : 12.0,
+		"default_fontface" : 0,
+		"default_fontname" : "Arial",
+		"gridonopen" : 1,
+		"gridsize" : [ 15.0, 15.0 ],
+		"gridsnaponopen" : 1,
+		"objectsnaponopen" : 1,
+		"statusbarvisible" : 2,
+		"toolbarvisible" : 1,
+		"lefttoolbarpinned" : 0,
+		"toptoolbarpinned" : 0,
+		"righttoolbarpinned" : 0,
+		"bottomtoolbarpinned" : 0,
+		"toolbars_unpinned_last_save" : 0,
+		"tallnewobj" : 0,
+		"boxanimatetime" : 200,
+		"enablehscroll" : 1,
+		"enablevscroll" : 1,
+		"devicewidth" : 0.0,
+		"description" : "",
+		"digest" : "",
+		"tags" : "",
+		"style" : "",
+		"subpatcher_template" : "",
+		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-4",
+					"linecount" : 3,
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 322.0, 9.0, 604.0, 47.0 ],
+					"text" : "Eurorack Turing Machine expands on a shift register to create random, mutatable gate/cv sequences. Related to Buchla Source of Uncertainty, Wiard Noise Ring etc.\nNice overview in https://grayscale.info/manuals/Grayscale_Permutation_manual.pdf"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-8",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 556.5, 92.0, 161.0, 20.0 ],
+					"text" : "reset pattern to start"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-7",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 556.5, 153.0, 25.0, 22.0 ],
+					"text" : "trig"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-3",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 232.0, 126.0, 282.0, 22.0 ],
+					"text" : "param steps 8 @min 2 @max 8 @comment integer"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-1",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 25.5, 158.0, 25.0, 22.0 ],
+					"text" : "trig"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-61",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 556.5, 908.0, 55.0, 22.0 ],
+					"text" : "out 3 trig"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-60",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 556.5, 123.0, 58.0, 22.0 ],
+					"text" : "in 2 reset"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-56",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 291.0, 908.0, 62.0, 22.0 ],
+					"text" : "out 2 gate"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-68",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 25.5, 908.0, 67.0, 22.0 ],
+					"text" : "out 1 value"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"code" : "History randomize(1);\r\nHistory step;\r\n\r\nif (randomize) {\r\n\tfor (i=0; i<dim(registers); i+=1) {\r\n\t\tpoke(registers, noise() > 0, i);\r\n\t}\t\r\n\trandomize = 0;\r\n}\r\n\r\ntrig = in1;\r\nreset_trig = in2;\r\n\r\n// the main action: \r\nif (trig) {\r\n\t// step control:\r\n\tif (reset_trig) {\r\n\t\tstep = 0;\r\n\t} else if (trig) {\r\n\t\tstep = wrap(step-1, 0, int(steps));\r\n\t}\r\n\t// get current bit in buffer\r\n\tval = peek(registers, step, boundmode=\"wrap\");\r\n\t// negative stability means we should flip the bit\r\n\tif (stability < 0) { val = !val; }\r\n\t// stability closer to zero increases chance of \r\n\t// randomizing the bit\r\n\tif (abs(noise()) > abs(stability)) { val = (noise() > 0); }\r\n\t// write the bit back into the buffer\r\n\tpoke(registers, val, step);\r\n}\r\n// compute a binary coding from first 8 registers:\r\nsum = 0;\r\nfor (i=0; i<8; i+=1) {\r\n\tval = peek(registers, step+i, boundmode=\"wrap\");\r\n\tsum += val * pow(2, i);\r\n}\r\n// output binary-coded number:\r\nout1 = sum / pow(2, 8);\r\n// output gate:\r\nout2 = peek(registers, step);\r\n// output trig:\r\nout3 = out2 * trig;",
+					"fontface" : 0,
+					"fontname" : "Lucida Console",
+					"fontsize" : 12.0,
+					"id" : "obj-67",
+					"maxclass" : "codebox",
+					"numinlets" : 2,
+					"numoutlets" : 3,
+					"outlettype" : [ "", "", "" ],
+					"patching_rect" : [ 25.5, 193.0, 550.0, 701.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-65",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 25.5, 123.0, 59.0, 22.0 ],
+					"text" : "in 1 clock"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-54",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "" ],
+					"patching_rect" : [ 628.0, 158.0, 91.0, 22.0 ],
+					"text" : "data registers 8"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-63",
+					"linecount" : 3,
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 724.0, 158.0, 161.0, 47.0 ],
+					"text" : "using a data/buffer instead of latches grants external access to the register"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-59",
+					"linecount" : 21,
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 628.0, 241.0, 196.0, 288.0 ],
+					"text" : "TM \"voltages\" expander effectively lets you override the powers of 2 for each step's binary calc, which will help change the pattern distribution -- particularly the distribution of large & small leaps in the output voltage.\n\nI suggest that rather than lots of individual knobs, the key here is to re-order the bit positions when calculating the number, so some kind of parameter to control that shuffle is all is needed (and a proper shuffle a la urn will ensure the total range remains the same)\n\ne.g. maybe multiply by an arbitrary ramp, then fold, then using a sorting algorithm to derive a cardinal order?"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-57",
+					"linecount" : 5,
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 628.0, 531.0, 150.0, 74.0 ],
+					"text" : "TODO: inputs to override looped bit with 0s / override with 1s. These will override the mutation input. "
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-32",
+					"linecount" : 4,
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 25.5, 9.0, 272.0, 60.0 ],
+					"text" : "chance of bit changing:\nstability == 1 means no changes\nstability == -1 means always flip\nstability == 0 means change randomly"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-29",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 25.5, 75.0, 216.0, 22.0 ],
+					"text" : "param stability 0.875 @min -1 @max 1"
+				}
+
+			}
+ ],
+		"lines" : [ 			{
+				"patchline" : 				{
+					"destination" : [ "obj-67", 0 ],
+					"source" : [ "obj-1", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-7", 0 ],
+					"source" : [ "obj-60", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-1", 0 ],
+					"source" : [ "obj-65", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-56", 0 ],
+					"source" : [ "obj-67", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-61", 0 ],
+					"source" : [ "obj-67", 2 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-68", 0 ],
+					"source" : [ "obj-67", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-67", 1 ],
+					"source" : [ "obj-7", 0 ]
+				}
+
+			}
+ ],
+		"autosave" : 0
+	}
+
+}
