@@ -1,5 +1,5 @@
 import './style.css'
-import { World } from './Components/World/World.js'
+import { Studio } from './Studio.js'
 
 let paletteState = 0;
 
@@ -13,10 +13,10 @@ function main() {
    const container = document.querySelector('#scene-container');
    
    // 1. Create an instance of the World app
-   const world = new World(container);
+   const studio = new Studio(container);
 
    // 2. Render the scene
-   world.start();
+   studio.start();
 
 
    // keyboard scaffolding
