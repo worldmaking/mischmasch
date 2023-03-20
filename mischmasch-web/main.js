@@ -7,12 +7,11 @@ let paletteState = 0;
 function main() {
 
    // 
-    // code to set up the World App will go here
+    // code to set up the world App will go here
     
     // Get a reference to the container element
     const container = document.querySelector('#scene-container');
     
-    // 1. Create an instance of the World app
     const world = new World(container);
 
     // 2. Render the scene

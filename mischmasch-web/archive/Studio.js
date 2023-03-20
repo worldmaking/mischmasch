@@ -25,11 +25,11 @@ let camera, renderer;
 let loop;
 
 // scenes
-let studioScene, editor, patch;
+let worldScene, editor, patch;
 
 
-class Studio {
-  // 1. Create an instance of the Studio app
+class World {
+  // 1. Create an instance of the world app
   constructor(container) {
 
 
@@ -37,8 +37,8 @@ class Studio {
     camera = createCamera();
 
     // set up scenes
-    studioScene = createScene('studio')
-    studioScene.name = 'studio'
+    worldScene = createScene('world')
+    worldScene.name = 'world'
     const scene = new Scene();
     scene.background = new Color('black');
 
@@ -50,7 +50,7 @@ class Studio {
 
     //! look at start/end comments for more to add here
 
-    loop = new Loop(camera, studioScene, renderer)
+    loop = new Loop(camera, worldScene, renderer)
   }
 
   
@@ -64,4 +64,4 @@ class Studio {
   }
 }
 
-export { Studio } 
+export { World } 
