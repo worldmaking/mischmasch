@@ -10,7 +10,7 @@ if (isMainThread) {
 // console.log(workerData);
 
 // Set up audio driver
-const audio = require('../../../node-gles3/audio.js');
+const audio = require('../../../../node-gles3/audio.js');
 audio.start()
 
 //console.log("got audio", audio)
