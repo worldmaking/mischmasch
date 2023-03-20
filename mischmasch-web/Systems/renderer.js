@@ -6,7 +6,7 @@ function createRenderer() {
     renderer.xr.enabled = true;
       
     // turn on the physically correct lighting model
-    renderer.physicallyCorrectLights = true;
+    renderer.useLegacyLights  = true;
 
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
