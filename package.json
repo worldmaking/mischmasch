@@ -1,0 +1,23 @@
+{
+  "name": "mischmasch-loading",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pc": "cd PC && node app.js",
+    "web": "cd mischmasch-web && npm run dev"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/worldmaking/mischmasch.git"
+    
+  },
+  "author": "michael palumbo, graham wakefield, alexander zonta",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/worldmaking/mischmasch/issues"
+  },
+  "homepage": "https://github.com/worldmaking/mischmasch#readme"
+}

@@ -2,14 +2,15 @@ import { Scene } from "three";
 import { Op } from '../Op/Op'
 import { ops } from '../Palette/genishOperators.js'
 import { v4 as uuidv4 } from 'uuid';
-import * as Automerge from 'automerge'
+
+import * as automerge from '@automerge/automerge'
 import { Cable } from '../Cable/Cable'
 class Patch {
   constructor (loop){
     this.scene = new Scene();
 
     // versioning     
-    this.document = Automerge.init()
+    this.document = automerge.init()
 
     this.dirty = false
 
@@ -37,7 +38,7 @@ class Patch {
 
         // let ops = Object.keys(this.document)
         let srcName = `${src.parent.name}_${src.parent.uuid}`
-        this.document = Automerge.change(this.document, 'add cable', doc => {
+        this.document = automerge.change(this.document, 'add cable', doc => {
           for(let i = 0; i< this.document[srcName].outputs.length; i++){
             if(this.document[srcName].outputs[i].name == srcJackName){
               doc[srcName].outputs[i].connections[destName] = 'cable'
@@ -79,7 +80,7 @@ class Patch {
         
         let opName = `${op.name}_${op.uuid}`
         // update document in automerge
-        this.document = Automerge.change(this.document, 'add op', doc => {
+        this.document = automerge.change(this.document, 'add op', doc => {
           doc[opName] = op
       })
       // set patch dirty flag for Loop
