@@ -1,4 +1,4 @@
-import { WebGLRenderer, Scene, BoxGeometry, RawShaderMaterial, ShaderMaterial, MeshStandardMaterial, Mesh, HemisphereLight, UniformsUtils, GLSL3, AmbientLight, UniformsLib, Color, ShaderLib } from 'three';
+import { WebGLRenderer, Scene, BoxGeometry, RawShaderMaterial, ShaderMaterial, MeshStandardMaterial, Mesh, HemisphereLight, UniformsUtils, GLSL3, AmbientLight, Uniform, UniformsLib, Color, ShaderLib, Matrix4 } from 'three';
 import { Camera } from './systems/camera.js'
 import { Renderer } from './systems/Renderer.js' 
 
@@ -23,13 +23,17 @@ const scene = new Scene()
 
 const geometry = new BoxGeometry();
 
-const uniforms = UniformsUtils.clone(ShaderLib.phong.uniforms)
+const uniforms = {
+  u_viewmatrix: new Uniform( new Matrix4())
+  // time: { value: 1.0 },
+
+}
 
 
 const material = new ShaderMaterial( {
 
 	uniforms: uniforms,
-  lights: true,
+  // lights: true,
   // glslVersion: 'THREE.GLSL3',
 	vertexShader: `uniform mat4 u_viewmatrix;
   uniform mat4 u_projmatrix;
