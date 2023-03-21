@@ -917,13 +917,15 @@ function initWindow() {
 function initRenderer(renderer) {
 	
 	renderer.font = createSDFFont(gl, "font/CONSOLATTF.png", "font/CONSOLA.TTF-msdf.json")
-
+	/* //! moved to Renderer.js
 	renderer.textquad_geom = glutils.makeQuad({ min:0., max:1, div:8 });
 	renderer.module_geom = glutils.makeCube({ 
 		min:[-1,-1, 0], 
 		max:[ 1, 1, 1], 
 		div: [13, 13, 1] 
 	});
+	*/
+
 	// renderer.wand_geom = glutils.makeCube({ 
 	// 	min:[-0.03,-0.03, 0], 
 	// 	max:[ 0.03, 0.03, 0.1], 
@@ -932,13 +934,14 @@ function initRenderer(renderer) {
 	
 	// right controller
 	renderer.wand_geom = glutils.geomFromOBJ(fs.readFileSync(path.join(__dirname, "objs/touch_right", "oculus_cv1_controller_right.obj"), "utf-8"))
-
+	/* //! moved to Renderer.js
 	renderer.line_geom = glutils.makeLine({ min:0, max:1, div: 24 });
 	const floor_m = 6;
 	renderer.floor_geom = glutils.makeQuad({ min: -floor_m, max: floor_m, div:8 })
 	renderer.debug_geom = glutils.makeCube({min:-0.01, max:0.01})
-
+	*/
 	
+	/* //! moved to Renderer.js
 	renderer.fbo_program = glutils.makeProgram(gl,
 `#version 330
 in vec4 a_position;
@@ -970,7 +973,8 @@ void main() {
 	outColor = texture(u_tex, v_texCoord);
 }`
 	);
-	renderer.floor_program = glutils.makeProgram(gl,
+
+renderer.floor_program = glutils.makeProgram(gl,
 `#version 330
 uniform mat4 u_viewmatrix;
 uniform mat4 u_projmatrix;
@@ -1038,6 +1042,8 @@ void main() {
 
 }`
 	);
+	
+
 	renderer.wand_program = glutils.makeProgram(gl,
 `#version 330
 //uniform mat4 u_modelmatrix;
@@ -1093,6 +1099,8 @@ void main() {
 	outColor = vec4(cd*0.4);
 }`
 	);
+	
+
 	renderer.line_program = glutils.makeProgram(gl,
 `#version 330
 uniform mat4 u_viewmatrix;
@@ -1177,6 +1185,7 @@ void main() {
 	outColor *= v_color * stipple;
 }`
 	);
+	
 	renderer.ray_program = glutils.makeProgram(gl,
 		`#version 330
 		uniform mat4 u_viewmatrix;
@@ -1241,6 +1250,7 @@ void main() {
 			outColor = vec4(stipple);
 		}`
 	);
+	
 	renderer.textquad_program = glutils.makeProgram(gl, 
 `#version 330
 uniform mat4 u_viewmatrix;
@@ -1306,8 +1316,10 @@ void main() {
 	outColor = v_color * alpha;
 }`
 	);
+
+
 	renderer.module_program = glutils.makeProgram(gl,
-/* //! moved to shaders.js
+
 		`#version 330
 uniform mat4 u_viewmatrix;
 uniform mat4 u_projmatrix;
@@ -1437,8 +1449,9 @@ void main() {
 	// alternate render for cylinder shape
 	//float d = fCylinder(p, 1., 1.);
 }`
-*/
+
 	);
+
 	renderer.debug_program = glutils.makeProgram(gl,
 `#version 330
 uniform mat4 u_viewmatrix;
@@ -1470,6 +1483,7 @@ void main() {
 	outColor = v_color;
 }`
 	);
+	*/
 
 	// GLOBAL GL RESOURCES:
 	renderer.floor_vao = glutils.createVao(gl, renderer.floor_geom, renderer.floor_program.id);

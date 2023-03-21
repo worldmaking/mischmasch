@@ -14,6 +14,9 @@ import * as glutils from './utilities/glutils.js'
 import { systemSettings } from './settings/systemSettings.js'
 
 const renderer = new Renderer().r
+// apply an id to the dom Element
+renderer.domElement.id = 'mischmaschCanvas';
+
 // create and add the <canvas>
 document.body.appendChild(renderer.domElement); 
 // add the vr button
