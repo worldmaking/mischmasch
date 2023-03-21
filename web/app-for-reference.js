@@ -105,6 +105,8 @@ function intersectCube(boxPos, boxQuat, p0, p1, rayOrigin, rayDir) {
 	return [tentry <= texit && texit > 0, tentry];
 }
 */ 
+
+/* no longer used
 function makeDelNodeDelta(deltas, node, path) {
 	for (let name of Object.keys(node)) {
 		if (name != "_props") {
@@ -115,7 +117,7 @@ function makeDelNodeDelta(deltas, node, path) {
 	Object.assign(delta, node._props)
 	deltas.push(delta)
 }
-
+*/
 
 ////////////////////////////////////////////////////////////////
 
@@ -309,7 +311,7 @@ const UI = {
 			stateData: {},
 		}
 	],
-	*/
+	
 
 	cables: {
 
@@ -550,13 +552,13 @@ const UI = {
 				object = hand.stateData.object
 				object.i_highlight[0] = 1
 				if (hand.trigger_pressed) {
-					/*
-						project ray from hand to plane of knob to find a point 'p'
-						point the knob toward 'p'
-						that is, get relative angle in knob space from knob centre to p
-						(i.e. on the plane of the knob itself)
-						and set the value according to that angle
-					*/
+					
+						// project ray from hand to plane of knob to find a point 'p'
+						// point the knob toward 'p'
+						// that is, get relative angle in knob space from knob centre to p
+						// (i.e. on the plane of the knob itself)
+						// and set the value according to that angle
+					
 					let dir = glutils.quat_unrotate(vec3.create(), object.i_quat, hand.dir);
 					if (dir[2]) {
 						let origin = vec3.sub(vec3.create(), hand.pos, object.i_pos);
@@ -804,9 +806,13 @@ const UI = {
 		renderer.ray_program.end();
 		return this;
 	},
+	*/
 }
 
-let vrdim = [4096, 4096];
+
+
+//! moved to systemSettings
+// let vrdim = [4096, 4096];
 
 
 
@@ -1486,10 +1492,13 @@ void main() {
 	*/
 
 	// GLOBAL GL RESOURCES:
+	/* //! moved to Renderer.js
 	renderer.floor_vao = glutils.createVao(gl, renderer.floor_geom, renderer.floor_program.id);
+	
 	renderer.debug_vao = glutils.createVao(gl, renderer.debug_geom, renderer.debug_program.id);
 	renderer.fbo_vao = glutils.createVao(gl, glutils.makeQuad(), renderer.fbo_program.id);
 	renderer.fbo = glutils.makeFboWithDepth(gl, vrdim[0], vrdim[1])
+	*/
 }
 
 function makeSceneGraph(renderer, gl) {
@@ -2148,6 +2157,7 @@ function makeSceneGraph(renderer, gl) {
 // UI
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/* //! moved to collisions.js
 // assumes `instances` is an array of objects
 // each object has `i_pos`, `i_quat`, and `i_bb0`/`i_bb1` fields
 // `bbN` is the oriented bounding box of the object 
@@ -2174,6 +2184,7 @@ function rayTestModules(instances, ray_origin, ray_dir) {
 	if (hits.length) hits.sort((a,b)=>a[1]-b[1]);
 	return hits;
 }
+*/
 
 function initUI(window) {
 
@@ -2440,7 +2451,7 @@ async function init() {
 		patch.load({})
 	}
 }
-
+/* //! I don't think we need this
 function shutdown() {
 	console.log("shutdown")
 	if (USEVR) vr.connect(false)
@@ -2449,7 +2460,7 @@ function shutdown() {
 	// if (socket) socket.terminate();
 	process.exit(0)
 }
-
+*/
 init();
 
  

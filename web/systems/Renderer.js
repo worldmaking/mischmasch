@@ -8,9 +8,11 @@ class Renderer {
     this.r = new WebGLRenderer({ antialias: true });
     // apply an id to the dom Element
     this.r.domElement.id = 'mischmaschCanvas'
-
+    console.log(this.r)
     // get the gl context
     this.r.gl = this.r.domElement.getContext("webgl2");
+    console.log(this.r.gl.getParameter(this.r.gl.MAX_TEXTURE_SIZE))
+
     this.r.setPixelRatio(window.devicePixelRatio);
     // make it fill the page
     this.r.setSize(window.innerWidth, window.innerHeight);

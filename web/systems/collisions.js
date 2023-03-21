@@ -32,4 +32,25 @@ function intersectCube(boxPos, boxQuat, p0, p1, rayOrigin, rayDir) {
 	return [tentry <= texit && texit > 0, tentry];
 }
 
-export { intersectCube }
+function rayTestModules(instances, ray_origin, ray_dir) {
+	// hit test on each cube:
+	let hits = []
+	// naive hit-test by looping over all and testing in turn
+	//for (let obj of instances) {
+	for (let i=0; i<instances.count; i++) {
+		let obj = instances.instances[i]
+		if (!obj.i_bb0 || !obj.i_bb1) continue;  // no bounding box, no test
+		// check for hits:
+		let [hit, distance] = intersectCube(obj.i_pos, obj.i_quat, obj.i_bb0, obj.i_bb1, ray_origin, ray_dir);
+		if (hit) {
+			hits.push([obj, distance]);
+		}
+	}
+	// if there are hits, sort them by distance
+	// then highlight the nearest
+	if (hits.length) hits.sort((a,b)=>a[1]-b[1]);
+	return hits;
+}
+
+
+export { intersectCube, rayTestModules }
