@@ -1,8 +1,8 @@
 import { WebGLRenderer, Scene, BoxGeometry, RawShaderMaterial, ShaderMaterial, MeshStandardMaterial, Mesh, HemisphereLight, UniformsUtils, GLSL3, AmbientLight, Uniform, UniformsLib, Color, ShaderLib, Matrix4 } from 'three';
 import { Camera } from './systems/camera.js'
 import { Renderer } from './systems/Renderer.js' 
-
-const UI_KNOB_ANGLE_LIMIT = Math.PI * 5./6.; // 7 o'clock through 5 o'clock
+import { scale, hashCode, colorFromString, opMenuColour, value2angle, angle2value } from './utilities/utilities.js'
+import { systemSettings } from './settings/systemSettings.js'
 
 const renderer = new Renderer().r
 // create and add the <canvas>
@@ -59,7 +59,7 @@ const material = new ShaderMaterial( {
   out vec2 v_uv;
   
   const float PI = 3.141592653589793;
-  const float KNOB_ANGLE_LIMIT = ${UI_KNOB_ANGLE_LIMIT};
+  const float KNOB_ANGLE_LIMIT = ${systemSettings.UI_KNOB_ANGLE_LIMIT};
   
   float scale(float t, float ilo, float ihi, float olo, float ohi) {
     return (t-ilo)*(ohi-olo)/(ihi-ilo) + olo;
