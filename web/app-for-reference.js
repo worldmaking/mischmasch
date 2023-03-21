@@ -4,14 +4,14 @@ const assert = require("assert"),
 const { vec2, vec3, vec4, quat, mat2, mat2d, mat3, mat4} = require("gl-matrix")
 const PNG = require("png-js");
 // keep the 'ws' usage as well - coven requires this very spelling
-const ws = require('ws')
+// const ws = require('ws')
 const username = require('username')
-const filename = path.basename(__filename)
+// const filename = path.basename(__filename)
 
-const chroma = require("chroma-js")
+// const chroma = require("chroma-js")
 const {argv} = require('yargs')
 const nodeglpath = "../../node-gles3"
-const rws = require('reconnecting-websocket');
+// const rws = require('reconnecting-websocket');
 
 
 const gl = require(path.join(nodeglpath, "gles3.js")),
@@ -26,7 +26,7 @@ const Palette = require(path.join(componentPath, 'Palette/Palette.js'))
 const Audio = require(path.join(componentPath, 'Audio/Audio.js'))
 let patch = new Patch()
 
-// let p2pID; // set by coven signalling server
+// let p2pID; 
 let name;
 if (argv.name){
   name = argv.name
@@ -34,9 +34,7 @@ if (argv.name){
   name = username.sync()
 }
 
-function prettyPrint(object){
-	console.log(JSON.stringify(object, null, 4))
-}
+
 let USEVR = (process.platform === "win32") && !(argv.vr === 'false');
 // usevr if its specified on CLI & skip VR if on OSX:
 console.log('using VR?', USEVR)
@@ -75,6 +73,7 @@ function scale(t, ilo, ihi, olo, ohi) {
 }
 */
 
+/* //! moved into collisions.js
 // p0, p1 are the min/max bounding points of the cube
 // rayDir is assumed to be normalized to length 1
 // boxPos, boxQuat, rayOrigin, rayDir are all assumed to be in world space
@@ -105,7 +104,7 @@ function intersectCube(boxPos, boxQuat, p0, p1, rayOrigin, rayDir) {
 	// hit if entry is before exit:
 	return [tentry <= texit && texit > 0, tentry];
 }
-
+*/ 
 function makeDelNodeDelta(deltas, node, path) {
 	for (let name of Object.keys(node)) {
 		if (name != "_props") {
@@ -164,8 +163,6 @@ let menuGraph = {
 }
 
 let menu;
-
-
 
 let viewmatrix = mat4.create();
 let projmatrix = mat4.create();
@@ -1310,7 +1307,8 @@ void main() {
 }`
 	);
 	renderer.module_program = glutils.makeProgram(gl,
-`#version 330
+/* //! moved to shaders.js
+		`#version 330
 uniform mat4 u_viewmatrix;
 uniform mat4 u_projmatrix;
 
@@ -1439,6 +1437,7 @@ void main() {
 	// alternate render for cylinder shape
 	//float d = fCylinder(p, 1., 1.);
 }`
+*/
 	);
 	renderer.debug_program = glutils.makeProgram(gl,
 `#version 330

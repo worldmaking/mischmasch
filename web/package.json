@@ -12,6 +12,8 @@
     "vite": "^4.2.0"
   },
   "dependencies": {
+    "browser-assert": "^1.2.1",
+    "gl-matrix": "^3.4.3",
     "png-js": "^1.0.0",
     "three": "^0.150.1"
   }

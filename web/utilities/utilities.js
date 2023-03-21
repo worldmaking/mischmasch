@@ -28,6 +28,9 @@ function angle2value(a) {
 	return scale(a, -systemSettings.UI_KNOB_ANGLE_LIMIT, systemSettings.UI_KNOB_ANGLE_LIMIT, 0., 1.);
 }
 
+function prettyPrint(object){
+	console.log(JSON.stringify(object, null, 4))
+}
 
 export { 
   scale,
@@ -35,6 +38,7 @@ export {
   colorFromString,
   opMenuColour,
   value2angle,
-  angle2value
+  angle2value,
+  prettyPrint
 
 }
