@@ -147,6 +147,7 @@ const NEAR_CLIP = 0.01;
 const FAR_CLIP = 20;
 */
 
+/* //! moved into main.js
 let mainScene = null
 let menuScene = null
 let currentScene = null
@@ -168,17 +169,14 @@ let viewmatrix = mat4.create();
 let projmatrix = mat4.create();
 let viewmatrix_inverse = mat4.create();
 let projmatrix_inverse = mat4.create();
+*/
 
 const renderer = {
 	
 }
 
-let socket;
-let incomingDeltas = [];
-let outgoingDeltas = [];
-
 const UI = {
-
+	/* //! moved to main.js
 	keynav: {
 
 		pos: vec3.fromValues(0, 0, 1),
@@ -273,13 +271,14 @@ const UI = {
 			return mat4.lookAt(viewmatrix, this.pos, at, this.up);
 		},
 	},
+	
 
 	hmd: {
 		pos: [0, 1.4, 1],
 		orient: [0, 0, 0, 1],
 		mat: mat4.create(),
 	},
-
+	
 	hands: [
 		{
 			name: "hand_left",
@@ -310,6 +309,7 @@ const UI = {
 			stateData: {},
 		}
 	],
+	*/
 
 	cables: {
 

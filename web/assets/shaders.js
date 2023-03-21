@@ -1,5 +1,8 @@
+import { GLSL3 } from 'three';
+import { systemSettings } from '../settings/systemSettings.js'
+
 const module_program = {
-  uniforms: uniforms,
+  uniforms: null,
   glslVersion: GLSL3,
   vertexColors: true,
   vertexShader: `uniform mat4 u_viewmatrix;

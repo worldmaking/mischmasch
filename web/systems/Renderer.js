@@ -1,4 +1,5 @@
 import { WebGLRenderer } from 'three';
+import { module_program } from '../assets/shaders.js'
 
 class Renderer {
   constructor(){
