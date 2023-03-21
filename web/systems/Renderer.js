@@ -1,6 +1,7 @@
 import { WebGLRenderer } from 'three';
 import { module_program, fbo_program, floor_program, wand_program, line_program, ray_program, textquad_program, debug_program } from '../assets/shaders.js'
 import * as glutils from '../utilities/glutils.js'
+import { systemSettings } from '../settings/systemSettings.js'
 
 class Renderer {
   constructor(){
@@ -35,7 +36,9 @@ class Renderer {
 
     // Global GL Resources
     this.r.floor_vao = glutils.createVao(this.r.gl, this.r.floor_geom, this.r.floor_program.id);
-
+    this.r.debug_vao = glutils.createVao(this.r.gl, this.r.debug_geom, this.r.debug_program.id);
+    this.r.fbo_vao = glutils.createVao(this.r.gl, glutils.makeQuad(), this.r.fbo_program.id);
+    this.r.fbo = glutils.makeFboWithDepth(this.r.gl, systemSettings.vrdim[0], systemSettings.vrdim[1])
   }
 }
 
