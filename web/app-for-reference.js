@@ -2227,18 +2227,20 @@ let t = glfw.getTime();
 let fps = 60;
 
 function animate() {
+	/* //! moved to main.js animation loop
 	let t1 = glfw.getTime();
 	let dt = t1-t;
-	fps += 0.1*((1/dt)-fps);
-	t = t1;
-	glfw.setWindowTitle(window, `fps ${fps}`);
+	*/
+	// fps += 0.1*((1/dt)-fps);
+	// t = t1;
+	// glfw.setWindowTitle(window, `fps ${fps}`);
 	
-	glfw.pollEvents();
-	if(glfw.windowShouldClose(window) || glfw.getKey(window, glfw.KEY_ESCAPE)) {
-		shutdown();
-	} else {
-		setImmediate(animate)
-	}
+	// glfw.pollEvents();
+	// if(glfw.windowShouldClose(window) || glfw.getKey(window, glfw.KEY_ESCAPE)) {
+	// 	shutdown();
+	// } else {
+	// 	setImmediate(animate)
+	// }
 
 	// rebuild VR localGraph
 	if(patch.dirty.vr == true){
@@ -2412,9 +2414,12 @@ function draw(eye=0) {
 async function init() {
 	// init opengl 
 	window = initWindow();
+
+	/* //! added to main.js
 	initRenderer(renderer);
 
 	UI.init(renderer, gl)
+	*/
 
 	menu = new Palette()
 	menuGraph.nodes = menu.graph;

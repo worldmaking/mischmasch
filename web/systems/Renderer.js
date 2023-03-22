@@ -8,10 +8,9 @@ class Renderer {
     this.r = new WebGLRenderer({ antialias: true });
     // apply an id to the dom Element
     this.r.domElement.id = 'mischmaschCanvas'
-    console.log(this.r)
+    
     // get the gl context
     this.r.gl = this.r.domElement.getContext("webgl2");
-    console.log(this.r.gl.getParameter(this.r.gl.MAX_TEXTURE_SIZE))
 
     this.r.setPixelRatio(window.devicePixelRatio);
     // make it fill the page
@@ -23,6 +22,13 @@ class Renderer {
       max:[ 1, 1, 1], 
       div: [13, 13, 1] 
     });
+    //! this is older code, probably will want to remove this. see 'renderer.wand_geom' in initRenderer that uses the obj files 
+    this.r.wand_geom = glutils.makeCube({ 
+      	min:[-0.03,-0.03, 0], 
+      	max:[ 0.03, 0.03, 0.1], 
+      	div: [13, 13, 1] 
+      });
+
     this.r.line_geom = glutils.makeLine({ min:0, max:1, div: 24 });
     const floor_m = 6;
     this.r.floor_geom = glutils.makeQuad({ min: -floor_m, max: floor_m, div:8 });
@@ -41,6 +47,7 @@ class Renderer {
     this.r.debug_vao = glutils.createVao(this.r.gl, this.r.debug_geom, this.r.debug_program.id);
     this.r.fbo_vao = glutils.createVao(this.r.gl, glutils.makeQuad(), this.r.fbo_program.id);
     this.r.fbo = glutils.makeFboWithDepth(this.r.gl, systemSettings.vrdim[0], systemSettings.vrdim[1])
+
   }
 }
 

@@ -1,5 +1,5 @@
 // three libs
-import { WebGLRenderer, Scene, BoxGeometry, RawShaderMaterial, ShaderMaterial, MeshStandardMaterial, Mesh, HemisphereLight, UniformsUtils, GLSL3, AmbientLight, Uniform, UniformsLib, Color, ShaderLib, Matrix4 } from 'three';
+import { WebGLRenderer, Scene, BoxGeometry, RawShaderMaterial, ShaderMaterial, MeshStandardMaterial, Mesh, HemisphereLight, UniformsUtils, GLSL3, AmbientLight, Uniform, UniformsLib, Color, ShaderLib, Matrix4, Clock } from 'three';
 import { VRButton } from 'three/addons/webxr/VRButton.js';
 // other libs
 import { vec2, vec3, vec4, quat, mat2, mat2d, mat3, mat4} from "gl-matrix"
@@ -13,22 +13,7 @@ import * as glutils from './utilities/glutils.js'
 // settings files
 import { systemSettings } from './settings/systemSettings.js'
 
-const renderer = new Renderer().r
-
-// create and add the <canvas>
-document.body.appendChild(renderer.domElement); 
-// add the vr button
-document.body.appendChild( VRButton.createButton( renderer ) );
-renderer.xr.enabled = true;
-
-// do this now and whenever the window is resized()
-window.addEventListener("resize", function () {
-  // ensure the renderer fills the page, and the camera aspect ratio matches:
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-}, false);
-
+const clock = new Clock();
 // vars
 let mainScene = null
 let menuScene = null
@@ -51,33 +36,17 @@ let viewmatrix = mat4.create();
 let projmatrix = mat4.create();
 let viewmatrix_inverse = mat4.create();
 let projmatrix_inverse = mat4.create();
+let renderer;
 
 
-
-let camera = new Camera().camera;
-const scene = new Scene()
-// make a cube
-const geometry = new BoxGeometry();
-const material = new MeshStandardMaterial();
-const cube = new Mesh( geometry, material );
-// position the cube, and add it to the scene:
-cube.position.y = 1.5;
-scene.add( cube );
-// add ambient light
-const light = new AmbientLight(0x404040, 1. );
-scene.add(light);
-
-// animate!
-function animate() {
-  // update the scene:
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
-  // draw the scene:
-  renderer.render( scene, camera );
-};
-// start!
-renderer.setAnimationLoop(animate);
-
+function initRenderer(){
+  renderer = new Renderer().r
+  // create and add the <canvas>
+  document.body.appendChild(renderer.domElement); 
+  // add the vr button
+  document.body.appendChild( VRButton.createButton( renderer ) );
+  renderer.xr.enabled = true;
+}
 
 const UI = {
 
@@ -213,7 +182,7 @@ const UI = {
   cables: {
 
 		arcs: [],
-
+    
 		init(renderer, gl) {
 			// for temporary cables:
 			this.module_vao = glutils.createVao(gl, renderer.module_geom, renderer.module_program.id)
@@ -625,9 +594,9 @@ const UI = {
 
 
 	init(renderer, gl) {
-
+    /* //! temporary
 		this.cables.init(renderer, gl)
-
+    
 		this.ray_vao = glutils.createVao(gl, renderer.line_geom, renderer.ray_program.id)
 		this.ray_instances = glutils.createInstances(gl, [
 			//{ name:"i_color", components:4 },
@@ -636,6 +605,7 @@ const UI = {
 			{ name:"i_dir", components:3 },
 		]);
 		this.ray_instances.attachTo(this.ray_vao).allocate(16);
+
 		this.wand_vao = glutils.createVao(gl, renderer.wand_geom, renderer.wand_program.id)
 		this.wand_instances = glutils.createInstances(gl, [
 			{ name:"i_quat", components:4 },
@@ -651,6 +621,8 @@ const UI = {
 			//vec4.set(line.i_color, 1, 1, 1, 1);
 		}
 		return this.updateInstances();
+
+    */
 	},
 
 	makeLocalCable() {
@@ -705,3 +677,57 @@ const UI = {
 	},
 
 }
+
+
+async function init() {
+  initRenderer()
+  UI.init(renderer, renderer.gl)
+}
+
+init()
+
+
+
+
+// do this now and whenever the window is resized()
+window.addEventListener("resize", function () {
+  // ensure the renderer fills the page, and the camera aspect ratio matches:
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+}, false);
+
+
+
+
+
+let camera = new Camera().camera;
+const scene = new Scene()
+// make a cube
+const geometry = new BoxGeometry();
+const material = new MeshStandardMaterial();
+const cube = new Mesh( geometry, material );
+// position the cube, and add it to the scene:
+cube.position.y = 1.5;
+scene.add( cube );
+// add ambient light
+const light = new AmbientLight(0x404040, 1. );
+scene.add(light);
+
+// animate!
+function animate() {
+
+  // get current timing:
+  const dt = clock.getDelta();
+  const t = clock.getElapsedTime();
+  
+  // update the scene:
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
+
+
+  // draw the scene:
+  renderer.render( scene, camera );
+};
+// start!
+renderer.setAnimationLoop(animate);
