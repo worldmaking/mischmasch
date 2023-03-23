@@ -12,7 +12,10 @@
     "vite": "^4.2.0"
   },
   "dependencies": {
+    "@depasquale/three-immersive-controls": "0.0.14",
+    "@webxr-input-profiles/motion-controllers": "^1.0.0",
     "browser-assert": "^1.2.1",
+    "gamepad-wrapper": "^1.2.0",
     "gl-matrix": "^3.4.3",
     "png-js": "^1.0.0",
     "three": "^0.150.1"
