@@ -7,10 +7,10 @@ import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerM
 
 
 // components
-import { Patch } from '../components/Patch/Patch.js'
+import { Patch } from './components/Patch/Patch.js'
 
 // utilities
-import { scale, hashCode, colorFromString, opMenuColour, value2angle, angle2value, prettyPrint } from '../../web/utilities/utilities.js'
+import { scale, hashCode, colorFromString, opMenuColour, value2angle, angle2value, prettyPrint } from '../web/utilities/utilities.js'
 
 // scenes
 // import { funzo } from '../web/userData/scenes.js'
