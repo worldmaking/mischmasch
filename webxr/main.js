@@ -4,12 +4,13 @@ import { Mesh, HemisphereLight, PerspectiveCamera, Scene, WebGLRenderer, BoxGeom
 import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory';
 
-import { funzo } from './userData/scenes.js'
-
 // import * as Automerge from "@automerge/automerge"
 // let doc = Automerge.init({cables: [1,2,3,4]})
 // console.log(doc)
 // controller thumbstick access
+
+// systems
+import { Renderer } from'./systems/Renderer.js'
 
 
 // components
@@ -17,13 +18,19 @@ import { Patch } from './components/Patch/Patch.js'
 
 // utilities
 import { scale, hashCode, colorFromString, opMenuColour, value2angle, angle2value, prettyPrint } from '/utilities/utilities.js'
+import * as glutils from './utilities/glutils.js'
 
 // scenes
-// import { funzo } from '../web/userData/scenes.js'
+import { funzo } from './userData/scenes.js'
 
-// automerge
+// assets
+import { module_program, fbo_program, floor_program, wand_program, line_program, ray_program, textquad_program, debug_program } from './assets/shaders.js'
 
-
+// GOT graph, local copy.
+let localGraph = {
+	nodes: {},
+	arcs: []
+}
 
 const objectUnselectedColor = new Color(0x5853e6);
 const objectSelectedColor = new Color(0xf0520a);
@@ -34,13 +41,11 @@ class App {
     this.camera.position.set(0, 1.6, 3);
     this.scene = new Scene();
     this.scene.background = new Color(0x505050);
-  
-    this.renderer = new WebGLRenderer({
-        antialias: true
-    });
-    this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer = new Renderer().renderer;
+    
     document.body.appendChild(this.renderer.domElement);
+    
+    
   
     this.initXR();
     this.initScene();
@@ -48,13 +53,7 @@ class App {
     window.addEventListener('resize', this.onWindowResize.bind(this), false);
     this.renderer.setAnimationLoop(this.render.bind(this));
 
-    // initialize patch
-    this.patch = new Patch()
-   
-    // try passing a scene to load into patch
-    this.patch.load(funzo)
-    console.log(this.patch.document.toJSON())
-    console.log(this.patch.rebuild())
+
   }
 
   initXR() {
@@ -82,11 +81,21 @@ class App {
       controller.addEventListener( 'connected', (e) => {
         controller.userData.gamepad = e.data.gamepad 
         controller.userData.handedness = e.data.handedness 
+      });
     });
-    });
+    // mainScene = this.renderer.makeSceneGraph();
+    // mainScene.init();
+    // mainScene.rebuild(localGraph)
   }
 
   initScene() {
+    // initialize patch
+    this.patch = new Patch()
+
+    // try passing a scene to load into patch
+    this.patch.load(funzo)
+    console.log(this.patch.document.toJSON())
+    console.log(this.patch.rebuild())
     this.objects = [];
 
     const boxGeometry = new BoxGeometry(0.5, 0.5, 0.5);
@@ -166,7 +175,17 @@ class App {
   }
 
   render() {
-   
+    // rebuild XR localGraph
+    // rebuild VR localGraph
+    if(this.patch.dirty.vr == true){
+      // fs.writeFileSync('userData/document.json', JSON.stringify(patch.document, null, 2))
+      
+      localGraph = this.patch.rebuild()
+      // fs.writeFileSync('userData/graph.json', JSON.stringify(localGraph, null, 2))
+
+      // mainScene.rebuild(localGraph)
+      this.patch.dirty.vr = false
+    }
     if (this.controllers) {
       this.controllers.forEach(controller => {
         if(controller.userData.gamepad){

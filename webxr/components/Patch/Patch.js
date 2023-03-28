@@ -343,11 +343,12 @@ class Patch{
     this.dirty.audio.graph = true
   }
   ensureSpeaker(hmd){
-    let ids = Object.keys(this.document)
+    let tempPatch = this.document.toJSON() // convert yjs doc to json 
+    let ids = Object.keys(tempPatch)
     let speakers = []
     for(let i = 0; i< ids.length;i++){
       
-      if(this.document[ids[i]].name == 'speaker'){
+      if(tempPatch[ids[i]].name == 'speaker'){
         speakers.push('speaker')
       }
     }
@@ -373,11 +374,12 @@ class Patch{
         }],
         outputs:[ ]
       }
-      
+      // update yjs doc
+      this.document.set(`${id}`, op)
       // update document in automerge
-      this.document = Automerge.change(this.document, 'add speaker', doc => {
-        doc[id] = op
-      })
+      // this.document = Automerge.change(this.document, 'add speaker', doc => {
+      //   doc[id] = op
+      // })
       // set patch dirty flag for animation Loop
       this.dirty.vr = true
       this.dirty.audio.graph = true
