@@ -1,15 +1,30 @@
 import { v4 as uuidv4 } from 'uuid';
-import * as Automerge from "@automerge/automerge"
-// import { scale, hashCode, colorFromString, opMenuColour, value2angle, angle2value, prettyPrint } from '../../utilities/utilities.js'
+import * as Y from 'yjs'
 
-const _ = require('lodash')
-const replaceAll = require("replaceall");
+
+import { scale, hashCode, colorFromString, opMenuColour, value2angle, angle2value, prettyPrint } from '../../utilities/utilities.js'
+
+import * as _ from 'lodash'
+import * as replaceAll from 'replaceAll'
 
 class Patch{
   constructor(){
     // versioning     
     
-     
+    // create a yjs map
+    this.document = new Y.Doc()
+    // 
+    // Method 1: Define a top-level type
+    const ymap = this.document.getMap('patch') 
+    // Method 2: Define Y.Map that can be included into the Yjs document
+    const ymapNested = new Y.Map()
+    // Nested types can be included as content into any other shared type
+    ymap.set('patch', ymapNested)
+
+    // Common methods
+    ymap.set('prop-name', 'value') // value can be anything json-encodable
+    ymap.get('prop-name') // => 'value'
+    // ymap.delete('prop-name')
     
     this.dirty = {
       vr: false,
@@ -22,10 +37,6 @@ class Patch{
 
     this.cables = []
 
-  }
-  wipe(){
-    this.document = Automerge.init()
-    prettyPrint(this.document)
   }
   add(item, payload){
     switch(item){

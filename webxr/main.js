@@ -12,10 +12,10 @@ import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerM
 
 
 // components
-// import { Patch } from '../components/Patch/Patch.js'
+import { Patch } from './components/Patch/Patch.js'
 
 // utilities
-import { scale, hashCode, colorFromString, opMenuColour, value2angle, angle2value, prettyPrint } from '../../web/utilities/utilities.js'
+import { scale, hashCode, colorFromString, opMenuColour, value2angle, angle2value, prettyPrint } from '/utilities/utilities.js'
 
 // scenes
 // import { funzo } from '../web/userData/scenes.js'
@@ -48,11 +48,8 @@ class App {
     this.renderer.setAnimationLoop(this.render.bind(this));
 
     // initialize patch
-    // this.patch = new Patch()
-    // this.patch.view()
-    // console.log(this.patch)
-    // this.document = Automerge.init()
-    // prettyPrint(this.document)
+    this.patch = new Patch()
+    console.log(this.patch.document)
   }
 
   initXR() {

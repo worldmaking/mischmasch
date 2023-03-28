@@ -4,17 +4,21 @@
   "version": "0.6.0",
   "scripts": {
     "start": "node server.js",
-    "build": "npx webpack"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "devDependencies": {
     "webpack": "^5.76.3",
-    "webpack-cli": "^5.0.1"
+    "webpack-cli": "^5.0.1",
+    "vite": "^4.2.0"
   },
   "dependencies": {
     "@automerge/automerge": "^2.0.2",
     "express": "^4.18.2",
     "lodash": "^4.17.21",
     "replaceall": "^0.1.6",
-    "three": "^0.150.1"
+    "three": "^0.150.1",
+    "yjs": "^13.5.51"
   }
 }
