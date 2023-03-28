@@ -4,6 +4,7 @@ import { Mesh, HemisphereLight, PerspectiveCamera, Scene, WebGLRenderer, BoxGeom
 import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory';
 
+import { funzo } from './userData/scenes.js'
 
 // import * as Automerge from "@automerge/automerge"
 // let doc = Automerge.init({cables: [1,2,3,4]})
@@ -49,7 +50,11 @@ class App {
 
     // initialize patch
     this.patch = new Patch()
-    console.log(this.patch.document)
+   
+    // try passing a scene to load into patch
+    this.patch.load(funzo)
+    console.log(this.patch.document.toJSON())
+    console.log(this.patch.rebuild())
   }
 
   initXR() {

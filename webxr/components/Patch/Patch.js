@@ -12,18 +12,14 @@ class Patch{
     // versioning     
     
     // create a yjs map
-    this.document = new Y.Doc()
+    this.y = new Y.Doc()
     // 
     // Method 1: Define a top-level type
-    const ymap = this.document.getMap('patch') 
+    this.document = this.y.getMap('patches') 
     // Method 2: Define Y.Map that can be included into the Yjs document
-    const ymapNested = new Y.Map()
+    //const ymapNested = new Y.Map()
     // Nested types can be included as content into any other shared type
-    ymap.set('patch', ymapNested)
-
-    // Common methods
-    ymap.set('prop-name', 'value') // value can be anything json-encodable
-    ymap.get('prop-name') // => 'value'
+    //ymap.set('patch', ymapNested)
     // ymap.delete('prop-name')
     
     this.dirty = {
@@ -53,6 +49,8 @@ class Patch{
         if(srcID == destID){
           cableType = 'history'
         }
+        // update document in Yjs
+        
         // update document in automerge
         this.document = Automerge.change(this.document, 'add cable', doc => {
           for(let i=0; i<doc[srcID].outputs.length; i++){
@@ -260,11 +258,12 @@ class Patch{
       arcs: []
     }
     // prettyPrint(this.document)
-    let ops = Object.keys(this.document)
-
+    let tempPatch = this.document.toJSON()
+    let ops = Object.keys(tempPatch)
+    
     // loop through ops and get graph
     for(let i=0; i<ops.length; i++){
-      let op = this.document[ops[i]];
+      let op = tempPatch[ops[i]];
       let opName = `${op.name}_${op.uuid}`
       graph.nodes[opName] = {
         _props: {
@@ -305,7 +304,7 @@ class Patch{
             let src = `${opName}.${output.name}`
             // destination op id
             let destID = connections[k]
-            let destOp = this.document[destID]
+            let destOp = tempPatch[destID]
 
             // when user deletes an op, sometimes it gets deleted from patch.document before its connections, which will throw an error. so, ignore any connection attempts to non-existent ops
             if(!destOp){
@@ -331,9 +330,13 @@ class Patch{
   load(file){ 
     let ops = Object.keys(file)
     for(let i = 0; i< ops.length; i++){
+      // update Yjs document
+      this.document.set(`${ops[i]}`, file[ops[i]])
+      /*!
       this.document = Automerge.change(this.document, `load patch from file`, doc => {
         doc[ops[i]]= file[ops[i]]
       }) 
+      */
     }
     // set patch dirty flag for animation Loop
     this.dirty.vr = true
