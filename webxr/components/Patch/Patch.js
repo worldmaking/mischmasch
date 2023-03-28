@@ -1,14 +1,16 @@
 import { v4 as uuidv4 } from 'uuid';
-const Automerge = require("@automerge/automerge")
+import * as Automerge from "@automerge/automerge"
+// import { scale, hashCode, colorFromString, opMenuColour, value2angle, angle2value, prettyPrint } from '../../utilities/utilities.js'
 
 const _ = require('lodash')
 const replaceAll = require("replaceall");
 
-
 class Patch{
-  constructor(load){
+  constructor(){
     // versioning     
-    this.document = Automerge.init()
+    
+     
+    
     this.dirty = {
       vr: false,
       audio:{
@@ -21,7 +23,10 @@ class Patch{
     this.cables = []
 
   }
-
+  wipe(){
+    this.document = Automerge.init()
+    prettyPrint(this.document)
+  }
   add(item, payload){
     switch(item){
       case 'cable':
@@ -368,11 +373,6 @@ class Patch{
 
     
   }
-}
-
-
-function prettyPrint(object){
-	console.log(JSON.stringify(object, null, 4))
 }
 
 export { Patch }

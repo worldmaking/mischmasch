@@ -3,11 +3,16 @@
 import { Mesh, HemisphereLight, PerspectiveCamera, Scene, WebGLRenderer, BoxGeometry, MeshStandardMaterial, Vector3, BufferGeometry, Line, Color, Matrix4, Raycaster } from 'three';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory';
+
+
+// import * as Automerge from "@automerge/automerge"
+// let doc = Automerge.init({cables: [1,2,3,4]})
+// console.log(doc)
 // controller thumbstick access
 
 
 // components
-import { Patch } from '../components/Patch/Patch.js'
+// import { Patch } from '../components/Patch/Patch.js'
 
 // utilities
 import { scale, hashCode, colorFromString, opMenuColour, value2angle, angle2value, prettyPrint } from '../../web/utilities/utilities.js'
@@ -15,7 +20,9 @@ import { scale, hashCode, colorFromString, opMenuColour, value2angle, angle2valu
 // scenes
 // import { funzo } from '../web/userData/scenes.js'
 
-let gamepadWrapper;
+// automerge
+
+
 
 const objectUnselectedColor = new Color(0x5853e6);
 const objectSelectedColor = new Color(0xf0520a);
@@ -42,6 +49,10 @@ class App {
 
     // initialize patch
     // this.patch = new Patch()
+    // this.patch.view()
+    // console.log(this.patch)
+    // this.document = Automerge.init()
+    // prettyPrint(this.document)
   }
 
   initXR() {

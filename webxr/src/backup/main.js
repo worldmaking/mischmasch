@@ -22,6 +22,7 @@ const objectSelectedColor = new Color(0xf0520a);
 
 class App {
   constructor() {
+    console.log('test')
     this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.camera.position.set(0, 1.6, 3);
     this.scene = new Scene();
@@ -40,8 +41,6 @@ class App {
     window.addEventListener('resize', this.onWindowResize.bind(this), false);
     this.renderer.setAnimationLoop(this.render.bind(this));
 
-    // initialize patch
-    // this.patch = new Patch()
   }
 
   initXR() {
@@ -74,6 +73,10 @@ class App {
   }
 
   initScene() {
+    
+    // initialize patch
+    this.patch = new Patch()
+    console.log(this.patch)
     this.objects = [];
 
     const boxGeometry = new BoxGeometry(0.5, 0.5, 0.5);

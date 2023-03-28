@@ -8,7 +8,7 @@ module.exports = {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
   },
-  mode: "development", // or production
+  mode: "production", // or production
   performance: {       // we dont want the wasm blob to generate warnings
      hints: false,
      maxEntrypointSize: 512000,
