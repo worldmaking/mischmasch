@@ -1,9 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
-// import * as Automerge from "@automerge/automerge"
+const Automerge = require("@automerge/automerge")
 
-import * as _ from 'lodash'
-import { replaceAll } from 'replaceall'
-// const replaceAll = require("replaceall");
+const _ = require('lodash')
+const replaceAll = require("replaceall");
 
 
 class Patch{
