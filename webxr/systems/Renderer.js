@@ -2,6 +2,7 @@ import { WebGLRenderer } from 'three';
 import { module_program, fbo_program, floor_program, wand_program, line_program, ray_program, textquad_program, debug_program } from '../assets/shaders.js'
 import * as glutils from '../utilities/glutils.js'
 import { systemSettings } from '../settings/systemSettings.js'
+import { createShader, createProgram } from '../assets/makeProgram.js'
 
 class Renderer{
   constructor(){
@@ -10,10 +11,10 @@ class Renderer{
     });
     this.renderer.domElement.id = 'mischmaschCanvas'
     this.renderer.gl = this.renderer.domElement.getContext('webgl2')
-    document.body.appendChild(this.renderer.domElement);
+    
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    
+    this.renderer.gl.viewport(0, 0, this.renderer.gl.canvas.width, this.renderer.gl.canvas.height);
     // assets
     this.renderer.textquad_geom = glutils.makeQuad({ min:0., max:1, div:8 });
     this.renderer.line_geom = glutils.makeLine({ min:0, max:1, div: 24 });
@@ -35,18 +36,51 @@ class Renderer{
     });
     // glsl programs
     this.renderer.fbo_program = fbo_program;
-    this.renderer.floor_program = floor_program;
+
+    // this was my attempt at setting up the floor program. i followed this. https://webgl2fundamentals.org/webgl/lessons/webgl-fundamentals.html
+    /*
+    // setup floor program.
+    // todo: export these to a file called floorProgram.js eventually (only once it works!)
+    let floorV = createShader(this.renderer.gl, this.renderer.gl.VERTEX_SHADER, floor_program.vertexShader )
+    let floorF = createShader(this.renderer.gl, this.renderer.gl.FRAGMENT_SHADER, floor_program.fragmentShader )
+    this.renderer.floor_program = createProgram(this.renderer.gl, floorV, floorF)
+    // get location of a_position attribute
+    this.renderer.floor_program.positionAttributeLocation = this.renderer.gl.getAttribLocation(this.renderer.floor_program, "a_position")
+    this.renderer.floor_program.positionBuffer = this.renderer.gl.createBuffer()
+    this.renderer.gl.bindBuffer(this.renderer.gl.ARRAY_BUFFER, this.renderer.floor_program.positionBuffer);
+    // add data into that buffer by referencing it through the bind point
+    this.renderer.gl.bufferData(this.renderer.gl.ARRAY_BUFFER, new Float32Array([0, 0]), this.renderer.gl.STATIC_DRAW);
+    // create a vao
+    this.renderer.floor_vao = this.renderer.gl.createVertexArray()
+    // make it the current vao so that attribute settings will be applied to it
+    this.renderer.gl.bindVertexArray(this.renderer.floor_vao)
+    // turn on the attribute
+    this.renderer.gl.enableVertexAttribArray(this.renderer.floor_program.positionAttributeLocation)
+    // specifiy how to pull data out
+    this.renderer.gl.vertexAttribPointer(this.renderer.floor_program.positionAttributeLocation, 2, this.renderer.gl.FLOAT, false, 0, 0)
+    // to webgl to use the shader program
+    this.renderer.gl.useProgram(this.renderer.floor_program)
+    // Bind the attribute/buffer set we want.
+    this.renderer.gl.bindVertexArray(this.renderer.floor_vao);
+    this.renderer.gl.drawArrays(this.renderer.gl.TRIANGLES, 0, 3);
+    // todo, bring these in once the floor program works...
+    */
+    /*
     this.renderer.wand_program = wand_program;
     this.renderer.line_program = line_program;
     this.renderer.ray_program = ray_program;
     this.renderer.textquad_program = textquad_program;
     this.renderer.debug_program = debug_program;
-
+    */
     // Global GL Resources
-    this.renderer.floor_vao = glutils.createVao(this.renderer.gl, this.renderer.floor_geom, this.renderer.floor_program.id);
-    this.renderer.debug_vao = glutils.createVao(this.renderer.gl, this.renderer.debug_geom, this.renderer.debug_program.id);
-    this.renderer.fbo_vao = glutils.createVao(this.renderer.gl, glutils.makeQuad(), this.renderer.fbo_program.id);
-    this.renderer.fbo = glutils.makeFboWithDepth(this.renderer.gl, systemSettings.vrdim[0], systemSettings.vrdim[1])
+    /*
+    // todo
+    this.renderer.floor_vao = this.renderer.gl.createVertexArray(this.renderer.gl, this.renderer.floor_geom, this.renderer.floor_program.id);
+    this.renderer.gl.bindVertexArray(this.renderer.floor_vao)
+    // this.renderer.debug_vao = glutils.createVao(this.renderer.gl, this.renderer.debug_geom, this.renderer.debug_program.id);
+    // this.renderer.fbo_vao = glutils.createVao(this.renderer.gl, glutils.makeQuad(), this.renderer.fbo_program.id);
+    */
+    // this.renderer.fbo = glutils.makeFboWithDepth(this.renderer.gl, systemSettings.vrdim[0], systemSettings.vrdim[1])
   }
   makeSceneGraph() {
 
@@ -671,29 +705,33 @@ class Renderer{
       },
   
       draw(gl) {
-  
-       this.renderer.module_program.begin();
-       this.renderer.module_program.uniform("u_viewmatrix", viewmatrix);
-       this.renderer.module_program.uniform("u_projmatrix", projmatrix);
-        this.module_vao.bind().drawInstanced(this.module_instances.count).unbind()
-       this.renderer.module_program.end();
-  
-       this.renderer.line_program.begin();
-       this.renderer.line_program.uniform("u_viewmatrix", viewmatrix);
-       this.renderer.line_program.uniform("u_projmatrix", projmatrix);
-       this.renderer.line_program.uniform("u_stiffness", 0.5)
-        // consider gl.LINE_STRIP with simpler geometry
-        this.line_vao.bind().drawInstanced(this.line_instances.count, gl.LINES).unbind()
-       this.renderer.line_program.end();
-      
-        // text:
-       this.renderer.font.texture.bind(0)
-       this.renderer.textquad_program.begin();
-        //textquad_program.uniform("u_modelmatrix", modelmatrix);
-       this.renderer.textquad_program.uniform("u_viewmatrix", viewmatrix);
-       this.renderer.textquad_program.uniform("u_projmatrix", projmatrix);
-        this.textquad_vao.bind().drawInstanced(this.textquad_instances.count).unbind()
-       this.renderer.textquad_program.end();
+   
+
+        //TODO uncomment these to add in the shaders for other mischmasch elements
+        /*
+        this.renderer.module_program.begin();
+        this.renderer.module_program.uniform("u_viewmatrix", viewmatrix);
+        this.renderer.module_program.uniform("u_projmatrix", projmatrix);
+          this.module_vao.bind().drawInstanced(this.module_instances.count).unbind()
+        this.renderer.module_program.end();
+    
+        this.renderer.line_program.begin();
+        this.renderer.line_program.uniform("u_viewmatrix", viewmatrix);
+        this.renderer.line_program.uniform("u_projmatrix", projmatrix);
+        this.renderer.line_program.uniform("u_stiffness", 0.5)
+          // consider gl.LINE_STRIP with simpler geometry
+          this.line_vao.bind().drawInstanced(this.line_instances.count, gl.LINES).unbind()
+        this.renderer.line_program.end();
+        
+          // text:
+        this.renderer.font.texture.bind(0)
+        this.renderer.textquad_program.begin();
+          //textquad_program.uniform("u_modelmatrix", modelmatrix);
+        this.renderer.textquad_program.uniform("u_viewmatrix", viewmatrix);
+        this.renderer.textquad_program.uniform("u_projmatrix", projmatrix);
+          this.textquad_vao.bind().drawInstanced(this.textquad_instances.count).unbind()
+        this.renderer.textquad_program.end();
+        */
     
         return this;
       },

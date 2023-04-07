@@ -31,7 +31,8 @@ let localGraph = {
 	nodes: {},
 	arcs: []
 }
-
+let viewmatrix, projmatrix;
+let mainScene;
 const objectUnselectedColor = new Color(0x5853e6);
 const objectSelectedColor = new Color(0xf0520a);
 
@@ -41,10 +42,10 @@ class App {
     this.camera.position.set(0, 1.6, 3);
     this.scene = new Scene();
     this.scene.background = new Color(0x505050);
-    this.renderer = new Renderer().renderer;
-    
+    this.r = new Renderer();
+    this.renderer = this.r.renderer
     document.body.appendChild(this.renderer.domElement);
-    
+
     
   
     this.initXR();
@@ -83,7 +84,7 @@ class App {
         controller.userData.handedness = e.data.handedness 
       });
     });
-    // mainScene = this.renderer.makeSceneGraph();
+    // mainScene = this.r.makeSceneGraph();
     // mainScene.init();
     // mainScene.rebuild(localGraph)
   }
@@ -175,6 +176,25 @@ class App {
   }
 
   render() {
+    this.renderer.gl.viewport(0, 0, this.renderer.gl.canvas.width, this.renderer.gl.canvas.height);
+    viewmatrix = this.camera.matrixWorldInverse
+    projmatrix = this.camera.projectionMatrix
+
+   
+    // this.renderer.floor_program.begin();
+    /*
+    // todo
+    // pass updated viewmatrix and projmatrix into the floor shader program
+    this.renderer.floor_program.uniforms.u_viewmatrix = viewmatrix;
+    this.renderer.floor_program.uniforms.u_projmatrix = projmatrix;
+    // bind the vao to the floor
+    this.renderer.gl.bindVertexArray(this.renderer.floor_vao)
+    // unbind the vao when done
+    this.renderer.gl.bindVertexArray(null)
+    */
+    // this.renderer.floor_vao.bind().draw().unbind();
+    // this.renderer.gl.drawElements()
+    // this.renderer.floor_program.end();
     // rebuild XR localGraph
     // rebuild VR localGraph
     if(this.patch.dirty.vr == true){
@@ -196,7 +216,7 @@ class App {
         this.handleController(controller);
       })
     }
-  
+    
     this.renderer.render(this.scene, this.camera);
   }
 

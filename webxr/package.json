@@ -15,6 +15,8 @@
     "browser-assert": "^1.2.1",
     "express": "^4.18.2",
     "gl-matrix": "^3.4.3",
+    "glsl-noise": "^0.0.0",
+    "glslify": "^7.1.1",
     "lodash": "^4.17.21",
     "replaceall": "^0.1.6",
     "three": "^0.150.1",

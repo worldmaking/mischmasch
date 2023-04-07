@@ -1,5 +1,8 @@
-import { GLSL3 } from 'three';
+import { GLSL3, ShaderMaterial, Matrix4 } from 'three';
 import { systemSettings } from '../settings/systemSettings.js'
+
+
+
 
 const module_program = {
   uniforms: null,
@@ -169,14 +172,88 @@ const fbo_program = {
   }`
 }
 
+// const floor_program = {
+//   uniforms: null,
+//   glslVersion: GLSL3,
+//   vertexColors: true,
+//   vertexShader: `
+//   uniform mat4 u_viewmatrix;
+//   uniform mat4 u_projmatrix;
+
+//   // geometry variables:
+//   in vec2 a_position;
+//   in vec2 a_texCoord;
+
+//   out vec2 v_xz;
+//   out vec2 v_uv;
+
+//   void main() {
+//     vec4 vertex = vec4(a_position.x, 0., a_position.y, 1.);
+//     gl_Position = u_projmatrix * u_viewmatrix * vertex;
+//     float divs = 5.; // lines per metre
+//     v_xz = a_position.xy * divs; 
+//     v_uv = abs(a_texCoord.xy*2.-1.);
+//   }`
+//   ,
+//   fragmentShader: 
+//   `precision mediump float;
+//   in vec2 v_xz;
+//   in vec2 v_uv;
+//   out vec4 outColor;
+  
+//   // void mainImage( out vec4 fragColor, in vec2 fragCoord )
+//   // {
+//   //     vec2 uv = (fragCoord  - 0.5 * iResolution.xy) / iResolution.y;
+      
+//   //     vec3 col = vec3( fibonacci(uv) );
+  
+//   //     fragColor = vec4(col, 1.0);
+  
+//   // }
+  
+//   void main() {
+  
+//     // fade in the distance
+//     float alpha = 1.-length(v_uv);
+//     float soft = 0.02;
+  
+  
+//     vec2 grid = smoothstep(soft, -soft, abs(mod(v_xz, 1.) - 0.5));
+//     outColor = vec4(length(grid) * alpha);
+  
+//     float d = length(v_xz);
+//     float b = floor(mod(d * 8., 1.) / 8.);
+//     float ribs = smoothstep(soft, -soft, abs(mod(d, 1.) - 0.5));
+  
+//     outColor = vec4(ribs);
+  
+  
+//     //outColor = vec4(clamp(0.3-0.2*floor(d)/10., 0., 1.));
+  
+//     // vec2 checks = floor(mod(v_xz, 1.) + alpha);
+//     // float q = checks.x * checks.y;
+//     // outColor = vec4(q);
+  
+//     // float c = floor(0.5-length(mod(v_xz, 1.)-0.5) + alpha);
+//     // outColor = vec4(c);
+  
+//     //outColor = vec4(fibonacci(v_xz / 64., 0., 100.));
+  
+//     //outColor *= 0.3;
+//     outColor *= alpha;
+  
+//   }`
+// }
 const floor_program = {
-  uniforms: null,
-  glslVersion: GLSL3,
-  vertexColors: true,
-  vertexShader: `
+  vertexShader: `#version 300 es
+  precision mediump float;
+
+  // precision highp float;
+
   uniform mat4 u_viewmatrix;
   uniform mat4 u_projmatrix;
 
+  // an attribute is an input (in) to a vertex shader.
   // geometry variables:
   in vec2 a_position;
   in vec2 a_texCoord;
@@ -190,10 +267,10 @@ const floor_program = {
     float divs = 5.; // lines per metre
     v_xz = a_position.xy * divs; 
     v_uv = abs(a_texCoord.xy*2.-1.);
-  }`
-  ,
-  fragmentShader: 
-  `precision mediump float;
+  }
+  `,
+  fragmentShader: `#version 300 es
+  precision mediump float;
   in vec2 v_xz;
   in vec2 v_uv;
   out vec4 outColor;
@@ -241,6 +318,151 @@ const floor_program = {
   
   }`
 }
+// const floor_program = new ShaderMaterial({
+//   uniforms: {
+//     u_viewmatrix: new Matrix4(),
+//     u_projmatrix: new Matrix4()
+//   },
+//   fragmentShader: /*glsl*/`#version 330
+//     uniform mat4 u_viewmatrix;
+//     uniform mat4 u_projmatrix;
+
+//     // an attribute is an input (in) to a vertex shader.
+//     // geometry variables:
+//     in vec2 a_position;
+//     in vec2 a_texCoord;
+
+//     out vec2 v_xz;
+//     out vec2 v_uv;
+
+//     void main() {
+//       vec4 vertex = vec4(a_position.x, 0., a_position.y, 1.);
+//       gl_Position = u_projmatrix * u_viewmatrix * vertex;
+//       float divs = 5.; // lines per metre
+//       v_xz = a_position.xy * divs; 
+//       v_uv = abs(a_texCoord.xy*2.-1.);
+//     }
+//     `,
+//   vertexShader: `#version330
+//     precision mediump float;
+//     in vec2 v_xz;
+//     in vec2 v_uv;
+//     out vec4 outColor;
+    
+//     // void mainImage( out vec4 fragColor, in vec2 fragCoord )
+//     // {
+//     //     vec2 uv = (fragCoord  - 0.5 * iResolution.xy) / iResolution.y;
+        
+//     //     vec3 col = vec3( fibonacci(uv) );
+    
+//     //     fragColor = vec4(col, 1.0);
+    
+//     // }
+    
+//     void main() {
+    
+//       // fade in the distance
+//       float alpha = 1.-length(v_uv);
+//       float soft = 0.02;
+    
+    
+//       vec2 grid = smoothstep(soft, -soft, abs(mod(v_xz, 1.) - 0.5));
+//       outColor = vec4(length(grid) * alpha);
+    
+//       float d = length(v_xz);
+//       float b = floor(mod(d * 8., 1.) / 8.);
+//       float ribs = smoothstep(soft, -soft, abs(mod(d, 1.) - 0.5));
+    
+//       outColor = vec4(ribs);
+    
+    
+//       //outColor = vec4(clamp(0.3-0.2*floor(d)/10., 0., 1.));
+    
+//       // vec2 checks = floor(mod(v_xz, 1.) + alpha);
+//       // float q = checks.x * checks.y;
+//       // outColor = vec4(q);
+    
+//       // float c = floor(0.5-length(mod(v_xz, 1.)-0.5) + alpha);
+//       // outColor = vec4(c);
+    
+//       //outColor = vec4(fibonacci(v_xz / 64., 0., 100.));
+    
+//       //outColor *= 0.3;
+//       outColor *= alpha;
+    
+//     }
+//   `
+// })
+
+// glsl(`
+// #version 330
+// uniform mat4 u_viewmatrix;
+// uniform mat4 u_projmatrix;
+
+// // geometry variables:
+// in vec2 a_position;
+// in vec2 a_texCoord;
+
+// out vec2 v_xz;
+// out vec2 v_uv;
+
+// void main() {
+// 	vec4 vertex = vec4(a_position.x, 0., a_position.y, 1.);
+// 	gl_Position = u_projmatrix * u_viewmatrix * vertex;
+// 	float divs = 5.; // lines per metre
+// 	v_xz = a_position.xy * divs; 
+// 	v_uv = abs(a_texCoord.xy*2.-1.);
+// }`,
+// `#version 330
+// precision mediump float;
+// in vec2 v_xz;
+// in vec2 v_uv;
+// out vec4 outColor;
+
+// // void mainImage( out vec4 fragColor, in vec2 fragCoord )
+// // {
+// //     vec2 uv = (fragCoord  - 0.5 * iResolution.xy) / iResolution.y;
+    
+// //     vec3 col = vec3( fibonacci(uv) );
+
+// //     fragColor = vec4(col, 1.0);
+
+// // }
+
+// void main() {
+
+// 	// fade in the distance
+// 	float alpha = 1.-length(v_uv);
+// 	float soft = 0.02;
+
+
+// 	vec2 grid = smoothstep(soft, -soft, abs(mod(v_xz, 1.) - 0.5));
+// 	outColor = vec4(length(grid) * alpha);
+
+// 	float d = length(v_xz);
+// 	float b = floor(mod(d * 8., 1.) / 8.);
+// 	float ribs = smoothstep(soft, -soft, abs(mod(d, 1.) - 0.5));
+
+// 	outColor = vec4(ribs);
+
+
+// 	//outColor = vec4(clamp(0.3-0.2*floor(d)/10., 0., 1.));
+
+// 	// vec2 checks = floor(mod(v_xz, 1.) + alpha);
+// 	// float q = checks.x * checks.y;
+// 	// outColor = vec4(q);
+
+// 	// float c = floor(0.5-length(mod(v_xz, 1.)-0.5) + alpha);
+// 	// outColor = vec4(c);
+
+// 	//outColor = vec4(fibonacci(v_xz / 64., 0., 100.));
+
+// 	//outColor *= 0.3;
+// 	outColor *= alpha;
+
+// }
+// `
+// )
 
 const wand_program = {
   uniforms: null,
@@ -565,6 +787,7 @@ const debug_program = {
 }
 
 export {
+  // floor,
   module_program,
   fbo_program,
   floor_program,
@@ -572,5 +795,5 @@ export {
   line_program,
   ray_program,
   textquad_program,
-  debug_program
+  debug_program,
 }
