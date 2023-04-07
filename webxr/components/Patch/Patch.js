@@ -1,6 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import * as Y from 'yjs'
 
+import { syncedStore, getYjsDoc } from "@syncedstore/core";
+import { WebrtcProvider } from "y-webrtc";
+
 
 import { scale, hashCode, colorFromString, opMenuColour, value2angle, angle2value, prettyPrint } from '../../utilities/utilities.js'
 
@@ -10,18 +13,16 @@ import * as replaceAll from 'replaceAll'
 class Patch{
   constructor(){
     // versioning     
+    // create the syncedStore store 
+
+    this.document = syncedStore({ patch: {} });
     
-    // create a yjs map
-    this.y = new Y.Doc()
-    // 
-    // Method 1: Define a top-level type
-    this.document = this.y.getMap('patches') 
-    // Method 2: Define Y.Map that can be included into the Yjs document
-    //const ymapNested = new Y.Map()
-    // Nested types can be included as content into any other shared type
-    //ymap.set('patch', ymapNested)
-    // ymap.delete('prop-name')
-    
+    // Get the Yjs document and sync automatically using y-webrtc
+    // todo: uncomment the lines below to implement the webrtc sync
+    /*
+    const doc = getYjsDoc(this.document);
+    const webrtcProvider = new WebrtcProvider("mischmaschXR", doc);
+    */
     this.dirty = {
       vr: false,
       audio:{
@@ -49,30 +50,19 @@ class Patch{
         if(srcID == destID){
           cableType = 'history'
         }
-        // update document in Yjs
-        let tempPatch = this.document.toJSON()
+        
+        let tempPatch = this.document.patch
         for(let i=0; i<tempPatch[srcID].outputs.length; i++){
           // find the output in the doc matching the cable's src
           if(tempPatch[srcID].outputs[i].name == srcJack){
             if(!tempPatch[srcID].outputs[i].connections[destID]){
-              this.document.set(`${id}`, op)
+              this.document.patch[id] = op
               tempPatch[srcID].outputs[i].connections[destID] = {}
             }
             tempPatch[srcID].outputs[i].connections[destID][destJack] = cableType
           }
         }   
-        // update document in automerge
-        // this.document = Automerge.change(this.document, 'add cable', doc => {
-        //   for(let i=0; i<doc[srcID].outputs.length; i++){
-        //     // find the output in the doc matching the cable's src
-        //     if(doc[srcID].outputs[i].name == srcJack){
-        //       if(!doc[srcID].outputs[i].connections[destID]){
-        //         doc[srcID].outputs[i].connections[destID] = {}
-        //       }
-        //       doc[srcID].outputs[i].connections[destID][destJack] = cableType
-        //     }
-        //   }     
-        // })
+        
         this.dirty.vr = true
         this.dirty.audio.graph = true
       break;
@@ -133,10 +123,9 @@ class Patch{
         if(op.sign){
           payload.node.sign = sign
         }
-        // update document in automerge
-        this.document = Automerge.change(this.document, 'add op', doc => {
-          doc[op.uuid] = op
-        })
+        // update syncdStore
+        this.document.patch[op.uuid] = op
+
         // set patch dirty flag for animation Loop
         this.dirty.vr = true
         this.dirty.audio.graph = true
@@ -159,24 +148,20 @@ class Patch{
         let destJack = to.split('.')[1]
 
         
-        let outputs = this.document[srcID].outputs 
+        let outputs = this.document.patch[srcID].outputs 
         for(let i=0; i< outputs.length; i++){
           if(outputs[i].connections[destID]){
             console.log('connections', outputs[i].connections[destID])
-            // update document in automerge
-            this.document = Automerge.change(this.document, 'remove cable', doc => {
-              delete doc[srcID].outputs[i].connections[destID][destJack]
-            }) 
+            // update document in syncdStore
+            delete this.document.patch[srcID].outputs[i].connections[destID][destJack]
+
 
             // check if destination op has no more connections, if so, delete its reference in ouput[i].connections
-            if(Object.keys(this.document[srcID].outputs[i].connections[destID]).length == 0){
+            if(Object.keys(this.document.patch[srcID].outputs[i].connections[destID]).length == 0){
               // update document in automerge
-              this.document = Automerge.change(this.document, 'remove connection ref', doc => {
-                delete doc[srcID].outputs[i].connections[destID]
-              }) 
-            }
-            
-            
+
+              delete this.document.patch[srcID].outputs[i].connections[destID]
+            }            
           }
         }
      
@@ -185,31 +170,28 @@ class Patch{
       break
 
       case 'op':
-        let opKind = this.document[payload].name
+        let opKind = this.document.patch[payload].name
         if(opKind == 'speaker'){
           this.dirty.speaker = true
         }
         
         // rescursively remove all instances of this op's uuid matching output connections in other ops across the patch.document
-        for(let m = 0; m < Object.keys(this.document).length; m++){
-          let op = this.document[Object.keys(this.document)[m]]
+        for(let m = 0; m < Object.keys(this.document.patch).length; m++){
+          let op = this.document.patch[Object.keys(this.document.patch)[m]]
           let outputs = op.outputs
           for(let i = 0; i< outputs.length; i++){
             for(let j = 0; j< Object.keys(outputs[i].connections).length; j++){
               if(Object.keys(outputs[i].connections)[j] == payload){
                 // delete the connection
-                this.document = Automerge.change(this.document, 'remove cable', doc => {
-                  delete doc[Object.keys(doc)[m]].outputs[i].connections[Object.keys(outputs[i].connections)[j]]
-                }) 
+                delete this.document.patch[Object.keys(doc)[m]].outputs[i].connections[Object.keys(outputs[i].connections)[j]]
               }
             }
           }
         }
 
-        // remove the op from the document in automerge
-        this.document = Automerge.change(this.document, 'remove op', doc => {
-          delete doc[payload]
-        }) 
+        // remove the op from the document in syncdStore
+        delete this.document.patch[payload]
+
 
 
         this.dirty.vr = true;
@@ -227,17 +209,13 @@ class Patch{
       case 'pos':
         let posID = payload[0].split('_')[1]
         // prevent updates if op was recently deleted
-        this.document = Automerge.change(this.document, 'update position', doc => {
-          doc[posID].position = payload[1]
-        }) 
+        this.document.patch[posID].position = payload[1]
         this.dirty.vr = true
       break;
 
       case 'quat':
-        let quatID = payload[0].split('_')[1]
-        this.document = Automerge.change(this.document, 'update quaternion', doc => {
-          doc[quatID].quaternion = payload[1]
-        }) 
+
+          this.document.patch[quatID].quaternion = payload[1]
         this.dirty.vr = true
       break;
 
@@ -247,14 +225,13 @@ class Patch{
 
         let paramName = payload[0].name
         // get the param index
-        for(let i = 0; i < this.document[opID].inputs.length; i++){
-          if(this.document[opID].inputs[i].name == paramName){
-            this.document = Automerge.change(this.document, `update param value`, doc => {
-              doc[opID].inputs[i]._props.value = payload[1]
-              doc[opID].inputs[i].value = payload[1]
-            }) 
+        for(let i = 0; i < this.document.patch[opID].inputs.length; i++){
+          if(this.document.patch[opID].inputs[i].name == paramName){
+            this.document.patch[opID].inputs[i]._props.value = payload[1]
+            this.document.patch[opID].inputs[i].value = payload[1]
           }
         }
+      
 
         this.dirty.vr = true
         this.dirty.audio.param = true
@@ -268,7 +245,8 @@ class Patch{
       arcs: []
     }
     // prettyPrint(this.document)
-    let tempPatch = this.document.toJSON()
+    let tempPatch = this.document.patch
+
     let ops = Object.keys(tempPatch)
     
     // loop through ops and get graph
@@ -338,10 +316,12 @@ class Patch{
   }
   // load an patch from file ( use process.argv[2] = nameOfPatch.json )
   load(file){ 
+    
     let ops = Object.keys(file)
     for(let i = 0; i< ops.length; i++){
-      // update Yjs document
-      this.document.set(`${ops[i]}`, file[ops[i]])
+      // update syncdStore
+      this.document.patch[ops[i]] = file[ops[i]]
+      // this.document.set(`${ops[i]}`, file[ops[i]])
       /*!
       this.document = Automerge.change(this.document, `load patch from file`, doc => {
         doc[ops[i]]= file[ops[i]]
@@ -353,7 +333,7 @@ class Patch{
     this.dirty.audio.graph = true
   }
   ensureSpeaker(hmd){
-    let tempPatch = this.document.toJSON() // convert yjs doc to json 
+    let tempPatch = this.document.patch
     let ids = Object.keys(tempPatch)
     let speakers = []
     for(let i = 0; i< ids.length;i++){
@@ -385,7 +365,7 @@ class Patch{
         outputs:[ ]
       }
       // update yjs doc
-      this.document.set(`${id}`, op)
+      this.document.patch[id] = op
       // update document in automerge
       // this.document = Automerge.change(this.document, 'add speaker', doc => {
       //   doc[id] = op

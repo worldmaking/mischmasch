@@ -95,7 +95,7 @@ class App {
 
     // try passing a scene to load into patch
     this.patch.load(funzo)
-    console.log(this.patch.document.toJSON())
+    
     console.log(this.patch.rebuild())
     this.objects = [];
 
@@ -176,7 +176,7 @@ class App {
   }
 
   render() {
-    this.renderer.gl.viewport(0, 0, this.renderer.gl.canvas.width, this.renderer.gl.canvas.height);
+
     viewmatrix = this.camera.matrixWorldInverse
     projmatrix = this.camera.projectionMatrix
 

@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@automerge/automerge": "^2.0.2",
+    "@syncedstore/core": "^0.4.3",
     "browser-assert": "^1.2.1",
     "express": "^4.18.2",
     "gl-matrix": "^3.4.3",
@@ -20,6 +21,7 @@
     "lodash": "^4.17.21",
     "replaceall": "^0.1.6",
     "three": "^0.150.1",
+    "y-webrtc": "^10.2.5",
     "yjs": "^13.5.51"
   }
 }
