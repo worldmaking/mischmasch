@@ -50,19 +50,29 @@ class Patch{
           cableType = 'history'
         }
         // update document in Yjs
-        
-        // update document in automerge
-        this.document = Automerge.change(this.document, 'add cable', doc => {
-          for(let i=0; i<doc[srcID].outputs.length; i++){
-            // find the output in the doc matching the cable's src
-            if(doc[srcID].outputs[i].name == srcJack){
-              if(!doc[srcID].outputs[i].connections[destID]){
-                doc[srcID].outputs[i].connections[destID] = {}
-              }
-              doc[srcID].outputs[i].connections[destID][destJack] = cableType
+        let tempPatch = this.document.toJSON()
+        for(let i=0; i<tempPatch[srcID].outputs.length; i++){
+          // find the output in the doc matching the cable's src
+          if(tempPatch[srcID].outputs[i].name == srcJack){
+            if(!tempPatch[srcID].outputs[i].connections[destID]){
+              this.document.set(`${id}`, op)
+              tempPatch[srcID].outputs[i].connections[destID] = {}
             }
-          }     
-        })
+            tempPatch[srcID].outputs[i].connections[destID][destJack] = cableType
+          }
+        }   
+        // update document in automerge
+        // this.document = Automerge.change(this.document, 'add cable', doc => {
+        //   for(let i=0; i<doc[srcID].outputs.length; i++){
+        //     // find the output in the doc matching the cable's src
+        //     if(doc[srcID].outputs[i].name == srcJack){
+        //       if(!doc[srcID].outputs[i].connections[destID]){
+        //         doc[srcID].outputs[i].connections[destID] = {}
+        //       }
+        //       doc[srcID].outputs[i].connections[destID][destJack] = cableType
+        //     }
+        //   }     
+        // })
         this.dirty.vr = true
         this.dirty.audio.graph = true
       break;
