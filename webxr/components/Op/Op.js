@@ -27,12 +27,10 @@ import { opsList } from "../Palette/genishOperators.js"
             // this.meshes.outputLabel,
             this.meshes.opLabel
         );
-        console.log(position[0])
         let posX = position[0]
         let posY = position[1]
         let posZ = position[2]
         this.op.position.set(posX, posY, posZ)
-        console.log(this)
         // using the op's panel width, we can calculate the offset for the first input and output, respectively
         let panelWidth = this.meshes.panel.geometry.parameters.width
         let inputOffset = ((panelWidth / 2) * -1) + 0.5

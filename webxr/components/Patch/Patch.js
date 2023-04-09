@@ -243,7 +243,7 @@ class Patch{
       break 
     }
   }
-  rebuild(scene){
+  rebuild(scene, sceneObjects){
     let graph = {
       nodes:{},
       arcs: []
@@ -261,8 +261,9 @@ class Patch{
       // op.quaternion = target.quaternion
       // keep the uuid consistent between mischmasch document and threejs!
       op.uuid = target.uuid
-      console.log(op)
       scene.add(op.op)
+      // add op to sceneObjects for intersecting with raycaster
+      sceneObjects.push(op.op)
       // loop through connection(s)
       if(target.outputs && target.outputs.length > 0){
         for(let j = 0; j < target.outputs.length; j++){
@@ -274,7 +275,6 @@ class Patch{
         }
       }
     }
-    console.log(scene)
 
 
 

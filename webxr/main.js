@@ -90,14 +90,16 @@ class App {
   }
 
   initScene() {
+    // objects that can intersect with wand raycaster
+    this.objects = [];
     // initialize patch
     this.patch = new Patch()
 
     // try passing a scene to load into patch
     this.patch.load(funzo)
     
-    this.patch.rebuild(this.scene)
-    this.objects = [];
+    this.patch.rebuild(this.scene, this.objects)
+    
 
     const boxGeometry = new BoxGeometry(0.5, 0.5, 0.5);
     const boxMaterial = new MeshStandardMaterial({ color: objectUnselectedColor });
@@ -153,6 +155,7 @@ class App {
         raycaster.ray.direction.set(0, 0, -1).applyMatrix4(rotationMatrix);
         const intersects = raycaster.intersectObjects(this.objects);
         if (intersects.length > 0) {
+          console.log(intersects[0])
           controller.children[0].scale.z = intersects[0].distance;
           this.selectedObject = intersects[0].object;
           this.selectedObject.material.color = objectSelectedColor;
