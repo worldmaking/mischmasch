@@ -7,4 +7,4 @@ export const store = syncedStore({ myArray: [], patch: {} });
 
 // Create a document that syncs automatically using Y-WebRTC
 const doc = getYjsDoc(store);
-export const webrtcProvider = new WebrtcProvider("syncedstore-plain", doc);
+export const webrtcProvider = new WebrtcProvider("mischmaschXR-sync", doc);

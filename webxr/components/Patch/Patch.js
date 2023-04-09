@@ -1,7 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import * as Y from 'yjs'
 
-import { syncedStore, getYjsDoc } from "@syncedstore/core";
+import { store } from '../../systems/syncStore.js'
+
+
 import { WebrtcProvider } from "y-webrtc";
 
 
@@ -17,9 +19,9 @@ class Patch{
     // versioning     
     // create the syncedStore store 
 
-    this.document = syncedStore({ patch: {} });
-    this.document = {}
-    this.document.patch = {}
+    this.document = store;
+    // this.document = {}
+    // this.document.patch = {}
     
     // Get the Yjs document and sync automatically using y-webrtc
     // todo: uncomment the lines below to implement the webrtc sync
