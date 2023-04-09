@@ -21,6 +21,7 @@
     "lodash": "^4.17.21",
     "replaceall": "^0.1.6",
     "three": "^0.150.1",
+    "troika-three-text": "^0.47.1",
     "y-webrtc": "^10.2.5",
     "yjs": "^13.5.51"
   }

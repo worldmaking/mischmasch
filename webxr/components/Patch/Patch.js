@@ -7,6 +7,8 @@ import { WebrtcProvider } from "y-webrtc";
 
 import { scale, hashCode, colorFromString, opMenuColour, value2angle, angle2value, prettyPrint } from '../../utilities/utilities.js'
 
+import { Op } from '../Op/Op.js'
+
 import * as _ from 'lodash'
 import * as replaceAll from 'replaceAll'
 
@@ -16,6 +18,8 @@ class Patch{
     // create the syncedStore store 
 
     this.document = syncedStore({ patch: {} });
+    this.document = {}
+    this.document.patch = {}
     
     // Get the Yjs document and sync automatically using y-webrtc
     // todo: uncomment the lines below to implement the webrtc sync
@@ -239,12 +243,46 @@ class Patch{
       break 
     }
   }
-  rebuild(){
+  rebuild(scene){
     let graph = {
       nodes:{},
       arcs: []
     }
-    // prettyPrint(this.document)
+    //! webxr version
+    let cables = []
+    let ops = Object.keys(this.document.patch)
+    for(let i = 0; i < ops.length; i++){
+
+      
+      let opID = ops[i]
+      let target = this.document.patch[opID]
+      let op = new Op(target.name, target.uuid, target.position)
+      // op.position.set(target.position.x, target.position.y, target.position.z)
+      // op.quaternion = target.quaternion
+      // keep the uuid consistent between mischmasch document and threejs!
+      op.uuid = target.uuid
+      console.log(op)
+      scene.add(op.op)
+      // loop through connection(s)
+      if(target.outputs && target.outputs.length > 0){
+        for(let j = 0; j < target.outputs.length; j++){
+          Object.keys(target.outputs[j].connections).forEach((connection)=>{
+            let dest = `inlet_${connection.split("_")[2]}_${connection.split("_")[1]}`
+            let src = `outlet_${target.outputs[j].name}_${target.uuid}`
+            cables.push([src, dest])
+          })
+        }
+      }
+    }
+    console.log(scene)
+
+
+
+
+
+
+    //! node-gles3 version below
+    /*
     let tempPatch = this.document.patch
 
     let ops = Object.keys(tempPatch)
@@ -313,13 +351,15 @@ class Patch{
       }
     }
     return graph // this is the localGraph that mischmasch's vr uses (mainscene(localGraph))
+    */
   }
   // load an patch from file ( use process.argv[2] = nameOfPatch.json )
   load(file){ 
-    
+
     let ops = Object.keys(file)
     for(let i = 0; i< ops.length; i++){
       // update syncdStore
+     
       this.document.patch[ops[i]] = file[ops[i]]
       // this.document.set(`${ops[i]}`, file[ops[i]])
       /*!

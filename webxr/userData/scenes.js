@@ -1,7 +1,7 @@
 // speaker, phasor, train
 let funzo = {
   "4614e4e247cb428397f39a6c11c015ae": {
-    "category": "speaker",
+    "category": "throughput",
     "inputs": [
       {
         "_props": {

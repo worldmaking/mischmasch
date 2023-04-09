@@ -96,7 +96,7 @@ class App {
     // try passing a scene to load into patch
     this.patch.load(funzo)
     
-    console.log(this.patch.rebuild())
+    this.patch.rebuild(this.scene)
     this.objects = [];
 
     const boxGeometry = new BoxGeometry(0.5, 0.5, 0.5);
@@ -198,13 +198,11 @@ class App {
     // rebuild XR localGraph
     // rebuild VR localGraph
     if(this.patch.dirty.vr == true){
-      // fs.writeFileSync('userData/document.json', JSON.stringify(patch.document, null, 2))
+      // update syncStore?
       
-      localGraph = this.patch.rebuild()
-      // fs.writeFileSync('userData/graph.json', JSON.stringify(localGraph, null, 2))
-
-      // mainScene.rebuild(localGraph)
+      // localGraph = this.patch.rebuild(this.scene)
       this.patch.dirty.vr = false
+      
     }
     if (this.controllers) {
       this.controllers.forEach(controller => {

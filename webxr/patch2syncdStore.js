@@ -1,4 +1,7 @@
-{
+import { observeDeep } from "@syncedstore/core";
+import { store, webrtcProvider } from "/systems/syncStore.js";
+
+let patchFile = {
   "4614e4e247cb428397f39a6c11c015ae": {
     "category": "speaker",
     "inputs": [
@@ -172,3 +175,25 @@
     "uuid": "de824969ed9540f2915d80bb0b924923"
   }
 }
+
+
+
+
+
+let opIDs = Object.keys(patchFile)
+store.myArray.push({ property: "value" });
+
+// Add a random number between 0 and 100 to the array
+store.myArray.push(Math.floor(Math.random() * 100));
+
+for(let i = 0; i<opIDs.length; i++){
+  console.log(patchFile[opIDs[i]])
+  store.patch[opIDs[i]] = {}
+  store.patch[opIDs[i]] = patchFile[opIDs[i]]
+  
+}
+
+console.log(Array.isArray(store.myArray))
+
+console.log(webrtcProvider)
+
