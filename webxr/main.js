@@ -145,6 +145,8 @@ class App {
 
   handleController(controller) {
     if (controller.userData.selectPressed) {
+      let ui = 0
+      let parentGroup = 0;
       if (!controller.userData.selectPressedPrev) {
         // Select pressed
         controller.children[0].scale.z = 10;
@@ -156,10 +158,25 @@ class App {
         const intersects = raycaster.intersectObjects(this.objects);
         if (intersects.length > 0) {
           console.log(intersects[0])
-          controller.children[0].scale.z = intersects[0].distance;
-          this.selectedObject = intersects[0].object;
-          this.selectedObject.material.color = objectSelectedColor;
-          this.selectedObjectDistance = this.selectedObject.position.distanceTo(controller.position);
+          ui = intersects[0].object.name.split('_')[0]
+          switch(ui){
+            case 'inlet':
+            case 'outlet':
+              // spawn a cable
+            break
+            case 'panel':
+              parentGroup = intersects[0].object.parent    
+              console.log(parentGroup)     
+              controller.children[0].scale.z = intersects[0].distance;
+              this.selectedObject = intersects[0].object.parent ;
+              // todo: could change panel color to new highlighted color
+              // this.selectedObject.material.color = objectSelectedColor;
+              this.selectedObjectDistance = this.selectedObject.position.distanceTo(controller.position);
+            break
+            default:
+              console.log(ui, 'type grabbed')
+          }
+
         }
       } else if (this.selectedObject) {
         // Move selected object so it's always the same distance from controller
@@ -171,7 +188,8 @@ class App {
       // Select released
       controller.children[0].scale.z = 10;
       if (this.selectedObject != null) {
-        this.selectedObject.material.color = objectUnselectedColor;
+        // todo: could change panel color back to an unselected colour
+        // this.selectedObject.material.color = objectUnselectedColor;
         this.selectedObject = null;
       }
     }
