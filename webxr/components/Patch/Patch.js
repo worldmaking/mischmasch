@@ -20,15 +20,8 @@ class Patch{
     // create the syncedStore store 
 
     this.document = store;
-    // this.document = {}
-    // this.document.patch = {}
-    
-    // Get the Yjs document and sync automatically using y-webrtc
-    // todo: uncomment the lines below to implement the webrtc sync
-    /*
-    const doc = getYjsDoc(this.document);
-    const webrtcProvider = new WebrtcProvider("mischmaschXR", doc);
-    */
+    this.document = {}
+    this.document.patch = {}
     this.dirty = {
       vr: false,
       audio:{
@@ -258,12 +251,13 @@ class Patch{
       
       let opID = ops[i]
       let target = this.document.patch[opID]
-      let op = new Op(target.name, target.uuid, target.position)
+      let op = new Op(target.name, target.uuid, target.position, target.quaternion)
       // op.position.set(target.position.x, target.position.y, target.position.z)
       // op.quaternion = target.quaternion
       // keep the uuid consistent between mischmasch document and threejs!
       op.uuid = target.uuid
       scene.add(op.op)
+      
       // add op to sceneObjects for intersecting with raycaster
       sceneObjects.push(op.op)
       // loop through connection(s)
@@ -277,7 +271,7 @@ class Patch{
         }
       }
     }
-
+    
 
 
 

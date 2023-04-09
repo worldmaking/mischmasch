@@ -7,7 +7,7 @@ import { opsList } from "../Palette/genishOperators.js"
 
 // class Op extends Group {
     class Op{
-    constructor(opName, uuid, position) {
+    constructor(opName, uuid, position, quat) {
         // super();
         // retrieve the op's info
         let opProps = opsList.find(item => item.op === opName)
@@ -30,7 +30,13 @@ import { opsList } from "../Palette/genishOperators.js"
         let posX = position[0]
         let posY = position[1]
         let posZ = position[2]
+        let quatX = quat[0]
+        let quatY = quat[1]
+        let quatZ = quat[2]
+        let quatW = quat[3]
+
         this.op.position.set(posX, posY, posZ)
+        this.op.quaternion.set(quatX, quatY, quatZ, quatW)
         // using the op's panel width, we can calculate the offset for the first input and output, respectively
         let panelWidth = this.meshes.panel.geometry.parameters.width
         let inputOffset = ((panelWidth / 2) * -1) + 0.5
