@@ -143,7 +143,8 @@ class App {
     return controllers;
   }
 
-  handleController(controller) {
+  handleController(controller, thumbX, thumbY) {
+
     if (controller.userData.selectPressed) {
       let ui = 0
       let parentGroup = 0;
@@ -166,7 +167,6 @@ class App {
             break
             case 'panel':
               parentGroup = intersects[0].object.parent    
-              console.log(parentGroup)     
               controller.children[0].scale.z = intersects[0].distance;
               this.selectedObject = intersects[0].object.parent ;
               // todo: could change panel color to new highlighted color
@@ -180,9 +180,18 @@ class App {
         }
       } else if (this.selectedObject) {
         // Move selected object so it's always the same distance from controller
-        const moveVector = controller.getWorldDirection(new Vector3()).multiplyScalar(this.selectedObjectDistance).negate()
-        
+        let moveVector = controller.getWorldDirection(new Vector3()).multiplyScalar(this.selectedObjectDistance).negate()
+        if(thumbY){
+          // console.log(thumbY, moveVector)
+          moveVector.z = thumbY - 1
+        } 
         this.selectedObject.position.copy(controller.position.clone().add(moveVector));
+        // op rotation
+        let rotationUpdate = controller.rotation.clone()
+        if(thumbX){
+          rotationUpdate._y = thumbX
+        } 
+        this.selectedObject.rotation.copy(rotationUpdate)
       }
     } else if (controller.userData.selectPressedPrev) {
       // Select released
@@ -190,6 +199,18 @@ class App {
       if (this.selectedObject != null) {
         // todo: could change panel color back to an unselected colour
         // this.selectedObject.material.color = objectUnselectedColor;
+        // handle object deletion
+        if(this.selectedObject.position.y < 0.2){
+          console.log(this.selectedObject)
+          // remove from scene
+          this.scene.remove(this.selectedObject)
+          // dispose of the materials and geometries to prevent memory leaks
+          for(let i = 0; i< this.selectedObject.children.length; i++){
+            this.selectedObject.children[i].material.dispose()
+            this.selectedObject.children[i].geometry.dispose()
+          }
+          console.log(this.objects)
+        }
         this.selectedObject = null;
       }
     }
@@ -227,12 +248,13 @@ class App {
     }
     if (this.controllers) {
       this.controllers.forEach(controller => {
+        let thumbX, thumbY
         if(controller.userData.gamepad){
           // leaving these here just so we know how to access thumbstick axes
-          let x = controller.userData.gamepad.axes[2]
-          let y = controller.userData.gamepad.axes[3]
+          thumbX = controller.userData.gamepad.axes[2]
+          thumbY = controller.userData.gamepad.axes[3]
         }
-        this.handleController(controller);
+        this.handleController(controller, thumbX, thumbY);
       })
     }
     

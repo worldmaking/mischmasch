@@ -27,7 +27,7 @@ function createMeshes(opProps) {
       // jacks
       let jackIn = new Mesh(geometries.jack, materials.jackIn);
       let posX = inputNames.indexOf(inputName) * scale
-      
+
       jackIn.position.set(posX, 2 * scale, 0.2 * scale);
       // jackIn.rotation.set(1.55, 1, 0);
       jackIn.rotation.set(0, 0, 0)

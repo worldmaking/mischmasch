@@ -20,6 +20,8 @@ const scale = systemSettings.UI_DEFAULT_SCALE
         this.meshes = createMeshes(opProps);
         
         this.op = new Group()
+        this.op.name = `opGroup_${opName}` 
+        this.op.uuid;
         // these are single items
         this.op.add(
             
@@ -54,6 +56,7 @@ const scale = systemSettings.UI_DEFAULT_SCALE
             for(let i=0; i<this.meshes.inputJacks.length; i++){
                 // set the the 1st input position to the input offset, then increment for each additional input
                 this.meshes.inputJacks[i].position.x = (inputOffset * scale + i) * scale
+
                 this.meshes.inputLabels[i].position.x = (inputOffset * scale + i) * scale
                 // name every jack with the parent op's uuid
                 this.meshes.inputJacks[i].name = `${this.meshes.inputJacks[i].name}_${this.uuid}`

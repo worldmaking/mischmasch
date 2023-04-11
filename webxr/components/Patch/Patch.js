@@ -238,11 +238,15 @@ class Patch{
       break 
     }
   }
+  dispose(scene, sceneObjects){
+
+  }
   rebuild(scene, sceneObjects){
     let graph = {
       nodes:{},
       arcs: []
     }
+    console.log(scene, sceneObjects)
     //! webxr version
     let cables = []
     let ops = Object.keys(this.document.patch)
