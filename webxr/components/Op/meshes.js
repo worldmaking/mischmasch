@@ -175,7 +175,7 @@ function createMeshes(opProps) {
   opLabel.fontSize = 0.2 * scale
   opLabel.color = 'white'
   opLabel.anchorX = 'center'
-  opLabel.position.set(0, 2.5 * scale, 0.2);
+  opLabel.position.set(0, 2.5 * scale, 0.2 * scale);
   opLabel.rotation.set(0, 0, 0)
   opLabel.name = 'opLabel'
   opLabel.userData.name = opProps.op;
