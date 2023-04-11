@@ -3,6 +3,8 @@ import { Mesh } from 'three';
 import { createGeometries } from './geometries.js';
 import { createMaterials } from './materials.js';
 import {Text} from 'troika-three-text'
+import { systemSettings } from '../../settings/systemSettings.js'
+const scale = systemSettings.UI_DEFAULT_SCALE
 // todo: see https://www.npmjs.com/package/troika-three-text#preloading for optimizing text loading
 
 function createMeshes(opProps) {
@@ -24,8 +26,9 @@ function createMeshes(opProps) {
     inputNames.forEach(inputName => {
       // jacks
       let jackIn = new Mesh(geometries.jack, materials.jackIn);
-      let posX = inputNames.indexOf(inputName)
-      jackIn.position.set(posX, 2, 0.2);
+      let posX = inputNames.indexOf(inputName) * scale
+      
+      jackIn.position.set(posX, 2 * scale, 0.2 * scale);
       // jackIn.rotation.set(1.55, 1, 0);
       jackIn.rotation.set(0, 0, 0)
 
@@ -44,10 +47,10 @@ function createMeshes(opProps) {
       } else {
         inputLabel.text = inputName
       }
-      inputLabel.fontSize = 0.2
+      inputLabel.fontSize = 0.2 * scale
       inputLabel.color = 'white'
       inputLabel.anchorX = 'center'
-      inputLabel.position.set(posX, 1.8, 0.2);
+      inputLabel.position.set(posX, 1.8 * scale, 0.2 * scale);
       inputLabel.rotation.set(0, 0, 0)
       inputLabel.name = 'inputLabel'
       inputLabel.userData.name = inputLabel;
@@ -59,7 +62,7 @@ function createMeshes(opProps) {
     panelGeometry = createGeometries(numInputs);
   } else {
     // op has no inputs, set panel width to 1
-    panelGeometry = createGeometries(1);
+    panelGeometry = createGeometries(1 * scale);
   }
   
 
@@ -96,7 +99,7 @@ function createMeshes(opProps) {
     break;
   }
   panel.material.color.set(panelColour)
-  panel.position.set(0, 1.6, 0);
+  panel.position.set(0, 1.6 * scale, 0);
   panel.rotation.set(0, 0, 0)
   panel.name = `panel_${opProps.op}_${panel.uuid}`
   panel.userData.name = opProps.op;
@@ -118,8 +121,8 @@ function createMeshes(opProps) {
     outputNames.forEach(outputName => {
       // jacks
       let jackOut = new Mesh(geometries.jack, materials.jackOut);
-      let posX = outputNames.indexOf(outputName)
-      jackOut.position.set(posX, 1.2, 0.2);
+      let posX = outputNames.indexOf(outputName) * scale
+      jackOut.position.set(posX, 1.2 * scale, 0.2 * scale);
       // jackOut.rotation.set(1.55, 1, 0);
       jackOut.rotation.set(0, 0, 0)
 
@@ -145,10 +148,10 @@ function createMeshes(opProps) {
         outputLabel.text = label
       }
 
-      outputLabel.fontSize = 0.2
+      outputLabel.fontSize = 0.2 * scale
       outputLabel.color = 'white'
       outputLabel.anchorX = 'center'
-      outputLabel.position.set(posX, 1, 0.2);
+      outputLabel.position.set(posX, 1 * scale, 0.2 * scale);
       outputLabel.rotation.set(0, 0, 0)
       outputLabel.name = 'outputLabel'
       outputLabel.userData.name = label;
@@ -169,10 +172,10 @@ function createMeshes(opProps) {
   const opLabel = new Text();
 
   opLabel.text = opProps.op
-  opLabel.fontSize = 0.2
+  opLabel.fontSize = 0.2 * scale
   opLabel.color = 'white'
   opLabel.anchorX = 'center'
-  opLabel.position.set(0, 2.5, 0.2);
+  opLabel.position.set(0, 2.5 * scale, 0.2);
   opLabel.rotation.set(0, 0, 0)
   opLabel.name = 'opLabel'
   opLabel.userData.name = opProps.op;

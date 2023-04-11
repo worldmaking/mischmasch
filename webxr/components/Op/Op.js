@@ -2,6 +2,8 @@ import { Group, MathUtils } from 'three';
 
 import { createMeshes } from "./meshes.js";
 import { opsList } from "../Palette/genishOperators.js"
+import { systemSettings } from '../../settings/systemSettings.js'
+const scale = systemSettings.UI_DEFAULT_SCALE
 // todo: for now this is a rotation speed. but I bet this is how we could update the inlet and outlet LED saturation to respond to signal amplitude! use this when ready to make LED jacks: https://discoverthreejs.com/book/first-steps/animation-system/
 // const wheelSpeed = MathUtils.degToRad(24);
 
@@ -51,8 +53,8 @@ import { opsList } from "../Palette/genishOperators.js"
             // loop through the inlets array
             for(let i=0; i<this.meshes.inputJacks.length; i++){
                 // set the the 1st input position to the input offset, then increment for each additional input
-                this.meshes.inputJacks[i].position.x = inputOffset + i
-                this.meshes.inputLabels[i].position.x = inputOffset + i
+                this.meshes.inputJacks[i].position.x = (inputOffset * scale + i) * scale
+                this.meshes.inputLabels[i].position.x = (inputOffset * scale + i) * scale
                 // name every jack with the parent op's uuid
                 this.meshes.inputJacks[i].name = `${this.meshes.inputJacks[i].name}_${this.uuid}`
                 this.op.add(
@@ -67,8 +69,8 @@ import { opsList } from "../Palette/genishOperators.js"
             // loop through the inlets array
             for(let i=0; i<this.meshes.outputJacks.length; i++){
                 // set the the 1st output position to the output offset, then increment for each additional output
-                this.meshes.outputJacks[i].position.x = outputOffset + i
-                this.meshes.outputLabels[i].position.x = outputOffset + i
+                this.meshes.outputJacks[i].position.x = (scale * outputOffset + i) * scale
+                this.meshes.outputLabels[i].position.x = (scale * outputOffset + i) * scale
                 // name every jack with the parent op's uuid
                 this.meshes.outputJacks[i].name = `${this.meshes.outputJacks[i].name}_${this.uuid}`
                 this.op.add(
