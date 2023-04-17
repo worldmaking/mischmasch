@@ -12,7 +12,8 @@ const systemSettings = {
   UI_KNOB_ANGLE_LIMIT: Math.PI * 5./6., // 7 o'clock through 5 o'clock
   NEAR_CLIP: 0.01,
   FAR_CLIP: 20,
-  vrdim: [4096, 4096]
+  vrdim: [4096, 4096],
+  cableThickness: 0.007
 }
 
 export { systemSettings }

@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import * as Y from 'yjs'
-
+import { Vector3, Curve, TubeGeometry, MeshBasicMaterial, Mesh } from 'three'
 import { store } from '../../systems/syncStore.js'
 
 
@@ -10,7 +10,7 @@ import { WebrtcProvider } from "y-webrtc";
 import { scale, hashCode, colorFromString, opMenuColour, value2angle, angle2value, prettyPrint } from '../../utilities/utilities.js'
 
 import { Op } from '../Op/Op.js'
-
+import {systemSettings} from '../../settings/systemSettings.js'
 import * as _ from 'lodash'
 import * as replaceAll from 'replaceAll'
 
@@ -37,97 +37,151 @@ class Patch{
   add(item, payload){
     switch(item){
       case 'cable':
-        let from = payload[0].split('_')[1]
-        let to = payload[1].split('_')[1]
+        // payload is [scene, src, dest]
+        console.log(item, payload)
 
-        let srcID = from.split('.')[0]
-        let srcJack = from.split('.')[1]
-        let destID = to.split('.')[0]
-        let destJack = to.split('.')[1]
+        // build the cable
+        class CustomSinCurve extends Curve {
 
-        let cableType = 'cable'
-        if(srcID == destID){
-          cableType = 'history'
+          constructor( scale = 0.1 ) {
+        
+            super();
+        
+            this.scale = scale;
+        
+          }
+        
+          getPoint( t, optionalTarget = new Vector3() ) {
+        
+            const tx = t * 3 - 1.5;
+            const ty = Math.sin( 2 * Math.PI * t );
+            const tz = 0;
+            console.log(optionalTarget)
+            return optionalTarget.set( tx, ty, tz ).multiplyScalar( this.scale );
+      
+          }
+        
         }
         
-        let tempPatch = this.document.patch
-        for(let i=0; i<tempPatch[srcID].outputs.length; i++){
-          // find the output in the doc matching the cable's src
-          if(tempPatch[srcID].outputs[i].name == srcJack){
-            if(!tempPatch[srcID].outputs[i].connections[destID]){
-              this.document.patch[id] = op
-              tempPatch[srcID].outputs[i].connections[destID] = {}
-            }
-            tempPatch[srcID].outputs[i].connections[destID][destJack] = cableType
-          }
-        }   
+        const path = new CustomSinCurve( 2 );
+        const geometry = new TubeGeometry( path, 20, systemSettings.cableThickness, 8, false );
+        const material = new MeshBasicMaterial( { color: 0x00ff00 } );
+        const mesh = new Mesh( geometry, material );
+        payload[0].add( mesh );
+        // let from = payload[1].split('_')[1]
+        // let to = payload[2].split('_')[1]
+
+        // let srcID = from.split('.')[0]
+        // let srcJack = from.split('.')[1]
+        // let destID = to.split('.')[0]
+        // let destJack = to.split('.')[1]
+
+        // let cableType = 'cable'
+        // if(srcID == destID){
+        //   cableType = 'history'
+        // }
+        
+        // let tempPatch = this.document.patch
+        // for(let i=0; i<tempPatch[srcID].outputs.length; i++){
+        //   // find the output in the doc matching the cable's src
+        //   if(tempPatch[srcID].outputs[i].name == srcJack){
+        //     if(!tempPatch[srcID].outputs[i].connections[destID]){
+        //       this.document.patch[id] = op
+        //       tempPatch[srcID].outputs[i].connections[destID] = {}
+        //     }
+        //     tempPatch[srcID].outputs[i].connections[destID][destJack] = cableType
+        //   }
+        // }   
         
         this.dirty.vr = true
         this.dirty.audio.graph = true
       break;
   
       case 'op':
-        // get all nodes from this op
-        let outputs = []
-        let inputs = []
-        for(let i=0; i < payload.nodes.length; i++){
-          let node = payload.nodes[i]
-          switch(node.kind){
-            case 'knob':
-              let knob = {
-                name: node.name,
-                kind: 'knob',
-                index: i,
-                value: node.node._props.value || 0.,
-                _props: node.node._props,
-                range: node.node._props.range || [0., 1.],
-                trim: node.node._props.trim || 'add'
-              }
-              inputs.push(knob)
-            break
-
-            case 'inlet':
-              let input = {
-                name: node.name,
-                kind: 'inlet',
-                index: i,
-                _props: node.node._props
-              }
-              inputs.push(input)
-            break
-
-            case 'outlet':
-              let output = {
-                name: node.name,
-                _props: node.node._props,
-                connections: {}
-              }
-              outputs.push(output)
-            break
-          }
-        }
-        // get each output for this op
+        // payload is: [scene, sceneObjects, opID]
+        let sceneObjects = payload[1]
         
-        const id = replaceAll('-', '', uuidv4())
-        let op = {
-          position: payload.node._props.pos,
-          quaternion: payload.node._props.orient,
-          category: payload.node._props.category,
-          name: payload.name,
-          uuid: id,
-          inputs: inputs,
-          outputs: outputs
-          
-        }
-        if(op.sign){
-          payload.node.sign = sign
-        }
-        // update syncdStore
+        let opID = payload[2]
+        let target = this.document.patch[opID]
+        let op = new Op(target.name, target.uuid, target.position, target.quaternion)
+        // op.position.set(target.position.x, target.position.y, target.position.z)
+        // op.quaternion = target.quaternion
+        // keep the uuid consistent between mischmasch document and threejs!
+        op.uuid = target.uuid
+        // payload[0] is scene
+        payload[0].add(op.op)
+        
+        // add op to sceneObjects for intersecting with raycaster
+        sceneObjects.push(op.op)
+
         this.document.patch[op.uuid] = op
 
         // set patch dirty flag for animation Loop
         this.dirty.vr = true
         this.dirty.audio.graph = true
+
+        //! node version?
+        // get all nodes from this op
+        // let outputs = []
+        // let inputs = []
+        // for(let i=0; i < payload.nodes.length; i++){
+        //   let node = payload.nodes[i]
+        //   switch(node.kind){
+        //     case 'knob':
+        //       let knob = {
+        //         name: node.name,
+        //         kind: 'knob',
+        //         index: i,
+        //         value: node.node._props.value || 0.,
+        //         _props: node.node._props,
+        //         range: node.node._props.range || [0., 1.],
+        //         trim: node.node._props.trim || 'add'
+        //       }
+        //       inputs.push(knob)
+        //     break
+
+        //     case 'inlet':
+        //       let input = {
+        //         name: node.name,
+        //         kind: 'inlet',
+        //         index: i,
+        //         _props: node.node._props
+        //       }
+        //       inputs.push(input)
+        //     break
+
+        //     case 'outlet':
+        //       let output = {
+        //         name: node.name,
+        //         _props: node.node._props,
+        //         connections: {}
+        //       }
+        //       outputs.push(output)
+        //     break
+        //   }
+        // }
+        // // get each output for this op
+        
+        // const id = replaceAll('-', '', uuidv4())
+        // let op = {
+        //   position: payload.node._props.pos,
+        //   quaternion: payload.node._props.orient,
+        //   category: payload.node._props.category,
+        //   name: payload.name,
+        //   uuid: id,
+        //   inputs: inputs,
+        //   outputs: outputs
+          
+        // }
+        // if(op.sign){
+        //   payload.node.sign = sign
+        // }
+        // update syncdStore
+        // this.document.patch[op.uuid] = op
+
+        // // set patch dirty flag for animation Loop
+        // this.dirty.vr = true
+        // this.dirty.audio.graph = true
  
         return op
       break
@@ -246,7 +300,6 @@ class Patch{
       nodes:{},
       arcs: []
     }
-    console.log(scene, sceneObjects)
     //! webxr version
     let cables = []
     let ops = Object.keys(this.document.patch)
@@ -255,27 +308,26 @@ class Patch{
       
       let opID = ops[i]
       let target = this.document.patch[opID]
-      let op = new Op(target.name, target.uuid, target.position, target.quaternion)
-      // op.position.set(target.position.x, target.position.y, target.position.z)
-      // op.quaternion = target.quaternion
-      // keep the uuid consistent between mischmasch document and threejs!
-      op.uuid = target.uuid
-      scene.add(op.op)
-      
-      // add op to sceneObjects for intersecting with raycaster
-      sceneObjects.push(op.op)
+      this.add('op', [scene, sceneObjects, opID])
       // loop through connection(s)
       if(target.outputs && target.outputs.length > 0){
         for(let j = 0; j < target.outputs.length; j++){
-          Object.keys(target.outputs[j].connections).forEach((connection)=>{
-            let dest = `inlet_${connection.split("_")[2]}_${connection.split("_")[1]}`
-            let src = `outlet_${target.outputs[j].name}_${target.uuid}`
-            cables.push([src, dest])
+          Object.keys(target.outputs[j].connections).forEach((destinationOpID)=>{
+            // check for one-to-many connections
+            Object.keys(target.outputs[j].connections[destinationOpID]).forEach((destInput)=>{
+
+              let dest = `inlet_${destInput}_${destinationOpID}`
+              let src = `outlet_${target.outputs[j].name}_${target.uuid}`
+              cables.push([src, dest])
+              this.add('cable', [scene, src, dest])
+            })
+
           })
         }
       }
+      
     }
-    
+    console.log('cables',cables)
 
 
 
