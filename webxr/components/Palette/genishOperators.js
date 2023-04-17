@@ -105,7 +105,7 @@ let opsList =
       "value": "input value"
     },
     "outputs": {
-      "abs": "absolute value of input"
+      "out1": "absolute value of input"
     }
   },
   {
@@ -126,7 +126,7 @@ let opsList =
       "value2": "input value 2"
     },
     "outputs": {
-      "sum": "in1 + in2"
+      "out1": "in1 + in2"
     }
   },
   {
@@ -177,7 +177,7 @@ let opsList =
       "value2": "input value 2"
     },
     "outputs": {
-      "quotient": "in1 / in2"
+      "out1": "in1 / in2"
     }
   },
   {
@@ -307,7 +307,7 @@ let opsList =
       "value2": "input value 2"
     },
     "outputs": {
-      "modulo": "mod(in1,in2)"
+      "out1": "mod(in1,in2)"
     }
   },
   {
@@ -318,7 +318,7 @@ let opsList =
       "value2": "input value 2"
     },
     "outputs": {
-      "product": "in1 * in2"
+      "out1": "in1 * in2"
     }
   },
   {
@@ -382,7 +382,7 @@ let opsList =
       "value2": "input value 2"
     },
     "outputs": {
-      "difference": "in1 - in2"
+      "out1": "in1 - in2"
     }
   },
   {
@@ -420,7 +420,7 @@ let opsList =
     "classification": "parameter",
     "inputs": {},
     "outputs": {
-      "value": "parameter value"
+      "out1": "parameter value"
     }
   },
   {
@@ -432,7 +432,7 @@ let opsList =
       "max": "upper bound"
     },
     "outputs": {
-      "clamped": "clamped input"
+      "out1": "clamped input"
     }
   },
   {
@@ -489,7 +489,7 @@ let opsList =
     "classification": "source",
     "inputs": {},
     "outputs": {
-      "random-stream": "random numbers"
+      "out1": "random numbers"
     }
   },
   {
@@ -575,7 +575,7 @@ let opsList =
       "value": "input value"
     },
     "outputs": {
-      "bool": "boolean (0 or 1)"
+      "out1": "boolean (0 or 1)"
     }
   },
   {
@@ -626,7 +626,7 @@ let opsList =
     "classification": "throughput",
     "inputs": {},
     "outputs": {
-      "value": "input value"
+      "out1": "input value"
     }
   }
 ]
@@ -720,7 +720,7 @@ let opsList =
       "value": "input value"
     },
     "outputs": {
-      "abs": "absolute value of input"
+      "out1": "absolute value of input"
     }
   },
   "acos": {
@@ -739,7 +739,7 @@ let opsList =
       "value2": "input value 2"
     },
     "outputs": {
-      "sum": "in1 + in2"
+      "out1": "in1 + in2"
     }
   },
   "asin": {
@@ -903,7 +903,7 @@ let opsList =
       "value2": "input value 2"
     },
     "outputs": {
-      "modulo": "mod(in1,in2)"
+      "out1": "mod(in1,in2)"
     }
   },
   "mul": {
@@ -913,7 +913,7 @@ let opsList =
       "value2": "input value 2"
     },
     "outputs": {
-      "product": "in1 * in2"
+      "out1": "in1 * in2"
     }
   },
   "neq": {
@@ -971,7 +971,7 @@ let opsList =
       "value2": "input value 2"
     },
     "outputs": {
-      "difference": "in1 - in2"
+      "out1": "in1 - in2"
     }
   },
   "t60": {
@@ -1005,7 +1005,7 @@ let opsList =
     "classification": "parameter",
     "inputs": {},
     "outputs": {
-      "value": "parameter value"
+      "out1": "parameter value"
     }
   },
   "clamp": {
@@ -1016,7 +1016,7 @@ let opsList =
       "max": "upper bound"
     },
     "outputs": {
-      "clamped": "clamped input"
+      "out1": "clamped input"
     }
   },
   "fold": {
@@ -1068,7 +1068,7 @@ let opsList =
     "classification": "source",
     "inputs": {},
     "outputs": {
-      "random-stream": "random numbers"
+      "out1": "random numbers"
     }
   },
   "peek": {
@@ -1147,7 +1147,7 @@ let opsList =
       "value": "input value"
     },
     "outputs": {
-      "bool": "boolean (0 or 1)"
+      "out1": "boolean (0 or 1)"
     }
   },
   "gate": {
@@ -1193,7 +1193,7 @@ let opsList =
     "classification": "throughput",
     "inputs": {},
     "outputs": {
-      "value": "input value"
+      "out1": "input value"
     }
   }
 }

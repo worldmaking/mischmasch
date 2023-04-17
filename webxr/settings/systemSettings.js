@@ -13,7 +13,7 @@ const systemSettings = {
   NEAR_CLIP: 0.01,
   FAR_CLIP: 20,
   vrdim: [4096, 4096],
-  cableThickness: 0.007
+  cableThickness: 0.001
 }
 
 export { systemSettings }

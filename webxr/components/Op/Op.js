@@ -22,6 +22,7 @@ const scale = systemSettings.UI_DEFAULT_SCALE
         this.op = new Group()
         this.op.name = `opGroup_${opName}` 
         this.op.uuid;
+        this.op.userData = {mischmaschID: uuid}
         // these are single items
         this.op.add(
             

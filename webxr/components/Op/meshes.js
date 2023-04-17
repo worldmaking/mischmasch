@@ -112,6 +112,7 @@ function createMeshes(opProps) {
   if(opProps.outputs && Object.keys(opProps.outputs).length > 0){
     let outputs = opProps.outputs
     let outputNames = Object.keys(outputs)
+    console.log('outputNames', outputNames)
     let outputLabelNames = Object.values(outputs)
     let numoutputs = outputNames.length
     // loop through outputs and create the inlets aand labels for this op

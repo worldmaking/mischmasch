@@ -67,16 +67,16 @@ let funzo = {
         },
         "index": 1,
         "kind": "knob",
-        "name": "width",
+        "name": "phase",
         "range": [
           0,
           1
         ],
         "trim": "add",
-        "value": 0.16684976456107503
+        "value": 0.
       }
     ],
-    "name": "train",
+    "name": "cycle",
     "outputs": [
       {
         "_props": {
@@ -156,7 +156,7 @@ let funzo = {
             "freq": "cable"
           }
         },
-        "name": "phase"
+        "name": "out1"
       }
     ],
     "position": [

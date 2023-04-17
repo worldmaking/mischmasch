@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import * as Y from 'yjs'
-import { Vector3, Curve, TubeGeometry, MeshBasicMaterial, Mesh } from 'three'
+import { Vector3, Curve, TubeGeometry, MeshBasicMaterial, Mesh, LineCurve3, SphereGeometry, MeshStandardMaterial } from 'three'
 import { store } from '../../systems/syncStore.js'
 
 
@@ -37,37 +37,56 @@ class Patch{
   add(item, payload){
     switch(item){
       case 'cable':
+        
+ 
         // payload is [scene, src, dest]
-        console.log(item, payload)
+        // get src
+        // get src opID
+        let srcID = payload[1].split('_')[2]
+        // get src op object from scene
+        let srcSceneObject = payload[0].children.find(element => element.userData.mischmaschID == srcID);
 
-        // build the cable
-        class CustomSinCurve extends Curve {
+        console.log('srcP', srcSceneObject.position)
+        // get src jack object from op
+        let srcJackObject = srcSceneObject.children.find(element => element.name == payload[1]);
+        console.log('srcJackObject', srcJackObject)
+        // get world position of src jack
+        let srcPos = srcSceneObject.localToWorld( new Vector3( srcJackObject.position.x, srcJackObject.position.y, ( srcJackObject.position.z) ) )
 
-          constructor( scale = 0.1 ) {
+        let destID = payload[2].split('_')[2]
+        // get src op object from scene
+        let destSceneObject = payload[0].children.find(element => element.userData.mischmaschID == destID);
+        console.log('destSceneObject.name', destSceneObject.name)
+        console.log('destScenePos', destSceneObject.position)
+        // get src jack object from op
+        let destJackObject = destSceneObject.children.find(element => element.name == payload[2]);
+        // get world position of src jack
+        let destPos = destSceneObject.localToWorld( new Vector3( destJackObject.position.x, destJackObject.position.y, ( destJackObject.position.z) ) )
         
-            super();
-        
-            this.scale = scale;
-        
-          }
-        
-          getPoint( t, optionalTarget = new Vector3() ) {
-        
-            const tx = t * 3 - 1.5;
-            const ty = Math.sin( 2 * Math.PI * t );
-            const tz = 0;
-            console.log(optionalTarget)
-            return optionalTarget.set( tx, ty, tz ).multiplyScalar( this.scale );
-      
-          }
-        
-        }
-        
-        const path = new CustomSinCurve( 2 );
-        const geometry = new TubeGeometry( path, 20, systemSettings.cableThickness, 8, false );
+        // get world position of dest jack
+        console.log(srcPos, destPos)
+        var path = new LineCurve3(srcPos, destPos)
+        const geometry = new TubeGeometry( path, 20, systemSettings.cableThickness, 8, true );
+        // geometry.setFromPoints(curveArray)
         const material = new MeshBasicMaterial( { color: 0x00ff00 } );
         const mesh = new Mesh( geometry, material );
-        payload[0].add( mesh );
+
+        // create cable plugs
+        const plugGeometry = new SphereGeometry( 0.01, 32, 32 )
+        const plugMaterial = new MeshStandardMaterial( { color: 0x00ff00, roughness: 0.7, metalness: 0.0 } )
+        const plugOne = new Mesh(plugGeometry, plugMaterial)
+        plugOne.position.set(srcPos.x, srcPos.y, srcPos.z)
+        plugOne.rotation.set(0, 0, 1.57)
+        plugOne.name = 'cablePlug_' + payload[1]
+        plugOne.userData.status = 'partial'
+        plugOne.userData.src = 'object'
+        const plugTwo = plugOne.clone()
+        plugTwo.name = 'cablePlug_' + payload[2]
+        plugTwo.userData.status = 'complete'
+        plugTwo.userData.dest = 'object'
+        plugTwo.position.set(destPos.x, destPos.y, destPos.z)
+
+        payload[0].add( mesh, plugOne, plugTwo );
         // let from = payload[1].split('_')[1]
         // let to = payload[2].split('_')[1]
 
@@ -107,7 +126,7 @@ class Patch{
         // op.position.set(target.position.x, target.position.y, target.position.z)
         // op.quaternion = target.quaternion
         // keep the uuid consistent between mischmasch document and threejs!
-        op.uuid = target.uuid
+        op.userData = { mischmaschID: target.uuid }
         // payload[0] is scene
         payload[0].add(op.op)
         
@@ -327,7 +346,7 @@ class Patch{
       }
       
     }
-    console.log('cables',cables)
+    // console.log('cables',cables)
 
 
 
