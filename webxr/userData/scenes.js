@@ -174,4 +174,105 @@ let funzo = {
   }
 }
 
-export { funzo }
+let simple = {	
+	"be8bd31350ee4a25aeb7c8d883c5822a": {
+		"uuid": "be8bd31350ee4a25aeb7c8d883c5822a",
+		"name": "cycle",
+		"category": "source",
+	  "inputs": [
+		{
+		  "_props": {
+			"index": 0,
+			"kind": "knob",
+			"range": [
+			  -10, 10
+			],
+			"value": 1
+		  },
+		  "index": 0,
+		  "kind": "knob",
+		  "name": "freq",
+		  "trim": "add",
+		  "range": [
+			-10, 10
+		  ],
+		  "value": 1
+		},
+		{
+		  "_props": {
+			"index": 1,
+			"kind": "inlet",
+			"range": [
+			  0,
+			  2
+			],
+			"value": 0
+		  },
+		  "index": 1,
+		  "kind": "inlet",
+		  "name": "reset",
+		  "value": 0
+		}
+	  ],
+	  "outputs": [
+		{
+		  "_props": {
+			"history": false,
+			"index": 0,
+			"kind": "outlet"
+		  },
+		  "name": "sinusoid",
+		  "connections": {
+			"ba986cc161d447df928119b29079cd4b": {
+			  "audio": "cable"
+			}
+		  }
+		}
+	  ],
+	  "position": [
+		-0.5241548418998718,
+		1.8588511943817139,
+		-0.526749849319458
+	  ],
+	  "quaternion": [
+		0.19770330462972563,
+		0.8452109573783186,
+		-0.29663300631941836,
+		0.3981717369734786
+	  ]
+	},
+	"ba986cc161d447df928119b29079cd4b": {
+		"uuid": "ba986cc161d447df928119b29079cd4b",
+		"name": "speaker",
+		"category": "speaker",
+	  "inputs": [
+		{
+		  "_props": {
+			"index": 0,
+			"kind": "inlet",
+			"range": [
+			  -1,
+			  1
+			],
+			"value": 0
+		  },
+		  "index": 0,
+		  "name": "audio",
+		  "kind": "inlet"
+		}
+	  ],
+	  "outputs": [],
+	  "position": [
+		-0.8124987483024597,
+		1.4730645418167114,
+		-1.0267239809036255
+	  ],
+	  "quaternion": [
+		0.04588808118409689,
+		0.6699639926195489,
+		-0.07339067904804884,
+		0.7373305106657235
+	  ]
+	}
+  }
+export { funzo, simple }

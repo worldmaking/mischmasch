@@ -49,13 +49,16 @@ class Patch{
 
         // get src jack object from op
         let srcJackObject = srcSceneObject.children.find(element => element.name == payload[1]);
-
+        
         // get world position of src jack
         let srcPos = srcSceneObject.localToWorld( new Vector3( srcJackObject.position.x, srcJackObject.position.y, ( srcJackObject.position.z) ) )
 
         let destID = payload[2].split('_')[2]
+        console.log(payload[1], payload[2], )
         // get src op object from scene
+        console.log('scene', payload[0])
         let destSceneObject = payload[0].children.find(element => element.userData.mischmaschID == destID);
+        console.log('destSceneObject', destSceneObject)
         // get src jack object from op
         let destJackObject = destSceneObject.children.find(element => element.name == payload[2]);
         // get world position of src jack
@@ -312,16 +315,11 @@ class Patch{
 
   }
   rebuild(scene, sceneObjects){
-    let graph = {
-      nodes:{},
-      arcs: []
-    }
     //! webxr version
     let cables = []
     let ops = Object.keys(this.document.patch)
+    // add all ops first
     for(let i = 0; i < ops.length; i++){
-
-      
       let opID = ops[i]
       let target = this.document.patch[opID]
       this.add('op', [scene, sceneObjects, opID])
@@ -334,21 +332,18 @@ class Patch{
 
               let dest = `inlet_${destInput}_${destinationOpID}`
               let src = `outlet_${target.outputs[j].name}_${target.uuid}`
+              // push into cables array, but wait until for..loop is completed before adding them to scene
               cables.push([src, dest])
-              this.add('cable', [scene, src, dest])
             })
-
           })
         }
-      }
-      
+      }      
     }
-    // console.log('cables',cables)
-
-
-
-
-
+    // once ops have all been added, loop through cables and add those
+    for(i=0;i<cables.length;i++){
+      this.add('cable', [scene, cables[i][0], cables[i][1]])
+    }
+    
     //! node-gles3 version below
     /*
     let tempPatch = this.document.patch

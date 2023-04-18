@@ -27,7 +27,7 @@ import { scale, hashCode, colorFromString, opMenuColour, value2angle, angle2valu
 import * as glutils from './utilities/glutils.js'
 
 // scenes
-import { funzo } from './userData/scenes.js'
+import { funzo, simple } from './userData/scenes.js'
 
 // assets
 import { module_program, fbo_program, floor_program, wand_program, line_program, ray_program, textquad_program, debug_program } from './assets/shaders.js'
@@ -113,7 +113,7 @@ class App {
     this.patch = new Patch()
 
     // try passing a scene to load into patch
-    this.patch.load(funzo)
+    this.patch.load(simple)
     
     this.patch.rebuild(this.scene, this.objects)
     
