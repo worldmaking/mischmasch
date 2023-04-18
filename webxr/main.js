@@ -4,6 +4,7 @@ import { Mesh, HemisphereLight, PerspectiveCamera, Scene, WebGLRenderer, BoxGeom
 import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory';
 
+import {updateGraph, updateParams} from './components/Audio/Audio.js'
 // import * as Automerge from "@automerge/automerge"
 // let doc = Automerge.init({cables: [1,2,3,4]})
 // console.log(doc)
@@ -16,6 +17,11 @@ import { Renderer } from'./systems/Renderer.js'
 // components
 import { Patch } from './components/Patch/Patch.js'
 
+// import { Worker } from 'worker_threads'
+
+// load a js file as a new Worker thread:
+const worker = new Worker("./components/Audio/xr_genish_worker.js")
+
 // utilities
 import { scale, hashCode, colorFromString, opMenuColour, value2angle, angle2value, prettyPrint } from '/utilities/utilities.js'
 import * as glutils from './utilities/glutils.js'
@@ -25,6 +31,7 @@ import { funzo } from './userData/scenes.js'
 
 // assets
 import { module_program, fbo_program, floor_program, wand_program, line_program, ray_program, textquad_program, debug_program } from './assets/shaders.js'
+
 
 // GOT graph, local copy.
 let localGraph = {
@@ -54,7 +61,17 @@ class App {
     window.addEventListener('resize', this.onWindowResize.bind(this), false);
     this.renderer.setAnimationLoop(this.render.bind(this));
 
-
+    // zoom with mousewheel
+    window.addEventListener('wheel', (event) => {
+      event.preventDefault(); /// prevent scrolling
+      
+      let zoom = this.camera.zoom; // take current zoom value
+      zoom += event.deltaY * -0.01; /// adjust it
+      zoom = Math.min(Math.max(.125, zoom), 4); /// clamp the value
+    
+      this.camera.zoom = zoom /// assign new zoom value
+      this.camera.updateProjectionMatrix(); /// make the changes take effect
+    }, { passive: false });
   }
 
   initXR() {
@@ -239,6 +256,14 @@ class App {
     // this.renderer.floor_program.end();
     // rebuild XR localGraph
     // rebuild VR localGraph
+
+    if(this.patch.dirty.audio.graph == true){
+      // update genish graph
+      // console.log('dirtay')
+      // updateGraph(this.patch.document.patch)
+      // reset dirty flag
+      this.patch.dirty.audio.graph = false
+    }
     if(this.patch.dirty.vr == true){
       // update syncStore?
       
@@ -270,5 +295,9 @@ class App {
 }
   
 window.addEventListener('DOMContentLoaded', () => {
+  
   new App();
+
+  genish.export( window )
+  genish.utilities.createContext()
 });

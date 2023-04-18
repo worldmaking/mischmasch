@@ -1,24 +1,25 @@
-const assert = require('assert');
-const { Worker, MessageChannel, MessagePort, isMainThread, parentPort, workerData, SHARE_ENV } = require('worker_threads');
 
-if (isMainThread) {
-	console.error("this script is intended to run as a worker thread, do not invoke it directly")
-	process.exit()
-}
+// import "./subworkers.js"
 
 // // `workerData` can be passed here in the `new Worker` constructor
 // console.log(workerData);
 
 // Set up audio driver
-const audio = require('../../../../node-gles3/audio.js');
-audio.start()
+// const audio = require('../../../../node-gles3/audio.js');
+// audio.start()
 
 //console.log("got audio", audio)
 
 // Now setup genish.js
-const genish = require("./genish.js")
-genish.gen.mode = "" // prevent worklet mode, because it breaks node.js
-genish.samplerate = audio.samplerate
+// import * as genish from 'https://gitcdn.link/repo/charlieroberts/genish.js/master/dist/gen.lib.js'
+
+// genish.export( window )
+// schedule our audiocontext to be created when a user
+// interacts with the page... this is required by browsers
+
+// const genish = require("./genish.js")
+// genish.gen.mode = "" // prevent worklet mode, because it breaks node.js
+// genish.samplerate = audio.samplerate
 
 // this will hold our generated audio code
 // left undefined for now:
@@ -27,7 +28,7 @@ let kernel //= gen.gen.createCallback(0, memsize)
 let oldkernel //= gen.gen.createCallback(0, memsize)
 let mixerXfade = 0
 // 5ms crossfade:
-let mixerXfadeStep = 1/(audio.samplerate*0.005)
+let mixerXfadeStep = 1/(44100*0.005)
 let mixerGain = 0.1
 
 // build a lookup table for all the named memory slots in the graph:
@@ -47,7 +48,6 @@ function getMemoryMap(graph) {
 				if (ugen.inputs) ugen.inputs.forEach(visit);
 			}
 		}
-		
 		return map;
 	}
 	return visit(graph);
@@ -77,7 +77,10 @@ function applystash(kernel, stash) {
 function makeUID(name) { let id=0; genish.gen.getUID = () => name+(id++) }
 
 // handle messages from main thread:
-parentPort.on("message", (msg) => {
+
+onmessage = (msg) => {
+	console.log('workerMSG', msg)
+// worker.addEventListener("message", (msg) => {
 	try {
 		if (typeof msg == "object") {
 			switch(msg.cmd) {
@@ -191,7 +194,7 @@ parentPort.on("message", (msg) => {
 		console.error(e)
 		kernel = null
 	}
-})
+}
 
 // send a message back to parent:
 // parentPort.postMessage("yo from thread")
@@ -257,4 +260,4 @@ function runAudioProcess() {
 		setTimeout(runAudioProcess, audio.pollms/2);
 	//}
 }
-runAudioProcess();
+// runAudioProcess();

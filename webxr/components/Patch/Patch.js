@@ -3,6 +3,7 @@ import * as Y from 'yjs'
 import { Vector3, Curve, TubeGeometry, MeshBasicMaterial, Mesh, LineCurve3, SphereGeometry, MeshStandardMaterial } from 'three'
 import { store } from '../../systems/syncStore.js'
 
+import { 	docHasFeedback, updateGraph, updateParams} from '../Audio/Audio.js'
 
 import { WebrtcProvider } from "y-webrtc";
 
@@ -46,25 +47,21 @@ class Patch{
         // get src op object from scene
         let srcSceneObject = payload[0].children.find(element => element.userData.mischmaschID == srcID);
 
-        console.log('srcP', srcSceneObject.position)
         // get src jack object from op
         let srcJackObject = srcSceneObject.children.find(element => element.name == payload[1]);
-        console.log('srcJackObject', srcJackObject)
+
         // get world position of src jack
         let srcPos = srcSceneObject.localToWorld( new Vector3( srcJackObject.position.x, srcJackObject.position.y, ( srcJackObject.position.z) ) )
 
         let destID = payload[2].split('_')[2]
         // get src op object from scene
         let destSceneObject = payload[0].children.find(element => element.userData.mischmaschID == destID);
-        console.log('destSceneObject.name', destSceneObject.name)
-        console.log('destScenePos', destSceneObject.position)
         // get src jack object from op
         let destJackObject = destSceneObject.children.find(element => element.name == payload[2]);
         // get world position of src jack
         let destPos = destSceneObject.localToWorld( new Vector3( destJackObject.position.x, destJackObject.position.y, ( destJackObject.position.z) ) )
         
         // get world position of dest jack
-        console.log(srcPos, destPos)
         var path = new LineCurve3(srcPos, destPos)
         const geometry = new TubeGeometry( path, 20, systemSettings.cableThickness, 8, true );
         // geometry.setFromPoints(curveArray)
@@ -133,12 +130,12 @@ class Patch{
         // add op to sceneObjects for intersecting with raycaster
         sceneObjects.push(op.op)
 
-        this.document.patch[op.uuid] = op
-
+        // update audio
+        this.updateGenishGraph()
         // set patch dirty flag for animation Loop
         this.dirty.vr = true
         this.dirty.audio.graph = true
-
+        
         //! node version?
         // get all nodes from this op
         // let outputs = []
@@ -489,6 +486,10 @@ class Patch{
     
 
     
+  }
+  updateGenishGraph(){
+    console.log('n')
+    updateGraph(this.document.patch)
   }
 }
 

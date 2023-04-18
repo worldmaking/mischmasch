@@ -1803,7 +1803,7 @@ var gen = {
   },
 
   debug: false,
-  // samplerate: 44100, // change on audiocontext creation
+  samplerate: 44100, // change on audiocontext creation
   shouldLocalize: false,
   graph: null,
   alwaysReturnArrays: false,
@@ -2608,14 +2608,14 @@ var library = {
     }
 
     Object.assign(destination, library);
-
+    /*//! commented out, was causing errors
     Object.defineProperty(library, 'samplerate', {
       get: function get() {
         return library.gen.samplerate;
       },
       set: function set(v) {}
     });
-
+    */
     library.in = destination.input;
     library.history = destination.ssd;
     library.switch = destination.ternary;
