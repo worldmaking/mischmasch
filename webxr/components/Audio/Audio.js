@@ -291,7 +291,7 @@ function updateGraph(doc) {
 		let operations = doc2operations(doc)
 
 		//console.log("operations", JSON.stringify(operations, null, "  "))
-		console.log("operations\n", operations2string(operations))
+		console.log("genish string:\n\n", operations2string(operations))
 
 		handleUpdate({ cmd: "graph", operations })
 

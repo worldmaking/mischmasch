@@ -13,7 +13,6 @@ const scale = systemSettings.UI_DEFAULT_SCALE
         // super();
         // retrieve the op's info
         let opProps = opsList.find(item => item.op === opName)
-        console.log(opName)
         this.name = opName
         this.uuid;
         // import and create the meshes

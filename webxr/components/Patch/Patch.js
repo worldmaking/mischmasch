@@ -54,11 +54,11 @@ class Patch{
         let srcPos = srcSceneObject.localToWorld( new Vector3( srcJackObject.position.x, srcJackObject.position.y, ( srcJackObject.position.z) ) )
 
         let destID = payload[2].split('_')[2]
-        console.log(payload[1], payload[2], )
+        
         // get src op object from scene
-        console.log('scene', payload[0])
+        
         let destSceneObject = payload[0].children.find(element => element.userData.mischmaschID == destID);
-        console.log('destSceneObject', destSceneObject)
+        
         // get src jack object from op
         let destJackObject = destSceneObject.children.find(element => element.name == payload[2]);
         // get world position of src jack
@@ -483,7 +483,6 @@ class Patch{
     
   }
   updateGenishGraph(){
-    console.log('n')
     updateGraph(this.document.patch)
   }
 }

@@ -15,7 +15,6 @@ function createMeshes(opProps) {
   let inputLabels = []
   let outputJacks = []
   let outputLabels = []
-  console.log(opProps)
   // does it have inputs?
   if(opProps.inputs && Object.keys(opProps.inputs).length > 0){
     let inputs = opProps.inputs
