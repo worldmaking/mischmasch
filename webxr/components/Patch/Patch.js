@@ -340,7 +340,7 @@ class Patch{
       }      
     }
     // once ops have all been added, loop through cables and add those
-    for(i=0;i<cables.length;i++){
+    for(let i=0;i<cables.length;i++){
       this.add('cable', [scene, cables[i][0], cables[i][1]])
     }
     
