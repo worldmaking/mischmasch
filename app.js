@@ -34,6 +34,8 @@ if (argv.name){
   name = username.sync()
 }
 
+let userSettings = JSON.parse(fs.readFileSync(path.join(__dirname, 'userData/userSettings.json')))
+
 function prettyPrint(object){
 	console.log(JSON.stringify(object, null, 4))
 }
@@ -1611,8 +1613,9 @@ function makeSceneGraph(renderer, gl) {
 					line.to = this.paths[ arc[1] ];
 
 					if (!line.from || !line.to) continue;
-
-					vec4.set(line.i_color, 0.2, 0.8, 0.2, 1);
+					// CABLE colour!
+					let lineColor = userSettings.cables.colourPalette[this.line_instances.count % userSettings.cables.colourPalette.length]
+					vec4.set(line.i_color, lineColor[0], lineColor[1], lineColor[2], lineColor[3]);
 					line.name = line.from.path + ">" + line.to.path
 					this.line_instances.count++;
 
