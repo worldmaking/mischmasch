@@ -9,7 +9,17 @@ const username = require('username')
 const filename = path.basename(__filename)
 
 const chroma = require("chroma-js")
-const {argv} = require('yargs')
+const flags = require('flags')
+let userSettings = JSON.parse(fs.readFileSync(path.join(__dirname, 'userData/userSettings.json')))
+
+// if user entered their name, use that, otherwise use system username
+flags.defineString('username', username.sync());
+// default to running vr. if --runVR set to false, run with mouse n keys
+flags.defineString('disableVR', false);
+// default to new blank scene. if --patchFile contains the name of a file in /userData, load that file. 
+flags.defineString('patchFile', 'new')
+flags.parse()
+
 const nodeglpath = "../node-gles3"
 const rws = require('reconnecting-websocket');
 
@@ -27,19 +37,14 @@ const Audio = require(path.join(componentPath, 'Audio/Audio.js'))
 let patch = new Patch()
 
 // let p2pID; // set by coven signalling server
-let name;
-if (argv.name){
-  name = argv.name
-} else {
-  name = username.sync()
-}
+let name = flags.get('username')
 
-let userSettings = JSON.parse(fs.readFileSync(path.join(__dirname, 'userData/userSettings.json')))
+
 
 function prettyPrint(object){
 	console.log(JSON.stringify(object, null, 4))
 }
-let USEVR = (process.platform === "win32") && !(argv.vr === 'false');
+let USEVR = (process.platform === "win32") && !(flags.get('disableVR') === 'true');
 // usevr if its specified on CLI & skip VR if on OSX:
 console.log('using VR?', USEVR)
 let vr = (USEVR) ? require(path.join(nodeglpath, "openvr.js")) : null
@@ -58,11 +63,11 @@ let gensym = (function() {
 })();
 
 function hashCode(str) { // java String#hashCode
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-       hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return hash;
+	let hash = 0;
+	for (let i = 0; i < str.length; i++) {
+			hash = str.charCodeAt(i) + ((hash << 5) - hash);
+	}
+	return hash;
 } 
 
 function colorFromString(str) {
@@ -2416,19 +2421,14 @@ async function init() {
 	animate()
 
 	// load a scene on start?
- 	if(process.argv[2] == 'new'){
+ 	if(flags.get('patchFile') == 'new'){
 		let startPatch = {}
 		patch.load(startPatch)
 	}
-	else if(process.argv[2]){
-		let file = `userData/${process.argv[2]}.json`
+	else {
+		let file = `userData/${flags.get('patchFile')}.json`
 		let startPatch = JSON.parse(fs.readFileSync(path.join(__dirname, file)))
 		patch.load(startPatch)
-	} else if(process.argv[2] == 'restart'){
-		let startPatch = JSON.parse(fs.readFileSync(path.join(__dirname, 'userData/document.json')))
-		patch.load(startPatch)
-	} else {
-		patch.load({})
 	}
 }
 
