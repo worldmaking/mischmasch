@@ -1,27 +1,48 @@
 {
-  "name": "mischmasch-loading",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "msvr",
+  "version": "0.0.1",
+  "description": "Modular Synthesis in VR",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "pc": "cd PC && node app.js",
-    "web": "cd webxr && vite"
+    "start": "node mischmasch.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/worldmaking/mischmasch.git"
   },
-  "author": "michael palumbo, graham wakefield, alexander zonta",
-  "license": "ISC",
+  "author": "Alice Lab",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/worldmaking/mischmasch/issues"
   },
   "homepage": "https://github.com/worldmaking/mischmasch#readme",
-  "devDependencies": {
-    "snowpack": "^3.8.8"
-  },
   "dependencies": {
-    "vite": "^4.2.1"
+    "array-equal": "^1.0.0",
+    "automerge": "^1.0.1-preview.7",
+    "chroma-js": "^2.4.2",
+    "deep-equal": "^2.0.5",
+    "express": "^4.18.1",
+    "gl-matrix": "^3.3.0",
+    "http": "0.0.1-security",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "png-js": "^1.0.0",
+    "progress": "^2.0.3",
+    "public-ip": "^4.0.4",
+    "reconnecting-websocket": "^4.4.0",
+    "replaceall": "^0.1.6",
+    "tiny-queue": "^0.2.1",
+    "url": "^0.11.0",
+    "username": "^5.1.0",
+    "uuid": "^9.0.0",
+    "ws": "^6.2.2",
+    "yargs": "^15.4.1"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "test/*",
+      "docs/*"
+    ],
+    "ext": "js html"
   }
 }
