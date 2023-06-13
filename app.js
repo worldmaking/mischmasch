@@ -376,7 +376,7 @@ const UI = {
 				this.line_instances.count++;
 
 				let {from, to} = arc;
-				vec4.set(line.i_color, 1, 1, 1, 1);
+				vec4.set(line.i_color, 1, 0.25, 1, 1);
 				quat.copy(line.i_quat0, from.i_quat)
 				quat.copy(line.i_quat1, to.i_quat)
 				vec3.copy(line.i_pos0, from.i_pos)
@@ -735,7 +735,7 @@ const UI = {
 
 		this.ray_vao = glutils.createVao(gl, renderer.line_geom, renderer.ray_program.id)
 		this.ray_instances = glutils.createInstances(gl, [
-			//{ name:"i_color", components:4 },
+			{ name:"i_color", components:4 },
 			{ name:"i_pos", components:3 },
 			{ name:"i_len", components:1 },
 			{ name:"i_dir", components:3 },
@@ -936,8 +936,8 @@ function initRenderer(renderer) {
 	
 	// right controller
 	renderer.wand_geom = glutils.geomFromOBJ(fs.readFileSync(path.join(__dirname, "objs/touch_right", "oculus_cv1_controller_right.obj"), "utf-8"))
-
-	renderer.line_geom = glutils.makeLine({ min:0, max:1, div: 24 });
+	// cable geometry
+	renderer.line_geom = glutils.makeLine({ min:0, max:1, div: 64 });
 	const floor_m = 6;
 	renderer.floor_geom = glutils.makeQuad({ min: -floor_m, max: floor_m, div:8 })
 	renderer.debug_geom = glutils.makeCube({min:-0.01, max:0.01})
@@ -1174,7 +1174,7 @@ void main() {
 	outColor = v_color;
 
 	// stippling:
-	// float stipplerate = 1.; // 1.0
+	// float stipplerate = 2.; // 1.0
 	// float stippleclamp = 0.; 
 	// float stipple = 1. - 0.372*smoothstep(stippleclamp, 1.-stippleclamp, abs(sin(3.141592653589793 * v_t * stipplerate)));
 	float stipple = smoothstep(0., 1., 0.5+abs(v_t - 0.5));
@@ -1612,7 +1612,7 @@ function makeSceneGraph(renderer, gl) {
 
 					if (!line.from || !line.to) continue;
 
-					vec4.set(line.i_color, 1, 1, 1, 1);
+					vec4.set(line.i_color, 0.2, 0.8, 0.2, 1);
 					line.name = line.from.path + ">" + line.to.path
 					this.line_instances.count++;
 
