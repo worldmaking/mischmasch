@@ -14,8 +14,8 @@ let userSettings = JSON.parse(fs.readFileSync(path.join(__dirname, 'userData/use
 
 // if user entered their name, use that, otherwise use system username
 flags.defineString('username', username.sync());
-// default to running vr. if --runVR set to false, run with mouse n keys
-flags.defineString('disableVR', false);
+// default to running vr. if --disableVR set to true, run with mouse n keys
+flags.defineBoolean('disableVR');
 // default to new blank scene. if --patchFile contains the name of a file in /userData, load that file. 
 flags.defineString('patchFile', 'new')
 flags.parse()
@@ -44,9 +44,17 @@ let name = flags.get('username')
 function prettyPrint(object){
 	console.log(JSON.stringify(object, null, 4))
 }
-let USEVR = (process.platform === "win32") && !(flags.get('disableVR') === 'true');
+
+let USEVR;
+
+if(process.platform === "win32" && !flags.get('disableVR')){
+	USEVR = true
+} else {
+	USEVR = false
+}
 // usevr if its specified on CLI & skip VR if on OSX:
 console.log('using VR?', USEVR)
+
 let vr = (USEVR) ? require(path.join(nodeglpath, "openvr.js")) : null
 
 // const shaderpath = path.join(__dirname, "shaders")
@@ -209,8 +217,13 @@ const UI = {
 		turnState: 0,
 		speed: 1, // metres per second
 		keySpeed: 1,
+
+		patching: {
+			menuOpen: 0
+		},
 		
 		handleKeys(key, down, mod) {
+			console.log(key, down, mod)
 			switch (key) {
 				case 87: // W
 				case 265: // up
@@ -226,11 +239,13 @@ const UI = {
 				this.strafeState = down ? -1 : 0; break;
 				case 263: // left
 				this.turnState = down ? -1 : 0; break;
+
 			}
 			// handle mod, e.g. shift for 'run' and ctrl for 'creep'
 			let shift = !!(mod % 2);
 			let ctrl = !!(mod % 4);
 			this.keySpeed = shift ? 4 : ctrl ? 1/4 : 1;
+			
 		},
 
 		move(dt=1/60) {
@@ -472,6 +487,7 @@ const UI = {
 			case "menu": {
 				if (object && hand.trigger_pressed) {
 					// recurse up object parentage until we have a module:
+					console.log(object)
 					let module = object;
 					while (module && !module.isModule) module = module.parent;
 					if (module && module.isModule) {

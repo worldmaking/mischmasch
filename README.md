@@ -8,7 +8,7 @@ CLI flags:
 
 --username *input a string with no spaces for player name. defaults to system username*
 
---disableVR *set this to true to disable VR. default: false*
+--disableVR *include this flag to disable VR and run the app with keyboard and mouse*
 
 --patchFile *enter name of a patch file found in /userData (don't include .json extension). default: blank scene*
 
