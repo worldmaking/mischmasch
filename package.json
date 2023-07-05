@@ -19,6 +19,7 @@
   "dependencies": {
     "array-equal": "^1.0.0",
     "automerge": "^1.0.1-preview.7",
+    "boring-name-generator": "^1.0.3",
     "chroma-js": "^2.4.2",
     "deep-equal": "^2.0.5",
     "express": "^4.18.1",
@@ -32,9 +33,11 @@
     "public-ip": "^4.0.4",
     "reconnecting-websocket": "^4.4.0",
     "replaceall": "^0.1.6",
+    "socket.io-client": "^4.7.1",
     "tiny-queue": "^0.2.1",
     "url": "^0.11.0",
     "username": "^5.1.0",
+    "util": "^0.12.5",
     "uuid": "^9.0.0",
     "ws": "^6.2.2",
     "yargs": "^15.4.1"

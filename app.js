@@ -5,20 +5,30 @@ const { vec2, vec3, vec4, quat, mat2, mat2d, mat3, mat4} = require("gl-matrix")
 const PNG = require("png-js");
 // keep the 'ws' usage as well - coven requires this very spelling
 const ws = require('ws')
-const username = require('username')
+const generateName = require('boring-name-generator');
+let username = require('username')
 const filename = path.basename(__filename)
+
 
 const chroma = require("chroma-js")
 const flags = require('flags')
 let userSettings = JSON.parse(fs.readFileSync(path.join(__dirname, 'userData/userSettings.json')))
 
 // if user entered their name, use that, otherwise use system username
-flags.defineString('username', username.sync());
+flags.defineString('username', username.sync() + '_' + generateName().dashed);
 // default to running vr. if --disableVR set to true, run with mouse n keys
 flags.defineBoolean('disableVR');
 // default to new blank scene. if --patchFile contains the name of a file in /userData, load that file. 
 flags.defineString('patchFile', 'new')
 flags.parse()
+
+let userID = flags.get('username')
+
+
+console.log(userID)
+
+
+
 
 const nodeglpath = "../node-gles3"
 const rws = require('reconnecting-websocket');
@@ -35,10 +45,6 @@ const Patch = require(path.join(componentPath, 'Patch/Patch.js'))
 const Palette = require(path.join(componentPath, 'Palette/Palette.js'))
 const Audio = require(path.join(componentPath, 'Audio/Audio.js'))
 let patch = new Patch()
-
-// let p2pID; // set by coven signalling server
-let name = flags.get('username')
-
 
 
 function prettyPrint(object){
