@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/worldmaking/mischmasch#readme",
   "dependencies": {
+    "@mapbox/node-pre-gyp": "^1.0.10",
     "array-equal": "^1.0.0",
     "automerge": "^1.0.1-preview.7",
     "boring-name-generator": "^1.0.3",
@@ -39,6 +40,7 @@
     "username": "^5.1.0",
     "util": "^0.12.5",
     "uuid": "^9.0.0",
+    "wrtc": "^0.4.7",
     "ws": "^6.2.2",
     "yargs": "^15.4.1"
   },

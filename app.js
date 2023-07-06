@@ -22,12 +22,29 @@ flags.defineBoolean('disableVR');
 flags.defineString('patchFile', 'new')
 flags.parse()
 
-let userID = flags.get('username')
+const PEER_ID = flags.get('username')
 
 
-console.log(userID)
+console.log(PEER_ID)
 
+// webrtc datachannel setup
+const SignalingChannel = require("./lib/signaling-channel");
+const WebrtcManager = require("./lib/webrtc-manager");
+const dataChannelHandler = require("./lib/webrtc-handlers/data-channel-handler");
+// CONSTANTS
+const TOKEN = 'SIGNALING123';
+const SIGNALING_SERVER_URL = 'http://localhost:3030'
 
+console.log(SIGNALING_SERVER_URL)
+/** @type {string} - can for example be 'admin' | 'vehicle' | 'robot'  depending on you application*/
+const PEER_TYPE = "admin";
+
+// SETUP SIGNALING CHANNEL AND WEBRTC
+const channel = new SignalingChannel(PEER_ID, PEER_TYPE, SIGNALING_SERVER_URL, TOKEN);
+const webrtcOptions = { enableDataChannel: true, enableStreams: false, dataChannelHandler };
+const manager = new WebrtcManager(PEER_ID, PEER_TYPE, channel, webrtcOptions, (verbose = true));
+channel.connect();
+let num = 0
 
 
 const nodeglpath = "../node-gles3"
