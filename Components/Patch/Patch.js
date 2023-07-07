@@ -2,7 +2,8 @@ const { v4: uuidv4 } = require('uuid');
 const Automerge = require('automerge')
 const _ = require('lodash');
 const replaceAll = require("replaceall");
-
+const EventEmitter = require('node:events');
+const emitMessage = new EventEmitter();
 
 // webrtc datachannel setup
 const SignalingChannel = require("../../lib/signaling-channel");
@@ -40,9 +41,16 @@ module.exports = class Patch{
     let num = 0
     let docId = this.docId
     let syncStates = this.syncStates
-    this.webRTCManager = new WebrtcManager(PEER_ID, PEER_TYPE, channel, webrtcOptions, true, this.syncStates, this.docId);
+    this.webRTCManager = new WebrtcManager(PEER_ID, PEER_TYPE, channel, webrtcOptions, true, this.syncStates, this.docId, emitMessage);
     channel.connect();
 
+    // this.messaging = this.webRTCManager.signalingMessageHandler
+    // let self = this 
+    // this.messaging.onMessage = (e) =>{
+    //   console.log('received msseg', e)
+      
+    // }
+    emitMessage.on('msg', e=> this.receiveSyncMessages(e))
 
   }
 
@@ -141,8 +149,8 @@ module.exports = class Patch{
         // set patch dirty flag for animation Loop
         this.dirty.vr = true
         this.dirty.audio.graph = true
-
-        this.webRTCSend('add', 'op')
+        this.updatePeers(this.docId)
+        // this.webRTCSend('add', 'op')
         return op
       break
   
@@ -403,53 +411,36 @@ module.exports = class Patch{
 
     }
   }
-  // dataChannelHandler(ourPeerId, ourPeerType, peer) {
-  //   const peerId = peer.peerId;
-  //   this.peers[peerId] = peer
-  //   console.log(this.peers)
-  //   console.log(`our peerid: ${ourPeerId}, incoming peerID ${peerId}`)
-  //   channel = peer.dataChannel;
-  //   const onOpen = (event) => {
-  //       /* 
-  //           YOUR CODE HERE - This code is executed when the data channel opens.
-  //           For example, you can send data to the peer:
-  //       */
-  //       channel.send(`Hello from test ${ourPeerId}`);
-            
-  //       thisConnection = event.type      
-  //       };
-  //   const onMessage = (event) => {
-  //     //TODO likely what will happen here is to update the automerge document, then run this.rebuild()
-  //       /* 
-  //           YOUR CODE HERE - This code is executed when a message is recieved from the peer.
-  //           For example, extract the data and log it to the console:
-  //       */
-  //       const { data } = event;
-  //       console.log(peerId, "says:", `"${data}"`); // put peer data inside quotation marks
-  //   };
-  //   const onClose = (event) => {
-  //       /* 
-  //           YOUR CODE HERE - This code is executed when the data channel is closed.
-  //           For example, log the closing event to the console:
-  //       */
-  //       console.log(`Channel with ${peerId} is closing `);
-              
-  //       thisConnection = event.type
-  //   };
 
-  //   channel.onopen = (event) => {
-  //       if (event.type === "open") {
-  //           console.log("Data channel with", peerId, "is open");
-  //           channel.onmessage = onMessage;
-  //           channel.onclose = onClose;
-  //           onOpen(event);
-  //       }
-  //   };
-  // }
-
-}
-
-
-function prettyPrint(object){
-	console.log(JSON.stringify(object, null, 4))
+  receiveSyncMessages(msg){
+    console.log('test', msg)
+    // this code is from https://automerge.org/docs/cookbook/real-time/
+    // in the section 'receiving sync messages'
+    // need to figure out how to do this:
+    const [nextDoc, nextSyncState, patch] = Automerge.receiveSyncMessage(
+      this.document,
+      this.syncStates[peerId][docId] || Automerge.initSyncState(),
+      syncMessage,
+    )
+    docs[docId] = nextDoc
+    syncStates[peerId] = { ...syncStates[peerId], [docId]: nextSyncState }
+  
+    updatePeers(docId)
+  }
+  updatePeers(){
+    Object.entries(this.syncStates).forEach(([peer, syncState]) => {
+      const [nextSyncState, syncMessage] = Automerge.generateSyncMessage(
+        this.document,
+        syncState[this.docId] || Automerge.initSyncState(),
+      )
+      this.syncStates[peer] = { ...this.syncStates[peer], [this.docId]: nextSyncState }
+      if (syncMessage) {
+        let docId = this.docId
+        this.webRTCManager.peers[peer].dataChannel.send(JSON.stringify({
+          docId, peerId: this.PEER_ID, target: peer, syncMessage,
+        }))
+      }
+    })
+  }
+  
 }
