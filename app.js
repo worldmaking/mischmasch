@@ -22,6 +22,22 @@ flags.defineBoolean('disableVR');
 flags.defineString('patchFile', 'new')
 flags.parse()
 
+const nodeglpath = "../node-gles3"
+const rws = require('reconnecting-websocket');
+
+
+const gl = require(path.join(nodeglpath, "gles3.js")),
+glfw = require(path.join(nodeglpath, "glfw3.js")),
+glutils = require(path.join(nodeglpath, "glutils.js"))
+
+
+const componentPath = path.join(__dirname, 'Components')
+// components
+const Patch = require(path.join(componentPath, 'Patch/Patch.js'))
+const Palette = require(path.join(componentPath, 'Palette/Palette.js'))
+const Audio = require(path.join(componentPath, 'Audio/Audio.js'))
+
+
 const PEER_ID = flags.get('username')
 
 
@@ -42,27 +58,13 @@ const PEER_TYPE = "admin";
 // SETUP SIGNALING CHANNEL AND WEBRTC
 const channel = new SignalingChannel(PEER_ID, PEER_TYPE, SIGNALING_SERVER_URL, TOKEN);
 const webrtcOptions = { enableDataChannel: true, enableStreams: false, dataChannelHandler };
-const manager = new WebrtcManager(PEER_ID, PEER_TYPE, channel, webrtcOptions, (verbose = true));
+const dataChannelManager = new WebrtcManager(PEER_ID, PEER_TYPE, channel, webrtcOptions, (verbose = true));
 channel.connect();
 let num = 0
 
 
-const nodeglpath = "../node-gles3"
-const rws = require('reconnecting-websocket');
 
-
-const gl = require(path.join(nodeglpath, "gles3.js")),
-glfw = require(path.join(nodeglpath, "glfw3.js")),
-glutils = require(path.join(nodeglpath, "glutils.js"))
-
-
-const componentPath = path.join(__dirname, 'Components')
-// components
-const Patch = require(path.join(componentPath, 'Patch/Patch.js'))
-const Palette = require(path.join(componentPath, 'Palette/Palette.js'))
-const Audio = require(path.join(componentPath, 'Audio/Audio.js'))
-let patch = new Patch()
-
+let patch = new Patch(dataChannelManager)
 
 function prettyPrint(object){
 	console.log(JSON.stringify(object, null, 4))

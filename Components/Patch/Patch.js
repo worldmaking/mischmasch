@@ -16,9 +16,10 @@ const replaceAll = require("replaceall");
  * @param {Function} peer.remove - Closes all connections and removes the peer. Automatically called when peer leaves signaling server.
  */
 
+let channel, thisConnection;
 
 module.exports = class Patch{
-  constructor(load){
+  constructor(webRTCManager){
     // versioning     
     this.document = Automerge.init()
     this.dirty = {
@@ -32,6 +33,7 @@ module.exports = class Patch{
 
     this.cables = []
 
+    this.webRTCManager = webRTCManager
   }
 
   add(item, payload){
@@ -63,6 +65,7 @@ module.exports = class Patch{
         })
         this.dirty.vr = true
         this.dirty.audio.graph = true
+
       break;
   
       case 'op':
@@ -129,7 +132,13 @@ module.exports = class Patch{
         this.dirty.vr = true
         this.dirty.audio.graph = true
  
-
+        for (let peer in this.webRTCManager.peers) {
+          this.webRTCManager.peers[peer].dataChannel.send(JSON.stringify({
+            edit: 'add',
+            type: 'op',
+            sync: op
+          }))
+        }
         return op
       break
   
@@ -381,25 +390,33 @@ module.exports = class Patch{
 
   webRTCSend(payload){
     // eventually we'll involve automerge. but for now, just send the payload
+    if(thisConnection === 'open'){
+      let msg = JSON.stringify({
+        date: Date.now(),
+        msg: payload,
+        arg: 'sync'
+      })
+      channel.send(msg)
+    }
 
   }
   // dataChannelHandler(ourPeerId, ourPeerType, peer) {
   //   const peerId = peer.peerId;
-  //   const channel = peer.dataChannel;
-  
+  //   this.peers[peerId] = peer
+  //   console.log(this.peers)
+  //   console.log(`our peerid: ${ourPeerId}, incoming peerID ${peerId}`)
+  //   channel = peer.dataChannel;
   //   const onOpen = (event) => {
   //       /* 
   //           YOUR CODE HERE - This code is executed when the data channel opens.
   //           For example, you can send data to the peer:
   //       */
-  //       channel.send(`Hello from ${ourPeerId}`);
-                
-  //       function intervalFunc() {
-  //           channel.send('hello from hello')
-  //       }
-  //       setInterval(intervalFunc, 1500);
+  //       channel.send(`Hello from test ${ourPeerId}`);
+            
+  //       thisConnection = event.type      
   //       };
   //   const onMessage = (event) => {
+  //     //TODO likely what will happen here is to update the automerge document, then run this.rebuild()
   //       /* 
   //           YOUR CODE HERE - This code is executed when a message is recieved from the peer.
   //           For example, extract the data and log it to the console:
@@ -413,8 +430,10 @@ module.exports = class Patch{
   //           For example, log the closing event to the console:
   //       */
   //       console.log(`Channel with ${peerId} is closing `);
+              
+  //       thisConnection = event.type
   //   };
-  
+
   //   channel.onopen = (event) => {
   //       if (event.type === "open") {
   //           console.log("Data channel with", peerId, "is open");
