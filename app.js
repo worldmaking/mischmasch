@@ -1,6 +1,9 @@
 const assert = require("assert"),
 	fs = require("fs"),
 	path = require("path");
+//keyboard events
+const keyboardEvent = require('lepikevents');
+const cycle = require('cycle')
 const { vec2, vec3, vec4, quat, mat2, mat2d, mat3, mat4} = require("gl-matrix")
 const PNG = require("png-js");
 // keep the 'ws' usage as well - coven requires this very spelling
@@ -13,6 +16,9 @@ const filename = path.basename(__filename)
 const chroma = require("chroma-js")
 const flags = require('flags')
 let userSettings = JSON.parse(fs.readFileSync(path.join(__dirname, 'userData/userSettings.json')))
+
+// temporary op spawning using keyboard input
+let testOp = cycle.retrocycle(JSON.parse(fs.readFileSync(path.join(__dirname, 'developer/op.json'))));
 
 // if user entered their name, use that, otherwise use system username
 flags.defineString('username', username.sync() + '_' + generateName().dashed);
@@ -41,13 +47,22 @@ const Audio = require(path.join(componentPath, 'Audio/Audio.js'))
 const PEER_ID = flags.get('username')
 
 
-console.log(PEER_ID)
 
 
 
 
 let patch = new Patch(PEER_ID)
 
+
+keyboardEvent.events.on('keyDown', (data) => {
+  switch(data){
+    case "A":
+      console.log('add a new op')
+			patch.add('op', testOp)
+    break;
+    default:
+  }
+})
 
 function prettyPrint(object){
 	console.log(JSON.stringify(object, null, 4))
@@ -495,11 +510,12 @@ const UI = {
 			case "menu": {
 				if (object && hand.trigger_pressed) {
 					// recurse up object parentage until we have a module:
-					console.log(object)
 					let module = object;
 					while (module && !module.isModule) module = module.parent;
 					if (module && module.isModule) {
 						// add the module to patch.document
+						fs.writeFileSync('op.json', JSON.stringify(cycle.decycle(module)))
+						console.log(module)
 						patch.add('op', module)
 						// exit menu:
 						hand.state = "default";

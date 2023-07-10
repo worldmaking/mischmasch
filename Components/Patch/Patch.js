@@ -4,6 +4,9 @@ const _ = require('lodash');
 const replaceAll = require("replaceall");
 const EventEmitter = require('node:events');
 const emitMessage = new EventEmitter();
+const fs = require('fs')
+//keyboard events
+const keyboardEvent = require('lepikevents');
 
 // webrtc datachannel setup
 const SignalingChannel = require("../../lib/signaling-channel");
@@ -19,6 +22,7 @@ const PEER_TYPE = "admin";
 
 module.exports = class Patch{
   constructor(PEER_ID){
+    this.PEER_ID = PEER_ID
     // versioning     
     this.document = Automerge.init()
     this.docId = 'doc1'
@@ -55,6 +59,7 @@ module.exports = class Patch{
   }
 
   add(item, payload){
+
     switch(item){
       case 'cable':
         let from = payload[0].split('_')[1]
@@ -150,6 +155,7 @@ module.exports = class Patch{
         this.dirty.vr = true
         this.dirty.audio.graph = true
         this.updatePeers(this.docId)
+        console.log()
         // this.webRTCSend('add', 'op')
         return op
       break
@@ -366,7 +372,7 @@ module.exports = class Patch{
         speakers.push('speaker')
       }
     }
-    console.log('num speakers', speakers)
+    
     if(speakers.length == 0){
       let pos = [hmd.pos[0], hmd.pos[1], hmd.pos[2]-0.5]
       const id = replaceAll('-', '', uuidv4())
@@ -413,10 +419,28 @@ module.exports = class Patch{
   }
 
   receiveSyncMessages(msg){
-    console.log('test', msg)
-    // this code is from https://automerge.org/docs/cookbook/real-time/
-    // in the section 'receiving sync messages'
-    // need to figure out how to do this:
+    // first filter out signalling messages:
+    if(msg.arg == 'signallingMessage'){
+      console.log('our id', this.PEER_ID)
+      // ignore for now?
+      //todo: the signalling messaging is funky. msg.target and msg.from sometimes get flipped. need to figure out why
+      // if (msg.target == 'all'){
+      //   if(this.PEER_ID != msg.from){
+      //     console.log(`connected to new peer ${msg.from} on datachannel`)
+      //   }
+      // } else if (msg.from == 'all'){
+      //   if(this.PEER_ID != msg.target){
+      //     console.log(`connected to new peer ${msg.target} on datachannel`)
+      //   }
+      // }
+
+    } else {
+      console.log('edit', msg)
+    }
+    //todo this code is from https://automerge.org/docs/cookbook/real-time/
+    //todo in the section 'receiving sync messages'
+    //todo need to figure out how to do this:
+    /*
     const [nextDoc, nextSyncState, patch] = Automerge.receiveSyncMessage(
       this.document,
       this.syncStates[peerId][docId] || Automerge.initSyncState(),
@@ -426,16 +450,17 @@ module.exports = class Patch{
     syncStates[peerId] = { ...syncStates[peerId], [docId]: nextSyncState }
   
     updatePeers(docId)
+    */
   }
-  updatePeers(){
+  updatePeers(docId){
     Object.entries(this.syncStates).forEach(([peer, syncState]) => {
       const [nextSyncState, syncMessage] = Automerge.generateSyncMessage(
         this.document,
-        syncState[this.docId] || Automerge.initSyncState(),
+        syncState[docId] || Automerge.initSyncState(),
       )
-      this.syncStates[peer] = { ...this.syncStates[peer], [this.docId]: nextSyncState }
+      this.syncStates[peer] = { ...this.syncStates[peer], [docId]: nextSyncState }
+      console.log('syncStates', this.syncStates)
       if (syncMessage) {
-        let docId = this.docId
         this.webRTCManager.peers[peer].dataChannel.send(JSON.stringify({
           docId, peerId: this.PEER_ID, target: peer, syncMessage,
         }))

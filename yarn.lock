@@ -274,6 +274,11 @@ cross-spawn@^6.0.0:
     shebang-command "^1.2.0"
     which "^1.2.9"
 
+cycle@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/cycle/-/cycle-1.0.3.tgz"
+  integrity sha512-TVF6svNzeQCOpjCqsy0/CSy8VgObG3wXusJ73xW2GbG5rGx7lC8zxDSURicsXI2UsGdi2L0QNRCi745/wUDvsA==
+
 debug@~4.3.1:
   version "4.3.4"
   resolved "https://registry.npmjs.org/debug/-/debug-4.3.4.tgz"
@@ -458,6 +463,11 @@ etag@~1.8.1:
   version "1.8.1"
   resolved "https://registry.npmjs.org/etag/-/etag-1.8.1.tgz"
   integrity sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==
+
+eventemitter2@^6.4.5:
+  version "6.4.9"
+  resolved "https://registry.npmjs.org/eventemitter2/-/eventemitter2-6.4.9.tgz"
+  integrity sha512-JEPTiaOt9f04oa6NOkc4aH+nVp5I3wEjpHbIPqfgCdD5v5bUzy7xQqwcVO2aDQgOWhI28da57HksMrzK9HlRxg==
 
 execa@^1.0.0:
   version "1.0.0"
@@ -926,6 +936,13 @@ keyv@^3.0.0:
   integrity sha512-9ykJ/46SN/9KPM/sichzQ7OvXyGDYKGTaDlKMGCAlg2UK8KRy4jb0d8sFc+0Tt0YYnThq8X2RZgCg74RPxgcVA==
   dependencies:
     json-buffer "3.0.0"
+
+lepikevents@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.npmjs.org/lepikevents/-/lepikevents-2.0.3.tgz"
+  integrity sha512-KBcqbURnXK0llswr1OaDcmdhL9CEHSM8qQJE6uJdoOXagXkOTKTzKInOjXtpCHd1SbekP0VQG1xGuAeYxOw/QA==
+  dependencies:
+    eventemitter2 "^6.4.5"
 
 locate-path@^5.0.0:
   version "5.0.0"
