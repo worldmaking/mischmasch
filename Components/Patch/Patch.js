@@ -5,8 +5,7 @@ const replaceAll = require("replaceall");
 const EventEmitter = require('node:events');
 const emitMessage = new EventEmitter();
 const fs = require('fs')
-//keyboard events
-const keyboardEvent = require('lepikevents');
+
 
 // webrtc datachannel setup
 const SignalingChannel = require("../../lib/signaling-channel");
@@ -155,7 +154,6 @@ module.exports = class Patch{
         this.dirty.vr = true
         this.dirty.audio.graph = true
         this.updatePeers(this.docId)
-        console.log()
         // this.webRTCSend('add', 'op')
         return op
       break
@@ -419,49 +417,40 @@ module.exports = class Patch{
   }
 
   receiveSyncMessages(msg){
-    // first filter out signalling messages:
-    if(msg.arg == 'signallingMessage'){
-      console.log('our id', this.PEER_ID)
-      // ignore for now?
-      //todo: the signalling messaging is funky. msg.target and msg.from sometimes get flipped. need to figure out why
-      // if (msg.target == 'all'){
-      //   if(this.PEER_ID != msg.from){
-      //     console.log(`connected to new peer ${msg.from} on datachannel`)
-      //   }
-      // } else if (msg.from == 'all'){
-      //   if(this.PEER_ID != msg.target){
-      //     console.log(`connected to new peer ${msg.target} on datachannel`)
-      //   }
-      // }
+    switch(msg.arg){
+      case 'signallingMessage':
+        console.log('our id', this.PEER_ID)
+        // ignore for now?
+        //todo: the signalling messaging is funky. msg.target and msg.from sometimes get flipped. need to figure out why
+        // if (msg.target == 'all'){
+        //   if(this.PEER_ID != msg.from){
+        //     console.log(`connected to new peer ${msg.from} on datachannel`)
+        //   }
+        // } else if (msg.from == 'all'){
+        //   if(this.PEER_ID != msg.target){
+        //     console.log(`connected to new peer ${msg.target} on datachannel`)
+        //   }
+        // }
+      break;
 
-    } else {
-      console.log('edit', msg)
+      case 'syncMessage':
+
+      break;
+
+      default: console.log(`message from datachannel without matching switch case in Patch.js:receiveSyncMessages() ${msg}`)
     }
-    //todo this code is from https://automerge.org/docs/cookbook/real-time/
-    //todo in the section 'receiving sync messages'
-    //todo need to figure out how to do this:
-    /*
-    const [nextDoc, nextSyncState, patch] = Automerge.receiveSyncMessage(
-      this.document,
-      this.syncStates[peerId][docId] || Automerge.initSyncState(),
-      syncMessage,
-    )
-    docs[docId] = nextDoc
-    syncStates[peerId] = { ...syncStates[peerId], [docId]: nextSyncState }
-  
-    updatePeers(docId)
-    */
   }
   updatePeers(docId){
+    console.log('syncStates', this.syncStates)
+
     Object.entries(this.syncStates).forEach(([peer, syncState]) => {
       const [nextSyncState, syncMessage] = Automerge.generateSyncMessage(
         this.document,
         syncState[docId] || Automerge.initSyncState(),
       )
       this.syncStates[peer] = { ...this.syncStates[peer], [docId]: nextSyncState }
-      console.log('syncStates', this.syncStates)
       if (syncMessage) {
-        this.webRTCManager.peers[peer].dataChannel.send(JSON.stringify({
+        this.webRTCManager.peers[peer].dataChannel.send(JSON.stringify({arg: 'syncMessage',
           docId, peerId: this.PEER_ID, target: peer, syncMessage,
         }))
       }

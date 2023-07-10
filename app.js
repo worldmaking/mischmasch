@@ -18,7 +18,7 @@ const flags = require('flags')
 let userSettings = JSON.parse(fs.readFileSync(path.join(__dirname, 'userData/userSettings.json')))
 
 // temporary op spawning using keyboard input
-let testOp = cycle.retrocycle(JSON.parse(fs.readFileSync(path.join(__dirname, 'developer/op.json'))));
+let testOp = cycle.retrocycle(JSON.parse(fs.readFileSync(path.join(__dirname, 'developer/trainOp_for_testing.json'))));
 
 // if user entered their name, use that, otherwise use system username
 flags.defineString('username', username.sync() + '_' + generateName().dashed);
@@ -57,7 +57,6 @@ let patch = new Patch(PEER_ID)
 keyboardEvent.events.on('keyDown', (data) => {
   switch(data){
     case "A":
-      console.log('add a new op')
 			patch.add('op', testOp)
     break;
     default:
@@ -514,8 +513,6 @@ const UI = {
 					while (module && !module.isModule) module = module.parent;
 					if (module && module.isModule) {
 						// add the module to patch.document
-						fs.writeFileSync('op.json', JSON.stringify(cycle.decycle(module)))
-						console.log(module)
 						patch.add('op', module)
 						// exit menu:
 						hand.state = "default";
