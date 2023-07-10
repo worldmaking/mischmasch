@@ -448,7 +448,6 @@ module.exports = class Patch{
           this.syncStates[syncMsg.peerId][this.docId] || Automerge.initSyncState(),
           syncMessageArray,
         )
-       
         this.document = nextDoc
         this.syncStates[syncMsg.peerId] = { ...this.syncStates[syncMsg.peerId], [this.docId]: nextSyncState }
         this.dirty.audio.graph = true
