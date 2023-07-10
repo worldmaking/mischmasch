@@ -417,7 +417,8 @@ module.exports = class Patch{
   }
 
   receiveSyncMessages(msg){
-    switch(msg.arg){
+    let syncMsg = JSON.parse(msg)
+    switch(syncMsg.arg){
       case 'signallingMessage':
         console.log('our id', this.PEER_ID)
         // ignore for now?
@@ -434,12 +435,25 @@ module.exports = class Patch{
       break;
 
       case 'syncMessage':
+        delete syncMsg.arg
+        console.log('syncMsg', syncMsg)
+        let syncMessageArray = new Uint8Array(syncMsg.syncMsgArray);
+        const [nextDoc, nextSyncState, patch] = Automerge.receiveSyncMessage(
+          this.document,
+          this.syncStates[syncMsg.peerId][this.docId] || Automerge.initSyncState(),
+          syncMessageArray,
+        )
+        this.document = nextDoc
+        this.syncStates[syncMsg.peerId] = { ...this.syncStates[syncMsg.peerId], [this.docId]: nextSyncState }
+      
+        this.updatePeers(this.docId)
 
       break;
 
       default: console.log(`message from datachannel without matching switch case in Patch.js:receiveSyncMessages() ${msg}`)
     }
   }
+  // method to update all peers using automerge sync protocol
   updatePeers(docId){
     console.log('syncStates', this.syncStates)
 
@@ -448,11 +462,18 @@ module.exports = class Patch{
         this.document,
         syncState[docId] || Automerge.initSyncState(),
       )
+      console.log('\n\nthisPeerID', this.PEER_ID, '\n\npeerID', peer, '\n\nsyncMessage', syncMessage, '\n\nnextSyncState', nextSyncState)
       this.syncStates[peer] = { ...this.syncStates[peer], [docId]: nextSyncState }
-      if (syncMessage) {
+      if (syncMessage && this.webRTCManager.peers[peer]) {
+        console.log('syndMessage', syncMessage)
+
+        // convert sync message array to string
+        let syncMsgArray = Array.from(syncMessage)
+        console.log(syncMsgArray)
         this.webRTCManager.peers[peer].dataChannel.send(JSON.stringify({arg: 'syncMessage',
-          docId, peerId: this.PEER_ID, target: peer, syncMessage,
+          docId, peerId: this.PEER_ID, target: peer, syncMsgArray,
         }))
+        console.log('here')
       }
     })
   }
