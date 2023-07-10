@@ -59,7 +59,6 @@ keyboardEvent.events.on('keyDown', (data) => {
     case "A":
 			patch.add('op', testOp)
     break;
-    default:
   }
 })
 
@@ -245,7 +244,7 @@ const UI = {
 		},
 		
 		handleKeys(key, down, mod) {
-			console.log(key, down, mod)
+			
 			switch (key) {
 				case 87: // W
 				case 265: // up

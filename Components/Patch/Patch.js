@@ -5,7 +5,7 @@ const replaceAll = require("replaceall");
 const EventEmitter = require('node:events');
 const emitMessage = new EventEmitter();
 const fs = require('fs')
-
+const utf8Array2Str = require('utf8array2str');
 
 // webrtc datachannel setup
 const SignalingChannel = require("../../lib/signaling-channel");
@@ -87,7 +87,7 @@ module.exports = class Patch{
         })
         this.dirty.vr = true
         this.dirty.audio.graph = true
-
+        this.updatePeers(this.docId)
       break;
   
       case 'op':
@@ -196,6 +196,8 @@ module.exports = class Patch{
      
         this.dirty.vr = true
         this.dirty.audio.graph = true
+        this.updatePeers(this.docId)
+        
       break
 
       case 'op':
@@ -228,9 +230,8 @@ module.exports = class Patch{
 
         this.dirty.vr = true;
         this.dirty.audio.graph = true;
-      break
-      case 'steve':
-        console.log('hooosa')
+
+        this.updatePeers(this.docId)
       break
     }
   }
@@ -245,6 +246,7 @@ module.exports = class Patch{
           doc[posID].position = payload[1]
         }) 
         this.dirty.vr = true
+        this.updatePeers(this.docId)
       break;
 
       case 'quat':
@@ -253,6 +255,7 @@ module.exports = class Patch{
           doc[quatID].quaternion = payload[1]
         }) 
         this.dirty.vr = true
+        this.updatePeers(this.docId)
       break;
 
       case 'param':
@@ -272,7 +275,7 @@ module.exports = class Patch{
 
         this.dirty.vr = true
         this.dirty.audio.param = true
-
+        this.updatePeers(this.docId)
       break 
     }
   }
@@ -360,6 +363,7 @@ module.exports = class Patch{
     // set patch dirty flag for animation Loop
     this.dirty.vr = true
     this.dirty.audio.graph = true
+    this.updatePeers(this.docId)
   }
   ensureSpeaker(hmd){
     let ids = Object.keys(this.document)
@@ -401,6 +405,7 @@ module.exports = class Patch{
       this.dirty.vr = true
       this.dirty.audio.graph = true
       this.dirty.speaker = false
+      this.updatePeers(this.docId)
     }    
   }
 
@@ -417,6 +422,7 @@ module.exports = class Patch{
   }
 
   receiveSyncMessages(msg){
+    
     let syncMsg = JSON.parse(msg)
     switch(syncMsg.arg){
       case 'signallingMessage':
@@ -436,16 +442,18 @@ module.exports = class Patch{
 
       case 'syncMessage':
         delete syncMsg.arg
-        console.log('syncMsg', syncMsg)
         let syncMessageArray = new Uint8Array(syncMsg.syncMsgArray);
         const [nextDoc, nextSyncState, patch] = Automerge.receiveSyncMessage(
           this.document,
           this.syncStates[syncMsg.peerId][this.docId] || Automerge.initSyncState(),
           syncMessageArray,
         )
+
         this.document = nextDoc
         this.syncStates[syncMsg.peerId] = { ...this.syncStates[syncMsg.peerId], [this.docId]: nextSyncState }
-      
+        this.dirty.audio.graph = true
+        this.dirty.audio.param = true
+        this.dirty.vr = true
         this.updatePeers(this.docId)
 
       break;
@@ -454,26 +462,22 @@ module.exports = class Patch{
     }
   }
   // method to update all peers using automerge sync protocol
-  updatePeers(docId){
-    console.log('syncStates', this.syncStates)
-
+  updatePeers(docId, editDetails){
     Object.entries(this.syncStates).forEach(([peer, syncState]) => {
       const [nextSyncState, syncMessage] = Automerge.generateSyncMessage(
         this.document,
         syncState[docId] || Automerge.initSyncState(),
       )
-      console.log('\n\nthisPeerID', this.PEER_ID, '\n\npeerID', peer, '\n\nsyncMessage', syncMessage, '\n\nnextSyncState', nextSyncState)
       this.syncStates[peer] = { ...this.syncStates[peer], [docId]: nextSyncState }
       if (syncMessage && this.webRTCManager.peers[peer]) {
-        console.log('syndMessage', syncMessage)
-
+        
         // convert sync message array to string
         let syncMsgArray = Array.from(syncMessage)
-        console.log(syncMsgArray)
-        this.webRTCManager.peers[peer].dataChannel.send(JSON.stringify({arg: 'syncMessage',
+        // send new sync message to peer
+        this.webRTCManager.peers[peer].dataChannel.send(JSON.stringify({arg: 'syncMessage', editDetails,
           docId, peerId: this.PEER_ID, target: peer, syncMsgArray,
         }))
-        console.log('here')
+        
       }
     })
   }

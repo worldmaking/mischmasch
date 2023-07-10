@@ -1,10 +1,16 @@
-Run with default settings
+## michael needs to add to pre-install script:
+
+```shell
+npm install @mapbox/node-pre-gyp --save
+```
+
+## Run with default settings
 
 ```shell
 npm start
 ```
 
-CLI flags:
+## CLI flags:
 
 --username *input a string with no spaces for player name. defaults to system username*
 
@@ -16,3 +22,14 @@ i.e Load the *funzo* scene at start
 ```shell
 npm start --patchFile funzo
 ```
+
+
+## Mouse & Keyboard Controls
+
+### Navigation
+Forward: W
+Back: S
+Left: A
+Right: D
+Turn Left: Left Arrow
+Turn Right: Right Arrow

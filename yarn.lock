@@ -767,6 +767,11 @@ internal-slot@^1.0.4:
     has "^1.0.3"
     side-channel "^1.0.4"
 
+into-stream@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.npmjs.org/into-stream/-/into-stream-8.0.0.tgz"
+  integrity sha512-iQ+qehnm8loIU7DNaz7MiJCEAR6FIRd12AWZaXRINlR9nlQgunxsmY7/0GWq5mQ8JZqCyv2pBLCB5G5TUJGX/w==
+
 ip-regex@^4.0.0:
   version "4.3.0"
   resolved "https://registry.npmjs.org/ip-regex/-/ip-regex-4.3.0.tgz"
@@ -1548,6 +1553,11 @@ to-readable-stream@^1.0.0:
   resolved "https://registry.npmjs.org/to-readable-stream/-/to-readable-stream-1.0.0.tgz"
   integrity sha512-Iq25XBt6zD5npPhlLVXGFN3/gyR2/qODcKNNyTMd4vbm39HUaOiAM4PMq0eMVC/Tkxz+Zjdsc55g9yyz+Yq00Q==
 
+to-readable-stream@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.npmjs.org/to-readable-stream/-/to-readable-stream-4.0.0.tgz"
+  integrity sha512-b39z6yUzkmzZXTNlKZoLo1kIPXJDioGSMMX4ydudA3XX8M/AjcsPdJRVz2zbrGZoekhkMlz6qYok2iVdlMH/yQ==
+
 toidentifier@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/toidentifier/-/toidentifier-1.0.1.tgz"
@@ -1593,6 +1603,11 @@ username@^5.1.0:
   dependencies:
     execa "^1.0.0"
     mem "^4.3.0"
+
+utf8array2str@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/utf8array2str/-/utf8array2str-1.0.0.tgz"
+  integrity sha512-KceI5Bc8IAqrs2yv6rKp3O849Qbq3vifKESlhYm+smepYJp+XujwukeRTwfi4KtKfPXFarXj9mI5TS8T+hmWeQ==
 
 util-deprecate@^1.0.1:
   version "1.0.2"
