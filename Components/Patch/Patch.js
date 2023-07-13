@@ -13,7 +13,9 @@ const WebrtcManager = require("../../lib/webrtc-manager");
 const dataChannelHandler = require("../../lib/webrtc-handlers/data-channel-handler");
 // CONSTANTS
 const TOKEN = 'SIGNALING123';
-const SIGNALING_SERVER_URL = 'http://localhost:3030'
+// const SIGNALING_SERVER_URL = 'http://localhost:3030'
+
+const SIGNALING_SERVER_URL = 'https://mischmasch-signalling-11bb45c31d65.herokuapp.com/'
 
 /** @type {string} - can for example be 'admin' | 'vehicle' | 'robot'  depending on you application*/
 const PEER_TYPE = "admin";
