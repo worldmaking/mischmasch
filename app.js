@@ -23,9 +23,9 @@ let testOp = cycle.retrocycle(JSON.parse(fs.readFileSync(path.join(__dirname, 'd
 // if user entered their name, use that, otherwise use system username
 flags.defineString('username', username.sync() + '_' + generateName().dashed);
 // default to running vr. if --disableVR set to true, run with mouse n keys
-flags.defineBoolean('disableVR');
+flags.defineBoolean('disablevr');
 // default to new blank scene. if --patchFile contains the name of a file in /userData, load that file. 
-flags.defineString('patchFile', 'new')
+flags.defineString('patchfile', 'new')
 flags.parse()
 
 const nodeglpath = "../node-gles3"
@@ -68,7 +68,7 @@ function prettyPrint(object){
 
 let USEVR;
 
-if(process.platform === "win32" && !flags.get('disableVR')){
+if(process.platform === "win32" && !flags.get('disablevr')){
 	USEVR = true
 } else {
 	USEVR = false
@@ -2457,12 +2457,12 @@ async function init() {
 	animate()
 
 	// load a scene on start?
- 	if(flags.get('patchFile') == 'new'){
+ 	if(flags.get('patchfile') == 'new'){
 		let startPatch = {}
 		patch.load(startPatch)
 	}
 	else {
-		let file = `userData/${flags.get('patchFile')}.json`
+		let file = `userData/${flags.get('patchfile')}.json`
 		let startPatch = JSON.parse(fs.readFileSync(path.join(__dirname, file)))
 		patch.load(startPatch)
 	}
