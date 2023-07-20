@@ -281,47 +281,34 @@ module.exports = {
 	updateGraph(doc) {
 		try {
 			if (FAIL) return;
-			//console.log("doc", JSON.stringify(doc, null, "  "))
+			// check for feedback connections, if any, return as an array
 			let feedback = docHasFeedback(doc)
 			if (feedback[0]) {
-				console.error("doc has feedback")
 				// create ssd object(s), connect them to the in/outs of the feedback path(s), add them to doc
 				for(let i=0; i< feedback[1].length; i++){
 					let fb = feedback[1][i]
-					// console.log(fb)
 					let ssd = new FeedbackCable(fb.dst, fb.input, fb.type)
-					// console.log(ssd)
+
 					// add ssd to doc
 					doc[ssd.id] ={}
 					doc[ssd.id] = ssd.cable
-					// add ssd as output connection to the src op in doc
-					// loop through outputs and find the node name
+
+					// loop through outputs and find the src output node so we can add the fb cable as a new output connection
 					for ( let j = 0; j< doc[fb.src].outputs.length; j++){
 						let outNode = doc[fb.src].outputs[j]
 						if(Object.hasOwn(outNode.connections, fb.dst)){
 							// delete the original connection
 							delete outNode.connections[fb.dst]
-
 							// replace it with our fb cable connection
 							doc[fb.src].outputs[j].connections[ssd.id] = { }
-							doc[fb.src].outputs[j].connections[ssd.id]['value'] = 'cable'
-						}
-						
-					}
-
-					// console.log(doc)
-
-					
+							doc[fb.src].outputs[j].connections[ssd.id][ssd.cable.inputs[1].name] = 'cable'
+						}			
+					}		
 				}
-				// console.log(doc)
-				fs.writeFileSync('fb.json', JSON.stringify(doc, undefined, 2))
 				// return
 			}
 			
 			let operations = doc2operations(doc)
-
-			//console.log("operations", JSON.stringify(operations, null, "  "))
-		
 
 			worker.postMessage({ cmd: "graph", operations })
 

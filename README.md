@@ -18,6 +18,9 @@ npm start
 
 --patchFile *enter name of a patch file found in /userData (don't include .json extension). default: blank scene*
 
+--devmode *keyboard events can modify the graph (default: off)*
+
+
 i.e Load the *funzo* scene at start
 ```shell
 npm start --patchFile funzo

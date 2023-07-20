@@ -25,6 +25,8 @@ flags.defineString('username', username.sync() + '_' + generateName().dashed);
 // default to running vr. if --disableVR set to true, run with mouse n keys
 flags.defineBoolean('disablevr');
 // default to new blank scene. if --patchFile contains the name of a file in /userData, load that file. 
+// if --devmode entered (default false), keyboard events can modify the graph 
+flags.defineBoolean('devmode');
 flags.defineString('patchfile', 'new')
 flags.parse()
 
@@ -54,12 +56,15 @@ const PEER_ID = flags.get('username')
 let patch = new Patch(PEER_ID)
 
 
+	
 keyboardEvent.events.on('keyDown', (data) => {
-  switch(data){
-    case "A":
-			patch.add('op', testOp)
-    break;
-  }
+	if(flags.get('devmode')){
+		switch(data){
+			case "A":
+				patch.add('op', testOp)
+			break;
+		}
+	}
 })
 
 function prettyPrint(object){
