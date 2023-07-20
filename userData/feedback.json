@@ -1,0 +1,175 @@
+{
+  "08b47f807ecb4c6da50f883ab9f05f22": {
+    "category": "speaker",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "inlet",
+          "range": [
+            -1,
+            1
+          ]
+        },
+        "index": 0,
+        "kind": "inlet",
+        "name": "audio"
+      }
+    ],
+    "name": "speaker",
+    "outputs": [],
+    "position": [
+      -0.9731054306030273,
+      1.4882835149765015,
+      -0.8715433478355408
+    ],
+    "quaternion": [
+      -0.22191412873643246,
+      0.5373903859580326,
+      0.21893395575937835,
+      0.7836029436142239
+    ],
+    "uuid": "08b47f807ecb4c6da50f883ab9f05f22"
+  },
+  "21073a74b9b64ac6b2d79ae7e0bb2d1f": {
+    "category": "source",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "knob",
+          "range": [
+            -10,
+            7
+          ],
+          "value": 0
+        },
+        "index": 0,
+        "kind": "knob",
+        "name": "freq",
+        "range": [
+          -10,
+          7
+        ],
+        "trim": "add",
+        "value": 0
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "knob",
+          "range": [
+            0,
+            1
+          ],
+          "value": 0.5
+        },
+        "index": 1,
+        "kind": "knob",
+        "name": "width",
+        "range": [
+          0,
+          1
+        ],
+        "trim": "add",
+        "value": 0.5
+      }
+    ],
+    "name": "train",
+    "outputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {
+          "08b47f807ecb4c6da50f883ab9f05f22": {
+            "audio": "cable"
+          },
+          "4c39b8a07ad54b049f99a6820b0d013d": {
+            "freq": "cable"
+          }
+        },
+        "name": "out1"
+      }
+    ],
+    "position": [
+      -1.0601496770977974,
+      1.404109589041096,
+      -0.44617831707000727
+    ],
+    "quaternion": [
+      0,
+      0.7071067811865475,
+      0,
+      0.7071067811865476
+    ],
+    "uuid": "21073a74b9b64ac6b2d79ae7e0bb2d1f"
+  },
+  "4c39b8a07ad54b049f99a6820b0d013d": {
+    "category": "source",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "knob",
+          "range": [
+            -10,
+            7
+          ],
+          "value": 0
+        },
+        "index": 0,
+        "kind": "knob",
+        "name": "freq",
+        "range": [
+          -10,
+          7
+        ],
+        "trim": "add",
+        "value": 0
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "inlet",
+          "range": [
+            0,
+            1
+          ],
+          "value": 0
+        },
+        "index": 1,
+        "kind": "inlet",
+        "name": "reset"
+      }
+    ],
+    "name": "cycle",
+    "outputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {
+          "21073a74b9b64ac6b2d79ae7e0bb2d1f": {
+            "freq": "cable"
+          }
+        },
+        "name": "sinusoid"
+      }
+    ],
+    "position": [
+      -1.174831748008728,
+      1.7946621179580688,
+      -0.3505764901638031
+    ],
+    "quaternion": [
+      0.07133083330147283,
+      0.7352801471657078,
+      -0.0951293482608725,
+      0.6672520209383382
+    ],
+    "uuid": "4c39b8a07ad54b049f99a6820b0d013d"
+  }
+}

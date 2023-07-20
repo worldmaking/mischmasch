@@ -44,7 +44,7 @@ module.exports = class Palette{
         continue
       }
 
-      if(opName == 'poke' || opName == 'data' || opName == 'peek' || opName == 'history'){
+      if(opName == 'poke' || opName == 'data' || opName == 'peek'){
         //TODO these ops exist in the mischmaschOps.json, but require named buffers and are not within scope of nuit blanche
         this.opsList.splice(this.opsList.indexOf(opName), 0)
         continue

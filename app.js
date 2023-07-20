@@ -1812,8 +1812,8 @@ function makeSceneGraph(renderer, gl) {
 					vec4.copy(obj.i_color, props.kind == "inlet" ? [0.5, 0.5, 0.5, 1] : [0.25, 0.25, 0.25, 1]);
 					obj.dim = [1/2, 1/2, -UI_DEPTH];
 					obj.cablingKind = (props.kind == "inlet") ? "to" : "from";
-					if (props.history) {
-						// render history outs differently:
+					if (props.kind == 'buffer') {
+						// render history buffer variable differently:
 						obj.i_shape[0] = SHAPE_BOX;
 					}
 					this.addLabel(obj, label_text, text_pos, text_scale);
