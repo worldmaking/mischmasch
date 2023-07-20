@@ -307,9 +307,9 @@ module.exports = {
 				}
 				// return
 			}
-			
+			fs.writeFileSync('fb.json', JSON.stringify(doc, undefined, 2))
 			let operations = doc2operations(doc)
-
+			console.log(operations)
 			worker.postMessage({ cmd: "graph", operations })
 
 		} catch (e) {
