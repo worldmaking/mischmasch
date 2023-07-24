@@ -87,7 +87,7 @@ parentPort.on("message", (msg) => {
 
 					msg.operations.forEach(op => {
 
-						//console.log("op", op.name)
+						// console.log("op", op.name, op.inputs)
 
 						let inputs = op.inputs.map(name => typeof name == "number" ? name : values[name] != undefined ? values[name] : name)
 						if (op.name == "speaker") {
@@ -96,14 +96,16 @@ parentPort.on("message", (msg) => {
 						// } else if (op.name == "history") {
 						// 	console.log("history", op)
 
-						} else if (genish[op.name]) {
+						} 
+						
+						else if (genish[op.name]) {
 							makeUID(op.uuid)
 
 
 							let outputs = genish[op.name].apply(genish, inputs)
 
 
-							//if (op.name == "history") console.log("op", op.name, op, outputs)
+							// if (op.name == "history") console.log("op", op.name, op, outputs)
 
 							// store outputs:
 							if (Array.isArray(outputs)) {

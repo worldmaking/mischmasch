@@ -156,7 +156,6 @@ function doc2operations(doc) {
 				// for any op that we used, add it to the chain:
 				if (memo[conn.src]) {
 					// if we have already generated this object, this must be a history connection
-					console.log("feedback loop", conn)
 
 					// // at this point, we need to add a history object
 					// // and replace this cable with two cables
@@ -309,7 +308,6 @@ module.exports = {
 			}
 			fs.writeFileSync('fb.json', JSON.stringify(doc, undefined, 2))
 			let operations = doc2operations(doc)
-			console.log(operations)
 			worker.postMessage({ cmd: "graph", operations })
 
 		} catch (e) {

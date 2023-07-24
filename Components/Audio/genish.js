@@ -556,7 +556,9 @@
       history = require('./history.js'),
       mul = require('./mul.js'),
       sub = require('./sub.js');
-  
+
+      const fs = require('fs')
+      // fs.writeFileSync('historyDef.txt', history)
   module.exports = function () {
       var decayTime = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 44100;
   
@@ -2162,6 +2164,8 @@
             input = input.graph;
           }
           var code = input.gen();
+
+          
           //if( code.indexOf( 'Object' ) > -1 ) console.log( 'bad input:', input, code )
   
           if (Array.isArray(code)) {
