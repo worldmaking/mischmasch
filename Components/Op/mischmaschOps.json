@@ -519,7 +519,7 @@
         "inputs": {},
         "outputs": {}
     },
-    "history": {
+    "ssd": {
         "classification": "delay",
         "inputs": {
             "name": {

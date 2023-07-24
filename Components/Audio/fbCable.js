@@ -44,7 +44,7 @@ module.exports = class FeedbackCable{
           "name": "value"
         }
       ],
-      "name": "history",
+      "name": "ssd",
       "outputs": [
         {
           "_props": {
