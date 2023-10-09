@@ -2267,7 +2267,7 @@ function animate() {
 		
 		localGraph = patch.rebuild()
 		fs.writeFileSync('userData/graph.json', JSON.stringify(localGraph, null, 2))
-
+		console.log('rebuild vr scene')
 		mainScene.rebuild(localGraph)
 		patch.dirty.vr = false
 	}

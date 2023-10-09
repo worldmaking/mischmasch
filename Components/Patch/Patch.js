@@ -89,7 +89,7 @@ module.exports = class Patch{
         })
         this.dirty.vr = true
         this.dirty.audio.graph = true
-        this.updatePeers(this.docId)
+        this.updatePeers(this.docId, 'add cable')
       break;
   
       case 'op':
@@ -155,7 +155,7 @@ module.exports = class Patch{
         // set patch dirty flag for animation Loop
         this.dirty.vr = true
         this.dirty.audio.graph = true
-        this.updatePeers(this.docId)
+        this.updatePeers(this.docId, `add op ${op.name}`)
         // this.webRTCSend('add', 'op')
         return op
       break
@@ -198,7 +198,7 @@ module.exports = class Patch{
      
         this.dirty.vr = true
         this.dirty.audio.graph = true
-        this.updatePeers(this.docId)
+        this.updatePeers(this.docId, 'remove cable')
         
       break
 
@@ -233,7 +233,7 @@ module.exports = class Patch{
         this.dirty.vr = true;
         this.dirty.audio.graph = true;
 
-        this.updatePeers(this.docId)
+        this.updatePeers(this.docId, `remove op ${op.name}`)
       break
     }
   }
@@ -248,7 +248,7 @@ module.exports = class Patch{
           doc[posID].position = payload[1]
         }) 
         this.dirty.vr = true
-        this.updatePeers(this.docId)
+        this.updatePeers(this.docId, 'update position')
       break;
 
       case 'quat':
@@ -257,7 +257,7 @@ module.exports = class Patch{
           doc[quatID].quaternion = payload[1]
         }) 
         this.dirty.vr = true
-        this.updatePeers(this.docId)
+        this.updatePeers(this.docId, 'update quaternion')
       break;
 
       case 'param':
@@ -277,7 +277,7 @@ module.exports = class Patch{
 
         this.dirty.vr = true
         this.dirty.audio.param = true
-        this.updatePeers(this.docId)
+        this.updatePeers(this.docId, 'update param value')
       break 
     }
   }
@@ -365,7 +365,7 @@ module.exports = class Patch{
     // set patch dirty flag for animation Loop
     this.dirty.vr = true
     this.dirty.audio.graph = true
-    this.updatePeers(this.docId)
+    this.updatePeers(this.docId, 'load patch file')
   }
   ensureSpeaker(hmd){
     let ids = Object.keys(this.document)
@@ -407,7 +407,7 @@ module.exports = class Patch{
       this.dirty.vr = true
       this.dirty.audio.graph = true
       this.dirty.speaker = false
-      this.updatePeers(this.docId)
+      this.updatePeers(this.docId, 'ensure speaker')
     }    
   }
 
@@ -455,7 +455,7 @@ module.exports = class Patch{
         this.dirty.audio.graph = true
         this.dirty.audio.param = true
         this.dirty.vr = true
-        this.updatePeers(this.docId)
+        this.updatePeers(this.docId, 'received sync message')
 
       break;
 
@@ -464,6 +464,7 @@ module.exports = class Patch{
   }
   // method to update all peers using automerge sync protocol
   updatePeers(docId, editDetails){
+    console.log('update: ', docId, editDetails)
     Object.entries(this.syncStates).forEach(([peer, syncState]) => {
       const [nextSyncState, syncMessage] = Automerge.generateSyncMessage(
         this.document,
