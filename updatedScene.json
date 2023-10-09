@@ -1,0 +1,103 @@
+{
+  "36cb2c46879e44c8815d478a91118569": {
+    "category": "speaker",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "inlet",
+          "range": [
+            -1,
+            1
+          ]
+        },
+        "index": 0,
+        "kind": "inlet",
+        "name": "audio"
+      }
+    ],
+    "name": "speaker",
+    "outputs": [],
+    "position": [
+      0.0007461756467819214,
+      1.6706634759902954,
+      -1.2494720220565796
+    ],
+    "quaternion": [
+      -0.1245964709687886,
+      0.5278284709728983,
+      0.06794909803041696,
+      0.8374101377074432
+    ],
+    "uuid": "36cb2c46879e44c8815d478a91118569"
+  },
+  "c016e0bdfcdb4842b3312a194437eafb": {
+    "category": "source",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "knob",
+          "range": [
+            -10,
+            7
+          ],
+          "value": 0
+        },
+        "index": 0,
+        "kind": "knob",
+        "name": "freq",
+        "range": [
+          -10,
+          7
+        ],
+        "trim": "add",
+        "value": 0
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "knob",
+          "range": [
+            0,
+            1
+          ],
+          "value": 0.5
+        },
+        "index": 1,
+        "kind": "knob",
+        "name": "width",
+        "range": [
+          0,
+          1
+        ],
+        "trim": "add",
+        "value": 0.5
+      }
+    ],
+    "name": "train",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {},
+        "name": "out1"
+      }
+    ],
+    "position": [
+      -0.8783748745918274,
+      1.747822880744934,
+      -1.1191986799240112
+    ],
+    "quaternion": [
+      0.15180173805266772,
+      0.5429692137017863,
+      -0.09482930551600788,
+      0.820456055094209
+    ],
+    "uuid": "c016e0bdfcdb4842b3312a194437eafb"
+  }
+}

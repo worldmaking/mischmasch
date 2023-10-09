@@ -247,8 +247,10 @@ module.exports = class Patch{
         // prevent updates if op was recently deleted
         this.document = Automerge.change(this.document, 'update position', doc => {
           doc[posID].position = payload[1]
+          console.log(`pos update:\nmodule: ${posID}\nposition: ${payload[1]}`)
         }) 
         this.dirty.vr = true
+        fs.writeFileSync('updatedScene.json', JSON.stringify(this.document, null, 2))
         this.updatePeers(this.docId, 'update position')
       break;
 
@@ -445,6 +447,7 @@ module.exports = class Patch{
 
       case 'syncMessage':
         delete syncMsg.arg
+        console.log('incoming sync type', syncMsg.type)
         let syncMessageArray = new Uint8Array(syncMsg.syncMsgArray);
         const [nextDoc, nextSyncState, patch] = Automerge.receiveSyncMessage(
           this.document,
@@ -456,6 +459,7 @@ module.exports = class Patch{
         this.dirty.audio.graph = true
         this.dirty.audio.param = true
         this.dirty.vr = true
+        fs.writeFileSync('updatedDocument.json', JSON.stringify(this.document, null, 2))
         this.rebuild()
         // also send Audio.updateGraph(this.document)
         // this.AUDIO.updateGraph(this.document)
@@ -468,7 +472,6 @@ module.exports = class Patch{
   }
   // method to update all peers using automerge sync protocol
   updatePeers(docId, editDetails){
-    console.log('update: ', docId, editDetails)
     Object.entries(this.syncStates).forEach(([peer, syncState]) => {
       const [nextSyncState, syncMessage] = Automerge.generateSyncMessage(
         this.document,
@@ -480,7 +483,7 @@ module.exports = class Patch{
         // convert sync message array to string
         let syncMsgArray = Array.from(syncMessage)
         // send new sync message to peer
-        this.webRTCManager.peers[peer].dataChannel.send(JSON.stringify({arg: 'syncMessage', editDetails,
+        this.webRTCManager.peers[peer].dataChannel.send(JSON.stringify({arg: 'syncMessage', type: editDetails,
           docId, peerId: this.PEER_ID, target: peer, syncMsgArray,
         }))
         

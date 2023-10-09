@@ -7,9 +7,9 @@ npm install @mapbox/node-pre-gyp --save
 ## Run with default settings
 
 ```shell
-npm start
+node app.js
 ```
-
+**Note: don't run with 'npm start' as the startup flags won't get passed**
 ## CLI flags:
 
 --username *input a string with no spaces for player name. defaults to system username*
