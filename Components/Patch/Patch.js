@@ -22,8 +22,9 @@ const PEER_TYPE = "admin";
 
 
 module.exports = class Patch{
-  constructor(PEER_ID){
+  constructor(PEER_ID, audioEngine){
     this.PEER_ID = PEER_ID
+    this.AUDIO = audioEngine
     // versioning     
     this.document = Automerge.init()
     this.docId = 'doc1'
@@ -233,7 +234,7 @@ module.exports = class Patch{
         this.dirty.vr = true;
         this.dirty.audio.graph = true;
 
-        this.updatePeers(this.docId, `remove op ${op.name}`)
+        this.updatePeers(this.docId, `remove op ${opKind}`)
       break
     }
   }
@@ -455,6 +456,9 @@ module.exports = class Patch{
         this.dirty.audio.graph = true
         this.dirty.audio.param = true
         this.dirty.vr = true
+        this.rebuild()
+        // also send Audio.updateGraph(this.document)
+        // this.AUDIO.updateGraph(this.document)
         this.updatePeers(this.docId, 'received sync message')
 
       break;
