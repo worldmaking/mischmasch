@@ -540,12 +540,59 @@ const UI = {
 				
 				// apply hand pose to the dragged object:
 				let m = mat4.multiply(mat4.create(), hand.mat, hand.stateData.objectRelativeMat);
+				// handle translation and scaling ourselves so that object isn't being modified (we want the pos and quat to be written to patch.document, not directly)
+				// get translation of position
 				let newPos = [m[12], m[13], m[14]]
-				let newQuat
+				// get rotation of quat
+				let newQuat = [ 0, 0, 0, 0 ]
+				let scaling = [Math.hypot(m[0], m[1], m[2]), Math.hypot(m[4], m[5], m[6]), Math.hypot(m[8], m[9], m[10])]
+				let is1 = 1 / scaling[0];
+				let is2 = 1 / scaling[1];
+				let is3 = 1 / scaling[2];
+				let sm11 = m[0] * is1;
+				let sm12 = m[1] * is2;
+				let sm13 = m[2] * is3;
+				let sm21 = m[4] * is1;
+				let sm22 = m[5] * is2;
+				let sm23 = m[6] * is3;
+				let sm31 = m[8] * is1;
+				let sm32 = m[9] * is2;
+				let sm33 = m[10] * is3;
+				let trace = sm11 + sm22 + sm33;
+				let S = 0;
+
+				if (trace > 0) {
+					S = Math.sqrt(trace + 1.0) * 2;
+					newQuat[3] = 0.25 * S;
+					newQuat[0] = (sm23 - sm32) / S;
+					newQuat[1] = (sm31 - sm13) / S;
+					newQuat[2] = (sm12 - sm21) / S;
+				} else if (sm11 > sm22 && sm11 > sm33) {
+					S = Math.sqrt(1.0 + sm11 - sm22 - sm33) * 2;
+					newQuat[3] = (sm23 - sm32) / S;
+					newQuat[0] = 0.25 * S;
+					newQuat[1] = (sm12 + sm21) / S;
+					newQuat[2] = (sm31 + sm13) / S;
+				} else if (sm22 > sm33) {
+					S = Math.sqrt(1.0 + sm22 - sm11 - sm33) * 2;
+					newQuat[3] = (sm31 - sm13) / S;
+					newQuat[0] = (sm12 + sm21) / S;
+					newQuat[1] = 0.25 * S;
+					newQuat[2] = (sm23 + sm32) / S;
+				} else {
+					S = Math.sqrt(1.0 + sm33 - sm11 - sm22) * 2;
+					newQuat[3] = (sm12 - sm21) / S;
+					newQuat[0] = (sm31 + sm13) / S;
+					newQuat[1] = (sm23 + sm32) / S;
+					newQuat[2] = 0.25 * S;
+				}
+
+				
+				
 				// mat4.getTranslation(object.pos, m)
 				// mat4.getRotation(object.quat, m)
 				// mat4.getTranslation(newPos, m)
-				mat4.getRotation(object.quat, m)
+				// mat4.getRotation(object.quat, m)
 
 				// check for exit:
 				if (!hand.trigger_pressed) {
@@ -575,7 +622,7 @@ const UI = {
 					
 					
 					patch.update('pos', [object.path, newPos])
-					patch.update('quat', [object.path, object.quat])
+					patch.update('quat', [object.path, newQuat])
 					// propchange!
 					// outgoingDeltas.push(
 					// // 	{ 
