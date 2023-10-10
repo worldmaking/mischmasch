@@ -130,7 +130,11 @@ module.exports = class Patch{
         
         const id = replaceAll('-', '', uuidv4())
         let op = {
-          position: payload.node._props.pos,
+          position: {
+            x: payload.node._props.pos[0],
+            y: payload.node._props.pos[1],
+            z: payload.node._props.pos[2]
+          },
           quaternion: payload.node._props.orient,
           category: payload.node._props.category,
           name: payload.name,
@@ -238,20 +242,17 @@ module.exports = class Patch{
       case 'pos':
         let posID = payload[0].split('_')[1]
 
-        console.log('oldPos', this.document[posID].position[0])
+        console.log('oldPos', this.document[posID].position.x)
 
         // prevent updates if op was recently deleted
         this.document = Automerge.change(this.document, 'update position', doc => {
-          console.log(doc)
-          doc[posID].position[0] = payload[1][0]
-          doc[posID].position[1] = payload[1][1]
-          doc[posID].position[2] = payload[1][2]
+          doc[posID].position.x = payload[1][0]
+          doc[posID].position.y = payload[1][1]
+          doc[posID].position.z = payload[1][2]
         }) 
         this.dirty.vr = true
        
-        fs.writeFileSync('updatedScene.json', JSON.stringify(this.document, null, 2))
-
-        console.log(payload[1][0], this.document[posID].position[0])
+        console.log('incoming position value:', payload[1][0], '\nupdated value in document:', this.document[posID].position.x)
         this.updatePeers(this.docId, 'update position')
       break;
 
@@ -291,6 +292,8 @@ module.exports = class Patch{
       nodes:{},
       arcs: []
     }
+
+    
     // prettyPrint(this.document)
     let ops = Object.keys(this.document)
 
@@ -302,7 +305,7 @@ module.exports = class Patch{
         _props: {
           kind: op.name,
           category: op.category,
-          pos: op.position,
+          pos: [op.position.x, op.position.y, op.position.z],
           orient: op.quaternion,
         },
         // pos: op.position,
@@ -387,7 +390,12 @@ module.exports = class Patch{
       let pos = [hmd.pos[0], hmd.pos[1], hmd.pos[2]-0.5]
       const id = replaceAll('-', '', uuidv4())
       let op = {
-        position: pos,
+        position: {
+          x: pos[0],
+          y: pos[1],
+          z: pos[2]
+        },
+        
         quaternion: hmd.orient,
         category: 'speaker',
         name: 'speaker',
@@ -417,17 +425,17 @@ module.exports = class Patch{
     }    
   }
 
-  webRTCSend(payload){
-    // eventually we'll involve automerge. but for now, just send the payload
-    for (let peer in this.webRTCManager.peers) {
-      this.webRTCManager.peers[peer].dataChannel.send(JSON.stringify({
-        edit: 'add',
-        type: 'op',
-        sync: op
-      }))
+  // webRTCSend(payload){
+  //   // eventually we'll involve automerge. but for now, just send the payload
+  //   for (let peer in this.webRTCManager.peers) {
+  //     this.webRTCManager.peers[peer].dataChannel.send(JSON.stringify({
+  //       edit: 'add',
+  //       type: 'op',
+  //       sync: op
+  //     }))
 
-    }
-  }
+  //   }
+  // }
 
   // from the automerge sync protocol
   receiveSyncMessages(msg){
