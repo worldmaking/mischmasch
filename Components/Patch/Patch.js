@@ -135,7 +135,13 @@ module.exports = class Patch{
             y: payload.node._props.pos[1],
             z: payload.node._props.pos[2]
           },
-          quaternion: payload.node._props.orient,
+          quaternion: { 
+            x: payload.node._props.orient[0],
+            y: payload.node._props.orient[1],
+            z: payload.node._props.orient[2],
+            w: payload.node._props.orient[3],
+            
+          },
           category: payload.node._props.category,
           name: payload.name,
           uuid: id,
@@ -259,7 +265,11 @@ module.exports = class Patch{
       case 'quat':
         let quatID = payload[0].split('_')[1]
         this.document = Automerge.change(this.document, 'update quaternion', doc => {
-          doc[quatID].quaternion = payload[1]
+          doc[quatID].quaternion.x = payload[1][0]
+          doc[quatID].quaternion.y = payload[1][1]
+          doc[quatID].quaternion.z = payload[1][2]
+          doc[quatID].quaternion.w = payload[1][3]
+
         }) 
         this.dirty.vr = true
         this.updatePeers(this.docId, 'update quaternion')
@@ -306,7 +316,7 @@ module.exports = class Patch{
           kind: op.name,
           category: op.category,
           pos: [op.position.x, op.position.y, op.position.z],
-          orient: op.quaternion,
+          orient: [op.quaternion.x, op.quaternion.y, op.quaternion.z, op.quaternion.w],
         },
         // pos: op.position,
         // orient: op.quaternion
@@ -396,7 +406,12 @@ module.exports = class Patch{
           z: pos[2]
         },
         
-        quaternion: hmd.orient,
+        quaternion: {
+          x: hmd.orient[0],
+          y: hmd.orient[1],
+          z: hmd.orient[2],
+          w: hmd.orient[3]
+        },
         category: 'speaker',
         name: 'speaker',
         uuid: id,
