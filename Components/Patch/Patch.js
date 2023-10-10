@@ -471,7 +471,6 @@ module.exports = class Patch{
         this.dirty.audio.graph = true
         this.dirty.audio.param = true
         this.dirty.vr = true
-        fs.writeFileSync('updatedDocument.json', JSON.stringify(this.document, null, 2))
         this.rebuild()
         // also send Audio.updateGraph(this.document)
         // this.AUDIO.updateGraph(this.document)
