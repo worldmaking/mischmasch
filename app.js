@@ -85,12 +85,12 @@ let gensym = (function() {
     return function (prefix="node") {
         //return `${prefix}_${nodeid++}_${userPose.id}`
 		//return `${prefix}_${nodeid++}`
-			console.log(prefix)
 		return `${prefix}_${Date.now()}`	
     }
 })();
 
 function hashCode(str) { // java String#hashCode
+	
 	let hash = 0;
 	for (let i = 0; i < str.length; i++) {
 			hash = str.charCodeAt(i) + ((hash << 5) - hash);
@@ -540,7 +540,11 @@ const UI = {
 				
 				// apply hand pose to the dragged object:
 				let m = mat4.multiply(mat4.create(), hand.mat, hand.stateData.objectRelativeMat);
-				mat4.getTranslation(object.pos, m)
+				let newPos = object.pos
+				let newQuat
+				// mat4.getTranslation(object.pos, m)
+				// mat4.getRotation(object.quat, m)
+				mat4.getTranslation(newPos, m)
 				mat4.getRotation(object.quat, m)
 
 				// check for exit:
@@ -568,7 +572,9 @@ const UI = {
 					hand.state = "default";
 				} else {
 					// send propchange data to patch
-					patch.update('pos', [object.path, object.pos])
+					console.log('app.js object.pos', object.pos)
+					
+					// patch.update('pos', [object.path, newPos])
 					patch.update('quat', [object.path, object.quat])
 					// propchange!
 					// outgoingDeltas.push(
@@ -2262,10 +2268,8 @@ function animate() {
 
 	// rebuild VR localGraph
 	if(patch.dirty.vr == true){
-		fs.writeFileSync('userData/document.json', JSON.stringify(patch.document, null, 2))
 		
 		localGraph = patch.rebuild()
-		fs.writeFileSync('userData/graph.json', JSON.stringify(localGraph, null, 2))
 		console.log('rebuild vr scene')
 		mainScene.rebuild(localGraph)
 		patch.dirty.vr = false

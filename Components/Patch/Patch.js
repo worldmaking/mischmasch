@@ -172,7 +172,7 @@ module.exports = class Patch{
         let outputs = this.document[srcID].outputs 
         for(let i=0; i< outputs.length; i++){
           if(outputs[i].connections[destID]){
-            console.log('connections', outputs[i].connections[destID])
+            
             // update document in automerge
             this.document = Automerge.change(this.document, 'remove cable', doc => {
               delete doc[srcID].outputs[i].connections[destID][destJack]
@@ -237,13 +237,19 @@ module.exports = class Patch{
     switch(item){
       case 'pos':
         let posID = payload[0].split('_')[1]
+
+        console.log('oldPos', this.document[posID].position)
+
         // prevent updates if op was recently deleted
         this.document = Automerge.change(this.document, 'update position', doc => {
+          
           doc[posID].position = payload[1]
-          console.log(`pos update:\nmodule: ${posID}\nposition: ${payload[1]}`)
         }) 
         this.dirty.vr = true
+       
         fs.writeFileSync('updatedScene.json', JSON.stringify(this.document, null, 2))
+
+        console.log(payload[1], this.document[posID].position)
         this.updatePeers(this.docId, 'update position')
       break;
 
@@ -278,6 +284,7 @@ module.exports = class Patch{
     }
   }
   rebuild(){
+  
     let graph = {
       nodes:{},
       arcs: []
@@ -295,9 +302,10 @@ module.exports = class Patch{
           category: op.category,
           pos: op.position,
           orient: op.quaternion,
-        }
+        },
+        // pos: op.position,
+        // orient: op.quaternion
       }
-      let controlName = null; // used if there is a control (param) op
       
       // loop over inputs
       for(let j = 0; j<op.inputs.length; j++){
@@ -419,6 +427,7 @@ module.exports = class Patch{
     }
   }
 
+  // from the automerge sync protocol
   receiveSyncMessages(msg){
     
     let syncMsg = JSON.parse(msg)
@@ -437,7 +446,7 @@ module.exports = class Patch{
         //   }
         // }
       break;
-
+      // these are sync messages sent by other peers
       case 'syncMessage':
         delete syncMsg.arg
         console.log('incoming sync type', syncMsg.type)
@@ -456,15 +465,17 @@ module.exports = class Patch{
         this.rebuild()
         // also send Audio.updateGraph(this.document)
         // this.AUDIO.updateGraph(this.document)
-        this.updatePeers(this.docId, 'received sync message')
+        this.updatePeers(this.docId, 'automerge sync message')
 
       break;
 
       default: console.log(`message from datachannel without matching switch case in Patch.js:receiveSyncMessages() ${msg}`)
     }
   }
+
   // method to update all peers using automerge sync protocol
   updatePeers(docId, editDetails){
+    console.log(`docId ${docId}\neditDetails: ${editDetails}`)
     Object.entries(this.syncStates).forEach(([peer, syncState]) => {
       const [nextSyncState, syncMessage] = Automerge.generateSyncMessage(
         this.document,
@@ -475,6 +486,7 @@ module.exports = class Patch{
         
         // convert sync message array to string
         let syncMsgArray = Array.from(syncMessage)
+        console.log('syncMsgArray', syncMsgArray)
         // send new sync message to peer
         this.webRTCManager.peers[peer].dataChannel.send(JSON.stringify({arg: 'syncMessage', type: editDetails,
           docId, peerId: this.PEER_ID, target: peer, syncMsgArray,
