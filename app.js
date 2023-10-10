@@ -29,7 +29,6 @@ flags.defineString('patchFile', 'new')
 flags.parse()
 
 const nodeglpath = "../node-gles3"
-const rws = require('reconnecting-websocket');
 
 
 const gl = require(path.join(nodeglpath, "gles3.js")),
@@ -51,7 +50,7 @@ const PEER_ID = flags.get('username')
 
 
 
-let patch = new Patch(PEER_ID)
+let patch = new Patch(PEER_ID, Audio)
 
 
 keyboardEvent.events.on('keyDown', (data) => {
