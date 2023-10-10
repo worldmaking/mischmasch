@@ -44,18 +44,11 @@ module.exports = class Patch{
     const channel = new SignalingChannel(PEER_ID, PEER_TYPE, SIGNALING_SERVER_URL, TOKEN);
     const webrtcOptions = { enableDataChannel: true, enableStreams: false, dataChannelHandler };
 
-    let num = 0
-    let docId = this.docId
-    let syncStates = this.syncStates
+
     this.webRTCManager = new WebrtcManager(PEER_ID, PEER_TYPE, channel, webrtcOptions, true, this.syncStates, this.docId, emitMessage);
     channel.connect();
 
-    // this.messaging = this.webRTCManager.signalingMessageHandler
-    // let self = this 
-    // this.messaging.onMessage = (e) =>{
-    //   console.log('received msseg', e)
-      
-    // }
+
     emitMessage.on('msg', e=> this.receiveSyncMessages(e))
 
   }

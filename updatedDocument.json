@@ -1,0 +1,107 @@
+{
+  "118a00e55a794b76b8abbd373c0fe15f": {
+    "category": "speaker",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "inlet",
+          "range": [
+            -1,
+            1
+          ]
+        },
+        "index": 0,
+        "kind": "inlet",
+        "name": "audio"
+      }
+    ],
+    "name": "speaker",
+    "outputs": [],
+    "position": [
+      -0.2960543632507324,
+      1.7530375719070435,
+      -1.1642504930496216
+    ],
+    "quaternion": [
+      -0.15324738812801741,
+      0.14544684420881235,
+      -0.10119448704079712,
+      0.9721728841503361
+    ],
+    "uuid": "118a00e55a794b76b8abbd373c0fe15f"
+  },
+  "5f596c78098140c0938ee7ea1717ad65": {
+    "category": "source",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "knob",
+          "range": [
+            -10,
+            7
+          ],
+          "value": 1.2949820392439495
+        },
+        "index": 0,
+        "kind": "knob",
+        "name": "freq",
+        "range": [
+          -10,
+          7
+        ],
+        "trim": "add",
+        "value": 1.2949820392439495
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "knob",
+          "range": [
+            0,
+            1
+          ],
+          "value": 0.5
+        },
+        "index": 1,
+        "kind": "knob",
+        "name": "width",
+        "range": [
+          0,
+          1
+        ],
+        "trim": "add",
+        "value": 0.5
+      }
+    ],
+    "name": "train",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {
+          "118a00e55a794b76b8abbd373c0fe15f": {
+            "audio": "cable"
+          }
+        },
+        "name": "out1"
+      }
+    ],
+    "position": [
+      -0.7318814992904663,
+      1.7231193780899048,
+      -0.970938503742218
+    ],
+    "quaternion": [
+      0.15369634085629702,
+      0.4868083296100386,
+      -0.036379157033808944,
+      0.8591109983937918
+    ],
+    "uuid": "5f596c78098140c0938ee7ea1717ad65"
+  }
+}
