@@ -238,18 +238,20 @@ module.exports = class Patch{
       case 'pos':
         let posID = payload[0].split('_')[1]
 
-        console.log('oldPos', this.document[posID].position)
+        console.log('oldPos', this.document[posID].position[0])
 
         // prevent updates if op was recently deleted
         this.document = Automerge.change(this.document, 'update position', doc => {
-          
-          doc[posID].position = payload[1]
+          console.log(doc)
+          doc[posID].position[0] = payload[1][0]
+          doc[posID].position[1] = payload[1][1]
+          doc[posID].position[2] = payload[1][2]
         }) 
         this.dirty.vr = true
        
         fs.writeFileSync('updatedScene.json', JSON.stringify(this.document, null, 2))
 
-        console.log(payload[1], this.document[posID].position)
+        console.log(payload[1][0], this.document[posID].position[0])
         this.updatePeers(this.docId, 'update position')
       break;
 

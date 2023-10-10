@@ -540,11 +540,11 @@ const UI = {
 				
 				// apply hand pose to the dragged object:
 				let m = mat4.multiply(mat4.create(), hand.mat, hand.stateData.objectRelativeMat);
-				let newPos = object.pos
+				let newPos = [m[12], m[13], m[14]]
 				let newQuat
 				// mat4.getTranslation(object.pos, m)
 				// mat4.getRotation(object.quat, m)
-				mat4.getTranslation(newPos, m)
+				// mat4.getTranslation(newPos, m)
 				mat4.getRotation(object.quat, m)
 
 				// check for exit:
@@ -572,9 +572,9 @@ const UI = {
 					hand.state = "default";
 				} else {
 					// send propchange data to patch
-					console.log('app.js object.pos', object.pos)
 					
-					// patch.update('pos', [object.path, newPos])
+					
+					patch.update('pos', [object.path, newPos])
 					patch.update('quat', [object.path, object.quat])
 					// propchange!
 					// outgoingDeltas.push(
