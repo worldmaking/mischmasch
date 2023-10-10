@@ -248,8 +248,6 @@ module.exports = class Patch{
       case 'pos':
         let posID = payload[0].split('_')[1]
 
-        console.log('oldPos', this.document[posID].position.x)
-
         // prevent updates if op was recently deleted
         this.document = Automerge.change(this.document, 'update position', doc => {
           doc[posID].position.x = payload[1][0]
@@ -258,7 +256,6 @@ module.exports = class Patch{
         }) 
         this.dirty.vr = true
        
-        console.log('incoming position value:', payload[1][0], '\nupdated value in document:', this.document[posID].position.x)
         this.updatePeers(this.docId, 'update position')
       break;
 
@@ -474,7 +471,6 @@ module.exports = class Patch{
       // these are sync messages sent by other peers
       case 'syncMessage':
         delete syncMsg.arg
-        console.log('incoming sync type', syncMsg.type)
         let syncMessageArray = new Uint8Array(syncMsg.syncMsgArray);
         const [nextDoc, nextSyncState, patch] = Automerge.receiveSyncMessage(
           this.document,
@@ -499,7 +495,6 @@ module.exports = class Patch{
 
   // method to update all peers using automerge sync protocol
   updatePeers(docId, editDetails){
-    console.log(`docId ${docId}\neditDetails: ${editDetails}`)
     Object.entries(this.syncStates).forEach(([peer, syncState]) => {
       const [nextSyncState, syncMessage] = Automerge.generateSyncMessage(
         this.document,
@@ -510,7 +505,6 @@ module.exports = class Patch{
         
         // convert sync message array to string
         let syncMsgArray = Array.from(syncMessage)
-        console.log('syncMsgArray', syncMsgArray)
         // send new sync message to peer
         this.webRTCManager.peers[peer].dataChannel.send(JSON.stringify({arg: 'syncMessage', type: editDetails,
           docId, peerId: this.PEER_ID, target: peer, syncMsgArray,
