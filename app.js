@@ -1,27 +1,34 @@
 const assert = require("assert"),
 	fs = require("fs"),
 	path = require("path");
+//keyboard events
+const keyboardEvent = require('lepikevents');
+const cycle = require('cycle')
 const { vec2, vec3, vec4, quat, mat2, mat2d, mat3, mat4} = require("gl-matrix")
 const PNG = require("png-js");
 // keep the 'ws' usage as well - coven requires this very spelling
 const ws = require('ws')
-const username = require('username')
+const generateName = require('boring-name-generator');
+let username = require('username')
 const filename = path.basename(__filename)
+
 
 const chroma = require("chroma-js")
 const flags = require('flags')
 let userSettings = JSON.parse(fs.readFileSync(path.join(__dirname, 'userData/userSettings.json')))
 
+// temporary op spawning using keyboard input
+let testOp = cycle.retrocycle(JSON.parse(fs.readFileSync(path.join(__dirname, 'developer/trainOp_for_testing.json'))));
+
 // if user entered their name, use that, otherwise use system username
-flags.defineString('username', username.sync());
-// default to running vr. if --runVR set to false, run with mouse n keys
-flags.defineString('disableVR', false);
+flags.defineString('username', username.sync() + '_' + generateName().dashed);
+// default to running vr. if --disableVR set to true, run with mouse n keys
+flags.defineBoolean('disableVR');
 // default to new blank scene. if --patchFile contains the name of a file in /userData, load that file. 
 flags.defineString('patchFile', 'new')
 flags.parse()
 
 const nodeglpath = "../node-gles3"
-const rws = require('reconnecting-websocket');
 
 
 const gl = require(path.join(nodeglpath, "gles3.js")),
@@ -34,19 +41,40 @@ const componentPath = path.join(__dirname, 'Components')
 const Patch = require(path.join(componentPath, 'Patch/Patch.js'))
 const Palette = require(path.join(componentPath, 'Palette/Palette.js'))
 const Audio = require(path.join(componentPath, 'Audio/Audio.js'))
-let patch = new Patch()
-
-// let p2pID; // set by coven signalling server
-let name = flags.get('username')
 
 
+const PEER_ID = flags.get('username')
+
+
+
+
+
+
+let patch = new Patch(PEER_ID, Audio)
+
+
+keyboardEvent.events.on('keyDown', (data) => {
+  switch(data){
+    case "A":
+			patch.add('op', testOp)
+    break;
+  }
+})
 
 function prettyPrint(object){
 	console.log(JSON.stringify(object, null, 4))
 }
-let USEVR = (process.platform === "win32") && !(flags.get('disableVR') === 'true');
+
+let USEVR;
+
+if(process.platform === "win32" && !flags.get('disableVR')){
+	USEVR = true
+} else {
+	USEVR = false
+}
 // usevr if its specified on CLI & skip VR if on OSX:
 console.log('using VR?', USEVR)
+
 let vr = (USEVR) ? require(path.join(nodeglpath, "openvr.js")) : null
 
 // const shaderpath = path.join(__dirname, "shaders")
@@ -57,12 +85,12 @@ let gensym = (function() {
     return function (prefix="node") {
         //return `${prefix}_${nodeid++}_${userPose.id}`
 		//return `${prefix}_${nodeid++}`
-			console.log(prefix)
 		return `${prefix}_${Date.now()}`	
     }
 })();
 
 function hashCode(str) { // java String#hashCode
+	
 	let hash = 0;
 	for (let i = 0; i < str.length; i++) {
 			hash = str.charCodeAt(i) + ((hash << 5) - hash);
@@ -209,8 +237,13 @@ const UI = {
 		turnState: 0,
 		speed: 1, // metres per second
 		keySpeed: 1,
+
+		patching: {
+			menuOpen: 0
+		},
 		
 		handleKeys(key, down, mod) {
+			
 			switch (key) {
 				case 87: // W
 				case 265: // up
@@ -226,11 +259,13 @@ const UI = {
 				this.strafeState = down ? -1 : 0; break;
 				case 263: // left
 				this.turnState = down ? -1 : 0; break;
+
 			}
 			// handle mod, e.g. shift for 'run' and ctrl for 'creep'
 			let shift = !!(mod % 2);
 			let ctrl = !!(mod % 4);
 			this.keySpeed = shift ? 4 : ctrl ? 1/4 : 1;
+			
 		},
 
 		move(dt=1/60) {
@@ -505,8 +540,59 @@ const UI = {
 				
 				// apply hand pose to the dragged object:
 				let m = mat4.multiply(mat4.create(), hand.mat, hand.stateData.objectRelativeMat);
-				mat4.getTranslation(object.pos, m)
-				mat4.getRotation(object.quat, m)
+				// handle translation and scaling ourselves so that object isn't being modified (we want the pos and quat to be written to patch.document, not directly)
+				// get translation of position
+				let newPos = [m[12], m[13], m[14]]
+				// get rotation of quat
+				let newQuat = [ 0, 0, 0, 0 ]
+				let scaling = [Math.hypot(m[0], m[1], m[2]), Math.hypot(m[4], m[5], m[6]), Math.hypot(m[8], m[9], m[10])]
+				let is1 = 1 / scaling[0];
+				let is2 = 1 / scaling[1];
+				let is3 = 1 / scaling[2];
+				let sm11 = m[0] * is1;
+				let sm12 = m[1] * is2;
+				let sm13 = m[2] * is3;
+				let sm21 = m[4] * is1;
+				let sm22 = m[5] * is2;
+				let sm23 = m[6] * is3;
+				let sm31 = m[8] * is1;
+				let sm32 = m[9] * is2;
+				let sm33 = m[10] * is3;
+				let trace = sm11 + sm22 + sm33;
+				let S = 0;
+
+				if (trace > 0) {
+					S = Math.sqrt(trace + 1.0) * 2;
+					newQuat[3] = 0.25 * S;
+					newQuat[0] = (sm23 - sm32) / S;
+					newQuat[1] = (sm31 - sm13) / S;
+					newQuat[2] = (sm12 - sm21) / S;
+				} else if (sm11 > sm22 && sm11 > sm33) {
+					S = Math.sqrt(1.0 + sm11 - sm22 - sm33) * 2;
+					newQuat[3] = (sm23 - sm32) / S;
+					newQuat[0] = 0.25 * S;
+					newQuat[1] = (sm12 + sm21) / S;
+					newQuat[2] = (sm31 + sm13) / S;
+				} else if (sm22 > sm33) {
+					S = Math.sqrt(1.0 + sm22 - sm11 - sm33) * 2;
+					newQuat[3] = (sm31 - sm13) / S;
+					newQuat[0] = (sm12 + sm21) / S;
+					newQuat[1] = 0.25 * S;
+					newQuat[2] = (sm23 + sm32) / S;
+				} else {
+					S = Math.sqrt(1.0 + sm33 - sm11 - sm22) * 2;
+					newQuat[3] = (sm12 - sm21) / S;
+					newQuat[0] = (sm31 + sm13) / S;
+					newQuat[1] = (sm23 + sm32) / S;
+					newQuat[2] = 0.25 * S;
+				}
+
+				
+				
+				// mat4.getTranslation(object.pos, m)
+				// mat4.getRotation(object.quat, m)
+				// mat4.getTranslation(newPos, m)
+				// mat4.getRotation(object.quat, m)
 
 				// check for exit:
 				if (!hand.trigger_pressed) {
@@ -533,8 +619,10 @@ const UI = {
 					hand.state = "default";
 				} else {
 					// send propchange data to patch
-					patch.update('pos', [object.path, object.pos])
-					patch.update('quat', [object.path, object.quat])
+					
+					
+					patch.update('pos', [object.path, newPos])
+					patch.update('quat', [object.path, newQuat])
 					// propchange!
 					// outgoingDeltas.push(
 					// // 	{ 
@@ -2227,11 +2315,8 @@ function animate() {
 
 	// rebuild VR localGraph
 	if(patch.dirty.vr == true){
-		fs.writeFileSync('userData/document.json', JSON.stringify(patch.document, null, 2))
 		
 		localGraph = patch.rebuild()
-		fs.writeFileSync('userData/graph.json', JSON.stringify(localGraph, null, 2))
-
 		mainScene.rebuild(localGraph)
 		patch.dirty.vr = false
 	}

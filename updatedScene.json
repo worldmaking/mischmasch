@@ -1,0 +1,103 @@
+{
+  "a048080e171044a3ac3c5b5196f329cf": {
+    "category": "speaker",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "inlet",
+          "range": [
+            -1,
+            1
+          ]
+        },
+        "index": 0,
+        "kind": "inlet",
+        "name": "audio"
+      }
+    ],
+    "name": "speaker",
+    "outputs": [],
+    "position": {
+      "x": -0.04013315215706825,
+      "y": 1.7013651132583618,
+      "z": -1.26372629404068
+    },
+    "quaternion": [
+      -0.2027889815543676,
+      0.4080176970314873,
+      0.07279454077417524,
+      0.8871860785101735
+    ],
+    "uuid": "a048080e171044a3ac3c5b5196f329cf"
+  },
+  "6bd9b5a478de450393b1716b773a48f6": {
+    "category": "source",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "knob",
+          "range": [
+            -10,
+            7
+          ],
+          "value": 0
+        },
+        "index": 0,
+        "kind": "knob",
+        "name": "freq",
+        "range": [
+          -10,
+          7
+        ],
+        "trim": "add",
+        "value": 0
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "knob",
+          "range": [
+            0,
+            1
+          ],
+          "value": 0.5
+        },
+        "index": 1,
+        "kind": "knob",
+        "name": "width",
+        "range": [
+          0,
+          1
+        ],
+        "trim": "add",
+        "value": 0.5
+      }
+    ],
+    "name": "train",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {},
+        "name": "out1"
+      }
+    ],
+    "position": {
+      "x": -0.7503178119659424,
+      "y": 1.7154664993286133,
+      "z": -1.331127643585205
+    },
+    "quaternion": [
+      0.06896674153543478,
+      0.36952612791208705,
+      -0.08895135608525952,
+      0.9223782920331601
+    ],
+    "uuid": "6bd9b5a478de450393b1716b773a48f6"
+  }
+}

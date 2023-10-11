@@ -1,0 +1,310 @@
+{
+  "c3b1109718eb4057b7e4ed2935bd2d35": {
+    "category": "speaker",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "inlet",
+          "range": [
+            -1,
+            1
+          ]
+        },
+        "index": 0,
+        "kind": "inlet",
+        "name": "audio"
+      }
+    ],
+    "name": "speaker",
+    "outputs": [],
+    "position": {
+      "x": 0.11747151613235474,
+      "y": 1.662401795387268,
+      "z": -1.3631404042243958
+    },
+    "quaternion": [
+      -0.12031673810941225,
+      0.5864183920121001,
+      0.0889979458570071,
+      0.7960632668406352
+    ],
+    "uuid": "c3b1109718eb4057b7e4ed2935bd2d35"
+  },
+  "a85552903f4d430cae423f7df43d10ac": {
+    "category": "source",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "knob",
+          "range": [
+            -10,
+            7
+          ],
+          "value": 0
+        },
+        "index": 0,
+        "kind": "knob",
+        "name": "freq",
+        "range": [
+          -10,
+          7
+        ],
+        "trim": "add",
+        "value": 0
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "knob",
+          "range": [
+            0,
+            1
+          ],
+          "value": 0.5
+        },
+        "index": 1,
+        "kind": "knob",
+        "name": "width",
+        "range": [
+          0,
+          1
+        ],
+        "trim": "add",
+        "value": 0.5
+      }
+    ],
+    "name": "train",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {},
+        "name": "out1"
+      }
+    ],
+    "position": {
+      "x": -0.48137223720550537,
+      "y": 1.7873486280441284,
+      "z": -1.4677501916885376
+    },
+    "quaternion": [
+      0.23393920514534414,
+      0.32498919431453727,
+      0.012340880615572878,
+      0.9162435326880962
+    ],
+    "uuid": "a85552903f4d430cae423f7df43d10ac"
+  },
+  "de41507315aa4131b73d7a65f8e23e07": {
+    "category": "source",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "knob",
+          "range": [
+            -10,
+            7
+          ],
+          "value": 0
+        },
+        "index": 0,
+        "kind": "knob",
+        "name": "freq",
+        "range": [
+          -10,
+          7
+        ],
+        "trim": "add",
+        "value": 0
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "knob",
+          "range": [
+            0,
+            1
+          ],
+          "value": 0.5
+        },
+        "index": 1,
+        "kind": "knob",
+        "name": "width",
+        "range": [
+          0,
+          1
+        ],
+        "trim": "add",
+        "value": 0.5
+      }
+    ],
+    "name": "train",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {},
+        "name": "out1"
+      }
+    ],
+    "position": {
+      "x": -1.115971602499485,
+      "y": 1.404109589041096,
+      "z": -0.7906470298767089
+    },
+    "quaternion": [
+      0,
+      0.7071067811865475,
+      0,
+      0.7071067811865476
+    ],
+    "uuid": "de41507315aa4131b73d7a65f8e23e07"
+  },
+  "8188d34645be4b2a9ca1f0756dcd3113": {
+    "category": "source",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "knob",
+          "range": [
+            -10,
+            7
+          ],
+          "value": 0
+        },
+        "index": 0,
+        "kind": "knob",
+        "name": "freq",
+        "range": [
+          -10,
+          7
+        ],
+        "trim": "add",
+        "value": 0
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "knob",
+          "range": [
+            0,
+            1
+          ],
+          "value": 0.5
+        },
+        "index": 1,
+        "kind": "knob",
+        "name": "width",
+        "range": [
+          0,
+          1
+        ],
+        "trim": "add",
+        "value": 0.5
+      }
+    ],
+    "name": "train",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {},
+        "name": "out1"
+      }
+    ],
+    "position": {
+      "x": -1.115971602499485,
+      "y": 1.404109589041096,
+      "z": -0.7906470298767089
+    },
+    "quaternion": [
+      0,
+      0.7071067811865475,
+      0,
+      0.7071067811865476
+    ],
+    "uuid": "8188d34645be4b2a9ca1f0756dcd3113"
+  },
+  "e4f69cebb486403584b5b3049461fc01": {
+    "category": "source",
+    "inputs": [
+      {
+        "_props": {
+          "index": 0,
+          "kind": "knob",
+          "range": [
+            -10,
+            7
+          ],
+          "value": 0
+        },
+        "index": 0,
+        "kind": "knob",
+        "name": "freq",
+        "range": [
+          -10,
+          7
+        ],
+        "trim": "add",
+        "value": 0
+      },
+      {
+        "_props": {
+          "index": 1,
+          "kind": "knob",
+          "range": [
+            0,
+            1
+          ],
+          "value": 0.5
+        },
+        "index": 1,
+        "kind": "knob",
+        "name": "width",
+        "range": [
+          0,
+          1
+        ],
+        "trim": "add",
+        "value": 0.5
+      }
+    ],
+    "name": "train",
+    "outputs": [
+      {
+        "_props": {
+          "history": false,
+          "index": 0,
+          "kind": "outlet"
+        },
+        "connections": {},
+        "name": "out1"
+      }
+    ],
+    "position": {
+      "x": -1.115971602499485,
+      "y": 1.404109589041096,
+      "z": -0.7906470298767089
+    },
+    "quaternion": [
+      0,
+      0.7071067811865475,
+      0,
+      0.7071067811865476
+    ],
+    "uuid": "e4f69cebb486403584b5b3049461fc01"
+  }
+}

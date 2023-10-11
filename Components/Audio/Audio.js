@@ -288,9 +288,9 @@ module.exports = {
 			}
 			
 			let operations = doc2operations(doc)
-			console.log('doc\n', doc, 'operations\n',operations)
+
 			//console.log("operations", JSON.stringify(operations, null, "  "))
-			console.log("operations2string\n", operations2string(operations))
+		
 
 			worker.postMessage({ cmd: "graph", operations })
 

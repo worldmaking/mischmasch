@@ -2,12 +2,38 @@ const { v4: uuidv4 } = require('uuid');
 const Automerge = require('automerge')
 const _ = require('lodash');
 const replaceAll = require("replaceall");
+const EventEmitter = require('node:events');
+const emitMessage = new EventEmitter();
+const fs = require('fs')
+const utf8Array2Str = require('utf8array2str');
+const path = require('path')
+// for logging user edits during research study to csv 
+const writeCSV = require('write-csv') 
+const microtime = require('microtime')
+const date = require('date-and-time');
+
+// webrtc datachannel setup
+const SignalingChannel = require("../../lib/signaling-channel");
+const WebrtcManager = require("../../lib/webrtc-manager");
+const dataChannelHandler = require("../../lib/webrtc-handlers/data-channel-handler");
+// CONSTANTS
+const TOKEN = 'SIGNALING123';
+// const SIGNALING_SERVER_URL = 'http://localhost:3030'
+
+const SIGNALING_SERVER_URL = 'https://mischmasch-signalling-11bb45c31d65.herokuapp.com/'
+
+/** @type {string} - can for example be 'admin' | 'vehicle' | 'robot'  depending on you application*/
+const PEER_TYPE = "admin";
 
 
 module.exports = class Patch{
-  constructor(load){
+  constructor(PEER_ID, audioEngine){
+    this.PEER_ID = PEER_ID
+    this.AUDIO = audioEngine
     // versioning     
     this.document = Automerge.init()
+    this.docId = 'doc1'
+    this.syncStates = new Object()// automerge sync states
     this.dirty = {
       vr: false,
       audio:{
@@ -19,9 +45,26 @@ module.exports = class Patch{
 
     this.cables = []
 
+    // research data
+    this.userHistory = [ ]
+   
+    this.historyCsvFilename = `patchHistory_${PEER_ID}_${date.format(new Date(), 'ddd MMM DD YYYY hh:mmA')}.csv`
+
+    // SETUP SIGNALING CHANNEL AND WEBRTC
+    const channel = new SignalingChannel(PEER_ID, PEER_TYPE, SIGNALING_SERVER_URL, TOKEN);
+    const webrtcOptions = { enableDataChannel: true, enableStreams: false, dataChannelHandler };
+
+
+    this.webRTCManager = new WebrtcManager(PEER_ID, PEER_TYPE, channel, webrtcOptions, true, this.syncStates, this.docId, emitMessage);
+    channel.connect();
+
+
+    emitMessage.on('msg', e=> this.receiveSyncMessages(e))
+
   }
 
   add(item, payload){
+    this.storeHistory('add', item, payload)
     switch(item){
       case 'cable':
         let from = payload[0].split('_')[1]
@@ -50,6 +93,10 @@ module.exports = class Patch{
         })
         this.dirty.vr = true
         this.dirty.audio.graph = true
+        this.updatePeers(this.docId, 'add cable')
+
+        // store the history
+        
       break;
   
       case 'op':
@@ -96,8 +143,18 @@ module.exports = class Patch{
         
         const id = replaceAll('-', '', uuidv4())
         let op = {
-          position: payload.node._props.pos,
-          quaternion: payload.node._props.orient,
+          position: {
+            x: payload.node._props.pos[0],
+            y: payload.node._props.pos[1],
+            z: payload.node._props.pos[2]
+          },
+          quaternion: { 
+            x: payload.node._props.orient[0],
+            y: payload.node._props.orient[1],
+            z: payload.node._props.orient[2],
+            w: payload.node._props.orient[3],
+            
+          },
           category: payload.node._props.category,
           name: payload.name,
           uuid: id,
@@ -115,7 +172,8 @@ module.exports = class Patch{
         // set patch dirty flag for animation Loop
         this.dirty.vr = true
         this.dirty.audio.graph = true
- 
+        this.updatePeers(this.docId, `add op ${op.name}`)
+        // this.webRTCSend('add', 'op')
         return op
       break
   
@@ -123,6 +181,7 @@ module.exports = class Patch{
   }
 
   remove(item, payload){
+    this.storeHistory('remove', item, payload)
     switch(item){
       case 'cable':
         let from = payload[0].split('_')[1]
@@ -137,7 +196,7 @@ module.exports = class Patch{
         let outputs = this.document[srcID].outputs 
         for(let i=0; i< outputs.length; i++){
           if(outputs[i].connections[destID]){
-            console.log('connections', outputs[i].connections[destID])
+            
             // update document in automerge
             this.document = Automerge.change(this.document, 'remove cable', doc => {
               delete doc[srcID].outputs[i].connections[destID][destJack]
@@ -157,6 +216,8 @@ module.exports = class Patch{
      
         this.dirty.vr = true
         this.dirty.audio.graph = true
+        this.updatePeers(this.docId, 'remove cable')
+        
       break
 
       case 'op':
@@ -189,31 +250,40 @@ module.exports = class Patch{
 
         this.dirty.vr = true;
         this.dirty.audio.graph = true;
-      break
-      case 'steve':
-        console.log('hooosa')
+
+        this.updatePeers(this.docId, `remove op ${opKind}`)
       break
     }
   }
 
   update(item, payload){
-    
+    this.storeHistory('update', item, payload)
     switch(item){
       case 'pos':
         let posID = payload[0].split('_')[1]
+
         // prevent updates if op was recently deleted
         this.document = Automerge.change(this.document, 'update position', doc => {
-          doc[posID].position = payload[1]
+          doc[posID].position.x = payload[1][0]
+          doc[posID].position.y = payload[1][1]
+          doc[posID].position.z = payload[1][2]
         }) 
         this.dirty.vr = true
+       
+        this.updatePeers(this.docId, 'update position')
       break;
 
       case 'quat':
         let quatID = payload[0].split('_')[1]
         this.document = Automerge.change(this.document, 'update quaternion', doc => {
-          doc[quatID].quaternion = payload[1]
+          doc[quatID].quaternion.x = payload[1][0]
+          doc[quatID].quaternion.y = payload[1][1]
+          doc[quatID].quaternion.z = payload[1][2]
+          doc[quatID].quaternion.w = payload[1][3]
+
         }) 
         this.dirty.vr = true
+        this.updatePeers(this.docId, 'update quaternion')
       break;
 
       case 'param':
@@ -233,15 +303,18 @@ module.exports = class Patch{
 
         this.dirty.vr = true
         this.dirty.audio.param = true
-
+        this.updatePeers(this.docId, 'update param value')
       break 
     }
   }
   rebuild(){
+  
     let graph = {
       nodes:{},
       arcs: []
     }
+
+    
     // prettyPrint(this.document)
     let ops = Object.keys(this.document)
 
@@ -253,11 +326,12 @@ module.exports = class Patch{
         _props: {
           kind: op.name,
           category: op.category,
-          pos: op.position,
-          orient: op.quaternion,
-        }
+          pos: [op.position.x, op.position.y, op.position.z],
+          orient: [op.quaternion.x, op.quaternion.y, op.quaternion.z, op.quaternion.w],
+        },
+        // pos: op.position,
+        // orient: op.quaternion
       }
-      let controlName = null; // used if there is a control (param) op
       
       // loop over inputs
       for(let j = 0; j<op.inputs.length; j++){
@@ -321,6 +395,7 @@ module.exports = class Patch{
     // set patch dirty flag for animation Loop
     this.dirty.vr = true
     this.dirty.audio.graph = true
+    this.updatePeers(this.docId, 'load patch file')
   }
   ensureSpeaker(hmd){
     let ids = Object.keys(this.document)
@@ -331,13 +406,23 @@ module.exports = class Patch{
         speakers.push('speaker')
       }
     }
-    console.log('num speakers', speakers)
+    
     if(speakers.length == 0){
       let pos = [hmd.pos[0], hmd.pos[1], hmd.pos[2]-0.5]
       const id = replaceAll('-', '', uuidv4())
       let op = {
-        position: pos,
-        quaternion: hmd.orient,
+        position: {
+          x: pos[0],
+          y: pos[1],
+          z: pos[2]
+        },
+        
+        quaternion: {
+          x: hmd.orient[0],
+          y: hmd.orient[1],
+          z: hmd.orient[2],
+          w: hmd.orient[3]
+        },
         category: 'speaker',
         name: 'speaker',
         uuid: id,
@@ -362,14 +447,114 @@ module.exports = class Patch{
       this.dirty.vr = true
       this.dirty.audio.graph = true
       this.dirty.speaker = false
-    }
-    
+      this.updatePeers(this.docId, 'ensure speaker')
+      this.storeHistory('ensureSpeaker', 'speaker', op)
+    }    
+  }
 
+  // webRTCSend(payload){
+  //   // eventually we'll involve automerge. but for now, just send the payload
+  //   for (let peer in this.webRTCManager.peers) {
+  //     this.webRTCManager.peers[peer].dataChannel.send(JSON.stringify({
+  //       edit: 'add',
+  //       type: 'op',
+  //       sync: op
+  //     }))
+
+  //   }
+  // }
+
+  // from the automerge sync protocol
+  receiveSyncMessages(msg){
+    
+    let syncMsg = JSON.parse(msg)
+    switch(syncMsg.arg){
+      case 'signallingMessage':
+        console.log('our id', this.PEER_ID)
+        // ignore for now?
+        //todo: the signalling messaging is funky. msg.target and msg.from sometimes get flipped. need to figure out why
+        // if (msg.target == 'all'){
+        //   if(this.PEER_ID != msg.from){
+        //     console.log(`connected to new peer ${msg.from} on datachannel`)
+        //   }
+        // } else if (msg.from == 'all'){
+        //   if(this.PEER_ID != msg.target){
+        //     console.log(`connected to new peer ${msg.target} on datachannel`)
+        //   }
+        // }
+      break;
+      // these are sync messages sent by other peers
+      case 'syncMessage':
+        delete syncMsg.arg
+        let syncMessageArray = new Uint8Array(syncMsg.syncMsgArray);
+        const [nextDoc, nextSyncState, patch] = Automerge.receiveSyncMessage(
+          this.document,
+          this.syncStates[syncMsg.peerId][this.docId] || Automerge.initSyncState(),
+          syncMessageArray,
+        )
+        this.document = nextDoc
+        this.syncStates[syncMsg.peerId] = { ...this.syncStates[syncMsg.peerId], [this.docId]: nextSyncState }
+        this.dirty.audio.graph = true
+        this.dirty.audio.param = true
+        this.dirty.vr = true
+        this.rebuild()
+        // also send Audio.updateGraph(this.document)
+        // this.AUDIO.updateGraph(this.document)
+        this.updatePeers(this.docId, 'automerge sync message')
+
+      break;
+
+      default: console.log(`message from datachannel without matching switch case in Patch.js:receiveSyncMessages() ${msg}`)
+    }
+  }
+
+  // method to update all peers using automerge sync protocol
+  updatePeers(docId, editDetails){
+    Object.entries(this.syncStates).forEach(([peer, syncState]) => {
+      const [nextSyncState, syncMessage] = Automerge.generateSyncMessage(
+        this.document,
+        syncState[docId] || Automerge.initSyncState(),
+      )
+      this.syncStates[peer] = { ...this.syncStates[peer], [docId]: nextSyncState }
+      if (syncMessage && this.webRTCManager.peers[peer]) {
+        
+        // convert sync message array to string
+        let syncMsgArray = Array.from(syncMessage)
+        // send new sync message to peer
+        this.webRTCManager.peers[peer].dataChannel.send(JSON.stringify({arg: 'syncMessage', type: editDetails,
+          docId, peerId: this.PEER_ID, target: peer, syncMsgArray,
+        }))
+        
+      }
+    })
+
+    // store the history
     
   }
+
+  storeHistory(edit, item, payload){
+    //! this is commented out for now, because running it causes significant slowdown in framerate. need to find another way to write the csv (i.e. maybe keep pushing to this.userHistory array but only write the file once every 30 seconds, etc. )
+    /*
+    let p = null;
+    let i = null;
+    switch(item) {
+      case 'op': 
+      i = payload.node.uuid
+    }
+    let historyEntry = {
+      timestamp: microtime.now(),
+      username: this.PEER_ID,
+      edit: edit,
+      item: item,
+      itemID: i,
+      payload: p,
+    }
+    
+    this.userHistory.push(historyEntry)
+    
+    writeCSV(this.historyCsvFilename, this.userHistory )
+    */
+  }
+  
 }
 
-
-function prettyPrint(object){
-	console.log(JSON.stringify(object, null, 4))
-}
