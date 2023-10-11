@@ -2317,7 +2317,6 @@ function animate() {
 	if(patch.dirty.vr == true){
 		
 		localGraph = patch.rebuild()
-		console.log('rebuild vr scene')
 		mainScene.rebuild(localGraph)
 		patch.dirty.vr = false
 	}

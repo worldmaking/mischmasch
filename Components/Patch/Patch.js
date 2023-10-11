@@ -6,6 +6,11 @@ const EventEmitter = require('node:events');
 const emitMessage = new EventEmitter();
 const fs = require('fs')
 const utf8Array2Str = require('utf8array2str');
+const path = require('path')
+// for logging user edits during research study to csv 
+const writeCSV = require('write-csv') 
+const microtime = require('microtime')
+const date = require('date-and-time');
 
 // webrtc datachannel setup
 const SignalingChannel = require("../../lib/signaling-channel");
@@ -40,6 +45,11 @@ module.exports = class Patch{
 
     this.cables = []
 
+    // research data
+    this.userHistory = [ ]
+   
+    this.historyCsvFilename = `patchHistory_${PEER_ID}_${date.format(new Date(), 'ddd MMM DD YYYY hh:mmA')}.csv`
+
     // SETUP SIGNALING CHANNEL AND WEBRTC
     const channel = new SignalingChannel(PEER_ID, PEER_TYPE, SIGNALING_SERVER_URL, TOKEN);
     const webrtcOptions = { enableDataChannel: true, enableStreams: false, dataChannelHandler };
@@ -54,7 +64,7 @@ module.exports = class Patch{
   }
 
   add(item, payload){
-
+    this.storeHistory('add', item, payload)
     switch(item){
       case 'cable':
         let from = payload[0].split('_')[1]
@@ -84,6 +94,9 @@ module.exports = class Patch{
         this.dirty.vr = true
         this.dirty.audio.graph = true
         this.updatePeers(this.docId, 'add cable')
+
+        // store the history
+        
       break;
   
       case 'op':
@@ -168,6 +181,7 @@ module.exports = class Patch{
   }
 
   remove(item, payload){
+    this.storeHistory('remove', item, payload)
     switch(item){
       case 'cable':
         let from = payload[0].split('_')[1]
@@ -243,7 +257,7 @@ module.exports = class Patch{
   }
 
   update(item, payload){
-    
+    this.storeHistory('update', item, payload)
     switch(item){
       case 'pos':
         let posID = payload[0].split('_')[1]
@@ -434,6 +448,7 @@ module.exports = class Patch{
       this.dirty.audio.graph = true
       this.dirty.speaker = false
       this.updatePeers(this.docId, 'ensure speaker')
+      this.storeHistory('ensureSpeaker', 'speaker', op)
     }    
   }
 
@@ -512,6 +527,34 @@ module.exports = class Patch{
         
       }
     })
+
+    // store the history
+    
+  }
+
+  storeHistory(edit, item, payload){
+    //! this is commented out for now, because running it causes significant slowdown in framerate. need to find another way to write the csv (i.e. maybe keep pushing to this.userHistory array but only write the file once every 30 seconds, etc. )
+    /*
+    let p = null;
+    let i = null;
+    switch(item) {
+      case 'op': 
+      i = payload.node.uuid
+    }
+    let historyEntry = {
+      timestamp: microtime.now(),
+      username: this.PEER_ID,
+      edit: edit,
+      item: item,
+      itemID: i,
+      payload: p,
+    }
+    
+    this.userHistory.push(historyEntry)
+    
+    writeCSV(this.historyCsvFilename, this.userHistory )
+    */
   }
   
 }
+
