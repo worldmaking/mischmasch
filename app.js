@@ -1794,59 +1794,127 @@ function makeSceneGraph(renderer, gl) {
 			// if op has a mathematical sign, provide it in the opsList so that VR can display it instead of the genish name (for better UX)
       switch(name){
         case 'add':
-          label_text = '+'
-        break
-        case 'sub':
-          label_text = 'subtract'
-        break
-        case 'mul':
-          label_text = 'multiply'
-        break
-        case 'div':
-          label_text = 'divide'
-        break
-        case 'gt':
-          label_text = '>'
-        break
-        case 'gte':
-          label_text = '>='
-        break
-        case 'lt':
-          label_text = '<'
-        break
-        case 'lte':
-          label_text = '<='
-        break
-        case 'bool':
-          label_text = 'boolean'
-        break
-        case 'gtp':
-          label_text = '> pass'
-        break
-        case 'ltp':
-          label_text = '< pass'
-        break
-        case 'ad':
-          label_text = 'attack/decay'
-        break
-        case 'eq':
-          label_text = 'equals'
-        break
-        case 'neq':
-          label_text = '!='
-        break
-        case 'ad':
-          label_text = 'attack/decay'
-        break
-        case 'eq':
-          label_text = '=='
-        break
-        case 'neq':
-          label_text = '!='
-        break
-        case 'seq':
-          //TODO what does this one do?
-        break
+					label_text = 'add'
+				break
+					case 'sub':
+						label_text = 'subtract'
+				break
+					case 'mul':
+						label_text = 'multiply'
+				break
+					case 'div':
+						label_text = 'divide'
+				break
+					case 'gt':
+						label_text = '>'
+				break
+					case 'gte':
+						label_text = '>='
+				break
+					case 'lt':
+						label_text = '<'
+				break
+					case 'lte':
+						label_text = '<='
+				break
+					case 'bool':
+						label_text = 'boolean'
+				break
+					case 'gtp':
+						label_text = '> pass'
+				break
+					case 'ltp':
+						label_text = '< pass'
+				break
+					case 'ad':
+						label_text = 'attack/decay'
+				break
+					case 'eq':
+						label_text = 'equals'
+				break
+					case 'neq':
+						label_text = '!='
+				break
+					//
+					//
+					// other better names
+					case 'sah':
+						label_text = 'sample_and_hold'
+				break
+					case 'slide':
+						label_text = 'lowpass'
+				break
+					case 'abs':
+						label_text = 'absolute'
+				break
+					case 'ceil':
+						label_text = 'round_up'
+				break
+	
+					case 'dcblock':
+						label_text = 'DC_Filter'
+				break
+					case 'abs':
+						label_text = 'absolute'
+				break
+					
+					case 'mtof':
+						label_text = 'MIDI_#_to_Freq'
+				break
+					case 'acos':
+						label_text = 'inverse_cosine'
+				break
+					case 'asin':
+						label_text = 'inverse_sine'
+				break
+					case 'atan':
+						label_text = 'inverse_tan'
+				break
+	
+					case 'cos':
+						label_text = 'cosine'
+				break
+					case 'floor':
+						label_text = 'round_down'
+				break
+	
+				case 'mod':
+					label_text = 'modulo'
+				break
+				case 'pow':
+					label_text = 'power'
+				break
+				case 'clamp':
+					label_text = 'scaling:_clamp'
+				break
+				case 'fold':
+					label_text = 'scaling:_fold'
+				break
+
+				case 'wrap':
+					label_text = 'scaling:_wrap'
+				break
+				
+					
+				case 'cycle':
+					label_text = 'sine_oscillator'
+				break
+				case 'phasor':
+					label_text = 'unipolar_saw_oscillator'
+				break
+				case 'rate':
+					label_text = 'time-scale_input_phase'
+				break
+				case 'train':
+					label_text = 'pulse_oscillator'
+				break
+				case 'gate':
+					label_text = 'logic_gate'
+				break
+
+				case 'mix':
+					label_text = 'mixer'
+				break
 
 
       }
@@ -2011,7 +2079,7 @@ function makeSceneGraph(renderer, gl) {
 					// if op has a mathematical sign, provide it in the opsList so that VR can display it instead of the genish name (for better UX)
 					switch(obj.kind){
 						case 'add':
-							label_text = '+'
+							label_text = 'add'
 						break
 						case 'sub':
 							label_text = 'subtract'
@@ -2052,17 +2120,85 @@ function makeSceneGraph(renderer, gl) {
 						case 'neq':
 							label_text = '!='
 						break
-						case 'ad':
-							label_text = 'attack/decay'
+						//
+						//
+						// other better names
+						case 'sah':
+							label_text = 'sample_and_hold'
 						break
-						case 'eq':
-							label_text = '=='
+						case 'slide':
+							label_text = 'lowpass'
 						break
-						case 'neq':
-							label_text = '!='
+						case 'abs':
+							label_text = 'absolute'
 						break
-						case 'seq':
-							//TODO what does this one do?
+						case 'ceil':
+							label_text = 'round_up'
+						break
+		
+						case 'dcblock':
+							label_text = 'DC_Filter'
+						break
+						case 'abs':
+							label_text = 'absolute'
+						break
+						
+						case 'mtof':
+							label_text = 'MIDI_#_to_Freq'
+						break
+						case 'acos':
+							label_text = 'inverse_cosine'
+						break
+						case 'asin':
+							label_text = 'inverse_sine'
+						break
+						case 'atan':
+							label_text = 'inverse_tan'
+						break
+		
+						case 'cos':
+							label_text = 'cosine'
+						break
+						case 'floor':
+							label_text = 'round_down'
+						break
+		
+						case 'mod':
+							label_text = 'modulo'
+						break
+						case 'pow':
+							label_text = 'power'
+						break
+						case 'clamp':
+							label_text = 'scaling:_clamp'
+						break
+						case 'fold':
+							label_text = 'scaling:_fold'
+						break
+		
+						case 'wrap':
+							label_text = 'scaling:_wrap'
+						break
+						
+						
+						case 'cycle':
+							label_text = 'sine_oscillator'
+						break
+						case 'phasor':
+							label_text = 'unipolar_saw_oscillator'
+						break
+						case 'rate':
+							label_text = 'time-scale_input_phase'
+						break
+						case 'train':
+							label_text = 'pulse_oscillator'
+						break
+						case 'gate':
+							label_text = 'logic_gate'
+						break
+		
+						case 'mix':
+							label_text = 'mixer'
 						break
 					}
 						label_text.toUpperCase()
