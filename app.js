@@ -166,7 +166,7 @@ const SHAPE_BUTTON = 1;
 const SHAPE_CYLINDER = 2;
 const SHAPE_KNOB = 3;
 
-const UI_DEFAULT_SCALE = 0.1;
+const UI_DEFAULT_SCALE = 0.12;
 const UI_DEPTH = 1/3;
 const UI_NUDGE = 0.01;
 const UI_SCROLL_SPEED = 1;
@@ -1929,8 +1929,8 @@ function makeSceneGraph(renderer, gl) {
 				case "outlet":
 				case "inlet":  {
 					obj.i_shape[0] = SHAPE_CYLINDER;
-					vec4.copy(obj.i_color, props.kind == "inlet" ? [0.5, 0.5, 0.5, 1] : [0.25, 0.25, 0.25, 1]);
-					obj.dim = [1/2, 1/2, -UI_DEPTH];
+					vec4.copy(obj.i_color, props.kind == "inlet" ? userSettings.modules.jacks.colour.inlet : userSettings.modules.jacks.colour.outlet);
+					obj.dim = [userSettings.modules.jacks.size[0], userSettings.modules.jacks.size[1], -UI_DEPTH];
 					obj.cablingKind = (props.kind == "inlet") ? "to" : "from";
 					if (props.history) {
 						// render history outs differently:
