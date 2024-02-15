@@ -5,7 +5,7 @@ if (isMainThread) {
 	console.error("this script is intended to run as a worker thread, do not invoke it directly")
 	process.exit()
 }
-
+const fs = require('fs')
 // // `workerData` can be passed here in the `new Worker` constructor
 // console.log(workerData);
 
@@ -129,7 +129,8 @@ parentPort.on("message", (msg) => {
 						// 2nd argument here is a memory allocation
 						// TODO we need to figure out how to assign this more sensibly
 						let newkernel = genish.gen.createCallback(graph, memsize)
-
+						// console.log(newkernel.toString())
+						// fs.writeFileSync('graph.json', JSON.stringify(newkernel, null, 2))
 						// add the required closures:
 						// for (const item of newkernel.members.entries()) {
 						// 	console.log(item)
@@ -139,6 +140,7 @@ parentPort.on("message", (msg) => {
 
 						// 	after compiling, build up the index map for stashing:
 					 	newkernel.memorymap = getMemoryMap(graph);
+						// console.log(newkernel)
 					 	applystash(newkernel, stash);
 
 						//console.log("stash", JSON.stringify(stash, null, "  "))
@@ -156,7 +158,7 @@ parentPort.on("message", (msg) => {
 						// console.log(newkernel.args)
 
 						// console.log(newkernel)
-						//console.log(newkernel.toString())
+						// console.log(newkernel.toString())
 
 						kernel = newkernel
 					} else {
