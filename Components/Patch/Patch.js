@@ -504,6 +504,11 @@ module.exports = class Patch{
 
       break;
 
+      // this comes from the onMessage event in data-channel-handler.js
+      case 'requestScene':
+        this.updatePeers(this.docId, `new peer: ${syncMsg.peer} added, syncing`)
+      break
+
       default: console.log(`message from datachannel without matching switch case in Patch.js:receiveSyncMessages() ${msg}`)
     }
   }
